@@ -1,0 +1,3438 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search",
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search",
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode",
+        "toolExposure": {
+          "one*": "deferred"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "codemode",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "codemode"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode",
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "deferred",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "deferred"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "direct",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "direct"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": true,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "both",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active (autoEnableCodemode is false); they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "codemode",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "search",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "custom",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "base",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "disabled",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "enabled": false
+      },
+      "initial": [],
+      "active": [],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "override",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden",
+        "toolExposure": {
+          "one*": "codemode"
+        }
+      },
+      "initial": [],
+      "active": [],
+      "warnings": [
+        {
+          "text": "MCP tools are only reachable from the codemode or tool_search tool, but neither is active; they cannot be called.",
+          "level": "warning"
+        }
+      ]
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-codemode",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "codemode"
+      ],
+      "active": [
+        "codemode"
+      ],
+      "warnings": []
+    },
+    {
+      "exposure": "hidden",
+      "autoEnableCodemode": false,
+      "builtins": "none",
+      "variant": "active-search",
+      "configuration": {
+        "command": "unused",
+        "exposure": "hidden"
+      },
+      "initial": [
+        "tool_search"
+      ],
+      "active": [
+        "tool_search"
+      ],
+      "warnings": []
+    }
+  ]
+}

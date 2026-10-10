@@ -32,16 +32,13 @@ pub const Bridge = struct {
 
     pub fn uiPromptEvent(self: *Bridge, event: ui.PromptEvent, method: []const u8) void {
         const hook = if (event == .start) "ui_prompt_start" else "ui_prompt_end";
-        if (!self.host.hasHook(hook)) return;
-        var payload: std.Io.Writer.Allocating = .init(self.host.gpa);
-        defer payload.deinit();
-        payload.writer.writeAll("{\"type\":") catch return;
-        std.json.Stringify.value(hook, .{}, &payload.writer) catch return;
-        payload.writer.writeAll(",\"method\":") catch return;
-        std.json.Stringify.value(method, .{}, &payload.writer) catch return;
-        payload.writer.writeAll("}") catch return;
-        var emitted = self.executeHook(hook, payload.written()) catch return;
-        emitted.deinit(self.host.gpa);
+        self.host.deferUiPromptEvent(hook, method, self, consumeUiPromptEvent);
+    }
+
+    fn consumeUiPromptEvent(context: ?*anyopaque, emitted: *host_mod.EmitResult) !void {
+        const self: *Bridge = @ptrCast(@alignCast(context.?));
+        try self.queueEmitted(emitted);
+        if (emitted.errors.len > 0) return error.ExtensionUiPromptHookFailed;
     }
 
     pub fn deinit(self: *Bridge) void {
@@ -50,20 +47,28 @@ pub const Bridge = struct {
     }
 
     pub fn drainActions(self: *Bridge) ![]actions_mod.Record {
+        _ = try self.host.synchronizeNativeMetadata();
+        try self.flushRendererActions();
         return self.action_queue.drain();
     }
 
     pub fn queuedActionCount(self: *Bridge) usize {
-        return self.action_queue.count();
+        return self.action_queue.count() + self.host.rendererActionCount();
     }
 
     /// Transfer command/shortcut action ownership into the same FIFO used by
     /// lifecycle hooks and parallel extension-tool callbacks.
     pub fn enqueueActions(self: *Bridge, batch: *actions_mod.Batch) !void {
+        try self.flushRendererActions();
         try self.action_queue.enqueue(batch);
     }
 
+    fn flushRendererActions(self: *Bridge) !void {
+        try self.host.transferRendererActions(&self.action_queue);
+    }
+
     fn queueEmitted(self: *Bridge, emitted: *host_mod.EmitResult) !void {
+        try self.flushRendererActions();
         for (emitted.responses) |*response| try self.action_queue.enqueue(&response.actions);
     }
 
@@ -361,14 +366,31 @@ pub const Bridge = struct {
         return result;
     }
 
+    /// Registration defaults govern automatic activation. Explicit SDK
+    /// selections may declare deferred/codemode tools; hidden stays hidden.
+    pub fn isToolDeclared(tool: host_mod.ExtensionTool, filter: agent_tools.ToolFilter) bool {
+        const enabled = if (@hasDecl(agent_tools.ToolFilter, "isExtensionEnabled")) filter.isExtensionEnabled(tool.name) else filter.isEnabled(tool.name);
+        if (tool.model_hidden or !enabled) return false;
+        if (tool.model_declarable) return true;
+        if (@hasField(agent_tools.ToolFilter, "default_activation_fn")) {
+            if (filter.default_activation_fn) |selected| return selected(filter.default_activation_ctx, tool.name);
+        }
+        return filter.allow != null;
+    }
+
     pub fn toolSchemasJson(self: *Bridge, gpa: std.mem.Allocator, filter: agent_tools.ToolFilter) ![]u8 {
+        _ = try self.host.synchronizeNativeMetadata();
+        var seen: std.StringHashMapUnmanaged(void) = .empty;
+        defer seen.deinit(gpa);
         var out: std.Io.Writer.Allocating = .init(gpa);
         errdefer out.deinit();
         try out.writer.writeByte('[');
         var first = true;
         for (self.host.extensions.items) |ext| {
             for (ext.tools) |tool| {
-                if (!filter.isEnabled(tool.name)) continue;
+                if (!isToolDeclared(tool, filter)) continue;
+                if (seen.contains(tool.name)) continue;
+                try seen.put(gpa, tool.name, {});
                 if (!first) try out.writer.writeByte(',');
                 first = false;
                 try out.writer.writeAll("{\"type\":\"function\",\"function\":{\"name\":");
@@ -460,7 +482,7 @@ pub const Bridge = struct {
     }
 
     fn transferToolOutput(self: *Bridge, gpa: std.mem.Allocator, output: *host_mod.ToolOutput) !?agent_tools.ToolResult {
-        try self.action_queue.enqueue(&output.actions);
+        try self.enqueueActions(&output.actions);
         if (output.delegate_builtin) return null;
 
         // The agent may execute external tools in a per-worker arena. The host
@@ -632,6 +654,43 @@ pub const Bridge = struct {
         var emitted = try self.executeHook("session_start", payload);
         defer emitted.deinit(gpa);
         try self.queueEmitted(&emitted);
+    }
+
+    pub fn beforeSessionSwitch(self: *Bridge, reason: []const u8, target: ?[]const u8) !bool {
+        return self.beforeSessionReplacement("session_before_switch", "reason", reason, "targetSessionFile", target);
+    }
+
+    pub fn beforeSessionFork(self: *Bridge, entry_id: []const u8) !bool {
+        return self.beforeSessionReplacement("session_before_fork", "entryId", entry_id, "position", "before");
+    }
+
+    fn beforeSessionReplacement(self: *Bridge, hook: []const u8, field: []const u8, value: []const u8, optional_field: []const u8, optional: ?[]const u8) !bool {
+        if (!self.host.hasHook(hook)) return false;
+        const gpa = self.host.gpa;
+        var payload: std.Io.Writer.Allocating = .init(gpa);
+        defer payload.deinit();
+        try payload.writer.writeAll("{\"type\":");
+        try std.json.Stringify.value(hook, .{}, &payload.writer);
+        try payload.writer.writeByte(',');
+        try std.json.Stringify.value(field, .{}, &payload.writer);
+        try payload.writer.writeByte(':');
+        try std.json.Stringify.value(value, .{}, &payload.writer);
+        if (optional) |text| {
+            try payload.writer.writeByte(',');
+            try std.json.Stringify.value(optional_field, .{}, &payload.writer);
+            try payload.writer.writeByte(':');
+            try std.json.Stringify.value(text, .{}, &payload.writer);
+        }
+        try payload.writer.writeByte('}');
+        var emitted = try self.executeHook(hook, payload.written());
+        defer emitted.deinit(gpa);
+        try self.queueEmitted(&emitted);
+        for (emitted.responses) |response| {
+            var parsed = std.json.parseFromSlice(std.json.Value, gpa, response.json, .{}) catch continue;
+            defer parsed.deinit();
+            if (parsed.value == .object) if (parsed.value.object.get("cancel")) |cancel| if (cancel == .bool and cancel.bool) return true;
+        }
+        return false;
     }
 
     pub fn sessionShutdown(self: *Bridge, gpa: std.mem.Allocator, cwd: []const u8, session_id: []const u8, reason: []const u8) !void {
@@ -874,6 +933,7 @@ fn eventPayload(gpa: std.mem.Allocator, event: agent_loop.AgentEvent, hook: []co
             try writeEventToolResult(&out.writer, event);
             try out.writer.writeAll(",\"isError\":");
             try out.writer.writeAll(if (event.is_error) "true" else "false");
+            if (event.duration_ms) |duration| try out.writer.print(",\"durationMs\":{d}", .{duration});
         },
         .agent_end => {
             try out.writer.writeAll(",\"messages\":[],\"text\":");
@@ -1849,6 +1909,7 @@ test "agent event payloads are valid upstream-shaped JSON" {
             .text = "contents",
             .is_error = true,
             .details_json = "{\"line\":3}",
+            .duration_ms = 0,
         },
         .{ .kind = .agent_end, .text = "done" },
     };
@@ -1882,6 +1943,7 @@ test "agent event payloads are valid upstream-shaped JSON" {
     var parsed_end = try std.json.parseFromSlice(std.json.Value, gpa, tool_end, .{});
     defer parsed_end.deinit();
     const result = parsed_end.value.object.get("result").?;
+    try std.testing.expectEqual(@as(i64, 0), parsed_end.value.object.get("durationMs").?.integer);
     try std.testing.expect(result == .object);
     try std.testing.expect(result.object.get("isError").?.bool);
     try std.testing.expectEqual(@as(i64, 3), result.object.get("details").?.object.get("line").?.integer);

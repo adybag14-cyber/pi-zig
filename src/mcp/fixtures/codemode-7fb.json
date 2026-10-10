@@ -1,0 +1,212 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "name": "roundtrip",
+      "code": "text('before'); const value=await tools.my_tool({value:3}); console.log('after',value); store('answer',value); return {value};",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": {
+          "value": 6
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          },
+          {
+            "type": "text",
+            "text": "after 6",
+            "console": true
+          }
+        ],
+        "calls": [
+          {
+            "name": "my-tool",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {
+            "answer": 6
+          },
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "originalName",
+      "code": "return await tools['my-tool']({value:4});",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": 8,
+        "output": [],
+        "calls": [
+          {
+            "name": "my-tool",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "storeClone",
+      "code": "const first=load('a'); first.x=9; store('b',first); store('a',undefined); return load('a');",
+      "store": {
+        "a": {
+          "x": 1
+        }
+      },
+      "result": {
+        "ok": true,
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "b": {
+              "x": 9
+            }
+          },
+          "delete": [
+            "a"
+          ]
+        }
+      }
+    },
+    {
+      "name": "throwRetainsOutput",
+      "code": "text('retained'); store('a',1); throw new Error('source failure');",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "source failure"
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "retained"
+          }
+        ],
+        "calls": []
+      }
+    },
+    {
+      "name": "exit",
+      "code": "text('early'); exit(); text('late');",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "text",
+            "text": "early"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "metadata",
+      "code": "return ALL_TOOLS;",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": [
+          {
+            "name": "my_tool",
+            "description": "double"
+          }
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "images",
+      "code": "image('data:image/jpeg;base64,iVBORw0KGgo='); image({type:'image',data:'R0lGODlh',mimeType:'ignored'}); image({image_url:'DATA:;BASE64,/9j/AA=='});",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgo=",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "R0lGODlh",
+            "mimeType": "image/gif"
+          },
+          {
+            "type": "image",
+            "data": "/9j/AA==",
+            "mimeType": "image/jpeg"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "intrinsics",
+      "code": "class CustomError extends Error {constructor(){super('owned');this.name='CustomError'}}; const own={};own.toString=()=> 'own'; return {array:Object.isFrozen(Array.prototype),console:Object.isFrozen(console),tools:Object.isFrozen(tools),globalWritable:Object.getOwnPropertyDescriptor(globalThis,'JSON').writable,error:new CustomError().name,own:own.toString()};",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": {
+          "array": true,
+          "console": true,
+          "tools": true,
+          "globalWritable": false,
+          "error": "CustomError",
+          "own": "own"
+        },
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "caughtExit",
+      "code": "text('before'); try {exit()} catch {} text('after'); return 9;",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    }
+  ]
+}

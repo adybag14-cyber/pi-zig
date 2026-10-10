@@ -1,0 +1,243 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourceSha256": "b3b34e9a8ba06aafb2342f11b279f7c584d23b5cc5a5695a30e3758f35c133d7",
+  "execution": "Original tokenizer/document builder/Bm25Ranker section executed after built-in type erasure; no substituted rank implementation.",
+  "tokens": [
+    {
+      "text": "HTTPServer XMLHTTPRequest listGitHubIssues",
+      "tokens": [
+        "http",
+        "server",
+        "xmlhttp",
+        "request",
+        "list",
+        "git",
+        "hub",
+        "issue"
+      ]
+    },
+    {
+      "text": "queries searches boxes passes status class",
+      "tokens": [
+        "query",
+        "search",
+        "box",
+        "pass",
+        "statu",
+        "class"
+      ]
+    },
+    {
+      "text": "a an THE with for issue",
+      "tokens": [
+        "issue"
+      ]
+    },
+    {
+      "text": "fooKBar İStanbul πreadOwner",
+      "tokens": [
+        "fookbar",
+        "i",
+        "stanbul",
+        "read",
+        "owner"
+      ]
+    },
+    {
+      "text": "emoji🦊Name repository_issues_path",
+      "tokens": [
+        "emoji",
+        "name",
+        "repository",
+        "issue",
+        "path"
+      ]
+    },
+    {
+      "text": "getHTTP2XMLData Ω CamelCase",
+      "tokens": [
+        "get",
+        "http2",
+        "xml",
+        "data",
+        "camel",
+        "case"
+      ]
+    },
+    {
+      "text": "s ss ies ieses benches fishes quizzes",
+      "tokens": [
+        "s",
+        "ss",
+        "ies",
+        "iese",
+        "bench",
+        "fish",
+        "quizz"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "mcp__repo__list_issues",
+      "description": "List GitHub issues for a repository",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "repoOwner": {
+            "description": "Repository owner"
+          },
+          "labels": {
+            "items": {
+              "description": "Issue labels"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__repo__createIssue",
+      "description": "Create issues and add comments",
+      "parameters": {
+        "type": "object",
+        "anyOf": [
+          {
+            "description": "GitHub issue title and body"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mcp__files__read_file",
+      "description": "Read a file from disk",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "description": "File path"
+          }
+        }
+      }
+    },
+    {
+      "name": "tie-first",
+      "description": "identical",
+      "parameters": {}
+    },
+    {
+      "name": "tie-second",
+      "description": "identical",
+      "parameters": {}
+    }
+  ],
+  "namespace": {
+    "name": "github",
+    "description": "GitHub repository administration",
+    "instructions": "Manage issues and labels"
+  },
+  "documents": [
+    {
+      "name": "mcp__repo__list_issues",
+      "text": "mcp__repo__list_issues mcp  repo  list issues List GitHub issues for a repository repoOwner Repository owner labels Issue labels github GitHub repository administration Manage issues and labels"
+    },
+    {
+      "name": "mcp__repo__createIssue",
+      "text": "mcp__repo__createIssue mcp  repo  createIssue Create issues and add comments GitHub issue title and body github GitHub repository administration Manage issues and labels"
+    },
+    {
+      "name": "mcp__files__read_file",
+      "text": "mcp__files__read_file mcp  files  read file Read a file from disk path File path"
+    },
+    {
+      "name": "tie-first",
+      "text": "tie-first tie-first identical"
+    },
+    {
+      "name": "tie-second",
+      "text": "tie-second tie-second identical"
+    }
+  ],
+  "rank": [
+    {
+      "query": "issues labels repoOwner",
+      "limit": 8,
+      "matches": [
+        {
+          "name": "mcp__repo__list_issues",
+          "score": 5.2789665935914565
+        },
+        {
+          "name": "mcp__repo__createIssue",
+          "score": 3.146136886373828
+        }
+      ]
+    },
+    {
+      "query": "read file path",
+      "limit": 2,
+      "matches": [
+        {
+          "name": "mcp__files__read_file",
+          "score": 6.7486665111044175
+        }
+      ]
+    },
+    {
+      "query": "identical",
+      "limit": 1,
+      "matches": [
+        {
+          "name": "tie-first",
+          "score": 1.2096607186602826
+        }
+      ]
+    },
+    {
+      "query": "the and with",
+      "limit": 8,
+      "matches": []
+    },
+    {
+      "query": "absentword",
+      "limit": 8,
+      "matches": []
+    },
+    {
+      "query": "issues issues",
+      "limit": 8,
+      "matches": [
+        {
+          "name": "mcp__repo__createIssue",
+          "score": 1.424360392890421
+        },
+        {
+          "name": "mcp__repo__list_issues",
+          "score": 1.3883580238508768
+        }
+      ]
+    },
+    {
+      "query": "issues",
+      "limit": 0,
+      "matches": []
+    },
+    {
+      "query": "GitHub",
+      "limit": 2,
+      "options": {
+        "k1": 1.5,
+        "b": 0.4
+      },
+      "matches": [
+        {
+          "name": "mcp__repo__createIssue",
+          "score": 2.259842198332225
+        },
+        {
+          "name": "mcp__repo__list_issues",
+          "score": 2.1936574284494075
+        }
+      ]
+    }
+  ]
+}

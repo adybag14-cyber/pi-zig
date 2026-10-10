@@ -1,0 +1,13 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/tui/src/tui.ts",
+  "sourceSha256": "92dcb7f5f9a3a9575421d8de366be5cc78890be8df38d86c4ed3c0d77c7f88a4",
+  "methodSha256": "9e573ce8191ea7ae93c269773d5f6a657e2b9852f4b8c707eb0325ff3d354c9d",
+  "liveIteration": [
+    "a:x",
+    "c:xA"
+  ],
+  "consumed": [
+    "consume:!"
+  ]
+}

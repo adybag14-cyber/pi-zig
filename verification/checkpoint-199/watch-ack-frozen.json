@@ -1,0 +1,121 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite": "all nine previously frozen ENV patches through watch-device-inode-remount-7fb59f9.patch",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+  "toolchain": "Zig 0.16.0",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\watch-observer-ack-device-prefix.patch",
+  "patch_sha256": "5509f4b67fb66297a71f853c02ca275c36e71a6b87f10f4dd8af99872aed2eba",
+  "files": [
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 19441,
+      "sha256": "41741d555b3eb6068392630272219f93525b2797c4ac32a24ecd7abf94b30423"
+    },
+    {
+      "path": "src/durable/filesystem.zig",
+      "bytes": 56059,
+      "sha256": "80161c210d03209ca2cb4cba8ebfc84b7da9ddcedd65fcdc407f66681f25e869"
+    }
+  ],
+  "fmt": {
+    "status": "passed",
+    "files": [
+      "src/env/watch_test.zig",
+      "src/durable/filesystem.zig"
+    ],
+    "source_unchanged_after_fmt": true,
+    "utc": "2026-10-07T14:53:08.6918942Z"
+  },
+  "tests": [
+    {
+      "name": "watch-ack-only-windows-debug",
+      "pid": 56888,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:49:53.242323Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T14:49:53.5597934Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:50:20.3599416Z"
+    },
+    {
+      "name": "watch-ack-only-linux-debug",
+      "pid": 52684,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-ack-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:51:22.898604Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T14:51:23.1431433Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:51:39.8648188Z"
+    },
+    {
+      "name": "watch-ack-only-windows-release-safe",
+      "pid": 37796,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:51:22.882722Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T14:51:23.1338759Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:53:39.7569146Z"
+    },
+    {
+      "name": "watch-ack-only-linux-release-safe",
+      "pid": 3752,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-ack-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:52:58.487232Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T14:52:58.7663368Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:55:22.4985752Z"
+    },
+    {
+      "name": "watch-ack-original-final-broad-debug",
+      "pid": 58504,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:42:40.409597Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T14:42:40.6812189Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:43:07.5675255Z"
+    }
+  ],
+  "counts": {
+    "windows": "178 pass, 15 platform skips, 193 total (Debug and ReleaseSafe)",
+    "linux": "186 pass, 4 platform skips, 190 total (Debug and ReleaseSafe)",
+    "original": "Same fixture passes latest original daemon under seven-target broad Debug selection"
+  },
+  "cause": "Both original and native watchers forward legitimate ancestor metadata notifications from concurrent .zig-cache activity. A child-only acknowledgement does not fence separate ancestor subscriptions.",
+  "repair": "Unpredictable owned user-session DOS-device alias bounds lexical ancestors to the fixture tree; child and parent observer paths acknowledge both streams. Strict zero read notifications and after-close RPC assertions are retained. openWindowsNoFollow preserves device namespace prefixes instead of rewriting them to UNC.",
+  "namespace_safety": "No drive letter, no device broadcast, unique PID plus random temporary-name alias, exact-match target removal and QueryDosDevice absence verified on every test exit.",
+  "negative_evidence": [
+    "watch-ack-native-broad-debug-diagnostic.stderr.log",
+    "watch-ack-original-broad-debug.stderr.log",
+    "watch-ack-owned-namespace-native-postclose.stderr.log"
+  ],
+  "limitations": [
+    "Earlier hosted deployment failure cause is unconfirmed; separate deployment patch has its own base and gates.",
+    "macOS FSEvents runtime remains pending in a separate checkout."
+  ],
+  "frozen_utc": "2026-10-07T14:56:03.2978226Z"
+}

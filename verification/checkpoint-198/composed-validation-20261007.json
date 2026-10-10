@@ -1,0 +1,87 @@
+{
+  "sourceArchiveSha256": "e964fb92ffeee0dc9c60a1e7a37d02d3cff5ab6243ffebf3556bc923a388b3ed",
+  "packageVersion": "1.0.4",
+  "parityCertified": false,
+  "status": "in_progress",
+  "checkpoint": 198,
+  "validation": [
+    {
+      "stderrSha256": "ab9e08f783555ca121da76aea450c1056cffa9e68c2e1259f66c486bf2e2366f",
+      "receipt": {
+        "name": "checkpoint198-amended-windows-debug",
+        "pid": 17208,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-07T12:55:26.0703970Z",
+        "launched_utc": "2026-10-07T12:55:26.0670699+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T12:58:00.2233700+00:00"
+      },
+      "summary": "Build Summary: 179/179 steps succeeded; 1016/1066 tests passed (50 skipped)"
+    },
+    {
+      "stderrSha256": "077fd789478a04702f3ff2b20b3e91f8b987794bf41ab8f506716471f4cd45a8",
+      "receipt": {
+        "name": "checkpoint198-amended-windows-releasesafe",
+        "pid": 52168,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-07T12:58:00.2377520Z",
+        "launched_utc": "2026-10-07T12:58:00.2367931+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T13:11:22.5207487+00:00"
+      },
+      "summary": "Build Summary: 179/179 steps succeeded; 1016/1066 tests passed (50 skipped)"
+    },
+    {
+      "stderrSha256": "32b05e4170a43b3492e98d7ae03aa4567ee67165b39c094a038966505b42e6da",
+      "receipt": {
+        "name": "checkpoint198-amended-native-cache-linux-debug",
+        "pid": 44624,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint198-amended-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-checkpoint198-amended-cache-20261007 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261007",
+        "created_utc": "2026-10-07T13:03:51.1420920Z",
+        "launched_utc": "2026-10-07T13:03:51.1388677+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T13:07:08.8096230+00:00"
+      },
+      "summary": "Build Summary: 175/175 steps succeeded; 1192/1196 tests passed (4 skipped)"
+    },
+    {
+      "stderrSha256": "cfbce23e0a522a211ace8ef0e31de4e7d27f59a8abf130c2c9057fd9afcdebcb",
+      "receipt": {
+        "name": "checkpoint198-amended-native-cache-linux-releasesafe",
+        "pid": 53752,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint198-amended-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1400s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-checkpoint198-amended-cache-20261007 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261007",
+        "created_utc": "2026-10-07T13:10:26.9004650Z",
+        "launched_utc": "2026-10-07T13:10:26.8970726+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T13:30:45.9271938+00:00"
+      },
+      "summary": "Build Summary: 175/175 steps succeeded; 1192/1196 tests passed (4 skipped)"
+    }
+  ],
+  "parent": "e071d075da16a004dc984296b907d25befff1278",
+  "compiledInputsUnchanged": 619,
+  "schemaVersion": 1,
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "limits": [
+    "Full native Pi SDK/UI/durable/MCP/codemode parity remains incomplete",
+    "Production still defaults legacy; one JS host remains and strict native release guard remains active",
+    "Hosted macOS qualification must be recorded separately",
+    "JSONL storage and further SDK/UI work remain in isolated qualified or active donor lanes"
+  ]
+}

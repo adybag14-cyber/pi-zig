@@ -1,0 +1,163 @@
+{
+  "created_utc": "2026-10-05T15:10:30.0528676+00:00",
+  "state": "frozen and validated; no commit push or Main edit",
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+  "base": "4809956e11f214985dc0f4f89b70b4285a8b3265",
+  "upstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "compiler": "0.16.0",
+  "source_manifest_sha256": "599d6e48d320ebe9c07e4d135e1b91adeea49da10d3b544ed24635cf6c383fe6",
+  "source_files_verified": 42,
+  "tracked_patch_sha256": "54d8a852fafed07ed9ee7c952b6fc5d2d26b0964e22c3bc675ffb35fbd11adbf",
+  "windows_full_graph": {
+    "debug_steps": "108/108",
+    "releasesafe_steps": "108/108",
+    "summary_tests_passed": 456,
+    "summary_tests_skipped": 29,
+    "summary_tests_total": 485,
+    "manual_library_executable_sqlite_suites": "passed",
+    "scope": "isolated base4809956 graph; Main integration graph is separate"
+  },
+  "focused_windows": {
+    "core_pass": 35,
+    "core_skip": 2,
+    "core_total": 37,
+    "cli_read_pass": 14,
+    "cli_read_skip": 1,
+    "cli_read_total": 15
+  },
+  "linux_runtime": {
+    "target": "x86_64-linux-musl",
+    "debug_pass": 37,
+    "releasesafe_pass": 37,
+    "root": "/tmp/pi-durable-integration-20261005.yO08Sp"
+  },
+  "macos": {
+    "target": "aarch64-macos",
+    "semantic_compile": "passed",
+    "runtime": "not run"
+  },
+  "oracles": {
+    "decoder_scanner": 5000,
+    "output_sequences": 3000,
+    "output_bounds": 240,
+    "structured_reads": 386,
+    "edits": 17,
+    "diff_display_patch": 240,
+    "bash_real_process_modes": 7
+  },
+  "remaining": [
+    "Polling watches only; forced native mode not_supported",
+    "Whole-file read facade retains regular files; nonregular streams not covered",
+    "Diff path graph/node budget1048576 returns DiffBudgetExceeded before edit write",
+    "One bounded global mutation lock serializes independent paths",
+    "Typed tools implemented; Harness registration/schema/language adapter pending",
+    "Durable storage/Session/Harness mapped to existing native layer but new backend not yet implemented",
+    "macOS runtime unverified"
+  ],
+  "jobs": [
+    {
+      "name": "durable-structured-frozen-full-debug",
+      "pid": 37228,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=Debug -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T15:01:06.452493Z",
+      "launched_utc": "2026-10-05T16:01:06.4491927+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:02:38.9268274+01:00"
+    },
+    {
+      "name": "durable-structured-frozen-full-releasesafe",
+      "pid": 47592,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=ReleaseSafe -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T15:03:14.938233Z",
+      "launched_utc": "2026-10-05T16:03:14.9354892+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:09:40.0480428+01:00"
+    },
+    {
+      "name": "durable-structured-frozen-wsl-runtime",
+      "pid": 45088,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/durable-integration-wsl-run.sh",
+      "created_utc": "2026-10-05T15:02:46.328875Z",
+      "launched_utc": "2026-10-05T16:02:46.3258193+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:03:09.9814527+01:00"
+    },
+    {
+      "name": "durable-structured-frozen-macos-arm64-compile",
+      "pid": 28716,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable_test.zig -lc src/durable/process_probe.c vendor/quickjs/libunicode.c -Ivendor/quickjs -target aarch64-macos -fno-emit-bin",
+      "created_utc": "2026-10-05T15:02:56.532478Z",
+      "launched_utc": "2026-10-05T16:02:56.5291591+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:02:57.5399455+01:00"
+    },
+    {
+      "name": "durable-read-node-capture",
+      "pid": 4504,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" durable-read-oracle.mts durable-read-node-data.json",
+      "created_utc": "2026-10-05T14:29:15.32991Z",
+      "launched_utc": "2026-10-05T15:29:15.3265012+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T15:29:15.7002953+01:00"
+    },
+    {
+      "name": "durable-edit-node-capture",
+      "pid": 45460,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "C:\\Program Files\\nodejs\\node.exe durable-edit-oracle.mts durable-edit-node-data.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T15:43:06.6499867+01:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T15:43:06.9073447+01:00"
+    },
+    {
+      "name": "durable-bash-node-capture",
+      "pid": 27316,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" durable-bash-oracle.mts C:/Users/adyba/pi-zig-durable-integration-20261005/zig-out/bin/pi-durable-fixture.exe durable-bash-node-data.json",
+      "created_utc": "2026-10-05T14:50:09.661606Z",
+      "launched_utc": "2026-10-05T15:50:09.6586449+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T15:50:10.646578+01:00"
+    },
+    {
+      "name": "durable-facade-node-capture",
+      "pid": 51036,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-facade-node-oracle.cjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-facade-node-data.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T15:09:11.0768043+01:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T15:09:11.3399208+01:00"
+    }
+  ]
+}

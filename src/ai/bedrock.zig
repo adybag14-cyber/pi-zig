@@ -209,6 +209,8 @@ pub const BedrockClient = struct {
     provider_id: []const u8 = "amazon-bedrock",
     api_id: []const u8 = "bedrock-converse-stream",
     thinking: ai.ThinkingLevel = .off,
+    model_name: []const u8 = "",
+    thinking_level_map: ?@import("thinking.zig").ThinkingLevelMap = null,
     custom_headers: []const metadata.Header = &.{},
     max_tokens: u64 = 0,
     context_window: u64 = 0,
@@ -274,6 +276,8 @@ pub const BedrockClient = struct {
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), effective_messages, tools_json);
         const payload = try buildRequestBody(gpa, self.model, effective_messages, tools_json, .{
             .thinking = self.thinking,
+            .model_name = self.model_name,
+            .thinking_level_map = self.thinking_level_map,
             .max_tokens = effective_max_tokens,
             .cache_retention = ai.resolveCacheRetention(self.cache_retention, request_options),
             .tool_choice = request_options.tool_choice,
@@ -381,6 +385,8 @@ pub const BedrockClient = struct {
 
 pub const BuildOptions = struct {
     thinking: ai.ThinkingLevel = .off,
+    model_name: []const u8 = "",
+    thinking_level_map: ?@import("thinking.zig").ThinkingLevelMap = null,
     max_tokens: u64 = 0,
     cache_retention: metadata.CacheRetention = .short,
     tool_choice: ?ai.ToolChoice = null,
@@ -518,6 +524,30 @@ pub fn buildRequestBody(
             if (!govcloud) try w.writeAll(",\"display\":\"summarized\"");
             try w.writeAll("},\"anthropic_beta\":[\"interleaved-thinking-2025-05-14\"]}");
         }
+    } else if (options.thinking != .off and (std.ascii.indexOfIgnoreCase(model, "gpt-oss") != null or std.ascii.indexOfIgnoreCase(options.model_name, "gpt-oss") != null)) {
+        const effort = switch (options.thinking) {
+            .minimal, .low => "low",
+            .medium => "medium",
+            .high, .xhigh, .max => "high",
+            .off => unreachable,
+        };
+        try w.print(",\"additionalModelRequestFields\":{{\"reasoning_effort\":\"{s}\"}}", .{effort});
+    } else if (options.thinking != .off and (std.ascii.indexOfIgnoreCase(model, "gpt-") != null or std.ascii.indexOfIgnoreCase(options.model_name, "gpt-") != null)) {
+        const fallback = switch (options.thinking) {
+            .minimal, .low => "low",
+            .medium => "medium",
+            .high => "high",
+            .xhigh => "xhigh",
+            .max => "max",
+            .off => unreachable,
+        };
+        const effort = if (options.thinking_level_map) |map| switch (map.entry(options.thinking)) {
+            .mapped => |value| value,
+            else => fallback,
+        } else fallback;
+        try w.writeAll(",\"additionalModelRequestFields\":{\"reasoning\":{\"effort\":");
+        try std.json.Stringify.value(effort, .{}, w);
+        try w.writeAll("}}");
     }
     if (try writeTools(gpa, w, tools_json, options.tool_choice)) {}
     try w.writeByte('}');
@@ -739,6 +769,37 @@ fn isClaudeModel(model: []const u8) bool {
     return std.ascii.indexOfIgnoreCase(model, "claude") != null;
 }
 
+test "latest Bedrock OpenAI thinking uses flat OSS or nested GPT effort and map override" {
+    const gpa = std.testing.allocator;
+    const cases = [_]struct { id: []const u8, level: ai.ThinkingLevel, effort: []const u8, flat: bool }{
+        .{ .id = "openai.gpt-oss-120b-1:0", .level = .minimal, .effort = "low", .flat = true },
+        .{ .id = "openai.gpt-oss-120b-1:0", .level = .medium, .effort = "medium", .flat = true },
+        .{ .id = "openai.gpt-oss-120b-1:0", .level = .max, .effort = "high", .flat = true },
+        .{ .id = "openai.gpt-6", .level = .minimal, .effort = "low", .flat = false },
+        .{ .id = "openai.gpt-6", .level = .xhigh, .effort = "xhigh", .flat = false },
+        .{ .id = "openai.gpt-6", .level = .max, .effort = "max", .flat = false },
+    };
+    for (cases) |case| {
+        const body = try buildRequestBody(gpa, case.id, &.{}, "[]", .{ .thinking = case.level });
+        defer gpa.free(body);
+        const parsed = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+        defer parsed.deinit();
+        const extra = parsed.value.object.get("additionalModelRequestFields").?.object;
+        const actual = if (case.flat) extra.get("reasoning_effort").?.string else extra.get("reasoning").?.object.get("effort").?.string;
+        try std.testing.expectEqualStrings(case.effort, actual);
+        try std.testing.expect(extra.get("thinking") == null);
+    }
+    const mapped = try buildRequestBody(gpa, "openai.gpt-6", &.{}, "[]", .{ .thinking = .high, .thinking_level_map = .{ .high = .{ .mapped = "medium" } } });
+    defer gpa.free(mapped);
+    try std.testing.expect(std.mem.indexOf(u8, mapped, "\"effort\":\"medium\"") != null);
+    const off = try buildRequestBody(gpa, "openai.gpt-6", &.{}, "[]", .{ .thinking = .off });
+    defer gpa.free(off);
+    try std.testing.expect(std.mem.indexOf(u8, off, "additionalModelRequestFields") == null);
+    const named = try buildRequestBody(gpa, "custom-profile", &.{}, "[]", .{ .thinking = .high, .model_name = "OpenAI GPT-6" });
+    defer gpa.free(named);
+    try std.testing.expect(std.mem.indexOf(u8, named, "\"effort\":\"high\"") != null);
+}
+
 fn normalizeModelRef(model: []const u8, out: []u8) []const u8 {
     const n = @min(model.len, out.len);
     for (model[0..n], 0..) |c, i| {
@@ -760,7 +821,22 @@ fn supportsAdaptiveThinking(model: []const u8) bool {
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-4-6") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "fable-5") != null;
+}
+
+test "Pi 1.1 Haiku 5 Bedrock supports adaptive xhigh thinking and explicit prompt caching" {
+    const gpa = std.testing.allocator;
+    const model = "anthropic.claude-haiku-5-5-v1:0";
+    try std.testing.expect(supportsAdaptiveThinking(model));
+    try std.testing.expect(supportsNativeXhighEffort(model));
+    try std.testing.expect(supportsPromptCaching(model));
+    const messages = [_]ai.ChatMessage{.{ .role = "user", .content = "hello" }};
+    const body = try buildRequestBody(gpa, model, &messages, "[]", .{ .thinking = .xhigh, .cache_retention = .short });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "adaptive") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "xhigh") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "cachePoint") != null);
 }
 
 fn supportsNativeXhighEffort(model: []const u8) bool {
@@ -770,6 +846,7 @@ fn supportsNativeXhighEffort(model: []const u8) bool {
         std.mem.indexOf(u8, value, "opus-4-8") != null or
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "fable-5") != null;
 }
 
@@ -798,6 +875,7 @@ fn supportsPromptCaching(model: []const u8) bool {
     return std.mem.indexOf(u8, value, "fable-5") != null or
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "-4-") != null or
         std.mem.indexOf(u8, value, "claude-3-7-sonnet") != null or
         std.mem.indexOf(u8, value, "claude-3-5-haiku") != null;

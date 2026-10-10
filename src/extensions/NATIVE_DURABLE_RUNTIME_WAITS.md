@@ -1,0 +1,13 @@
+# Native live child execution, waits and built-in document tokens
+
+This layer follows the Registry/agent/context qualified66 layer. Source authority remains durable 1.1.0 at `1cedd32724abfcb0915f76cc61b6827e2c16dbad`, with the reviewed later source head unchanged in durable, Chord and environment code.
+
+The VM manager uses `Scheduler.driveRefilling()` to admit new work while existing phase handlers are suspended. `Scheduler.drive()` retains its original one-batch contract. Every owned worker is joined before a task can be readmitted, including a registry-change boundary that marks an invocation ended before its final native step returns. Suspended task waits and sleeps release execution slots, so a task can await descendants deeper than the ordinary native worker count. The source fixture executes an eight-level owned chain through the default four execution slots.
+
+Runtime `sleep(until, context)` uses the current host clock and the invocation/context signal combination. It preserves the source's raw cancellation reason and rejects retained calls after an invocation ends. Runtime `waitForTask` binds the invocation signal; the manager resolves individual terminal-task waiters while other handlers are still live, rejects canceled waits independently, and reports missing tasks with the original Error text. Closing a Harness rejects outstanding manager waits with its closed Error. Sleeping native workers and their VM roots are released during owner teardown.
+
+The public `defineEntry` and six built-in entry tokens retain the original discriminator guard semantics. Typed `tx.appendEntry(token, conversationId, draft)` copies the draft, overrides its kind with the token's current kind, and retains ordinary native ID/head/task attribution rules. Runtime typed entry reads return undefined on a kind mismatch.
+
+The public LiveDoc, InboxDoc, UsageDoc and ProviderDoc are executable definitions with the source initial values and checkpoint predicates. Initial forks clear live/queued/usage state and create a fresh provider UUID; the rewindable AgentDoc retains its as-of state. The UUID implementation is shared with Harness creation.
+
+The two external original-source captures are `durable-live-child-sleep-entries-1ced-source-capture.mjs` and `durable-builtin-documents-1ced-source-capture.mjs` in `pi-zig-update-evidence-20261003/env-completion-20261007`. They do not provide a repository implementation, and the caller registries enumerate real custom executable tasks. Built-in GenerationTask/ToolTask/CompactionTask and public createRegistry remain unexported until their actual native workflows and validation prerequisites are implemented and qualified. Full durable parity is still incomplete.

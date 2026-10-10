@@ -1,0 +1,29 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-darwin-renderer-repair-20261005",
+  "paths": [
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "before_sha256": "ed744afe360f735b7ad788c1f08c204ffac23b676c233f80046d56f19e570b18",
+      "after_sha256": "2932bcd75f0477c14e7011d4fc3a2aaab54b3ea1fa3048e6ac062f3911d01396",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\darwin-renderer-fixture-repair-delta-20261005\\native_runtime_process_test.zig.patch"
+    },
+    {
+      "path": "src/fullscreen_frontend_process_test.zig",
+      "before_sha256": "17df958f59da8cc828d1142217ad610e9ab48cb2f62b251fb5e01412007da476",
+      "after_sha256": "a0c7147ad05755cc7a2dd114561e5066559d1f1303895b64fc9103030fa2abb9",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\darwin-renderer-fixture-repair-delta-20261005\\fullscreen_frontend_process_test.zig.patch"
+    },
+    {
+      "path": "src/test_support/event_wait.zig",
+      "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_sha256": "e6b4246373355b134204f6d20e56b149ba43eb431306b77ef732fbc173e0524d",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\darwin-renderer-fixture-repair-delta-20261005\\event_wait.zig.patch"
+    }
+  ],
+  "proof": "darwin-renderer-event-budget-unit-20261005a PASS1/1",
+  "logs": [
+    "ci-e62ff90-macos-connector.log",
+    "env-latest104-main-linux-releasesafe-restored.stderr.log"
+  ],
+  "scope": "fixture-only; same absolute budgets and original assertions retained"
+}

@@ -1,0 +1,36 @@
+name: Upstream contract drift
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/upstream-contract.yml'
+      - 'tools/upstream_contract.zig'
+      - 'verification/upstream-contract/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-contract-drift
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Validate native drift gate
+        run: zig build test-upstream-contract --summary all
+      - name: Fetch current upstream authority
+        run: git clone --depth=1 --branch main https://github.com/earendil-works/pi.git "$RUNNER_TEMP/pi-upstream-contract"
+      - name: Detect all tracked upstream contract changes
+        run: zig build maintenance -- verify-upstream-contract "$RUNNER_TEMP/pi-upstream-contract" verification/upstream-contract/tree-42a3497d.json

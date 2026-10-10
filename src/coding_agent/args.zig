@@ -1,5 +1,18 @@
 //! Full CLI arg parse matching upstream flags surface.
 const std = @import("std");
+const tool_selection = @import("tool_selection.zig");
+
+test "latest tools option retains exact modifier diagnostics and valid lists" {
+    var arena_state = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena_state.deinit();
+    const arena = arena_state.allocator();
+    const valid = try parseArgs(arena, &.{ "pi", "--tools", "+codemode,-write" });
+    try std.testing.expect(valid.tool_list_error == null and valid.tools.?.len == 2);
+    const mixed = try parseArgs(arena, &.{ "pi", "--tools", "+read,write" });
+    try std.testing.expectEqualStrings("--tools: tool names cannot be mixed with +name or -name entries", mixed.tool_list_error.?);
+    const pattern = try parseArgs(arena, &.{ "pi", "--tools", "+mcp__*" });
+    try std.testing.expectEqualStrings("--tools: +name and -name entries take exact tool names, not patterns: +mcp__*", pattern.tool_list_error.?);
+}
 
 pub const Mode = enum { text, json, rpc };
 pub const TuiMode = enum { regular, fullscreen };
@@ -31,6 +44,7 @@ pub const Args = struct {
     fork: ?[]const u8 = null,
     models: ?[]const []const u8 = null,
     tools: ?[]const []const u8 = null,
+    tool_list_error: ?[]const u8 = null,
     exclude_tools: ?[]const []const u8 = null,
     no_tools: bool = false,
     no_builtin_tools: bool = false,
@@ -175,7 +189,10 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
         } else if (std.mem.eql(u8, arg, "--tools") or std.mem.eql(u8, arg, "-t")) {
             i += 1;
             if (i >= raw_args.len) return error.MissingArg;
-            result.tools = try splitCsv(arena, raw_args[i]);
+            const tools = try splitCsv(arena, raw_args[i]);
+            if (try tool_selection.listError(arena, tools)) |diagnostic| {
+                result.tool_list_error = try std.fmt.allocPrint(arena, "{s}: {s}", .{ arg, diagnostic });
+            } else result.tools = tools;
         } else if (std.mem.eql(u8, arg, "--exclude-tools") or std.mem.eql(u8, arg, "-xt")) {
             i += 1;
             if (i >= raw_args.len) return error.MissingArg;
@@ -287,6 +304,21 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
     return result;
 }
 
+pub fn validateModelSelection(args: Args) !void {
+    if (args.help or args.version or args.command != null) return;
+    if (args.provider) |provider| {
+        if (provider.len > 0 and (args.model == null or args.model.?.len == 0)) return error.ProviderRequiresModel;
+    }
+}
+
+test "explicit provider requires an explicit model while help and version remain available" {
+    try std.testing.expectError(error.ProviderRequiresModel, validateModelSelection(.{ .provider = "anthropic" }));
+    try std.testing.expectError(error.ProviderRequiresModel, validateModelSelection(.{ .provider = "anthropic", .model = "" }));
+    try validateModelSelection(.{ .provider = "anthropic", .model = "claude-sonnet" });
+    try validateModelSelection(.{ .provider = "anthropic", .help = true });
+    try validateModelSelection(.{ .provider = "anthropic", .version = true });
+}
+
 fn splitCsv(arena: std.mem.Allocator, s: []const u8) ![]const []const u8 {
     var list: std.ArrayList([]const u8) = .empty;
     var it = std.mem.splitScalar(u8, s, ',');
@@ -365,7 +397,8 @@ pub fn printHelp(writer: anytype) !void {
         \\Env:
         \\  OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, GEMINI_API_KEY,
         \\  PI_API_KEY, PI_MODEL, PI_PROVIDER, OPENAI_BASE_URL, PI_MOCK_SCRIPT,
-        \\  PI_AGENT_DIR, PI_SESSION_DIR, GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
+        \\  PI_CODING_AGENT_DIR (legacy: PI_AGENT_DIR), PI_SESSION_DIR,
+        \\  GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
         \\
         \\Interactive slash commands:
         \\  /help /quit /exit /session /new /name /model /thinking /compact /export /share

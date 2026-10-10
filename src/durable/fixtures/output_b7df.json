@@ -1,0 +1,710 @@
+{
+  "upstream": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "node": "v24.14.0",
+  "cases": [
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "text": "lead"
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191,
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "lead",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "lead﻿x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "lead﻿x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239,
+            187
+          ]
+        },
+        {
+          "bytes": [
+            191
+          ]
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191,
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239
+          ]
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "�",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "���",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "���",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "text": "﻿first"
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "﻿first",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿first﻿",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿first﻿",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "head"
+      },
+      "steps": [
+        {
+          "bytes": []
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        },
+        {
+          "bytes": [
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "text": "lead"
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191,
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "lead",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "lead﻿x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "lead﻿x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239,
+            187
+          ]
+        },
+        {
+          "bytes": [
+            191
+          ]
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191,
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239
+          ]
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "�",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "���",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "���",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": [
+            240,
+            159
+          ]
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191,
+            120
+          ],
+          "skipped": {
+            "bytes": 5,
+            "newlines": 1,
+            "endsWithNewline": true
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿x",
+          "droppedBytes": 8,
+          "droppedLines": 1
+        }
+      ],
+      "result": {
+        "text": "﻿x",
+        "droppedBytes": 8,
+        "droppedLines": 1
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ],
+          "skipped": {
+            "bytes": 0,
+            "newlines": 0,
+            "endsWithNewline": false
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "﻿",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "text": "﻿first"
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "﻿first",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "﻿first﻿",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "﻿first﻿",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "limits": {
+        "maxBytes": 100,
+        "maxLines": 10,
+        "retain": "tail"
+      },
+      "steps": [
+        {
+          "bytes": []
+        },
+        {
+          "text": ""
+        },
+        {
+          "bytes": [
+            239,
+            187,
+            191
+          ]
+        },
+        {
+          "bytes": [
+            120
+          ]
+        }
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        },
+        {
+          "text": "x",
+          "droppedBytes": 0,
+          "droppedLines": 0
+        }
+      ],
+      "result": {
+        "text": "x",
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    }
+  ],
+  "bounds": [
+    {
+      "text": "prefix\n﻿tail",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "text": "prefix\n",
+        "bytes": 7,
+        "droppedBytes": 7,
+        "droppedLines": 1
+      }
+    },
+    {
+      "text": "prefix\n﻿tail",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "text": "﻿tail",
+        "bytes": 7,
+        "droppedBytes": 7,
+        "droppedLines": 1
+      }
+    },
+    {
+      "text": "﻿all",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "text": "﻿all",
+        "bytes": 6,
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "text": "﻿all",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "text": "﻿all",
+        "bytes": 6,
+        "droppedBytes": 0,
+        "droppedLines": 0
+      }
+    },
+    {
+      "text": "one\ntwo\n﻿three",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "text": "one\n",
+        "bytes": 4,
+        "droppedBytes": 12,
+        "droppedLines": 2
+      }
+    },
+    {
+      "text": "one\ntwo\n﻿three",
+      "limits": {
+        "maxBytes": 9,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "text": "﻿three",
+        "bytes": 8,
+        "droppedBytes": 8,
+        "droppedLines": 2
+      }
+    }
+  ]
+}

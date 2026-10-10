@@ -1,0 +1,14 @@
+Remaining late native tool/command discovery contract
+
+Concrete user input case:
+export default pi => pi.registerCommand("seed", {handler(){pi.registerCommand("late", {handler(){return {message:"late-visible"}}});pi.registerTool({name:"late-tool",parameters:{type:"object"},execute(){return {content:"late-tool-visible"}}});return {message:JSON.stringify(pi.getCommands().map(x=>x.name))}}});
+
+Current VM registration tables change synchronously (native_bindings.zig registration/store, ordered tool_order/command_order); native group catalog callbacks already see late names. Host.hasCommand/resolvedCommandNames and toolSchemas read startup ExtensionManifest.commands/tools. The persistent worker emits no metadata-change record after registration, so a subsequent actual /late command and agent late-tool discovery remain absent even though pi.getCommands/getAllTools see them. Replacement with the same name can also leave old schema/render flags in Host.
+
+Upstream authority: packages/coding-agent/src/core/extensions/loader.ts registerTool invokes bound runtime.refreshTools after Map.set; registerCommand updates the extension Map read directly by runner.resolveRegisteredCommands. runner tool merging remains first source wins; command aliases include reserved name:n collision avoidance.
+
+Smallest complete protocol increment: owner-local registration revision + generation, publish one owned authoritative group metadata snapshot at owner safe points after callback/jobs (including callbacks that throw), preserve registration source IDs/order. Snapshot all JS roots/names before observable getters; recheck revision after projection and repeat on mutation. Avoid retaining table/ArrayList slots over user getters. Runtime reader accepts version/owner-generation/revision-fenced DTO bytes into an owned metadata FIFO. Host owner safe point atomically rebuilds per-extension tools/commands/flags/hook/render metadata without replacing Runtime views or callback ownership; prepare/validate all replacements before commit. Main refreshes callable tool schemas and command completion metadata, preserving active-tool selection independently of getAllTools. Apply existing first-tool/command alias semantics and retain previous snapshots on allocation failure.
+
+Required gates: real noNode Host/CLI seed then /late and late-tool mock invocation; schema/renderer same-name replacement; two-source collision aliases (including pre-existing name:n), original callback throws after registering names, idle timer registration, unload/reload and stale-generation record, allocation failure atomicity, no Runtime mutex reentry from reader callback.
+
+This is not a coherent 15-minute scalar patch: producer projection/reentrancy, Runtime FIFO, Host atomic manifests and Main schema/completion admission are separate ownership boundaries. Root current fullgraphs freeze forbids new compiled-input edits; report this as a concrete remaining gap, not completed discovery.

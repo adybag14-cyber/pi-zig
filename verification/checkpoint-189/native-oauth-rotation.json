@@ -1,0 +1,97 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "f5d20047b3ad43d068a8eb61bd4e1f193bedbce6",
+  "upstreamVersion": "1.0.2",
+  "contracts": {
+    "storedExtensionRefresh": "abortable lock acquisition, freshness recheck, late-cancellation persistence, logout preservation, 15-second independent worker deadline",
+    "builtinRefresh": "Codex, Copilot, xAI, Anthropic, Kimi and Radius refresh/persistence continue after caller cancellation with one bounded 15-second HTTP attempt",
+    "builtinSharedRefreshLock": "pending_migration",
+    "durableProviderSessionIdentities": "pending_port",
+    "durableBoundedEnvironment": "pending_port"
+  },
+  "checks": [
+    "late native storage cancellation persists replacement",
+    "exclusive-lock wait cancellation never calls provider",
+    "concurrent refresh callbacks recheck fresh storage and perform one rotation",
+    "logged-out credentials are not recreated",
+    "real extension worker returns cancellation after rotated credential is persisted and reuses it without another refresh",
+    "real native Radius HTTP refresh ignores live request cancellation and preserves scope",
+    "ordinary login and mutation cancellation regressions remain passing"
+  ],
+  "windowsRegression": {
+    "aggregateSteps": 52,
+    "aggregateTests": 220,
+    "modulePassed": 1099,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "oauth-rotation-storage-regressions-fixed": {
+      "name": "oauth-rotation-storage-regressions-fixed",
+      "pid": 46100,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T20:12:36.9234360Z",
+      "launched_utc": "2026-10-04T20:12:36.9204497+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:13:42.3566238+00:00"
+    },
+    "oauth-rotation-worker-regressions": {
+      "name": "oauth-rotation-worker-regressions",
+      "pid": 50276,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T20:15:27.6436290Z",
+      "launched_utc": "2026-10-04T20:15:27.6406699+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:16:24.7948870+00:00"
+    },
+    "oauth-rotation-native-http-regressions": {
+      "name": "oauth-rotation-native-http-regressions",
+      "pid": 7908,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T20:19:03.8549320Z",
+      "launched_utc": "2026-10-04T20:19:03.8519620+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:20:07.4263875+00:00"
+    },
+    "oauth-rotation-concurrency-regressions": {
+      "name": "oauth-rotation-concurrency-regressions",
+      "pid": 53892,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T20:21:21.9520790Z",
+      "launched_utc": "2026-10-04T20:21:21.9490964+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:22:09.2456278+00:00"
+    },
+    "oauth-rotation-release-safe": {
+      "name": "oauth-rotation-release-safe",
+      "pid": 50740,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -j2 -Doptimize=ReleaseSafe --summary all",
+      "created_utc": "2026-10-04T20:23:47.8197110Z",
+      "launched_utc": "2026-10-04T20:23:47.8165197+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:25:11.6916858+00:00"
+    }
+  }
+}

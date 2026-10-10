@@ -1,0 +1,1841 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "shape": {
+    "name": "Editor",
+    "length": 2,
+    "own": [
+      "state",
+      "focused",
+      "tui",
+      "theme",
+      "paddingX",
+      "lastWidth",
+      "renderedVisibleLineCount",
+      "renderedAutocompleteHeight",
+      "scrollOffset",
+      "borderColor",
+      "autocompleteProvider",
+      "autocompleteTriggerCharacters",
+      "autocompleteTriggerPattern",
+      "autocompleteDebouncePattern",
+      "autocompleteList",
+      "autocompleteState",
+      "autocompletePrefix",
+      "autocompleteMaxVisible",
+      "autocompleteAbort",
+      "autocompleteDebounceTimer",
+      "autocompleteRequestTask",
+      "autocompleteStartToken",
+      "autocompleteRequestId",
+      "pastes",
+      "pasteCounter",
+      "pasteBuffer",
+      "isInPaste",
+      "history",
+      "historyIndex",
+      "historyDraft",
+      "killRing",
+      "lastAction",
+      "jumpMode",
+      "preferredVisualCol",
+      "snappedFromCursorCol",
+      "undoStack",
+      "onSubmit",
+      "onChange",
+      "disableSubmit"
+    ],
+    "methods": {
+      "validPasteIds": {
+        "name": "validPasteIds",
+        "length": 0,
+        "enumerable": false
+      },
+      "segment": {
+        "name": "segment",
+        "length": 2,
+        "enumerable": false
+      },
+      "getPaddingX": {
+        "name": "getPaddingX",
+        "length": 0,
+        "enumerable": false
+      },
+      "setPaddingX": {
+        "name": "setPaddingX",
+        "length": 1,
+        "enumerable": false
+      },
+      "getAutocompleteMaxVisible": {
+        "name": "getAutocompleteMaxVisible",
+        "length": 0,
+        "enumerable": false
+      },
+      "setAutocompleteMaxVisible": {
+        "name": "setAutocompleteMaxVisible",
+        "length": 1,
+        "enumerable": false
+      },
+      "setAutocompleteProvider": {
+        "name": "setAutocompleteProvider",
+        "length": 1,
+        "enumerable": false
+      },
+      "addToHistory": {
+        "name": "addToHistory",
+        "length": 1,
+        "enumerable": false
+      },
+      "isEditorEmpty": {
+        "name": "isEditorEmpty",
+        "length": 0,
+        "enumerable": false
+      },
+      "isOnFirstVisualLine": {
+        "name": "isOnFirstVisualLine",
+        "length": 0,
+        "enumerable": false
+      },
+      "isOnLastVisualLine": {
+        "name": "isOnLastVisualLine",
+        "length": 0,
+        "enumerable": false
+      },
+      "navigateHistory": {
+        "name": "navigateHistory",
+        "length": 1,
+        "enumerable": false
+      },
+      "exitHistoryBrowsing": {
+        "name": "exitHistoryBrowsing",
+        "length": 0,
+        "enumerable": false
+      },
+      "setTextInternal": {
+        "name": "setTextInternal",
+        "length": 1,
+        "enumerable": false
+      },
+      "invalidate": {
+        "name": "invalidate",
+        "length": 0,
+        "enumerable": false
+      },
+      "renderTopBorder": {
+        "name": "renderTopBorder",
+        "length": 2,
+        "enumerable": false
+      },
+      "renderBottomBorder": {
+        "name": "renderBottomBorder",
+        "length": 2,
+        "enumerable": false
+      },
+      "render": {
+        "name": "render",
+        "length": 1,
+        "enumerable": false
+      },
+      "handleMouse": {
+        "name": "handleMouse",
+        "length": 1,
+        "enumerable": false
+      },
+      "handleInput": {
+        "name": "handleInput",
+        "length": 1,
+        "enumerable": false
+      },
+      "layoutText": {
+        "name": "layoutText",
+        "length": 1,
+        "enumerable": false
+      },
+      "getText": {
+        "name": "getText",
+        "length": 0,
+        "enumerable": false
+      },
+      "expandPasteMarkers": {
+        "name": "expandPasteMarkers",
+        "length": 1,
+        "enumerable": false
+      },
+      "getExpandedText": {
+        "name": "getExpandedText",
+        "length": 0,
+        "enumerable": false
+      },
+      "getLines": {
+        "name": "getLines",
+        "length": 0,
+        "enumerable": false
+      },
+      "getCursor": {
+        "name": "getCursor",
+        "length": 0,
+        "enumerable": false
+      },
+      "setText": {
+        "name": "setText",
+        "length": 1,
+        "enumerable": false
+      },
+      "insertTextAtCursor": {
+        "name": "insertTextAtCursor",
+        "length": 1,
+        "enumerable": false
+      },
+      "normalizeText": {
+        "name": "normalizeText",
+        "length": 1,
+        "enumerable": false
+      },
+      "insertTextAtCursorInternal": {
+        "name": "insertTextAtCursorInternal",
+        "length": 1,
+        "enumerable": false
+      },
+      "insertCharacter": {
+        "name": "insertCharacter",
+        "length": 2,
+        "enumerable": false
+      },
+      "handlePaste": {
+        "name": "handlePaste",
+        "length": 1,
+        "enumerable": false
+      },
+      "addNewLine": {
+        "name": "addNewLine",
+        "length": 0,
+        "enumerable": false
+      },
+      "shouldSubmitOnBackslashEnter": {
+        "name": "shouldSubmitOnBackslashEnter",
+        "length": 2,
+        "enumerable": false
+      },
+      "submitValue": {
+        "name": "submitValue",
+        "length": 0,
+        "enumerable": false
+      },
+      "handleBackspace": {
+        "name": "handleBackspace",
+        "length": 0,
+        "enumerable": false
+      },
+      "setCursorCol": {
+        "name": "setCursorCol",
+        "length": 1,
+        "enumerable": false
+      },
+      "moveToVisualLine": {
+        "name": "moveToVisualLine",
+        "length": 3,
+        "enumerable": false
+      },
+      "computeVerticalMoveColumn": {
+        "name": "computeVerticalMoveColumn",
+        "length": 3,
+        "enumerable": false
+      },
+      "moveToLineStart": {
+        "name": "moveToLineStart",
+        "length": 0,
+        "enumerable": false
+      },
+      "moveToLineEnd": {
+        "name": "moveToLineEnd",
+        "length": 0,
+        "enumerable": false
+      },
+      "deleteToStartOfLine": {
+        "name": "deleteToStartOfLine",
+        "length": 0,
+        "enumerable": false
+      },
+      "deleteToEndOfLine": {
+        "name": "deleteToEndOfLine",
+        "length": 0,
+        "enumerable": false
+      },
+      "deleteWordBackwards": {
+        "name": "deleteWordBackwards",
+        "length": 0,
+        "enumerable": false
+      },
+      "deleteWordForward": {
+        "name": "deleteWordForward",
+        "length": 0,
+        "enumerable": false
+      },
+      "handleForwardDelete": {
+        "name": "handleForwardDelete",
+        "length": 0,
+        "enumerable": false
+      },
+      "buildVisualLineMap": {
+        "name": "buildVisualLineMap",
+        "length": 1,
+        "enumerable": false
+      },
+      "findVisualLineAt": {
+        "name": "findVisualLineAt",
+        "length": 3,
+        "enumerable": false
+      },
+      "findCurrentVisualLine": {
+        "name": "findCurrentVisualLine",
+        "length": 1,
+        "enumerable": false
+      },
+      "moveCursor": {
+        "name": "moveCursor",
+        "length": 2,
+        "enumerable": false
+      },
+      "pageScroll": {
+        "name": "pageScroll",
+        "length": 1,
+        "enumerable": false
+      },
+      "moveWordBackwards": {
+        "name": "moveWordBackwards",
+        "length": 0,
+        "enumerable": false
+      },
+      "yank": {
+        "name": "yank",
+        "length": 0,
+        "enumerable": false
+      },
+      "yankPop": {
+        "name": "yankPop",
+        "length": 0,
+        "enumerable": false
+      },
+      "insertYankedText": {
+        "name": "insertYankedText",
+        "length": 1,
+        "enumerable": false
+      },
+      "deleteYankedText": {
+        "name": "deleteYankedText",
+        "length": 0,
+        "enumerable": false
+      },
+      "pushUndoSnapshot": {
+        "name": "pushUndoSnapshot",
+        "length": 0,
+        "enumerable": false
+      },
+      "undo": {
+        "name": "undo",
+        "length": 0,
+        "enumerable": false
+      },
+      "jumpToChar": {
+        "name": "jumpToChar",
+        "length": 2,
+        "enumerable": false
+      },
+      "moveWordForwards": {
+        "name": "moveWordForwards",
+        "length": 0,
+        "enumerable": false
+      },
+      "isSlashMenuAllowed": {
+        "name": "isSlashMenuAllowed",
+        "length": 0,
+        "enumerable": false
+      },
+      "isAtStartOfMessage": {
+        "name": "isAtStartOfMessage",
+        "length": 0,
+        "enumerable": false
+      },
+      "isInSlashCommandContext": {
+        "name": "isInSlashCommandContext",
+        "length": 1,
+        "enumerable": false
+      },
+      "getBestAutocompleteMatchIndex": {
+        "name": "getBestAutocompleteMatchIndex",
+        "length": 2,
+        "enumerable": false
+      },
+      "createAutocompleteList": {
+        "name": "createAutocompleteList",
+        "length": 2,
+        "enumerable": false
+      },
+      "tryTriggerAutocomplete": {
+        "name": "tryTriggerAutocomplete",
+        "length": 0,
+        "enumerable": false
+      },
+      "handleTabCompletion": {
+        "name": "handleTabCompletion",
+        "length": 0,
+        "enumerable": false
+      },
+      "handleSlashCommandCompletion": {
+        "name": "handleSlashCommandCompletion",
+        "length": 0,
+        "enumerable": false
+      },
+      "forceFileAutocomplete": {
+        "name": "forceFileAutocomplete",
+        "length": 0,
+        "enumerable": false
+      },
+      "requestAutocomplete": {
+        "name": "requestAutocomplete",
+        "length": 1,
+        "enumerable": false
+      },
+      "startAutocompleteRequest": {
+        "name": "startAutocompleteRequest",
+        "length": 2,
+        "enumerable": false
+      },
+      "setAutocompleteTriggerCharacters": {
+        "name": "setAutocompleteTriggerCharacters",
+        "length": 1,
+        "enumerable": false
+      },
+      "getAutocompleteDebounceMs": {
+        "name": "getAutocompleteDebounceMs",
+        "length": 1,
+        "enumerable": false
+      },
+      "runAutocompleteRequest": {
+        "name": "runAutocompleteRequest",
+        "length": 6,
+        "enumerable": false
+      },
+      "isAutocompleteRequestCurrent": {
+        "name": "isAutocompleteRequestCurrent",
+        "length": 5,
+        "enumerable": false
+      },
+      "applyAutocompleteSuggestions": {
+        "name": "applyAutocompleteSuggestions",
+        "length": 2,
+        "enumerable": false
+      },
+      "cancelAutocompleteRequest": {
+        "name": "cancelAutocompleteRequest",
+        "length": 0,
+        "enumerable": false
+      },
+      "clearAutocompleteUi": {
+        "name": "clearAutocompleteUi",
+        "length": 0,
+        "enumerable": false
+      },
+      "cancelAutocomplete": {
+        "name": "cancelAutocomplete",
+        "length": 0,
+        "enumerable": false
+      },
+      "isShowingAutocomplete": {
+        "name": "isShowingAutocomplete",
+        "length": 0,
+        "enumerable": false
+      },
+      "updateAutocomplete": {
+        "name": "updateAutocomplete",
+        "length": 0,
+        "enumerable": false
+      }
+    }
+  },
+  "cases": [
+    {
+      "text": "",
+      "operations": [
+        [
+          "setText",
+          ""
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nY",
+          "expanded": "    X\nY",
+          "lines": [
+            "    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nY",
+          "expanded": "    X\nY",
+          "lines": [
+            "    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nZY",
+          "expanded": "    X\nZY",
+          "lines": [
+            "    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nY",
+          "expanded": "    X\nY",
+          "lines": [
+            "    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nY",
+          "expanded": "    X\nY",
+          "lines": [
+            "    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\n",
+          "expanded": "    X\n",
+          "lines": [
+            "    X",
+            ""
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "    X\nY",
+          "expanded": "    X\nY",
+          "lines": [
+            "    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "",
+        "    X\nY",
+        "    X\nZY",
+        "    X\nY",
+        "    X\n",
+        "    X\nY"
+      ]
+    },
+    {
+      "text": "a界😀",
+      "operations": [
+        [
+          "setText",
+          "a界😀"
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀",
+          "expanded": "a界😀",
+          "lines": [
+            "a界😀"
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nY",
+          "expanded": "a界😀    X\nY",
+          "lines": [
+            "a界😀    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nY",
+          "expanded": "a界😀    X\nY",
+          "lines": [
+            "a界😀    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nZY",
+          "expanded": "a界😀    X\nZY",
+          "lines": [
+            "a界😀    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nY",
+          "expanded": "a界😀    X\nY",
+          "lines": [
+            "a界😀    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nY",
+          "expanded": "a界😀    X\nY",
+          "lines": [
+            "a界😀    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\n",
+          "expanded": "a界😀    X\n",
+          "lines": [
+            "a界😀    X",
+            ""
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a界😀    X\nY",
+          "expanded": "a界😀    X\nY",
+          "lines": [
+            "a界😀    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "a界😀",
+        "a界😀    X\nY",
+        "a界😀    X\nZY",
+        "a界😀    X\nY",
+        "a界😀    X\n",
+        "a界😀    X\nY"
+      ]
+    },
+    {
+      "text": "a\tb\r\nc",
+      "operations": [
+        [
+          "setText",
+          "a\tb\r\nc"
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc",
+          "expanded": "a    b\nc",
+          "lines": [
+            "a    b",
+            "c"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nY",
+          "expanded": "a    b\nc    X\nY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nY",
+          "expanded": "a    b\nc    X\nY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nZY",
+          "expanded": "a    b\nc    X\nZY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nY",
+          "expanded": "a    b\nc    X\nY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nY",
+          "expanded": "a    b\nc    X\nY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\n",
+          "expanded": "a    b\nc    X\n",
+          "lines": [
+            "a    b",
+            "c    X",
+            ""
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "a    b\nc    X\nY",
+          "expanded": "a    b\nc    X\nY",
+          "lines": [
+            "a    b",
+            "c    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "a    b\nc",
+        "a    b\nc    X\nY",
+        "a    b\nc    X\nZY",
+        "a    b\nc    X\nY",
+        "a    b\nc    X\n",
+        "a    b\nc    X\nY"
+      ]
+    },
+    {
+      "text": "first\nsecond",
+      "operations": [
+        [
+          "setText",
+          "first\nsecond"
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond",
+          "expanded": "first\nsecond",
+          "lines": [
+            "first",
+            "second"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nY",
+          "expanded": "first\nsecond    X\nY",
+          "lines": [
+            "first",
+            "second    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nY",
+          "expanded": "first\nsecond    X\nY",
+          "lines": [
+            "first",
+            "second    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nZY",
+          "expanded": "first\nsecond    X\nZY",
+          "lines": [
+            "first",
+            "second    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nY",
+          "expanded": "first\nsecond    X\nY",
+          "lines": [
+            "first",
+            "second    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nY",
+          "expanded": "first\nsecond    X\nY",
+          "lines": [
+            "first",
+            "second    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\n",
+          "expanded": "first\nsecond    X\n",
+          "lines": [
+            "first",
+            "second    X",
+            ""
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "first\nsecond    X\nY",
+          "expanded": "first\nsecond    X\nY",
+          "lines": [
+            "first",
+            "second    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "first\nsecond",
+        "first\nsecond    X\nY",
+        "first\nsecond    X\nZY",
+        "first\nsecond    X\nY",
+        "first\nsecond    X\n",
+        "first\nsecond    X\nY"
+      ]
+    },
+    {
+      "text": "é👨‍👩‍👧‍👦🇺🇳",
+      "operations": [
+        [
+          "setText",
+          "é👨‍👩‍👧‍👦🇺🇳"
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳"
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 17
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nZY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nZY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\n",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\n",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            ""
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "expanded": "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+          "lines": [
+            "é👨‍👩‍👧‍👦🇺🇳    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "é👨‍👩‍👧‍👦🇺🇳",
+        "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+        "é👨‍👩‍👧‍👦🇺🇳    X\nZY",
+        "é👨‍👩‍👧‍👦🇺🇳    X\nY",
+        "é👨‍👩‍👧‍👦🇺🇳    X\n",
+        "é👨‍👩‍👧‍👦🇺🇳    X\nY"
+      ]
+    },
+    {
+      "text": "\ud800x",
+      "operations": [
+        [
+          "setText",
+          "\ud800x"
+        ],
+        [
+          "insertTextAtCursor",
+          "\tX\rY"
+        ],
+        [
+          "handleInput",
+          "\u001b[D"
+        ],
+        [
+          "handleInput",
+          "Z"
+        ],
+        [
+          "handleInput",
+          "\u001f"
+        ],
+        [
+          "handleInput",
+          "\u0001"
+        ],
+        [
+          "handleInput",
+          "\u000b"
+        ],
+        [
+          "handleInput",
+          "\u0019"
+        ]
+      ],
+      "snapshots": [
+        {
+          "text": "",
+          "expanded": "",
+          "lines": [
+            ""
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x",
+          "expanded": "\ud800x",
+          "lines": [
+            "\ud800x"
+          ],
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nY",
+          "expanded": "\ud800x    X\nY",
+          "lines": [
+            "\ud800x    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nY",
+          "expanded": "\ud800x    X\nY",
+          "lines": [
+            "\ud800x    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nZY",
+          "expanded": "\ud800x    X\nZY",
+          "lines": [
+            "\ud800x    X",
+            "ZY"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nY",
+          "expanded": "\ud800x    X\nY",
+          "lines": [
+            "\ud800x    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nY",
+          "expanded": "\ud800x    X\nY",
+          "lines": [
+            "\ud800x    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\n",
+          "expanded": "\ud800x    X\n",
+          "lines": [
+            "\ud800x    X",
+            ""
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        },
+        {
+          "text": "\ud800x    X\nY",
+          "expanded": "\ud800x    X\nY",
+          "lines": [
+            "\ud800x    X",
+            "Y"
+          ],
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "padding": 0,
+          "maxVisible": 5,
+          "requests": 0
+        }
+      ],
+      "changes": [
+        "\ud800x",
+        "\ud800x    X\nY",
+        "\ud800x    X\nZY",
+        "\ud800x    X\nY",
+        "\ud800x    X\n",
+        "\ud800x    X\nY"
+      ]
+    }
+  ],
+  "options": [
+    {
+      "value": {
+        "undefined": true
+      },
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      }
+    },
+    {
+      "value": null,
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      }
+    },
+    {
+      "value": -1,
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 3,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 3,
+        "requests": 0
+      }
+    },
+    {
+      "value": 0,
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 3,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 3,
+        "requests": 0
+      }
+    },
+    {
+      "value": 2.9,
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 2,
+        "maxVisible": 3,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 2,
+        "maxVisible": 3,
+        "requests": 0
+      }
+    },
+    {
+      "value": 99,
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 99,
+        "maxVisible": 20,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 99,
+        "maxVisible": 20,
+        "requests": 0
+      }
+    },
+    {
+      "value": {
+        "nan": true
+      },
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      }
+    },
+    {
+      "value": {
+        "infinity": true
+      },
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      }
+    },
+    {
+      "value": "2",
+      "snapshot": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      },
+      "after": {
+        "text": "",
+        "expanded": "",
+        "lines": [
+          ""
+        ],
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "padding": 0,
+        "maxVisible": 5,
+        "requests": 0
+      }
+    }
+  ]
+}

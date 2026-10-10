@@ -1,0 +1,73 @@
+{
+  "status": "frozen",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\capability-drvfs-source-aware-test.patch",
+  "patch_sha256": "b699af42467b299c9212ff70d59a7ffbc471f07c841025a1fb1ed4f5192763ad",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+  "file": {
+    "path": "src/env_capability_test.zig",
+    "sha256": "6b241379f06edb7ab5ab3693f6f14d781655e0c9d8f96b3a5c9aa6d5cce6bb6d"
+  },
+  "tests": [
+    {
+      "name": "capability-drvfs-source-aware-debug",
+      "pid": 34712,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /mnt/c/Users/adyba/pi-zig-env-capability-drvfs-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env-capability -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-env-capability-drvfs-cache-20261007 --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:35:50.91616Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T12:35:51.2188604Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:36:08.5516035Z"
+    },
+    {
+      "name": "capability-drvfs-source-aware-release-safe",
+      "pid": 57616,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /mnt/c/Users/adyba/pi-zig-env-capability-drvfs-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env-capability -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-env-capability-drvfs-cache-20261007 --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:38:03.175949Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T12:38:03.4927203Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:39:06.6200147Z"
+    },
+    {
+      "name": "capability-drvfs-test-windows-release-safe",
+      "pid": 47256,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env-capability -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:38:13.406878Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T12:38:13.7553924Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:39:13.4252105Z"
+    },
+    {
+      "name": "original-drvfs-rename-authority",
+      "pid": 50180,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec /usr/bin/timeout --signal=TERM --kill-after=5s 60s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin/node --no-warnings /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/env-completion-20261007/capture-drvfs-rename.mjs",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:32:29.219189Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 70,
+      "started_utc": "2026-10-07T12:32:29.5471124Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:32:29.7697051Z"
+    }
+  ],
+  "source_authority": "Exact original latest NodeExecutionEnv on sameDrvFS retainsoldFDbytes butboth renamed/recreatedpathnames expose replacement; ordinarypathselection fixturemustbeindependent",
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false
+}

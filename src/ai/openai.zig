@@ -15,6 +15,7 @@ const cloudflare = @import("cloudflare.zig");
 const copilot = @import("github_copilot.zig");
 const constrained = @import("constrained_sampling.zig");
 const thinking_mod = @import("thinking.zig");
+const azure = @import("azure.zig");
 
 pub const TokenRefreshFn = *const fn (*anyopaque, *OpenAIClient, i64) anyerror!void;
 
@@ -32,11 +33,13 @@ pub const OpenAIClient = struct {
     model: []const u8,
     provider_id: []const u8 = "openai",
     api_id: []const u8 = "openai-completions",
+    azure_options: azure.Options = .{},
     thinking: ai.ThinkingLevel = .off,
     reasoning: bool = true,
     thinking_level_map: ?thinking_mod.ThinkingLevelMap = null,
     custom_headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     max_tokens: u64 = 0,
     context_window: u64 = 0,
@@ -108,19 +111,28 @@ pub const OpenAIClient = struct {
         delta_ctx: ?*anyopaque,
     ) !ai.ModelResponse {
         try self.ensureTokenFresh();
+        const azure_provider = azure.isProvider(self.provider_id);
+        const azure_options = azure.Options.merge(self.azure_options, request_options.azure_options);
+        const azure_config = if (azure_provider) azure.resolveConfig(gpa, self.base_url, self.environ, azure_options) catch |err| return azure.configurationErrorResponse(ai.ModelResponse, gpa, "azure", self.model, err) else null;
+        defer if (azure_config) |config| config.deinit(gpa);
+        const deployment = if (azure_provider) try azure.resolveDeploymentName(gpa, self.model, self.environ, azure_options) else null;
+        defer if (deployment) |name| gpa.free(name);
+        const effective_thinking = if (azure_provider) thinking_mod.clamp(self.reasoning, self.thinking_level_map, self.thinking) else self.thinking;
         var prepared = try transcript_repair.prepare(gpa, messages, .{ .supports_images = self.input_image, .target_provider = self.provider_id, .target_api = self.api_id, .target_model = self.model });
         defer prepared.deinit();
         const effective_messages = prepared.messages.items;
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), effective_messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
-        const payload = try buildRequestBodyConfigured(gpa, self.model, effective_messages, tools_json, .{
+        const sampling = try metadata.resolveSamplingParams(gpa, self.sampling_params, self.sampling_params_by_thinking_level, self.reasoning, self.thinking_level_map, self.thinking, request_options.sampling_params);
+        defer gpa.free(sampling);
+        const original_payload = try buildRequestBodyConfigured(gpa, self.model, effective_messages, tools_json, .{
             .stream = streaming,
-            .thinking = self.thinking,
+            .thinking = effective_thinking,
             .reasoning = self.reasoning,
             .thinking_level_map = self.thinking_level_map,
             .max_tokens = effective_max_tokens,
-            .sampling_params = self.sampling_params,
+            .sampling_params = sampling,
             .compat = self.compat,
             .tool_choice = request_options.tool_choice,
             .session_id = if (effective_cache_retention != .none and effective_session_id != null and
@@ -128,14 +140,20 @@ pub const OpenAIClient = struct {
                     (effective_cache_retention == .long and self.compat.supports_long_cache_retention == true))) effective_session_id else null,
             .cache_retention = effective_cache_retention,
         });
-        defer gpa.free(payload);
+        defer gpa.free(original_payload);
+        const mapped_payload = if (deployment != null and !std.mem.eql(u8, deployment.?, self.model)) try azure.deploymentPayload(gpa, original_payload, deployment.?) else null;
+        defer if (mapped_payload) |value| gpa.free(value);
+        const hook_input = mapped_payload orelse original_payload;
+        const hook_payload = if (request_options.on_payload) |hook| try hook(request_options.on_payload_ctx, gpa, hook_input, .{ .id = self.model, .provider = if (azure_provider) "azure" else self.provider_id, .api = self.api_id }) else null;
+        defer if (hook_payload) |value| gpa.free(value);
+        const payload = hook_payload orelse hook_input;
 
-        const url = try std.fmt.allocPrint(gpa, "{s}/chat/completions", .{self.base_url});
+        const url = if (azure_config) |config| try azure.endpoint(gpa, config.base_url, "chat/completions", null) else try std.fmt.allocPrint(gpa, "{s}/chat/completions", .{self.base_url});
         defer gpa.free(url);
 
         var retry_index: usize = 0;
         while (true) {
-            const result = self.requestOnce(gpa, payload, url, tools_json, messages, effective_session_id, streaming, on_delta, delta_ctx) catch |err| {
+            const result = self.requestOnce(gpa, payload, url, tools_json, messages, effective_session_id, streaming, on_delta, delta_ctx, request_options.headers) catch |err| {
                 if (self.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return abortedResponse(gpa, self.provider_id, self.model);
                 if (err == error.ProviderStreamInterruptedAfterOutput or retry_index >= self.provider_retry.max_retries) return err;
                 const delay_ms = try retry_mod.providerDelayMs(self.io, self.provider_retry, retry_index, null);
@@ -172,6 +190,7 @@ pub const OpenAIClient = struct {
         streaming: bool,
         on_delta: ?ai.StreamHandler,
         delta_ctx: ?*anyopaque,
+        request_headers: []const metadata.Header,
     ) !ai.ModelResponse {
         var proxy_arena = std.heap.ArenaAllocator.init(gpa);
         defer proxy_arena.deinit();
@@ -210,6 +229,7 @@ pub const OpenAIClient = struct {
         }
         // Custom headers are last for normal OpenAI-compatible transports, matching upstream override semantics.
         for (self.custom_headers) |header| try putHttpHeader(gpa, &headers, header.name, header.value);
+        for (request_headers) |header| try putHttpHeader(gpa, &headers, header.name, header.value);
 
         // Live SSE writer: parse complete lines as HTTP body chunks drain into us
         var live = LiveSseWriter.init(gpa, on_delta, delta_ctx, streaming, self.abort_flag);
@@ -279,7 +299,7 @@ pub const OpenAIClient = struct {
             }
             // Accumulator.finish() duplicates its output; it does not consume the
             // accumulator buffers. Keep them attached so live.deinit() releases them.
-            resp.provider = try gpa.dupe(u8, self.provider_id);
+            resp.provider = try gpa.dupe(u8, if (azure.isProvider(self.provider_id)) "azure" else self.provider_id);
             resp.model = try gpa.dupe(u8, self.model);
             if (live.response_id.len > 0) resp.response_id = try gpa.dupe(u8, live.response_id);
             if (live.response_model.len > 0 and !std.mem.eql(u8, live.response_model, self.model)) resp.response_model = try gpa.dupe(u8, live.response_model);
@@ -297,7 +317,10 @@ pub const OpenAIClient = struct {
         defer gpa.free(response_json);
         var resp = try parseOpenAIResponseConfigured(gpa, response_json, tools_json, self.compat);
         try normalizeRequestedModel(gpa, &resp, self.model);
-        if (resp.provider.len == 0) resp.provider = try gpa.dupe(u8, self.provider_id);
+        if (azure.isProvider(self.provider_id)) {
+            if (resp.provider.len != 0) gpa.free(resp.provider);
+            resp.provider = try gpa.dupe(u8, "azure");
+        } else if (resp.provider.len == 0) resp.provider = try gpa.dupe(u8, self.provider_id);
         _ = cost_mod.calculate(self.model_cost, &resp.usage);
         try resp.ensureStopReason(gpa);
         return resp;
@@ -1586,7 +1609,7 @@ pub fn buildRequestBodyConfigured(
         const add_cache_to_message = cache_anthropic and
             ((first_instruction_index != null and first_instruction_index.? == msg_index) or
                 (last_cacheable_conversation_index != null and last_cacheable_conversation_index.? == msg_index));
-        if (msg.hasImages()) {
+        if (msg.hasImages() or msg.content_as_array) {
             try w.writeAll(",\"content\":[{\"type\":\"text\",\"text\":");
             try std.json.Stringify.value(replay_content, .{}, w);
             if (add_cache_to_message) try writeAnthropicCacheControlField(w, cache_long_ttl);

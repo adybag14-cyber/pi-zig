@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+  "upstream": {
+    "commit": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+    "packageVersion": "1.0.4",
+    "sourceArchiveSha256": "a11ca75ccca5a5e5a359afc5b32102545c27709052e3a1e7643c14cb52c219bb",
+    "catalogRevision": "sha256-c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f"
+  },
+  "changes": [
+    "Native Pi protocol-v1 daemon/client with bounded framing, retained filesystem handles, ordered output, cancellation, heartbeats and session fences",
+    "Retryable lazy SSH starts cache successful platform detection and verify deployment every restart, with actual strict-key reconnect/tamper proof",
+    "Windows daemon-specific process lifetime policy preserves original detached background behavior and fences active cancellation with owned duplicated process handles",
+    "Ordered first-tool registration merge and exact command-name collision aliases retain upstream extension semantics",
+    "Native MCP request/session/transport APIs provide stdio and HTTP/SSE networking, pagination and pending-connect shutdown",
+    "The compatibility McpClient and pi mcp stdio/explicit --url utility now use native transport ownership with inherited PATH and exact retained-child teardown",
+    "Native callback failure envelopes preserve authoritative already-admitted action FIFO before returning the original error",
+    "Environment startup/request waits preserve absolute deadlines across spurious timed-event wakes and return to protected reply predicates after shared wake resets",
+    "Persistent owner-rooted Editor/CustomEditor factories replace fullscreen editor rows and restore drafts/default ownership across focus modal and reload transitions",
+    "Captured UI capability and stable context UI getter retain the original owner lifetime across unrelated no-UI invocations; headless capabilities remain headless",
+    "Original modal-editor extension is retained as exact Zig string input with SHA256 assertion, without a tracked TypeScript file",
+    "Catalog/changelog provenance refreshed to newest captured Pi1.0.4 main commit; generated daemon version follows that pin"
+  ],
+  "validation": {
+    "fullGraphs": [
+      {
+        "receipt": {
+          "name": "checkpoint196-final-windows-debug",
+          "pid": 13832,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+          "created_utc": "2026-10-05T21:53:12.8123010Z",
+          "launched_utc": "2026-10-05T21:53:12.8093508+00:00",
+          "identity_captured": true,
+          "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-05T21:56:01.2891954+00:00"
+        },
+        "buildSummary": "Build Summary: 158/158 steps succeeded; 884/930 tests passed (46 skipped)",
+        "stderrSha256": "b5138e96f39d104b645d53021d5d6b6c6188427bfa34f6baff6a37753c1b9924"
+      },
+      {
+        "receipt": {
+          "name": "checkpoint196-final-windows-releasesafe",
+          "pid": 9336,
+          "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+          "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+          "created_utc": "2026-10-05T21:56:01.3015400Z",
+          "launched_utc": "2026-10-05T21:56:01.3005536+00:00",
+          "identity_captured": true,
+          "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-05T22:05:16.1326159+00:00"
+        },
+        "buildSummary": "Build Summary: 158/158 steps succeeded; 884/930 tests passed (46 skipped)",
+        "stderrSha256": "8a87b58552e6311557ea245c7fb6750b1720f5d1b8a9545f2ad57f6213b32196"
+      },
+      {
+        "receipt": {
+          "name": "checkpoint196-final-linux-debug",
+          "pid": 36520,
+          "executable": "C:\\Windows\\System32\\wsl.exe",
+          "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint196-final2-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=Debug -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+          "created_utc": "2026-10-05T21:53:31.5539650Z",
+          "launched_utc": "2026-10-05T21:53:31.5514613+00:00",
+          "identity_captured": true,
+          "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-05T21:55:56.8826060+00:00"
+        },
+        "buildSummary": "Build Summary: 154/154 steps succeeded; 1056/1060 tests passed (4 skipped)",
+        "stderrSha256": "140372b3e671da06c0310f25d8aa2e3c77f350c76515991b4bbd47c8f573b6b1"
+      },
+      {
+        "receipt": {
+          "name": "checkpoint196-final-linux-releasesafe",
+          "pid": 5660,
+          "executable": "C:\\Windows\\System32\\wsl.exe",
+          "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint196-final2-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+          "created_utc": "2026-10-05T21:55:56.8931770Z",
+          "launched_utc": "2026-10-05T21:55:56.8926225+00:00",
+          "identity_captured": true,
+          "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+          "status": "passed",
+          "exit_code": 0,
+          "completed_utc": "2026-10-05T22:07:36.1755761+00:00"
+        },
+        "buildSummary": "Build Summary: 154/154 steps succeeded; 1056/1060 tests passed (4 skipped)",
+        "stderrSha256": "4bb94eb9577c69ca0e093e0194e787c6af7b5579d2f80e6d23372d7bfc9c29e5"
+      }
+    ],
+    "independentOriginalAndActualProcessProof": [
+      {
+        "name": "pi-env-b7df-original-file-contracts",
+        "pid": 12828,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "C:\\Program Files\\nodejs\\node.exe --experimental-strip-types capture-env-latest-file-contracts.mjs C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-b7df-original-reference-target/debug/pi-env.exe",
+        "created_utc": null,
+        "launched_utc": "2026-10-05T17:52:49.2948628+00:00",
+        "identity_captured": false,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:52:49.6117119+00:00"
+      },
+      {
+        "name": "pi-env-b7df-native-file-contracts-eof-repaired",
+        "pid": 5180,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "C:\\Program Files\\nodejs\\node.exe --experimental-strip-types capture-env-latest-file-contracts.mjs C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-native.exe",
+        "created_utc": null,
+        "launched_utc": "2026-10-05T17:56:09.7378371+00:00",
+        "identity_captured": false,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:56:10.0611923+00:00"
+      },
+      {
+        "name": "pi-env-native-upstream-whole-large-file-client-correct-api",
+        "pid": 22900,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "C:\\Program Files\\nodejs\\node.exe --experimental-strip-types --experimental-loader ./env-upstream-source-loader.mjs env-upstream-large-file-contract.mjs C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-native.exe",
+        "created_utc": null,
+        "launched_utc": "2026-10-05T17:58:58.2882392+00:00",
+        "identity_captured": false,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:58:58.5700214+00:00"
+      },
+      {
+        "name": "pi-env-native-priority-backpressure-actual-peer",
+        "pid": 37536,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" env-priority-output-actual-peer.mjs C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-native.exe C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-ssh-fixture.exe",
+        "created_utc": "2026-10-05T19:22:20.8540290Z",
+        "launched_utc": "2026-10-05T19:22:20.8496901+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:22:21.4744615+00:00"
+      },
+      {
+        "name": "pi-env-native-background-original-policy-repaired2",
+        "pid": 38884,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --experimental-strip-types env-original-native-background-compare.mjs C:/Users/adyba/pi-zig-update-evidence-20261003/pi-env-native.exe",
+        "created_utc": "2026-10-05T19:05:55.5549630Z",
+        "launched_utc": "2026-10-05T19:05:55.5520450+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:05:58.2809548+00:00"
+      },
+      {
+        "name": "pi-env-leased-original-upstream-exec-replay",
+        "pid": 44472,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --experimental-strip-types native-env-exec-upstream-client.mjs",
+        "created_utc": "2026-10-05T19:20:22.7644560Z",
+        "launched_utc": "2026-10-05T19:20:22.7606134+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:20:23.5605910+00:00"
+      },
+      {
+        "name": "pi-env-leased-original-active-disconnect-replay",
+        "pid": 10672,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "C:\\Program Files\\nodejs\\node.exe --experimental-strip-types native-env-disconnect-upstream-client.mjs",
+        "created_utc": null,
+        "launched_utc": "2026-10-05T19:20:23.5695811+00:00",
+        "identity_captured": false,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:20:23.8057056+00:00"
+      },
+      {
+        "name": "native-env-actual-ssh-upload-eof-repaired",
+        "pid": 4792,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-integration-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 100s /usr/bin/env PI_TEST_REAL_SSH_ROOT=/tmp/pi-env-local-ssh-20261005 PI_TEST_REAL_SSH_PORT=49237 PI_TEST_ENV_DAEMON=/tmp/pi-env-integration-source-20261005/zig-out/bin/pi-env /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/env_test.zig src/durable/process_probe.c -target x86_64-linux-musl -lc --test-filter \"native SSH detection\" --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:54:35.4769590Z",
+        "launched_utc": "2026-10-05T19:54:35.4741132+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-env-integration-20261005",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:54:43.0766413+00:00"
+      },
+      {
+        "name": "native-env-actual-ssh-private-key-contracts",
+        "pid": 37296,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-integration-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 100s /usr/bin/env PI_TEST_REAL_SSH_ROOT=/tmp/pi-env-local-ssh-20261005 PI_TEST_REAL_SSH_PORT=49237 PI_TEST_REAL_SSH_CHANGED_HOSTS=/tmp/pi-env-local-ssh-20261005/changed_known_hosts PI_TEST_ENV_DAEMON=/tmp/pi-env-integration-source-20261005/zig-out/bin/pi-env /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/env_test.zig src/durable/process_probe.c -target x86_64-linux-musl -lc --test-filter \"native SSH detection\" --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:56:32.2074490Z",
+        "launched_utc": "2026-10-05T19:56:32.2045087+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-env-integration-20261005",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:56:39.9431595+00:00"
+      }
+    ],
+    "sourceManifestSha256": "ca281e67049df5f645fe2ea49628fbe854201bce4ee730dd0584b916bd5c6d8c",
+    "sourceSnapshotSha256": "bb51daff096b3ef85e7de724d4fd69a33fba8a3f734ef3c66c5c4f27232127b1",
+    "interruption": "User turn interruption ended two owned jobs and cleared WSL task staging. Their receipts remain interrupted. A missing SQLite link failed the first replay; the subsequent Linux ReleaseSafe run exposed an existing marker creation/write observer race. Terminal composed jobs above include the bounded fixture repair.",
+    "hostedRenderer": "Parent e62 macOS renderer observer failures have a separate preserved diagnostic/fixture repair record. Local results and cross compilation do not certify hosted Darwin.",
+    "admissionNotes": [
+      "Original daemon JSON and adapter contract line endings normalized to LF; captured values unchanged",
+      "New module build wiring applied additively, preserving prompt/ENV/scheduler targets",
+      "Editor host/bindings merged against captured baselines to preserve catalog behavior",
+      "Prethrow process regression appended intact to avoid editor import-context collision",
+      "Dedicated custom-editor frontend target explicitly links libc on macOS"
+    ]
+  },
+  "limits": [
+    "Serial file dispatch; bounded worker pool, per-handle concurrent arrival lanes, blocking FIFO/device behavior and native watch subscriptions remain pending",
+    "RemoteExecutionEnv adapters, host-key scan/accept management and cross-platform daemon packaging remain pending",
+    "Slow-link unsent-window coalescing remains incomplete",
+    "Late registration and qualified heterogeneous model registry remain pending",
+    "Native prethrow actions are retained in the Runtime owner FIFO; the Host native command-error branch currently drops them and the original diagnostic from CommandOutput, with CLI correction a separate follow-on",
+    "Configured-agent MCP exposure, OAuth/codemode, dynamic headers and unanswered POST SSE resumption remain pending; the compatibility facade is sequential and HTTP utility is POST-only",
+    "Extension-owned autocomplete provider/dropdown is explicitly unsupported in this checkpoint; core Tab completion forwards to Main",
+    "Native editor visual wrapping and grapheme motion retain current Zig editor core limits; additional advanced subclasses remain uncertified",
+    "One JS host remains, default backend is legacy, whole Pi parity and native release remain uncertified"
+  ]
+}

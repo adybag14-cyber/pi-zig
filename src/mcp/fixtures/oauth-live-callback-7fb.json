@@ -1,0 +1,17 @@
+{
+  "statuses": [
+    404,
+    400,
+    400,
+    200
+  ],
+  "response": {
+    "code": "owned",
+    "state": "one",
+    "iss": "https://issuer.example"
+  },
+  "wrongRoute": {
+    "error": "The authorization response arrived on another redirect URI"
+  },
+  "closed": "OAuth callback server closed"
+}

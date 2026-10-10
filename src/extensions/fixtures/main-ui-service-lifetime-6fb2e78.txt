@@ -1,0 +1,7 @@
+export default pi => {
+  let saved;
+  pi.registerCommand('capture', { handler(_args, ctx) { saved = ctx.ui; return { same: ctx.ui === saved }; } });
+  pi.registerCommand('later', { async handler() { return { value: await saved.input('retained', 'hint') }; } });
+  pi.registerCommand('fresh', { async handler(_args, ctx) { return { value: await ctx.ui.input('fresh', 'hint') }; } });
+  pi.registerCommand('schedule', { handler() { setTimeout(async () => saved.notify('idle:' + await saved.input('idle', 'hint')), 2); return { scheduled: true }; } });
+}

@@ -1,0 +1,148 @@
+{
+  "created_utc": "2026-10-05T18:42:10.4873818+00:00",
+  "state": "all admitted final gates terminal passed; 11 scheduler paths immutable; 63 previous storage paths unchanged",
+  "source_manifest": "durable-scheduler-frozen-source-20261005.json",
+  "source_manifest_sha256": "f29aed1cedefac7dfc01f69430fc61d4b8a2563676a364c533f9f1b30d9eff24",
+  "integration_patch": "durable-scheduler-additive-lf-20261005.patch",
+  "integration_patch_sha256": "2dbb82403d5e1508d44a8f822585b634c736a7f09c733e1f615aa5c7fbc9af7c",
+  "toolchain": "final Zig 0.16.0",
+  "authority": "98d2e1947aa9c75dff4c20474d541873dadc1d05",
+  "reference": "actual upstream b7df TaskScheduler/SessionImpl/createRegistry/MemoryStorage/defineTask, Node24.14.0; scheduler/transaction/types/recovery test source SHA checked identical at98d2",
+  "counts": {
+    "scheduler_each_configuration": 24,
+    "windows_full_each": {
+      "steps": 130,
+      "summary_pass": 595,
+      "summary_skip": 39,
+      "summary_total": 634,
+      "root_module_pass": 1218,
+      "root_module_skip": 32,
+      "root_module_total": 1250,
+      "sqlite_main_pass": 11,
+      "sqlite_main_skip": 6,
+      "sqlite_main_total": 17
+    },
+    "linux_full_each": {
+      "steps": 126,
+      "summary_pass": 764,
+      "summary_total": 764,
+      "root_module_pass": 1242,
+      "root_module_skip": 8,
+      "root_module_total": 1250
+    },
+    "focused_windows": {
+      "steps": 18,
+      "pass": 92,
+      "skip": 3,
+      "total": 95
+    },
+    "focused_linux_each": {
+      "steps": 18,
+      "pass": 95,
+      "total": 95
+    }
+  },
+  "linux_stage": "/tmp/pi-durable-scheduler-20261005.qdPD9s",
+  "macos": "ARM64 semantic compilation only; runtime unverified",
+  "new_files": [
+    "src/durable/task_state.zig",
+    "src/durable/scheduler.zig",
+    "src/durable/scheduler_tests.zig",
+    "src/durable/scheduler_fixture.zig",
+    "src/durable_scheduler_fixture.zig",
+    "src/durable_scheduler_test.zig",
+    "src/durable/fixtures/scheduler_b7df.json",
+    "src/durable/SCHEDULER_CONTRACT.md"
+  ],
+  "remaining": "Explicit bounded drive and mark-only abort APIs; full async dispatcher/join facade, runtime forwarding, QuickJS user task-function bridge, executable registry/Harness integration, built-in generation/tool/compaction tasks remain subsequent work, detailed in SCHEDULER_CONTRACT.md",
+  "jobs": [
+    {
+      "name": "durable-scheduler-source-oracle-2",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 12224,
+      "created_utc": "2026-10-05T18:04:24.8941300+00:00",
+      "completed_utc": "2026-10-05T18:04:25.4469361+00:00",
+      "record_sha256": "4fcd902c1be611069a371cab6f5dd2a25aa72ff62c39ff8318cd374f6697e89d",
+      "stdout_sha256": "f463a7778987487bd7e5ac235dd4029e5b6fa822d61cd8b494bb4157297ab800",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-scheduler-final-focused-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 28496,
+      "created_utc": "2026-10-05T18:23:05.7874410+00:00",
+      "completed_utc": "2026-10-05T18:23:21.7875011+00:00",
+      "record_sha256": "d2df4385893f83cb2f6a2fa2ecd7ff15cb6f77da9e42a5fff0017c4460311866",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2b3c7e031030144bc27c58f2f57dac2d99c2dcd7f4ffdb822030ef4a778ce6b9"
+    },
+    {
+      "name": "durable-scheduler-final-linux",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 5400,
+      "created_utc": "2026-10-05T18:24:44.7145490+00:00",
+      "completed_utc": "2026-10-05T18:26:00.5892575+00:00",
+      "record_sha256": "2f74e79ffb875cb53e954d05bb382d5c25a2a3650de34f4726f357d39ed82d9c",
+      "stdout_sha256": "5d6a0b5410566ba281c7d6c47c2114f4aa04217515f3e418a8a150265b59a030",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-scheduler-macos-arm64-semantic",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 55244,
+      "created_utc": "2026-10-05T18:26:31.1676030+00:00",
+      "completed_utc": "2026-10-05T18:26:31.9389740+00:00",
+      "record_sha256": "39872cf7ae824cbe506a1ae164e83c6b196010b05bab9a62c46b6bafc2a8bb45",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-scheduler-full-windows-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 49928,
+      "created_utc": "2026-10-05T18:25:12.4805020+00:00",
+      "completed_utc": "2026-10-05T18:35:49.3203979+00:00",
+      "record_sha256": "bd8dc94c2b66d5ba89be93f8e014bc560c5b9bf2541dfba7640d1bca97db8257",
+      "stdout_sha256": "152a04f1af9ebbc11c48338e0270c483339a464c8563e2e25b747b79f4e325b8",
+      "stderr_sha256": "9fe88a6266ac4a229dd45cbf771d268bed8ec8f0051d4a558b8f8a237da0b073"
+    },
+    {
+      "name": "durable-scheduler-full-windows-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 52956,
+      "created_utc": "2026-10-05T18:36:01.5171770+00:00",
+      "completed_utc": "2026-10-05T18:38:19.7144844+00:00",
+      "record_sha256": "97e89ed33438f4d733a7facd93a130cf242c78039310f47e6ec4b1bab43116f5",
+      "stdout_sha256": "152a04f1af9ebbc11c48338e0270c483339a464c8563e2e25b747b79f4e325b8",
+      "stderr_sha256": "66d41dff486bc759b970c3bc27459242d7a23e6d6fcceb3eb6c65db4bbe1783f"
+    },
+    {
+      "name": "durable-scheduler-full-linux-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 41516,
+      "created_utc": "2026-10-05T18:28:39.8680960+00:00",
+      "completed_utc": "2026-10-05T18:31:12.3131427+00:00",
+      "record_sha256": "e716ac229b712cdcea43a2edac667fc5ef1fe597b165d3072fc40b89ee7a67c4",
+      "stdout_sha256": "077d22fe73b2e56c84f8710a979bb2825ffb97fdc5399f6d16abfe25da457260",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-scheduler-full-linux-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 52948,
+      "created_utc": "2026-10-05T18:31:42.3786270+00:00",
+      "completed_utc": "2026-10-05T18:40:44.1686440+00:00",
+      "record_sha256": "8fe0a1cebbe44c98e67ff5c0a7f4bd1fd01e6fb96fd023001d041492358e0c66",
+      "stdout_sha256": "2b42764f3f79de18106966a494275d5592eb5fa4cdf10e380bc39ff508751819",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

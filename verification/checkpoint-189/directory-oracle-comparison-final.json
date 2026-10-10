@@ -1,0 +1,43 @@
+{
+  "source_sha256": "5CEB129EADF60012DF94E79690A37C9D900F62E872B8F791C2339D8F6B21A87C",
+  "created_utc": "2026-10-05T07:54:44.7347241+00:00",
+  "real_fixture_exact_match": true,
+  "real_fixture_characters": 5048,
+  "cycle_exact_match": true,
+  "cycle_actual": {
+    "syncfalse": [
+      128,
+      64
+    ],
+    "synctrue": [
+      128,
+      64
+    ],
+    "asyncfalse": [
+      128,
+      64
+    ],
+    "asynctrue": [
+      2,
+      1
+    ]
+  },
+  "cycle_node": {
+    "syncfalse": [
+      128,
+      64
+    ],
+    "synctrue": [
+      128,
+      64
+    ],
+    "asyncfalse": [
+      128,
+      64
+    ],
+    "asynctrue": [
+      2,
+      1
+    ]
+  }
+}

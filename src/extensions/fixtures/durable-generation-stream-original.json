@@ -1,0 +1,234 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "empty",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "partial",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "first"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "two-partial",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "throw",
+      "failure": true,
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "first"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "abort-write",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "copy-throw",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "report",
+          "Value must contain strict JSON enumerable data properties"
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "commit-sync",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "report",
+          "[object Object]"
+        ]
+      ],
+      "live": {}
+    }
+  ]
+}

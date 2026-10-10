@@ -1,0 +1,538 @@
+[
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\146399cf94a883278db72449f9a92574\\test.exe",
+    "sha256": "B929C4B0FA47C0AB5E5D197EC86F37EEBE3EC1F95E1113F59390F03E7847BCC4",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "ADVAPI32.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "USERENV.dll",
+      "CRYPT32.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\15e5a92587bc8fc2a6aba60ecd89bd7f\\test.exe",
+    "sha256": "5A660270DAFAB7B1EF9216BACBDD1A282F1F0EB1C7A7882869CE3B18E317A8CF",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\16a6566d1a4a2430e26c3a157c19db53\\test.exe",
+    "sha256": "034C43AA32DAF2D7AB5BD15E202C01081D7FAFF50D6B6369CB65167A3EFD8C84",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\1ad5528e1d2e7d951d6e7f53028a033c\\test.exe",
+    "sha256": "BCE6C9BF326019ED22BB2C83D3B5A9075B53E7A458D61AC39C40B7DB7A75F4C3",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\29381c1f57d55b2967c7c15963e01984\\test.exe",
+    "sha256": "152688D2D49FF0C2B98085EB631C518030D3F8C8FF535B7E55E70AC14C51B295",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\44c5a5732d85f1148eb0c8d9fdaf3df7\\test.exe",
+    "sha256": "212926C190D0CF1D4DEB1F0B1AB142F44686C17C0BE80D2A74B92F4644E01EE5",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "ADVAPI32.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "USERENV.dll",
+      "CRYPT32.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\57efcd1c14ca22721af117a21fafc377\\test.exe",
+    "sha256": "EB360436B6D4BF25E5F72B28F256631EE361A617B4D0E517AFB3E6C4B19C9B0F",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\604c2e1bcb07ec5990d484c6535dc981\\test.exe",
+    "sha256": "A8C0FE3EEE6AC8989F1C0880317A9617A0E7125718B609666E58F0F66D409166",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\6b4f2de877fbd5c5c55487bfc12c1073\\test.exe",
+    "sha256": "62CFC0A5B5EA117A0C03DF93C2BE18BADA6072FDAEA8763D7E6FC0CF88DF0D04",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\7e18e5f84b5623b229e8022e4d8da6a8\\test.exe",
+    "sha256": "FAA9251B7EC5894477F83C5C8EEA289802FE282784DDB9FAAF96A459404A8985",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\7fc91872ba95be3d36a18265e2986a1a\\test.exe",
+    "sha256": "9CD6B0E5E6F2EE8AEAE2D6CE7C0B7A12F32363E2BC567C03ED06BA922AC3DE24",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\826b716fba6bf3b514db20711dab557a\\test.exe",
+    "sha256": "0C8F117C04268A7B26B06D9D8A7CF73EBACAD81672FF480C6D68200A6C643B5B",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\8ee0b414dd6dafc34d229b5790eb48bc\\test.exe",
+    "sha256": "BDF7E2B795AD2AB505330F5853CE67AEC553033E266FCAB580436112A511518F",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\91ae9b13ab0567d47beedda0f31560cb\\test.exe",
+    "sha256": "7942EA73B9686BAAECBA43BCEEDEB24F199E4CC44650744177E949C73BCF7FD9",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\a318204216cbdd7e3504e5ac3c6c7553\\test.exe",
+    "sha256": "757825381E901D7DDA295EA6D2E16DD13C3A0174A8900490F01E5F8C0DEF6488",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\a91d72cac3ffd0b676185f7b3a3eeec0\\test.exe",
+    "sha256": "226FEECE5C7BCB614366593ABE37BABA165F4FDC2E5622842BAA8037C08D043E",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\a98b2235dd3ded82930123e7aa3eaaae\\test.exe",
+    "sha256": "E6E6EA14A16965028FEAA60434E6D20B8EF5BE334B1003248C2E4AC0C146D5B3",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "ADVAPI32.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "USERENV.dll",
+      "CRYPT32.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\cf87ec2211a88517676b89e0acd20aed\\test.exe",
+    "sha256": "C2695AEB161AE6A583064416E1F1F48F60E69D22A3FB2AE1A3DBC5877DC2E017",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\d65f8590109fda6a946aedc34e7a6cec\\test.exe",
+    "sha256": "290CE93F79C1BDB85B39FAF7C8A7256BD124F8892289A40A97C9F595D25C0191",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\db45895de3f223e3ed2de07dbd18925d\\test.exe",
+    "sha256": "4B00EFB51BFFD161C910CF0FAD2DCA438B654E5E4D1A36C5AD08826EDC901956",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\df723ed91dcd06463644d5b10d3ff1a7\\test.exe",
+    "sha256": "46E6797470290F14AA0AD206B575C94BEAD2BA74630BE0AC5F116052AF9947D4",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\e6404073fb56436a8d7c06785f3ee4e4\\test.exe",
+    "sha256": "BEA6A9A8D6BC20E507D5D72BA16C2F33845E7DBF7EA4B8DB7F3008A16E203091",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\ef882bc251a3a8401b4ae189c0686fb6\\test.exe",
+    "sha256": "9101A12DABBDB04D6411CC1A3E2C44873622D780DBE9CB8BA6CF94D777C8C99D",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\f86aa26f4094294223f871ec37a96659\\test.exe",
+    "sha256": "79AD6888F6C46F5ACB785F309E8361A622AD6AEFAE33D7105F6159E930964021",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\f96f57e54ec14f2671f364ba483afede\\test.exe",
+    "sha256": "EC3C6602000EFA77FCA3B0BAB5F0F7C0DD13F28E309D3ED8AEEC307BDFDAB4BC",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  },
+  {
+    "candidate": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+    "path": "C:\\Users\\adyba\\pi-zig-composition237-20261010\\.zig-cache\\o\\facb376c4e35b867184e7ec841f044f9\\test.exe",
+    "sha256": "514F6618BB8136952E0BF61D492CFD0FC82B8775B3DA32C06F655457C088BD35",
+    "imports": [
+      "api-ms-win-crt-heap-l1-1-0.dll",
+      "api-ms-win-crt-math-l1-1-0.dll",
+      "api-ms-win-crt-private-l1-1-0.dll",
+      "api-ms-win-crt-runtime-l1-1-0.dll",
+      "api-ms-win-crt-stdio-l1-1-0.dll",
+      "ADVAPI32.dll",
+      "KERNEL32.dll",
+      "ntdll.dll",
+      "USERENV.dll",
+      "CRYPT32.dll",
+      "api-ms-win-crt-string-l1-1-0.dll",
+      "api-ms-win-crt-time-l1-1-0.dll",
+      "api-ms-win-crt-environment-l1-1-0.dll",
+      "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "api-ms-win-crt-locale-l1-1-0.dll",
+      "api-ms-win-crt-convert-l1-1-0.dll"
+    ],
+    "sqlite_dll": false
+  }
+]

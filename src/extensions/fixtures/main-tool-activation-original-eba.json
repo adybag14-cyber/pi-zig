@@ -1,0 +1,264 @@
+{
+  "reference": "6fb2e78; relevant SDK/session/runner sources unchanged through f1b2e77",
+  "rows": [
+    {
+      "name": "default",
+      "options": {},
+      "names": [
+        "read",
+        "bash",
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "codemode",
+        "tool_search",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "codemode",
+        "tool_search",
+        "read"
+      ]
+    },
+    {
+      "name": "exclude-native",
+      "options": {
+        "excludeTools": [
+          "read",
+          "codemode"
+        ]
+      },
+      "names": [
+        "bash",
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "tool_search",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "tool_search"
+      ]
+    },
+    {
+      "name": "all-disabled-explicit",
+      "options": {
+        "noTools": "all",
+        "tools": [
+          "read",
+          "bootstrap"
+        ]
+      },
+      "names": [
+        "read",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "read"
+      ]
+    },
+    {
+      "name": "builtin-disabled-explicit",
+      "options": {
+        "noTools": "builtin",
+        "tools": [
+          "read",
+          "bootstrap"
+        ]
+      },
+      "names": [
+        "read",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "read"
+      ]
+    },
+    {
+      "name": "allowed-excluded",
+      "options": {
+        "tools": [
+          "read",
+          "bootstrap",
+          "codemode"
+        ],
+        "excludeTools": [
+          "codemode"
+        ]
+      },
+      "names": [
+        "read",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "read"
+      ]
+    },
+    {
+      "name": "empty",
+      "options": {
+        "tools": []
+      },
+      "names": [],
+      "after": []
+    },
+    {
+      "name": "builtin-disabled",
+      "options": {
+        "noTools": "builtin"
+      },
+      "names": [
+        "read",
+        "bash",
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "codemode",
+        "tool_search",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "codemode",
+        "tool_search",
+        "read"
+      ]
+    },
+    {
+      "name": "all-disabled",
+      "options": {
+        "noTools": "all"
+      },
+      "names": [],
+      "after": []
+    },
+    {
+      "name": "modifier",
+      "options": {
+        "tools": [
+          "+read"
+        ]
+      },
+      "names": [
+        "read",
+        "bash",
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "codemode",
+        "tool_search",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "codemode",
+        "tool_search",
+        "read"
+      ]
+    },
+    {
+      "name": "exclude-glob",
+      "options": {
+        "excludeTools": [
+          "*sh",
+          "read"
+        ]
+      },
+      "names": [
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "codemode",
+        "tool_search",
+        "bootstrap",
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": [
+        "codemode",
+        "tool_search"
+      ]
+    },
+    {
+      "name": "mcp-pattern",
+      "options": {
+        "tools": [
+          "bootstrap",
+          "mcp__one__*"
+        ]
+      },
+      "names": [
+        "bootstrap",
+        "mcp__one__remote"
+      ],
+      "after": []
+    },
+    {
+      "name": "resource-only",
+      "options": {
+        "tools": [
+          "read_mcp_resource"
+        ]
+      },
+      "names": [
+        "mcp__one__remote",
+        "mcp__two__remote",
+        "read_mcp_resource",
+        "list_mcp_resources",
+        "list_mcp_resource_templates"
+      ],
+      "after": []
+    }
+  ]
+}

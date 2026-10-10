@@ -1,0 +1,66 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "project-settings",
+  "allTenReportGatesPreserved": true,
+  "reportByteIdentical": true,
+  "reportSha256": "a10799e495ef226b4a493e8582a78c3ed631fd8b72cd93ac624179e71295b1a3",
+  "baselineCompatibility": "Only initial global tuiMode is explicitly regular; every original assertion is unchanged. Original unspecified-mode failure retained.",
+  "nativeLinuxTestsPassed": 3,
+  "windows": "Linux fixture explicitly skipped",
+  "jobs": {
+    "project-settings-native-explicit-mode-live": {
+      "name": "project-settings-native-explicit-mode-live",
+      "pid": 15860,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_PROJECT_SETTINGS_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/project-settings-native-report.json /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/project-settings-native-linux-test",
+      "created_utc": "2026-10-05T09:38:56.5370360Z",
+      "launched_utc": "2026-10-05T09:38:56.5339471+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T09:38:57.5971112+00:00"
+    },
+    "project-settings-python-baseline": {
+      "name": "project-settings-python-baseline",
+      "pid": 34796,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/project_settings_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/project-settings-python-report.json",
+      "created_utc": "2026-10-05T09:37:09.0001070Z",
+      "launched_utc": "2026-10-05T09:37:08.9969833+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T09:37:10.0552021+00:00"
+    },
+    "project-settings-python-compat": {
+      "name": "project-settings-python-compat",
+      "pid": 31848,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/project_settings_baseline_compat.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/project-settings-python-compat-report.json",
+      "created_utc": "2026-10-05T09:38:56.5524580Z",
+      "launched_utc": "2026-10-05T09:38:56.5494240+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T09:38:57.5515090+00:00"
+    },
+    "project-settings-native-windows": {
+      "name": "project-settings-native-windows",
+      "pid": 47960,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/project_settings_process_test.zig",
+      "created_utc": "2026-10-05T09:39:49.6683580Z",
+      "launched_utc": "2026-10-05T09:39:49.6652640+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T09:39:51.4776406+00:00"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "tag": "initial",
+      "stateIdentity": true,
+      "modelIdentity": true,
+      "messagesIdentity": true,
+      "thinking": "low",
+      "isIdle": true,
+      "scoped": [],
+      "prompts": 0
+    },
+    {
+      "tag": "assigned",
+      "stateIdentity": true,
+      "modelIdentity": true,
+      "messagesIdentity": true,
+      "thinking": "high",
+      "last": "first last",
+      "isIdle": true,
+      "scoped": [],
+      "prompts": 0
+    },
+    {
+      "tag": "aborted-empty",
+      "stateIdentity": true,
+      "modelIdentity": true,
+      "messagesIdentity": true,
+      "thinking": "high",
+      "last": "first last",
+      "isIdle": true,
+      "scoped": [],
+      "prompts": 0
+    },
+    {
+      "tag": "blank",
+      "stateIdentity": true,
+      "modelIdentity": true,
+      "messagesIdentity": true,
+      "thinking": "high",
+      "isIdle": true,
+      "scoped": [],
+      "prompts": 0
+    },
+    {
+      "tag": "scoped",
+      "stateIdentity": true,
+      "modelIdentity": true,
+      "messagesIdentity": true,
+      "thinking": "high",
+      "isIdle": true,
+      "scoped": [
+        "b"
+      ],
+      "prompts": 0
+    }
+  ],
+  "scopeIdentity": true,
+  "assignmentCopies": true,
+  "assignedLength": 1
+}

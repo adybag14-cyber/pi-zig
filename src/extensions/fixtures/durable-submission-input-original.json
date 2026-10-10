@@ -1,0 +1,275 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "idle",
+      "id": 11,
+      "trace": [
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "hello",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "submission",
+          {
+            "conversationId": 3,
+            "type": "input",
+            "status": "placed",
+            "entry": 10
+          },
+          11
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          12
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 12,
+          "inputs": [
+            11
+          ]
+        }
+      },
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "busy-steer",
+      "id": 10,
+      "trace": [
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "submission",
+          {
+            "conversationId": 3,
+            "type": "input",
+            "status": "queued"
+          },
+          10
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "inbox": {
+        "items": [
+          {
+            "id": 10,
+            "mode": "steer",
+            "content": "hello"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "busy-follow",
+      "id": 10,
+      "trace": [
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "submission",
+          {
+            "conversationId": 3,
+            "type": "input",
+            "status": "queued"
+          },
+          10
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "inbox": {
+        "items": [
+          {
+            "id": 10,
+            "mode": "followUp",
+            "content": "hello"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "busy-reject",
+      "failure": {
+        "name": "ConversationBusy",
+        "message": "Conversation 3 is busy"
+      },
+      "trace": [
+        [
+          "doc",
+          "live",
+          3
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "queued",
+      "id": 10,
+      "trace": [
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "submission",
+          {
+            "conversationId": 3,
+            "type": "input",
+            "status": "queued"
+          },
+          10
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "prior",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          1,
+          11
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "hello",
+                "timestamp": 5
+              }
+            ]
+          },
+          12
+        ],
+        [
+          "place",
+          10,
+          12
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          13
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 13,
+          "inputs": [
+            1,
+            10
+          ]
+        }
+      },
+      "inbox": {
+        "items": []
+      }
+    }
+  ]
+}

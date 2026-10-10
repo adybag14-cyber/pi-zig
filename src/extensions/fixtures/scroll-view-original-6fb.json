@@ -1,0 +1,1666 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "none hidden",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 0,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 0,
+            "scrollTop": 1,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": -2,
+            "unused": -1,
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 100,
+            "unused": 93,
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": false
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ],
+        "lines": [
+          "row0",
+          "row1",
+          "row2"
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "none auto",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 0,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 0,
+            "scrollTop": 1,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "delta": -2,
+            "unused": -1,
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "delta": 100,
+            "unused": 93,
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": true
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "set",
+            1,
+            5
+          ],
+          [
+            "unref",
+            1
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            5
+          ],
+          [
+            "unref",
+            2
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            2
+          ],
+          [
+            "set",
+            3,
+            5
+          ],
+          [
+            "unref",
+            3
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            3
+          ],
+          [
+            "set",
+            4,
+            5
+          ],
+          [
+            "unref",
+            4
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            4
+          ],
+          [
+            "set",
+            5,
+            5
+          ],
+          [
+            "unref",
+            5
+          ],
+          [
+            "render"
+          ],
+          [
+            "render2"
+          ]
+        ],
+        "lines": [
+          "row0",
+          "row1",
+          "row2"
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "none always",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 0,
+            "scrollbar": "always",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 0,
+            "scrollTop": 1,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": -2,
+            "unused": -1,
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 100,
+            "unused": 93,
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": false
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ],
+        "lines": [
+          "row0 ",
+          "row1 ",
+          "row2 "
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "end hidden",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": true,
+            "viewportHeight": 0,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 1,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": -2,
+            "unused": 0,
+            "scrollTop": 5,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 100,
+            "unused": 98,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": false
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ],
+        "lines": [
+          "row0",
+          "row1",
+          "row2"
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "end auto",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": true,
+            "viewportHeight": 0,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 1,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": -2,
+            "unused": 0,
+            "scrollTop": 5,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "delta": 100,
+            "unused": 98,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": true
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "auto",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": true
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "auto",
+            "visible": false,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "set",
+            1,
+            5
+          ],
+          [
+            "unref",
+            1
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            5
+          ],
+          [
+            "unref",
+            2
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            2
+          ],
+          [
+            "set",
+            3,
+            5
+          ],
+          [
+            "unref",
+            3
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            3
+          ],
+          [
+            "set",
+            4,
+            5
+          ],
+          [
+            "unref",
+            4
+          ],
+          [
+            "render"
+          ],
+          [
+            "render2"
+          ]
+        ],
+        "lines": [
+          "row0",
+          "row1",
+          "row2"
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "end always",
+      "value": {
+        "steps": [
+          {
+            "label": "initial",
+            "scrollTop": 0,
+            "following": true,
+            "viewportHeight": 0,
+            "scrollbar": "always",
+            "visible": false,
+            "active": false,
+            "contentHeight": 0,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "layout",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 1,
+            "unused": 1,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": -2,
+            "unused": 0,
+            "scrollTop": 5,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "delta": 100,
+            "unused": 98,
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "end",
+            "scrollTop": 7,
+            "following": true,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "start",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "disabled follow",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 3,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 10,
+            "suppressed": true,
+            "timer": false
+          },
+          {
+            "label": "relayout",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "label": "timer",
+            "scrollTop": 7,
+            "following": false,
+            "viewportHeight": 4,
+            "scrollbar": "always",
+            "visible": true,
+            "active": false,
+            "contentHeight": 12,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ],
+        "lines": [
+          "row0 ",
+          "row1 ",
+          "row2 "
+        ],
+        "childIdentity": true,
+        "stateIdentity": true,
+        "type": "scroll"
+      }
+    },
+    {
+      "name": "shape fields getters inheritance",
+      "value": {
+        "fields": [
+          "children",
+          "mouseLayout",
+          "child",
+          "followEnd",
+          "primary",
+          "overscroll",
+          "scrollbarTrackStyle",
+          "scrollbarThumbStyle",
+          "currentScrollbar",
+          "scrollbarHideDelayMs",
+          "currentScrollTop",
+          "contentHeight",
+          "currentViewportHeight",
+          "followingEnd",
+          "followSuppressedAtEnd",
+          "requestRenderCallback",
+          "transientScrollbarVisible",
+          "scrollbarActive",
+          "scrollbarHideTimer"
+        ],
+        "length": 1,
+        "name": "ScrollView",
+        "inherits": true,
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "scrollTop",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get scrollTop",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "isFollowingEnd",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get isFollowingEnd",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "viewportHeight",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get viewportHeight",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "scrollbar",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get scrollbar",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "isScrollbarVisible",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get isScrollbarVisible",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "isScrollbarActive",
+            "enumerable": false,
+            "configurable": true,
+            "getterName": "get isScrollbarActive",
+            "length": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "setScrollbar",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "getContentWidth",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "markScrollbarActivity",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "hideTransientScrollbar",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "setScrollbarActive",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "scrollTo",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "scrollBy",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "scrollToStart",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "scrollToEnd",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "updateLayout",
+            "enumerable": false,
+            "configurable": true,
+            "length": 3,
+            "writable": true
+          },
+          {
+            "name": "addChild",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "removeChild",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "clear",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "render",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          }
+        ],
+        "symbols": [
+          "@earendil-works/pi-tui/layout-node"
+        ],
+        "styles": [
+          "\u001b[90mx\u001b[39m",
+          "\u001b[37my\u001b[39m"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "unsupported axis horizontal",
+      "error": "Error",
+      "message": "Unsupported ScrollView axis: horizontal"
+    },
+    {
+      "name": "unsupported axis false",
+      "error": "Error",
+      "message": "Unsupported ScrollView axis: false"
+    },
+    {
+      "name": "unsupported axis null",
+      "error": "Error",
+      "message": "Unsupported ScrollView axis: null"
+    },
+    {
+      "name": "unsupported axis 0",
+      "error": "Error",
+      "message": "Unsupported ScrollView axis: 0"
+    },
+    {
+      "name": "delay undefined",
+      "value": {
+        "delay": 1000
+      }
+    },
+    {
+      "name": "delay 0",
+      "value": {
+        "delay": 0
+      }
+    },
+    {
+      "name": "delay -2",
+      "value": {
+        "delay": 0
+      }
+    },
+    {
+      "name": "delay 2.9",
+      "value": {
+        "delay": 2
+      }
+    },
+    {
+      "name": "delay NaN",
+      "value": {
+        "delay": null
+      }
+    },
+    {
+      "name": "delay Infinity",
+      "value": {
+        "delay": null
+      }
+    },
+    {
+      "name": "delay 3",
+      "value": {
+        "delay": 3
+      }
+    },
+    {
+      "name": "scroll strict finite arguments",
+      "value": {
+        "steps": [
+          {
+            "value": "2",
+            "unused": 0,
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "2",
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "value": "NaN",
+            "unused": 0,
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "NaN",
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "value": "Infinity",
+            "unused": 0,
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "Infinity",
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "value": "-Infinity",
+            "unused": 0,
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "-Infinity",
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "value": "2.9",
+            "unused": 2,
+            "scrollTop": 15,
+            "following": true,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "2.9",
+            "scrollTop": 2,
+            "following": false,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "value": "-2.9",
+            "unused": 0,
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          },
+          {
+            "to": "-2.9",
+            "scrollTop": 0,
+            "following": false,
+            "viewportHeight": 5,
+            "scrollbar": "hidden",
+            "visible": false,
+            "active": false,
+            "contentHeight": 20,
+            "suppressed": false,
+            "timer": false
+          }
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "ordinary mutable fields and child",
+      "value": {
+        "lines": [
+          "new "
+        ],
+        "state": {
+          "scrollTop": 2,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "always",
+          "visible": true,
+          "active": false,
+          "contentHeight": 10,
+          "suppressed": false,
+          "timer": false
+        },
+        "layoutChild": true,
+        "childrenUnchanged": true,
+        "events": [
+          [
+            "child",
+            true,
+            7
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual getContentWidth and actual map",
+      "value": {
+        "lines": [
+          "a ",
+          "b "
+        ],
+        "events": [
+          [
+            "width",
+            true,
+            9
+          ],
+          [
+            "render",
+            7
+          ],
+          [
+            "map",
+            true,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "transient active transition",
+      "value": {
+        "active": {
+          "scrollTop": 0,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "auto",
+          "visible": true,
+          "active": true,
+          "contentHeight": 9,
+          "suppressed": false,
+          "timer": false
+        },
+        "inactive": {
+          "scrollTop": 1,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "auto",
+          "visible": true,
+          "active": false,
+          "contentHeight": 9,
+          "suppressed": false,
+          "timer": true
+        },
+        "hidden": {
+          "scrollTop": 1,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "auto",
+          "visible": false,
+          "active": false,
+          "contentHeight": 9,
+          "suppressed": false,
+          "timer": false
+        },
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            0
+          ],
+          [
+            "unref",
+            1
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "scrollbar mode transition and short content",
+      "value": {
+        "auto": {
+          "scrollTop": 1,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "auto",
+          "visible": true,
+          "active": false,
+          "contentHeight": 9,
+          "suppressed": false,
+          "timer": true
+        },
+        "always": {
+          "scrollTop": 1,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "always",
+          "visible": true,
+          "active": false,
+          "contentHeight": 9,
+          "suppressed": false,
+          "timer": false
+        },
+        "hidden": {
+          "scrollTop": 0,
+          "following": false,
+          "viewportHeight": 3,
+          "scrollbar": "hidden",
+          "visible": false,
+          "active": false,
+          "contentHeight": 2,
+          "suppressed": false,
+          "timer": false
+        },
+        "events": [
+          [
+            "set",
+            1,
+            1000
+          ],
+          [
+            "unref",
+            1
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "render"
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forbidden child mutations",
+      "value": [
+        [
+          "Error",
+          "ScrollView has exactly one child"
+        ],
+        [
+          "Error",
+          "ScrollView child cannot be removed"
+        ],
+        [
+          "Error",
+          "ScrollView child cannot be cleared"
+        ]
+      ]
+    },
+    {
+      "name": "original callback throw",
+      "value": true
+    },
+    {
+      "name": "source callback receiver",
+      "value": [
+        true,
+        true,
+        true
+      ]
+    }
+  ]
+}

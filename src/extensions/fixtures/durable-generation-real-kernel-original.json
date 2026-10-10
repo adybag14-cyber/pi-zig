@@ -1,0 +1,26 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "status": "completed",
+  "entryPresent": true,
+  "live": {},
+  "usage": {
+    "models": {
+      "p/m": {
+        "input": 1,
+        "output": 2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "totalTokens": 3,
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        }
+      }
+    },
+    "tools": {}
+  },
+  "reports": []
+}

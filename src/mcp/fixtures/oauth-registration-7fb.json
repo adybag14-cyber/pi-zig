@@ -1,0 +1,141 @@
+{
+  "information": [
+    {
+      "input": {
+        "client_id": "registered",
+        "client_secret": null,
+        "client_id_issued_at": "ignored",
+        "client_secret_expires_at": false,
+        "redirect_uris": null,
+        "extension": true
+      },
+      "result": {
+        "client_id": "registered",
+        "redirect_uris": [],
+        "extension": true
+      }
+    },
+    {
+      "input": {
+        "client_id": "configured",
+        "client_secret": "",
+        "redirect_uris": [
+          "http://localhost/callback"
+        ],
+        "client_id_issued_at": 17,
+        "client_secret_expires_at": 0
+      },
+      "result": {
+        "client_id": "configured",
+        "redirect_uris": [
+          "http://localhost/callback"
+        ],
+        "client_id_issued_at": 17,
+        "client_secret_expires_at": 0
+      }
+    },
+    {
+      "input": {
+        "client_id": ""
+      },
+      "error": "Invalid client_id"
+    },
+    {
+      "input": {
+        "client_id": "c",
+        "client_secret": 3
+      },
+      "error": "Invalid client_secret"
+    },
+    {
+      "input": {
+        "client_id": "c",
+        "redirect_uris": [
+          null
+        ]
+      },
+      "error": "Invalid redirect_uris"
+    }
+  ],
+  "registrations": [
+    {
+      "clientMetadata": {
+        "client_name": "pi",
+        "redirect_uris": [
+          "http://127.0.0.1:1234/callback"
+        ]
+      },
+      "request": {
+        "url": "https://issuer.example/register",
+        "method": "POST",
+        "metadata": {
+          "client_name": "pi",
+          "redirect_uris": [
+            "http://127.0.0.1:1234/callback"
+          ],
+          "application_type": "native",
+          "scope": "read write"
+        }
+      },
+      "result": {
+        "client_id": "registered",
+        "redirect_uris": [
+          "http://127.0.0.1:1234/callback"
+        ],
+        "extension": true
+      }
+    },
+    {
+      "clientMetadata": {
+        "redirect_uris": [
+          "https://site.example/callback"
+        ]
+      },
+      "request": {
+        "url": "https://issuer.example/register",
+        "method": "POST",
+        "metadata": {
+          "redirect_uris": [
+            "https://site.example/callback"
+          ],
+          "application_type": "web",
+          "scope": "read write"
+        }
+      },
+      "result": {
+        "client_id": "registered",
+        "redirect_uris": [
+          "https://site.example/callback"
+        ],
+        "extension": true
+      }
+    },
+    {
+      "clientMetadata": {
+        "redirect_uris": [
+          "custom-app:/callback"
+        ],
+        "application_type": "web"
+      },
+      "request": {
+        "url": "https://issuer.example/register",
+        "method": "POST",
+        "metadata": {
+          "redirect_uris": [
+            "custom-app:/callback"
+          ],
+          "application_type": "web",
+          "scope": "read write"
+        }
+      },
+      "result": {
+        "client_id": "registered",
+        "redirect_uris": [
+          "custom-app:/callback"
+        ],
+        "extension": true
+      }
+    }
+  ],
+  "unsupported": "Authorization server does not support dynamic client registration"
+}

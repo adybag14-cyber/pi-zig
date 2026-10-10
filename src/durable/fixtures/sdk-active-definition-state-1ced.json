@@ -1,0 +1,35 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "unchangedThrough": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "no-search",
+      "selected": [
+        "codemode",
+        "deferred",
+        "direct"
+      ],
+      "observed": [
+        "injected"
+      ],
+      "topCopy": true,
+      "elementIdentity": true,
+      "unregistered": true
+    },
+    {
+      "name": "search",
+      "selected": [
+        "codemode",
+        "deferred",
+        "direct",
+        "mcp__fixture__deferred"
+      ],
+      "observed": [
+        "injected"
+      ],
+      "topCopy": true,
+      "elementIdentity": true,
+      "unregistered": true
+    }
+  ]
+}

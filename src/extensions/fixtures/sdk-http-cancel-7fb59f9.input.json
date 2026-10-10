@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "f572cb479b840508ea63b022c0a9a081a96483e44adc1f8ed37b9d263088c0b8",
+  "input": "import {ModelRuntime} from '@earendil-works/pi-coding-agent';const r=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false});const image=process.env.SDK_KIND==='image';await r.setRuntimeApiKey(image?'openrouter':'opencode','fixture-key');const model={...(image?r.getModelsOfType('image','openrouter')[0]:r.getModelOfType('classifier','opencode','jev-1.13')),baseUrl:process.env.SDK_CLASS_URL};const controller=new AbortController;const timing=[];const pending=image?r.generateImages(model,{input:[{type:'text',text:'fixture'}]},{maxRetries:0,signal:controller.signal}):r.classify(model,{state:{text:'sdk'},questions:{q:{type:'bool',instructions:'check',criteria:{true:'yes',false:'no'}}}},{maxRetries:0,signal:controller.signal});timing.push('returned');setTimeout(()=>{timing.push('aborted');controller.abort('sdk-http-cancel')},150);const response=await pending;timing.push('settled');delete response.timestamp;if(response.stopReason!=='aborted')throw Error(JSON.stringify(response));console.log(JSON.stringify({response,timing}));"
+}

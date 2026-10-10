@@ -1,0 +1,52 @@
+[
+  {
+    "header": null,
+    "result": {}
+  },
+  {
+    "header": "",
+    "result": {}
+  },
+  {
+    "header": "Basic realm=\"x\", scope=\"ignored\"",
+    "result": {}
+  },
+  {
+    "header": "Bearer scope=\"read write\", resource_metadata=\"https://SERVICE.example:443/meta\", error=\"insufficient_scope\", error_description=\"more access\"",
+    "result": {
+      "resourceMetadataUrl": "https://service.example/meta",
+      "scope": "read write",
+      "error": "insufficient_scope",
+      "errorDescription": "more access"
+    }
+  },
+  {
+    "header": "dPoP scope=read, error=invalid_token",
+    "result": {
+      "scope": "read",
+      "error": "invalid_token"
+    }
+  },
+  {
+    "header": "Bearer scope=\"\", resource_metadata=\"invalid URL\"",
+    "result": {}
+  },
+  {
+    "header": "Bearer scope=\"first\", scope=\"second\"",
+    "result": {
+      "scope": "first"
+    }
+  },
+  {
+    "header": "Bearer resource_metadata=https://service.example",
+    "result": {
+      "resourceMetadataUrl": "https://service.example/"
+    }
+  },
+  {
+    "header": "Bearer realm=\"x,error=inside\",error=outside",
+    "result": {
+      "error": "inside\""
+    }
+  }
+]

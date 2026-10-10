@@ -1,0 +1,4049 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "empty registry \"\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined"
+          },
+          {
+            "index": "NaN"
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0"
+          },
+          {
+            "index": "0.9"
+          },
+          {
+            "index": "1"
+          },
+          {
+            "index": "2"
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "valid registry \"\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined"
+          },
+          {
+            "index": "NaN"
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0"
+          },
+          {
+            "index": "0.9"
+          },
+          {
+            "index": "1"
+          },
+          {
+            "index": "2"
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty registry \"\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined"
+          },
+          {
+            "index": "NaN"
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0"
+          },
+          {
+            "index": "0.9"
+          },
+          {
+            "index": "1"
+          },
+          {
+            "index": "2"
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "valid registry \"\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined"
+          },
+          {
+            "index": "NaN"
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0"
+          },
+          {
+            "index": "0.9"
+          },
+          {
+            "index": "1"
+          },
+          {
+            "index": "2"
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty registry \"abc def\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "abc def"
+          },
+          {
+            "segment": "b",
+            "index": 1,
+            "input": "abc def"
+          },
+          {
+            "segment": "c",
+            "index": 2,
+            "input": "abc def"
+          },
+          {
+            "segment": " ",
+            "index": 3,
+            "input": "abc def"
+          },
+          {
+            "segment": "d",
+            "index": 4,
+            "input": "abc def"
+          },
+          {
+            "segment": "e",
+            "index": 5,
+            "input": "abc def"
+          },
+          {
+            "segment": "f",
+            "index": 6,
+            "input": "abc def"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "b",
+              "index": 1,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "c",
+              "index": 2,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": " ",
+              "index": 3,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "d",
+              "index": 4,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "c",
+              "index": 2,
+              "input": "abc def"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "a",
+          "index": 0,
+          "input": "abc def"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"abc def\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "abc def"
+          },
+          {
+            "segment": "b",
+            "index": 1,
+            "input": "abc def"
+          },
+          {
+            "segment": "c",
+            "index": 2,
+            "input": "abc def"
+          },
+          {
+            "segment": " ",
+            "index": 3,
+            "input": "abc def"
+          },
+          {
+            "segment": "d",
+            "index": 4,
+            "input": "abc def"
+          },
+          {
+            "segment": "e",
+            "index": 5,
+            "input": "abc def"
+          },
+          {
+            "segment": "f",
+            "index": 6,
+            "input": "abc def"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "b",
+              "index": 1,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "c",
+              "index": 2,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": " ",
+              "index": 3,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "d",
+              "index": 4,
+              "input": "abc def"
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "c",
+              "index": 2,
+              "input": "abc def"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "a",
+          "index": 0,
+          "input": "abc def"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"abc def\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "abc def",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 3,
+            "input": "abc def",
+            "isWordLike": false
+          },
+          {
+            "segment": "def",
+            "index": 4,
+            "input": "abc def",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": " ",
+              "index": 3,
+              "input": "abc def",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "def",
+              "index": 4,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "abc",
+          "index": 0,
+          "input": "abc def",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "valid registry \"abc def\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "abc def",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 3,
+            "input": "abc def",
+            "isWordLike": false
+          },
+          {
+            "segment": "def",
+            "index": 4,
+            "input": "abc def",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": " ",
+              "index": 3,
+              "input": "abc def",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "def",
+              "index": 4,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "abc",
+              "index": 0,
+              "input": "abc def",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "abc",
+          "index": 0,
+          "input": "abc def",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "empty registry \"é😀🇺🇳\\n\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "😀",
+            "index": 2,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "🇺🇳",
+            "index": 4,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "\n",
+            "index": 8,
+            "input": "é😀🇺🇳\n"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "é",
+          "index": 0,
+          "input": "é😀🇺🇳\n"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"é😀🇺🇳\\n\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "😀",
+            "index": 2,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "🇺🇳",
+            "index": 4,
+            "input": "é😀🇺🇳\n"
+          },
+          {
+            "segment": "\n",
+            "index": 8,
+            "input": "é😀🇺🇳\n"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n"
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "é",
+          "index": 0,
+          "input": "é😀🇺🇳\n"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"é😀🇺🇳\\n\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": true
+          },
+          {
+            "segment": "😀",
+            "index": 2,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          },
+          {
+            "segment": "🇺🇳",
+            "index": 4,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          },
+          {
+            "segment": "\n",
+            "index": 8,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "é",
+          "index": 0,
+          "input": "é😀🇺🇳\n",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "valid registry \"é😀🇺🇳\\n\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": true
+          },
+          {
+            "segment": "😀",
+            "index": 2,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          },
+          {
+            "segment": "🇺🇳",
+            "index": 4,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          },
+          {
+            "segment": "\n",
+            "index": 8,
+            "input": "é😀🇺🇳\n",
+            "isWordLike": false
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "é",
+              "index": 0,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "🇺🇳",
+              "index": 4,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "😀",
+              "index": 2,
+              "input": "é😀🇺🇳\n",
+              "isWordLike": false
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "é",
+          "index": 0,
+          "input": "é😀🇺🇳\n",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "empty registry \"\\ud800a\\udfff\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "\ud800a\udfff"
+          },
+          {
+            "segment": "a",
+            "index": 1,
+            "input": "\ud800a\udfff"
+          },
+          {
+            "segment": "\udfff",
+            "index": 2,
+            "input": "\ud800a\udfff"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "a",
+              "index": 1,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "\ud800",
+          "index": 0,
+          "input": "\ud800a\udfff"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"\\ud800a\\udfff\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "\ud800a\udfff"
+          },
+          {
+            "segment": "a",
+            "index": 1,
+            "input": "\ud800a\udfff"
+          },
+          {
+            "segment": "\udfff",
+            "index": 2,
+            "input": "\ud800a\udfff"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "a",
+              "index": 1,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff"
+            }
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "\ud800",
+          "index": 0,
+          "input": "\ud800a\udfff"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"\\ud800a\\udfff\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "\ud800a\udfff",
+            "isWordLike": false
+          },
+          {
+            "segment": "a",
+            "index": 1,
+            "input": "\ud800a\udfff",
+            "isWordLike": true
+          },
+          {
+            "segment": "\udfff",
+            "index": 2,
+            "input": "\ud800a\udfff",
+            "isWordLike": false
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "a",
+              "index": 1,
+              "input": "\ud800a\udfff",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "\ud800",
+          "index": 0,
+          "input": "\ud800a\udfff",
+          "isWordLike": false
+        }
+      }
+    },
+    {
+      "name": "valid registry \"\\ud800a\\udfff\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "\ud800a\udfff",
+            "isWordLike": false
+          },
+          {
+            "segment": "a",
+            "index": 1,
+            "input": "\ud800a\udfff",
+            "isWordLike": true
+          },
+          {
+            "segment": "\udfff",
+            "index": 2,
+            "input": "\ud800a\udfff",
+            "isWordLike": false
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "\ud800",
+              "index": 0,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "a",
+              "index": 1,
+              "input": "\ud800a\udfff",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "3"
+          },
+          {
+            "index": "4"
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "\udfff",
+              "index": 2,
+              "input": "\ud800a\udfff",
+              "isWordLike": false
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "\ud800",
+          "index": 0,
+          "input": "\ud800a\udfff",
+          "isWordLike": false
+        }
+      }
+    },
+    {
+      "name": "empty registry \"中文テスト한글\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "文",
+            "index": 1,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "テ",
+            "index": 2,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "ス",
+            "index": 3,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "ト",
+            "index": 4,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "한",
+            "index": 5,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "글",
+            "index": 6,
+            "input": "中文テスト한글"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "文",
+              "index": 1,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テ",
+              "index": 2,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "ス",
+              "index": 3,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ト",
+              "index": 4,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テ",
+              "index": 2,
+              "input": "中文テスト한글"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "中",
+          "index": 0,
+          "input": "中文テスト한글"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"中文テスト한글\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "文",
+            "index": 1,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "テ",
+            "index": 2,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "ス",
+            "index": 3,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "ト",
+            "index": 4,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "한",
+            "index": 5,
+            "input": "中文テスト한글"
+          },
+          {
+            "segment": "글",
+            "index": 6,
+            "input": "中文テスト한글"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "中",
+              "index": 0,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "文",
+              "index": 1,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テ",
+              "index": 2,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "ス",
+              "index": 3,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ト",
+              "index": 4,
+              "input": "中文テスト한글"
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テ",
+              "index": 2,
+              "input": "中文テスト한글"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "中",
+          "index": 0,
+          "input": "中文テスト한글"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"中文テスト한글\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          },
+          {
+            "segment": "テスト",
+            "index": 2,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          },
+          {
+            "segment": "한글",
+            "index": 5,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "中文",
+          "index": 0,
+          "input": "中文テスト한글",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "valid registry \"中文テスト한글\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          },
+          {
+            "segment": "テスト",
+            "index": 2,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          },
+          {
+            "segment": "한글",
+            "index": 5,
+            "input": "中文テスト한글",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "中文",
+              "index": 0,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7"
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "テスト",
+              "index": 2,
+              "input": "中文テスト한글",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "中文",
+          "index": 0,
+          "input": "中文テスト한글",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "empty registry \"ภาษาไทย ทดสอบ\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "า",
+            "index": 1,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ษ",
+            "index": 2,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "า",
+            "index": 3,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ไ",
+            "index": 4,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ท",
+            "index": 5,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ย",
+            "index": 6,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": " ",
+            "index": 7,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ท",
+            "index": 8,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ด",
+            "index": 9,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ส",
+            "index": 10,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "อ",
+            "index": 11,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "บ",
+            "index": 12,
+            "input": "ภาษาไทย ทดสอบ"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "า",
+              "index": 1,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ษ",
+              "index": 2,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "า",
+              "index": 3,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ไ",
+              "index": 4,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": " ",
+              "index": 7,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ษ",
+              "index": 2,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "ภ",
+          "index": 0,
+          "input": "ภาษาไทย ทดสอบ"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"ภาษาไทย ทดสอบ\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "า",
+            "index": 1,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ษ",
+            "index": 2,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "า",
+            "index": 3,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ไ",
+            "index": 4,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ท",
+            "index": 5,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ย",
+            "index": 6,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": " ",
+            "index": 7,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ท",
+            "index": 8,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ด",
+            "index": 9,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "ส",
+            "index": 10,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "อ",
+            "index": 11,
+            "input": "ภาษาไทย ทดสอบ"
+          },
+          {
+            "segment": "บ",
+            "index": 12,
+            "input": "ภาษาไทย ทดสอบ"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "ภ",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "า",
+              "index": 1,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ษ",
+              "index": 2,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "า",
+              "index": 3,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ไ",
+              "index": 4,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": " ",
+              "index": 7,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ษ",
+              "index": 2,
+              "input": "ภาษาไทย ทดสอบ"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "ภ",
+          "index": 0,
+          "input": "ภาษาไทย ทดสอบ"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"ภาษาไทย ทดสอบ\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          },
+          {
+            "segment": "ไทย",
+            "index": 4,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 7,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": false
+          },
+          {
+            "segment": "ทดสอบ",
+            "index": 8,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ไทย",
+              "index": 4,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": " ",
+              "index": 7,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "ภาษา",
+          "index": 0,
+          "input": "ภาษาไทย ทดสอบ",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "valid registry \"ภาษาไทย ทดสอบ\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          },
+          {
+            "segment": "ไทย",
+            "index": 4,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 7,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": false
+          },
+          {
+            "segment": "ทดสอบ",
+            "index": 8,
+            "input": "ภาษาไทย ทดสอบ",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "ไทย",
+              "index": 4,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": " ",
+              "index": 7,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "ภาษา",
+              "index": 0,
+              "input": "ภาษาไทย ทดสอบ",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "ภาษา",
+          "index": 0,
+          "input": "ภาษาไทย ทดสอบ",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "empty registry \"[paste #1 +12 lines]x [paste #2]\" grapheme",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "p",
+            "index": 1,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "a",
+            "index": 2,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "s",
+            "index": 3,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "t",
+            "index": 4,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "e",
+            "index": 5,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 6,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "#",
+            "index": 7,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "1",
+            "index": 8,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 9,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "+",
+            "index": 10,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "1",
+            "index": 11,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "2",
+            "index": 12,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 13,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "l",
+            "index": 14,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "i",
+            "index": 15,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "n",
+            "index": 16,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "e",
+            "index": 17,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "s",
+            "index": 18,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "]",
+            "index": 19,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "x",
+            "index": 20,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 21,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "[",
+            "index": 22,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "p",
+            "index": 23,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "a",
+            "index": 24,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "s",
+            "index": 25,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "t",
+            "index": 26,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "e",
+            "index": 27,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 28,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "#",
+            "index": 29,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "2",
+            "index": 30,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "]",
+            "index": 31,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "p",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "a",
+              "index": 2,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "s",
+              "index": 3,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "t",
+              "index": 4,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "#",
+              "index": 7,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "a",
+              "index": 2,
+              "input": "[paste #1 +12 lines]x [paste #2]"
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "[",
+          "index": 0,
+          "input": "[paste #1 +12 lines]x [paste #2]"
+        }
+      }
+    },
+    {
+      "name": "valid registry \"[paste #1 +12 lines]x [paste #2]\" grapheme",
+      "value": {
+        "array": true,
+        "tag": "[object Array]",
+        "own": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "x",
+            "index": 20,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": " ",
+            "index": 21,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "[paste #2]",
+            "index": 22,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          }
+        ],
+        "fresh": false,
+        "afterMutation": {
+          "segment": "mutated",
+          "index": 0,
+          "input": "[paste #1 +12 lines]x [paste #2]"
+        }
+      }
+    },
+    {
+      "name": "empty registry \"[paste #1 +12 lines]x [paste #2]\" word",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "paste",
+            "index": 1,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 6,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "#",
+            "index": 7,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "1",
+            "index": 8,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 9,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "+",
+            "index": 10,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "12",
+            "index": 11,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 13,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "lines",
+            "index": 14,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": "]",
+            "index": 19,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "x",
+            "index": 20,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 21,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "[",
+            "index": 22,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "paste",
+            "index": 23,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 28,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "#",
+            "index": 29,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "2",
+            "index": 30,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": "]",
+            "index": 31,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "[",
+              "index": 0,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "paste",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "paste",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "paste",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "paste",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": "#",
+              "index": 7,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "paste",
+              "index": 1,
+              "input": "[paste #1 +12 lines]x [paste #2]",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "[",
+          "index": 0,
+          "input": "[paste #1 +12 lines]x [paste #2]",
+          "isWordLike": false
+        }
+      }
+    },
+    {
+      "name": "valid registry \"[paste #1 +12 lines]x [paste #2]\" word",
+      "value": {
+        "array": true,
+        "tag": "[object Array]",
+        "own": [
+          "0",
+          "1",
+          "2",
+          "3"
+        ],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          },
+          {
+            "segment": "x",
+            "index": 20,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 21,
+            "input": "[paste #1 +12 lines]x [paste #2]",
+            "isWordLike": false
+          },
+          {
+            "segment": "[paste #2]",
+            "index": 22,
+            "input": "[paste #1 +12 lines]x [paste #2]"
+          }
+        ],
+        "fresh": false,
+        "afterMutation": {
+          "segment": "mutated",
+          "index": 0,
+          "input": "[paste #1 +12 lines]x [paste #2]"
+        }
+      }
+    },
+    {
+      "name": "no valid matching marker keeps Segments",
+      "value": {
+        "array": false,
+        "tag": "[object Object]",
+        "own": [],
+        "rows": [
+          {
+            "segment": "mutated",
+            "index": 0,
+            "input": "a[paste #1]b",
+            "isWordLike": true
+          },
+          {
+            "segment": "[",
+            "index": 1,
+            "input": "a[paste #1]b",
+            "isWordLike": false
+          },
+          {
+            "segment": "paste",
+            "index": 2,
+            "input": "a[paste #1]b",
+            "isWordLike": true
+          },
+          {
+            "segment": " ",
+            "index": 7,
+            "input": "a[paste #1]b",
+            "isWordLike": false
+          },
+          {
+            "segment": "#",
+            "index": 8,
+            "input": "a[paste #1]b",
+            "isWordLike": false
+          },
+          {
+            "segment": "1",
+            "index": 9,
+            "input": "a[paste #1]b",
+            "isWordLike": true
+          },
+          {
+            "segment": "]",
+            "index": 10,
+            "input": "a[paste #1]b",
+            "isWordLike": false
+          },
+          {
+            "segment": "b",
+            "index": 11,
+            "input": "a[paste #1]b",
+            "isWordLike": true
+          }
+        ],
+        "prototype": [
+          "containing",
+          "Symbol(Symbol.iterator)"
+        ],
+        "containingLength": 1,
+        "iteratorLength": 0,
+        "iteratorTag": "[object Segmenter String Iterator]",
+        "iteratorOwn": [],
+        "iteratorPrototype": [
+          "next",
+          "Symbol(Symbol.toStringTag)"
+        ],
+        "nextLength": 0,
+        "positions": [
+          {
+            "index": "undefined",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "NaN",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "-1"
+          },
+          {
+            "index": "0",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "0.9",
+            "value": {
+              "segment": "a",
+              "index": 0,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "1",
+            "value": {
+              "segment": "[",
+              "index": 1,
+              "input": "a[paste #1]b",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "paste",
+              "index": 2,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "3",
+            "value": {
+              "segment": "paste",
+              "index": 2,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "4",
+            "value": {
+              "segment": "paste",
+              "index": 2,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          },
+          {
+            "index": "7",
+            "value": {
+              "segment": " ",
+              "index": 7,
+              "input": "a[paste #1]b",
+              "isWordLike": false
+            }
+          },
+          {
+            "index": "100"
+          },
+          {
+            "index": "Infinity"
+          },
+          {
+            "index": "2",
+            "value": {
+              "segment": "paste",
+              "index": 2,
+              "input": "a[paste #1]b",
+              "isWordLike": true
+            }
+          }
+        ],
+        "fresh": true,
+        "afterMutation": {
+          "segment": "a",
+          "index": 0,
+          "input": "a[paste #1]b",
+          "isWordLike": true
+        }
+      }
+    },
+    {
+      "name": "valid set evaluated before intrinsic string conversion",
+      "value": {
+        "calls": [
+          true,
+          "toString"
+        ],
+        "rows": [
+          {
+            "segment": "a",
+            "index": 0,
+            "input": "a😀"
+          },
+          {
+            "segment": "😀",
+            "index": 1,
+            "input": "a😀"
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual includes raw throw",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "native segment brand exhaustion and record shape",
+      "value": {
+        "out": [
+          "TypeError",
+          "TypeError"
+        ],
+        "first": {
+          "value": {
+            "segment": "a",
+            "index": 0,
+            "input": "a😀"
+          },
+          "done": false
+        },
+        "second": {
+          "value": {
+            "segment": "😀",
+            "index": 1,
+            "input": "a😀"
+          },
+          "done": false
+        },
+        "done1": {
+          "done": true
+        },
+        "done2": {
+          "done": true
+        },
+        "self": true
+      }
+    }
+  ]
+}

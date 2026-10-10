@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "885e2d868935e5a076c00f6658e32199dd4880fbd8d2685fa9ed4a084a32b054",
+  "input": "import {ModelRuntime,CredentialSynchronizationError} from '@earendil-works/pi-coding-agent';let resolve,enter,blocking=false;const gate=new Promise(r=>resolve=r),entered=new Promise(r=>enter=r);const r=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});r.registerNativeProvider({id:'p',auth:{apiKey:{async check(){if(blocking){enter();await gate}return {type:'api_key',source:'fixture'}},resolve:async()=>({auth:{apiKey:'key'}})}},getModels:()=>[]});await r.getAvailable();await r.getAvailable();blocking=true;const controller=new AbortController(),reason={active:true};const work=r.setRuntimeApiKey('p','committed',{signal:controller.signal});await entered;controller.abort(reason);const rejected=await work.then(()=>({resolved:true}),e=>({name:e.name,instance:e instanceof CredentialSynchronizationError,cause:e.cause===reason,key:e.credential.key,operation:e.operation}));const beforeRelease=r.getProviderAuthStatus('p');resolve();blocking=false;for(let i=0;i<50;i++)await Promise.resolve();await r.removeRuntimeApiKey('p');console.log(JSON.stringify({rejected,beforeRelease,after:r.getProviderAuthStatus('p')}));"
+}

@@ -1,0 +1,1721 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "HStack 1 stretch",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "HStack 1 start",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "HStack 1 center",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "HStack 1 end",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "HStack 2 stretch",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007 "
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "HStack 2 start",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007 "
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "HStack 2 center",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007 "
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "HStack 2 end",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A\u001b[0m\u001b]8;;\u0007 "
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "HStack 5 stretch",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0\u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B1\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B2\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "HStack 5 start",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0\u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B1\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B2\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "HStack 5 center",
+      "value": {
+        "lines": [
+          "   \u001b[0m\u001b]8;;\u0007B0\u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0\u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B1\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B2\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "HStack 5 end",
+      "value": {
+        "lines": [
+          "   \u001b[0m\u001b]8;;\u0007B0\u001b[0m\u001b]8;;\u0007",
+          "   \u001b[0m\u001b]8;;\u0007B1\u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0\u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B2\u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "HStack 10 stretch",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0   \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B1  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B2  \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "HStack 10 start",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0   \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B1  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B2  \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "HStack 10 center",
+      "value": {
+        "lines": [
+          "      \u001b[0m\u001b]8;;\u0007B0  \u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0   \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B1  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B2  \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "HStack 10 end",
+      "value": {
+        "lines": [
+          "      \u001b[0m\u001b]8;;\u0007B0  \u001b[0m\u001b]8;;\u0007",
+          "      \u001b[0m\u001b]8;;\u0007B1  \u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0   \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B2  \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "HStack 20 stretch",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0       \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B1        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B2        \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "HStack 20 start",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007A0       \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B0        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B1        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B2        \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "HStack 20 center",
+      "value": {
+        "lines": [
+          "          \u001b[0m\u001b]8;;\u0007B0        \u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0       \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B1        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B2        \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "HStack 20 end",
+      "value": {
+        "lines": [
+          "          \u001b[0m\u001b]8;;\u0007B0        \u001b[0m\u001b]8;;\u0007",
+          "          \u001b[0m\u001b]8;;\u0007B1        \u001b[0m\u001b]8;;\u0007",
+          "\u001b[0m\u001b]8;;\u0007A0       \u001b[0m\u001b]8;;\u0007 \u001b[0m\u001b]8;;\u0007B2        \u001b[0m\u001b]8;;\u0007"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "hstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "VStack 1 stretch",
+      "value": {
+        "lines": [
+          "A",
+          "",
+          "",
+          "",
+          "B",
+          "B",
+          "B"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack 1 start",
+      "value": {
+        "lines": [
+          "A",
+          "",
+          "",
+          "",
+          "B",
+          "B",
+          "B"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "VStack 1 center",
+      "value": {
+        "lines": [
+          "A",
+          "",
+          "",
+          "",
+          "B",
+          "B",
+          "B"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "VStack 1 end",
+      "value": {
+        "lines": [
+          "A",
+          "",
+          "",
+          "",
+          "B",
+          "B",
+          "B"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "VStack 2 stretch",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack 2 start",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "VStack 2 center",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "VStack 2 end",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "VStack 5 stretch",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack 5 start",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "VStack 5 center",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "VStack 5 end",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "VStack 10 stretch",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack 10 start",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "VStack 10 center",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "VStack 10 end",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "VStack 20 stretch",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack 20 start",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "start"
+        }
+      }
+    },
+    {
+      "name": "VStack 20 center",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "center"
+        }
+      }
+    },
+    {
+      "name": "VStack 20 end",
+      "value": {
+        "lines": [
+          "A0",
+          "",
+          "",
+          "",
+          "B0",
+          "B1",
+          "B2"
+        ],
+        "children": [
+          "A",
+          "B"
+        ],
+        "entries": [
+          {
+            "component": "A",
+            "basis": 3,
+            "grow": 1,
+            "minSize": 1,
+            "maxSize": 10
+          },
+          {
+            "component": "B",
+            "basis": "auto",
+            "grow": 2,
+            "shrink": 2
+          }
+        ],
+        "layout": {
+          "type": "vstack",
+          "gap": 1,
+          "align": "end"
+        }
+      }
+    },
+    {
+      "name": "HStack shape",
+      "value": {
+        "type": "HStack",
+        "length": 0,
+        "fields": [
+          "children",
+          "mouseLayout",
+          "entries",
+          "gap",
+          "align",
+          "layoutType"
+        ],
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 0
+          },
+          {
+            "name": "render",
+            "length": 1
+          }
+        ],
+        "base": {
+          "name": "Stack",
+          "length": 0,
+          "prototype": [
+            "constructor",
+            "addChild",
+            "removeChild",
+            "clear"
+          ]
+        },
+        "symbols": [
+          "@earendil-works/pi-tui/layout-node"
+        ],
+        "inherits": true,
+        "layout": {
+          "type": "hstack",
+          "entries": [],
+          "gap": 0,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "VStack shape",
+      "value": {
+        "type": "VStack",
+        "length": 0,
+        "fields": [
+          "children",
+          "mouseLayout",
+          "entries",
+          "gap",
+          "align",
+          "layoutType"
+        ],
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 0
+          },
+          {
+            "name": "render",
+            "length": 1
+          }
+        ],
+        "base": {
+          "name": "Stack",
+          "length": 0,
+          "prototype": [
+            "constructor",
+            "addChild",
+            "removeChild",
+            "clear"
+          ]
+        },
+        "symbols": [
+          "@earendil-works/pi-tui/layout-node"
+        ],
+        "inherits": true,
+        "layout": {
+          "type": "vstack",
+          "entries": [],
+          "gap": 0,
+          "align": "stretch"
+        }
+      }
+    },
+    {
+      "name": "normalization undefined",
+      "value": {
+        "gap": 0,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf"
+        },
+        "lines": [
+          "X0"
+        ]
+      }
+    },
+    {
+      "name": "normalization NaN",
+      "value": {
+        "gap": 0,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf",
+          "basis": null,
+          "grow": 0,
+          "shrink": 1,
+          "minSize": 0,
+          "maxSize": 9007199254740991
+        },
+        "lines": []
+      }
+    },
+    {
+      "name": "normalization Infinity",
+      "error": "RangeError",
+      "message": "Invalid array length"
+    },
+    {
+      "name": "normalization -2",
+      "value": {
+        "gap": 0,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf",
+          "basis": -2,
+          "grow": 0,
+          "shrink": 0,
+          "minSize": 0,
+          "maxSize": 0
+        },
+        "lines": []
+      }
+    },
+    {
+      "name": "normalization 2.9",
+      "value": {
+        "gap": 2,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf",
+          "basis": 2.9,
+          "grow": 2,
+          "shrink": 2,
+          "minSize": 2,
+          "maxSize": 2
+        },
+        "lines": [
+          "X0",
+          ""
+        ]
+      }
+    },
+    {
+      "name": "normalization 3",
+      "value": {
+        "gap": 0,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf",
+          "basis": "3",
+          "grow": 0,
+          "shrink": 1,
+          "minSize": 0,
+          "maxSize": 9007199254740991
+        },
+        "lines": [
+          "X0",
+          "",
+          ""
+        ]
+      }
+    },
+    {
+      "name": "normalization null",
+      "value": {
+        "gap": 0,
+        "align": "stretch",
+        "entry": {
+          "component": "leaf",
+          "basis": null,
+          "grow": 0,
+          "shrink": 1,
+          "minSize": 0,
+          "maxSize": 9007199254740991
+        },
+        "lines": []
+      }
+    },
+    {
+      "name": "visibility viewport callback receiver",
+      "value": {
+        "lines": [
+          "\u001b[0m\u001b]8;;\u0007B0\u001b[0m\u001b]8;;\u0007          "
+        ],
+        "events": [
+          [
+            false,
+            {
+              "width": 12,
+              "height": 9007199254740991
+            }
+          ]
+        ],
+        "entries": 2
+      }
+    },
+    {
+      "name": "ordinary fields mutation and entry identity",
+      "value": {
+        "lines": [
+          "B0",
+          "",
+          ""
+        ],
+        "sameEntries": true,
+        "children": true
+      }
+    },
+    {
+      "name": "remove duplicates and clear",
+      "value": {
+        "remaining": {
+          "children": 1,
+          "entries": 1
+        },
+        "children": [],
+        "entries": [],
+        "identity": true
+      }
+    },
+    {
+      "name": "derived virtual add during super",
+      "value": {
+        "events": [
+          [
+            true,
+            false,
+            2
+          ]
+        ],
+        "fields": [
+          "children",
+          "mouseLayout",
+          "entries",
+          "gap",
+          "align",
+          "layoutType"
+        ],
+        "lines": [
+          "X0",
+          ""
+        ]
+      }
+    },
+    {
+      "name": "source render order",
+      "value": {
+        "lines": [
+          " \u001b[0m\u001b]8;;\u0007B \u001b[0m\u001b]8;;\u0007       "
+        ],
+        "events": [
+          [
+            "A",
+            10
+          ],
+          [
+            "B",
+            10
+          ],
+          [
+            "B",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw visibility throw",
+      "value": true
+    },
+    {
+      "name": "raw render throw",
+      "value": true
+    }
+  ]
+}

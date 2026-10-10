@@ -1,0 +1,50 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "kind": "authorization",
+      "input": {
+        "issuer": "https://issuer.example",
+        "authorization_endpoint": "https://issuer.example/auth",
+        "token_endpoint": "https://issuer.example/token",
+        "response_types_supported": [
+          "code"
+        ],
+        "registration_endpoint": null,
+        "grant_types_supported": null,
+        "extra": {
+          "retained": true
+        }
+      },
+      "result": {
+        "issuer": "https://issuer.example",
+        "authorization_endpoint": "https://issuer.example/auth",
+        "token_endpoint": "https://issuer.example/token",
+        "response_types_supported": [
+          "code"
+        ],
+        "extra": {
+          "retained": true
+        }
+      }
+    },
+    {
+      "kind": "protected",
+      "input": {
+        "resource": "https://service.example/mcp",
+        "authorization_servers": [
+          "https://issuer.example"
+        ],
+        "scopes_supported": null,
+        "extra": 2
+      },
+      "result": {
+        "resource": "https://service.example/mcp",
+        "authorization_servers": [
+          "https://issuer.example"
+        ],
+        "extra": 2
+      }
+    }
+  ]
+}

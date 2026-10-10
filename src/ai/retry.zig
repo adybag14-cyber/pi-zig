@@ -163,10 +163,17 @@ const non_retryable_patterns = [_][]const u8{
     "free-models-per-day",
     "free model daily limit",
     "billing",
+    "subscription_sharing_usage_limit_exceeded",
 };
 
 const retryable_patterns = [_][]const u8{
     "overloaded",
+    "server_busy",
+    "servers are currently busy",
+    "currently experiencing high demand",
+    "model is at capacity",
+    "subscription_sharing_usage_unavailable",
+    "subscription_sharing_user_unavailable",
     "rate limit",
     "rate-limit",
     "ratelimit",
@@ -215,6 +222,7 @@ const retryable_patterns = [_][]const u8{
     "stream ended before message_stop",
     "stream ended before a terminal response event",
     "http2 request did not get a response",
+    "pending stream has been canceled",
     "retry delay",
     "you can retry your request",
     "try your request again",
@@ -366,8 +374,12 @@ test "provider retry defaults match upstream request policy" {
 }
 
 test "retry classifier accepts transient provider and transport failures" {
+    try std.testing.expect(isRetryableError("Pending stream has been canceled"));
+    try std.testing.expect(isRetryableError("ERR_HTTP2_STREAM_CANCEL: Pending stream has been canceled"));
     inline for (.{
         "529 overloaded_error: Overloaded",
+        "SERVER_BUSY",
+        "The servers are currently busy, please try later",
         "HTTP 429 too many requests",
         "Provider returned error",
         "fetch failed: getaddrinfo ENOTFOUND api.example.test",
@@ -379,6 +391,14 @@ test "retry classifier accepts transient provider and transport failures" {
     }) |message| {
         try std.testing.expect(isRetryableError(message));
     }
+}
+
+test "Pi 1 retries capacity and temporary ChatGPT failures without retrying subscription exhaustion" {
+    try std.testing.expect(isRetryableError("Selected model is at capacity"));
+    try std.testing.expect(isRetryableError("currently experiencing high demand"));
+    try std.testing.expect(isRetryableError("subscription_sharing_usage_unavailable"));
+    try std.testing.expect(isRetryableError("subscription_sharing_user_unavailable"));
+    try std.testing.expect(!isRetryableError("subscription_sharing_usage_limit_exceeded"));
 }
 
 test "retry classifier rejects quota billing and deterministic failures" {

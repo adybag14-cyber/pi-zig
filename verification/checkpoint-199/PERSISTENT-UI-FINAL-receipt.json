@@ -1,0 +1,72 @@
+{
+  "main_scope_and_available_snapshot_wiring": "Root composition required",
+  "ownership": "No Main edits/staging/commits/pushes; owned jobs terminal",
+  "upstream_sha": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "patch_sha256": "CAEFA416167CAF0797E5C635CB59640FDEB720BA1C713D710EE9F3D9B59FCCD6",
+  "archive": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\PERSISTENT-UI-source-20261007-c.tar",
+  "hosted_macos": "Root exact composed head required",
+  "archive_sha256": "1F511CB214991F94CD1C54F457093539DFD25E45DFC8267D85D2BA837680E033",
+  "source_hash_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\PERSISTENT-UI-FINAL-source-hashes.json",
+  "scope": "retained UI persistent lifetime and transport",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\PERSISTENT-UI-FINAL-parent-base.patch",
+  "native_default_certified": false,
+  "status": "qualified",
+  "paths": [
+    "src/coding_agent/fullscreen_frontend.zig",
+    "src/extensions/js_runtime.zig",
+    "src/extensions/native_bindings.zig",
+    "src/extensions/native_editor.zig",
+    "src/extensions/native_tui.zig",
+    "src/extensions/native_ui.zig",
+    "src/extensions/native_worker.zig",
+    "src/extensions/ui.zig",
+    "src/extensions/native_widgets.zig",
+    "src/extensions/widget_protocol.zig",
+    "src/main.zig",
+    "src/fullscreen_frontend_process_test.zig",
+    "src/native_runtime_process_test.zig",
+    "src/themes/theme.zig",
+    "src/tui/application.zig",
+    "src/tui/render.zig",
+    "src/tui/terminal_image.zig",
+    "src/extensions/native_footer_data.zig",
+    "src/extensions/native_terminal_input.zig",
+    "src/extensions/fixtures/context-lifetime-original-7fb.json",
+    "src/extensions/fixtures/terminal-listeners-original-7fb.json",
+    "src/extensions/fixtures/persistent-slots-original-7fb.json",
+    "src/extensions/fixtures/footer-scope-count-original-7fb.json",
+    "src/extensions/fixtures/theme-methods-original-7fb.json",
+    "src/extensions/fixtures/custom-footer-original-7fb.ts",
+    "src/extensions/fixtures/custom-header-original-7fb.ts",
+    "src/extensions/fixtures/working-indicator-original-7fb.ts"
+  ],
+  "toolchain": "Zig 0.16.0",
+  "gates": [
+    {
+      "status": "passed",
+      "name": "persistent-ui-raw-paste-win-rs-20261007-final-a",
+      "completed_utc": "2026-10-07T16:01:07.6176463+01:00",
+      "exit_code": 0
+    },
+    {
+      "status": "passed",
+      "name": "persistent-ui-raw-paste-win-debug-20261007-final-a",
+      "completed_utc": "2026-10-07T16:03:23.7711527+01:00",
+      "exit_code": 0
+    },
+    {
+      "status": "passed",
+      "name": "persistent-ui-raw-paste-linux-rs-20261007-final-a",
+      "completed_utc": "2026-10-07T16:01:51.4673445+01:00",
+      "exit_code": 0
+    },
+    {
+      "status": "passed",
+      "name": "persistent-ui-raw-paste-linux-debug-20261007-final-a",
+      "completed_utc": "2026-10-07T16:08:23.6722903+01:00",
+      "exit_code": 0
+    }
+  ],
+  "frozen_utc": "2026-10-07T15:11:06.9533880+00:00",
+  "source": "C:\\Users\\adyba\\pi-zig-persistent-ui-20261007"
+}

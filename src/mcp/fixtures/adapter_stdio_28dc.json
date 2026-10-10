@@ -1,0 +1,47 @@
+{
+  "upstream": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "node": "v24.14.0",
+  "platform": "win32",
+  "privatePath": "C:\\Users\\adyba\\pi-zig-mcp-adapter-20261005\\zig-out\\bin",
+  "initialized": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "native-fixture",
+      "version": "1"
+    }
+  },
+  "tools": [
+    {
+      "name": "one",
+      "inputSchema": {}
+    },
+    {
+      "name": "two",
+      "inputSchema": {}
+    }
+  ],
+  "tool": {
+    "content": [
+      {
+        "type": "text",
+        "text": "real-pipe"
+      }
+    ]
+  },
+  "notifications": [
+    {
+      "method": "notifications/tools/list_changed"
+    },
+    {
+      "method": "notifications/progress",
+      "params": {
+        "progress": 1
+      }
+    }
+  ],
+  "childAlive": false,
+  "connectionState": "closed"
+}

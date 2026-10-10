@@ -1,0 +1,88 @@
+{
+  "upstream": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "cases": [
+    {
+      "name": "split",
+      "chunks": [
+        "hello\u001b[3",
+        "1mred\u001b[0",
+        "m\u001b]0;title\u001b",
+        "\\world\r\n🌍"
+      ],
+      "output": [
+        "hello",
+        "red",
+        "world\n🌍"
+      ],
+      "joined": "helloredworld\n🌍"
+    },
+    {
+      "name": "utf8",
+      "chunks": [
+        "start🌍\u001b[3",
+        "2mgreen\u001b[0m"
+      ],
+      "output": [
+        "start🌍",
+        "green"
+      ],
+      "joined": "start🌍green"
+    },
+    {
+      "name": "incomplete",
+      "chunks": [
+        "before\u001b[31"
+      ],
+      "output": [
+        "before"
+      ],
+      "joined": "before"
+    },
+    {
+      "name": "oscBel",
+      "chunks": [
+        "before\u001b]title",
+        "\u0007after"
+      ],
+      "output": [
+        "before",
+        "after"
+      ],
+      "joined": "beforeafter"
+    },
+    {
+      "name": "c1",
+      "chunks": [
+        "a3",
+        "1mb"
+      ],
+      "output": [
+        "a",
+        "b"
+      ],
+      "joined": "ab"
+    },
+    {
+      "name": "long",
+      "chunks": [
+        "\u001b]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "\u0007end"
+      ],
+      "output": [
+        "]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "end"
+      ],
+      "joined": "]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxend"
+    },
+    {
+      "name": "binary",
+      "chunks": [
+        "a\u0000b￹c\r\n"
+      ],
+      "output": [
+        "abc\n"
+      ],
+      "joined": "abc\n"
+    }
+  ]
+}

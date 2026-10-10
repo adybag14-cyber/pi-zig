@@ -1,0 +1,392 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "tools": [
+    {
+      "name": "ordinary-long",
+      "description": "Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description ",
+      "parameters": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "mcp__a__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__a__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__A__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__A__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__a-b__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__a-b__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__a_b__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__a_b__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__0__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__0__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__z__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__z__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__Z__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__Z__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__AA__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__AA__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__aa__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__aa__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__b__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__b__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__B__tool_0",
+      "description": "Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "mcp__B__tool_1",
+      "description": "Description Description Description Description Description ",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "namespaces": {
+    "mcp__a__tool_0": {
+      "name": "mcp__a",
+      "description": " Group 0 "
+    },
+    "mcp__a__tool_1": {
+      "name": "mcp__a",
+      "description": " Group 0 "
+    },
+    "mcp__A__tool_0": {
+      "name": "mcp__A",
+      "description": " Group 1 "
+    },
+    "mcp__A__tool_1": {
+      "name": "mcp__A",
+      "description": " Group 1 "
+    },
+    "mcp__a-b__tool_0": {
+      "name": "mcp__a-b",
+      "description": " Group 2 "
+    },
+    "mcp__a-b__tool_1": {
+      "name": "mcp__a-b",
+      "description": " Group 2 "
+    },
+    "mcp__a_b__tool_0": {
+      "name": "mcp__a_b",
+      "description": " Group 3 "
+    },
+    "mcp__a_b__tool_1": {
+      "name": "mcp__a_b",
+      "description": " Group 3 "
+    },
+    "mcp__0__tool_0": {
+      "name": "mcp__0",
+      "description": " Group 4 "
+    },
+    "mcp__0__tool_1": {
+      "name": "mcp__0",
+      "description": " Group 4 "
+    },
+    "mcp__z__tool_0": {
+      "name": "mcp__z",
+      "description": " Group 5 "
+    },
+    "mcp__z__tool_1": {
+      "name": "mcp__z",
+      "description": " Group 5 "
+    },
+    "mcp__Z__tool_0": {
+      "name": "mcp__Z",
+      "description": " Group 6 "
+    },
+    "mcp__Z__tool_1": {
+      "name": "mcp__Z",
+      "description": " Group 6 "
+    },
+    "mcp__AA__tool_0": {
+      "name": "mcp__AA",
+      "description": " Group 7 "
+    },
+    "mcp__AA__tool_1": {
+      "name": "mcp__AA",
+      "description": " Group 7 "
+    },
+    "mcp__aa__tool_0": {
+      "name": "mcp__aa",
+      "description": " Group 8 "
+    },
+    "mcp__aa__tool_1": {
+      "name": "mcp__aa",
+      "description": " Group 8 "
+    },
+    "mcp__b__tool_0": {
+      "name": "mcp__b",
+      "description": " Group 9 "
+    },
+    "mcp__b__tool_1": {
+      "name": "mcp__b",
+      "description": " Group 9 "
+    },
+    "mcp__B__tool_0": {
+      "name": "mcp__B",
+      "description": " Group 10 "
+    },
+    "mcp__B__tool_1": {
+      "name": "mcp__B",
+      "description": " Group 10 "
+    }
+  },
+  "rows": [
+    {
+      "inlineBudget": 0,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n## mcp__0 (tools not listed)\nGroup 4\n\n## mcp__a (tools not listed)\nGroup 0\n\n## mcp__A (tools not listed)\nGroup 1\n\n## mcp__a_b (tools not listed)\nGroup 3\n\n## mcp__a-b (tools not listed)\nGroup 2\n\n## mcp__aa (tools not listed)\nGroup 8\n\n## mcp__AA (tools not listed)\nGroup 7\n\n## mcp__b (tools not listed)\nGroup 9\n\n## mcp__B (tools not listed)\nGroup 10\n\n## mcp__z (tools not listed)\nGroup 5\n\n## mcp__Z (tools not listed)\nGroup 6"
+    },
+    {
+      "inlineBudget": 50,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n## mcp__0 (some tools not listed)\nGroup 4\n\n### `mcp__0__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a (tools not listed)\nGroup 0\n\n## mcp__A (tools not listed)\nGroup 1\n\n## mcp__a_b (tools not listed)\nGroup 3\n\n## mcp__a-b (tools not listed)\nGroup 2\n\n## mcp__aa (tools not listed)\nGroup 8\n\n## mcp__AA (tools not listed)\nGroup 7\n\n## mcp__b (tools not listed)\nGroup 9\n\n## mcp__B (tools not listed)\nGroup 10\n\n## mcp__z (tools not listed)\nGroup 5\n\n## mcp__Z (tools not listed)\nGroup 6"
+    },
+    {
+      "inlineBudget": 100,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n### `ordinary_long` (`ordinary-long`)\nOrdinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { ordinary_long(args: { [key: string]: unknown; }): Promise<string>; };\n```\n\n## mcp__0 (tools not listed)\nGroup 4\n\n## mcp__a (tools not listed)\nGroup 0\n\n## mcp__A (tools not listed)\nGroup 1\n\n## mcp__a_b (tools not listed)\nGroup 3\n\n## mcp__a-b (tools not listed)\nGroup 2\n\n## mcp__aa (tools not listed)\nGroup 8\n\n## mcp__AA (tools not listed)\nGroup 7\n\n## mcp__b (tools not listed)\nGroup 9\n\n## mcp__B (tools not listed)\nGroup 10\n\n## mcp__z (tools not listed)\nGroup 5\n\n## mcp__Z (tools not listed)\nGroup 6"
+    },
+    {
+      "inlineBudget": 300,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n### `ordinary_long` (`ordinary-long`)\nOrdinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { ordinary_long(args: { [key: string]: unknown; }): Promise<string>; };\n```\n\n## mcp__0 (some tools not listed)\nGroup 4\n\n### `mcp__0__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a (some tools not listed)\nGroup 0\n\n### `mcp__a__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__A (some tools not listed)\nGroup 1\n\n### `mcp__A__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__A__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a_b (some tools not listed)\nGroup 3\n\n### `mcp__a_b__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a-b (some tools not listed)\nGroup 2\n\n### `mcp__a_b__tool_0` (`mcp__a-b__tool_0`)\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__aa (tools not listed)\nGroup 8\n\n## mcp__AA (tools not listed)\nGroup 7\n\n## mcp__b (tools not listed)\nGroup 9\n\n## mcp__B (tools not listed)\nGroup 10\n\n## mcp__z (tools not listed)\nGroup 5\n\n## mcp__Z (tools not listed)\nGroup 6"
+    },
+    {
+      "inlineBudget": 1000,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n### `ordinary_long` (`ordinary-long`)\nOrdinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { ordinary_long(args: { [key: string]: unknown; }): Promise<string>; };\n```\n\n## mcp__0\nGroup 4\n\n### `mcp__0__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__0__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a\nGroup 0\n\n### `mcp__a__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__A\nGroup 1\n\n### `mcp__A__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__A__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__A__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__A__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a_b\nGroup 3\n\n### `mcp__a_b__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a_b__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a-b\nGroup 2\n\n### `mcp__a_b__tool_0` (`mcp__a-b__tool_0`)\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a_b__tool_1` (`mcp__a-b__tool_1`)\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__aa\nGroup 8\n\n### `mcp__aa__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__aa__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__aa__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__aa__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__AA\nGroup 7\n\n### `mcp__AA__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__AA__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__AA__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__AA__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__b\nGroup 9\n\n### `mcp__b__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__b__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__B\nGroup 10\n\n### `mcp__B__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__B__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__B__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__B__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__z (some tools not listed)\nGroup 5\n\n### `mcp__z__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__z__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__Z (some tools not listed)\nGroup 6\n\n### `mcp__Z__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__Z__tool_0(args: { x?: string; }): Promise<string>; };\n```"
+    },
+    {
+      "inlineBudget": 10000,
+      "result": "Run JavaScript that calls other tools. The input is raw JavaScript (not JSON, no code fence), run as an async function body in a QuickJS sandbox: top-level `await` and `return` work. No Node, file system, network, or timers.\n- `await tools.<name>({ ...args })` resolves to a string, or an object if the tool's declaration says so, and rejects with an Error on failure. Calls still running when the script ends are cancelled.\n- Optional first line: `// @options: {\"max_output_tokens\": 10000, \"timeout_ms\": 60000}`\n\nGlobals:\n- `text(value)`, `image(dataUrlOrImageBlock)`, `console.log(...)`, and top-level `return` add output; `exit()` ends the script. With several text items, each starts with a `==> text N/M <==` line, and `console` lines follow the other output in one `<console_output>` block. `image()` also saves the image to a temp file and the result names its path.\n- `store(key, value)` and `load(key)` keep JSON values across codemode calls.\n- `ALL_TOOLS`, `await searchTools(query, { limit?, namespace? })`, `await describeTool(name)`, `await describeNamespace(name)`: find unlisted tools, such as MCP tools.\n\nNested tools:\n\n### `ordinary_long` (`ordinary-long`)\nOrdinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description Ordinary description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { ordinary_long(args: { [key: string]: unknown; }): Promise<string>; };\n```\n\n## mcp__0\nGroup 4\n\n### `mcp__0__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__0__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__0__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a\nGroup 0\n\n### `mcp__a__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__A\nGroup 1\n\n### `mcp__A__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__A__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__A__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__A__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a_b\nGroup 3\n\n### `mcp__a_b__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a_b__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__a-b\nGroup 2\n\n### `mcp__a_b__tool_0` (`mcp__a-b__tool_0`)\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__a_b__tool_1` (`mcp__a-b__tool_1`)\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__a_b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__aa\nGroup 8\n\n### `mcp__aa__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__aa__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__aa__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__aa__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__AA\nGroup 7\n\n### `mcp__AA__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__AA__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__AA__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__AA__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__b\nGroup 9\n\n### `mcp__b__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__b__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__b__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__b__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__B\nGroup 10\n\n### `mcp__B__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__B__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__B__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__B__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__z\nGroup 5\n\n### `mcp__z__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__z__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__z__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__z__tool_1(args: { x?: string; }): Promise<string>; };\n```\n\n## mcp__Z\nGroup 6\n\n### `mcp__Z__tool_0`\nDescription\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__Z__tool_0(args: { x?: string; }): Promise<string>; };\n```\n\n### `mcp__Z__tool_1`\nDescription Description Description Description Description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__Z__tool_1(args: { x?: string; }): Promise<string>; };\n```"
+    }
+  ]
+}

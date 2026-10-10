@@ -9,10 +9,12 @@ const thinking = @import("thinking.zig");
 const api_mod = @import("api.zig");
 const metadata = @import("request_metadata.zig");
 const catalog_generated = @import("catalog_generated.zig");
+pub const ModelType = @import("model_types.zig").ModelType;
 
 pub const Provider = enum {
     openai,
     anthropic,
+    meta,
     google,
     mock,
 
@@ -69,7 +71,7 @@ pub const Provider = enum {
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-cn")) return .qwen_token_plan_cn;
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-individual")) return .qwen_token_plan_individual;
         if (std.ascii.eqlIgnoreCase(s, "ant-ling")) return .ant_ling;
-        if (std.ascii.eqlIgnoreCase(s, "azure-openai-responses")) return .azure_openai_responses;
+        if (std.ascii.eqlIgnoreCase(s, "azure") or std.ascii.eqlIgnoreCase(s, "azure-openai-responses")) return .azure_openai_responses;
         if (std.ascii.eqlIgnoreCase(s, "google-vertex")) return .google_vertex;
         if (std.ascii.eqlIgnoreCase(s, "minimax-cn")) return .minimax_cn;
         if (std.ascii.eqlIgnoreCase(s, "moonshotai-cn")) return .moonshotai_cn;
@@ -100,7 +102,7 @@ pub const Provider = enum {
             .qwen_token_plan_cn => "qwen-token-plan-cn",
             .qwen_token_plan_individual => "qwen-token-plan-individual",
             .ant_ling => "ant-ling",
-            .azure_openai_responses => "azure-openai-responses",
+            .azure_openai_responses => "azure",
             .google_vertex => "google-vertex",
             .minimax_cn => "minimax-cn",
             .moonshotai_cn => "moonshotai-cn",
@@ -118,7 +120,7 @@ pub const Provider = enum {
     /// Native wire/API implementation used for requests.
     pub fn transport(self: Provider) Provider {
         return switch (self) {
-            .groq, .together, .deepseek, .ollama, .openrouter, .xai, .mistral, .fireworks, .cerebras, .lmstudio, .vllm, .perplexity, .nvidia, .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot, .baseten, .qwen_token_plan, .qwen_token_plan_cn, .qwen_token_plan_individual, .ant_ling, .azure_openai_responses, .huggingface, .moonshotai, .moonshotai_cn, .opencode, .opencode_go, .openai_codex, .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp, .zai, .zai_coding_cn => .openai,
+            .meta, .groq, .together, .deepseek, .ollama, .openrouter, .xai, .mistral, .fireworks, .cerebras, .lmstudio, .vllm, .perplexity, .nvidia, .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot, .baseten, .qwen_token_plan, .qwen_token_plan_cn, .qwen_token_plan_individual, .ant_ling, .azure_openai_responses, .huggingface, .moonshotai, .moonshotai_cn, .opencode, .opencode_go, .openai_codex, .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp, .zai, .zai_coding_cn => .openai,
             .kimi_coding, .minimax, .minimax_cn, .vercel_ai_gateway => .anthropic,
             .google_vertex => .google,
             else => self,
@@ -129,6 +131,14 @@ pub const Provider = enum {
         return self.transport() == .openai and self != .openai;
     }
 };
+
+pub fn canonicalProviderId(id: []const u8) []const u8 {
+    return if (std.ascii.eqlIgnoreCase(id, "azure-openai-responses") or std.ascii.eqlIgnoreCase(id, "azure")) "azure" else id;
+}
+
+pub fn providerIdsEqual(left: []const u8, right: []const u8) bool {
+    return std.ascii.eqlIgnoreCase(canonicalProviderId(left), canonicalProviderId(right));
+}
 
 pub const ModelCostRates = struct {
     input: f64 = 0,
@@ -154,6 +164,11 @@ pub const ModelCost = struct {
 };
 
 pub const ModelInfo = struct {
+    kind: ModelType = .chat,
+    /// Operation APIs remain distinct from the chat-only transport enum.
+    operation_api: ?[]const u8 = null,
+    /// Full reviewed model metadata retained for operation-specific consumers.
+    source_metadata_json: ?[]const u8 = null,
     /// Native request transport/provider implementation.
     provider: Provider,
     /// Public provider identity. Null means `provider.name()` for built-ins.
@@ -178,15 +193,22 @@ pub const ModelInfo = struct {
     /// Generated model-scoped request headers and sampling defaults.
     headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
 
     pub fn apiKind(self: ModelInfo) api_mod.Api {
+        std.debug.assert(self.kind == .chat);
         if (self.api) |value| return value;
+        if (self.provider == .azure_openai_responses) return .azure_openai_responses;
         return switch (self.provider.transport()) {
             .anthropic => .anthropic_messages,
             .google => .google_generative_ai,
             .amazon_bedrock => .bedrock_converse_stream,
             else => .openai_completions,
         };
+    }
+
+    pub fn apiName(self: ModelInfo) []const u8 {
+        return self.operation_api orelse self.apiKind().name();
     }
 
     pub fn providerName(self: ModelInfo) []const u8 {
@@ -329,11 +351,13 @@ const native_extra_models = [_]ModelInfo{
 };
 
 pub const known_models = catalog_generated.rows(ModelInfo) ++ native_extra_models;
+pub const all_models = catalog_generated.allRows(ModelInfo) ++ native_extra_models;
 
 pub fn credentialEnvName(provider: Provider) ?[]const u8 {
     return switch (provider) {
         .openai => config.ENV_OPENAI_KEY,
         .anthropic => config.ENV_ANTHROPIC_KEY,
+        .meta => "META_API_KEY",
         .google => config.ENV_GOOGLE_KEY,
         .groq => "GROQ_API_KEY",
         .together => "TOGETHER_API_KEY",
@@ -427,21 +451,22 @@ pub fn defaultModel(provider: Provider) []const u8 {
     return switch (provider) {
         .openai => "gpt-5.5",
         .anthropic => "claude-opus-4-8",
+        .meta => "muse-spark-1.3",
         .google => "gemini-3.1-pro-preview",
         .mock => "mock",
         .groq => "openai/gpt-oss-120b",
-        .together => "moonshotai/Kimi-K2.6",
+        .together => "moonshotai/Kimi-K3",
         .deepseek => "deepseek-v4-pro",
         .ollama => "llama3.2",
         .openrouter => "moonshotai/kimi-k2.6",
-        .xai => "grok-4.6",
+        .xai => "grok-4.7",
         .mistral => "devstral-medium-latest",
-        .fireworks => "accounts/fireworks/models/kimi-k2p6",
+        .fireworks => "accounts/fireworks/models/kimi-k3",
         .cerebras => "gpt-oss-120b",
         .lmstudio, .vllm => "local-model",
         .perplexity => "sonar",
-        .nvidia => "nvidia/nemotron-3-super-120b-a12b",
-        .radius => "auto",
+        .nvidia => "nvidia/nemotron-3-ultra-550b-a55b",
+        .radius => "balanced",
         .cloudflare_workers_ai => "@cf/moonshotai/kimi-k2.6",
         .cloudflare_ai_gateway => "workers-ai/@cf/moonshotai/kimi-k2.6",
         .amazon_bedrock => "us.anthropic.claude-opus-4-6-v1",
@@ -456,8 +481,9 @@ pub fn defaultModel(provider: Provider) []const u8 {
         .huggingface => "moonshotai/Kimi-K2.6",
         .minimax, .minimax_cn => "MiniMax-M2.7",
         .moonshotai, .moonshotai_cn => "kimi-k2.6",
-        .opencode, .opencode_go => "kimi-k2.6",
-        .openai_codex => "gpt-5.5",
+        .opencode => "kimi-k2.6",
+        .opencode_go => "kimi-k3",
+        .openai_codex => "gpt-6.1-sol",
         .vercel_ai_gateway => "zai/glm-5.1",
         .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.5-pro",
         .zai, .zai_coding_cn => "glm-5.3",
@@ -468,6 +494,7 @@ pub fn defaultBaseUrl(provider: Provider) []const u8 {
     return switch (provider) {
         .openai => "https://api.openai.com/v1",
         .anthropic => "https://api.anthropic.com",
+        .meta => "https://api.meta.ai/v1",
         .google => "https://generativelanguage.googleapis.com/v1beta",
         .mock => "",
         .groq => "https://api.groq.com/openai/v1",
@@ -556,14 +583,30 @@ test "catalog has distinct gateway provider ids" {
     try std.testing.expect(saw_groq and saw_openrouter);
 }
 
-test "generated catalog preserves exact upstream identity cardinality" {
-    try std.testing.expectEqual(@as(usize, 1290), catalog_generated.model_count);
-    try std.testing.expectEqual(@as(usize, 39), catalog_generated.provider_count);
-    try std.testing.expectEqual(@as(usize, 1296), known_models.len);
-    try std.testing.expectEqualStrings("0.84.4", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("853a80d26c90a14c1886f0ebb8ffaae133ca2185", catalog_generated.upstream_commit);
-    try std.testing.expectEqualStrings("cbb8df101cdeb3751d3a094a64c9214a4a7a72175bf187a039a02ee9724cb6af", catalog_generated.source_sha256);
+test "Azure canonical identity retains legacy names environment keys and model API selection" {
+    try std.testing.expectEqual(Provider.azure_openai_responses, Provider.fromString("azure").?);
+    try std.testing.expectEqual(Provider.azure_openai_responses, Provider.fromString("azure-openai-responses").?);
+    try std.testing.expectEqualStrings("azure", Provider.azure_openai_responses.name());
+    try std.testing.expectEqual(api_mod.Api.azure_openai_responses, (ModelInfo{ .provider = .azure_openai_responses, .id = "custom", .display = "Custom" }).apiKind());
+    try std.testing.expect(providerIdsEqual("AZURE", "azure-openai-responses"));
+    try std.testing.expect(!providerIdsEqual("azure-custom", "azure"));
+    try std.testing.expectEqualStrings("gpt-5.4", defaultModel(.azure_openai_responses));
+    var env = std.process.Environ.Map.init(std.testing.allocator);
+    defer env.deinit();
+    try env.put("AZURE_OPENAI_API_KEY", "azure-test-key");
+    try std.testing.expectEqualStrings("azure-test-key", resolveApiKey(.azure_openai_responses, null, &env).?);
+    var found = false;
+    for (known_models) |model| if (std.mem.eql(u8, model.providerName(), "azure") and std.mem.eql(u8, model.id, "deepseek-v4-pro")) {
+        found = true;
+        try std.testing.expectEqual(api_mod.Api.openai_completions, model.apiKind());
+        try std.testing.expectApproxEqAbs(@as(f64, 1.925), model.cost.input, 0.00001);
+        try std.testing.expectApproxEqAbs(@as(f64, 3.828), model.cost.output, 0.00001);
+        try std.testing.expectEqual(false, model.compat.supports_long_cache_retention.?);
+    };
+    try std.testing.expect(found);
+}
 
+test "generated catalog preserves exact upstream identity cardinality" {
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
     const a = arena.allocator();
@@ -571,6 +614,27 @@ test "generated catalog preserves exact upstream identity cardinality" {
     defer identities.deinit();
     var public_providers: std.StringHashMap(void) = .init(a);
     defer public_providers.deinit();
+    const source_bytes = @embedFile("catalog_source.json");
+    const source = try std.json.parseFromSlice(std.json.Value, a, source_bytes, .{});
+    defer source.deinit();
+    const source_models = source.value.object.get("models").?.array.items;
+    var source_chat_count: usize = 0;
+    var source_chat_providers: std.StringHashMap(void) = .init(a);
+    for (source_models) |model| {
+        if (!std.mem.eql(u8, model.object.get("type").?.string, "chat")) continue;
+        source_chat_count += 1;
+        try source_chat_providers.put(model.object.get("provider").?.string, {});
+    }
+    try std.testing.expectEqual(source_chat_count, catalog_generated.model_count);
+    try std.testing.expectEqual(@as(usize, @intCast(source.value.object.get("providerCount").?.integer)), catalog_generated.provider_count);
+    try std.testing.expectEqual(source_chat_count + native_extra_models.len, known_models.len);
+    try std.testing.expectEqual(source_models.len + native_extra_models.len, all_models.len);
+    try std.testing.expectEqualStrings(source.value.object.get("upstreamVersion").?.string, catalog_generated.upstream_version);
+    try std.testing.expectEqualStrings(source.value.object.get("upstreamCommit").?.string, catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings(source.value.object.get("catalogSha256").?.string, catalog_generated.catalog_sha256);
+    var source_hash: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(source_bytes, &source_hash, .{});
+    try std.testing.expectEqualStrings(&std.fmt.bytesToHex(source_hash, .lower), catalog_generated.source_sha256);
     for (known_models[0..catalog_generated.model_count]) |model| {
         const identity = try std.fmt.allocPrint(a, "{s}\x00{s}", .{ model.providerName(), model.id });
         try std.testing.expect(!identities.contains(identity));
@@ -581,7 +645,12 @@ test "generated catalog preserves exact upstream identity cardinality" {
         try std.testing.expect(model.context_window > 0);
         try std.testing.expect(model.max_tokens > 0);
     }
-    try std.testing.expectEqual(@as(usize, 39), public_providers.count());
+    try std.testing.expectEqual(source_chat_providers.count(), public_providers.count());
+    for (source_models) |model| {
+        if (!std.mem.eql(u8, model.object.get("type").?.string, "chat")) continue;
+        const identity = try std.fmt.allocPrint(a, "{s}\x00{s}", .{ model.object.get("provider").?.string, model.object.get("id").?.string });
+        try std.testing.expect(identities.contains(identity));
+    }
 }
 
 test "catalog exposes the current OpenRouter free capability router" {
@@ -604,13 +673,13 @@ test "catalog exposes the current OpenRouter free capability router" {
     try std.testing.expectEqual(@as(f64, 0), model.cost.output);
 }
 
-test "0.84.4 catalog carries vision xAI and Anthropic fallback metadata" {
+test "current catalog carries vision xAI and Anthropic fallback metadata" {
     var deepseek_vision: ?ModelInfo = null;
     var grok46: ?ModelInfo = null;
     var fable: ?ModelInfo = null;
     for (known_models) |model| {
-        if (std.mem.eql(u8, model.providerName(), "deepseek") and std.mem.eql(u8, model.id, "deepseek-v4-flash-vision-exp")) deepseek_vision = model;
-        if (std.mem.eql(u8, model.providerName(), "xai") and std.mem.eql(u8, model.id, "grok-4.6")) grok46 = model;
+        if (std.mem.eql(u8, model.providerName(), "deepseek") and std.mem.eql(u8, model.id, "deepseek-flash")) deepseek_vision = model;
+        if (std.mem.eql(u8, model.providerName(), "xai") and std.mem.eql(u8, model.id, "grok-4.7")) grok46 = model;
         if (std.mem.eql(u8, model.providerName(), "anthropic") and std.mem.eql(u8, model.id, "claude-fable-5")) fable = model;
     }
     try std.testing.expect(deepseek_vision != null and deepseek_vision.?.input_image);
@@ -770,9 +839,9 @@ test "generated Baseten and Qwen catalogs preserve capability metadata" {
         if (std.mem.eql(u8, model.providerName(), "baseten") and std.mem.eql(u8, model.id, "zai-org/GLM-5.2")) baseten_glm = model;
         if (std.mem.eql(u8, model.providerName(), "qwen-token-plan") and std.mem.eql(u8, model.id, "qwen3.8-max")) qwen38 = model;
     }
-    try std.testing.expectEqual(@as(usize, 18), broad_count);
-    try std.testing.expectEqual(@as(usize, 18), cn_count);
-    try std.testing.expectEqual(@as(usize, 8), individual_count);
+    try std.testing.expectEqual(@as(usize, 20), broad_count);
+    try std.testing.expectEqual(@as(usize, 20), cn_count);
+    try std.testing.expectEqual(@as(usize, 9), individual_count);
     try std.testing.expect(baseten_glm != null and qwen38 != null);
     try std.testing.expect(baseten_glm.?.compat.thinking_format.? == .baseten);
     try std.testing.expectEqual(true, baseten_glm.?.compat.supports_reasoning_effort.?);
@@ -787,7 +856,7 @@ test "generated Baseten and Qwen catalogs preserve capability metadata" {
     try std.testing.expect(qwen38.?.input_image);
     try std.testing.expectEqualSlices(
         thinking.ThinkingLevel,
-        &.{ .off, .low, .medium, .xhigh },
+        &.{ .low, .medium, .xhigh },
         qwen38.?.supportedThinkingLevels(&levels_buf),
     );
 }

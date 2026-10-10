@@ -1,0 +1,259 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "sourceSHA256": "206519884c4cb27096d00048a2fc4e8a0c404714e548c8dd5b62c38060d3b240",
+  "cases": [
+    {
+      "script": "const calls=[],root={children:{indexOf(){return '-1'},splice(...args){calls.push(args)}}};Container.prototype.removeChild.call(root,{});return calls",
+      "result": [
+        [
+          "-1",
+          1
+        ]
+      ]
+    },
+    {
+      "script": "const root=Object.create(Container.prototype),target={},log=[];let saved;root.children={some(callback){saved=callback;return false}};const owner={containsComponent:TUI.prototype.containsComponent};const first=TUI.prototype.containsComponent.call(owner,root,target),next=new Container();next.addChild(target);return{first,later:saved(next),miss:saved({})}",
+      "result": {
+        "first": false,
+        "later": true,
+        "miss": false
+      }
+    },
+    {
+      "script": "const original=Object.getOwnPropertyDescriptor(Container,Symbol.hasInstance),log=[],target={},root={children:[target]};Object.defineProperty(Container,Symbol.hasInstance,{configurable:true,value(value){log.push(value===root);return value===root}});try{return{result:TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,target),log}}finally{if(original)Object.defineProperty(Container,Symbol.hasInstance,original);else delete Container[Symbol.hasInstance]}",
+      "result": {
+        "result": true,
+        "log": [
+          true
+        ]
+      }
+    },
+    {
+      "script": "const root=Object.create(Container.prototype),reason={},target={};Object.defineProperty(root,'children',{get(){throw reason}});try{TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,target)}catch(error){return error===reason}",
+      "result": true
+    },
+    {
+      "script": "const root=new Container(),a={id:'a',render:w=>['a'+w]},b={id:'b',render:w=>['b'+w,'c']};root.addChild(a);root.addChild(a);root.addChild(b);root.removeChild(a);const lines=root.render(7),layout={width:root.mouseLayout.width,children:root.mouseLayout.children.map(x=>({id:x.component.id,height:x.height}))},old=root.children;root.clear();return{lines,layout,clearIdentity:root.children!==old,old:old.map(c=>c.id),children:root.children,layoutRetained:root.mouseLayout.width===7};",
+      "result": {
+        "lines": [
+          "a7",
+          "b7",
+          "c"
+        ],
+        "layout": {
+          "width": 7,
+          "children": [
+            {
+              "id": "a",
+              "height": 1
+            },
+            {
+              "id": "b",
+              "height": 2
+            }
+          ]
+        },
+        "clearIdentity": true,
+        "old": [
+          "a",
+          "b"
+        ],
+        "children": [],
+        "layoutRetained": true
+      }
+    },
+    {
+      "script": "const calls=[],root=new Container(),a={render(w){calls.push(['a',w,this===a]);root.children.push(b);return ['A']}},b={render(w){calls.push(['b',w,this===b]);return ['B']}};root.addChild(a);return{lines:root.render(12),calls};",
+      "result": {
+        "lines": [
+          "A",
+          "B"
+        ],
+        "calls": [
+          [
+            "a",
+            12,
+            true
+          ],
+          [
+            "b",
+            12,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "script": "const log=[],root=new Container(),old={width:1,children:[]};root.mouseLayout=old;root.children=[{render(){throw log}}];try{root.render(5)}catch(e){return{identity:e===log,layoutSame:root.mouseLayout===old}}",
+      "result": {
+        "identity": true,
+        "layoutSame": true
+      }
+    },
+    {
+      "script": "const log=[],root=new Container();root.children={[Symbol.iterator](){let i=0;return{next(){if(i++===0)return{value:{render(){return{get length(){log.push('length');return 9},*[Symbol.iterator](){log.push('line1');yield 1;log.push('line2');yield {x:2}}}}},done:false};return{done:true}},return(){log.push('return');return{done:true}}}}};const lines=root.render(3);return{lines,log,height:root.mouseLayout.children[0].height};",
+      "result": {
+        "lines": [
+          1,
+          {
+            "x": 2
+          }
+        ],
+        "log": [
+          "length",
+          "line1",
+          "line2"
+        ],
+        "height": 9
+      }
+    },
+    {
+      "script": "const log=[],root=new Container(),reason={reason:true};root.children={[Symbol.iterator](){return{next(){return{value:{render(){throw reason}},done:false}},return(){log.push('return');throw Error('secondary')}}}};try{root.render(3)}catch(e){return{identity:e===reason,log}}",
+      "result": {
+        "identity": true,
+        "log": [
+          "return"
+        ]
+      }
+    },
+    {
+      "script": "const log=[],root=new Container(),a={invalidate(){log.push(this===a);root.children.push(b)}},b={};root.children=[a];root.invalidate();return log",
+      "result": [
+        true
+      ]
+    },
+    {
+      "script": "const receiver={children:[{invalidate:undefined},{invalidate:null}]};Container.prototype.invalidate.call(receiver);return true",
+      "result": true
+    },
+    {
+      "script": "let gets=0;const first={indexOf(c){return 1}},second={splice(i,n){return [i,n]}},root={get children(){gets++;return gets===1?first:second}};Container.prototype.removeChild.call(root,{});return gets",
+      "result": 2
+    },
+    {
+      "script": "const root=new Container(),calls=[],a={render(w){calls.push(['render',w]);return['a','b']},handleMouse(e){calls.push(['mouse',e.y,e.height,e.width,e.x,this===a]);return {handled:true,focus:true}}};root.addChild(a);const event={type:'press',button:'left',x:2,y:1,width:8,height:3};const result=root.handleMouse(event);return{calls,result:{handled:result?.handled,focus:result?.focus,child:result?.focusTarget===a},layout:root.mouseLayout}",
+      "result": {
+        "calls": [
+          [
+            "render",
+            8
+          ],
+          [
+            "mouse",
+            1,
+            2,
+            8,
+            2,
+            true
+          ]
+        ],
+        "result": {
+          "handled": true,
+          "focus": true,
+          "child": true
+        }
+      }
+    },
+    {
+      "script": "const root=new Container(),calls=[],a={render(w){calls.push(w);return['a']},handleMouse(){return {handled:true,focus:true}}};root.handleInput=()=>{};root.addChild(a);root.render(9);a.render=()=>{throw Error('must use cached layout')};const result=root.handleMouse({type:'press',button:'left',x:2,y:0,width:9,height:2});return{calls,result:{handled:result?.handled,focus:result?.focus,target:result?.focusTarget===root}}",
+      "result": {
+        "calls": [
+          9
+        ],
+        "result": {
+          "handled": true,
+          "focus": true,
+          "target": true
+        }
+      }
+    },
+    {
+      "script": "const root=new Container();root.children={map(){throw Error('must not map')}};return[root.handleMouse({y:-1,height:2}),root.handleMouse({y:2,height:2})]",
+      "result": [
+        null,
+        null
+      ]
+    },
+    {
+      "script": "const root=new Container(),a={render(){return['a']},handleMouse(){return undefined}};root.addChild(a);return root.handleMouse({type:'press',button:'left',x:0,y:0,width:8,height:2})"
+    },
+    {
+      "script": "let reads=0;const root=new Container();Object.defineProperty(root,'mouseLayout',{get(){reads++;return {width:8,children:[]}}});root.handleMouse({y:0,height:1,width:8});return reads",
+      "result": 2
+    },
+    {
+      "script": "const root=new Container(),target={},fake={get children(){throw Error('must not visit fake')}};root.addChild(fake);root.addChild(target);return TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,target)",
+      "result": true
+    },
+    {
+      "script": "const root=Object.create(Container.prototype),target={},log=[];root.children={some(callback){log.push([this===root.children,callback.length,callback(target)]);return 'yes'}};return {result:TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,target),log}",
+      "result": {
+        "result": "yes",
+        "log": [
+          [
+            true,
+            1,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "script": "const root=new Container();root.addChild(root);try{TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,{})}catch(e){return{name:e.name,message:e.message}}",
+      "result": {
+        "name": "RangeError",
+        "message": "Maximum call stack size exceeded"
+      }
+    },
+    {
+      "script": "const root=new Container(),a=new Container(),b=new Container(),target={},log=[];Object.defineProperty(a,'children',{get(){log.push('a');return[]}});Object.defineProperty(b,'children',{get(){log.push('b');return[target]}});root.children=[a,b];return{result:TUI.prototype.containsComponent.call({containsComponent:TUI.prototype.containsComponent},root,target),log}",
+      "result": {
+        "result": true,
+        "log": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  ],
+  "shape": {
+    "name": "Container",
+    "length": 0,
+    "own": [
+      "children",
+      "mouseLayout"
+    ],
+    "methods": {
+      "addChild": {
+        "name": "addChild",
+        "length": 1,
+        "enumerable": false
+      },
+      "removeChild": {
+        "name": "removeChild",
+        "length": 1,
+        "enumerable": false
+      },
+      "clear": {
+        "name": "clear",
+        "length": 0,
+        "enumerable": false
+      },
+      "invalidate": {
+        "name": "invalidate",
+        "length": 0,
+        "enumerable": false
+      },
+      "handleMouse": {
+        "name": "handleMouse",
+        "length": 1,
+        "enumerable": false
+      },
+      "render": {
+        "name": "render",
+        "length": 1,
+        "enumerable": false
+      }
+    }
+  }
+}

@@ -1,0 +1,585 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "method": "resources",
+      "payload": null,
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": [],
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {},
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": null
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": []
+      },
+      "result": {
+        "resources": []
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": null
+      },
+      "result": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": ""
+      },
+      "result": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": "next"
+      },
+      "result": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ],
+        "nextCursor": "next"
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": 3
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": false
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": {}
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          null
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          []
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {}
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": 3
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "x",
+            "name": null
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "resources",
+      "payload": {
+        "resources": [
+          {
+            "uri": "x",
+            "name": 3
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": null,
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": [],
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {},
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": null
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": []
+      },
+      "result": {
+        "resourceTemplates": []
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": null
+      },
+      "result": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": ""
+      },
+      "result": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ]
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": "next"
+      },
+      "result": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            },
+            "name": "file:///resource"
+          }
+        ],
+        "nextCursor": "next"
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": 3
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": false
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "file:///resource",
+            "_meta": {
+              "retained": true
+            }
+          }
+        ],
+        "nextCursor": {}
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid MCP resources/templates/list cursor",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          null
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          []
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {}
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": 3
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "x",
+            "name": null
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    },
+    {
+      "method": "templates",
+      "payload": {
+        "resourceTemplates": [
+          {
+            "uriTemplate": "x",
+            "name": 3
+          }
+        ]
+      },
+      "error": {
+        "name": "McpError",
+        "message": "Invalid entry in MCP resources/templates/list result",
+        "code": -32600
+      }
+    }
+  ]
+}

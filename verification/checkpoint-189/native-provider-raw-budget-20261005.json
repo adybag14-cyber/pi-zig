@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "cd149227b99189b56bffe9d888fb19405c637654",
+  "upstreamSource": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "zig": "0.16.0",
+  "retiredDrivers": [
+    "checkpoint-tests/provider-method-manifest-bridge.mjs",
+    "checkpoint-tests/provider-stream-simple-bridge.mjs"
+  ],
+  "rawContracts": "All original method and streaming behavior assertions retained through the real native worker with Node absent from child PATH.",
+  "wireAdapters": [
+    "Decimal invocation identities",
+    "Explicit provider name and callback generation from native manifest",
+    "Canonical actionQueue and live UI actions",
+    "Native typed tool mismatch and unloaded callback errors"
+  ],
+  "streamRepair": "Actual supplied AbortSignal reason retains original identity through iterator cleanup; hostile cleanup keeps retirement marker and original cause.",
+  "deadlineRepair": "Same production record budget factored into helper; injected timestamps prove human wait suspension beyond 30ms, exact 30ms rearm and ordinary expiry. Real process selectors use normal admission budget.",
+  "baselineEvidence": {
+    "method": "Original Linux Node driver passed; Windows equivalent uses file-backed bridge to avoid command-line length limit.",
+    "stream": "Unmodified current and historical drivers failed missing generation. Separate external transport adapter supplies manifest identity/generation; all unchanged behavior assertions pass with 14 ordered events."
+  },
+  "sourceSha256": {
+    "build.zig": "683c10fdc0c65d7705da411499d0296192e844293999ba43a29112568b573e6b",
+    "src/extensions/js_runtime.zig": "8d693569f68883aba2dd378cf32f67fbb8f3fddbb937e8abd50926830d770527",
+    "src/extensions/native_stream.zig": "e03c12e6e203d7c26de18123fde6614b52215ca4e17391e2eda929eabcc325b4",
+    "src/native_runtime_process_test.zig": "9aca4fbc5f6536f31a66ef725310537957e40fb18591647d06e4dc3d3d33cc0b",
+    "src/provider_method_protocol_test.zig": "f75830f2f2c973581d9759d13f21aeb04923e45c55a9d3c6e2f2ff1cf9130269",
+    "src/provider_stream_protocol_test.zig": "b8fbc36e3769e64f9c4245867a8ae261459160554b3c7c0c2bf74df32e9081bd",
+    "src/test_support/native_peer.zig": "cfd1307c74433b7870805cc13eb387ac9b19d40a4ca62646cd1488c01bdd07c3",
+    "src/test_support/provider_method_extension_fixture.zig": "233e9438b0b94904c07c6ae4d1b142cde319e6500e1cb0a8a75d0c4bef8a847e",
+    "src/test_support/provider_stream_extension_fixture.zig": "dcf4894cf699d15149a676d6b17cf63cc1262647fffaedbfe44758bcb032a914"
+  },
+  "jobs": {
+    "raw-method-stream-integrated-windows-debug": {
+      "name": "raw-method-stream-integrated-windows-debug",
+      "pid": 53660,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-provider-method-protocol test-provider-stream-protocol -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T14:23:41.6749070Z",
+      "launched_utc": "2026-10-05T14:23:41.6719548+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:24:05.2220961+00:00"
+    },
+    "raw-method-stream-integrated-linux-debug": {
+      "name": "raw-method-stream-integrated-linux-debug",
+      "pid": 53848,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 850s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-provider-method-protocol test-provider-stream-protocol -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:24:23.5065990Z",
+      "launched_utc": "2026-10-05T14:24:23.5034591+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:24:37.6494357+00:00"
+    },
+    "raw-method-stream-integrated-windows-release": {
+      "name": "raw-method-stream-integrated-windows-release",
+      "pid": 52988,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-provider-method-protocol test-provider-stream-protocol -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T14:25:49.7854040Z",
+      "launched_utc": "2026-10-05T14:25:49.7817335+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:26:15.4015079+00:00"
+    },
+    "raw-method-stream-integrated-linux-release": {
+      "name": "raw-method-stream-integrated-linux-release",
+      "pid": 29104,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 850s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-provider-method-protocol test-provider-stream-protocol -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:25:49.7988340Z",
+      "launched_utc": "2026-10-05T14:25:49.7957730+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:27:38.1891703+00:00"
+    },
+    "native-budget-root-windows-debug": {
+      "name": "native-budget-root-windows-debug",
+      "pid": 47300,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-runtime -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T14:27:00.7107050Z",
+      "launched_utc": "2026-10-05T14:27:00.7082053+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:27:23.5111369+00:00"
+    },
+    "native-budget-root-linux-debug": {
+      "name": "native-budget-root-linux-debug",
+      "pid": 6080,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 850s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-runtime -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:29:19.2577770Z",
+      "launched_utc": "2026-10-05T14:29:19.2552501+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:29:30.1541596+00:00"
+    },
+    "native-budget-root-windows-release": {
+      "name": "native-budget-root-windows-release",
+      "pid": 25032,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-runtime test-provider-method-protocol test-provider-stream-protocol -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T14:29:29.4002340Z",
+      "launched_utc": "2026-10-05T14:29:29.3969052+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:31:21.4258679+00:00"
+    },
+    "native-budget-root-linux-release": {
+      "name": "native-budget-root-linux-release",
+      "pid": 48328,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 850s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-runtime test-provider-method-protocol test-provider-stream-protocol -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:32:56.0487090Z",
+      "launched_utc": "2026-10-05T14:32:56.0462566+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:34:49.0561345+00:00"
+    },
+    "raw-budget-integrated-windows-full-debug": {
+      "name": "raw-budget-integrated-windows-full-debug",
+      "pid": 16788,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T14:32:56.0488230Z",
+      "launched_utc": "2026-10-05T14:32:56.0461415+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:34:10.6409035+00:00"
+    },
+    "raw-budget-integrated-linux-full-debug": {
+      "name": "raw-budget-integrated-linux-full-debug",
+      "pid": 36584,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1650s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:36:05.9696450Z",
+      "launched_utc": "2026-10-05T14:36:05.9666303+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:37:19.1874924+00:00"
+    }
+  },
+  "fullWindows": "109/109 steps; 467 dedicated passes and 32 skips; 1148 primary module passes and 28 skips",
+  "limits": [
+    "Production extension default still legacy Node",
+    "Three JavaScript implementation/driver files remain",
+    "OAuth and custom UI candidate not integrated",
+    "No final parity or release certification"
+  ],
+  "fullLinux": "109/109 steps; 639/639 dedicated passes; 1168 primary module passes and 8 skips"
+}

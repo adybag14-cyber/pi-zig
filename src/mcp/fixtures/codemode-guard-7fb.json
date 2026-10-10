@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "error": {
+    "kind": "script",
+    "message": "tools.mytool does not exist. Did you mean tools.my_tool? ALL_TOOLS lists every tool; searchTools(query) finds tools by topic. Check for a member with \"mytool\" in tools."
+  },
+  "output": [],
+  "calls": []
+}

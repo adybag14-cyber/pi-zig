@@ -1,0 +1,363 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "timer": "actual Source StdinBuffer with controlled host scheduling clock; readiness wake does not expire a timer",
+  "sourceSHA256": "a96af34c1c304a033b482b57ded426f4a51a5d1158f01c2d9daee5225fe60914",
+  "cases": [
+    {
+      "name": "early-wake-csi-0",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界"
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 1,
+          "data": "\u001b[DZ\r"
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "aZ界",
+          "cursor": 2,
+          "done": true,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D",
+            "Z",
+            "\r"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "early-wake-csi-1",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界\u001b"
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 1,
+          "data": "[DZ\r"
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "aZ界",
+          "cursor": 2,
+          "done": true,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D",
+            "Z",
+            "\r"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "early-wake-csi-2",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界\u001b["
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 1,
+          "data": "DZ\r"
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "aZ界",
+          "cursor": 2,
+          "done": true,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D",
+            "Z",
+            "\r"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "early-wake-csi-3",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界\u001b[D"
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 1,
+          "data": "Z\r"
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 1,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 1,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D"
+          ]
+        },
+        {
+          "value": "aZ界",
+          "cursor": 2,
+          "done": true,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[D",
+            "Z",
+            "\r"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "real-escape-deadline",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界\u001b"
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 9,
+          "wake": true
+        },
+        {
+          "at": 10,
+          "wake": true
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": true,
+          "cancelled": true,
+          "events": [
+            "a",
+            "界",
+            "\u001b"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "real-incomplete-csi-deadline",
+      "steps": [
+        {
+          "at": 0,
+          "data": "a界\u001b["
+        },
+        {
+          "at": 1,
+          "wake": true
+        },
+        {
+          "at": 49,
+          "wake": true
+        },
+        {
+          "at": 50,
+          "wake": true
+        },
+        {
+          "at": 50,
+          "data": "DZ\r"
+        }
+      ],
+      "snapshots": [
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界"
+          ]
+        },
+        {
+          "value": "a界",
+          "cursor": 2,
+          "done": false,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b["
+          ]
+        },
+        {
+          "value": "a界DZ",
+          "cursor": 4,
+          "done": true,
+          "cancelled": false,
+          "events": [
+            "a",
+            "界",
+            "\u001b[",
+            "D",
+            "Z",
+            "\r"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 const std = @import("std");
 const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
+const widget_protocol = @import("widget_protocol.zig");
 const providers = @import("../ai/providers.zig");
 const coding_clipboard = @import("../coding_agent/clipboard.zig");
 const agent_session = @import("../agent/session.zig");
@@ -15,11 +16,49 @@ const render = @import("../tui/render.zig");
 const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const Keybindings = @import("../tui/keybindings.zig").Manager;
+const native_dialog = @import("native_dialog.zig");
+pub const component_protocol = @import("component_protocol.zig");
+pub const ComponentSceneFn = *const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void;
+pub const ComponentCloseFn = *const fn (?*anyopaque, component_protocol.Fence) anyerror!void;
+pub const renderer_protocol = @import("renderer_protocol.zig");
+pub const RendererRecordFn = *const fn (?*anyopaque, renderer_protocol.Record, *renderer_protocol.ControlQueue) anyerror!void;
+pub const RendererClosedFn = *const fn (?*anyopaque, u64) anyerror!void;
 
 pub const NotificationKind = enum { info, warning, error_message };
 pub const WidgetPlacement = enum { above_editor, below_editor };
 pub const PromptEvent = enum { start, end };
 pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
+pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anyerror!void;
+pub const DialogStatusFn = *const fn (?*anyopaque, PromptEvent, []const u8, []const u8) anyerror!void;
+pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
+pub const EditorSinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
+
+/// Owned projection for a retained frontend. No Controller slices cross threads.
+pub const SurfaceSnapshot = struct {
+    gpa: std.mem.Allocator,
+    header: ?[][]u8 = null,
+    footer: ?[][]u8 = null,
+    above: [][]u8 = &.{},
+    below: [][]u8 = &.{},
+    status: []u8 = &.{},
+    working: ?[]u8 = null,
+    working_visible: bool = true,
+    working_frames: [][]u8 = &.{},
+    working_interval_ms: u64 = 100,
+    title: ?[]u8 = null,
+    notifications: [][]u8 = &.{},
+    pub fn deinit(self: *SurfaceSnapshot) void {
+        if (self.header) |lines| freeLines(self.gpa, lines);
+        if (self.footer) |lines| freeLines(self.gpa, lines);
+        freeLines(self.gpa, self.above);
+        freeLines(self.gpa, self.below);
+        freeLines(self.gpa, self.notifications);
+        freeLines(self.gpa, self.working_frames);
+        self.gpa.free(self.status);
+        if (self.working) |value| self.gpa.free(value);
+        if (self.title) |value| self.gpa.free(value);
+    }
+};
 
 pub const Notification = struct {
     message: []u8,
@@ -46,6 +85,7 @@ pub const Widget = struct {
     key: []u8,
     lines: [][]u8,
     placement: WidgetPlacement,
+    native_owner_generation: ?u64 = null,
 
     fn deinit(self: *Widget, gpa: std.mem.Allocator) void {
         gpa.free(self.key);
@@ -64,7 +104,43 @@ pub const WorkingIndicator = struct {
     }
 };
 
+fn writeModelSnapshot(writer: *std.Io.Writer, model: providers.ModelInfo) !void {
+    try writer.writeAll("{\"id\":");
+    try std.json.Stringify.value(model.id, .{}, writer);
+    try writer.writeAll(",\"name\":");
+    try std.json.Stringify.value(model.display, .{}, writer);
+    try writer.writeAll(",\"provider\":");
+    try std.json.Stringify.value(model.providerName(), .{}, writer);
+    try writer.writeAll(",\"type\":");
+    try std.json.Stringify.value(@tagName(model.kind), .{}, writer);
+    try writer.writeAll(",\"api\":");
+    try std.json.Stringify.value(model.operation_api orelse model.apiKind().name(), .{}, writer);
+    try writer.writeAll(",\"baseUrl\":");
+    if (model.base_url) |base_url| try std.json.Stringify.value(base_url, .{}, writer) else try writer.writeAll("null");
+    try writer.print(",\"reasoning\":{s},\"input\":[", .{if (model.reasoning) "true" else "false"});
+    if (model.input_text) try writer.writeAll("\"text\"");
+    if (model.input_image) {
+        if (model.input_text) try writer.writeByte(',');
+        try writer.writeAll("\"image\"");
+    }
+    try writer.print("],\"contextWindow\":{d},\"maxTokens\":{d},\"cost\":{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}}}}}", .{
+        model.context_window,
+        model.max_tokens,
+        model.cost.input,
+        model.cost.output,
+        model.cost.cache_read,
+        model.cost.cache_write,
+    });
+}
+
 pub const ContextOptions = struct {
+    strict_theme_validation: ?bool = null,
+    settings_json: ?[]const u8 = null,
+    runtime_bound: ?bool = null,
+    admit_keybindings: bool = false,
+    kitty_active: ?bool = null,
+    /// Null leaves the controller's cached presentation state bound as-is.
+    theme_state: ?@import("theme_state.zig").State = null,
     mode: []const u8,
     cwd: []const u8,
     session_id: []const u8,
@@ -76,22 +152,86 @@ pub const ContextOptions = struct {
     idle: bool = true,
     active_tools: []const []const u8 = &.{},
     all_tools: []const []const u8 = &.{},
+    native_tool_selection: ?NativeToolSelection = null,
     model_catalog: []const providers.ModelInfo = &.{},
+    scoped_models: []const providers.ModelInfo = &.{},
+    /// Null means the host has not bound an availability snapshot; an empty
+    /// slice is a bound snapshot with no available providers.
+    available_models: ?[]const providers.ModelInfo = null,
     configured_providers: []const []const u8 = &.{},
     session: ?*const agent_session.Session = null,
     session_file: ?[]const u8 = null,
     session_dir: ?[]const u8 = null,
 };
+test "native main context carries admitted key overrides kitty and strict files only when explicitly bound" {
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, false, 80);
+    defer controller.deinit();
+    const standalone = try controller.contextJson(gpa, .{ .mode = "print", .cwd = "/standalone", .session_id = "sdk" });
+    defer gpa.free(standalone);
+    const before = try std.json.parseFromSlice(std.json.Value, gpa, standalone, .{});
+    defer before.deinit();
+    try std.testing.expect(!before.value.object.contains("strictThemeValidation"));
+    try std.testing.expect(!before.value.object.contains("keybindingsConfig"));
+    try std.testing.expect(!before.value.object.contains("kittyActive"));
+    var bindings = Keybindings.init(gpa);
+    defer bindings.deinit();
+    bindings.parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"tui.select.confirm\":\"alt+x\",\"tui.select.cancel\":[]}", .{ .allocate = .alloc_always });
+    controller.bindKeybindings(&bindings);
+    defer controller.bindKeybindings(null);
+    const admitted = try controller.contextJson(gpa, .{ .mode = "tui", .cwd = "/cli", .session_id = "session", .strict_theme_validation = true, .admit_keybindings = true, .kitty_active = true });
+    defer gpa.free(admitted);
+    const after = try std.json.parseFromSlice(std.json.Value, gpa, admitted, .{});
+    defer after.deinit();
+    try std.testing.expect(after.value.object.get("strictThemeValidation").?.bool);
+    try std.testing.expect(after.value.object.get("kittyActive").?.bool);
+    const configuration = after.value.object.get("keybindingsConfig").?.object;
+    try std.testing.expectEqual(@as(usize, 2), configuration.count());
+    try std.testing.expectEqualStrings("alt+x", configuration.get("tui.select.confirm").?.string);
+    try std.testing.expectEqual(@as(usize, 0), configuration.get("tui.select.cancel").?.array.items.len);
+    controller.bindKeybindings(null);
+    const empty = try controller.contextJson(gpa, .{ .mode = "print", .cwd = "/cli", .session_id = "session", .strict_theme_validation = true, .admit_keybindings = true, .kitty_active = false });
+    defer gpa.free(empty);
+    const cleared = try std.json.parseFromSlice(std.json.Value, gpa, empty, .{});
+    defer cleared.deinit();
+    try std.testing.expectEqual(@as(usize, 0), cleared.value.object.get("keybindingsConfig").?.object.count());
+    try std.testing.expect(!cleared.value.object.get("kittyActive").?.bool);
+}
+
+/// Native registration callbacks must use the same initial selection policy
+/// as the owner, before a newly registered tool appears in the next snapshot.
+pub const NativeToolSelection = @import("tool_activation.zig").Selection;
 
 pub const Controller = struct {
+    terminal_capabilities: ?@import("../tui/terminal_image.zig").TerminalCapabilities = null,
+    terminal_cell_dimensions: ?@import("../tui/terminal_image.zig").CellDimensions = null,
     gpa: std.mem.Allocator,
     io: Io,
     has_ui: bool,
     width: usize = 80,
     reader: ?*Io.File.Reader = null,
+    dialog_keybindings: ?*const Keybindings = null,
     clipboard_options: coding_clipboard.Options = .{},
     prompt_event_fn: ?PromptEventFn = null,
     prompt_event_ctx: ?*anyopaque = null,
+    modal_observer_fn: ?ModalObserverFn = null,
+    modal_observer_ctx: ?*anyopaque = null,
+    dialog_status_fn: ?DialogStatusFn = null,
+    dialog_status_ctx: ?*anyopaque = null,
+    surface_sink_fn: ?SurfaceSinkFn = null,
+    surface_sink_ctx: ?*anyopaque = null,
+    editor_sink_fn: ?EditorSinkFn = null,
+    editor_sink_ctx: ?*anyopaque = null,
+    component_scene_fn: ?ComponentSceneFn = null,
+    component_close_fn: ?ComponentCloseFn = null,
+    component_scene_ctx: ?*anyopaque = null,
+    component_fence: ?component_protocol.Fence = null,
+    renderer_record_fn: ?RendererRecordFn = null,
+    renderer_closed_fn: ?RendererClosedFn = null,
+    renderer_context: ?*anyopaque = null,
+    renderer_calls: usize = 0,
+    renderer_detaching: bool = false,
+    renderer_changed: Io.Condition = .init,
 
     state_mutex: Io.Mutex = .init,
     dialog_mutex: Io.Mutex = .init,
@@ -101,6 +241,8 @@ pub const Controller = struct {
     widgets: std.ArrayList(Widget) = .empty,
     header_lines: ?[][]u8 = null,
     footer_lines: ?[][]u8 = null,
+    native_header_owner: ?u64 = null,
+    native_footer_owner: ?u64 = null,
     custom_lines: ?[][]u8 = null,
     title: ?[]u8 = null,
     working_message: ?[]u8 = null,
@@ -108,8 +250,10 @@ pub const Controller = struct {
     working_indicator: WorkingIndicator = .{},
     hidden_thinking_label: ?[]u8 = null,
     theme_name: ?[]u8 = null,
+    theme_state_json: ?[]u8 = null,
     editor_snapshot: []u8,
     pending_editor_text: ?[]u8 = null,
+    pending_editor_delivered: bool = false,
     custom_editor_enabled: bool = false,
     autocomplete_requested: bool = false,
 
@@ -130,6 +274,7 @@ pub const Controller = struct {
     }
 
     pub fn deinit(self: *Controller) void {
+        self.bindRendererFrontend(null, null, null);
         for (self.notifications.items) |*item| item.deinit(self.gpa);
         self.notifications.deinit(self.gpa);
         for (self.statuses.items) |*item| item.deinit(self.gpa);
@@ -144,6 +289,7 @@ pub const Controller = struct {
         self.working_indicator.deinit(self.gpa);
         if (self.hidden_thinking_label) |value| self.gpa.free(value);
         if (self.theme_name) |value| self.gpa.free(value);
+        if (self.theme_state_json) |value| self.gpa.free(value);
         self.gpa.free(self.editor_snapshot);
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.* = undefined;
@@ -152,6 +298,187 @@ pub const Controller = struct {
     pub fn bindPromptEvents(self: *Controller, callback: ?PromptEventFn, context: ?*anyopaque) void {
         self.prompt_event_fn = callback;
         self.prompt_event_ctx = context;
+    }
+
+    pub fn bindDialogStatus(self: *Controller, callback: ?DialogStatusFn, context: ?*anyopaque) void {
+        self.dialog_status_fn = callback;
+        self.dialog_status_ctx = context;
+    }
+
+    /// Borrowed from the interactive owner; clear after all dialogs have ended.
+    pub fn bindKeybindings(self: *Controller, bindings: ?*const Keybindings) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.dialog_keybindings = bindings;
+    }
+    pub fn bindTerminalState(self: *Controller, capabilities: @import("../tui/terminal_image.zig").TerminalCapabilities, cells: @import("../tui/terminal_image.zig").CellDimensions) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.terminal_capabilities = capabilities;
+        self.terminal_cell_dimensions = cells.normalized();
+    }
+
+    fn dialogBindings(self: *Controller) ?*const Keybindings {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        return self.dialog_keybindings;
+    }
+    pub fn bindFrontend(self: *Controller, sink: ?SurfaceSinkFn, observer: ?ModalObserverFn, context: ?*anyopaque) void {
+        self.surface_sink_fn = sink;
+        self.surface_sink_ctx = context;
+        self.modal_observer_fn = observer;
+        self.modal_observer_ctx = context;
+    }
+
+    pub fn bindComponentScenes(self: *Controller, scene: ?ComponentSceneFn, close: ?ComponentCloseFn, context: ?*anyopaque) void {
+        self.component_scene_fn = scene;
+        self.component_close_fn = close;
+        self.component_scene_ctx = context;
+    }
+    pub fn bindRendererFrontend(self: *Controller, record: ?RendererRecordFn, closed: ?RendererClosedFn, context: ?*anyopaque) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.renderer_detaching = true;
+        while (self.renderer_calls > 0) self.renderer_changed.waitUncancelable(self.io, &self.state_mutex);
+        self.renderer_record_fn = record;
+        self.renderer_closed_fn = closed;
+        self.renderer_context = context;
+        self.renderer_detaching = false;
+    }
+    pub fn rendererBridge(self: *Controller) ?js_runtime.RendererBridge {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.renderer_record_fn == null or self.renderer_detaching) return null;
+        return .{ .context = self, .record_fn = rendererRecord, .closed_fn = rendererClosed };
+    }
+    fn rendererCallbackEnded(self: *Controller) void {
+        self.state_mutex.lockUncancelable(self.io);
+        self.renderer_calls -= 1;
+        self.renderer_changed.broadcast(self.io);
+        self.state_mutex.unlock(self.io);
+    }
+    pub fn rendererRecord(raw: ?*anyopaque, record: renderer_protocol.Record, controls: *renderer_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.state_mutex.lockUncancelable(self.io);
+        const sink = if (!self.renderer_detaching) self.renderer_record_fn else null;
+        const context = self.renderer_context;
+        if (sink != null) self.renderer_calls += 1;
+        self.state_mutex.unlock(self.io);
+        if (sink) |callback| {
+            defer self.rendererCallbackEnded();
+            try callback(context, record, controls);
+        } else {
+            // No borrowed channel was admitted when the frontend is detached.
+            var owned = record;
+            owned.deinit();
+        }
+    }
+    pub fn rendererClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.state_mutex.lockUncancelable(self.io);
+        // Close callbacks still detach already-admitted borrowed channels while
+        // record admission is being fenced and existing callbacks drain.
+        const sink = self.renderer_closed_fn;
+        const context = self.renderer_context;
+        if (sink != null) self.renderer_calls += 1;
+        self.state_mutex.unlock(self.io);
+        if (sink) |callback| {
+            defer self.rendererCallbackEnded();
+            try callback(context, generation);
+        }
+    }
+
+    pub fn bindEditorFrontend(self: *Controller, sink: ?EditorSinkFn, context: ?*anyopaque) void {
+        self.editor_sink_fn = sink;
+        self.editor_sink_ctx = context;
+    }
+
+    pub fn componentScene(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        const sink = self.component_scene_fn orelse return error.NativeComponentFrontendUnavailable;
+        const first = self.component_fence == null;
+        if (self.component_fence) |active| if (!active.matches(scene.fence)) return error.StaleNativeComponentScene;
+        try sink(self.component_scene_ctx, scene, controls);
+        self.component_fence = scene.fence;
+        // Custom scenes retain the frontend's sole stdin/paint ownership.
+        // Extension lifecycle fanout is still deferred by the integration.
+        if (first) if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .start, "custom");
+    }
+
+    pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        // Runtime validates the admitted close fence before calling this
+        // boundary. A scene may have closed before its first delivery, or while
+        // another FIFO scene owns the frontend. Neither case borrowed our queue.
+        const active = self.component_fence orelse return;
+        if (!active.matches(fence)) return;
+        const close = self.component_close_fn orelse return error.NativeComponentFrontendUnavailable;
+        defer {
+            self.component_fence = null;
+            if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .end, "custom");
+        }
+        // Success means the scene is gone and the restored editor was painted.
+        // The sink must detach the borrowed channel even when paint fails.
+        try close(self.component_scene_ctx, fence);
+    }
+
+    pub fn snapshotRetained(self: *Controller, gpa: std.mem.Allocator) !SurfaceSnapshot {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        var snapshot: SurfaceSnapshot = .{ .gpa = gpa };
+        errdefer snapshot.deinit();
+        const Clone = struct {
+            fn lines(allocator: std.mem.Allocator, values: []const []const u8) ![][]u8 {
+                const copied = try allocator.alloc([]u8, values.len);
+                var count: usize = 0;
+                errdefer {
+                    for (copied[0..count]) |line| allocator.free(line);
+                    allocator.free(copied);
+                }
+                for (copied, values) |*line, value| {
+                    line.* = try allocator.dupe(u8, value);
+                    count += 1;
+                }
+                return copied;
+            }
+        };
+        if (self.header_lines) |lines| snapshot.header = try Clone.lines(gpa, lines);
+        if (self.footer_lines) |lines| snapshot.footer = try Clone.lines(gpa, lines);
+        var above: std.ArrayList([]const u8) = .empty;
+        defer above.deinit(gpa);
+        var below: std.ArrayList([]const u8) = .empty;
+        defer below.deinit(gpa);
+        for (self.widgets.items) |widget| try (if (widget.placement == .above_editor) &above else &below).appendSlice(gpa, widget.lines);
+        snapshot.above = try Clone.lines(gpa, above.items);
+        snapshot.below = try Clone.lines(gpa, below.items);
+        var status: Io.Writer.Allocating = .init(gpa);
+        defer status.deinit();
+        for (self.statuses.items, 0..) |item, index| {
+            if (index > 0) try status.writer.writeAll("  ");
+            try status.writer.print("{s}={s}", .{ item.key, item.text });
+        }
+        snapshot.status = try status.toOwnedSlice();
+        snapshot.working_visible = self.working_visible;
+        if (self.working_visible and self.working_message != null) snapshot.working = try gpa.dupe(u8, self.working_message.?);
+        if (self.working_visible) {
+            if (self.working_indicator.frames) |frames| snapshot.working_frames = try Clone.lines(gpa, frames);
+        }
+        snapshot.working_interval_ms = @max(@as(u64, 16), self.working_indicator.interval_ms orelse 100);
+        if (self.title) |value| snapshot.title = try gpa.dupe(u8, value);
+        snapshot.notifications = try gpa.alloc([]u8, self.notifications.items.len);
+        var count: usize = 0;
+        errdefer {
+            for (snapshot.notifications[0..count]) |line| gpa.free(line);
+            gpa.free(snapshot.notifications);
+            snapshot.notifications = &.{};
+        }
+        for (snapshot.notifications, self.notifications.items) |*line, item| {
+            line.* = try std.fmt.allocPrint(gpa, "[{s}] {s}", .{ @tagName(item.kind), item.message });
+            count += 1;
+        }
+        for (self.notifications.items) |*item| item.deinit(self.gpa);
+        self.notifications.clearRetainingCapacity();
+        return snapshot;
     }
 
     /// Drop all state owned by the previous extension runtime while preserving
@@ -185,6 +512,7 @@ pub const Controller = struct {
         self.theme_name = null;
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.pending_editor_text = null;
+        self.pending_editor_delivered = false;
         self.working_visible = true;
         self.custom_editor_enabled = false;
         self.autocomplete_requested = false;
@@ -203,7 +531,64 @@ pub const Controller = struct {
             .context = self,
             .request_fn = requestThunk,
             .action_fn = actionThunk,
+            .component_scene_fn = componentScene,
+            .component_close_fn = componentClose,
         };
+    }
+    pub fn widgetRecordProjection(raw: ?*anyopaque, record: widget_protocol.Record, _: *widget_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        var owned = record;
+        var consumed = false;
+        defer if (consumed) owned.deinit();
+        var out: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer out.deinit();
+        try out.writer.writeAll("{\"key\":");
+        try std.json.Stringify.value(record.key, .{}, &out.writer);
+        try out.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
+        if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &out.writer) else try out.writer.writeAll("null");
+        try out.writer.writeByte('}');
+        try self.applyAction(switch (record.slot) {
+            .widget => "setWidget",
+            .header => "setHeader",
+            .footer => "setFooter",
+        }, out.written());
+        consumed = true;
+    }
+    pub fn widgetProjectionClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.clearNativeWidgetProjections(generation);
+    }
+    pub fn persistentAction(raw: ?*anyopaque, method: []const u8, args: []const u8) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        try self.applyAction(method, args);
+        try self.flush();
+    }
+    pub fn clearNativeWidgetProjections(self: *Controller, generation: ?u64) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.native_header_owner) |owner| if (generation == null or owner == generation.?) {
+            if (self.header_lines) |lines| freeLines(self.gpa, lines);
+            self.header_lines = null;
+            self.native_header_owner = null;
+            self.header_dirty = true;
+            self.surface_dirty = true;
+        };
+        if (self.native_footer_owner) |owner| if (generation == null or owner == generation.?) {
+            if (self.footer_lines) |lines| freeLines(self.gpa, lines);
+            self.footer_lines = null;
+            self.native_footer_owner = null;
+            self.footer_dirty = true;
+            self.surface_dirty = true;
+        };
+        var index: usize = 0;
+        while (index < self.widgets.items.len) {
+            const owner = self.widgets.items[index].native_owner_generation;
+            if (owner != null and (generation == null or owner.? == generation.?)) {
+                var removed = self.widgets.orderedRemove(index);
+                removed.deinit(self.gpa);
+                self.surface_dirty = true;
+            } else index += 1;
+        }
     }
 
     pub fn bindClipboardEnvironment(self: *Controller, environ: ?*const std.process.Environ.Map) void {
@@ -234,14 +619,43 @@ pub const Controller = struct {
         self.editor_snapshot = owned;
     }
 
+    /// Bind an owned cached DTO atomically. Null unbinds it; a present state
+    /// with empty reports explicitly selects source defaults. No terminal read.
+    pub fn setThemeState(self: *Controller, state: ?@import("theme_state.zig").State) !void {
+        const encoded = if (state) |value| try @import("theme_state.zig").encode(self.gpa, value) else null;
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.theme_state_json) |old| self.gpa.free(old);
+        self.theme_state_json = encoded;
+    }
+
     /// Transfer the next editor prefill to the caller. Ownership follows the
     /// controller allocator and the caller must free the returned slice.
     pub fn takePendingEditorText(self: *Controller) ?[]u8 {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
+        // A bound owner already received this value. Its typed publication
+        // acknowledges adoption; Main must not replay it over later user edits.
+        if (self.pending_editor_delivered) return null;
         const value = self.pending_editor_text;
         self.pending_editor_text = null;
         return value;
+    }
+
+    pub fn frontendEditorSnapshot(raw: ?*anyopaque, text: []const u8) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        const owned = try self.gpa.dupe(u8, text);
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.gpa.free(self.editor_snapshot);
+        self.editor_snapshot = owned;
+        if (self.pending_editor_delivered) if (self.pending_editor_text) |pending| {
+            if (std.mem.eql(u8, pending, text)) {
+                self.gpa.free(pending);
+                self.pending_editor_text = null;
+                self.pending_editor_delivered = false;
+            }
+        };
     }
 
     pub fn editorText(self: *Controller, allocator: std.mem.Allocator) ![]u8 {
@@ -260,6 +674,41 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (self.terminal_capabilities) |caps| {
+            const images: ?[]const u8 = if (caps.images) |protocol| @tagName(protocol) else null;
+            try out.writer.writeAll(",\"terminalCapabilities\":");
+            try std.json.Stringify.value(.{ .images = images, .trueColor = caps.true_color, .hyperlinks = caps.hyperlinks }, .{}, &out.writer);
+        }
+        if (self.terminal_cell_dimensions) |cells| {
+            try out.writer.writeAll(",\"cellDimensions\":");
+            try std.json.Stringify.value(.{ .widthPx = cells.width_px, .heightPx = cells.height_px }, .{}, &out.writer);
+        }
+        if (options.runtime_bound) |bound| try out.writer.print(",\"nativeRuntimeBound\":{}", .{bound});
+        if (options.settings_json) |settings| {
+            var parsed_settings = try std.json.parseFromSlice(std.json.Value, allocator, settings, .{});
+            defer parsed_settings.deinit();
+            if (parsed_settings.value != .object) return error.InvalidExtensionContext;
+            try out.writer.writeAll(",\"settings\":");
+            try std.json.Stringify.value(parsed_settings.value, .{}, &out.writer);
+        }
+        if (options.strict_theme_validation) |enabled| try out.writer.print(",\"strictThemeValidation\":{}", .{enabled});
+        if (options.kitty_active) |active| try out.writer.print(",\"kittyActive\":{}", .{active});
+        if (options.admit_keybindings) {
+            try out.writer.writeAll(",\"keybindingsConfig\":");
+            if (self.dialog_keybindings) |bindings| {
+                if (bindings.parsed) |parsed| try std.json.Stringify.value(parsed.value, .{}, &out.writer) else try out.writer.writeAll("{}");
+            } else try out.writer.writeAll("{}");
+        }
+        if (options.theme_state) |state| {
+            try @import("theme_state.zig").validate(allocator, state);
+            try out.writer.writeAll(",\"themeState\":");
+            try @import("theme_state.zig").write(&out.writer, state);
+        } else if (self.theme_state_json) |state| {
+            try out.writer.print(",\"themeState\":{s}", .{state});
+        }
+        if (@import("../tui/render.zig").activeThemeResource()) |resource| {
+            try out.writer.print(",\"themeResource\":{s}", .{resource});
+        }
         try out.writer.print(",\"hasUI\":{s},\"cwd\":", .{if (self.has_ui) "true" else "false"});
         try std.json.Stringify.value(options.cwd, .{}, &out.writer);
         try out.writer.print(",\"width\":{d},\"editorText\":", .{self.width});
@@ -286,6 +735,10 @@ pub const Controller = struct {
             if (options.provider) |provider| try std.json.Stringify.value(provider, .{}, &out.writer) else try out.writer.writeAll("null");
             try out.writer.writeByte('}');
         } else try out.writer.writeAll("null");
+        if (options.native_tool_selection) |selection| {
+            try out.writer.writeAll(",\"nativeToolSelection\":");
+            try std.json.Stringify.value(selection, .{}, &out.writer);
+        }
         try out.writer.writeAll(",\"activeTools\":[");
         for (options.active_tools, 0..) |tool, index| {
             if (index > 0) try out.writer.writeByte(',');
@@ -301,32 +754,23 @@ pub const Controller = struct {
         try out.writer.writeAll("],\"models\":[");
         for (options.model_catalog, 0..) |model, index| {
             if (index > 0) try out.writer.writeByte(',');
-            try out.writer.writeAll("{\"id\":");
-            try std.json.Stringify.value(model.id, .{}, &out.writer);
-            try out.writer.writeAll(",\"name\":");
-            try std.json.Stringify.value(model.display, .{}, &out.writer);
-            try out.writer.writeAll(",\"provider\":");
-            try std.json.Stringify.value(model.providerName(), .{}, &out.writer);
-            try out.writer.writeAll(",\"api\":");
-            try std.json.Stringify.value(@tagName(model.apiKind()), .{}, &out.writer);
-            try out.writer.writeAll(",\"baseUrl\":");
-            if (model.base_url) |base_url| try std.json.Stringify.value(base_url, .{}, &out.writer) else try out.writer.writeAll("null");
-            try out.writer.print(",\"reasoning\":{s},\"input\":[", .{if (model.reasoning) "true" else "false"});
-            if (model.input_text) try out.writer.writeAll("\"text\"");
-            if (model.input_image) {
-                if (model.input_text) try out.writer.writeByte(',');
-                try out.writer.writeAll("\"image\"");
-            }
-            try out.writer.print("],\"contextWindow\":{d},\"maxTokens\":{d},\"cost\":{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}}}}}", .{
-                model.context_window,
-                model.max_tokens,
-                model.cost.input,
-                model.cost.output,
-                model.cost.cache_read,
-                model.cost.cache_write,
-            });
+            try writeModelSnapshot(&out.writer, model);
         }
-        try out.writer.writeAll("],\"configuredProviders\":[");
+        try out.writer.writeAll("],\"scopedModels\":[");
+        for (options.scoped_models, 0..) |model, index| {
+            if (index > 0) try out.writer.writeByte(',');
+            try writeModelSnapshot(&out.writer, model);
+        }
+        try out.writer.writeAll("],\"availableModels\":");
+        if (options.available_models) |models| {
+            try out.writer.writeByte('[');
+            for (models, 0..) |model, index| {
+                if (index > 0) try out.writer.writeByte(',');
+                try writeModelSnapshot(&out.writer, model);
+            }
+            try out.writer.writeByte(']');
+        } else try out.writer.writeAll("null");
+        try out.writer.writeAll(",\"configuredProviders\":[");
         for (options.configured_providers, 0..) |provider, index| {
             if (index > 0) try out.writer.writeByte(',');
             try std.json.Stringify.value(provider, .{}, &out.writer);
@@ -413,6 +857,7 @@ pub const Controller = struct {
         }
         if (std.mem.eql(u8, method, "setWidget")) {
             const key = try requiredString(object, "key");
+            const native_owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             const lines_value = object.get("lines");
             if (lines_value == null or lines_value.? == .null) {
                 self.removeWidget(key);
@@ -422,17 +867,24 @@ pub const Controller = struct {
                 const placement_text = optionalString(object, "placement") orelse "aboveEditor";
                 const placement: WidgetPlacement = if (std.mem.eql(u8, placement_text, "belowEditor")) .below_editor else .above_editor;
                 try self.putWidget(key, lines, placement);
+                for (self.widgets.items) |*widget| if (std.mem.eql(u8, widget.key, key)) {
+                    widget.native_owner_generation = native_owner;
+                };
             }
             self.surface_dirty = true;
             return;
         }
         if (std.mem.eql(u8, method, "setHeader")) {
+            const owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             try replaceNullableLines(self.gpa, &self.header_lines, object.get("lines"));
+            self.native_header_owner = owner;
             self.header_dirty = true;
             return;
         }
         if (std.mem.eql(u8, method, "setFooter")) {
+            const owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             try replaceNullableLines(self.gpa, &self.footer_lines, object.get("lines"));
+            self.native_footer_owner = owner;
             self.footer_dirty = true;
             return;
         }
@@ -446,15 +898,21 @@ pub const Controller = struct {
             const text = try requiredString(object, "text");
             const base = self.pending_editor_text orelse self.editor_snapshot;
             const joined = try std.mem.concat(self.gpa, u8, &.{ base, text });
+            errdefer self.gpa.free(joined);
+            if (self.editor_sink_fn) |sink| try sink(self.editor_sink_ctx, joined);
             if (self.pending_editor_text) |old| self.gpa.free(old);
             self.pending_editor_text = joined;
+            self.pending_editor_delivered = self.editor_sink_fn != null;
             return;
         }
         if (std.mem.eql(u8, method, "setEditorText")) {
             const text = try requiredString(object, "text");
             const owned = try self.gpa.dupe(u8, text);
+            errdefer self.gpa.free(owned);
+            if (self.editor_sink_fn) |sink| try sink(self.editor_sink_ctx, owned);
             if (self.pending_editor_text) |old| self.gpa.free(old);
             self.pending_editor_text = owned;
+            self.pending_editor_delivered = self.editor_sink_fn != null;
             return;
         }
         if (std.mem.eql(u8, method, "setTheme")) {
@@ -511,20 +969,39 @@ pub const Controller = struct {
         const reader = self.reader;
         self.state_mutex.unlock(self.io);
         if (!ui_available) return allocator.dupe(u8, if (std.mem.eql(u8, method, "confirm")) "false" else "null");
+        if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .start, null);
+        var modal_ended = false;
+        errdefer if (!modal_ended) if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, error.DialogStatusFailed) catch {};
+        const title_value = parsed.value.object.get("title");
+        const title = if (title_value) |value| if (value == .string) value.string else "" else "";
+        if (self.dialog_status_fn) |callback| try callback(self.dialog_status_ctx, .start, method, title);
+        defer if (self.dialog_status_fn) |callback| callback(self.dialog_status_ctx, .end, method, title) catch {};
         if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .start, method);
         defer if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .end, method);
+        const result = self.dispatchDialog(allocator, reader.?, method, &parsed.value.object) catch |err| {
+            modal_ended = true;
+            if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, err) catch {};
+            return err;
+        };
+        errdefer allocator.free(result);
+        modal_ended = true;
+        if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .end, null);
+        return result;
+    }
 
-        if (std.mem.eql(u8, method, "select")) return self.requestSelect(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "confirm")) return self.requestConfirm(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "input")) return self.requestInput(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "editor")) return self.requestEditor(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "custom")) return self.requestCustom(allocator, reader.?, &parsed.value.object);
+    fn dispatchDialog(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, method: []const u8, object: *const std.json.ObjectMap) ![]u8 {
+        if (std.mem.eql(u8, method, "select")) return self.requestSelect(allocator, reader, object);
+        if (std.mem.eql(u8, method, "confirm")) return self.requestConfirm(allocator, reader, object);
+        if (std.mem.eql(u8, method, "input")) return self.requestInput(allocator, reader, object);
+        if (std.mem.eql(u8, method, "editor")) return self.requestEditor(allocator, reader, object);
+        if (std.mem.eql(u8, method, "custom")) return self.requestCustom(allocator, reader, object);
         return allocator.dupe(u8, "null");
     }
 
     /// Render and acknowledge the extension-owned header. Returns false when
     /// the built-in header should be used instead.
     pub fn renderCustomHeader(self: *Controller) !bool {
+        if (self.surface_sink_fn != null) return true;
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         if (!self.has_ui or self.header_lines == null) return false;
@@ -536,6 +1013,14 @@ pub const Controller = struct {
     /// Render queued notifications and changed retained surfaces. The state is
     /// preserved across invocations; only transient notifications are cleared.
     pub fn flush(self: *Controller) !void {
+        if (self.surface_sink_fn) |sink| {
+            var snapshot = try self.snapshotRetained(self.gpa);
+            sink(self.surface_sink_ctx, snapshot) catch |err| {
+                snapshot.deinit();
+                return err;
+            };
+            return;
+        }
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         if (!self.has_ui) return;
@@ -611,55 +1096,35 @@ pub const Controller = struct {
         const title = try requiredString(object, "title");
         const options_value = object.get("options") orelse return error.InvalidExtensionUiRequest;
         if (options_value != .array) return error.InvalidExtensionUiRequest;
-        try render.printLine(self.io, title);
+        const options = try self.gpa.alloc([]const u8, options_value.array.items.len);
+        defer self.gpa.free(options);
         for (options_value.array.items, 0..) |item, index| {
             if (item != .string) return error.InvalidExtensionUiRequest;
-            var line: std.Io.Writer.Allocating = .init(self.gpa);
-            defer line.deinit();
-            try line.writer.print("  {d}. {s}", .{ index + 1, item.string });
-            try render.printLine(self.io, line.written());
+            options[index] = item.string;
         }
-        if (options_value.array.items.len == 0) return allocator.dupe(u8, "null");
-
-        while (true) {
-            const answer = try self.readDialogLine(reader, "Select (blank cancels): ", "");
-            defer self.gpa.free(answer);
-            const trimmed = std.mem.trim(u8, answer, " \t\r\n");
-            if (trimmed.len == 0) return allocator.dupe(u8, "null");
-            if (std.fmt.parseUnsigned(usize, trimmed, 10)) |choice| {
-                if (choice >= 1 and choice <= options_value.array.items.len) return jsonString(allocator, options_value.array.items[choice - 1].string);
-            } else |_| {}
-            for (options_value.array.items) |item| if (std.ascii.eqlIgnoreCase(trimmed, item.string)) return jsonString(allocator, item.string);
-            try render.printLine(self.io, "Choose an option number or press Enter to cancel.");
-        }
+        var model = native_dialog.Model.init(self.gpa, .select, options, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, title);
+        return if (model.cancelled) allocator.dupe(u8, "null") else jsonString(allocator, options[model.selected]);
     }
 
     fn requestConfirm(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {
         const title = try requiredString(object, "title");
         const message = try requiredString(object, "message");
-        try render.printLine(self.io, title);
-        try render.printLine(self.io, message);
-        const answer = try self.readDialogLine(reader, "Confirm [y/N]: ", "");
-        defer self.gpa.free(answer);
-        const trimmed = std.mem.trim(u8, answer, " \t\r\n");
-        const yes = std.ascii.eqlIgnoreCase(trimmed, "y") or std.ascii.eqlIgnoreCase(trimmed, "yes");
-        return allocator.dupe(u8, if (yes) "true" else "false");
+        const combined_title = try std.fmt.allocPrint(self.gpa, "{s}\n{s}", .{ title, message });
+        defer self.gpa.free(combined_title);
+        var model = native_dialog.Model.init(self.gpa, .select, &.{ "Yes", "No" }, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, combined_title);
+        return allocator.dupe(u8, if (!model.cancelled and model.selected == 0) "true" else "false");
     }
 
     fn requestInput(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {
         const title = try requiredString(object, "title");
-        const placeholder = optionalString(object, "placeholder") orelse "";
-        try render.printLine(self.io, title);
-        if (placeholder.len > 0) {
-            var line: std.Io.Writer.Allocating = .init(self.gpa);
-            defer line.deinit();
-            try line.writer.print("({s})", .{placeholder});
-            try render.printLine(self.io, line.written());
-        }
-        const answer = try self.readDialogLine(reader, "> ", "");
-        defer self.gpa.free(answer);
-        if (answer.len == 0) return allocator.dupe(u8, "null");
-        return jsonString(allocator, answer);
+        var model = native_dialog.Model.init(self.gpa, .input, &.{}, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, title);
+        return if (model.cancelled) allocator.dupe(u8, "null") else jsonString(allocator, model.input.editor.slice());
     }
 
     fn requestEditor(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {
@@ -800,7 +1265,10 @@ fn requestThunk(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const 
 fn actionThunk(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args_json: []const u8) anyerror!void {
     _ = allocator;
     const self: *Controller = @ptrCast(@alignCast(raw orelse return error.MissingExtensionUiController));
-    return self.applyAction(method, args_json);
+    try self.applyAction(method, args_json);
+    // The bridge runs on a managed Runtime owner while Main may be awaiting a
+    // custom component. Retained snapshots cross into the paint owner mailbox.
+    if (self.surface_sink_fn != null) try self.flush();
 }
 
 fn requiredString(object: *const std.json.ObjectMap, key: []const u8) ![]const u8 {
@@ -886,6 +1354,18 @@ fn printLines(io: Io, lines: [][]u8) !void {
     for (lines) |line| try render.printLine(io, line);
 }
 
+pub fn terminalTitleAlloc(gpa: std.mem.Allocator, title: []const u8) ![]u8 {
+    var sanitized: [512]u8 = undefined;
+    var length: usize = 0;
+    for (title) |byte| {
+        if (length == sanitized.len) break;
+        if (byte == 0x1b or byte == 0x07 or byte < 0x20) continue;
+        sanitized[length] = byte;
+        length += 1;
+    }
+    return std.fmt.allocPrint(gpa, "\x1b]0;{s}\x07", .{sanitized[0..length]});
+}
+
 fn writeTerminalTitle(io: Io, title: []const u8) !void {
     var sanitized: [512]u8 = undefined;
     var length: usize = 0;
@@ -920,6 +1400,159 @@ test "extension UI actions retain status widgets editor and title state" {
     const pending = controller.takePendingEditorText().?;
     defer std.testing.allocator.free(pending);
     try std.testing.expectEqualStrings("hello world", pending);
+}
+
+test "renderer callback failure releases its admission and detached bridge owns discarded records" {
+    const Fake = struct {
+        closes: usize = 0,
+        fn record(_: ?*anyopaque, _: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            return error.OutOfMemory;
+        }
+        fn closed(raw: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.closes += 1;
+        }
+    };
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, true, 80);
+    defer controller.deinit();
+    var queue = renderer_protocol.ControlQueue.init(gpa, std.testing.io, 1);
+    defer queue.deinit();
+    var fake: Fake = .{};
+    controller.bindRendererFrontend(Fake.record, Fake.closed, &fake);
+    try std.testing.expect(controller.rendererBridge() != null);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"version\":1,\"type\":\"renderer_register\",\"ownerGeneration\":\"1\",\"extensionId\":\"2\",\"rowGeneration\":\"3\",\"toolCallId\":\"owned\",\"toolName\":\"paint\",\"width\":80}", .{});
+    defer parsed.deinit();
+    var rejected = try renderer_protocol.read(gpa, &parsed.value.object);
+    defer rejected.deinit();
+    try std.testing.expectError(error.OutOfMemory, Controller.rendererRecord(&controller, rejected, &queue));
+    try std.testing.expectEqual(@as(usize, 0), controller.renderer_calls);
+    try std.testing.expectEqualStrings("owned", rejected.fence.tool_call_id);
+    try Controller.rendererClosed(&controller, 1);
+    try std.testing.expectEqual(@as(usize, 1), fake.closes);
+    controller.bindRendererFrontend(null, null, null);
+    try std.testing.expect(controller.rendererBridge() == null);
+    const discarded = try renderer_protocol.read(gpa, &parsed.value.object);
+    Controller.rendererRecord(&controller, discarded, &queue) catch |err| {
+        var owned = discarded;
+        owned.deinit();
+        return err;
+    };
+    try Controller.rendererClosed(&controller, 1);
+    try std.testing.expectEqual(@as(usize, 1), fake.closes);
+}
+
+test "extension editor frontend failures preserve pending owned text and later actions reuse sink" {
+    const Fake = struct {
+        reject: bool = true,
+        calls: usize = 0,
+        fn sink(raw: ?*anyopaque, text: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (self.reject) return error.OutOfMemory;
+            try std.testing.expectEqualStrings("beforeafter", text);
+            self.calls += 1;
+        }
+    };
+    var controller = try Controller.init(std.testing.allocator, std.testing.io, true, 80);
+    defer controller.deinit();
+    try controller.applyAction("setEditorText", "{\"text\":\"before\"}");
+    var fake: Fake = .{};
+    controller.bindEditorFrontend(Fake.sink, &fake);
+    try std.testing.expectError(error.OutOfMemory, controller.applyAction("setEditorText", "{\"text\":\"lost\"}"));
+    try std.testing.expectError(error.OutOfMemory, controller.applyAction("pasteToEditor", "{\"text\":\"lost\"}"));
+    try std.testing.expectEqualStrings("before", controller.pending_editor_text.?);
+    fake.reject = false;
+    try controller.applyAction("pasteToEditor", "{\"text\":\"after\"}");
+    try std.testing.expectEqualStrings("beforeafter", controller.pending_editor_text.?);
+    try std.testing.expectEqual(@as(usize, 1), fake.calls);
+}
+
+test "delivered frontend editor snapshots acknowledge adoption and preserve later user edits" {
+    const Sink = struct {
+        fn accept(_: ?*anyopaque, _: []const u8) !void {}
+    };
+    var controller = try Controller.init(std.testing.allocator, std.testing.io, true, 80);
+    defer controller.deinit();
+    controller.bindEditorFrontend(Sink.accept, null);
+    try controller.applyAction("setEditorText", "{\"text\":\"extension draft\"}");
+    try std.testing.expect(controller.takePendingEditorText() == null);
+    try std.testing.expect(controller.pending_editor_text != null);
+    try Controller.frontendEditorSnapshot(&controller, "extension draft");
+    try std.testing.expect(controller.pending_editor_text == null);
+    try Controller.frontendEditorSnapshot(&controller, "extension draft typed");
+    try std.testing.expect(controller.takePendingEditorText() == null);
+    const snapshot = try controller.editorText(std.testing.allocator);
+    defer std.testing.allocator.free(snapshot);
+    try std.testing.expectEqualStrings("extension draft typed", snapshot);
+}
+
+test "component close error detaches foreground lifecycle and permits a new fenced scene" {
+    const Fake = struct {
+        active: ?component_protocol.Scene = null,
+        borrowed: ?*component_protocol.ControlQueue = null,
+        fail_close: bool = true,
+        starts: usize = 0,
+        ends: usize = 0,
+        closes: usize = 0,
+        fn scene(raw: ?*anyopaque, owned: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.active = owned;
+            self.borrowed = queue;
+        }
+        fn close(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.closes += 1;
+            try std.testing.expect(self.active.?.fence.matches(fence));
+            self.active.?.deinit();
+            self.active = null;
+            self.borrowed = null;
+            if (self.fail_close) return error.Canceled;
+        }
+        fn event(raw: ?*anyopaque, value: PromptEvent, name: []const u8) void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            std.debug.assert(std.mem.eql(u8, name, "custom"));
+            if (value == .start) self.starts += 1 else self.ends += 1;
+        }
+    };
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, true, 80);
+    defer controller.deinit();
+    var queue = component_protocol.ControlQueue.init(gpa, std.testing.io);
+    defer queue.deinit();
+    var fake: Fake = .{};
+    controller.bindComponentScenes(Fake.scene, Fake.close, &fake);
+    controller.bindPromptEvents(Fake.event, &fake);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"version\":1,\"token\":1,\"generation\":2,\"invocationId\":3,\"componentId\":4,\"width\":80,\"height\":24,\"lines\":[\"owned\"],\"overlay\":null}", .{});
+    defer parsed.deinit();
+    var first = try component_protocol.readScene(gpa, &parsed.value.object);
+    const fence = first.fence;
+    try Controller.componentClose(&controller, fence);
+    try std.testing.expectEqual(@as(usize, 0), fake.closes);
+    try std.testing.expectEqual(@as(usize, 0), fake.starts);
+    try std.testing.expectEqual(@as(usize, 0), fake.ends);
+    Controller.componentScene(&controller, first, &queue) catch |err| {
+        first.deinit();
+        return err;
+    };
+    var stale = fence;
+    stale.token += 1;
+    try Controller.componentClose(&controller, stale);
+    try std.testing.expect(fake.borrowed != null);
+    try std.testing.expectEqual(@as(usize, 0), fake.closes);
+    try std.testing.expectEqual(@as(usize, 1), fake.starts);
+    try std.testing.expectEqual(@as(usize, 0), fake.ends);
+    try std.testing.expectError(error.Canceled, Controller.componentClose(&controller, fence));
+    try std.testing.expect(fake.borrowed == null and controller.component_fence == null);
+    fake.fail_close = false;
+    var second = try component_protocol.readScene(gpa, &parsed.value.object);
+    Controller.componentScene(&controller, second, &queue) catch |err| {
+        second.deinit();
+        return err;
+    };
+    try Controller.componentClose(&controller, fence);
+    try std.testing.expectEqual(@as(usize, 2), fake.starts);
+    try std.testing.expectEqual(@as(usize, 2), fake.ends);
+    try std.testing.expectEqual(@as(usize, 2), fake.closes);
 }
 
 test "extension UI context snapshot owns live editor model and status data" {

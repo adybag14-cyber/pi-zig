@@ -1,13 +1,56 @@
 //! Persistent compatibility runtime for upstream JavaScript and TypeScript
 //! extensions. The Zig host owns discovery, lifecycle, validation, limits and
-//! agent integration; Node is used only to execute the extension language that
-//! upstream Pi exposes as a public plugin ABI.
+//! agent integration. The legacy backend executes extension input through
+//! Node; the explicit native backend uses the standalone Zig/C worker.
 const std = @import("std");
 const Io = std.Io;
+const component_protocol = @import("component_protocol.zig");
+const renderer_protocol = @import("renderer_protocol.zig");
+const editor_protocol = @import("editor_protocol.zig");
+const widget_protocol = @import("widget_protocol.zig");
+const context_invalidation = @import("context_invalidation_protocol.zig");
+const native_catalog_broker = @import("native_catalog_broker.zig");
+pub const WidgetBridge = struct {
+    context: ?*anyopaque,
+    record_fn: *const fn (?*anyopaque, widget_protocol.Record, *widget_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+    initial_width: usize = 80,
+    initial_height: usize = 24,
+    dimensions_fn: ?*const fn (?*anyopaque) widget_protocol.Dimensions = null,
+    action_fn: ?*const fn (?*anyopaque, []const u8, []const u8) anyerror!void = null,
+    action_context: ?*anyopaque = null,
+    attached_fn: ?*const fn (?*anyopaque, TerminalInputBridge, u64) anyerror!void = null,
+};
+pub const TerminalInputResult = struct { data: []u8, consume: bool };
+pub const TerminalInputBridge = struct { context: ?*anyopaque, input_fn: *const fn (?*anyopaque, []const u8) anyerror!TerminalInputResult };
+const actions_mod = @import("actions.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
 var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
+var native_owner_generation: std.atomic.Value(u64) = .init(1);
+
+const RendererBridgeAdapter = struct {
+    context: ?*anyopaque = null,
+    record_fn: *const fn (?*anyopaque, renderer_protocol.Record, *renderer_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+};
+pub const RendererBridge = RendererBridgeAdapter;
+pub const EditorBridge = struct {
+    context: ?*anyopaque = null,
+    record_fn: *const fn (?*anyopaque, editor_protocol.Record, *editor_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+};
+
+pub const Backend = enum { legacy, native };
+pub const NativeModelLease = struct { generation: u64, runtime_id: u64 };
+pub const NativeModelOperation = enum { query, classify, generate_images };
+pub fn validateNativeModelReply(gpa: std.mem.Allocator, bytes: []const u8, lease: NativeModelLease, request_id: u64) !void {
+    const Header = struct { version: u32, requestId: u64, generation: u64, runtimeId: u64 };
+    const header = std.json.parseFromSlice(Header, gpa, bytes, .{ .ignore_unknown_fields = true }) catch |cause| return if (cause == error.OutOfMemory) cause else error.InvalidNativeModelBridgeResponse;
+    defer header.deinit();
+    if (header.value.version != 1 or header.value.requestId != request_id or header.value.generation != lease.generation or header.value.runtimeId != lease.runtime_id) return error.InvalidNativeModelBridgeResponse;
+}
 
 fn privateFilePermissions() std.Io.File.Permissions {
     if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
@@ -49,6 +92,8 @@ pub const UiBridge = struct {
     context: ?*anyopaque = null,
     request_fn: *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8,
     action_fn: *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror!void,
+    component_scene_fn: ?*const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void = null,
+    component_close_fn: ?*const fn (?*anyopaque, component_protocol.Fence) anyerror!void = null,
 };
 
 /// Synchronous callback for a normalized extension-tool partial result. The
@@ -62,13 +107,810 @@ pub const ToolUpdateFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 /// protocol-synchronized and reusable.
 pub const ProviderStreamEventFn = *const fn (?*anyopaque, u64, []const u8) anyerror!void;
 
+/// The ordinary record budget starts when no host UI owns the human wait.
+/// Timestamp input is explicit so suspension and resume are testable without
+/// relying on subprocess admission latency or operating-system scheduling.
+pub const NativeRecordBudget = struct {
+    deadline: ?i64 = null,
+    pub fn remaining(self: *@This(), now: i64, timeout_ms: u64, human_wait: bool) !?i64 {
+        if (human_wait or timeout_ms == 0) {
+            self.deadline = null;
+            return null;
+        }
+        if (self.deadline == null) self.deadline = now +| @as(i64, @intCast(@min(timeout_ms, std.math.maxInt(i64))));
+        const value = self.deadline.? - now;
+        if (value <= 0) return error.JavaScriptExtensionTimeout;
+        return value;
+    }
+};
+
+// Native dialog callbacks contain no JavaScript. A separate, bounded pipe
+// reader keeps receiving cancellation records while one frontend callback
+// waits in cancellable native I/O. Record memory uses a thread-safe allocator.
+const NativeReadSession = struct {
+    runtime: *Runtime,
+    mutex: Io.Mutex = .init,
+    wake: Io.Event = .unset,
+    records: std.ArrayList([]u8) = .empty,
+    bytes: usize = 0,
+    finished: bool = false,
+    failure: ?anyerror = null,
+
+    fn reader(self: *@This()) Io.Cancelable!void {
+        defer self.runtime.ui_services.close(self.runtime);
+        defer self.runtime.rendererEnded();
+        defer self.runtime.editorEnded();
+        defer self.runtime.widgetEnded();
+        defer self.runtime.context_invalidation_broker.close(self.runtime.io);
+        defer self.runtime.catalog_broker.close(self.runtime.io);
+        while (true) {
+            const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            };
+            const adopted = (self.dispatchUiServiceRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchMetadataRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchWidgetRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchEditorRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchRendererRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            });
+            if (adopted) {
+                std.heap.page_allocator.free(record);
+                continue;
+            }
+            self.mutex.lockUncancelable(self.runtime.io);
+            if (self.records.items.len >= 128 or record.len > 8 * 1024 * 1024 - self.bytes) {
+                self.finished = true;
+                self.failure = error.NativeUiRecordQueueLimit;
+                self.mutex.unlock(self.runtime.io);
+                std.heap.page_allocator.free(record);
+                self.wake.set(self.runtime.io);
+                return;
+            }
+            self.records.append(std.heap.page_allocator, record) catch |err| {
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                std.heap.page_allocator.free(record);
+                self.wake.set(self.runtime.io);
+                return;
+            };
+            self.bytes += record.len;
+            self.mutex.unlock(self.runtime.io);
+            self.wake.set(self.runtime.io);
+        }
+    }
+
+    fn dispatchUiServiceRecord(self: *@This(), record: []const u8) !bool {
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string) return false;
+        return self.runtime.ui_services.dispatch(self.runtime, self, kind.string, root.object);
+    }
+
+    fn next(self: *@This(), dialogs: *NativeDialogs) ![]u8 {
+        var budget: NativeRecordBudget = .{};
+        while (true) {
+            self.wake.reset();
+            try dialogs.progress();
+            self.mutex.lockUncancelable(self.runtime.io);
+            const selected = selected: {
+                for (self.records.items, 0..) |record, index| {
+                    var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+                    defer arena.deinit();
+                    const parsed = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record, .{}) catch break :selected index;
+                    if (parsed == .object) if (parsed.object.get("invocationId")) |identity| {
+                        const actual = wireInvocationId(identity) catch break :selected index;
+                        if (dialogs.invocation_id != 0 and actual != dialogs.invocation_id) continue;
+                    };
+                    break :selected index;
+                }
+                break :selected @as(?usize, null);
+            };
+            if (selected) |index| {
+                const value = self.records.orderedRemove(index);
+                self.bytes -= value.len;
+                self.mutex.unlock(self.runtime.io);
+                return value;
+            }
+            const finished = self.finished;
+            const failure = self.failure;
+            self.mutex.unlock(self.runtime.io);
+            if (finished) return failure orelse error.JavaScriptExtensionClosed;
+            // Human dialogs do not inherit the short ordinary script-record
+            // timeout. Their own cancellation/deadline arrives on the wire.
+            const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
+            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.humanWait() or self.runtime.ui_services.humanWait(self.runtime, dialogs.invocation_id))) |remaining| {
+                const timeout: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } };
+                self.wake.waitTimeout(self.runtime.io, timeout) catch |err| switch (err) {
+                    // Event waits may report a spurious wake as Timeout.
+                    // Check the absolute deadline before retiring the worker.
+                    error.Timeout => continue,
+                    else => return err,
+                };
+            } else {
+                try self.wake.wait(self.runtime.io);
+            }
+        }
+    }
+
+    fn deinit(self: *@This()) void {
+        for (self.records.items) |record| std.heap.page_allocator.free(record);
+        self.records.deinit(std.heap.page_allocator);
+    }
+};
+
+const NativeComponentSession = struct {
+    runtime: *Runtime,
+    bridge: ?UiBridge,
+    fence: component_protocol.Fence,
+    controls: component_protocol.ControlQueue,
+    mutex: Io.Mutex = .init,
+    wake: Io.Event = .unset,
+    frames: std.ArrayList(component_protocol.Scene) = .empty,
+    closing: bool = false,
+    stopping: bool = false,
+    presented: std.atomic.Value(bool) = .init(false),
+    close_attempted: std.atomic.Value(bool) = .init(false),
+    failure: ?anyerror = null,
+    service_header: ?@import("native_ui_service_protocol.zig").Header = null,
+
+    fn writeControl(self: *@This(), writer: *Io.Writer, control: *const component_protocol.Control) !void {
+        if (self.service_header) |header| {
+            try writer.writeAll("{\"kind\":\"native_ui_service_component_control\",");
+            try header.writeFields(writer);
+            try writer.writeAll(",\"control\":");
+            try component_protocol.writeControl(writer, control);
+            try writer.writeByte('}');
+        } else try component_protocol.writeControl(writer, control);
+    }
+
+    fn push(self: *@This(), scene: component_protocol.Scene) !void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        defer self.mutex.unlock(self.runtime.io);
+        if (!component_protocol.Fence.matches(scene.fence, self.fence) or self.closing or self.stopping) return error.StaleNativeComponentScene;
+        // Coalesce queued paint frames; the latest viewport supersedes earlier
+        // owned copies without changing input ordering.
+        for (self.frames.items) |*frame| frame.deinit();
+        self.frames.clearRetainingCapacity();
+        try self.frames.append(std.heap.page_allocator, scene);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn requestClose(self: *@This()) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        self.closing = true;
+        self.mutex.unlock(self.runtime.io);
+        self.controls.reset(null);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn controlTask(self: *@This()) Io.Cancelable!void {
+        while (try self.controls.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer record.deinit();
+            self.writeControl(&record.writer, &control) catch |err| {
+                self.fail(err);
+                return;
+            };
+            self.runtime.writeLine(record.written()) catch |err| {
+                self.fail(err);
+                return;
+            };
+        }
+    }
+
+    fn fail(self: *@This(), err: anyerror) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        if (self.failure == null) self.failure = err;
+        self.mutex.unlock(self.runtime.io);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn execute(self: *@This()) !void {
+        var control_group: Io.Group = .init;
+        try control_group.concurrent(self.runtime.io, controlTask, .{self});
+        defer {
+            self.controls.stop();
+            control_group.cancel(self.runtime.io);
+        }
+        while (true) {
+            self.mutex.lockUncancelable(self.runtime.io);
+            if (self.failure) |err| {
+                self.mutex.unlock(self.runtime.io);
+                return err;
+            }
+            if (self.closing or self.stopping) {
+                const stopping = self.stopping;
+                self.mutex.unlock(self.runtime.io);
+                if (stopping) return;
+                break;
+            }
+            if (self.frames.items.len == 0) {
+                self.wake.reset();
+                self.mutex.unlock(self.runtime.io);
+                try self.wake.wait(self.runtime.io);
+                continue;
+            }
+            var frame = self.frames.orderedRemove(0);
+            self.mutex.unlock(self.runtime.io);
+            var consumed = false;
+            defer if (!consumed) frame.deinit();
+            if (self.bridge) |bridge| if (bridge.component_scene_fn) |callback| {
+                if (bridge.component_close_fn == null) return error.NativeComponentCloseBridgeMissing;
+                try callback(bridge.context, frame, &self.controls);
+                consumed = true;
+                self.presented.store(true, .release);
+            } else {
+                const cancel: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .cancel };
+                var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+                defer record.deinit();
+                try self.writeControl(&record.writer, &cancel);
+                try self.runtime.writeLine(record.written());
+            };
+        }
+        const outcome = try self.closeBoundary(std.heap.page_allocator);
+        defer if (outcome.error_message) |message| std.heap.page_allocator.free(message);
+        var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer record.deinit();
+        const acknowledgement: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .{ .close_ack = outcome.ok }, .error_message = outcome.error_message };
+        try self.writeControl(&record.writer, &acknowledgement);
+        try self.runtime.writeLine(record.written());
+    }
+
+    fn closeBoundary(self: *@This(), allocator: std.mem.Allocator) !struct { ok: bool = true, error_message: ?[]u8 = null } {
+        if (self.close_attempted.swap(true, .acq_rel)) return .{};
+        self.presented.store(false, .release);
+        if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| {
+            // The admitted request may close before a queued first frame is
+            // painted. Its close callback is still the explicit ACK boundary.
+            // Publish both fences before user code or fallible diagnostics.
+            callback(bridge.context, self.fence) catch |err| {
+                return .{ .ok = false, .error_message = try allocator.dupe(u8, @errorName(err)) };
+            };
+        } else if (bridge.component_scene_fn != null) {
+            return .{ .ok = false, .error_message = try allocator.dupe(u8, "NativeComponentCloseBridgeMissing") };
+        };
+        return .{};
+    }
+
+    fn stop(self: *@This()) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        self.stopping = true;
+        self.mutex.unlock(self.runtime.io);
+        self.controls.stop();
+        self.wake.set(self.runtime.io);
+    }
+
+    fn deinit(self: *@This()) void {
+        // The dialog joins its owner task before this method; this close has
+        // no competing scene producer and must release the frontend pointer.
+        if (self.presented.load(.acquire) and !self.close_attempted.swap(true, .acq_rel)) {
+            self.presented.store(false, .release);
+            if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| callback(bridge.context, self.fence) catch {};
+        }
+        self.controls.deinit();
+        for (self.frames.items) |*frame| frame.deinit();
+        self.frames.deinit(std.heap.page_allocator);
+        std.heap.page_allocator.destroy(self);
+    }
+};
+
+test "native component close fence survives pre-scene callbacks errors diagnostic OOM and stop fallback" {
+    const Probe = struct {
+        count: usize = 0,
+        failure: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.count += 1;
+            if (self.failure) return error.InjectedCloseBoundary;
+        }
+    };
+    var runtime: Runtime = undefined;
+    runtime.io = std.testing.io;
+    for ([_]enum { pre_scene, callback_error, diagnostic_oom, presented_stop }{ .pre_scene, .callback_error, .diagnostic_oom, .presented_stop }) |mode| {
+        var probe: Probe = .{ .failure = mode == .callback_error or mode == .diagnostic_oom };
+        const session = try std.heap.page_allocator.create(NativeComponentSession);
+        session.* = .{ .runtime = &runtime, .bridge = .{ .context = &probe, .request_fn = Probe.request, .action_fn = Probe.action, .component_close_fn = Probe.close }, .fence = .{ .token = 1, .generation = 1, .invocation_id = 1, .component_id = 1 }, .controls = component_protocol.ControlQueue.init(std.heap.page_allocator, std.testing.io) };
+        session.presented.store(mode != .pre_scene, .release);
+        if (mode != .presented_stop) {
+            if (mode == .diagnostic_oom) {
+                var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+                try std.testing.expectError(error.OutOfMemory, session.closeBoundary(failing.allocator()));
+            } else {
+                const result = try session.closeBoundary(std.testing.allocator);
+                defer if (result.error_message) |text| std.testing.allocator.free(text);
+                try std.testing.expectEqual(!probe.failure, result.ok);
+            }
+            try std.testing.expect(!session.presented.load(.acquire) and session.close_attempted.load(.acquire));
+            const repeated = try session.closeBoundary(std.testing.allocator);
+            try std.testing.expect(repeated.ok and repeated.error_message == null);
+        }
+        session.deinit();
+        try std.testing.expectEqual(@as(usize, 1), probe.count);
+    }
+}
+
+const NativeDialog = struct {
+    runtime: *Runtime,
+    session: *NativeReadSession,
+    bridge: ?UiBridge,
+    invocation_id: u64,
+    id: u32,
+    method: []u8,
+    args: []u8,
+    group: Io.Group = .init,
+    started: bool = false,
+    done: std.atomic.Value(bool) = .init(false),
+    cancelled: std.atomic.Value(bool) = .init(false),
+    failure: ?anyerror = null,
+    component: ?*NativeComponentSession = null,
+    service_header: ?@import("native_ui_service_protocol.zig").Header = null,
+    activity_invocation_id: u64 = 0,
+
+    fn run(self: *@This()) Io.Cancelable!void {
+        defer {
+            self.done.store(true, .release);
+            self.session.wake.set(self.runtime.io);
+        }
+        self.execute() catch |err| {
+            if (!self.cancelled.load(.acquire)) self.failure = err;
+        };
+    }
+
+    fn execute(self: *@This()) !void {
+        if (self.component) |component| return component.execute();
+        const allocator = std.heap.page_allocator;
+        var failure: ?[]u8 = null;
+        defer if (failure) |text| allocator.free(text);
+        const result = if (self.bridge) |bridge| bridge.request_fn(bridge.context, allocator, self.method, self.args) catch |err| blk: {
+            if (self.cancelled.load(.acquire)) return;
+            failure = try std.fmt.allocPrint(allocator, "native UI request failed: {s}", .{@errorName(err)});
+            break :blk null;
+        } else try allocator.dupe(u8, if (std.mem.eql(u8, self.method, "confirm")) "false" else "null");
+        defer if (result) |value| allocator.free(value);
+        if (self.cancelled.load(.acquire)) return;
+        if (result) |value| try validateAnyJson(allocator, value);
+        var response: Io.Writer.Allocating = .init(allocator);
+        defer response.deinit();
+        if (self.service_header) |header| {
+            try response.writer.writeAll("{\"kind\":\"native_ui_service_response\",");
+            try header.writeFields(&response.writer);
+            try response.writer.writeByte(',');
+        } else try response.writer.print("{{\"kind\":\"ui_response\",\"invocationId\":\"{d}\",\"id\":{d},", .{ self.invocation_id, self.id });
+        if (result) |value| {
+            try response.writer.writeAll("\"ok\":true,\"result\":");
+            try response.writer.writeAll(value);
+        } else {
+            try response.writer.writeAll("\"ok\":false,\"error\":");
+            try std.json.Stringify.value(failure orelse "native UI request failed", .{}, &response.writer);
+        }
+        try response.writer.writeByte('}');
+        if (!self.cancelled.load(.acquire)) try self.runtime.writeLine(response.written());
+    }
+
+    fn deinit(self: *@This()) void {
+        if (self.component) |component| component.stop();
+        if (self.started) {
+            self.cancelled.store(true, .release);
+            self.group.cancel(self.runtime.io);
+            self.group.await(self.runtime.io) catch {};
+        }
+        if (self.component) |component| component.deinit();
+        std.heap.page_allocator.free(self.method);
+        std.heap.page_allocator.free(self.args);
+        std.heap.page_allocator.destroy(self);
+    }
+};
+
+/// Only the persistent stdout reader mutates these owned tables. Callback
+/// tasks publish their completion atomically and never access the VM or table.
+const NativeUiServices = struct {
+    const protocol = @import("native_ui_service_protocol.zig");
+    const Lease = struct { identity: protocol.Lease, bridge: ?UiBridge, invocation_id: u64, last_request_id: u64 = 0 };
+    leases: std.ArrayList(Lease) = .empty,
+    requests: std.ArrayList(*NativeDialog) = .empty,
+    last_service_id: u64 = 0,
+    mutex: Io.Mutex = .init,
+
+    fn releaseDialog(request: *NativeDialog) void {
+        const io = request.runtime.io;
+        const previous = io.swapCancelProtection(.blocked);
+        defer _ = io.swapCancelProtection(previous);
+        request.deinit();
+    }
+
+    fn reap(self: *@This()) void {
+        var index: usize = 0;
+        while (index < self.requests.items.len) {
+            const request = self.requests.items[index];
+            if (request.done.load(.acquire)) {
+                _ = self.requests.swapRemove(index);
+                releaseDialog(request);
+            } else index += 1;
+        }
+    }
+    fn close(self: *@This(), runtime: *Runtime) void {
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.requests.items) |request| releaseDialog(request);
+        self.requests.clearRetainingCapacity();
+        self.leases.clearRetainingCapacity();
+    }
+    fn deinit(self: *@This(), runtime: *Runtime) void {
+        self.close(runtime);
+        self.requests.deinit(std.heap.page_allocator);
+        self.leases.deinit(std.heap.page_allocator);
+    }
+    fn find(self: *@This(), identity: protocol.Lease) ?*Lease {
+        for (self.leases.items) |*lease| if (lease.identity.eql(identity)) return lease;
+        return null;
+    }
+    fn sameBridge(a: ?UiBridge, b: ?UiBridge) bool {
+        if (a == null or b == null) return a == null and b == null;
+        return a.?.context == b.?.context and a.?.request_fn == b.?.request_fn and a.?.action_fn == b.?.action_fn and a.?.component_scene_fn == b.?.component_scene_fn and a.?.component_close_fn == b.?.component_close_fn;
+    }
+    fn epochForBridge(self: *@This(), runtime: *Runtime, bridge: ?UiBridge, proposed: u64) u64 {
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.leases.items) |lease| if (sameBridge(lease.bridge, bridge)) return lease.identity.service_generation;
+        return proposed;
+    }
+    fn humanWait(self: *@This(), runtime: *Runtime, invocation_id: u64) bool {
+        if (invocation_id == 0) return false;
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.requests.items) |request| if (request.activity_invocation_id == invocation_id and !request.done.load(.acquire)) {
+            if (request.component) |component| {
+                if (component.presented.load(.acquire)) return true;
+            } else return true;
+        };
+        return false;
+    }
+    fn dispatch(self: *@This(), runtime: *Runtime, session: *NativeReadSession, kind: []const u8, object: std.json.ObjectMap) !bool {
+        if (!std.mem.startsWith(u8, kind, "native_ui_service_")) return false;
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        const identity = protocol.Lease.read(object) catch return true;
+        if (identity.owner_generation != runtime.owner_generation) return true;
+        self.reap();
+        if (std.mem.eql(u8, kind, "native_ui_service_open")) {
+            const invocation = wireInvocationId(object.get("invocationId") orelse return true) catch return true;
+            if (invocation == 0 or invocation != @atomicLoad(u64, &runtime.service_open_invocation_id, .acquire) or identity.extension_id != @atomicLoad(u64, &runtime.service_open_extension_id, .acquire)) return true;
+            if (identity.service_id <= self.last_service_id or self.leases.items.len >= 4096) return true;
+            const bridge = runtime.captureUiBridge();
+            try self.leases.append(std.heap.page_allocator, .{ .identity = identity, .bridge = bridge, .invocation_id = invocation });
+            self.last_service_id = identity.service_id;
+            return true;
+        }
+        const lease = self.find(identity) orelse return true;
+        if (std.mem.eql(u8, kind, "native_ui_service_close")) {
+            var index: usize = 0;
+            while (index < self.requests.items.len) {
+                const request = self.requests.items[index];
+                if (request.service_header.?.lease.eql(identity)) {
+                    _ = self.requests.swapRemove(index);
+                    releaseDialog(request);
+                } else index += 1;
+            }
+            for (self.leases.items, 0..) |item, at| if (item.identity.eql(identity)) {
+                _ = self.leases.swapRemove(at);
+                break;
+            };
+            return true;
+        }
+        if (std.mem.eql(u8, kind, "native_ui_service_action")) {
+            const method = object.get("method") orelse return true;
+            const args = object.get("args") orelse return true;
+            if (method != .string or args != .object) return true;
+            const encoded = try stringifyValue(std.heap.page_allocator, args);
+            defer std.heap.page_allocator.free(encoded);
+            if (lease.bridge) |bridge| try bridge.action_fn(bridge.context, std.heap.page_allocator, method.string, encoded);
+            return true;
+        }
+        const header = protocol.Header.read(object) catch return true;
+        if (std.mem.eql(u8, kind, "native_ui_service_component_scene") or std.mem.eql(u8, kind, "native_ui_service_component_close") or std.mem.eql(u8, kind, "native_ui_service_component_mouse_outcome")) {
+            const payload = object.get("args") orelse return true;
+            if (payload != .object) return true;
+            for (self.requests.items) |request| if (request.service_header.?.matches(header)) {
+                const component = request.component orelse return true;
+                if (std.mem.eql(u8, kind, "native_ui_service_component_scene")) {
+                    var scene = try component_protocol.readScene(std.heap.page_allocator, &payload.object);
+                    errdefer scene.deinit();
+                    component.push(scene) catch |err| {
+                        if (err == error.StaleNativeComponentScene) {
+                            scene.deinit();
+                            return true;
+                        }
+                        return err;
+                    };
+                } else if (std.mem.eql(u8, kind, "native_ui_service_component_close")) {
+                    const fence = component_protocol.readFence(&payload.object) catch return true;
+                    if (component_protocol.Fence.matches(component.fence, fence)) component.requestClose();
+                } else {
+                    const outcome = component_protocol.readMouseOutcome(&payload.object) catch return true;
+                    if (!component_protocol.Fence.matches(component.fence, outcome.fence)) return true;
+                    component.controls.publishMouseOutcome(outcome) catch |err| {
+                        if (err != error.StaleNativeComponentControl) return err;
+                    };
+                }
+                break;
+            };
+            return true;
+        }
+        if (std.mem.eql(u8, kind, "native_ui_service_cancel")) {
+            for (self.requests.items, 0..) |request, index| if (request.service_header.?.matches(header)) {
+                _ = self.requests.swapRemove(index);
+                releaseDialog(request);
+                break;
+            };
+            return true;
+        }
+        if (!std.mem.eql(u8, kind, "native_ui_service_request")) return true;
+        const incoming = protocol.readRequest(object) catch return true;
+        if (header.request_id <= lease.last_request_id or header.request_id > std.math.maxInt(u32) or self.requests.items.len >= protocol.maximum_pending) return true;
+        const component_fence: ?component_protocol.Fence = if (std.mem.eql(u8, incoming.method, "custom_native")) blk: {
+            const fence = component_protocol.readFence(&incoming.args) catch return true;
+            if (fence.invocation_id != lease.invocation_id or fence.token != header.request_id) return true;
+            break :blk fence;
+        } else null;
+        const allocator = std.heap.page_allocator;
+        const method = try allocator.dupe(u8, incoming.method);
+        errdefer allocator.free(method);
+        const args = try stringifyValue(allocator, .{ .object = incoming.args });
+        errdefer allocator.free(args);
+        if (args.len > protocol.maximum_request_bytes) return error.NativeUiServiceRequestLimit;
+        const request = try allocator.create(NativeDialog);
+        errdefer allocator.destroy(request);
+        const activity = if (object.get("invocationId")) |value| wireInvocationId(value) catch 0 else 0;
+        request.* = .{ .runtime = runtime, .session = session, .bridge = lease.bridge, .invocation_id = lease.invocation_id, .id = @intCast(header.request_id), .method = method, .args = args, .service_header = header, .activity_invocation_id = activity };
+        if (component_fence) |fence| {
+            const component = try allocator.create(NativeComponentSession);
+            component.* = .{ .runtime = runtime, .bridge = lease.bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, runtime.io), .service_header = header };
+            component.controls.reset(fence);
+            request.component = component;
+        }
+        errdefer if (request.component) |component| component.deinit();
+        try self.requests.ensureUnusedCapacity(allocator, 1);
+        try request.group.concurrent(runtime.io, NativeDialog.run, .{request});
+        request.started = true;
+        self.requests.appendAssumeCapacity(request);
+        lease.last_request_id = header.request_id;
+        return true;
+    }
+};
+
+const NativeDialogs = struct {
+    runtime: *Runtime,
+    session: *NativeReadSession,
+    invocation_id: u64,
+    bridge: ?UiBridge = null,
+    queued: std.ArrayList(*NativeDialog) = .empty,
+    active: ?*NativeDialog = null,
+
+    fn humanWait(self: *@This()) bool {
+        const dialog = self.active orelse return false;
+        const component = dialog.component orelse return true;
+        return component.presented.load(.acquire);
+    }
+
+    fn deinit(self: *@This()) void {
+        if (self.active) |dialog| dialog.deinit();
+        for (self.queued.items) |dialog| dialog.deinit();
+        self.queued.deinit(std.heap.page_allocator);
+    }
+
+    fn progress(self: *@This()) !void {
+        if (self.active) |dialog| if (dialog.done.load(.acquire)) {
+            const failure = dialog.failure;
+            self.active = null;
+            dialog.deinit();
+            if (failure) |err| return err;
+        };
+        if (self.active == null and self.queued.items.len > 0) {
+            const dialog = self.queued.orderedRemove(0);
+            self.active = dialog;
+            dialog.started = true;
+            try dialog.group.concurrent(self.runtime.io, NativeDialog.run, .{dialog});
+        }
+    }
+
+    fn fencedId(self: *@This(), object: *const std.json.ObjectMap) !u32 {
+        const invocation = object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+        if (try wireInvocationId(invocation) != self.invocation_id or self.invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+        const id = object.get("id") orelse return error.InvalidNativeUiIdentity;
+        if (id != .integer or id.integer <= 0 or id.integer > std.math.maxInt(u32)) return error.InvalidNativeUiIdentity;
+        return @intCast(id.integer);
+    }
+
+    fn request(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const id = try self.fencedId(object);
+        if (self.active) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
+        for (self.queued.items) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
+        if (self.queued.items.len >= 128) return error.NativeDialogLimit;
+        const method = object.get("method") orelse return error.InvalidNativeUiRequest;
+        const args = object.get("args") orelse std.json.Value{ .object = .empty };
+        if (method != .string or method.string.len == 0 or args != .object) return error.InvalidNativeUiRequest;
+        const allocator = std.heap.page_allocator;
+        var published = false;
+        const name = try allocator.dupe(u8, method.string);
+        errdefer if (!published) allocator.free(name);
+        const encoded = try stringifyValue(allocator, args);
+        errdefer if (!published) allocator.free(encoded);
+        const dialog = try allocator.create(NativeDialog);
+        errdefer if (!published) allocator.destroy(dialog);
+        dialog.* = .{ .runtime = self.runtime, .session = self.session, .bridge = self.bridge, .invocation_id = self.invocation_id, .id = id, .method = name, .args = encoded };
+        if (std.mem.eql(u8, name, "custom_native")) {
+            const fence = try component_protocol.readFence(&args.object);
+            if (fence.invocation_id != self.invocation_id or fence.token != id) return error.InvalidNativeComponentIdentity;
+            const component = try allocator.create(NativeComponentSession);
+            errdefer if (!published) allocator.destroy(component);
+            component.* = .{ .runtime = self.runtime, .bridge = self.bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, self.runtime.io) };
+            component.controls.reset(fence);
+            dialog.component = component;
+        }
+        try self.queued.append(allocator, dialog);
+        published = true;
+        try self.progress();
+    }
+
+    fn cancel(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const id = try self.fencedId(object);
+        if (self.active) |dialog| if (dialog.id == id) {
+            self.active = null;
+            dialog.deinit();
+            try self.progress();
+            return;
+        };
+        for (self.queued.items, 0..) |dialog, index| if (dialog.id == id) {
+            _ = self.queued.orderedRemove(index);
+            dialog.deinit();
+            return;
+        };
+        // The callback may have already returned when cancellation crossed its
+        // response. A duplicate/late cancel never touches another request.
+    }
+
+    fn componentSession(self: *@This(), fence: component_protocol.Fence) ?*NativeComponentSession {
+        if (fence.invocation_id != self.invocation_id) return null;
+        if (self.active) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
+        for (self.queued.items) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
+        return null;
+    }
+
+    fn scene(self: *@This(), object: *const std.json.ObjectMap) !void {
+        var frame = try component_protocol.readScene(std.heap.page_allocator, object);
+        var consumed = false;
+        defer if (!consumed) frame.deinit();
+        const session = self.componentSession(frame.fence) orelse return;
+        session.push(frame) catch |err| {
+            if (err == error.StaleNativeComponentScene) return;
+            return err;
+        };
+        consumed = true;
+    }
+
+    fn closeComponent(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const fence = try component_protocol.readFence(object);
+        const session = self.componentSession(fence) orelse return;
+        session.requestClose();
+    }
+    fn mouseOutcome(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const value = try component_protocol.readMouseOutcome(object);
+        const session = self.componentSession(value.fence) orelse return;
+        session.controls.publishMouseOutcome(value) catch |err| switch (err) {
+            error.StaleNativeComponentControl => return,
+            else => return err,
+        };
+    }
+};
+
 pub const Runtime = struct {
+    pub const Metadata = struct {
+        revision: u64,
+        bytes: []u8,
+        pub fn deinit(self: Metadata) void {
+            std.heap.page_allocator.free(self.bytes);
+        }
+    };
+    metadata_mutex: Io.Mutex = .init,
+    metadata_records: std.ArrayList(Metadata) = .empty,
+    metadata_bytes: usize = 0,
+    metadata_received_revision: u64 = 0,
     gpa: std.mem.Allocator,
     io: Io,
     child: std.process.Child,
     source_path: []u8,
     node_program: []u8,
     bridge_path: []u8,
+    backend: Backend = .legacy,
+    native_group: bool = false,
+    shared_owner: ?*Runtime = null,
+    extension_id: u64 = 1,
+    group_references: std.atomic.Value(usize) = .init(1),
+    native_read_session: ?*NativeReadSession = null,
+    native_reader_group: Io.Group = .init,
+    ui_services: NativeUiServices = .{},
+    service_open_invocation_id: u64 = 0,
+    service_open_extension_id: u64 = 0,
+    ui_bridge_revision: u64 = 1,
+    service_epoch_sent_revision: u64 = 0,
+    owner_generation: u64 = 1,
+    renderer_mutex: Io.Mutex = .init,
+    editor_mutex: Io.Mutex = .init,
+    editor_bridge: ?EditorBridge = null,
+    editor_controls: ?*editor_protocol.ControlQueue = null,
+    editor_writer_group: Io.Group = .init,
+    editor_writer_started: bool = false,
+    widget_mutex: Io.Mutex = .init,
+    widget_lifecycle_mutex: Io.Mutex = .init,
+    widget_bridge: ?WidgetBridge = null,
+    widget_controls: ?*widget_protocol.ControlQueue = null,
+    widget_writer_group: Io.Group = .init,
+    widget_writer_started: bool = false,
+    terminal_input_mutex: Io.Mutex = .init,
+    terminal_result_mutex: Io.Mutex = .init,
+    terminal_input_wake: Io.Event = .unset,
+    terminal_input_next: u64 = 1,
+    terminal_input_pending: u64 = 0,
+    terminal_input_result: ?TerminalInputResult = null,
+    terminal_input_closed: bool = false,
+    context_invalidation_broker: context_invalidation.Broker = .{},
+    catalog_broker: native_catalog_broker.Broker = .{},
+    renderer_bridge: ?RendererBridgeAdapter = null,
+    renderer_controls: ?*renderer_protocol.ControlQueue = null,
+    renderer_writer_group: Io.Group = .init,
+    renderer_writer_started: bool = false,
+    renderer_actions: actions_mod.Queue = undefined,
+    renderer_actions_ready: bool = false,
     mutex: Io.Mutex = .init,
     /// Serializes worker stdin independently so the abort watcher can write while
     /// the invocation thread is blocked waiting for worker stdout.
@@ -91,8 +933,12 @@ pub const Runtime = struct {
     provider_stream_timeout_ms: u64 = 0,
     closed: bool = false,
     last_error: ?[]u8 = null,
+    /// Latest asynchronous owner diagnostic, separate from an invocation's
+    /// result/error identity. It never consumes the next invocation response.
+    last_owner_error: ?[]u8 = null,
     ui_bridge: ?UiBridge = null,
     context_json: ?[]u8 = null,
+    context_mutex: Io.Mutex = .init,
     next_invocation_id: u64 = 1,
     /// Lock-free identity of the one provider stream currently owned by this
     /// persistent worker. Registry replacement can request retirement without
@@ -100,12 +946,23 @@ pub const Runtime = struct {
     active_provider_stream: bool align(@alignOf(u64)) = false,
     active_provider_hash: u64 = 0,
     active_provider_generation: u64 = 0,
+    active_extension_id: u64 = 0,
     active_provider_invocation_id: u64 = 0,
     retired_provider_generation: u64 = 0,
 
     pub const Started = struct {
         runtime: *Runtime,
         manifest_json: []u8,
+    };
+    pub const RendererBridge = RendererBridgeAdapter;
+
+    pub const NativeOptions = struct {
+        // Null selects this running standalone executable. Tests/embedders can
+        // explicitly select an installed pi binary instead of the test runner.
+        executable: ?[]const u8 = null,
+        environ_map: ?*const std.process.Environ.Map = null,
+        /// Group workers admit this object before evaluating extension input.
+        startup_context_json: ?[]const u8 = null,
     };
 
     pub fn start(
@@ -114,7 +971,81 @@ pub const Runtime = struct {
         source_path: []const u8,
         node_program: []const u8,
     ) !Started {
-        const runtime = try spawnRuntime(gpa, io, source_path, node_program);
+        return startSpawned(try spawnRuntime(gpa, io, source_path, node_program));
+    }
+
+    /// Start the directly linked worker without creating bridge source or
+    /// resolving Node. This remains explicit until its complete API is gated.
+    pub fn startNative(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !Started {
+        return startSpawned(try spawnNativeRuntime(gpa, io, source_path, options));
+    }
+
+    pub fn startNativeGroup(gpa: std.mem.Allocator, io: Io, source_paths: []const []const u8, options: NativeOptions) !Started {
+        if (source_paths.len == 0 or source_paths.len > 4096) return error.InvalidNativeExtensionGroup;
+        if (options.startup_context_json) |context| try validateObjectJson(gpa, context);
+        const runtime = try spawnNativeRuntimeConfigured(gpa, io, source_paths[0], options, true);
+        const generation = native_owner_generation.fetchAdd(1, .monotonic);
+        if (generation == 0 or generation > 9_007_199_254_740_991) {
+            runtime.deinit();
+            return error.NativeOwnerGenerationLimit;
+        }
+        runtime.owner_generation = generation;
+        var startup: Io.Writer.Allocating = .init(gpa);
+        defer startup.deinit();
+        const written: ?anyerror = blk: {
+            startup.writer.print("{{\"kind\":\"load_group\",\"ownerGeneration\":\"{d}\",\"sources\":", .{generation}) catch break :blk error.OutOfMemory;
+            std.json.Stringify.value(source_paths, .{}, &startup.writer) catch break :blk error.OutOfMemory;
+            if (options.startup_context_json) |context| {
+                startup.writer.writeAll(",\"context\":") catch break :blk error.OutOfMemory;
+                startup.writer.writeAll(context) catch break :blk error.OutOfMemory;
+            }
+            startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
+            if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
+            runtime.writeLine(startup.written()) catch |err| break :blk err;
+            break :blk null;
+        };
+        if (written) |err| {
+            runtime.deinit();
+            return err;
+        }
+        return startSpawned(runtime);
+    }
+
+    fn spawnNativeRuntime(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !*Runtime {
+        return spawnNativeRuntimeConfigured(gpa, io, source_path, options, false);
+    }
+
+    fn spawnNativeRuntimeConfigured(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions, grouped: bool) !*Runtime {
+        const owned_source = try gpa.dupe(u8, source_path);
+        errdefer gpa.free(owned_source);
+        const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
+            const executable = try std.process.executablePathAlloc(io, gpa);
+            defer gpa.free(executable);
+            break :blk try gpa.dupe(u8, executable);
+        };
+        errdefer gpa.free(owned_program);
+        const owned_bridge = try gpa.dupe(u8, "");
+        errdefer gpa.free(owned_bridge);
+        const single_args = [_][]const u8{ owned_program, "--internal-native-extension-worker", owned_source };
+        const group_args = [_][]const u8{ owned_program, "--internal-native-extension-group-worker" };
+        var child = try std.process.spawn(io, .{
+            .argv = if (grouped) &group_args else &single_args,
+            .environ_map = options.environ_map,
+            .stdin = .pipe,
+            .stdout = .pipe,
+            .stderr = .inherit,
+            .create_no_window = true,
+        });
+        // This exact owned child may already be running user factory code.
+        // Reuse the bounded native termination path on every setup failure.
+        errdefer terminateChild(&child, io);
+        const runtime = try gpa.create(Runtime);
+        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .node_program = owned_program, .bridge_path = owned_bridge, .backend = .native, .native_group = grouped };
+        return runtime;
+    }
+
+    fn startSpawned(runtime: *Runtime) !Started {
+        const gpa = runtime.gpa;
         errdefer runtime.deinit();
 
         const ready_line = runtime.readRecordUnlocked() catch |err| {
@@ -130,12 +1061,115 @@ pub const Runtime = struct {
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidJavaScriptExtensionHandshake;
         const type_value = parsed.value.object.get("type") orelse return error.InvalidJavaScriptExtensionHandshake;
-        const manifest = parsed.value.object.get("manifest") orelse return error.InvalidJavaScriptExtensionHandshake;
-        if (type_value != .string or !std.mem.eql(u8, type_value.string, "ready") or manifest != .object) {
+        const manifest = parsed.value.object.get(if (runtime.native_group) "extensions" else "manifest") orelse return error.InvalidJavaScriptExtensionHandshake;
+        if (type_value != .string or !std.mem.eql(u8, type_value.string, "ready") or (if (runtime.native_group) manifest != .array else manifest != .object)) {
             return error.InvalidJavaScriptExtensionHandshake;
         }
         const manifest_json = try stringifyValue(gpa, manifest);
+        errdefer gpa.free(manifest_json);
+        runtime.renderer_actions = actions_mod.Queue.init(std.heap.page_allocator, runtime.io);
+        runtime.renderer_actions_ready = true;
+        if (runtime.native_group) {
+            const editor_controls = try std.heap.page_allocator.create(editor_protocol.ControlQueue);
+            editor_controls.* = editor_protocol.ControlQueue.init(std.heap.page_allocator, runtime.io, runtime.owner_generation);
+            runtime.editor_controls = editor_controls;
+            const controls = try std.heap.page_allocator.create(renderer_protocol.ControlQueue);
+            controls.* = renderer_protocol.ControlQueue.init(std.heap.page_allocator, runtime.io, runtime.owner_generation);
+            runtime.renderer_controls = controls;
+            const session = try gpa.create(NativeReadSession);
+            session.* = .{ .runtime = runtime };
+            errdefer gpa.destroy(session);
+            try runtime.native_reader_group.concurrent(runtime.io, NativeReadSession.reader, .{session});
+            runtime.native_read_session = session;
+        }
         return .{ .runtime = runtime, .manifest_json = manifest_json };
+    }
+
+    /// A group owner serializes every request and tags the selected extension.
+    /// Runtime views will delegate here instead of owning duplicate pipe ends.
+    pub fn invokeGroupRequest(self: *Runtime, extension_id: u64, request_json: []const u8, abort_flag: ?*bool) ![]u8 {
+        if (!self.native_group or extension_id == 0 or extension_id > 9_007_199_254_740_991) return error.InvalidNativeExtensionGroup;
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, allocator, request_json, .{});
+        if (request != .object) return error.InvalidNativeExtensionGroup;
+        const invocation_id = self.next_invocation_id;
+        self.next_invocation_id +%= 1;
+        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
+        try request.object.put(allocator, "extensionId", .{ .integer = @intCast(extension_id) });
+        try request.object.put(allocator, "invocationId", .{ .string = try std.fmt.allocPrint(allocator, "{d}", .{invocation_id}) });
+        try request.object.put(allocator, "abortable", .{ .bool = true });
+        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(allocator, "aborted", .{ .bool = true });
+        if (!request.object.contains("context")) {
+            const context = try self.contextValue(allocator);
+            try request.object.put(allocator, "context", context);
+        }
+        const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
+        const response = try self.exchangeWithUpdatesUnlocked(encoded, invocation_id, abort_flag, null, null);
+        errdefer self.gpa.free(response);
+        if (request.object.get("kind")) |kind| if (kind == .string and std.mem.eql(u8, kind.string, "sdk_model_bridge")) {
+            const lease = request.object.get("lease") orelse return error.InvalidNativeModelBridgeRequest;
+            if (lease != .object) return error.InvalidNativeModelBridgeRequest;
+            try validateNativeModelReply(self.gpa, response, .{ .generation = try component_protocol.identifier(lease.object.get("generation") orelse return error.InvalidNativeModelBridgeRequest), .runtime_id = try component_protocol.identifier(lease.object.get("runtimeId") orelse return error.InvalidNativeModelBridgeRequest) }, invocation_id);
+        };
+        return response;
+    }
+
+    /// Invoke one explicitly admitted registry on this exact worker owner.
+    pub fn invokeNativeModelBridge(self: *Runtime, lease: NativeModelLease, operation: NativeModelOperation, request_json: []const u8, abort_flag: ?*bool, deadline_ms: ?i64) ![]u8 {
+        if (self.backend != .native or lease.generation == 0 or lease.runtime_id == 0) return error.InvalidNativeModelBridgeRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const payload = try std.json.parseFromSliceLeaky(std.json.Value, a, request_json, .{});
+        if (payload != .object) return error.InvalidNativeModelBridgeRequest;
+        const bytes = try std.json.Stringify.valueAlloc(a, .{
+            .kind = "sdk_model_bridge",
+            .version = 1,
+            .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}),
+            .lease = .{ .generation = try std.fmt.allocPrint(a, "{d}", .{lease.generation}), .runtimeId = try std.fmt.allocPrint(a, "{d}", .{lease.runtime_id}) },
+            .operation = @tagName(operation),
+            .request = payload,
+            .deadlineMs = deadline_ms,
+        }, .{ .emit_null_optional_fields = false });
+        // The invocation sequence is single-use. An uncertain response must
+        // never cause an automatic replay of a provider side effect.
+        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, bytes, abort_flag);
+        if (self.native_group) return self.invokeGroupRequest(self.extension_id, bytes, abort_flag);
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        const invocation_id = self.next_invocation_id;
+        self.next_invocation_id +%= 1;
+        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, a, bytes, .{});
+        try request.object.put(a, "invocationId", .{ .string = try std.fmt.allocPrint(a, "{d}", .{invocation_id}) });
+        try request.object.put(a, "abortable", .{ .bool = true });
+        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(a, "aborted", .{ .bool = true });
+        try request.object.put(a, "context", try self.contextValue(a));
+        const response = try self.exchangeWithUpdatesUnlocked(try std.json.Stringify.valueAlloc(a, request, .{}), invocation_id, abort_flag, null, null);
+        errdefer self.gpa.free(response);
+        try validateNativeModelReply(self.gpa, response, lease, invocation_id);
+        return response;
+    }
+    /// Extension views own only metadata/context. One group owner retains all
+    /// pipe handles, reader state, invocation ordering and process cleanup.
+    pub fn extensionView(self: *Runtime, id: u64, source_path: []const u8) !*Runtime {
+        if (!self.native_group or self.shared_owner != null or id == 0 or id > 9_007_199_254_740_991) return error.InvalidNativeExtensionGroup;
+        const source = try self.gpa.dupe(u8, source_path);
+        errdefer self.gpa.free(source);
+        const program = try self.gpa.dupe(u8, self.node_program);
+        errdefer self.gpa.free(program);
+        const bridge = try self.gpa.dupe(u8, "");
+        errdefer self.gpa.free(bridge);
+        const view = try self.gpa.create(Runtime);
+        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .node_program = program, .bridge_path = bridge, .backend = .native, .shared_owner = self, .extension_id = id, .owner_generation = self.owner_generation };
+        _ = self.group_references.fetchAdd(1, .monotonic);
+        return view;
     }
 
     fn spawnRuntime(
@@ -189,6 +1223,57 @@ pub const Runtime = struct {
     }
 
     pub fn deinit(self: *Runtime) void {
+        if (self.shared_owner) |owner| {
+            self.shared_owner = null;
+            if (self.last_error) |message| self.gpa.free(message);
+            if (self.last_owner_error) |message| self.gpa.free(message);
+            if (self.context_json) |context| self.gpa.free(context);
+            self.gpa.free(self.source_path);
+            self.gpa.free(self.node_program);
+            self.gpa.free(self.bridge_path);
+            const gpa = self.gpa;
+            gpa.destroy(self);
+            owner.deinit();
+            return;
+        }
+        if (self.native_group and self.group_references.fetchSub(1, .acq_rel) != 1) return;
+        self.catalog_broker.close(self.io);
+        self.catalog_broker.serial.lockUncancelable(self.io);
+        self.catalog_broker.serial.unlock(self.io);
+        self.context_invalidation_broker.close(self.io);
+        self.context_invalidation_broker.serial.lockUncancelable(self.io);
+        self.context_invalidation_broker.serial.unlock(self.io);
+        if (self.native_read_session) |session| {
+            self.native_reader_group.cancel(self.io);
+            self.native_reader_group.await(self.io) catch {};
+            session.deinit();
+            self.gpa.destroy(session);
+            self.native_read_session = null;
+        }
+        self.ui_services.deinit(self);
+        self.editorEnded();
+        self.widgetEnded();
+        if (self.widget_controls) |controls| std.heap.page_allocator.destroy(controls);
+        if (self.editor_controls) |controls| {
+            controls.deinit();
+            std.heap.page_allocator.destroy(controls);
+            self.editor_controls = null;
+        }
+        if (self.renderer_controls) |controls| controls.stop();
+        if (self.renderer_writer_started) {
+            self.renderer_writer_group.cancel(self.io);
+            self.renderer_writer_group.await(self.io) catch {};
+        }
+        if (self.renderer_bridge) |bridge| bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        self.renderer_bridge = null;
+        if (self.renderer_controls) |controls| {
+            controls.deinit();
+            std.heap.page_allocator.destroy(controls);
+            self.renderer_controls = null;
+        }
+        if (self.renderer_actions_ready) self.renderer_actions.deinit();
+        for (self.metadata_records.items) |record| record.deinit();
+        self.metadata_records.deinit(std.heap.page_allocator);
         self.mutex.lockUncancelable(self.io);
         if (!self.closed) {
             self.writeLine("{\"kind\":\"shutdown\"}") catch {};
@@ -197,16 +1282,55 @@ pub const Runtime = struct {
         }
         self.mutex.unlock(self.io);
         if (self.last_error) |message| self.gpa.free(message);
+        if (self.last_owner_error) |message| self.gpa.free(message);
         if (self.context_json) |context| self.gpa.free(context);
         self.gpa.free(self.source_path);
         self.gpa.free(self.node_program);
-        std.Io.Dir.cwd().deleteFile(self.io, self.bridge_path) catch {};
+        if (self.backend == .legacy) std.Io.Dir.cwd().deleteFile(self.io, self.bridge_path) catch {};
         self.gpa.free(self.bridge_path);
         const gpa = self.gpa;
         self.* = undefined;
         gpa.destroy(self);
     }
 
+    /// Called at committed session teardown after shutdown callbacks settle.
+    /// Uses a dedicated VM-owner control and works during a managed callback.
+    pub fn invalidateContexts(self: *Runtime, reason: ?[]const u8) !usize {
+        if (self.shared_owner) |owner| return owner.invalidateContexts(reason);
+        if (self.backend != .native or !self.native_group) return error.NativeContextInvalidationUnavailable;
+        const broker = &self.context_invalidation_broker;
+        broker.serial.lockUncancelable(self.io);
+        defer broker.serial.unlock(self.io);
+        const ticket = try broker.begin(self.io);
+        defer broker.finish(self.io);
+        var writer: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer writer.deinit();
+        try writer.writer.print("{{\"kind\":\"context_invalidate\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\"", .{ ticket, self.owner_generation });
+        if (reason) |message| {
+            if (message.len > 65536) return error.InvalidContextInvalidationMessage;
+            try writer.writer.writeAll(",\"message\":");
+            try std.json.Stringify.value(message, .{}, &writer.writer);
+        }
+        try writer.writer.writeByte('}');
+        try self.writeLine(writer.written());
+        return broker.wait(self.io);
+    }
+    pub fn admitNativeToolCatalog(self: *Runtime, catalog: std.json.Value) !void {
+        if (self.shared_owner) |owner| return owner.admitNativeToolCatalog(catalog);
+        if (self.backend != .native or !self.native_group) return error.NativeCatalogControlUnavailable;
+        const broker = &self.catalog_broker;
+        broker.serial.lockUncancelable(self.io);
+        defer broker.serial.unlock(self.io);
+        const id = try broker.begin(self.io);
+        defer broker.finish(self.io);
+        var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer writer.deinit();
+        try writer.writer.print("{{\"kind\":\"native_tool_catalog\",\"version\":1,\"controlId\":\"{d}\",\"ownerGeneration\":\"{d}\",\"catalog\":", .{ id, self.owner_generation });
+        try std.json.Stringify.value(catalog, .{}, &writer.writer);
+        try writer.writer.writeByte('}');
+        try self.writeLine(writer.written());
+        return broker.wait(self.io);
+    }
     pub fn lastError(self: *const Runtime) ?[]const u8 {
         return self.last_error;
     }
@@ -214,7 +1338,486 @@ pub const Runtime = struct {
     pub fn setUiBridge(self: *Runtime, bridge: ?UiBridge) void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
+        _ = self.swapUiBridge(bridge);
+    }
+    fn swapUiBridge(self: *Runtime, bridge: ?UiBridge) ?UiBridge {
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        const previous = self.ui_bridge;
+        if (!NativeUiServices.sameBridge(previous, bridge)) self.ui_bridge_revision +|= 1;
         self.ui_bridge = bridge;
+        return previous;
+    }
+    fn prepareUiServiceEpoch(self: *Runtime) !void {
+        if (self.backend != .native or !self.native_group) return;
+        self.widget_mutex.lockUncancelable(self.io);
+        const revision = self.ui_bridge_revision;
+        const bridge = self.ui_bridge;
+        self.widget_mutex.unlock(self.io);
+        if (revision == self.service_epoch_sent_revision) return;
+        if (revision > 9_007_199_254_740_991) return error.NativeUiServiceExhausted;
+        const epoch = self.ui_services.epochForBridge(self, bridge, revision);
+        var buffer: [256]u8 = undefined;
+        const notice = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"native_ui_service_epoch\",\"version\":1,\"ownerGeneration\":\"{d}\",\"controlId\":\"{d}\",\"serviceGeneration\":\"{d}\"}}", .{ self.owner_generation, revision, epoch });
+        try self.writeLine(notice);
+        self.service_epoch_sent_revision = revision;
+    }
+
+    pub fn setWidgetBridge(self: *Runtime, bridge: ?WidgetBridge) !void {
+        if (self.shared_owner) |owner| return owner.setWidgetBridge(bridge);
+        if (!self.native_group) return;
+        self.widget_lifecycle_mutex.lockUncancelable(self.io);
+        defer self.widget_lifecycle_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        const previous = blk: {
+            self.widget_mutex.lockUncancelable(self.io);
+            defer self.widget_mutex.unlock(self.io);
+            if (self.widget_bridge) |old| if (bridge) |replacement| {
+                if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn and old.dimensions_fn == replacement.dimensions_fn and old.action_fn == replacement.action_fn and old.action_context == replacement.action_context and old.attached_fn == replacement.attached_fn) return;
+            };
+            const old = self.widget_bridge;
+            self.widget_bridge = null;
+            break :blk old;
+        };
+        if (previous) |old| {
+            self.stopWidgetWriter();
+            self.closeTerminalInput();
+            self.drainTerminalInput();
+            // A frontend close drains its own callback leases. Keep the record
+            // mutex available for any final actions those callbacks publish.
+            try old.closed_fn(old.context, self.owner_generation);
+        }
+        if (bridge == null) return;
+        if (self.widget_controls) |controls| std.heap.page_allocator.destroy(controls);
+        self.widget_controls = null;
+        const controls = try std.heap.page_allocator.create(widget_protocol.ControlQueue);
+        controls.* = .{ .io = self.io };
+        self.widget_controls = controls;
+        try self.widget_writer_group.concurrent(self.io, widgetControlWriter, .{self});
+        self.widget_writer_started = true;
+        self.widget_mutex.lockUncancelable(self.io);
+        self.widget_bridge = bridge;
+        self.widget_mutex.unlock(self.io);
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        self.terminal_input_closed = false;
+        self.terminal_result_mutex.unlock(self.io);
+        if (bridge.?.attached_fn) |attached| try attached(bridge.?.context, self.terminalInputBridge(), self.owner_generation);
+        const dimensions = if (bridge.?.dimensions_fn) |get| get(bridge.?.context) else widget_protocol.Dimensions{ .width = bridge.?.initial_width, .height = bridge.?.initial_height };
+        // Admit current geometry before a following session-start request can
+        // construct a factory. A scheduled writer alone does not order this.
+        var initial: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer initial.deinit();
+        try widget_protocol.writeControl(&initial.writer, .{ .owner_generation = self.owner_generation, .width = dimensions.width, .height = dimensions.height });
+        try self.writeLine(initial.written());
+    }
+    fn stopWidgetWriter(self: *Runtime) void {
+        if (self.widget_controls) |controls| controls.stop();
+        if (self.widget_writer_started) {
+            self.widget_writer_group.cancel(self.io);
+            self.widget_writer_group.await(self.io) catch {};
+            self.widget_writer_started = false;
+        }
+    }
+    fn widgetEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.widget_lifecycle_mutex.lockUncancelable(self.io);
+        defer self.widget_lifecycle_mutex.unlock(self.io);
+        self.widget_mutex.lockUncancelable(self.io);
+        const previous = self.widget_bridge;
+        self.widget_bridge = null;
+        self.widget_mutex.unlock(self.io);
+        self.stopWidgetWriter();
+        self.closeTerminalInput();
+        self.drainTerminalInput();
+        if (previous) |bridge| {
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+    fn closeTerminalInput(self: *Runtime) void {
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        self.terminal_input_closed = true;
+        self.terminal_input_wake.set(self.io);
+        self.terminal_result_mutex.unlock(self.io);
+    }
+    fn drainTerminalInput(self: *Runtime) void {
+        self.terminal_input_mutex.lockUncancelable(self.io);
+        self.terminal_input_mutex.unlock(self.io);
+    }
+    fn widgetControlWriter(self: *Runtime) Io.Cancelable!void {
+        const controls = self.widget_controls orelse return;
+        while (try controls.next()) |control| {
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            widget_protocol.writeControl(&writer.writer, control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+    fn dispatchWidgetRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (self.backend != .native) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string) return false;
+        if (std.mem.eql(u8, kind.string, "native_tool_catalog_result")) {
+            try self.catalog_broker.accept(self.io, self.owner_generation, &root.object);
+            return true;
+        }
+        if (std.mem.eql(u8, kind.string, "context_invalidate_result")) {
+            try self.context_invalidation_broker.accept(self.io, self.owner_generation, &root.object);
+            return true;
+        }
+        if (std.mem.eql(u8, kind.string, "terminal_input_result")) {
+            const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidTerminalInput);
+            const id = try component_protocol.identifier(root.object.get("id") orelse return error.InvalidTerminalInput);
+            const data = root.object.get("data") orelse return error.InvalidTerminalInput;
+            const consume = root.object.get("consume") orelse return error.InvalidTerminalInput;
+            if (data != .string or consume != .bool) return error.InvalidTerminalInput;
+            self.terminal_result_mutex.lockUncancelable(self.io);
+            defer self.terminal_result_mutex.unlock(self.io);
+            if (!self.terminal_input_closed and generation == self.owner_generation and id == self.terminal_input_pending and self.terminal_input_result == null) {
+                self.terminal_input_result = .{ .data = try std.heap.page_allocator.dupe(u8, data.string), .consume = consume.bool };
+                self.terminal_input_wake.set(self.io);
+            }
+            return true;
+        }
+        if (std.mem.eql(u8, kind.string, "widget_action")) {
+            const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidWidgetRecord);
+            if (generation != self.owner_generation) return true;
+            const method = root.object.get("method") orelse return error.InvalidWidgetRecord;
+            const args = root.object.get("args") orelse return error.InvalidWidgetRecord;
+            if (method != .string or args != .object) return error.InvalidWidgetRecord;
+            const encoded = try std.json.Stringify.valueAlloc(std.heap.page_allocator, args, .{});
+            defer std.heap.page_allocator.free(encoded);
+            self.widget_mutex.lockUncancelable(self.io);
+            defer self.widget_mutex.unlock(self.io);
+            if (self.widget_bridge) |bridge| {
+                if (bridge.action_fn) |action| try action(bridge.action_context, method.string, encoded);
+            } else if (self.ui_bridge) |bridge| try bridge.action_fn(bridge.context, std.heap.page_allocator, method.string, encoded);
+            return true;
+        }
+        if (!std.mem.eql(u8, kind.string, "widget_record")) return false;
+        var record = try widget_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        if (record.owner_generation != self.owner_generation) return true;
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        if (self.widget_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.widget_controls.?);
+            transferred = true;
+        } else if (self.ui_bridge) |bridge| {
+            var projection: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer projection.deinit();
+            try projection.writer.writeAll("{\"key\":");
+            try std.json.Stringify.value(record.key, .{}, &projection.writer);
+            try projection.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
+            if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &projection.writer) else try projection.writer.writeAll("null");
+            try projection.writer.writeByte('}');
+            try bridge.action_fn(bridge.context, std.heap.page_allocator, switch (record.slot) {
+                .widget => "setWidget",
+                .header => "setHeader",
+                .footer => "setFooter",
+            }, projection.written());
+        }
+        return true;
+    }
+
+    pub fn setEditorBridge(self: *Runtime, bridge: ?EditorBridge) !void {
+        if (self.shared_owner) |owner| return owner.setEditorBridge(bridge);
+        if (!self.native_group) return;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        if (self.editor_bridge == null and bridge == null) return;
+        if (self.editor_bridge) |old| if (bridge) |replacement| {
+            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn) return;
+        };
+        if (self.editor_bridge) |old| {
+            self.editor_bridge = null;
+            self.stopEditorWriter();
+            try old.closed_fn(old.context, self.owner_generation);
+            const previous = self.editor_controls.?;
+            const replacement = try std.heap.page_allocator.create(editor_protocol.ControlQueue);
+            replacement.* = editor_protocol.ControlQueue.init(std.heap.page_allocator, self.io, self.owner_generation);
+            previous.deinit();
+            std.heap.page_allocator.destroy(previous);
+            self.editor_controls = replacement;
+        }
+        if (bridge != null and !self.editor_writer_started) {
+            try self.editor_writer_group.concurrent(self.io, editorControlWriter, .{self});
+            self.editor_writer_started = true;
+        }
+        self.editor_bridge = bridge;
+        var buffer: [192]u8 = undefined;
+        const request = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"editor_subscribe\",\"version\":1,\"ownerGeneration\":\"{d}\",\"enabled\":{}}}", .{ self.owner_generation, bridge != null });
+        try self.writeLine(request);
+    }
+    pub fn terminalInputBridge(self: *Runtime) TerminalInputBridge {
+        return .{ .context = self.shared_owner orelse self, .input_fn = terminalInput };
+    }
+    fn terminalInput(raw: ?*anyopaque, data: []const u8) !TerminalInputResult {
+        const self: *Runtime = @ptrCast(@alignCast(raw.?));
+        self.terminal_input_mutex.lockUncancelable(self.io);
+        defer self.terminal_input_mutex.unlock(self.io);
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        if (self.terminal_input_closed) {
+            self.terminal_result_mutex.unlock(self.io);
+            return error.TerminalInputChannelClosed;
+        }
+        const id = self.terminal_input_next;
+        self.terminal_input_next += 1;
+        self.terminal_input_pending = id;
+        self.terminal_input_wake.reset();
+        self.terminal_result_mutex.unlock(self.io);
+        defer {
+            self.terminal_result_mutex.lockUncancelable(self.io);
+            self.terminal_input_pending = 0;
+            if (self.terminal_input_result) |value| std.heap.page_allocator.free(value.data);
+            self.terminal_input_result = null;
+            self.terminal_result_mutex.unlock(self.io);
+        }
+        var out: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer out.deinit();
+        try out.writer.print("{{\"kind\":\"terminal_input\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"data\":", .{ id, self.owner_generation });
+        try std.json.Stringify.value(data, .{}, &out.writer);
+        try out.writer.writeByte('}');
+        try self.writeLine(out.written());
+        try self.terminal_input_wake.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(5000), .clock = .awake } });
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        defer self.terminal_result_mutex.unlock(self.io);
+        const result = self.terminal_input_result orelse return error.TerminalInputChannelClosed;
+        self.terminal_input_result = null;
+        return result;
+    }
+    fn stopEditorWriter(self: *Runtime) void {
+        if (self.editor_controls) |controls| controls.stop();
+        if (self.editor_writer_started) {
+            self.editor_writer_group.cancel(self.io);
+            self.editor_writer_group.await(self.io) catch {};
+            self.editor_writer_started = false;
+        }
+    }
+    fn editorEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        self.stopEditorWriter();
+        if (self.editor_bridge) |bridge| {
+            self.editor_bridge = null;
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+    fn editorControlWriter(self: *Runtime) Io.Cancelable!void {
+        const queue = self.editor_controls orelse return;
+        while (try queue.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            editor_protocol.writeControl(&writer.writer, control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+    fn dispatchEditorRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (!self.native_group) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string or !std.mem.startsWith(u8, kind.string, "editor_")) return false;
+        var record = try editor_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        if (record.fence.owner_generation != self.owner_generation) return true;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        if (self.editor_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.editor_controls.?);
+            transferred = true;
+        }
+        return true;
+    }
+
+    pub fn setRendererBridge(self: *Runtime, bridge: ?RendererBridgeAdapter) !void {
+        if (self.shared_owner) |owner| return owner.setRendererBridge(bridge);
+        if (!self.native_group) return;
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        if (self.native_read_session) |session| {
+            session.mutex.lockUncancelable(self.io);
+            const finished = session.finished;
+            const failure = session.failure;
+            session.mutex.unlock(self.io);
+            if (finished) return failure orelse error.JavaScriptExtensionClosed;
+        }
+        if (self.renderer_bridge == null and bridge == null) return;
+        if (self.renderer_bridge) |old| if (bridge) |replacement| {
+            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn) return;
+        };
+        if (self.renderer_bridge) |old| {
+            self.renderer_bridge = null;
+            self.stopRendererWriter();
+            try old.closed_fn(old.context, self.owner_generation);
+            const previous = self.renderer_controls.?;
+            const replacement = try std.heap.page_allocator.create(renderer_protocol.ControlQueue);
+            replacement.* = renderer_protocol.ControlQueue.init(std.heap.page_allocator, self.io, self.owner_generation);
+            previous.deinit();
+            std.heap.page_allocator.destroy(previous);
+            self.renderer_controls = replacement;
+        }
+        if (bridge != null and !self.renderer_writer_started) {
+            try self.renderer_writer_group.concurrent(self.io, rendererControlWriter, .{self});
+            self.renderer_writer_started = true;
+        }
+        self.renderer_bridge = bridge;
+        var buffer: [192]u8 = undefined;
+        const request = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"renderer_subscribe\",\"version\":1,\"ownerGeneration\":\"{d}\",\"enabled\":{}}}", .{ self.owner_generation, bridge != null });
+        try self.writeLine(request);
+    }
+
+    fn stopRendererWriter(self: *Runtime) void {
+        if (self.renderer_controls) |controls| controls.stop();
+        if (self.renderer_writer_started) {
+            self.renderer_writer_group.cancel(self.io);
+            self.renderer_writer_group.await(self.io) catch {};
+            self.renderer_writer_started = false;
+        }
+    }
+
+    fn rendererEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        self.stopRendererWriter();
+        if (self.renderer_bridge) |bridge| {
+            self.renderer_bridge = null;
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+
+    fn rendererControlWriter(self: *Runtime) Io.Cancelable!void {
+        const queue = self.renderer_controls orelse return;
+        while (try queue.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            renderer_protocol.writeControl(&writer.writer, &control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+
+    fn dispatchRendererRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (!self.native_group) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, allocator, bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string or !std.mem.startsWith(u8, kind.string, "renderer_")) return false;
+        const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidRendererIdentity);
+        if (generation != self.owner_generation) return true;
+        if (std.mem.eql(u8, kind.string, "renderer_actions")) {
+            const version_value = root.object.get("version") orelse return error.InvalidRendererVersion;
+            if (version_value != .integer or version_value.integer != renderer_protocol.version) return error.InvalidRendererVersion;
+            var batch = try actions_mod.Batch.parseNative(std.heap.page_allocator, "native", "renderer_redraw", bytes);
+            defer batch.deinit(std.heap.page_allocator);
+            if (batch.items.len > 4096 -| self.renderer_actions.count()) return error.ExtensionRendererActionQueueLimit;
+            try self.renderer_actions.enqueue(&batch);
+            return true;
+        }
+        var record = try renderer_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        if (self.renderer_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.renderer_controls.?);
+            transferred = true;
+        }
+        return true;
+    }
+
+    pub fn transferRendererActions(self: *Runtime, destination: *actions_mod.Queue) !void {
+        if (self.shared_owner) |owner| return owner.transferRendererActions(destination);
+        if (!self.renderer_actions_ready) return;
+        const source = &self.renderer_actions;
+        source.mutex.lockUncancelable(self.io);
+        defer source.mutex.unlock(self.io);
+        const count = source.items.items.len;
+        if (count == 0) return;
+        const records = try destination.gpa.alloc(actions_mod.Record, count);
+        var copied: usize = 0;
+        var batch: actions_mod.Batch = .{ .items = records };
+        errdefer {
+            for (records[0..copied]) |*record| record.deinit(destination.gpa);
+            destination.gpa.free(records);
+        }
+        for (source.items.items, records) |record, *owned| {
+            owned.* = try record.clone(destination.gpa);
+            copied += 1;
+        }
+        try destination.enqueue(&batch);
+        for (source.items.items) |*record| record.deinit(source.gpa);
+        source.items.clearRetainingCapacity();
+    }
+
+    pub fn rendererActionCount(self: *Runtime) usize {
+        if (self.shared_owner) |owner| return owner.rendererActionCount();
+        return if (self.renderer_actions_ready) self.renderer_actions.count() else 0;
+    }
+
+    // Reader ownership ends at the FIFO. It never calls Host callbacks or
+    // reacquires the invocation mutex, so reentrant UI/owner requests cannot
+    // deadlock registration discovery.
+    fn dispatchMetadataRecord(self: *Runtime, bytes: []const u8) !bool {
+        var parsed = try std.json.parseFromSlice(std.json.Value, std.heap.page_allocator, bytes, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return false;
+        const object = parsed.value.object;
+        const kind = object.get("type") orelse return false;
+        if (kind != .string or !std.mem.eql(u8, kind.string, "native_metadata")) return false;
+        const version = object.get("version") orelse return error.InvalidNativeMetadata;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeMetadata;
+        const generation = try wireInvocationId(object.get("ownerGeneration") orelse return error.InvalidNativeMetadata);
+        if (generation != self.owner_generation) return true;
+        const revision = try wireInvocationId(object.get("revision") orelse return error.InvalidNativeMetadata);
+        const extensions = object.get("extensions") orelse return error.InvalidNativeMetadata;
+        if (revision == 0 or extensions != .array or extensions.array.items.len > 4096) return error.InvalidNativeMetadata;
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (revision <= self.metadata_received_revision) return true;
+        if (self.metadata_records.items.len >= 128 or bytes.len > 16 * 1024 * 1024 -| self.metadata_bytes) return error.NativeMetadataQueueLimit;
+        const owned = try std.heap.page_allocator.dupe(u8, bytes);
+        errdefer std.heap.page_allocator.free(owned);
+        try self.metadata_records.append(std.heap.page_allocator, .{ .revision = revision, .bytes = owned });
+        self.metadata_bytes += owned.len;
+        self.metadata_received_revision = revision;
+        return true;
+    }
+
+    pub fn peekMetadata(self: *Runtime) !?Metadata {
+        if (self.shared_owner) |owner| return owner.peekMetadata();
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (self.metadata_records.items.len == 0) return null;
+        const record = self.metadata_records.items[0];
+        return .{ .revision = record.revision, .bytes = try std.heap.page_allocator.dupe(u8, record.bytes) };
+    }
+
+    pub fn commitMetadata(self: *Runtime, revision: u64) void {
+        if (self.shared_owner) |owner| return owner.commitMetadata(revision);
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (self.metadata_records.items.len == 0 or self.metadata_records.items[0].revision != revision) return;
+        const record = self.metadata_records.orderedRemove(0);
+        self.metadata_bytes -= record.bytes.len;
+        record.deinit();
     }
 
     /// Update the context exposed through ExtensionContext for later calls.
@@ -223,14 +1826,35 @@ pub const Runtime = struct {
     pub fn setContextJson(self: *Runtime, raw: []const u8) !void {
         try validateObjectJson(self.gpa, raw);
         const owned = try self.gpa.dupe(u8, raw);
-        self.mutex.lockUncancelable(self.io);
-        defer self.mutex.unlock(self.io);
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
         if (self.context_json) |old| self.gpa.free(old);
         self.context_json = owned;
     }
 
     fn writeContext(self: *const Runtime, writer: *std.Io.Writer) !void {
+        @constCast(self).context_mutex.lockUncancelable(self.io);
+        defer @constCast(self).context_mutex.unlock(self.io);
         try writer.writeAll(self.context_json orelse "{\"mode\":\"print\",\"hasUI\":false}");
+    }
+    fn contextValue(self: *Runtime, a: std.mem.Allocator) !std.json.Value {
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
+        return if (self.context_json) |raw| std.json.parseFromSliceLeaky(std.json.Value, a, raw, .{}) else .{ .object = .empty };
+    }
+    pub fn pinView(self: *Runtime) !*Runtime {
+        const view = try (self.shared_owner orelse self).extensionView(self.extension_id, self.source_path);
+        errdefer view.deinit();
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
+        if (self.context_json) |raw| view.context_json = try view.gpa.dupe(u8, raw);
+        view.ui_bridge = self.captureUiBridge();
+        return view;
+    }
+    fn captureUiBridge(self: *Runtime) ?UiBridge {
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        return self.ui_bridge;
     }
 
     pub fn invokeHook(self: *Runtime, name: []const u8, payload_json: []const u8, flags_json: []const u8) ![]u8 {
@@ -309,10 +1933,16 @@ pub const Runtime = struct {
         try std.json.Stringify.value(raw_arguments, .{}, &request.writer);
         try request.writer.writeAll(",\"flags\":");
         try request.writer.writeAll(flags_json);
+        const invocation_id = if (self.backend == .native) blk: {
+            const id = self.next_invocation_id;
+            self.next_invocation_id = std.math.add(u64, id, 1) catch return error.ExtensionInvocationIdExhausted;
+            try request.writer.print(",\"invocationId\":\"{d}\"", .{id});
+            break :blk id;
+        } else 0;
         try request.writer.writeAll(",\"context\":");
         try self.writeContext(&request.writer);
         try request.writer.writeByte('}');
-        return self.exchangeUnlocked(request.written());
+        return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, null, null, null);
     }
 
     pub fn invokeShortcut(self: *Runtime, key: []const u8, flags_json: []const u8) ![]u8 {
@@ -344,12 +1974,152 @@ pub const Runtime = struct {
         append_signal: bool,
         abort_flag: ?*bool,
     ) ![]u8 {
+        return self.invokeProviderMethodWithTimeout(callback_id, args_json, append_signal, abort_flag, null);
+    }
+    pub fn invokeProviderTypedOperation(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").Operation, model_json: []const u8, context_json: []const u8, options_json: []const u8, auth_rewrites_model: bool, abort_flag: ?*bool) ![]u8 {
+        if (self.backend != .native or callback_id.len == 0 or provider.len == 0 or generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeTypedProviderRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const model = try std.json.parseFromSliceLeaky(std.json.Value, a, model_json, .{});
+        const context = try std.json.parseFromSliceLeaky(std.json.Value, a, context_json, .{});
+        const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
+        if (model != .object or context != .object or options != .object) return error.InvalidNativeTypedProviderRequest;
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_typed_operation", .version = 1, .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}), .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .model = model, .modelContext = context, .options = options, .authRewritesModel = auth_rewrites_model, .context = try self.contextValue(a) }, .{});
+        // This operation is single-use; an uncertain provider response is not
+        // replayed on a different callback or worker generation.
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        return error.NativeTypedProviderRequiresGroupOwner;
+    }
+
+    fn invokeProviderTicketRequest(self: *Runtime, extension_id: u64, raw: []const u8, abort_flag: ?*bool, bridge: ?UiBridge) ![]u8 {
+        if (!self.native_group or extension_id == 0) return error.NativeTypedProviderRequiresGroupOwner;
+        const session = self.native_read_session orelse return error.NativeTypedProviderRequiresGroupOwner;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, a, raw, .{});
+        if (request != .object) return error.InvalidNativeTypedProviderRequest;
+        const kind = request.object.get("kind") orelse return error.InvalidNativeTypedProviderRequest;
+        if (kind != .string) return error.InvalidNativeTypedProviderRequest;
+        const begin_kind: []const u8 = if (std.mem.eql(u8, kind.string, "provider_typed_operation")) "provider_typed_begin" else if (std.mem.eql(u8, kind.string, "provider_auth_operation")) "provider_auth_begin" else return error.InvalidNativeTypedProviderRequest;
+        self.mutex.lockUncancelable(self.io);
+        const id = self.next_invocation_id;
+        self.next_invocation_id = std.math.add(u64, id, 1) catch {
+            self.mutex.unlock(self.io);
+            return error.NativeInvocationLimit;
+        };
+        const closed = self.closed;
+        self.mutex.unlock(self.io);
+        if (closed) return error.JavaScriptExtensionClosed;
+        const id_text = try std.fmt.allocPrint(a, "{d}", .{id});
+        const owner_text = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation});
+        var completed = false;
+        defer if (!completed) {
+            const previous = self.io.swapCancelProtection(.blocked);
+            defer _ = self.io.swapCancelProtection(previous);
+            var buffer: [256]u8 = undefined;
+            const retire = std.fmt.bufPrint(&buffer, "{{\"kind\":\"provider_ticket_retire\",\"ownerGeneration\":\"{s}\",\"extensionId\":{d},\"ticketId\":\"{s}\"}}", .{ owner_text, extension_id, id_text }) catch unreachable;
+            self.writeLine(retire) catch {};
+        };
+        try request.object.put(a, "kind", .{ .string = begin_kind });
+        try request.object.put(a, "extensionId", .{ .integer = @intCast(extension_id) });
+        try request.object.put(a, "invocationId", .{ .string = id_text });
+        try request.object.put(a, "abortable", .{ .bool = true });
+        try request.object.put(a, "aborted", .{ .bool = if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false });
+        var dialogs: NativeDialogs = .{ .runtime = self, .session = session, .invocation_id = id, .bridge = bridge };
+        defer dialogs.deinit();
+        const admission = try self.exchangeProviderTicket(try std.json.Stringify.valueAlloc(a, request, .{}), id, &dialogs);
+        defer self.gpa.free(admission);
+        const admitted = try std.json.parseFromSliceLeaky(std.json.Value, a, admission, .{});
+        const ticket_id = if (admitted == .object) admitted.object.get("ticketId") orelse return error.InvalidNativeProviderTicket else return error.InvalidNativeProviderTicket;
+        if (ticket_id != .string or !std.mem.eql(u8, ticket_id.string, id_text)) return error.InvalidNativeProviderTicket;
+        while (true) {
+            const poll = try std.json.Stringify.valueAlloc(self.gpa, .{ .kind = "provider_ticket_poll", .version = 1, .ownerGeneration = owner_text, .extensionId = extension_id, .invocationId = id_text, .ticketId = id_text, .aborted = if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false }, .{});
+            defer self.gpa.free(poll);
+            const response = try self.exchangeProviderTicket(poll, id, &dialogs);
+            defer self.gpa.free(response);
+            var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, response, .{});
+            defer parsed.deinit();
+            if (parsed.value != .object) return error.InvalidNativeProviderTicket;
+            const pending = parsed.value.object.get("pending") orelse return error.InvalidNativeProviderTicket;
+            if (pending != .bool) return error.InvalidNativeProviderTicket;
+            if (!pending.bool) {
+                if (parsed.value.object.get("error")) |_| return error.NativeTypedProviderTicketRetired;
+                const envelope = parsed.value.object.get("envelope") orelse return error.InvalidNativeProviderTicket;
+                const value = try stringifyValue(self.gpa, envelope);
+                completed = true;
+                return value;
+            }
+            try self.io.sleep(.fromMilliseconds(5), .awake);
+        }
+    }
+    fn exchangeProviderTicket(self: *Runtime, request: []const u8, id: u64, dialogs: *NativeDialogs) ![]u8 {
+        // Once a short request is written, drain its exact response before
+        // honoring task cancellation. The next outer cancellation point sends
+        // a ticket-only retirement control and preserves the shared owner.
+        const previous = self.io.swapCancelProtection(.blocked);
+        defer _ = self.io.swapCancelProtection(previous);
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        self.clearLastErrorUnlocked();
+        try self.requireNativeRequest(request);
+        self.writeLine(request) catch |err| {
+            self.closeUnlocked();
+            return err;
+        };
+        return self.readResultWithDialogs(null, null, null, null, id, null, dialogs) catch |err| {
+            if (err != error.JavaScriptExtensionExecutionFailed) self.closeUnlocked();
+            return err;
+        };
+    }
+
+    pub fn providerAdmission(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64) !bool {
+        if (self.backend != .native) return error.NativeTypedProviderOwnerRequired;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_admission", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .context = try self.contextValue(a) }, .{});
+        const bytes = if (self.shared_owner) |owner| try owner.invokeGroupRequest(self.extension_id, request, null) else if (self.native_group) try self.invokeGroupRequest(self.extension_id, request, null) else return error.NativeTypedProviderRequiresGroupOwner;
+        defer self.gpa.free(bytes);
+        var result = try std.json.parseFromSlice(std.json.Value, self.gpa, bytes, .{});
+        defer result.deinit();
+        const native_mode = if (result.value == .object) result.value.object.get("native") orelse return error.InvalidNativeProviderAdmission else return error.InvalidNativeProviderAdmission;
+        return if (native_mode == .bool) native_mode.bool else error.InvalidNativeProviderAdmission;
+    }
+    pub fn invokeProviderAuthOperation(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").AuthOperation, credential_json: []const u8, options_json: []const u8, abort_flag: ?*bool) ![]u8 {
+        if (self.backend != .native or generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeProviderAuthRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const credential = try std.json.parseFromSliceLeaky(std.json.Value, a, credential_json, .{});
+        const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
+        if ((credential != .null and credential != .object) or options != .object) return error.InvalidNativeProviderAuthRequest;
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_auth_operation", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .credential = credential, .options = options, .context = try self.contextValue(a) }, .{});
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        return error.NativeTypedProviderRequiresGroupOwner;
+    }
+    pub fn invokeProviderMethodWithTimeout(
+        self: *Runtime,
+        callback_id: []const u8,
+        args_json: []const u8,
+        append_signal: bool,
+        abort_flag: ?*bool,
+        timeout_ms: ?u64,
+    ) ![]u8 {
         if (callback_id.len == 0 or callback_id.len > 4096) return error.InvalidProviderCallbackId;
         try validateArrayJson(self.gpa, args_json);
 
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
+
+        const previous_timeout = self.timeout_ms;
+        if (timeout_ms) |deadline| self.timeout_ms = deadline;
+        defer self.timeout_ms = previous_timeout;
 
         var request: std.Io.Writer.Allocating = .init(self.gpa);
         defer request.deinit();
@@ -386,9 +2156,8 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
-        const previous_bridge = self.ui_bridge;
-        self.ui_bridge = bridge;
-        defer self.ui_bridge = previous_bridge;
+        const previous_bridge = self.swapUiBridge(bridge);
+        defer _ = self.swapUiBridge(previous_bridge);
         const previous_timeout = self.timeout_ms;
         self.timeout_ms = self.oauth_login_timeout_ms;
         defer self.timeout_ms = previous_timeout;
@@ -429,9 +2198,8 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
-        const previous_bridge = self.ui_bridge;
-        self.ui_bridge = bridge;
-        defer self.ui_bridge = previous_bridge;
+        const previous_bridge = self.swapUiBridge(bridge);
+        defer _ = self.swapUiBridge(previous_bridge);
         const previous_timeout = self.timeout_ms;
         self.timeout_ms = self.models_refresh_timeout_ms;
         defer self.timeout_ms = previous_timeout;
@@ -635,6 +2403,10 @@ pub const Runtime = struct {
     /// provider hash is paired with the runtime-local generation, preventing a
     /// colliding generation from another provider or worker from being aborted.
     pub fn retireProviderGeneration(self: *Runtime, provider_name: []const u8, generation: u64, timeout_ms: u64) bool {
+        if (self.shared_owner) |owner| {
+            if (@atomicLoad(u64, &owner.active_extension_id, .acquire) != self.extension_id) return true;
+            return owner.retireProviderGeneration(provider_name, generation, timeout_ms);
+        }
         if (generation == 0 or !@atomicLoad(bool, &self.active_provider_stream, .acquire)) return true;
         if (@atomicLoad(u64, &self.active_provider_hash, .acquire) != std.hash.Wyhash.hash(0, provider_name) or
             @atomicLoad(u64, &self.active_provider_generation, .acquire) != generation)
@@ -682,7 +2454,8 @@ pub const Runtime = struct {
             std.mem.eql(u8, kind, "transform_markdown") or
             std.mem.eql(u8, kind, "render_tool_call") or
             std.mem.eql(u8, kind, "render_tool_result") or
-            std.mem.eql(u8, kind, "prepare_tool_arguments"))) return error.InvalidJavaScriptRendererKind;
+            std.mem.eql(u8, kind, "prepare_tool_arguments") or
+            std.mem.eql(u8, kind, "renderer_retire"))) return error.InvalidJavaScriptRendererKind;
         try validateObjectJson(self.gpa, payload_json);
 
         self.mutex.lockUncancelable(self.io);
@@ -789,7 +2562,22 @@ pub const Runtime = struct {
         stream_event_ctx: ?*anyopaque,
         watch_provider_retirement: bool,
     ) ![]u8 {
+        if (self.shared_owner) |owner| return self.exchangeGroupView(owner, request, abort_flag, update_fn, update_ctx, stream_event_fn, stream_event_ctx, watch_provider_retirement);
+        if (self.backend == .native) try self.requireNativeRequest(request);
         self.clearLastErrorUnlocked();
+        try self.prepareUiServiceEpoch();
+        if (self.backend == .native and self.native_group) {
+            var arena: std.heap.ArenaAllocator = .init(self.gpa);
+            defer arena.deinit();
+            const value = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), request, .{});
+            const extension = if (value == .object) if (value.object.get("extensionId")) |id| try component_protocol.identifier(id) else self.extension_id else self.extension_id;
+            @atomicStore(u64, &self.service_open_extension_id, extension, .release);
+            @atomicStore(u64, &self.service_open_invocation_id, invocation_id, .release);
+        }
+        defer {
+            @atomicStore(u64, &self.service_open_invocation_id, 0, .release);
+            @atomicStore(u64, &self.service_open_extension_id, 0, .release);
+        }
         self.writeLine(request) catch |err| {
             self.closeUnlocked();
             return err;
@@ -798,7 +2586,12 @@ pub const Runtime = struct {
         var watcher_done = false;
         var watcher_group: Io.Group = .init;
         const watching_abort = invocation_id != 0 and (abort_flag != null or watch_provider_retirement);
-        if (watching_abort) watcher_group.async(self.io, abortWatcherTask, .{ self, abort_flag, invocation_id, &watcher_done, watch_provider_retirement });
+        if (watching_abort) watcher_group.concurrent(self.io, abortWatcherTask, .{ self, abort_flag, invocation_id, &watcher_done, watch_provider_retirement }) catch |err| {
+            // The request is already on the wire; retiring preserves protocol
+            // synchronization when no watcher concurrency can be acquired.
+            self.closeUnlocked();
+            return err;
+        };
         defer if (watching_abort) {
             @atomicStore(bool, &watcher_done, true, .release);
             watcher_group.cancel(self.io);
@@ -818,6 +2611,58 @@ pub const Runtime = struct {
         };
     }
 
+    fn exchangeGroupView(self: *Runtime, owner: *Runtime, raw: []const u8, abort_flag: ?*bool, update_fn: ?ToolUpdateFn, update_ctx: ?*anyopaque, event_fn: ?ProviderStreamEventFn, event_ctx: ?*anyopaque, retirement: bool) anyerror![]u8 {
+        owner.mutex.lockUncancelable(owner.io);
+        defer owner.mutex.unlock(owner.io);
+        if (owner.closed) {
+            self.closed = true;
+            self.child.id = null;
+            return error.JavaScriptExtensionClosed;
+        }
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw, .{});
+        if (request != .object) return error.InvalidNativeExtensionGroup;
+        const id = owner.next_invocation_id;
+        owner.next_invocation_id +%= 1;
+        if (owner.next_invocation_id == 0) owner.next_invocation_id = 1;
+        try request.object.put(allocator, "extensionId", .{ .integer = @intCast(self.extension_id) });
+        try request.object.put(allocator, "invocationId", .{ .string = try std.fmt.allocPrint(allocator, "{d}", .{id}) });
+        try request.object.put(allocator, "abortable", .{ .bool = true });
+        const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
+        const previous_timeout = owner.timeout_ms;
+        const previous_bridge = owner.ui_bridge;
+        owner.timeout_ms = self.timeout_ms;
+        _ = owner.swapUiBridge(self.ui_bridge);
+        defer {
+            owner.timeout_ms = previous_timeout;
+            _ = owner.swapUiBridge(previous_bridge);
+        }
+        @atomicStore(u64, &owner.active_extension_id, self.extension_id, .release);
+        defer @atomicStore(u64, &owner.active_extension_id, 0, .release);
+        if (retirement) {
+            @atomicStore(bool, &owner.active_provider_stream, true, .release);
+            @atomicStore(u64, &owner.active_provider_hash, @atomicLoad(u64, &self.active_provider_hash, .acquire), .release);
+            @atomicStore(u64, &owner.active_provider_generation, @atomicLoad(u64, &self.active_provider_generation, .acquire), .release);
+            @atomicStore(u64, &owner.active_provider_invocation_id, id, .release);
+            @atomicStore(u64, &owner.retired_provider_generation, @atomicLoad(u64, &self.retired_provider_generation, .acquire), .release);
+        }
+        defer if (retirement) {
+            @atomicStore(bool, &owner.active_provider_stream, false, .release);
+            @atomicStore(u64, &owner.active_provider_invocation_id, 0, .release);
+        };
+        const result = owner.exchangeWithCallbacksUnlocked(encoded, id, abort_flag, update_fn, update_ctx, event_fn, event_ctx, retirement) catch |err| {
+            self.clearLastErrorUnlocked();
+            if (owner.last_error) |message| self.last_error = try self.gpa.dupe(u8, message);
+            self.closed = owner.closed;
+            self.child.id = owner.child.id;
+            return err;
+        };
+        self.clearLastErrorUnlocked();
+        return result;
+    }
+
     fn readResultUnlocked(
         self: *Runtime,
         update_fn: ?ToolUpdateFn,
@@ -827,25 +2672,83 @@ pub const Runtime = struct {
         expected_invocation_id: u64,
         abort_flag: ?*const bool,
     ) ![]u8 {
+        return self.readResultWithDialogs(update_fn, update_ctx, stream_event_fn, stream_event_ctx, expected_invocation_id, abort_flag, null);
+    }
+    fn readResultWithDialogs(
+        self: *Runtime,
+        update_fn: ?ToolUpdateFn,
+        update_ctx: ?*anyopaque,
+        stream_event_fn: ?ProviderStreamEventFn,
+        stream_event_ctx: ?*anyopaque,
+        expected_invocation_id: u64,
+        abort_flag: ?*const bool,
+        retained_dialogs: ?*NativeDialogs,
+    ) ![]u8 {
         var expected_stream_sequence: u64 = 1;
+        var local_native_session: NativeReadSession = .{ .runtime = self };
+        const native_session = self.native_read_session orelse &local_native_session;
+        var reader_group: Io.Group = .init;
+        // A persistent reader and a human dialog must progress independently
+        // of the owner, including when the implementation's async pool is full.
+        if (self.backend == .native and self.native_read_session == null) try reader_group.concurrent(self.io, NativeReadSession.reader, .{native_session});
+        defer if (self.backend == .native and self.native_read_session == null) {
+            reader_group.cancel(self.io);
+            reader_group.await(self.io) catch {};
+            native_session.deinit();
+        };
+        var local_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id, .bridge = self.ui_bridge };
+        const native_dialogs = retained_dialogs orelse &local_dialogs;
+        defer if (retained_dialogs == null) local_dialogs.deinit();
         while (true) {
-            const line = try self.readRecordUnlocked();
-            defer self.gpa.free(line);
+            const line = if (self.backend == .native) try native_session.next(native_dialogs) else try self.readRecordUnlocked();
+            defer (if (self.backend == .native) std.heap.page_allocator else self.gpa).free(line);
             var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, line, .{});
             defer parsed.deinit();
             if (parsed.value != .object) return error.InvalidJavaScriptExtensionResponse;
 
             if (parsed.value.object.get("type")) |type_value| {
                 if (type_value != .string) return error.InvalidJavaScriptExtensionResponse;
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "native_owner_error")) {
+                    const message = parsed.value.object.get("error") orelse return error.InvalidJavaScriptExtensionResponse;
+                    if (message != .string) return error.InvalidJavaScriptExtensionResponse;
+                    const owned = try self.gpa.dupe(u8, message.string);
+                    if (self.last_owner_error) |old| self.gpa.free(old);
+                    self.last_owner_error = owned;
+                    continue;
+                }
                 if (std.mem.eql(u8, type_value.string, "ui_request")) {
-                    try self.handleUiRequestUnlocked(&parsed.value.object);
+                    if (self.backend == .native) try native_dialogs.request(&parsed.value.object) else try self.handleUiRequestUnlocked(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_scene")) {
+                    try native_dialogs.scene(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_close")) {
+                    try native_dialogs.closeComponent(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_mouse_outcome")) {
+                    try native_dialogs.mouseOutcome(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "ui_cancel")) {
+                    try native_dialogs.cancel(&parsed.value.object);
                     continue;
                 }
                 if (std.mem.eql(u8, type_value.string, "ui_action")) {
-                    self.handleUiActionUnlocked(&parsed.value.object) catch {};
+                    if (self.backend == .native) {
+                        const identity = parsed.value.object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+                        if (try wireInvocationId(identity) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+                    }
+                    self.handleUiActionUnlocked(&parsed.value.object, native_dialogs.bridge) catch {};
                     continue;
                 }
                 if (std.mem.eql(u8, type_value.string, "tool_update")) {
+                    if (self.backend == .native) {
+                        const identity = parsed.value.object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+                        if (try wireInvocationId(identity) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+                    }
                     const update = parsed.value.object.get("update") orelse return error.InvalidJavaScriptExtensionResponse;
                     if (update != .object) return error.InvalidJavaScriptExtensionResponse;
                     if (update_fn) |callback| {
@@ -897,6 +2800,15 @@ pub const Runtime = struct {
             const ok_value = parsed.value.object.get("ok") orelse return error.InvalidJavaScriptExtensionResponse;
             if (ok_value != .bool) return error.InvalidJavaScriptExtensionResponse;
             if (!ok_value.bool) {
+                if (self.backend == .native and parsed.value.object.contains("actionQueue")) {
+                    // The error and admitted actions share one response record.
+                    // Queue them before returning the primary execution error;
+                    // the owner safe point drains them even after rejection.
+                    var batch = try actions_mod.Batch.parseNative(std.heap.page_allocator, "native", "failed_invocation", line);
+                    defer batch.deinit(std.heap.page_allocator);
+                    if (batch.items.len > 4096 -| self.renderer_actions.count()) return error.ExtensionRendererActionQueueLimit;
+                    try self.renderer_actions.enqueue(&batch);
+                }
                 if (parsed.value.object.get("error")) |message| if (message == .string) {
                     self.last_error = try self.gpa.dupe(u8, message.string);
                 };
@@ -906,6 +2818,20 @@ pub const Runtime = struct {
             if (result != .object) return error.InvalidJavaScriptExtensionResponse;
             return stringifyValue(self.gpa, result);
         }
+    }
+
+    fn requireNativeRequest(self: *Runtime, request: []const u8) !void {
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, request, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
+        const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
+        if (kind != .string) return error.InvalidNativeExtensionRequest;
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_typed_operation", "provider_typed_begin", "provider_auth_begin", "provider_ticket_poll", "native_tool_catalog", "provider_admission", "provider_auth_operation", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+            if (std.mem.eql(u8, supported, kind.string)) return;
+        }
+        // Keep unsupported custom-component and renderer operations out of the
+        // pipe; they do not leave an unread response or retire a healthy worker.
+        return error.NativeExtensionOperationUnsupported;
     }
 
     fn sendProviderStreamAckUnlocked(
@@ -966,8 +2892,8 @@ pub const Runtime = struct {
         try self.writeLine(response.written());
     }
 
-    fn handleUiActionUnlocked(self: *Runtime, object: *const std.json.ObjectMap) !void {
-        const bridge = self.ui_bridge orelse return;
+    fn handleUiActionUnlocked(self: *Runtime, object: *const std.json.ObjectMap, captured_bridge: ?UiBridge) !void {
+        const bridge = captured_bridge orelse return;
         const method_value = object.get("method") orelse return error.InvalidJavaScriptExtensionResponse;
         if (method_value != .string or method_value.string.len == 0) return error.InvalidJavaScriptExtensionResponse;
         const args_value = object.get("args") orelse std.json.Value{ .object = .empty };
@@ -989,6 +2915,7 @@ pub const Runtime = struct {
     }
 
     fn writeLine(self: *Runtime, line: []const u8) !void {
+        if (self.shared_owner) |owner| return owner.writeLine(line);
         self.write_mutex.lockUncancelable(self.io);
         defer self.write_mutex.unlock(self.io);
         const stdin_file = self.child.stdin orelse return error.JavaScriptExtensionClosed;
@@ -1009,16 +2936,15 @@ pub const Runtime = struct {
         const Race = union(enum) { record: anyerror![]u8, timeout: bool };
         var queue: [2]Race = undefined;
         var select = Io.Select(Race).init(self.io, &queue);
-        select.async(.record, readRecordTask, .{self});
-        select.async(.timeout, timeoutTask, .{ self.io, self.timeout_ms });
+        defer drainRecordRace(&select, self.gpa);
+        try select.concurrent(.record, readRecordTask, .{self});
+        try select.concurrent(.timeout, timeoutTask, .{ self.io, self.timeout_ms });
         const winner = try select.await();
         switch (winner) {
             .record => |result| {
-                drainRecordRace(&select, self.gpa);
                 return try result;
             },
             .timeout => |expired| {
-                drainRecordRace(&select, self.gpa);
                 if (expired) return error.JavaScriptExtensionTimeout;
                 return error.Canceled;
             },
@@ -1026,6 +2952,10 @@ pub const Runtime = struct {
     }
 
     fn readRecordBlockingUnlocked(self: *Runtime) ![]u8 {
+        return self.readRecordAllocating(self.gpa);
+    }
+
+    fn readRecordAllocating(self: *Runtime, allocator: std.mem.Allocator) ![]u8 {
         // The bridge record separator may follow arbitrary extension stdout
         // without a newline. Scan the byte stream itself rather than assuming
         // line alignment, while retaining unread bytes across invocations.
@@ -1039,15 +2969,15 @@ pub const Runtime = struct {
             }
 
             var record: std.ArrayList(u8) = .empty;
-            errdefer record.deinit(self.gpa);
+            errdefer record.deinit(allocator);
             while (true) {
                 const next = try self.readByteBlockingUnlocked();
                 if (next == '\n') {
                     if (record.items.len > 0 and record.items[record.items.len - 1] == '\r') _ = record.pop();
                     if (record.items.len == 0) return error.InvalidJavaScriptExtensionResponse;
-                    return record.toOwnedSlice(self.gpa);
+                    return record.toOwnedSlice(allocator);
                 }
-                try record.append(self.gpa, next);
+                try record.append(allocator, next);
                 if (record.items.len > self.max_line_bytes) return error.JavaScriptExtensionResponseTooLarge;
             }
         }
@@ -1062,7 +2992,6 @@ pub const Runtime = struct {
                 else => return error.JavaScriptExtensionReadFailed,
             };
             if (read_count == 0) {
-                self.closed = true;
                 return error.JavaScriptExtensionClosed;
             }
             self.read_start = 0;
@@ -1146,8 +3075,49 @@ fn drainRecordRace(select: anytype, gpa: std.mem.Allocator) void {
 fn stringifyValue(gpa: std.mem.Allocator, value: std.json.Value) ![]u8 {
     var out: std.Io.Writer.Allocating = .init(gpa);
     errdefer out.deinit();
-    try std.json.Stringify.value(value, .{}, &out.writer);
+    // Allocating.Writer's only write failure is an allocator failure. Preserve
+    // that cause rather than turning a startup OOM into an unrelated I/O error.
+    std.json.Stringify.value(value, .{}, &out.writer) catch return error.OutOfMemory;
     return out.toOwnedSlice();
+}
+
+fn wireInvocationId(value: std.json.Value) !u64 {
+    return switch (value) {
+        .string => blk: {
+            const identity = std.fmt.parseUnsigned(u64, value.string, 10) catch return error.InvalidNativeInvocationIdentity;
+            break :blk if (identity > 0) identity else error.InvalidNativeInvocationIdentity;
+        },
+        .integer => if (value.integer > 0) @intCast(value.integer) else error.InvalidNativeInvocationIdentity,
+        else => error.InvalidNativeInvocationIdentity,
+    };
+}
+
+test "native model owner transport host rejects unsupported invalid and closed registry requests before IO" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .closed = true };
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 0, .runtime_id = 1 }, .query, "{}", null, null));
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "[]", null, null));
+    try std.testing.expectError(error.JavaScriptExtensionClosed, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{\"method\":\"getModelsOfType\",\"args\":[\"chat\"]}", null, null));
+    runtime.backend = .legacy;
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{}", null, null));
+}
+test "native main context model responses require exact version request and registry identities including full uint64" {
+    const gpa = std.testing.allocator;
+    const lease: NativeModelLease = .{ .generation = std.math.maxInt(u64), .runtime_id = 1 };
+    const bytes = "{\"version\":1,\"requestId\":7,\"generation\":18446744073709551615,\"runtimeId\":1,\"status\":\"complete\",\"result\":{\"version\":99}}";
+    try validateNativeModelReply(gpa, bytes, lease, 7);
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, lease, 8));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, .{ .generation = lease.generation - 1, .runtime_id = 1 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, .{ .generation = lease.generation, .runtime_id = 2 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, "{\"version\":2,\"requestId\":7,\"generation\":41,\"runtimeId\":1}", .{ .generation = 41, .runtime_id = 1 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, "{\"version\":1,\"requestId\":7.5,\"generation\":41,\"runtimeId\":1}", .{ .generation = 41, .runtime_id = 1 }, 7));
+}
+test "native runtime wire invocation identity accepts exact strings and integers without float coercion" {
+    try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .string = "42" }));
+    try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .integer = 42 }));
+    try std.testing.expectEqual(std.math.maxInt(u64), try wireInvocationId(.{ .string = "18446744073709551615" }));
+    for ([_]std.json.Value{ .{ .integer = -1 }, .{ .integer = 0 }, .{ .float = 42 }, .{ .string = "0" }, .{ .string = "1.0" }, .{ .string = "18446744073709551616" }, .null }) |value| {
+        try std.testing.expectError(error.InvalidNativeInvocationIdentity, wireInvocationId(value));
+    }
 }
 
 fn validateObjectJson(gpa: std.mem.Allocator, raw: []const u8) !void {
@@ -2160,10 +4130,12 @@ test "provider stream generation retirement drains cooperative iterators and pre
         output: ?[]u8 = null,
         failure: ?anyerror = null,
         events: u64 = 0,
+        first_event: Io.Event = .unset,
 
         fn consume(raw: ?*anyopaque, _: u64, _: []const u8) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             self.events += 1;
+            self.first_event.set(self.runtime.io);
         }
 
         fn run(self: *@This()) void {
@@ -2187,17 +4159,14 @@ test "provider stream generation retirement drains cooperative iterators and pre
     var invocation = Invocation{ .runtime = started.runtime, .callback_id = stream_id };
     defer if (invocation.output) |output| gpa.free(output);
     var group: Io.Group = .init;
-    group.async(io, Invocation.run, .{&invocation});
-    var waited_ms: u64 = 0;
-    while (!@atomicLoad(bool, &started.runtime.active_provider_stream, .acquire) and waited_ms < 1_000) : (waited_ms += 5) {
-        const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
-        try pause.sleep(io);
-    }
+    defer group.cancel(io);
+    try group.concurrent(io, Invocation.run, .{&invocation});
+    try invocation.first_event.waitTimeout(io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
     try std.testing.expect(@atomicLoad(bool, &started.runtime.active_provider_stream, .acquire));
     try std.testing.expect(started.runtime.retireProviderGeneration("retire-provider", 1, 1_000));
     try group.await(io);
     try std.testing.expectEqual(@as(u64, 1), invocation.events);
-    try std.testing.expectEqual(error.JavaScriptExtensionExecutionFailed, invocation.failure.?);
+    try std.testing.expectEqual(@as(?anyerror, error.JavaScriptExtensionExecutionFailed), invocation.failure);
 
     const ping = try started.runtime.invokeCommand("after-retire", "", "{}");
     defer gpa.free(ping);
@@ -2254,8 +4223,12 @@ test "provider stream retirement force-closes only the worker whose iterator ign
         runtime: *Runtime,
         callback_id: []const u8,
         failure: ?anyerror = null,
+        first_event: Io.Event = .unset,
 
-        fn consume(_: ?*anyopaque, _: u64, _: []const u8) !void {}
+        fn consume(raw: ?*anyopaque, _: u64, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.first_event.set(self.runtime.io);
+        }
 
         fn run(self: *@This()) void {
             const output = self.runtime.invokeProviderStreamSimple(
@@ -2267,7 +4240,7 @@ test "provider stream retirement force-closes only the worker whose iterator ign
                 "{}",
                 null,
                 consume,
-                null,
+                self,
             ) catch |err| {
                 self.failure = err;
                 return;
@@ -2278,16 +4251,13 @@ test "provider stream retirement force-closes only the worker whose iterator ign
 
     var invocation = Invocation{ .runtime = hostile.runtime, .callback_id = stream_id };
     var group: Io.Group = .init;
-    group.async(io, Invocation.run, .{&invocation});
-    var waited_ms: u64 = 0;
-    while (!@atomicLoad(bool, &hostile.runtime.active_provider_stream, .acquire) and waited_ms < 1_000) : (waited_ms += 5) {
-        const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
-        try pause.sleep(io);
-    }
+    defer group.cancel(io);
+    try group.concurrent(io, Invocation.run, .{&invocation});
+    try invocation.first_event.waitTimeout(io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
     try std.testing.expect(@atomicLoad(bool, &hostile.runtime.active_provider_stream, .acquire));
     try std.testing.expect(hostile.runtime.retireProviderGeneration("hostile-provider", 1, 1_000));
     try group.await(io);
-    try std.testing.expectEqual(error.JavaScriptExtensionExecutionFailed, invocation.failure.?);
+    try std.testing.expectEqual(@as(?anyerror, error.JavaScriptExtensionExecutionFailed), invocation.failure);
     try std.testing.expect(hostile.runtime.closed);
     try std.testing.expect(hostile.runtime.lastError() != null);
     try std.testing.expect(std.mem.indexOf(u8, hostile.runtime.lastError().?, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT") != null);
@@ -2295,4 +4265,32 @@ test "provider stream retirement force-closes only the worker whose iterator ign
     const ping = try healthy.runtime.invokeCommand("healthy-ping", "", "{}");
     defer gpa.free(ping);
     try std.testing.expect(std.mem.indexOf(u8, ping, "healthy-worker-reused") != null);
+}
+
+test "native runtime late metadata FIFO rejects stale owners and revisions without invocation mutex reentry" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    defer {
+        for (runtime.metadata_records.items) |record| record.deinit();
+        runtime.metadata_records.deinit(std.heap.page_allocator);
+    }
+    runtime.mutex.lockUncancelable(runtime.io);
+    defer runtime.mutex.unlock(runtime.io);
+    try std.testing.expect(try runtime.dispatchMetadataRecord("{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"41\",\"revision\":\"9\",\"extensions\":[]}"));
+    try std.testing.expect((try runtime.peekMetadata()) == null);
+    const first = "{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"1\",\"extensions\":[]}";
+    try std.testing.expect(try runtime.dispatchMetadataRecord(first));
+    try std.testing.expect(try runtime.dispatchMetadataRecord(first));
+    const second = "{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"2\",\"extensions\":[]}";
+    try std.testing.expect(try runtime.dispatchMetadataRecord(second));
+    const copied = (try runtime.peekMetadata()).?;
+    defer copied.deinit();
+    try std.testing.expectEqualStrings(first, copied.bytes);
+    runtime.commitMetadata(9);
+    try std.testing.expectEqual(@as(usize, 2), runtime.metadata_records.items.len);
+    runtime.commitMetadata(1);
+    const next = (try runtime.peekMetadata()).?;
+    defer next.deinit();
+    try std.testing.expectEqual(@as(u64, 2), next.revision);
+    runtime.commitMetadata(2);
+    try std.testing.expect((try runtime.peekMetadata()) == null);
 }

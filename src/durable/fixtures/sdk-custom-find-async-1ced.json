@@ -1,0 +1,80 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "cases": [
+    {
+      "name": "gated-custom",
+      "isPromise": true,
+      "before": [
+        "exists"
+      ],
+      "calls": [
+        [
+          "exists",
+          "$OVERRIDE"
+        ],
+        [
+          "glob",
+          "*.txt",
+          "$OVERRIDE",
+          {
+            "ignore": [
+              "**/node_modules/**",
+              "**/.git/**"
+            ],
+            "limit": 1000
+          }
+        ]
+      ],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "owned.txt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-delegated-await",
+      "error": {
+        "name": "Error",
+        "message": "Operation aborted"
+      },
+      "events": [
+        [
+          "add",
+          "abort",
+          true
+        ],
+        [
+          "remove",
+          "abort"
+        ]
+      ]
+    },
+    {
+      "name": "factory-wrapper",
+      "originalError": true,
+      "keys": [
+        "name",
+        "label",
+        "description",
+        "parameters",
+        "outputSchema",
+        "constrainedSampling",
+        "prepareArguments",
+        "executionMode",
+        "execute"
+      ],
+      "sharedParameters": true,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "No files found matching pattern"
+          }
+        ]
+      }
+    }
+  ]
+}

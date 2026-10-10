@@ -1,0 +1,229 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "kitty": false,
+      "sequence": "\u001b[61:43;2u",
+      "parsed": "+",
+      "matches": {
+        "+": true,
+        "ctrl++": false,
+        "shift+=": true,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "\u001b[61:43;6u",
+      "parsed": "ctrl++",
+      "matches": {
+        "+": false,
+        "ctrl++": true,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "\u001b[27;6;43~",
+      "parsed": "ctrl++",
+      "matches": {
+        "+": false,
+        "ctrl++": true,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "\u001b[49:33;2u",
+      "parsed": "!",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": true,
+        "shift+1": true,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "\u001b[99:67;2u",
+      "parsed": "shift+c",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": true,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "\u0003",
+      "parsed": "ctrl+c",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": true,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": false,
+      "sequence": "+",
+      "parsed": "+",
+      "matches": {
+        "+": true,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u001b[61:43;2u",
+      "parsed": "+",
+      "matches": {
+        "+": true,
+        "ctrl++": false,
+        "shift+=": true,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u001b[61:43;6u",
+      "parsed": "ctrl++",
+      "matches": {
+        "+": false,
+        "ctrl++": true,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u001b[27;6;43~",
+      "parsed": "ctrl++",
+      "matches": {
+        "+": false,
+        "ctrl++": true,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u001b[49:33;2u",
+      "parsed": "!",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": true,
+        "shift+1": true,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u001b[99:67;2u",
+      "parsed": "shift+c",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": true,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "\u0003",
+      "parsed": "ctrl+c",
+      "matches": {
+        "+": false,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": true,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    },
+    {
+      "kitty": true,
+      "sequence": "+",
+      "parsed": "+",
+      "matches": {
+        "+": true,
+        "ctrl++": false,
+        "shift+=": false,
+        "!": false,
+        "shift+1": false,
+        "shift+c": false,
+        "ctrl+c": false,
+        "ctrl+ctrl+c": false,
+        "junk+ctrl+c": false
+      }
+    }
+  ]
+}

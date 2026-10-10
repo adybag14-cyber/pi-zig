@@ -1,0 +1,22 @@
+{
+  "checkpoint": 196,
+  "commit": "1665296020007c26c5c82084029c093c930bce40",
+  "run": 37380542727,
+  "windows": "success",
+  "ubuntu": "success",
+  "macos": "failure",
+  "macJob": 112001081557,
+  "log": "ci-1665296-macos-failed.log",
+  "failures": [
+    "APFS rejects invalid byte fixture filename with EILSEQ/BadPathName",
+    "Renderer control arriving between pump and dequeue lacks ordinary-loop renderer dispatch",
+    "MCP progress request timeout has stale-deadline arbitration race under review",
+    "Fullscreen call width after resize may share the proven renderer control-admission race; original assertion remains unchanged pending hosted replay"
+  ],
+  "repairOwnership": {
+    "filesystem": "Root",
+    "renderer": "custom_editor",
+    "mcp": "text_decoder"
+  },
+  "parityCertified": false
+}

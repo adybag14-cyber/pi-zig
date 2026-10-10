@@ -1,0 +1,36 @@
+{
+  "redirect": {
+    "result": "REDIRECT",
+    "params": {
+      "response_type": "code",
+      "client_id": "client",
+      "code_challenge_method": "S256",
+      "redirect_uri": "http://127.0.0.1/callback",
+      "state": "fixed-state",
+      "scope": "read",
+      "resource": "https://service.example"
+    },
+    "verifierLength": 43,
+    "challengeMethod": "S256"
+  },
+  "exchange": {
+    "result": "AUTHORIZED",
+    "tokens": {
+      "access_token": "accepted",
+      "token_type": "Bearer",
+      "scope": "read"
+    },
+    "wrongIssuer": "OAuthIssuerMismatchError",
+    "requestsBeforeValid": 0,
+    "requests": 1,
+    "expiryAbsent": true
+  },
+  "invalidGrant": {
+    "result": "REDIRECT",
+    "staleRequests": 1,
+    "tokensAbsent": true,
+    "expiryAbsent": true,
+    "retainedClient": "client",
+    "retainedDiscovery": true
+  }
+}

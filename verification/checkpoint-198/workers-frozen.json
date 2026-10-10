@@ -1,0 +1,153 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patch": "remote-env-adapter-7fb59f9.patch",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+  "toolchain": "Zig 0.16.0",
+  "files": [
+    {
+      "path": "src/env/files.zig",
+      "bytes": 42063,
+      "sha256": "f3385f4edeb7a1ad7932bdb64c34cb0da9975a1aea3062d74332b7fec19cda4d"
+    },
+    {
+      "path": "src/env/daemon_input.zig",
+      "bytes": 7168,
+      "sha256": "3cec61c815e2b7ded9a47cf7c2751cfcb0d391bdb5010557739c80373aa18803"
+    },
+    {
+      "path": "src/env_daemon.zig",
+      "bytes": 4858,
+      "sha256": "78f89d2170993389be8d99000e69408cc9e6eac959529a313a10b44c1089a78f"
+    },
+    {
+      "path": "src/env/root.zig",
+      "bytes": 2749,
+      "sha256": "1d0079bdde943c4fa7de5ddd09ce0e02cc86b31fbb2d00085214d8add6992abe"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 6036,
+      "sha256": "9a0102753f060704346f526cb717a91d661417817e63dd08c84f7120c3a7a33d"
+    },
+    {
+      "path": "src/env/file_workers.zig",
+      "bytes": 4300,
+      "sha256": "fcded8531cee2d3a7ea1acac441bc9f61f86b95400ebfdf14351482e83d4aa7d"
+    },
+    {
+      "path": "src/env/file_workers_test.zig",
+      "bytes": 11402,
+      "sha256": "e98f857d0aed4068bebfdb9326a2828a47aeb10eb905f2a27a4c87076baf5028"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\file-workers-fifo-7fb59f9.patch",
+  "patch_sha256": "19b65fe2776c537cf17f37e8e8f348b289d754e343dac181d2302febbb6536e1",
+  "tests": [
+    {
+      "name": "workers-windows-release-safe",
+      "pid": 51136,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T10:09:28.85639Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T10:09:29.1680404Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:10:16.9096943Z"
+    },
+    {
+      "name": "workers-linux-release-safe",
+      "pid": 34180,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-workers-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "created_utc": "2026-10-07T10:09:28.855815Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 320,
+      "started_utc": "2026-10-07T10:09:29.1680352Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:10:04.0517089Z"
+    },
+    {
+      "name": "workers-linux-lifetime-debug-fixed",
+      "pid": 9196,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-workers-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "created_utc": "2026-10-07T10:08:33.38367Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T10:08:33.639393Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:08:42.1223541Z"
+    },
+    {
+      "name": "workers-windows-debug",
+      "pid": 34276,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "created_utc": "2026-10-07T10:04:07.933614Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T10:04:08.2420126Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:04:22.1685837Z"
+    },
+    {
+      "name": "native-workers-original-daemon-recheck",
+      "pid": 51492,
+      "executable": null,
+      "command_line": null,
+      "identity_captured": false,
+      "created_utc": null,
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 120,
+      "started_utc": "2026-10-07T10:10:15.1180013Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:10:15.158056Z"
+    },
+    {
+      "name": "native-workers-original-linux-daemon",
+      "pid": 50220,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-workers-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s env PI_TEST_ENV_DAEMON=/tmp/pi-env-original-target-7fb59f9-20261007/debug/pi-env /tmp/pi-env-workers-20261007/worker-reference-test",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:10:57.716302Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T10:10:57.9684348Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:10:58.2347608Z"
+    },
+    {
+      "name": "original-linux-build-online",
+      "pid": 38468,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-original-7fb59f9-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /home/tdamre/.cargo/bin/cargo +1.98.0 build --locked --manifest-path packages/env/daemon/Cargo.toml --target-dir /tmp/pi-env-original-target-7fb59f9-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:10:26.750583Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T10:10:27.0312978Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:10:33.6890104Z"
+    }
+  ],
+  "known_limits": [
+    "Native watch and remote watch facade pending",
+    "Pool control/handle boundaries proven; complete Node daemon error text still not claimed",
+    "Polite EOF proof runs POSIX; Windows background and cancellation existing gates retained"
+  ],
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "frozen_utc": "2026-10-07T10:11:36.5780374Z"
+}

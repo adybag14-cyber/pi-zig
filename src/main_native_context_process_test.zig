@@ -1,0 +1,81 @@
+//! The CLI must admit its validator before extension module/factory evaluation.
+const std = @import("std");
+test "native main context actual CLI applies strict theme admission before extension factory without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var inherited = try std.testing.environ.createMap(gpa);
+    defer inherited.deinit();
+    const binary = inherited.get("PI_MAIN_CONTEXT_BINARY") orelse return error.MissingMainContextBinary;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(io, &buffer);
+    const directory = buffer[0..length];
+    try scratch.dir.createDir(io, "agent", .default_dir);
+    try scratch.dir.createDir(io, "home", .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"custom\":{\"nested\":{\"value\":7}},\"queueMode\":\"one-at-a-time\",\"codemode\":{\"mode\":\"only\",\"inlineBudget\":0}}" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/keybindings.json", .data = "{\"tui.select.confirm\":\"ctrl+y\",\"tui.select.cancel\":[]}" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "partial.json", .data = "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}" });
+    const path = try std.fs.path.join(gpa, &.{ directory, "partial.json" });
+    defer gpa.free(path);
+    const path_json = try std.json.Stringify.valueAlloc(gpa, path, .{});
+    defer gpa.free(path_json);
+    const source = try std.fmt.allocPrint(gpa,
+        \\import {{loadThemeFromPath}} from '@earendil-works/pi-coding-agent';import {{getKeybindings,getCapabilities,getCellDimensions,setCapabilities,setCellDimensions}} from '@earendil-works/pi-tui';const caps=getCapabilities(),cells=getCellDimensions();if(caps.images!=='kitty'||!caps.trueColor||!caps.hyperlinks||cells.widthPx!==9||cells.heightPx!==18)throw Error('Missing actual Main terminal admission');const overrideCaps={{images:'iterm2',trueColor:false,hyperlinks:true}},overrideCells={{widthPx:11,heightPx:22}};setCapabilities(overrideCaps);setCellDimensions(overrideCells);const keys=getKeybindings();if(!keys.matches('\x19','tui.select.confirm')||keys.matches('\r','tui.select.confirm'))throw Error('Missing CLI keybindings bootstrap');let strict=false;try{{loadThemeFromPath({s})}}catch(error){{strict=error.name==='Error'&&String(error.message).includes('Missing required color tokens:')&&String(error.message).includes('- accent')}}if(!strict)throw Error('Missing CLI strict theme bootstrap');
+        \\export default pi=>{{let unbound=false;try{{pi.getSettings()}}catch(error){{unbound=error.name==='Error'&&error.message==='Extension runtime not initialized. Action methods cannot be called during extension loading.'}}if(!unbound)throw Error('Missing Source factory runtime fence');pi.registerTool({{name:'bootstrap',description:'Bootstrap proof',parameters:{{type:'object',properties:{{}}}},execute(){{if(getCapabilities()!==overrideCaps||getCellDimensions()!==overrideCells)throw Error('Identical Main admission erased terminal overrides');const settings=pi.getSettings();if(settings.custom?.nested?.value!==7||settings.steeringMode!=='one-at-a-time'||'queueMode' in settings||settings.codemode.mode!=='only')throw Error('Lost live CLI settings snapshot');settings.custom.nested.value=99;if(pi.getSettings().custom.nested.value!==7)throw Error('Shared CLI settings snapshot');return {{content:[{{type:'text',text:'STRICT_BOOTSTRAP_OK'}}]}}}}}});}};
+    , .{path_json});
+    defer gpa.free(source);
+    const catalog_check = "const first=pi.getAllTools(),second=pi.getAllTools(),read=first.find(t=>t.name==='read'),again=second.find(t=>t.name==='read');if(!read||first===second||read===again||read.parameters!==again.parameters||read.promptGuidelines!==again.promptGuidelines||read.sourceInfo!==again.sourceInfo||read.sourceInfo.path!=='builtin:read'||read.parameters['~kind']!=='Object'||read.parameters.properties.path['~kind']!=='String'||!read.description.startsWith('Read the contents of a file.'))throw Error('Missing actual Main canonical ToolInfo');for(const name of ['bash','powershell','edit','write','grep','find','ls','codemode','tool_search'])if(!first.some(t=>t.name===name))throw Error('Missing Main tool '+name);const settings=pi.getSettings();";
+    const source_with_catalog = try std.mem.replaceOwned(u8, gpa, source, "const settings=pi.getSettings();", catalog_check);
+    defer gpa.free(source_with_catalog);
+    try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data = source_with_catalog });
+    try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"done\"}]" });
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    try environment.put("PATH", std.fs.path.dirname(binary).?);
+    try environment.put("SystemRoot", "C:/Windows");
+    try environment.put("WINDIR", "C:/Windows");
+    try environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try environment.put("PI_TELEMETRY", "0");
+    try environment.put("PI_EXTENSION_BACKEND", "native");
+    try environment.put("TERM_PROGRAM", "kitty");
+    const home = try std.fs.path.join(gpa, &.{ directory, "home" });
+    defer gpa.free(home);
+    const agent = try std.fs.path.join(gpa, &.{ directory, "agent" });
+    defer gpa.free(agent);
+    try environment.put("HOME", home);
+    try environment.put("USERPROFILE", home);
+    try environment.put("PI_AGENT_DIR", agent);
+    const result = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--extension", "extension.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    defer gpa.free(result.stdout);
+    defer gpa.free(result.stderr);
+    if (result.term != .exited or result.term.exited != 0 or std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") == null) std.debug.print("CLI context stdout:\n{s}\nstderr:\n{s}\n", .{ result.stdout, result.stderr });
+    try std.testing.expect(result.term == .exited and result.term.exited == 0);
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") != null);
+    const filtered_source =
+        \\export default pi=>pi.registerTool({name:'bootstrap',description:'Registry proof',parameters:{type:'object',properties:{}},execute(){const names=pi.getAllTools().map(t=>t.name);if(JSON.stringify(names)!==JSON.stringify(['read','bootstrap']))throw Error('Registration policy mismatch: '+JSON.stringify(names));pi.setActiveTools(['bootstrap']);if(JSON.stringify(pi.getAllTools().map(t=>t.name))!==JSON.stringify(names))throw Error('Active loadout changed registry membership');return{content:[{type:'text',text:'FILTERED_REGISTRY_OK'}]}}});
+    ;
+    try scratch.dir.writeFile(io, .{ .sub_path = "filtered.mjs", .data = filtered_source });
+    const filtered = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--tools", "read,bootstrap,codemode", "--exclude-tools", "codemode", "--extension", "filtered.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    defer gpa.free(filtered.stdout);
+    defer gpa.free(filtered.stderr);
+    if (filtered.term != .exited or filtered.term.exited != 0 or std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") == null) std.debug.print("filtered CLI stdout:\n{s}\nstderr:\n{s}\n", .{ filtered.stdout, filtered.stderr });
+    try std.testing.expect(filtered.term == .exited and filtered.term.exited == 0);
+    try std.testing.expect(std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") != null);
+    // Source SDK and CLI accept explicit selection on top of either disabled
+    // default. The registry policy remains the explicit allowlist.
+    const selected_source = try std.mem.replaceOwned(u8, gpa, filtered_source, "pi.setActiveTools(['bootstrap'])", "pi.setActiveTools(['read','bootstrap'])");
+    defer gpa.free(selected_source);
+    try scratch.dir.writeFile(io, .{ .sub_path = "selected.mjs", .data = selected_source });
+    try scratch.dir.writeFile(io, .{ .sub_path = "optin.txt", .data = "NATIVE_READ_OPTIN_OK" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "selected-mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"\",\"tool_calls\":[{\"id\":\"read-proof\",\"name\":\"read\",\"arguments\":\"{\\\"path\\\":\\\"optin.txt\\\"}\"}]},{\"content\":\"done\"}]" });
+    for ([_][]const u8{ "--no-tools", "--no-builtin-tools" }) |disabled| {
+        const selected = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "selected-mock.json", disabled, "--tools", "read,bootstrap", "--extension", "selected.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+        defer gpa.free(selected.stdout);
+        defer gpa.free(selected.stderr);
+        if (selected.term != .exited or selected.term.exited != 0 or std.mem.indexOf(u8, selected.stdout, "FILTERED_REGISTRY_OK") == null) std.debug.print("selected CLI {s} stdout:\n{s}\nstderr:\n{s}\n", .{ disabled, selected.stdout, selected.stderr });
+        try std.testing.expect(selected.term == .exited and selected.term.exited == 0);
+        try std.testing.expect(std.mem.indexOf(u8, selected.stdout, "FILTERED_REGISTRY_OK") != null);
+        try std.testing.expect(std.mem.indexOf(u8, selected.stdout, "NATIVE_READ_OPTIN_OK") != null);
+    }
+}

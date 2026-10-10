@@ -22,10 +22,16 @@ const ReplCompletionContext = struct {
     prompt_templates: *const []coding.prompts.PromptTemplate,
     extension_commands: *const std.ArrayList([]const u8),
     session: *agent.session.Session,
+    host: *extensions.Host,
 };
 
 fn replComplete(raw_context: *anyopaque, gpa: std.mem.Allocator, line: []const u8, cursor: usize) !?tui.line_editor.Completion {
     const context: *ReplCompletionContext = @ptrCast(@alignCast(raw_context));
+    _ = try context.host.synchronizeNativeMetadata();
+    var names: std.ArrayList([]const u8) = .empty;
+    var infos: std.ArrayList(coding.rpc_data.ExtensionCommandInfo) = .empty;
+    defer deinitExtensionCommandMetadata(gpa, &names, &infos);
+    try collectExtensionCommandMetadata(gpa, context.host, &names, &infos);
     const catalog = if (context.live.model_catalog.len > 0) context.live.model_catalog else &ai.providers.known_models;
     const result = (try coding.repl_completion.complete(
         gpa,
@@ -36,7 +42,7 @@ fn replComplete(raw_context: *anyopaque, gpa: std.mem.Allocator, line: []const u
         cursor,
         catalog,
         context.prompt_templates.*,
-        context.extension_commands.items,
+        names.items,
         context.session,
         context.live.agent_cfg.enable_skill_commands,
     )) orelse return null;
@@ -56,10 +62,12 @@ const TreeSummaryPromptContext = struct {
             return tui.line_editor.readLine(gpa, self.io, self.reader, self.editor, self.bindings, prompt_text);
         }
         try tui.render.writeAll(self.io, prompt_text);
-        return readLine(self.reader, gpa);
+        return readInteractiveLine(self.reader, gpa);
     }
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator) anyerror!coding.slash.TreeSummaryChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         try tui.render.printLine(self.io, "Summarize branch?");
         try tui.render.printLine(self.io, "  [n] No summary  [s] Summarize  [c] Custom prompt  [q] Cancel");
@@ -118,6 +126,8 @@ const TreeTargetPromptContext = struct {
     filter_mode: *coding.tree_tui.FilterMode,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, sess: *agent.Session) anyerror!coding.slash.TreeTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const selection = try coding.tree_tui.runWithFilter(gpa, self.io, self.environ, self.reader, sess, self.filter_mode.*, self.already_fullscreen);
         return .{ .target_id = selection.target_id, .cancelled = selection.cancelled };
@@ -134,6 +144,8 @@ const ModelTargetPromptContext = struct {
     abort_flag: *bool,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ModelTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         var refresh_result = try self.provider_models.refresh(.{
             .allow_network = true,
@@ -179,6 +191,8 @@ const ThinkingTargetPromptContext = struct {
     default_level: *?[]const u8,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ThinkingTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         var levels_buf: [7]ai.thinking.ThinkingLevel = undefined;
         const levels = if (coding.live_state.activeModelInfo(self.live)) |model|
@@ -215,6 +229,8 @@ const SettingsTargetPromptContext = struct {
     theme_registry: *pi_zig.themes.Registry,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator) anyerror!coding.slash.SettingsTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const names = try gpa.alloc([]const u8, self.theme_registry.themes.items.len);
         defer gpa.free(names);
@@ -249,6 +265,8 @@ const AuthTargetPromptContext = struct {
         mode: coding.slash.AuthPromptMode,
         initial_search: ?[]const u8,
     ) anyerror!coding.slash.AuthTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const catalog = if (self.live.model_catalog.len > 0) self.live.model_catalog else &ai.providers.known_models;
         const oauth_provider_ids = try self.extension_oauth.loginProviderNames(gpa);
@@ -297,6 +315,8 @@ const SessionTargetPromptContext = struct {
     required_cwd: []const u8,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.SessionTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const selection = try coding.session_tui.run(gpa, self.io, self.environ, self.reader, .{
             .session_dir = self.session_dir,
@@ -473,6 +493,7 @@ fn terminalCapabilityOverrides(settings: *const coding.settings.Settings) tui.te
 }
 
 fn executeExtensionInvocation(host: *extensions.Host, line: []const u8) !?extensions.host.CommandOutput {
+    _ = try host.synchronizeNativeMetadata();
     const invocation = parseSlashInvocation(line) orelse return null;
     if (!host.hasCommand(invocation.name)) return null;
     return try host.executeCommand(invocation.name, invocation.arguments);
@@ -710,7 +731,14 @@ fn buildActiveToolSelection(
         names.deinit(gpa);
     }
     for (requested) |name| {
-        if (!knownExtensionTool(host, name)) continue;
+        if (host.native_catalog_source) |source| {
+            if (source.registration_allowed) |allowed| if (!allowed(source.context, name)) continue;
+            if (!host.hasTool(name)) {
+                if (source.native_tool_activatable) |activatable| {
+                    if (!activatable(source.context, name)) continue;
+                } else if (!knownExtensionTool(host, name)) continue;
+            }
+        } else if (!knownExtensionTool(host, name)) continue;
         var duplicate = false;
         for (names.items) |existing| {
             if (std.mem.eql(u8, existing, name)) {
@@ -799,7 +827,7 @@ fn applyExtensionRuntimeActions(
     if (requested_tools) |tools| {
         const next_names = try buildActiveToolSelection(gpa, host, tools);
         errdefer freeOwnedToolNames(gpa, next_names);
-        const next_filter = agent.tools.ToolFilter{ .allow = next_names };
+        const next_filter = agent.tools.ToolFilter{ .allow = next_names, .allow_is_loadout = true };
         const next_schemas = try bridge.toolSchemasJson(gpa, next_filter);
         errdefer gpa.free(next_schemas);
 
@@ -850,6 +878,7 @@ const ExtensionActionRuntime = struct {
     provider_registry: *extensions.provider_registry.Registry,
     provider_models: *extensions.provider_models.Runtime,
     active_filter: *agent.tools.ToolFilter,
+    registration_filter: agent.tools.ToolFilter,
     owned_active_tools: *?[]const []const u8,
     extension_schemas: *[]u8,
     prompt_templates: *const []coding.prompts.PromptTemplate,
@@ -910,6 +939,16 @@ const ExtensionActionRuntime = struct {
         const self: *ExtensionActionRuntime = @ptrCast(@alignCast(raw.?));
         const records = try self.bridge.drainActions();
         defer extensions.actions.freeRecords(self.host.gpa, records);
+        const next_schemas = try synchronizeNativeToolActivation(self.host, self.active_filter, self.registration_filter);
+        if (!std.mem.eql(u8, next_schemas, self.extension_schemas.*)) {
+            const previous = self.extension_schemas.*;
+            self.extension_schemas.* = next_schemas;
+            self.live.agent_cfg.extra_tools_json = next_schemas;
+            run_config.extra_tools_json = next_schemas;
+            gpa.free(previous);
+        } else gpa.free(next_schemas);
+        self.live.agent_cfg.tool_filter = self.active_filter.*;
+        run_config.tool_filter = self.active_filter.*;
         var reload_applied = false;
         for (records) |record| {
             if (reload_applied) {
@@ -1106,6 +1145,9 @@ const ExtensionActionRuntime = struct {
             return;
         }
         if (std.mem.eql(u8, record.kind, "set_active_tools")) {
+            if (object.get("nativeSelectionSequence")) |sequence| {
+                if (try extensions.tool_activation.Event.identifier(sequence) <= self.host.registration_acknowledged_sequence) return;
+            }
             const names_value = object.get("names") orelse return error.InvalidExtensionAction;
             if (names_value != .array) return error.InvalidExtensionAction;
             var requested: std.ArrayList([]const u8) = .empty;
@@ -1307,6 +1349,13 @@ fn applyExtensionCommandOutput(
 ) !AppliedExtensionCommand {
     var result = AppliedExtensionCommand{ .terminate = output.terminate, .is_error = output.is_error };
     errdefer result.deinit(gpa);
+    const next_schemas = try synchronizeNativeToolActivation(runtime.host, runtime.active_filter, runtime.registration_filter);
+    const previous_schemas = runtime.extension_schemas.*;
+    runtime.extension_schemas.* = next_schemas;
+    runtime.live.agent_cfg.extra_tools_json = next_schemas;
+    runtime.live.agent_cfg.tool_filter = runtime.active_filter.*;
+    gpa.free(previous_schemas);
+    runtime.refreshRunState(run_config, active_client);
 
     if (output.actions.isEmpty()) {
         try applyExtensionSessionActions(sess, output);
@@ -1431,6 +1480,9 @@ fn applyExtensionCommandOutput(
     try moveMutableMessages(gpa, &steering, queued_steering);
     try moveMutableMessages(gpa, &followups, queued_followups);
     result.terminate = result.terminate or stop_requested or output.abort;
+    // A previously admitted sendUserMessage still schedules its turn even
+    // when the command subsequently rejects. The diagnostic was printed above.
+    if (output.native_invocation_failed and result.prompt != null) result.is_error = false;
     return result;
 }
 
@@ -1468,6 +1520,13 @@ fn applyDeferredExtensionActions(
     defer freeMutableMessages(gpa, &followups);
     var stop_requested = deferred.abort;
     var reload_applied = false;
+    const next_schemas = try synchronizeNativeToolActivation(runtime.host, runtime.active_filter, runtime.registration_filter);
+    const old_schemas = runtime.extension_schemas.*;
+    runtime.extension_schemas.* = next_schemas;
+    runtime.live.agent_cfg.extra_tools_json = next_schemas;
+    runtime.live.agent_cfg.tool_filter = runtime.active_filter.*;
+    gpa.free(old_schemas);
+    runtime.refreshRunState(run_config, active_client);
 
     for (deferred.batches.items) |*batch| {
         for (batch.items) |record| {
@@ -1719,14 +1778,48 @@ fn collectExtensionContextTools(
 ) ![]const []const u8 {
     var names: std.ArrayList([]const u8) = .empty;
     errdefer names.deinit(allocator);
+    if (active_only and filter.allow_is_loadout) {
+        for (filter.allow orelse &.{}) |name| {
+            var declared = false;
+            var registered = false;
+            registry: for (host.extensions.items) |extension| for (extension.tools) |tool| {
+                if (!std.mem.eql(u8, tool.name, name)) continue;
+                registered = true;
+                declared = extensions.integration.Bridge.isToolDeclared(tool, filter);
+                break :registry;
+            };
+            if (!registered) declared = (!disable_builtin_tools and agent.tools.isBuiltin(name) and filter.isEnabled(name)) or (std.mem.startsWith(u8, name, "mcp__") and filter.isEnabled(name)) or ((std.mem.eql(u8, name, "codemode") or std.mem.eql(u8, name, "tool_search")) and pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter, name));
+            if (declared) try names.append(allocator, name);
+        }
+        return names.toOwnedSlice(allocator);
+    }
     if (!disable_builtin_tools or !active_only) {
-        for (agent.tools.all_tool_names) |name| {
+        const builtins = if (active_only) (filter.builtin_allow orelse &agent.tools.all_tool_names) else &agent.tools.all_tool_names;
+        for (builtins) |name| {
+            var hidden = false;
+            registered: for (host.extensions.items) |extension| for (extension.tools) |tool| {
+                if (std.mem.eql(u8, tool.name, name)) {
+                    hidden = tool.model_hidden;
+                    break :registered;
+                }
+            };
+            if (active_only and hidden) continue;
             if (!active_only or filter.isEnabled(name)) try names.append(allocator, name);
         }
     }
+    for ([_][]const u8{ "codemode", "tool_search" }) |name| {
+        if (host.hasTool(name)) continue;
+        if (active_only and !pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter, name)) continue;
+        var duplicate = false;
+        for (names.items) |existing| if (std.mem.eql(u8, existing, name)) {
+            duplicate = true;
+            break;
+        };
+        if (!duplicate) try names.append(allocator, name);
+    }
     for (host.extensions.items) |extension| {
         for (extension.tools) |tool| {
-            if (active_only and !filter.isEnabled(tool.name)) continue;
+            if (active_only and !extensions.integration.Bridge.isToolDeclared(tool, filter)) continue;
             var duplicate = false;
             for (names.items) |existing| {
                 if (std.mem.eql(u8, existing, tool.name)) {
@@ -1739,6 +1832,231 @@ fn collectExtensionContextTools(
     }
     return try names.toOwnedSlice(allocator);
 }
+
+fn nativeToolIsActive(raw: ?*anyopaque, name: []const u8) bool {
+    const host: *extensions.Host = @ptrCast(@alignCast(raw.?));
+    if (host.activation_tracker) |*tracker| if (tracker.defaultActivation(name) != null) return tracker.isActive(name);
+    return host.defaultToolActivation(name) orelse true;
+}
+
+const NativeRegistrationPolicy = struct {
+    filter: agent.tools.ToolFilter,
+    fn enabled(raw: ?*anyopaque, name: []const u8, default_active: bool) bool {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        var filter = self.filter;
+        filter.default_activation_ctx = @constCast(&default_active);
+        filter.default_activation_fn = struct {
+            fn lookup(context: ?*anyopaque, _: []const u8) bool {
+                return @as(*const bool, @ptrCast(@alignCast(context.?))).*;
+            }
+        }.lookup;
+        return filter.isExtensionEnabled(name);
+    }
+    fn selected(raw: ?*anyopaque, name: []const u8) bool {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        return (self.filter.allow != null or self.filter.modifiers != null) and enabled(raw, name, false);
+    }
+};
+
+/// Prepare owned activation state before acknowledging native producer events.
+/// Initial registration defaults and the current active set have independent lifetimes.
+fn synchronizeNativeToolActivation(host: *extensions.Host, filter: *agent.tools.ToolFilter, policy_filter: agent.tools.ToolFilter) ![]u8 {
+    for (0..64) |_| {
+        return prepareNativeToolActivation(host, filter, policy_filter) catch |err| switch (err) {
+            error.NativeToolSelectionChanged => continue,
+            else => return err,
+        };
+    }
+    return error.NativeToolSelectionUnstable;
+}
+
+fn prepareNativeToolActivation(host: *extensions.Host, filter: *agent.tools.ToolFilter, policy_filter: agent.tools.ToolFilter) ![]u8 {
+    _ = try host.synchronizeNativeMetadata();
+    host.native_tool_selection = .{ .allow = policy_filter.allow, .exclude = policy_filter.exclude, .modifiers = policy_filter.modifiers, .noTools = policy_filter.no_tools };
+    var schema_bridge = extensions.integration.Bridge.init(host);
+    defer schema_bridge.deinit();
+    const owner = if (host.native_group_runtime) |runtime| runtime.owner_generation else host.registration_owner_generation;
+    if (owner == 0) return schema_bridge.toolSchemasJson(host.gpa, filter.*);
+    var prepared = if (host.activation_tracker) |*tracker| try tracker.clone() else extensions.tool_activation.Tracker.init(host.gpa, owner);
+    errdefer prepared.deinit();
+    if (host.activation_tracker == null) {
+        var initial = filter.*;
+        initial.default_activation_ctx = host;
+        initial.default_activation_fn = nativeToolIsActive;
+        const names = try collectExtensionContextTools(host.gpa, host, initial, false, true);
+        defer host.gpa.free(names);
+        try prepared.setActive(names);
+    }
+    const events = try host.gpa.dupe(extensions.tool_activation.Event, host.registrationEvents());
+    defer host.gpa.free(events);
+    var policy = NativeRegistrationPolicy{ .filter = policy_filter };
+    if (events.len > 0) try prepared.apply(events, .{ .context = &policy, .enabled_fn = NativeRegistrationPolicy.enabled, .selected_fn = NativeRegistrationPolicy.selected });
+    var explicit_selection = host.activation_explicit_selection;
+    for (events) |event| if (event.kind == .selection) {
+        explicit_selection = true;
+    };
+    const Lookup = struct {
+        host: *extensions.Host,
+        tracker: *extensions.tool_activation.Tracker,
+        fn active(raw: ?*anyopaque, name: []const u8) bool {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (self.tracker.defaultActivation(name) != null) return self.tracker.isActive(name);
+            return self.host.defaultToolActivation(name) orelse true;
+        }
+    };
+    var lookup = Lookup{ .host = host, .tracker = &prepared };
+    var prepared_filter = filter.*;
+    prepared_filter.default_activation_ctx = &lookup;
+    prepared_filter.default_activation_fn = Lookup.active;
+    if (explicit_selection) {
+        prepared_filter.allow = prepared.active.items;
+        prepared_filter.allow_is_loadout = true;
+        prepared_filter.builtin_allow = null;
+        prepared_filter.modifiers = null;
+        prepared_filter.no_tools = false;
+    }
+    const schemas = try schema_bridge.toolSchemasJson(host.gpa, prepared_filter);
+    errdefer host.gpa.free(schemas);
+    if (host.registration_sequence != prepared.sequence) return error.NativeToolSelectionChanged;
+    // Allocate the schemas before committing state or acknowledging producer events.
+    try host.clearRegistrationEvents(prepared.sequence);
+    if (host.activation_tracker) |*tracker| tracker.deinit();
+    host.activation_tracker = prepared;
+    host.activation_explicit_selection = explicit_selection;
+    filter.default_activation_ctx = host;
+    filter.default_activation_fn = nativeToolIsActive;
+    if (explicit_selection) {
+        filter.allow = host.activation_tracker.?.active.items;
+        filter.allow_is_loadout = true;
+        filter.builtin_allow = null;
+        filter.modifiers = null;
+        filter.no_tools = false;
+    }
+    return schemas;
+}
+
+test "native CLI activation allocation failure retains producer acknowledgement tracker and filter" {
+    const Sweep = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            var host: extensions.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .registration_owner_generation = 7 };
+            defer host.deinit();
+            host.loadJson("{\"name\":\"snapshot\",\"tools\":[{\"name\":\"sticky\",\"defaultActive\":false,\"parameters\":{\"type\":\"object\"}}]}", ".") catch |err| return allocationFailure(gpa, err);
+            for ([_]bool{ false, true, false }, 0..) |active, index| {
+                var event = try (extensions.tool_activation.Event{ .owner_generation = 7, .owner_id = 1, .sequence = index + 1, .source_path = "source", .name = "sticky", .default_active = active, .activate = index != 0 }).clone(gpa);
+                errdefer event.deinit(gpa);
+                try host.tool_registration_events.append(gpa, event);
+            }
+            host.registration_sequence = 3;
+            var filter: agent.tools.ToolFilter = .{ .builtin_allow = &.{} };
+            const schemas = synchronizeNativeToolActivation(&host, &filter, filter) catch |err| {
+                try std.testing.expectEqual(@as(u64, 0), host.registration_acknowledged_sequence);
+                try std.testing.expect(host.activation_tracker == null);
+                try std.testing.expect(filter.default_activation_ctx == null and filter.allow == null);
+                try std.testing.expectEqual(@as(usize, 3), host.registrationEvents().len);
+                return allocationFailure(gpa, err);
+            };
+            defer gpa.free(schemas);
+            try std.testing.expectEqual(@as(u64, 3), host.registration_acknowledged_sequence);
+            try std.testing.expect(host.activation_tracker.?.isActive("sticky"));
+            try std.testing.expectEqual(@as(?bool, false), host.activation_tracker.?.defaultActivation("sticky"));
+            try std.testing.expect(filter.isExtensionEnabled("sticky"));
+            try std.testing.expect(std.mem.indexOf(u8, schemas, "\"name\":\"sticky\"") != null);
+        }
+        fn allocationFailure(gpa: std.mem.Allocator, err: anyerror) anyerror {
+            // Allocating JSON writers report their allocation failure as
+            // WriteFailed. Only translate a failure actually induced here.
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            return if (err == error.WriteFailed and failing.has_induced_failure) error.OutOfMemory else err;
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
+}
+
+const TypedModelOwner = coding.typed_model_registry.Owner;
+const TypedModelBackend = coding.typed_model_backend.State;
+fn enqueueMainModelActions(gpa: std.mem.Allocator, owner: *TypedModelOwner, generation: u64, bridge: *extensions.integration.Bridge, source: []const u8, envelope: []const u8) !void {
+    _ = gpa;
+    const allocator = bridge.action_queue.gpa;
+    var batch = try extensions.actions.Batch.parseNative(allocator, std.fs.path.stem(source), "typed_model", envelope);
+    defer batch.deinit(allocator);
+    if (batch.isEmpty()) return;
+    owner.mutex.lockUncancelable(owner.io);
+    defer owner.mutex.unlock(owner.io);
+    if (!owner.live or owner.generation != generation) return error.TypedRegistryOwnerRetired;
+    // Queue publication performs no VM callbacks while the owner is checked.
+    try bridge.action_queue.enqueue(&batch);
+}
+fn acceptMainModelActions(raw: ?*anyopaque, gpa: std.mem.Allocator, snapshot: *const coding.typed_model_registry.Snapshot, source: []const u8, envelope: []const u8) !void {
+    const bridge: *extensions.integration.Bridge = @ptrCast(@alignCast(raw.?));
+    try enqueueMainModelActions(gpa, snapshot.owner orelse return error.TypedRegistryProgramNotAdmitted, snapshot.generation, bridge, source, envelope);
+}
+fn refreshMainNativeModels(gpa: std.mem.Allocator, registry: *extensions.provider_registry.Registry, owner: *TypedModelOwner, bridge: *extensions.integration.Bridge, aborted: ?*bool) !void {
+    const names = try registry.nativeProviderNames(gpa);
+    defer {
+        for (names) |name| gpa.free(name);
+        gpa.free(names);
+    }
+    for (names) |name| {
+        const generation = owner.generation;
+        const envelope = (try registry.refreshNativeCatalog(gpa, name, aborted)) orelse continue;
+        defer gpa.free(envelope);
+        try enqueueMainModelActions(gpa, owner, generation, bridge, name, envelope);
+    }
+}
+const FooterModelSnapshot = struct {
+    live: *coding.live_state.LiveState,
+    registry: *extensions.provider_registry.Registry,
+    oauth: *extensions.provider_oauth.Runtime,
+    models_file: *const coding.models_file.ModelsFile,
+    environ: *const std.process.Environ.Map,
+    io: Io,
+    agent_dir: ?[]const u8,
+    explicit_provider: ?[]const u8,
+    explicit_key: ?[]const u8,
+
+    fn read(raw: ?*anyopaque, gpa: std.mem.Allocator) !extensions.Host.FooterModels {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const scoped = try gpa.alloc(ai.providers.ModelInfo, self.live.model_scope.len);
+        errdefer gpa.free(scoped);
+        for (self.live.model_scope, 0..) |model, index| scoped[index] = model.model;
+        var available: std.ArrayList(ai.providers.ModelInfo) = .empty;
+        errdefer available.deinit(gpa);
+        var known: std.StringHashMap(bool) = .init(gpa);
+        defer known.deinit();
+        for (self.live.model_catalog) |model| {
+            const provider_id = model.providerName();
+            const has_auth = if (known.get(provider_id)) |value| value else blk: {
+                var valid = false;
+                for (self.registry.runtimes()) |runtime| if (std.mem.eql(u8, runtime.id, provider_id) and runtime.api_key != null) {
+                    valid = true;
+                    break;
+                };
+                const credential = try self.oauth.credentialForModelRefresh(gpa, provider_id, Io.Clock.real.now(self.io).toMilliseconds(), false, null);
+                defer if (credential) |value| gpa.free(value);
+                valid = valid or credential != null;
+                if (!valid) {
+                    var runtime = coding.runtime_config.resolveForModel(gpa, self.io, self.environ, self.models_file, model, .{
+                        .agent_dir = self.agent_dir,
+                        .explicit_api_key = if (self.explicit_provider != null and std.mem.eql(u8, self.explicit_provider.?, provider_id)) self.explicit_key else null,
+                        .allow_generic_api_key = false,
+                    }) catch |cause| switch (cause) {
+                        error.MissingCloudflareAccountId, error.MissingCloudflareGatewayId, error.MissingGoogleCloudProject, error.MissingGoogleCloudLocation => {
+                            try known.put(provider_id, false);
+                            break :blk false;
+                        },
+                        else => return cause,
+                    };
+                    defer runtime.deinit();
+                    valid = runtime.api_key != null or (ai.Provider.fromString(provider_id) != null and ai.providers.hasUsableCredential(model.provider, null, self.environ));
+                }
+                try known.put(provider_id, valid);
+                break :blk valid;
+            };
+            if (has_auth) try available.append(gpa, model);
+        }
+        return .{ .scoped = scoped, .available = try available.toOwnedSlice(gpa) };
+    }
+};
 
 fn syncExtensionScriptContext(
     host: *extensions.Host,
@@ -1763,7 +2081,17 @@ fn syncExtensionScriptContext(
     defer host.gpa.free(active_tools);
     const all_tools = try collectExtensionContextTools(host.gpa, host, tool_filter, disable_builtin_tools, false);
     defer host.gpa.free(all_tools);
+    const footer_models = if (host.footer_models_fn) |read| try read(host.footer_models_context, host.gpa) else extensions.Host.FooterModels{ .scoped = &.{}, .available = null };
+    defer if (host.footer_models_fn != null) {
+        host.gpa.free(footer_models.scoped);
+        if (footer_models.available) |models| host.gpa.free(models);
+    };
     const context = try ui_controller.contextJson(host.gpa, .{
+        .runtime_bound = true,
+        .settings_json = host.settings_snapshot_json,
+        .strict_theme_validation = true,
+        .admit_keybindings = true,
+        .kitty_active = tui.keys.isKittyProtocolActive(),
         .mode = mode,
         .cwd = cwd,
         .session_id = sess.id,
@@ -1774,7 +2102,10 @@ fn syncExtensionScriptContext(
         .project_trusted = project_trusted,
         .active_tools = active_tools,
         .all_tools = all_tools,
+        .native_tool_selection = host.native_tool_selection,
         .model_catalog = model_catalog,
+        .scoped_models = footer_models.scoped,
+        .available_models = footer_models.available,
         .configured_providers = configured_providers,
         .session = sess,
         .session_file = session_file,
@@ -1795,18 +2126,44 @@ fn collectExtensionCommandMetadata(
     names: *std.ArrayList([]const u8),
     infos: *std.ArrayList(coding.rpc_data.ExtensionCommandInfo),
 ) !void {
-    for (host.extensions.items) |extension| {
+    const resolved = try host.resolvedCommandNames();
+    defer {
+        for (resolved) |entry| host.gpa.free(entry.invocation_name);
+        host.gpa.free(resolved);
+    }
+    for (resolved) |entry| {
+        const extension = host.extensions.items[entry.owner_index];
         for (extension.commands) |command| {
-            try names.append(gpa, command.name);
-            try infos.append(gpa, .{
-                .name = command.name,
-                .description = command.description,
-                .argument_hint = command.argument_hint,
-                .extension_name = extension.name,
-                .entry_path = extension.entry,
-            });
+            if (!std.mem.eql(u8, command.name, entry.name)) continue;
+            const name = try gpa.dupe(u8, entry.invocation_name);
+            errdefer gpa.free(name);
+            const description = try gpa.dupe(u8, command.description);
+            errdefer gpa.free(description);
+            const argument_hint = if (command.argument_hint) |hint| try gpa.dupe(u8, hint) else null;
+            errdefer if (argument_hint) |hint| gpa.free(hint);
+            const extension_name = try gpa.dupe(u8, extension.name);
+            errdefer gpa.free(extension_name);
+            const entry_path = try gpa.dupe(u8, extension.entry);
+            errdefer gpa.free(entry_path);
+            try names.ensureUnusedCapacity(gpa, 1);
+            try infos.ensureUnusedCapacity(gpa, 1);
+            names.appendAssumeCapacity(name);
+            infos.appendAssumeCapacity(.{ .name = name, .description = description, .argument_hint = argument_hint, .extension_name = extension_name, .entry_path = entry_path });
+            break;
         }
     }
+}
+
+fn deinitExtensionCommandMetadata(gpa: std.mem.Allocator, names: *std.ArrayList([]const u8), infos: *std.ArrayList(coding.rpc_data.ExtensionCommandInfo)) void {
+    for (names.items) |name| gpa.free(name);
+    for (infos.items) |info| {
+        gpa.free(info.description);
+        if (info.argument_hint) |hint| gpa.free(hint);
+        gpa.free(info.extension_name);
+        gpa.free(info.entry_path);
+    }
+    names.deinit(gpa);
+    infos.deinit(gpa);
 }
 
 fn configureExtensionCallbacks(
@@ -2003,12 +2360,16 @@ const RuntimeResourceReloadContext = struct {
     extension_oauth: *extensions.provider_oauth.Runtime,
     provider_stream: *extensions.provider_stream.Runtime,
     provider_models: *extensions.provider_models.Runtime,
+    typed_owner: ?*TypedModelOwner = null,
+    typed_backend: ?**TypedModelBackend = null,
+    initial_models_file: ?*const coding.models_file.ModelsFile = null,
     schemas: *[]u8,
     prompt_templates: *[]coding.prompts.PromptTemplate,
     command_names: *std.ArrayList([]const u8),
     command_infos: *std.ArrayList(coding.rpc_data.ExtensionCommandInfo),
     theme_registry: *pi_zig.themes.Registry,
     action_runtime: *ExtensionActionRuntime,
+    terminal_theme: *extensions.terminal_theme_producer.Producer,
     steering: *std.ArrayList([]const u8),
     followups: *std.ArrayList([]const u8),
     shared_abort: *bool,
@@ -2174,17 +2535,38 @@ const RuntimeResourceReloadContext = struct {
             .io = self.io,
             .js_runtime_program = self.environ.get("PI_JS_RUNTIME") orelse "node",
             .script_ui_bridge = self.ui.bridge(),
+            .script_backend = self.host.script_backend,
+            .footer_models_context = self.host.footer_models_context,
+            .footer_models_fn = self.host.footer_models_fn,
+            .native_runtime_options = self.host.native_runtime_options,
+            .native_catalog_source = self.host.native_catalog_source,
+            .script_renderer_bridge = self.host.script_renderer_bridge,
+            .script_editor_bridge = self.host.script_editor_bridge,
+            .script_widget_bridge = self.host.script_widget_bridge,
         };
         errdefer new_host.deinit();
+        new_host.settings_snapshot_json = try gpa.dupe(u8, fresh_settings.source_json orelse "{}");
+        if (self.host.script_context_json) |previous| {
+            const json = pi_zig.mcp.protocol.json;
+            var snapshot = try json.Owned.parse(gpa, previous);
+            defer snapshot.deinit();
+            var settings_snapshot = try json.Owned.parse(gpa, new_host.settings_snapshot_json.?);
+            defer settings_snapshot.deinit();
+            try snapshot.value.object.put(snapshot.arena.allocator(), "nativeRuntimeBound", .{ .bool = false });
+            try snapshot.value.object.put(snapshot.arena.allocator(), "settings", try json.clone(snapshot.arena.allocator(), settings_snapshot.value));
+            const startup_context = try json.stringify(gpa, snapshot.value);
+            defer gpa.free(startup_context);
+            try new_host.setScriptContextJson(startup_context);
+        }
+
         if (!self.cli.no_extensions) for (top_resources.extensions.items) |path| try new_host.loadPath(path);
         if (!self.cli.no_extensions) for (package_resources.extensions.items) |path| try new_host.loadPath(path);
         for (self.cli.extensions.items) |source| try self.loadExplicitExtension(&new_host, source, fresh_settings.npm_command);
         for (self.cli.unknown_flags.items) |flag| try new_host.applyCliFlag(flag.name, flag.value);
 
         var new_command_names: std.ArrayList([]const u8) = .empty;
-        errdefer new_command_names.deinit(gpa);
         var new_command_infos: std.ArrayList(coding.rpc_data.ExtensionCommandInfo) = .empty;
-        errdefer new_command_infos.deinit(gpa);
+        errdefer deinitExtensionCommandMetadata(gpa, &new_command_names, &new_command_infos);
         try collectExtensionCommandMetadata(gpa, &new_host, &new_command_names, &new_command_infos);
 
         var prompt_paths: std.ArrayList([]const u8) = .empty;
@@ -2214,6 +2596,7 @@ const RuntimeResourceReloadContext = struct {
         errdefer deinitPromptTemplateSlice(gpa, new_prompts);
 
         var new_themes = pi_zig.themes.Registry.init(gpa, self.io);
+        new_themes.validate_user_themes = true;
         errdefer new_themes.deinit();
         if (!self.cli.no_themes) for (top_resources.themes.items) |path| try new_themes.loadPath(path);
         if (!self.cli.no_themes) for (package_resources.themes.items) |path| try new_themes.loadPath(path);
@@ -2223,15 +2606,23 @@ const RuntimeResourceReloadContext = struct {
             try new_themes.loadPath(path);
         }
 
-        var new_provider_registry = extensions.provider_registry.Registry.init(
+        const replacement_all_catalog = if (fresh_catalog_snapshot) |*snapshot| snapshot.all_model_catalog else self.provider_registry.baseline_all_catalog;
+        var new_provider_registry = extensions.provider_registry.Registry.initAll(
             gpa,
             self.io,
             self.environ,
             self.agent_dir,
             replacement_baseline_catalog,
+            replacement_all_catalog,
             replacement_baseline_runtimes,
         );
         errdefer new_provider_registry.deinit();
+        var new_typed_backend: ?*TypedModelBackend = if (self.typed_backend != null) try TypedModelBackend.create(gpa, self.io, self.environ, if (fresh_catalog_snapshot) |*snapshot| &snapshot.models_file else self.initial_models_file orelse return error.MissingTypedModelConfiguration, self.agent_dir, if (self.cli.api_key != null) self.provider_name.* else null, self.cli.api_key, fresh_settings.http_proxy) else null;
+        defer if (new_typed_backend) |backend| TypedModelBackend.release(backend);
+        if (new_typed_backend) |backend| {
+            backend.actions_context = self.bridge;
+            backend.actions = acceptMainModelActions;
+        }
         for (new_host.extensions.items) |extension| {
             for (extension.providers) |registration| try new_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime);
         }
@@ -2245,18 +2636,24 @@ const RuntimeResourceReloadContext = struct {
             new_owned_active_tools = try buildActiveToolSelection(gpa, &new_host, old_names);
             new_filter.allow = new_owned_active_tools.?;
             new_filter.builtin_allow = null;
+        } else if (self.host.activation_explicit_selection) {
+            if (self.host.activation_tracker) |*tracker| {
+                new_owned_active_tools = try buildActiveToolSelection(gpa, &new_host, tracker.active.items);
+                new_filter.allow = new_owned_active_tools.?;
+                new_filter.builtin_allow = null;
+                new_host.activation_explicit_selection = true;
+            }
         } else if (self.cli.tools == null) {
             new_filter.allow = null;
-            new_filter.builtin_allow = fresh_settings.tools orelse &agent.tools.default_tool_names;
+            new_filter.builtin_allow = if (self.cli.no_builtin_tools or self.cli.no_tools) &.{} else fresh_settings.tools orelse &coding.tool_selection.default_tool_names;
         }
 
         var new_bridge = extensions.integration.Bridge.init(&new_host);
         errdefer new_bridge.deinit();
         new_bridge.setAbortFlag(self.shared_abort);
-        const new_schemas = if (new_host.extensions.items.len > 0)
-            try new_bridge.toolSchemasJson(gpa, new_filter)
-        else
-            try gpa.dupe(u8, "[]");
+        var new_registration_filter = self.action_runtime.registration_filter;
+        if (self.cli.tools == null) new_registration_filter.builtin_allow = fresh_settings.tools orelse &coding.tool_selection.default_tool_names;
+        const new_schemas = try synchronizeNativeToolActivation(&new_host, &new_filter, new_registration_filter);
         errdefer gpa.free(new_schemas);
 
         const active_provider = self.provider_name.*;
@@ -2370,6 +2767,10 @@ const RuntimeResourceReloadContext = struct {
             }
         }
 
+        // Client validation and rollback are finished. Retire captured contexts
+        // before any owner is replaced; failed preparation keeps them valid.
+        _ = try self.host.invalidateNativeContexts(null);
+        if (self.typed_owner) |owner| owner.retire();
         self.ui.resetForReload();
         tui.render.resetTheme();
 
@@ -2389,6 +2790,14 @@ const RuntimeResourceReloadContext = struct {
         self.bridge.* = new_bridge;
         self.bridge.host = self.host;
         self.provider_registry.* = new_provider_registry;
+        if (self.typed_owner) |owner| {
+            const backend = new_typed_backend orelse return error.MissingTypedModelBackend;
+            const previous = self.typed_backend.?.*;
+            self.typed_backend.?.* = backend;
+            new_typed_backend = null;
+            try owner.bindBackend(self.provider_registry, backend.backend());
+            TypedModelBackend.release(previous);
+        }
         self.extension_oauth.registry = self.provider_registry;
         self.provider_stream.registry = self.provider_registry;
         self.provider_models.commitPreparedRegistry(self.provider_registry, &provider_models_preparation);
@@ -2412,6 +2821,8 @@ const RuntimeResourceReloadContext = struct {
         self.command_names.* = new_command_names;
         self.command_infos.* = new_command_infos;
         self.active_filter.* = new_filter;
+        if (self.host.native_group_runtime != null) self.active_filter.default_activation_ctx = self.host;
+        self.action_runtime.registration_filter = new_registration_filter;
         self.owned_active_tools.* = new_owned_active_tools;
 
         if (fresh_catalog_snapshot) |*snapshot| {
@@ -2427,6 +2838,13 @@ const RuntimeResourceReloadContext = struct {
             pool.setRuntimeProviders(self.provider_registry.runtimes());
         }
         self.live.agent_cfg.tool_filter = self.active_filter.*;
+        if (self.live.agent_cfg.builtin_extension_runtime_fn == pi_zig.mcp.codemode_builtin.Runtime.execute) {
+            if (self.live.agent_cfg.builtin_extension_ctx) |codemode_context| {
+                const codemode: *pi_zig.mcp.codemode_builtin.Runtime = @ptrCast(@alignCast(codemode_context));
+                codemode.loadout_mode = fresh_settings.codemode_mode orelse .on;
+                codemode.inline_budget = fresh_settings.codemode_inline_budget orelse 3000;
+            }
+        }
         self.live.agent_cfg.max_turns = fresh_settings.max_turns;
         self.live.agent_cfg.auto_compaction_enabled = fresh_settings.compaction_enabled orelse true;
         self.live.agent_cfg.compaction_reserve_tokens = fresh_settings.compaction_reserve_tokens orelse 16_384;
@@ -2491,8 +2909,7 @@ const RuntimeResourceReloadContext = struct {
         }
 
         old_bridge.deinit();
-        old_command_names.deinit(gpa);
-        old_command_infos.deinit(gpa);
+        deinitExtensionCommandMetadata(gpa, &old_command_names, &old_command_infos);
         deinitPromptTemplateSlice(gpa, old_prompts);
         gpa.free(old_schemas);
         old_provider_registry.deinit();
@@ -2504,6 +2921,16 @@ const RuntimeResourceReloadContext = struct {
         if (self.cli.use_theme orelse fresh_settings.theme) |selection| {
             const theme_name = resolveThemeSelection(selection, self.environ);
             if (self.theme_registry.find(theme_name)) |theme| tui.render.setTheme(theme);
+        }
+        try selectTerminalTheme(self.terminal_theme, self.theme_registry);
+
+        if (self.typed_owner) |owner| {
+            try refreshMainNativeModels(gpa, self.provider_registry, owner, self.bridge, self.shared_abort);
+            self.live.model_catalog = self.provider_registry.catalog();
+            if (self.live.client_pool) |pool| {
+                pool.setModelCatalog(self.provider_registry.catalog());
+                pool.setRuntimeProviders(self.provider_registry.runtimes());
+            }
         }
 
         if (self.host.extensions.items.len > 0) {
@@ -2777,12 +3204,126 @@ fn runInteractiveReleaseLifecycle(
 }
 
 pub fn main(init: std.process.Init) !void {
+    runMain(init) catch |err| {
+        if (err == error.DeadTerminal) std.process.exit(129);
+        return err;
+    };
+}
+
+fn parseExtensionBackend(value: ?[]const u8) !extensions.js_runtime.Backend {
+    const selected = value orelse return .legacy;
+    if (std.mem.eql(u8, selected, "native")) return .native;
+    if (std.mem.eql(u8, selected, "legacy")) return .legacy;
+    return error.InvalidExtensionBackend;
+}
+
+/// Main supplies only Controller/editor snapshots to the temporary paint owner.
+/// Runtime's frame task never reads Session, Host or the regular editor object.
+const ComponentFrontendOwner = struct {
+    const Frontend = coding.fullscreen_frontend.Frontend;
+    const protocol = extensions.ui.component_protocol;
+    gpa: std.mem.Allocator,
+    io: Io,
+    environ: *const std.process.Environ.Map,
+    reader: *Io.File.Reader,
+    bindings: *const tui.keybindings.Manager,
+    controller: *extensions.ui.Controller,
+    terminal_theme: *extensions.terminal_theme_producer.Producer,
+    options: coding.fullscreen_frontend.Options,
+    persistent: ?*Frontend = null,
+    temporary: ?*Frontend = null,
+
+    fn detachTemporary(self: *@This()) void {
+        if (self.temporary) |owner| {
+            self.controller.bindEditorFrontend(null, null);
+            self.controller.bindFrontend(null, null, null);
+            self.controller.bindDialogStatus(null, null);
+            tui.render.bindFrontend(null, null, null);
+            owner.deinit();
+            self.temporary = null;
+        }
+    }
+    fn scene(raw: ?*anyopaque, dto: protocol.Scene, controls: *protocol.ControlQueue) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (self.persistent) |owner| return Frontend.componentSink(owner, dto, controls);
+        const first = self.temporary == null;
+        if (first) {
+            const editor = try self.controller.editorText(self.gpa);
+            defer self.gpa.free(editor);
+            const owner = try Frontend.start(self.gpa, self.io, self.environ, self.reader, self.bindings, self.options);
+            self.temporary = owner;
+            errdefer self.detachTemporary();
+            owner.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, self.terminal_theme);
+            owner.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
+            try self.terminal_theme.request();
+            self.controller.bindFrontend(Frontend.surfaceSink, Frontend.modalObserver, owner);
+            self.controller.bindDialogStatus(Frontend.dialogStatus, owner);
+            self.controller.bindEditorFrontend(Frontend.editorSink, owner);
+            owner.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, self.controller);
+            tui.render.bindFrontend(Frontend.noticeSink, Frontend.renderModalObserver, owner);
+            try owner.setEditorText(editor, null, null);
+            try self.controller.flush();
+        }
+        errdefer if (first) self.detachTemporary();
+        try Frontend.componentSink(self.temporary.?, dto, controls);
+    }
+    fn close(raw: ?*anyopaque, fence: protocol.Fence) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (self.persistent) |owner| return Frontend.componentClose(owner, fence);
+        const owner = self.temporary orelse return error.StaleNativeComponentScene;
+        defer self.detachTemporary();
+        // ACK follows scene removal, restored paint, raw-mode release and
+        // alternate-screen teardown before the ordinary editor owns input again.
+        try Frontend.componentClose(owner, fence);
+        const editor = try owner.snapshotEditor(self.gpa);
+        defer self.gpa.free(editor.text);
+        owner.stop();
+        self.controller.bindEditorFrontend(null, null);
+        var action: Io.Writer.Allocating = .init(self.gpa);
+        defer action.deinit();
+        try action.writer.writeAll("{\"text\":");
+        try std.json.Stringify.value(editor.text, .{}, &action.writer);
+        try action.writer.writeByte('}');
+        try self.controller.applyAction("setEditorText", action.written());
+    }
+};
+
+fn selectTerminalTheme(producer: *extensions.terminal_theme_producer.Producer, registry: *pi_zig.themes.Registry) !void {
+    const resource = tui.render.activeThemeResource();
+    var identity: ?[]const u8 = null;
+    if (resource) |selected| for (registry.themes.items) |theme| {
+        if (theme.resource_json) |json| if (json.ptr == selected.ptr) {
+            identity = registry.sourceFor(theme.name);
+            break;
+        };
+    };
+    try producer.select(resource, identity);
+}
+
+test "production extension backend selector defaults legacy and rejects unknown values" {
+    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend(null));
+    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend("legacy"));
+    try std.testing.expectEqual(extensions.js_runtime.Backend.native, try parseExtensionBackend("native"));
+    try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend("unknown"));
+}
+
+fn runMain(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const gpa = init.gpa;
     const io = init.io;
     const environ: *const std.process.Environ.Map = init.environ_map;
+    const extension_backend = parseExtensionBackend(environ.get("PI_EXTENSION_BACKEND")) catch |err| {
+        try Io.File.stderr().writeStreamingAll(io, "PI_EXTENSION_BACKEND must be native or legacy.\n");
+        return err;
+    };
 
     const raw_args = try init.minimal.args.toSlice(arena);
+    if (raw_args.len == 3 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-worker")) {
+        return extensions.native_worker.run(gpa, io, raw_args[2]);
+    }
+    if (raw_args.len == 2 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-group-worker")) {
+        return extensions.native_worker.runGroup(gpa, io);
+    }
     var cli = coding.args.parseArgs(arena, raw_args) catch |err| {
         const message = switch (err) {
             error.MissingArg => "error: an option is missing its required value",
@@ -2795,6 +3336,10 @@ pub fn main(init: std.process.Init) !void {
     };
 
     const explicit_cli_model = cli.model != null;
+    if (cli.tool_list_error) |diagnostic| {
+        try tui.render.printLine(io, diagnostic);
+        std.process.exit(2);
+    }
     const explicit_cli_thinking = cli.thinking != null;
 
     // Match the original CLI: redirected stdin supplies the initial prompt and
@@ -2814,6 +3359,11 @@ pub fn main(init: std.process.Init) !void {
         try tui.render.printLine(io, config.identity);
         return;
     }
+    coding.args.validateModelSelection(cli) catch {
+        const message = try std.fmt.allocPrint(arena, "--provider requires --model (for example: --provider {s} --model <pattern>)", .{cli.provider orelse "<provider>"});
+        try tui.render.printLine(io, message);
+        std.process.exit(2);
+    };
 
     // Run the original one-time compatibility migrations before any command
     // reads settings, sessions or credentials. They are deliberately silent
@@ -2909,6 +3459,7 @@ pub fn main(init: std.process.Init) !void {
     // original loader. `--no-themes` disables discovery but explicit --theme
     // paths remain enabled. The selected settings theme feeds the native renderer.
     var theme_registry = pi_zig.themes.Registry.init(gpa, io);
+    theme_registry.validate_user_themes = true;
     defer theme_registry.deinit();
     defer tui.render.resetTheme();
     if (!cli.no_themes) for (top_level_resources.themes.items) |theme_path| {
@@ -3406,17 +3957,53 @@ pub fn main(init: std.process.Init) !void {
     );
     defer extension_ui.deinit();
     extension_ui.bindClipboardEnvironment(environ);
+    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
+    defer terminal_keybindings.deinit();
+    extension_ui.bindKeybindings(&terminal_keybindings);
+    defer extension_ui.bindKeybindings(null);
+    const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
+    extension_ui.bindTerminalState(terminal_capabilities, .{});
+    var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
+    defer terminal_theme.deinit();
+    try selectTerminalTheme(&terminal_theme, &theme_registry);
     var extension_stdin_buf: [4096]u8 = undefined;
     var extension_stdin_reader: Io.File.Reader = .init(.stdin(), io, &extension_stdin_buf);
     if (extension_has_ui) extension_ui.bindReader(&extension_stdin_reader);
 
+    const native_extension_executable = if (extension_backend == .native) try std.process.executablePathAlloc(io, gpa) else null;
+    defer if (native_extension_executable) |path| gpa.free(path);
+    var main_catalog_source: extensions.main_catalog_source.State = .{ .gpa = gpa, .io = io };
+    defer main_catalog_source.deinit();
     var extension_host = extensions.Host{
         .gpa = gpa,
         .io = io,
         .js_runtime_program = environ.get("PI_JS_RUNTIME") orelse "node",
         .script_ui_bridge = extension_ui.bridge(),
+        .script_backend = extension_backend,
+        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
+        .native_catalog_source = main_catalog_source.source(),
+        .settings_snapshot_json = try gpa.dupe(u8, settings.source_json orelse "{}"),
     };
     defer extension_host.deinit();
+    const initial_worker_context = try extension_ui.contextJson(gpa, .{
+        .runtime_bound = false,
+        .settings_json = extension_host.settings_snapshot_json,
+        .strict_theme_validation = true,
+        .admit_keybindings = true,
+        .kitty_active = tui.keys.isKittyProtocolActive(),
+        .mode = extension_mode,
+        .cwd = cwd,
+        .session_id = sess.id,
+        .session_name = if (sess.name.len > 0) sess.name else null,
+        .provider = provider_name,
+        .model_id = model,
+        .thinking_level = cli.thinking orelse settings.thinking_level,
+        .project_trusted = trust_project,
+        .session_file = session_path,
+        .session_dir = session_dir,
+    });
+    defer gpa.free(initial_worker_context);
+    try extension_host.setScriptContextJson(initial_worker_context);
     if (!cli.no_extensions) for (top_level_resources.extensions.items) |extension_path| {
         extension_host.loadPath(extension_path) catch |err| {
             const warning = try std.fmt.allocPrint(arena, "warning: top-level extension {s} could not be loaded: {s}", .{ extension_path, @errorName(err) });
@@ -3515,21 +4102,9 @@ pub fn main(init: std.process.Init) !void {
         };
     }
     var extension_command_names: std.ArrayList([]const u8) = .empty;
-    defer extension_command_names.deinit(gpa);
     var extension_command_infos: std.ArrayList(coding.rpc_data.ExtensionCommandInfo) = .empty;
-    defer extension_command_infos.deinit(gpa);
-    for (extension_host.extensions.items) |extension| {
-        for (extension.commands) |command| {
-            try extension_command_names.append(gpa, command.name);
-            try extension_command_infos.append(gpa, .{
-                .name = command.name,
-                .description = command.description,
-                .argument_hint = command.argument_hint,
-                .extension_name = extension.name,
-                .entry_path = extension.entry,
-            });
-        }
-    }
+    defer deinitExtensionCommandMetadata(gpa, &extension_command_names, &extension_command_infos);
+    try collectExtensionCommandMetadata(gpa, &extension_host, &extension_command_names, &extension_command_infos);
 
     var explicit_prompt_paths: std.ArrayList([]const u8) = .empty;
     defer {
@@ -3577,12 +4152,24 @@ pub fn main(init: std.process.Init) !void {
     const extensions_active = extension_host.extensions.items.len > 0;
     // This filter is mutable because script extensions may change the active
     // tool set between turns through pi.setActiveTools().
+    const tool_selection = coding.tool_selection;
+    const cli_uses_modifiers = if (cli.tools) |names| tool_selection.usesModifiers(names) else false;
+    // Source noTools controls the initial loadout. Builtin implementations
+    // remain registered and may be selected explicitly or by setActiveTools.
+    const effective_no_builtin_tools = false;
+    const selected_from_disabled = if (cli_uses_modifiers and cli.no_tools) try tool_selection.apply(arena, &.{}, cli.tools.?) else null;
     var active_tool_filter = agent.tools.ToolFilter{
-        .allow = cli.tools,
-        .builtin_allow = if (cli.tools == null) (settings.tools orelse &agent.tools.default_tool_names) else null,
+        .allow = if (cli_uses_modifiers) selected_from_disabled else cli.tools,
+        .builtin_allow = if (cli.no_builtin_tools or cli.no_tools) &.{} else if (cli_uses_modifiers or cli.tools == null) (settings.tools orelse &coding.tool_selection.default_tool_names) else null,
+        .modifiers = if (cli_uses_modifiers) cli.tools else null,
         .exclude = cli.exclude_tools,
-        .no_tools = cli.no_tools,
+        .no_tools = cli.no_tools and !cli_uses_modifiers and cli.tools == null,
     };
+    const registration_tool_filter = active_tool_filter;
+    main_catalog_source.allowed_names = registration_tool_filter.allow orelse if (cli.no_tools) &.{} else null;
+    main_catalog_source.excluded_names = cli.exclude_tools orelse &.{};
+    const initial_extension_schemas = try synchronizeNativeToolActivation(&extension_host, &active_tool_filter, registration_tool_filter);
+    gpa.free(initial_extension_schemas);
     try syncExtensionScriptContext(
         &extension_host,
         &extension_ui,
@@ -3595,7 +4182,7 @@ pub fn main(init: std.process.Init) !void {
         trust_project,
         "",
         active_tool_filter,
-        cli.no_builtin_tools,
+        effective_no_builtin_tools,
         cycling_model_catalog,
         &.{},
         session_path,
@@ -3806,6 +4393,63 @@ pub fn main(init: std.process.Init) !void {
     else
         try gpa.dupe(u8, "[]");
     defer gpa.free(extension_tool_schemas);
+    var configured_mcp: ?*pi_zig.mcp.configured.Service = null;
+    defer if (configured_mcp) |service| service.deinit();
+    // Publishers must retire before the native service they snapshot.
+    defer {
+        extension_host.stopNativeCatalogPublisher();
+        main_catalog_source.unbindMcp();
+    }
+    if (agent_dir) |directory| {
+        var reserved: std.ArrayList([]const u8) = .empty;
+        defer reserved.deinit(gpa);
+        for (extension_host.extensions.items) |extension| for (extension.tools) |tool| try reserved.append(gpa, tool.name);
+        configured_mcp = try pi_zig.mcp.configured.Service.create(gpa, io, .{
+            .agent_dir = directory,
+            .cwd = cwd,
+            .project_trusted = trust_project,
+            .environ = environ,
+            .reserved_names = reserved.items,
+        });
+        main_catalog_source.bindMcp(configured_mcp.?);
+        const discovery_activation = pi_zig.mcp.activation;
+        const needs = discovery_activation.configuredNeeds(configured_mcp.?.loaded.value);
+        var eligible = active_tool_filter;
+        eligible.default_activation_ctx = null;
+        eligible.default_activation_fn = null;
+        const decision = discovery_activation.decide(needs, .{
+            .has_codemode = !extension_host.hasTool("codemode") and eligible.isEnabled("codemode"),
+            .has_search = !extension_host.hasTool("tool_search") and eligible.isEnabled("tool_search"),
+            .active_codemode = pi_zig.mcp.codemode_builtin.Runtime.isActive(&.{ .tool_filter = active_tool_filter }),
+            .active_search = pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(active_tool_filter, "tool_search"),
+            .auto_enable_codemode = if (configured_mcp.?.loaded.value.object.get("autoEnableCodemode")) |value| value.bool else true,
+        });
+        if (decision.activate_codemode or decision.activate_search) {
+            var modifiers: std.ArrayList([]const u8) = .empty;
+            try modifiers.appendSlice(arena, active_tool_filter.modifiers orelse &.{});
+            if (decision.activate_codemode) try modifiers.append(arena, "+codemode");
+            if (decision.activate_search) try modifiers.append(arena, "+tool_search");
+            active_tool_filter.modifiers = modifiers.items;
+        }
+        if (decision.warning) |warning| try std.Io.File.stderr().writeStreamingAll(io, try std.fmt.allocPrint(arena, "warning: {s}\n", .{warning}));
+        configured_mcp.?.notice_context = &extension_ui;
+        configured_mcp.?.notice_fn = extensions.ui.Controller.persistentAction;
+        configured_mcp.?.builtin_search_registered = !extension_host.hasTool("tool_search");
+        configured_mcp.?.search_active_context = &active_tool_filter;
+        configured_mcp.?.search_active_fn = struct {
+            fn active(raw: ?*anyopaque) bool {
+                const filter: *const agent.tools.ToolFilter = @ptrCast(@alignCast(raw.?));
+                return pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter.*, "tool_search");
+            }
+        }.active;
+        try configured_mcp.?.startBackground();
+        for (configured_mcp.?.diagnostics.items) |message| {
+            const warning = try std.fmt.allocPrint(arena, "warning: {s}\n", .{message});
+            try std.Io.File.stderr().writeStreamingAll(io, warning);
+        }
+    }
+    const configured_mcp_schemas = if (configured_mcp) |service| try service.schemasJson() else try gpa.dupe(u8, "[]");
+    defer gpa.free(configured_mcp_schemas);
     var extension_active_tools_owned: ?[]const []const u8 = null;
     defer if (extension_active_tools_owned) |names| freeOwnedToolNames(gpa, names);
 
@@ -3846,6 +4490,7 @@ pub fn main(init: std.process.Init) !void {
             .base_url = stored.base_url,
             .headers = stored.headers,
             .sampling_params = stored.sampling_params,
+            .sampling_params_by_thinking_level = stored.sampling_params_by_thinking_level,
             .compat = stored.compat,
             .reasoning = stored.reasoning,
             .input_image = stored.input_image,
@@ -3858,15 +4503,24 @@ pub fn main(init: std.process.Init) !void {
     // Declarative providers registered while script modules initialize share
     // the models.json parser and runtime resolver. Later hook/tool registrations
     // update this same in-memory registry through the ordered action channel.
-    var extension_provider_registry = extensions.provider_registry.Registry.init(
+    const all_model_catalog = try coding.effective_catalog.buildAllWithExtras(arena, &models_file, radius_cached_catalogs.infos);
+    var extension_provider_registry = extensions.provider_registry.Registry.initAll(
         gpa,
         io,
         environ,
         agent_dir,
         model_catalog,
+        all_model_catalog,
         runtime_provider_list.items,
     );
     defer extension_provider_registry.deinit();
+    var typed_model_backend = try TypedModelBackend.create(gpa, io, environ, &models_file, agent_dir, if (cli.api_key != null) provider_name else null, cli.api_key, settings.http_proxy);
+    defer TypedModelBackend.release(typed_model_backend);
+    var typed_model_owner: TypedModelOwner = .{ .io = io, .backend = typed_model_backend.backend() };
+    typed_model_backend.actions_context = &extension_bridge;
+    typed_model_backend.actions = acceptMainModelActions;
+    defer typed_model_owner.retire();
+    try typed_model_owner.bind(&extension_provider_registry);
     for (extension_host.extensions.items) |extension| {
         for (extension.providers) |registration| {
             extension_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime) catch |err| {
@@ -3937,7 +4591,7 @@ pub fn main(init: std.process.Init) !void {
     client_pool.setHttpProxy(settings.http_proxy);
     client_pool.setAuthAgentDir(agent_dir);
     client_pool.setPrimaryOAuthMetadata(primary_runtime.oauth_refresh, primary_runtime.oauth_expires_ms, primary_runtime.oauth_enterprise_url);
-    client_pool.setPrimaryRequestMetadata(primary_runtime.headers, primary_runtime.sampling_params, primary_runtime.compat, primary_runtime.max_tokens, primary_runtime.context_window, primary_runtime.input_image);
+    client_pool.setPrimaryRequestMetadata(primary_runtime.headers, primary_runtime.sampling_params, primary_runtime.sampling_params_by_thinking_level, primary_runtime.compat, primary_runtime.max_tokens, primary_runtime.context_window, primary_runtime.input_image);
     client_pool.setPrimaryModelRuntime(primary_runtime.api, primary_runtime.model_cost);
     client_pool.setPrimaryThinkingMetadata(primary_runtime.reasoning, primary_runtime.thinking_level_map);
     client_pool.setModelCatalog(model_catalog);
@@ -3960,6 +4614,7 @@ pub fn main(init: std.process.Init) !void {
         const raw = try std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(4 * 1024 * 1024));
         defer gpa.free(raw);
         mock_storage = try ai.mock.MockModel.loadFromJson(gpa, raw);
+        mock_storage.?.bindIo(io);
     } else {
         client_pool.switchToIdentity(provider_id, provider, model.?) catch {
             try tui.render.printLine(io, "error: no model configured. Set OPENAI_API_KEY / ANTHROPIC_API_KEY / GOOGLE_API_KEY or --mock-script.");
@@ -3982,6 +4637,7 @@ pub fn main(init: std.process.Init) !void {
     extension_bridge.setAbortFlag(&shared_abort);
 
     // Mutable agent config so /reload can update prompts for subsequent turns
+    var codemode_runtime: pi_zig.mcp.codemode_builtin.Runtime = .{ .io = io, .cwd = cwd, .session = &sess, .configured = configured_mcp, .host = &extension_host, .output_root = if (configured_mcp) |service| service.output_root else null, .model_runtime = typed_model_owner.runtime() };
     var agent_cfg = agent.AgentConfig{
         .max_turns = max_turns,
         .system_prompt = system_body,
@@ -4023,17 +4679,41 @@ pub fn main(init: std.process.Init) !void {
         .event_observer_fn = if (extensions_active) extensions.integration.Bridge.onAgentEvent else null,
         .event_observer_ctx = if (extensions_active) &extension_bridge else null,
         .extra_tools_json = extension_tool_schemas,
+        .configured_tools_json = configured_mcp_schemas,
+        .configured_tool_ctx = configured_mcp,
         .external_tool_fn = if (extensions_active) extensions.integration.Bridge.executeTool else null,
         .external_tool_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolStreaming else null,
         .external_tool_call_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolCallStreaming else null,
         .external_tool_exists_fn = if (extensions_active) extensions.integration.Bridge.hasExecutableTool else null,
         .external_prepare_arguments_fn = if (extensions_active) extensions.integration.Bridge.prepareToolArguments else null,
         .external_tool_mode_fn = if (extensions_active) extensions.integration.Bridge.toolExecutionMode else null,
-        .disable_builtin_tools = cli.no_builtin_tools,
+        .disable_builtin_tools = effective_no_builtin_tools,
     };
+    // Assign these callbacks after constructing the large configuration. Zig
+    agent_cfg.builtin_extension_ctx = &codemode_runtime;
+    agent_cfg.builtin_extension_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.execute;
+    agent_cfg.builtin_extension_exists_fn = pi_zig.mcp.codemode_builtin.Runtime.exists;
+    agent_cfg.builtin_extension_schemas_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.schemasForRuntime;
+    agent_cfg.builtin_extension_prepare_loadout_fn = pi_zig.mcp.codemode_builtin.Runtime.prepareLoadout;
+    codemode_runtime.loadout_mode = settings.codemode_mode orelse .on;
+    codemode_runtime.inline_budget = settings.codemode_inline_budget orelse 3000;
+    // 0.16's native x86 backend can reuse AL for a later boolean initializer
+    // while this function pointer is still held in RAX, corrupting its address.
+    // Keeping each assignment complete also avoids conditional callback values
+    // sharing that initializer's register lifetime.
+    if (configured_mcp != null) {
+        agent_cfg.configured_tools_json_fn = pi_zig.mcp.configured.Service.dynamicSchemas;
+        agent_cfg.configured_tool_fn = pi_zig.mcp.configured.Service.execute;
+        agent_cfg.configured_tool_exists_fn = pi_zig.mcp.configured.Service.exists;
+    }
 
     const thinking_eff = cli.thinking orelse settings.thinking_level;
 
+    if (configured_mcp != null) {
+        agent_cfg.configured_tools_json_fn = pi_zig.mcp.configured.Service.dynamicSchemas;
+        agent_cfg.configured_tool_fn = pi_zig.mcp.configured.Service.execute;
+        agent_cfg.configured_tool_exists_fn = pi_zig.mcp.configured.Service.exists;
+    }
     var live = coding.live_state.LiveState{
         .gpa = gpa,
         .io = io,
@@ -4064,6 +4744,9 @@ pub fn main(init: std.process.Init) !void {
     extension_oauth_runtime.bindLiveState(&live);
     extension_models_runtime.bindLiveState(&live);
     defer live.deinitDynamicCatalog();
+    var footer_model_snapshot: FooterModelSnapshot = .{ .live = &live, .registry = &extension_provider_registry, .oauth = &extension_oauth_runtime, .models_file = &models_file, .environ = environ, .io = io, .agent_dir = agent_dir, .explicit_provider = provider_name, .explicit_key = cli.api_key };
+    extension_host.footer_models_context = &footer_model_snapshot;
+    extension_host.footer_models_fn = FooterModelSnapshot.read;
 
     var extension_command_steering: std.ArrayList([]const u8) = .empty;
     defer {
@@ -4085,6 +4768,7 @@ pub fn main(init: std.process.Init) !void {
         .provider_registry = &extension_provider_registry,
         .provider_models = &extension_models_runtime,
         .active_filter = &active_tool_filter,
+        .registration_filter = registration_tool_filter,
         .owned_active_tools = &extension_active_tools_owned,
         .extension_schemas = &extension_tool_schemas,
         .prompt_templates = &prompt_templates,
@@ -4117,7 +4801,7 @@ pub fn main(init: std.process.Init) !void {
         .live = &live,
         .active_filter = &active_tool_filter,
         .owned_active_tools = &extension_active_tools_owned,
-        .disable_builtin_tools = cli.no_builtin_tools,
+        .disable_builtin_tools = effective_no_builtin_tools,
         .session_file = session_path,
         .session_dir = session_dir,
         .baseline_catalog = model_catalog,
@@ -4125,6 +4809,9 @@ pub fn main(init: std.process.Init) !void {
         .host = &extension_host,
         .bridge = &extension_bridge,
         .provider_registry = &extension_provider_registry,
+        .typed_owner = &typed_model_owner,
+        .typed_backend = &typed_model_backend,
+        .initial_models_file = &models_file,
         .extension_oauth = &extension_oauth_runtime,
         .provider_stream = &extension_stream_runtime,
         .provider_models = &extension_models_runtime,
@@ -4134,6 +4821,7 @@ pub fn main(init: std.process.Init) !void {
         .command_infos = &extension_command_infos,
         .theme_registry = &theme_registry,
         .action_runtime = &extension_action_runtime,
+        .terminal_theme = &terminal_theme,
         .steering = &extension_command_steering,
         .followups = &extension_command_followups,
         .shared_abort = &shared_abort,
@@ -4184,12 +4872,18 @@ pub fn main(init: std.process.Init) !void {
         trust_project,
         "",
         active_tool_filter,
-        cli.no_builtin_tools,
+        effective_no_builtin_tools,
         live.model_catalog,
         &.{},
         session_path,
         session_dir,
     );
+
+    try refreshMainNativeModels(gpa, &extension_provider_registry, &typed_model_owner, &extension_bridge, &shared_abort);
+    live.model_catalog = extension_provider_registry.catalog();
+    client_pool.setModelCatalog(extension_provider_registry.catalog());
+    client_pool.setRuntimeProviders(extension_provider_registry.runtimes());
+    if (model_scope_storage == null or model_scope_storage.?.scoped_models.len == 0) cycling_model_catalog = extension_provider_registry.catalog();
 
     // Export only mode
     if (cli.export_path) |ep| {
@@ -4223,6 +4917,7 @@ pub fn main(init: std.process.Init) !void {
             &live,
             &provider_name,
             &extension_host,
+            &extension_ui,
             &extension_action_runtime,
             &extension_command_steering,
             &extension_command_followups,
@@ -4291,18 +4986,21 @@ pub fn main(init: std.process.Init) !void {
     }
 
     // Interactive REPL. Fullscreen uses the terminal's alternate-screen buffer
-    // and always restores the caller's screen on normal/error unwinding.
+    // and restores the caller's screen unless the terminal itself vanished.
     const effective_tui_mode: coding.settings.TuiMode = if (cli.tui_mode) |mode| switch (mode) {
         .regular => .regular,
         .fullscreen => .fullscreen,
-    } else settings.tui_mode orelse .regular;
+    } else settings.effectiveTuiMode();
     var fullscreen_active = false;
+    const use_terminal_editor = tui.line_editor.available(io);
+    const use_fullscreen_scene = effective_tui_mode == .fullscreen and use_terminal_editor and tui.terminal.supportsFullscreen(io);
+    const use_persistent_scene = use_fullscreen_scene or (use_terminal_editor and extension_host.script_backend == .native);
     if (effective_tui_mode == .fullscreen and tui.terminal.supportsFullscreen(io)) {
-        try tui.terminal.enterAlternateScreen(io);
+        if (!use_fullscreen_scene) try tui.terminal.enterAlternateScreen(io);
         fullscreen_active = true;
         if (settings.show_hardware_cursor orelse false) try tui.render.writeAll(io, tui.terminal.show_cursor);
     }
-    defer if (fullscreen_active) tui.terminal.leaveAlternateScreen(io) catch {};
+    defer if (fullscreen_active and !use_fullscreen_scene) tui.terminal.leaveAlternateScreen(io) catch {};
 
     var interactive_render = InteractiveRenderOptions{
         .width = tui.terminal.columnsFromEnvironment(environ, 100),
@@ -4324,6 +5022,69 @@ pub fn main(init: std.process.Init) !void {
         .fullscreen_copy_on_select = settings.fullscreen_copy_on_select orelse true,
     };
     runtime_reload_context.render_options = &interactive_render;
+
+    var terminal_editor = tui.editor.Editor.init(gpa);
+    defer terminal_editor.deinit();
+    runtime_reload_context.keybindings = &terminal_keybindings;
+    // Keep the ordinary interactive terminal raw between commands. A temporary
+    // custom scene or standard dialog borrows this mode and restores it, rather
+    // than exposing a canonical interval that translates already-typed Enter
+    // into Ctrl+J before the next editor takes ownership.
+    var regular_terminal_mode: ?tui.line_editor.RawMode = if (use_terminal_editor and !use_persistent_scene) try tui.line_editor.RawMode.enter() else null;
+    defer if (regular_terminal_mode) |*mode| mode.leave();
+    var frontend: ?*coding.fullscreen_frontend.Frontend = null;
+    defer extension_host.setScriptWidgetBridge(null) catch {};
+    const widget_size = tui.terminal.terminalDimensions(environ, .{ .columns = 80, .rows = 24 });
+    if (!use_fullscreen_scene) try extension_host.setScriptWidgetBridge(.{ .context = &extension_ui, .record_fn = extensions.ui.Controller.widgetRecordProjection, .closed_fn = extensions.ui.Controller.widgetProjectionClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .action_fn = extensions.ui.Controller.persistentAction, .action_context = &extension_ui });
+    defer if (frontend) |scene| {
+        extension_host.setScriptEditorBridge(null) catch {};
+        extension_host.setScriptWidgetBridge(null) catch {};
+        extension_host.setScriptRendererBridge(null) catch {};
+        extension_ui.bindRendererFrontend(null, null, null);
+        extension_ui.bindComponentScenes(null, null, null);
+        extension_ui.bindEditorFrontend(null, null);
+        extension_ui.bindFrontend(null, null, null);
+        extension_ui.bindDialogStatus(null, null);
+        tui.render.bindFrontend(null, null, null);
+        scene.deinit();
+    };
+    var component_frontend_owner: ComponentFrontendOwner = .{
+        .gpa = gpa,
+        .io = io,
+        .environ = environ,
+        .reader = &extension_stdin_reader,
+        .bindings = &terminal_keybindings,
+        .controller = &extension_ui,
+        .terminal_theme = &terminal_theme,
+        .options = .{ .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x },
+    };
+    defer component_frontend_owner.detachTemporary();
+    extension_ui.bindComponentScenes(ComponentFrontendOwner.scene, ComponentFrontendOwner.close, &component_frontend_owner);
+    defer extension_ui.bindComponentScenes(null, null, null);
+    if (use_persistent_scene) {
+        const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
+        defer gpa.free(header);
+        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x, .alternate_screen = use_fullscreen_scene, .fullscreen_wheel_scroll_lines = settings.fullscreen_wheel_scroll_lines orelse .auto });
+        component_frontend_owner.persistent = frontend;
+        interactive_render.fullscreen = frontend;
+        agent_cfg.abort_flag = &frontend.?.abort_flag;
+        extension_bridge.setAbortFlag(agent_cfg.abort_flag);
+        extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
+        extension_ui.bindDialogStatus(coding.fullscreen_frontend.Frontend.dialogStatus, frontend);
+        extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
+        frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
+        frontend.?.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, &terminal_theme);
+        frontend.?.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
+        try terminal_theme.request();
+        extension_ui.bindRendererFrontend(coding.fullscreen_frontend.Frontend.rendererSink, coding.fullscreen_frontend.Frontend.rendererClosed, frontend);
+        try extension_host.setScriptRendererBridge(extension_ui.rendererBridge());
+        try extension_host.setScriptEditorBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.editorRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.editorClosed });
+        try extension_host.setScriptWidgetBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.widgetRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.widgetClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .dimensions_fn = coding.fullscreen_frontend.Frontend.widgetDimensions, .attached_fn = coding.fullscreen_frontend.Frontend.terminalInputAttached, .action_fn = extensions.ui.Controller.persistentAction, .action_context = &extension_ui });
+        extension_ui.clearNativeWidgetProjections(null);
+        try extension_ui.flush();
+        tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
+        try frontend.?.syncBranch(&sess);
+    }
 
     if (!(settings.quiet_startup orelse false)) {
         if (!try extension_ui.renderCustomHeader()) try tui.render.renderHeader(io, config.version, context_count, skills_count);
@@ -4350,12 +5111,6 @@ pub fn main(init: std.process.Init) !void {
         }
     }
 
-    const use_terminal_editor = tui.line_editor.available(io);
-    var terminal_editor = tui.editor.Editor.init(gpa);
-    defer terminal_editor.deinit();
-    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
-    defer terminal_keybindings.deinit();
-    runtime_reload_context.keybindings = &terminal_keybindings;
     var clipboard_store = coding.clipboard.TempStore.init(gpa, io, environ);
     defer clipboard_store.deinit();
     var tree_summary_prompt_context = TreeSummaryPromptContext{
@@ -4369,14 +5124,14 @@ pub fn main(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .filter_mode = &tree_filter_mode,
     };
     var model_target_prompt_context = ModelTargetPromptContext{
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .live = &live,
         .provider_models = &extension_models_runtime,
         .abort_flag = &shared_abort,
@@ -4385,7 +5140,7 @@ pub fn main(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .live = &live,
         .default_level = &settings.thinking_level,
     };
@@ -4393,7 +5148,7 @@ pub fn main(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .agent_dir = ad,
         .cwd = cwd,
         .trust_project = trust_project,
@@ -4403,7 +5158,7 @@ pub fn main(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .agent_dir = ad,
         .live = &live,
         .extension_oauth = &extension_oauth_runtime,
@@ -4426,7 +5181,7 @@ pub fn main(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .session_dir = session_dir,
         .all_sessions_root = all_sessions_root,
         .current_session_path = &session_path,
@@ -4439,6 +5194,7 @@ pub fn main(init: std.process.Init) !void {
     const auth_target_prompt_available = auth_target_prompt_context != null and tui.terminal.supportsFullscreen(io);
     const session_target_prompt_available = tui.terminal.supportsFullscreen(io);
     var completion_context = ReplCompletionContext{
+        .host = &extension_host,
         .io = io,
         .environ = environ,
         .cwd = cwd,
@@ -4467,7 +5223,7 @@ pub fn main(init: std.process.Init) !void {
         .thinking_level = &live.thinking,
         .project_trusted = trust_project,
         .tool_filter = &active_tool_filter,
-        .disable_builtin_tools = cli.no_builtin_tools,
+        .disable_builtin_tools = effective_no_builtin_tools,
         .model_catalog = live.model_catalog,
         .configured_providers = &.{},
         .session_file = session_path,
@@ -4484,7 +5240,21 @@ pub fn main(init: std.process.Init) !void {
         extension_shortcut_context.model_catalog = live.model_catalog;
         const pending_editor_text = extension_ui.takePendingEditorText();
         defer if (pending_editor_text) |value| gpa.free(value);
-        const editor_prefill = pending_editor_text orelse "";
+        const frontend_editor_snapshot = if (frontend) |scene| try scene.snapshotEditor(gpa) else null;
+        defer if (frontend_editor_snapshot) |snapshot| gpa.free(snapshot.text);
+        const editor_prefill = pending_editor_text orelse if (frontend_editor_snapshot) |snapshot| snapshot.text else "";
+        if (frontend) |scene| {
+            if (pending_editor_text) |text| try scene.setEditorText(text, null, null);
+            try scene.syncBranch(&sess);
+            const status = try std.fmt.allocPrint(gpa, "{s}/{s} · {s}", .{ provider_name orelse "mock", model orelse "mock", sess.id });
+            defer gpa.free(status);
+            try scene.setStatus(status);
+            var shortcut_keys: std.ArrayList([]const u8) = .empty;
+            defer shortcut_keys.deinit(gpa);
+            for (extension_host.extensions.items) |extension| for (extension.shortcuts) |shortcut| try shortcut_keys.append(gpa, shortcut.key);
+            try scene.updateConfigPadded(&terminal_keybindings, shortcut_keys.items, interactive_render.editor_padding_x);
+            try scene.setWheelScrollLines(if (use_fullscreen_scene) settings.fullscreen_wheel_scroll_lines orelse .auto else .{ .fixed = 1 });
+        }
         try syncExtensionScriptContext(
             &extension_host,
             &extension_ui,
@@ -4497,7 +5267,7 @@ pub fn main(init: std.process.Init) !void {
             trust_project,
             editor_prefill,
             active_tool_filter,
-            cli.no_builtin_tools,
+            effective_no_builtin_tools,
             live.model_catalog,
             &.{},
             session_path,
@@ -4507,9 +5277,18 @@ pub fn main(init: std.process.Init) !void {
         var prompt_buffer: [5]u8 = .{ ' ', ' ', ' ', '>', ' ' };
         const prompt_start: usize = 3 - @min(@as(usize, interactive_render.editor_padding_x), 3);
         const prompt_text = prompt_buffer[prompt_start..];
-        const line = if (use_terminal_editor)
+        const line = if (frontend) |scene|
+            readFullscreenLine(gpa, arena, scene, &completion_context, &extension_shortcut_context) catch |err| switch (err) {
+                error.EndOfStream => break,
+                else => return err,
+            }
+        else if (use_terminal_editor)
             tui.line_editor.readLineWithCompleterAndShortcutsPrefill(arena, io, &extension_stdin_reader, &terminal_editor, &terminal_keybindings, prompt_text, terminal_completer, terminal_shortcut_handler, editor_prefill) catch |err| switch (err) {
                 error.EndOfStream => break,
+                error.DeadTerminal => {
+                    fullscreen_active = false;
+                    return error.DeadTerminal;
+                },
                 else => return err,
             }
         else blk: {
@@ -4518,8 +5297,12 @@ pub fn main(init: std.process.Init) !void {
                 try tui.render.printLine(io, editor_prefill);
                 break :blk try arena.dupe(u8, editor_prefill);
             }
-            break :blk readLine(&extension_stdin_reader, arena) catch |err| switch (err) {
+            break :blk readInteractiveLine(&extension_stdin_reader, arena) catch |err| switch (err) {
                 error.EndOfStream => break,
+                error.DeadTerminal => {
+                    fullscreen_active = false;
+                    return error.DeadTerminal;
+                },
                 else => return err,
             };
         };
@@ -4624,6 +5407,7 @@ pub fn main(init: std.process.Init) !void {
                             }
                             if (session_path) |sp| if (!cli.no_session) try sess.save(io, sp);
 
+                            _ = try extension_host.invalidateNativeContexts(null);
                             sess.deinit();
                             sess = loaded;
                             loaded_owned = false;
@@ -4660,7 +5444,7 @@ pub fn main(init: std.process.Init) !void {
                                 trust_project,
                                 "",
                                 active_tool_filter,
-                                cli.no_builtin_tools,
+                                effective_no_builtin_tools,
                                 live.model_catalog,
                                 &.{},
                                 session_path,
@@ -4757,7 +5541,7 @@ pub fn main(init: std.process.Init) !void {
             trust_project,
             "",
             active_tool_filter,
-            cli.no_builtin_tools,
+            effective_no_builtin_tools,
             live.model_catalog,
             &.{},
             session_path,
@@ -4811,7 +5595,45 @@ const InteractiveRenderOptions = struct {
     editor_padding_x: u8 = 0,
     show_hardware_cursor: bool = false,
     fullscreen_copy_on_select: bool = true,
+    fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
 };
+
+fn readFullscreenLine(
+    gpa: std.mem.Allocator,
+    arena: std.mem.Allocator,
+    scene: *coding.fullscreen_frontend.Frontend,
+    completion_context: *ReplCompletionContext,
+    shortcut_context: *ExtensionShortcutContext,
+) ![]u8 {
+    while (true) {
+        var command = try scene.readCommand();
+        defer command.deinit(gpa);
+        switch (command.kind) {
+            .submit => return arena.dupe(u8, command.text),
+            .presentation => {
+                try syncExtensionScriptContext(shortcut_context.host, shortcut_context.ui_controller, shortcut_context.mode, shortcut_context.cwd, shortcut_context.session, shortcut_context.provider.*, shortcut_context.model_id.*, shortcut_context.thinking_level.*, shortcut_context.project_trusted, null, shortcut_context.tool_filter.*, shortcut_context.disable_builtin_tools, shortcut_context.model_catalog, shortcut_context.configured_providers, shortcut_context.session_file, shortcut_context.session_dir);
+                try shortcut_context.ui_controller.flush();
+            },
+            .quit => return error.EndOfStream,
+            .complete => {
+                if (try replComplete(completion_context, gpa, command.text, command.cursor)) |result| {
+                    var completion = result;
+                    defer completion.deinit(gpa);
+                    try scene.setEditorText(completion.text, completion.cursor, command.revision);
+                }
+            },
+            .clipboard, .shortcut => {
+                try shortcut_context.editor.setTextAt(command.text, command.cursor);
+                const result = if (command.kind == .clipboard)
+                    try ExtensionShortcutContext.pasteClipboard(shortcut_context, gpa)
+                else
+                    try ExtensionShortcutContext.handle(shortcut_context, gpa, command.key);
+                if (!std.mem.eql(u8, shortcut_context.editor.slice(), command.text)) try scene.setEditorText(shortcut_context.editor.slice(), shortcut_context.editor.cursor, command.revision);
+                if (result == .handled_interrupt) return arena.dupe(u8, "");
+            },
+        }
+    }
+}
 
 fn writeExtensionRendered(io: Io, rendered: []const u8) !void {
     if (rendered.len == 0) return;
@@ -4879,10 +5701,16 @@ const ExtensionPrintEmitter = struct {
     capabilities: tui.terminal_image.TerminalCapabilities,
     show_images: bool,
     image_width_cells: u32,
+    output_pad: usize = 1,
     host: *extensions.Host,
+    fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
 
     fn onEvent(raw: ?*anyopaque, event: agent.AgentEvent) void {
         const self: *ExtensionPrintEmitter = @ptrCast(@alignCast(raw.?));
+        if (self.fullscreen) |scene| {
+            self.onFullscreenEvent(scene, event) catch |err| scene.recordFailure(err);
+            return;
+        }
         switch (event.kind) {
             .message_update => {
                 if (self.verbose) tui.render.writeAll(self.io, event.text) catch {};
@@ -4896,7 +5724,7 @@ const ExtensionPrintEmitter = struct {
             .tool_execution_start => {
                 if (!self.verbose) return;
                 const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-                if (self.host.renderToolCall(event.name, event.id, arguments, false, self.width) catch null) |rendered| {
+                if (self.host.renderToolCallPadded(event.name, event.id, arguments, false, self.width, self.output_pad) catch null) |rendered| {
                     defer self.host.gpa.free(rendered);
                     writeExtensionRendered(self.io, rendered) catch {};
                 } else {
@@ -4905,6 +5733,13 @@ const ExtensionPrintEmitter = struct {
             },
             .tool_execution_update, .tool_execution_end => {
                 if (!self.verbose) return;
+                if (self.host.script_backend == .native and event.kind == .tool_execution_update) {
+                    // executeTool owns the group invocation until completion;
+                    // regular mode preserves its canonical partial output.
+                    tui.render.renderToolResult(self.io, event.name, event.text, event.is_error) catch {};
+                    renderToolEventImages(self.host.gpa, self.io, self.capabilities, self.show_images, self.image_width_cells, event.image_b64, event.image_mime, event.images);
+                    return;
+                }
                 const image_count: usize = @intFromBool(event.image_b64 != null) + event.images.len;
                 const render_images = self.host.gpa.alloc(extensions.host.ToolImage, image_count) catch return;
                 defer if (render_images.len > 0) self.host.gpa.free(render_images);
@@ -4923,7 +5758,7 @@ const ExtensionPrintEmitter = struct {
                     };
                     image_index += 1;
                 }
-                if (self.host.renderToolResultRichImages(
+                if (self.host.renderToolResultRichImagesTimed(
                     event.name,
                     event.id,
                     event.text,
@@ -4934,6 +5769,8 @@ const ExtensionPrintEmitter = struct {
                     event.kind == .tool_execution_update,
                     self.show_images and self.capabilities.images != null,
                     self.width,
+                    event.duration_ms,
+                    self.output_pad,
                 ) catch null) |rendered| {
                     defer self.host.gpa.free(rendered);
                     writeExtensionRendered(self.io, rendered) catch {};
@@ -4996,6 +5833,59 @@ const ExtensionPrintEmitter = struct {
             .tool_call, .tool_result => {},
             else => {},
         }
+    }
+
+    fn onFullscreenEvent(self: *ExtensionPrintEmitter, scene: *coding.fullscreen_frontend.Frontend, event: agent.AgentEvent) !void {
+        const live_renderer = self.host.script_backend == .native and self.host.script_renderer_bridge != null;
+        const width = scene.rendererWidth();
+        if (live_renderer) try scene.postEvent(event);
+        // Partial tool callbacks run inside the group's active execute call.
+        // Its owner publishes subscribed renderer updates without reentering
+        // the same Host invocation mutex from this callback.
+        if (live_renderer and event.kind == .tool_execution_update) return;
+        if (event.kind == .tool_execution_start) {
+            const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
+            if (try self.host.renderToolCallPadded(event.name, event.id, arguments, false, width, self.output_pad)) |rendered| {
+                defer self.host.gpa.free(rendered);
+                if (live_renderer) return;
+                return scene.postRenderedToolEvent(event, rendered);
+            }
+        } else if (event.kind == .tool_execution_update or event.kind == .tool_execution_end) {
+            const count: usize = @intFromBool(event.image_b64 != null) + event.images.len;
+            const images = try self.host.gpa.alloc(extensions.host.ToolImage, count);
+            defer self.host.gpa.free(images);
+            var index: usize = 0;
+            if (event.image_b64) |data| {
+                images[0] = .{ .data_b64 = @constCast(data), .mime_type = @constCast(event.image_mime orelse "image/png") };
+                index += 1;
+            }
+            for (event.images) |image| {
+                images[index] = .{ .data_b64 = image.data_b64, .mime_type = image.mime_type };
+                index += 1;
+            }
+            if (try self.host.renderToolResultRichImagesTimed(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width, event.duration_ms, self.output_pad)) |rendered| {
+                defer self.host.gpa.free(rendered);
+                if (live_renderer) return;
+                return scene.postRenderedToolEvent(event, rendered);
+            }
+            // Keep a visible media record in the transcript when a component
+            // has no custom renderer, as the ordinary terminal fallback does.
+            if (images.len > 0) {
+                var text: Io.Writer.Allocating = .init(self.host.gpa);
+                defer text.deinit();
+                try text.writer.writeAll(event.text);
+                for (images) |image| {
+                    const dimensions = try tui.terminal_image.getImageDimensionsBase64(self.host.gpa, image.data_b64, image.mime_type);
+                    const fallback = try tui.terminal_image.imageFallback(self.host.gpa, self.capabilities, image.mime_type, dimensions, null, null);
+                    defer self.host.gpa.free(fallback);
+                    try text.writer.print("\n{s}", .{fallback});
+                }
+                var projected = event;
+                projected.text = text.written();
+                return scene.postEvent(projected);
+            }
+        }
+        if (!live_renderer) try scene.postEvent(event);
     }
 };
 
@@ -5112,13 +6002,23 @@ fn runOneWithImages(
         .capabilities = render_options.capabilities,
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
+        .output_pad = render_options.output_pad,
         .host = extension_host,
+        .fullscreen = render_options.fullscreen,
     };
+    if (render_options.fullscreen) |scene| {
+        try scene.setProgramSessionName(sess.name);
+        try scene.setBusy(true);
+    }
+    defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
+    defer if (render_options.fullscreen) |scene| scene.settleProgramStatus(if (agent_cfg.abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.runWithImages(gpa, io, cwd, client, sess, prompt, images, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
     defer result.deinit(gpa);
-    if (!verbose) {
+    if (render_options.fullscreen) |scene| {
+        try scene.syncBranch(sess);
+    } else if (!verbose) {
         const transformed = extension_host.transformMarkdown(result.final_text, "assistant", false, render_options.width) catch try gpa.dupe(u8, result.final_text);
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);
@@ -5146,13 +6046,23 @@ fn runOne(
         .capabilities = render_options.capabilities,
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
+        .output_pad = render_options.output_pad,
         .host = extension_host,
+        .fullscreen = render_options.fullscreen,
     };
+    if (render_options.fullscreen) |scene| {
+        try scene.setProgramSessionName(sess.name);
+        try scene.setBusy(true);
+    }
+    defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
+    defer if (render_options.fullscreen) |scene| scene.settleProgramStatus(if (agent_cfg.abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.run(gpa, io, cwd, client, sess, prompt, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
     defer result.deinit(gpa);
-    if (!verbose) {
+    if (render_options.fullscreen) |scene| {
+        try scene.syncBranch(sess);
+    } else if (!verbose) {
         const transformed = extension_host.transformMarkdown(result.final_text, "assistant", false, render_options.width) catch try gpa.dupe(u8, result.final_text);
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);
@@ -5259,6 +6169,20 @@ fn clearRpcQueuesJson(
     return out.toOwnedSlice();
 }
 
+fn retireRpcSession(gpa: std.mem.Allocator, io: Io, cwd: []const u8, sess: *agent.session.Session, bridge: *extensions.integration.Bridge, path: ?[]const u8, no_session: bool, reason: []const u8) !void {
+    try bridge.sessionShutdown(gpa, cwd, sess.id, reason);
+    try flushFinalExtensionActions(gpa, io, sess, bridge);
+    if (path) |file| if (!no_session) try sess.save(io, file);
+    _ = try bridge.host.invalidateNativeContexts(null);
+}
+
+fn startRpcSession(runtime: *ExtensionActionRuntime, ui_controller: *extensions.ui.Controller, sess: *agent.session.Session, path: ?[]const u8, reason: []const u8) !void {
+    const live = runtime.live;
+    try syncExtensionScriptContext(runtime.host, ui_controller, "rpc", runtime.cwd, sess, if (live.provider_name) |name| name.* else null, live.model_display.*, live.thinking, runtime.trust_project, null, runtime.active_filter.*, false, live.model_catalog, live.configured_providers, path, if (path) |file| std.fs.path.dirname(file) else null);
+    try runtime.bridge.sessionStart(runtime.host.gpa, runtime.cwd, sess.id, reason);
+    try flushFinalExtensionActions(runtime.host.gpa, live.io, sess, runtime.bridge);
+}
+
 fn runRpcMode(
     gpa: std.mem.Allocator,
     io: Io,
@@ -5270,6 +6194,7 @@ fn runRpcMode(
     live: *coding.live_state.LiveState,
     provider_name: *?[]const u8,
     extension_host: *extensions.Host,
+    extension_ui: *extensions.ui.Controller,
     extension_action_runtime: *ExtensionActionRuntime,
     initial_steering: *std.ArrayList([]const u8),
     initial_followups: *std.ArrayList([]const u8),
@@ -5280,6 +6205,7 @@ fn runRpcMode(
     use_mock: bool,
     mock_storage: ?*ai.mock.MockModel,
 ) !void {
+    _ = extension_commands;
     var active_session_path: ?[]const u8 = session_path;
     var configured_auto_compaction_enabled = agent_cfg.auto_compaction_enabled;
     var auto_compaction_enabled = configured_auto_compaction_enabled;
@@ -5470,12 +6396,20 @@ fn runRpcMode(
             break;
         }
         if (std.mem.eql(u8, req.method, "new_session")) {
+            if (try extension_action_runtime.bridge.beforeSessionSwitch("new", null)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var fresh = try agent.session.Session.init(gpa, new_id, cwd);
-            errdefer fresh.deinit();
+            var fresh_owned = true;
+            defer if (fresh_owned) fresh.deinit();
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "new");
             sess.deinit();
             sess.* = fresh;
+            fresh_owned = false;
             if (!no_session) {
                 if (active_session_path) |old_path| {
                     const dir = std.fs.path.dirname(old_path) orelse ".";
@@ -5485,6 +6419,7 @@ fn runRpcMode(
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "new");
             try coding.modes.writeRpcResponse(io, req.id, "new_session", true, "{\"cancelled\":false}");
             continue;
         }
@@ -5867,16 +6802,26 @@ fn runRpcMode(
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"sessionPath required\"}");
                 continue;
             };
-            const loaded = agent.session.Session.load(gpa, io, path) catch {
+            if (try extension_action_runtime.bridge.beforeSessionSwitch("resume", path)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
+            var loaded = agent.session.Session.load(gpa, io, path) catch {
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"could not load session\"}");
                 continue;
             };
+            var loaded_owned = true;
+            defer if (loaded_owned) loaded.deinit();
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "resume");
             sess.deinit();
             sess.* = loaded;
+            loaded_owned = false;
             active_session_path = try arena.dupe(u8, path);
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "resume");
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":false}");
             continue;
         }
@@ -5885,6 +6830,11 @@ fn runRpcMode(
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"entryId required\"}");
                 continue;
             };
+            if (try extension_action_runtime.bridge.beforeSessionFork(entry_id)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
             const branch = try sess.branchEntries(gpa);
             defer gpa.free(branch);
             var selected: ?*const agent.session.SessionEntry = null;
@@ -5907,7 +6857,8 @@ fn runRpcMode(
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var forked = try sess.fork(gpa, new_id);
-            errdefer forked.deinit();
+            var forked_owned = true;
+            defer if (forked_owned) forked.deinit();
             if (active_session_path) |old_path| try forked.setParentSession(old_path);
             if (parent_id) |parent| try forked.setTip(parent) else forked.resetTip();
             var new_path: ?[]const u8 = null;
@@ -5916,12 +6867,15 @@ fn runRpcMode(
                 new_path = try agent.session.newSessionPath(arena, dir, new_id);
                 try forked.save(io, new_path.?);
             };
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "fork");
             sess.deinit();
             sess.* = forked;
+            forked_owned = false;
             active_session_path = new_path;
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "fork");
             var data_writer: std.Io.Writer.Allocating = .init(arena);
             try data_writer.writer.writeAll("{\"text\":");
             try std.json.Stringify.value(editable_text, .{}, &data_writer.writer);
@@ -5933,7 +6887,8 @@ fn runRpcMode(
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var cloned = try sess.fork(gpa, new_id);
-            errdefer cloned.deinit();
+            var cloned_owned = true;
+            defer if (cloned_owned) cloned.deinit();
             if (active_session_path) |old_path| try cloned.setParentSession(old_path);
             var new_path: ?[]const u8 = null;
             if (!no_session) if (active_session_path) |old_path| {
@@ -5941,12 +6896,15 @@ fn runRpcMode(
                 new_path = try agent.session.newSessionPath(arena, dir, new_id);
                 try cloned.save(io, new_path.?);
             };
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "fork");
             sess.deinit();
             sess.* = cloned;
+            cloned_owned = false;
             active_session_path = new_path;
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "fork");
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":false}");
             continue;
         }
@@ -5986,7 +6944,12 @@ fn runRpcMode(
                 }
                 gpa.free(skills);
             }
-            const data = try coding.rpc_data.formatCommandsJson(gpa, extension_commands.items, prompt_templates.*, skills, cwd, live.agent_dir);
+            var names: std.ArrayList([]const u8) = .empty;
+            var infos: std.ArrayList(coding.rpc_data.ExtensionCommandInfo) = .empty;
+            defer deinitExtensionCommandMetadata(gpa, &names, &infos);
+            _ = try extension_host.synchronizeNativeMetadata();
+            try collectExtensionCommandMetadata(gpa, extension_host, &names, &infos);
+            const data = try coding.rpc_data.formatCommandsJson(gpa, infos.items, prompt_templates.*, skills, cwd, live.agent_dir);
             defer gpa.free(data);
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, data);
             continue;
@@ -6007,16 +6970,54 @@ fn runRpcMode(
             const BashProgressCtx = struct {
                 io: Io,
                 id: []const u8,
+                gpa: std.mem.Allocator,
+                stream: coding.bash_output.Stream,
+                output: std.ArrayList(u8) = .empty,
+                dropped_output: bool = false,
+                failure: ?anyerror = null,
                 mutex: std.Io.Mutex = .init,
 
                 fn onProgress(ptr: ?*anyopaque, delta: []const u8) void {
                     const self: *@This() = @ptrCast(@alignCast(ptr.?));
                     self.mutex.lockUncancelable(self.io);
                     defer self.mutex.unlock(self.io);
-                    coding.modes.writeBashExecutionUpdate(self.io, self.id, delta) catch {};
+                    if (self.failure != null) return;
+                    const text = self.stream.feed(delta) catch |cause| {
+                        self.failure = cause;
+                        return;
+                    };
+                    defer self.gpa.free(text);
+                    self.append(text) catch |cause| {
+                        self.failure = cause;
+                        return;
+                    };
+                    if (text.len != 0) coding.modes.writeBashExecutionUpdate(self.io, self.id, text) catch |cause| {
+                        self.failure = cause;
+                    };
+                }
+                fn append(self: *@This(), text: []const u8) !void {
+                    const limit = 2 * agent.truncate.DEFAULT_MAX_BYTES;
+                    if (self.output.items.len + text.len > limit) {
+                        self.dropped_output = true;
+                        self.output.clearRetainingCapacity();
+                        const start = text.len -| limit;
+                        var boundary = start;
+                        while (boundary < text.len and text[boundary] & 0xc0 == 0x80) boundary += 1;
+                        return self.output.appendSlice(self.gpa, text[boundary..]);
+                    }
+                    try self.output.appendSlice(self.gpa, text);
+                }
+                fn finish(self: *@This()) !void {
+                    if (self.failure) |cause| return cause;
+                    const text = try self.stream.finish();
+                    defer self.gpa.free(text);
+                    try self.append(text);
+                    if (text.len != 0) try coding.modes.writeBashExecutionUpdate(self.io, self.id, text);
                 }
             };
-            var progress_ctx = BashProgressCtx{ .io = io, .id = req.id };
+            var progress_ctx = BashProgressCtx{ .io = io, .id = req.id, .gpa = gpa, .stream = try coding.bash_output.Stream.init(gpa) };
+            defer progress_ctx.stream.deinit();
+            defer progress_ctx.output.deinit(gpa);
 
             const BashRunCtx = struct {
                 tool_ctx: agent.ToolContext,
@@ -6123,6 +7124,12 @@ fn runRpcMode(
             defer tool_result.deinit(gpa);
             var parsed_result = try coding.rpc_bash.parse(gpa, tool_result.content, tool_result.is_error);
             defer parsed_result.deinit(gpa);
+            try progress_ctx.finish();
+            if (parsed_result.exit_code >= 0 and !parsed_result.cancelled and !parsed_result.truncated and !progress_ctx.dropped_output) {
+                const sanitized = try gpa.dupe(u8, progress_ctx.output.items);
+                gpa.free(parsed_result.output);
+                parsed_result.output = sanitized;
+            }
             const response_data = try coding.rpc_bash.formatJson(gpa, parsed_result);
             defer gpa.free(response_data);
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, response_data);
@@ -6867,7 +7874,7 @@ fn runUpdateCommand(
     }
 
     const agent_dir = config.agentDir(arena, environ) catch {
-        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_AGENT_DIR)");
+        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_CODING_AGENT_DIR)");
         std.process.exit(2);
     };
     config.ensureDir(io, agent_dir) catch {};
@@ -7124,7 +8131,7 @@ fn runPackageCommand(
 ) !void {
     if (std.mem.eql(u8, cmd, "update")) return runUpdateCommand(gpa, io, environ, arena, cmd_args);
     const agent_dir = config.agentDir(arena, environ) catch {
-        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_AGENT_DIR)");
+        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_CODING_AGENT_DIR)");
         std.process.exit(2);
     };
     config.ensureDir(io, agent_dir) catch {};
@@ -7529,30 +8536,25 @@ fn runSurfaceCommand(
     }
 
     if (std.mem.eql(u8, cmd, "mcp")) {
-        if (cmd_args.len == 0) {
-            try tui.render.printLine(io, "usage: pi mcp <server-command> [args...]");
-            std.process.exit(2);
+        const mcp_agent_dir = try config.agentDir(arena, environ);
+        const mcp_cwd = try std.process.currentPathAlloc(io, arena);
+        var trust_store = try coding.trust.Store.init(gpa, io, mcp_agent_dir);
+        defer trust_store.deinit();
+        var prompt: McpCommandPrompt = .{ .io = io, .name = "", .interactive = Io.File.stdin().isTty(io) catch false };
+        if (cmd_args.len > 1) prompt.name = cmd_args[1];
+        var result = try pi_zig.mcp.cli.run(gpa, .{
+            .context = .{ .io = io, .agent_dir = mcp_agent_dir, .cwd = mcp_cwd, .project_trusted = (try trust_store.get(mcp_cwd)) orelse false },
+            .environment = environ,
+            .prompt = .{ .context = &prompt, .show = McpCommandPrompt.show, .read = McpCommandPrompt.read },
+        }, cmd_args);
+        defer result.deinit();
+        for (pi_zig.mcp.protocol.json.get(result.data.value, "logs").?.array.items) |line| try tui.render.printLine(io, line.string);
+        for (pi_zig.mcp.protocol.json.get(result.data.value, "errors").?.array.items) |line| {
+            try Io.File.stderr().writeStreamingAll(io, line.string);
+            try Io.File.stderr().writeStreamingAll(io, "\n");
         }
-        var client = pi_zig.mcp.McpClient{ .gpa = gpa, .io = io };
-        defer client.deinit();
-        client.connect(cmd_args) catch |err| {
-            const m = try std.fmt.allocPrint(arena, "mcp connect failed: {s}", .{@errorName(err)});
-            try tui.render.printLine(io, m);
-            std.process.exit(2);
-        };
-        client.listTools() catch |err| {
-            const m = try std.fmt.allocPrint(arena, "mcp tools/list failed: {s}", .{@errorName(err)});
-            try tui.render.printLine(io, m);
-            std.process.exit(2);
-        };
-        if (client.tools.items.len == 0) {
-            try tui.render.printLine(io, "(no MCP tools reported)");
-        } else {
-            for (client.tools.items) |t| {
-                const line = try std.fmt.allocPrint(arena, "{s}\t{s}", .{ t.name, t.description });
-                try tui.render.printLine(io, line);
-            }
-        }
+        const exit_code = try pi_zig.mcp.protocol.json.asInteger(pi_zig.mcp.protocol.json.get(result.data.value, "code").?);
+        if (exit_code != 0) std.process.exit(@intCast(exit_code));
         return;
     }
 
@@ -7606,8 +8608,16 @@ fn runSurfaceCommand(
             try tui.render.printLine(io, "usage: pi theme <theme.json>");
             std.process.exit(2);
         }
-        var th = try pi_zig.themes.loadFile(gpa, io, cmd_args[0]);
-        defer th.deinit(gpa);
+        var registry = pi_zig.themes.Registry.init(gpa, io);
+        defer registry.deinit();
+        registry.validate_user_themes = true;
+        try registry.loadPath(cmd_args[0]);
+        if (registry.diagnostics.items.len > 0) {
+            try tui.render.printLine(io, registry.diagnostics.items[0].message);
+            std.process.exit(2);
+        }
+        if (registry.themes.items.len == 0) return error.ThemeNotFound;
+        const th = registry.themes.items[0];
         const sample = try pi_zig.themes.wrap(th.accent_sgr, th.name, arena);
         try tui.render.printLine(io, sample);
         return;
@@ -7687,6 +8697,35 @@ fn runSurfaceCommand(
     try tui.render.printLine(io, unknown);
     std.process.exit(2);
 }
+
+const McpCommandPrompt = struct {
+    io: Io,
+    name: []const u8,
+    interactive: bool,
+    fn show(raw: ?*anyopaque, url: []const u8) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const message = try std.fmt.allocPrint(std.heap.page_allocator, "Sign in to MCP server \"{s}\" in your browser:\n{s}", .{ self.name, url });
+        defer std.heap.page_allocator.free(message);
+        try tui.render.printLine(self.io, message);
+        try auth.openai_codex_oauth.openBrowser(self.io, url);
+    }
+    fn read(raw: ?*anyopaque, gpa: std.mem.Allocator, aborted: *bool) !?[]u8 {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (!self.interactive) {
+            while (!@atomicLoad(bool, aborted, .acquire)) try self.io.sleep(.fromMilliseconds(5), .awake);
+            return null;
+        }
+        try Io.File.stderr().writeStreamingAll(self.io, "If the browser cannot reach this machine, paste the URL it was redirected to: ");
+        var buffer: [1024]u8 = undefined;
+        var reader = Io.File.stdin().reader(self.io, &buffer);
+        const line = reader.interface.takeDelimiterExclusive('\n') catch |cause| switch (cause) {
+            error.EndOfStream => return null,
+            else => return cause,
+        };
+        if (@atomicLoad(bool, aborted, .acquire)) return null;
+        return try gpa.dupe(u8, std.mem.trimEnd(u8, line, "\r"));
+    }
+};
 
 fn listModels(gpa: std.mem.Allocator, io: Io, query: ?[]const u8, models: []const ai.providers.ModelInfo) !void {
     const RankedModel = struct { model: ai.providers.ModelInfo, score: i32, order: usize };
@@ -7829,6 +8868,28 @@ fn readLine(reader: *Io.File.Reader, arena: std.mem.Allocator) ![]u8 {
         try list.append(arena, n);
     }
     return try list.toOwnedSlice(arena);
+}
+
+fn readInteractiveLine(reader: *Io.File.Reader, arena: std.mem.Allocator) ![]u8 {
+    return readLine(reader, arena) catch |err| {
+        if (tui.line_editor.terminalInputError(err, reader.err) == error.DeadTerminal) return error.DeadTerminal;
+        return err;
+    };
+}
+
+test "interactive stdin distinguishes dead terminal causes from genuine and redirected errors" {
+    var buffer: [1]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), std.testing.io, &buffer);
+    reader.interface = Io.Reader.failing;
+    reader.interface.buffer = &buffer;
+    reader.err = error.InputOutput;
+    try std.testing.expectError(error.DeadTerminal, readInteractiveLine(&reader, std.testing.allocator));
+    // RPC and redirected-file readers keep their ordinary failure behavior.
+    try std.testing.expectError(error.ReadFailed, readLine(&reader, std.testing.allocator));
+    reader.err = error.AccessDenied;
+    try std.testing.expectError(error.ReadFailed, readInteractiveLine(&reader, std.testing.allocator));
+    reader.err = error.SystemResources;
+    try std.testing.expectError(error.ReadFailed, readInteractiveLine(&reader, std.testing.allocator));
 }
 
 test "SQLite session command flags normalize without changing operands" {

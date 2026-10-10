@@ -1,0 +1,12 @@
+{
+  "production_edits": false,
+  "status": "qualified Windows; hosted mac unknown",
+  "sha256": "678306A649B242A8B0F8C2AF46577566890986F0396324BF1E43652C56750E31",
+  "full": "macos-ready2-full-qualified-windows-20261007-a.json:31pass3skip0fail",
+  "format": "Zig0.16 fmt+check passed",
+  "source": "C:\\Users\\adyba\\pi-zig-macos-ready2-20261007",
+  "filtered": "macos-ready2-filtered-qualified-windows-20261007-a.json: 2pass",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\MAC-READY2-fefc394.patch",
+  "scope": "Only frontend process fixture; actual header/editor and owner factory/wrapper installed command ACK; all original 5s/currentcell assertions retained",
+  "base": "fefc394"
+}

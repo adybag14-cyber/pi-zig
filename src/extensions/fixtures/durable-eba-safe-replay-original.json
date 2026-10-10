@@ -1,0 +1,282 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "mode": "safe-recovery",
+      "partial": false,
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": false,
+      "mode": "safe-recovery",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": true,
+      "mode": "safe-recovery",
+      "partial": false,
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": true,
+      "mode": "safe-recovery",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent",
+            "output": "partial λ\n",
+            "details": {
+              "retained": true
+            },
+            "droppedBytes": 24,
+            "droppedLines": 2,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "earlier",
+                "message": "Before interruption"
+              }
+            ]
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    }
+  ]
+}

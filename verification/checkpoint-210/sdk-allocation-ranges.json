@@ -1,0 +1,226 @@
+{
+  "status": "all Windows Debug ranges terminal passed",
+  "ranges": [
+    {
+      "label": "model-registry",
+      "shard": 0,
+      "shards": 8,
+      "start": 0,
+      "end": 137,
+      "total": 1099,
+      "job": "sdk-allocation-range0-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 0,
+      "shards": 8,
+      "start": 0,
+      "end": 141,
+      "total": 1133,
+      "job": "sdk-allocation-range0-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 0,
+      "shards": 8,
+      "start": 0,
+      "end": 132,
+      "total": 1059,
+      "job": "sdk-allocation-range0-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 1,
+      "shards": 8,
+      "start": 137,
+      "end": 274,
+      "total": 1099,
+      "job": "sdk-allocation-range1-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 1,
+      "shards": 8,
+      "start": 141,
+      "end": 283,
+      "total": 1133,
+      "job": "sdk-allocation-range1-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 1,
+      "shards": 8,
+      "start": 132,
+      "end": 264,
+      "total": 1059,
+      "job": "sdk-allocation-range1-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 2,
+      "shards": 8,
+      "start": 264,
+      "end": 397,
+      "total": 1059,
+      "job": "sdk-allocation-range2-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 2,
+      "shards": 8,
+      "start": 283,
+      "end": 424,
+      "total": 1133,
+      "job": "sdk-allocation-range2-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 2,
+      "shards": 8,
+      "start": 274,
+      "end": 412,
+      "total": 1099,
+      "job": "sdk-allocation-range2-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 3,
+      "shards": 8,
+      "start": 412,
+      "end": 549,
+      "total": 1099,
+      "job": "sdk-allocation-range3-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 3,
+      "shards": 8,
+      "start": 424,
+      "end": 566,
+      "total": 1133,
+      "job": "sdk-allocation-range3-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 3,
+      "shards": 8,
+      "start": 397,
+      "end": 529,
+      "total": 1059,
+      "job": "sdk-allocation-range3-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 4,
+      "shards": 8,
+      "start": 549,
+      "end": 686,
+      "total": 1099,
+      "job": "sdk-allocation-range4-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 4,
+      "shards": 8,
+      "start": 566,
+      "end": 708,
+      "total": 1133,
+      "job": "sdk-allocation-range4-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 4,
+      "shards": 8,
+      "start": 529,
+      "end": 661,
+      "total": 1059,
+      "job": "sdk-allocation-range4-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 5,
+      "shards": 8,
+      "start": 661,
+      "end": 794,
+      "total": 1059,
+      "job": "sdk-allocation-range5-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 5,
+      "shards": 8,
+      "start": 708,
+      "end": 849,
+      "total": 1133,
+      "job": "sdk-allocation-range5-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 5,
+      "shards": 8,
+      "start": 686,
+      "end": 824,
+      "total": 1099,
+      "job": "sdk-allocation-range5-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 6,
+      "shards": 8,
+      "start": 849,
+      "end": 991,
+      "total": 1133,
+      "job": "sdk-allocation-range6-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 6,
+      "shards": 8,
+      "start": 794,
+      "end": 926,
+      "total": 1059,
+      "job": "sdk-allocation-range6-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 6,
+      "shards": 8,
+      "start": 824,
+      "end": 961,
+      "total": 1099,
+      "job": "sdk-allocation-range6-windows-debug-20261009"
+    },
+    {
+      "label": "session-model-lease",
+      "shard": 7,
+      "shards": 8,
+      "start": 991,
+      "end": 1133,
+      "total": 1133,
+      "job": "sdk-allocation-range7-windows-debug-20261009"
+    },
+    {
+      "label": "virtual-ownership",
+      "shard": 7,
+      "shards": 8,
+      "start": 926,
+      "end": 1059,
+      "total": 1059,
+      "job": "sdk-allocation-range7-windows-debug-20261009"
+    },
+    {
+      "label": "model-registry",
+      "shard": 7,
+      "shards": 8,
+      "start": 961,
+      "end": 1099,
+      "total": 1099,
+      "job": "sdk-allocation-range7-windows-debug-20261009"
+    }
+  ],
+  "verifiedUtc": "2026-10-09T13:46:15.5674856+01:00",
+  "parityCertified": false,
+  "linuxSmoke": "sdk-allocation-range0-native-linux-debug-20261009 terminal pass",
+  "sourceCommit": "1ea3ba9",
+  "scope": "Only test partitioning and hosted execution; no production code change. Default local execution remains exhaustive unpartitioned. Each hosted OS runs range0 in its full graph and ranges1..7 in a separate serial exhaustive step."
+}

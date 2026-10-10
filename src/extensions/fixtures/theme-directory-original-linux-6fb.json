@@ -1,0 +1,291 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "platform": "linux",
+  "node": "24.13.0",
+  "cases": [
+    {
+      "home": "/home/proof-home",
+      "value": null,
+      "result": "/home/proof-home/.pi/agent/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "",
+      "result": "/home/proof-home/.pi/agent/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "~",
+      "result": "/home/proof-home/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "~/nested",
+      "result": "/home/proof-home/nested/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "~\\nested",
+      "result": "~\\nested/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "relative",
+      "result": "relative/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "../relative",
+      "result": "../relative/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": " @relative ",
+      "result": " @relative /themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "file:///C:/Data/a%20b",
+      "result": "/C:/Data/a b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "file:///tmp/a%20b",
+      "result": "/tmp/a b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "file://server/share/x",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_HOST"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "FILE:///C:/Data/x",
+      "result": "FILE:/C:/Data/x/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/c",
+      "result": "/c/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/c/a/b",
+      "result": "/c/a/b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/mnt/c/a/b",
+      "result": "/mnt/c/a/b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/MNT/c/a/b",
+      "result": "/MNT/c/a/b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/cygdrive/d/a/b",
+      "result": "/cygdrive/d/a/b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/foo/bar",
+      "result": "/foo/bar/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "//server/share",
+      "result": "/server/share/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/c/a\\b",
+      "result": "/c/a\\b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/c/a\nb",
+      "result": "/c/a\nb/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "/c/a b",
+      "result": "/c/a b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "C:\\Data\\folder",
+      "result": "C:\\Data\\folder/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "C:/Data/folder",
+      "result": "C:/Data/folder/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "C:relative",
+      "result": "C:relative/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "../a\\b",
+      "result": "../a\\b/themes"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "file:///C:/bad%2Fseparator",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_PATH"
+    },
+    {
+      "home": "/home/proof-home",
+      "value": "file:///C:/bad%ZZ",
+      "errorName": "URIError"
+    },
+    {
+      "home": "",
+      "value": null,
+      "result": ".pi/agent/themes"
+    },
+    {
+      "home": "",
+      "value": "",
+      "result": ".pi/agent/themes"
+    },
+    {
+      "home": "",
+      "value": "~",
+      "result": "themes"
+    },
+    {
+      "home": "",
+      "value": "~/nested",
+      "result": "nested/themes"
+    },
+    {
+      "home": "",
+      "value": "~\\nested",
+      "result": "~\\nested/themes"
+    },
+    {
+      "home": "",
+      "value": "relative",
+      "result": "relative/themes"
+    },
+    {
+      "home": "",
+      "value": "../relative",
+      "result": "../relative/themes"
+    },
+    {
+      "home": "",
+      "value": " @relative ",
+      "result": " @relative /themes"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/Data/a%20b",
+      "result": "/C:/Data/a b/themes"
+    },
+    {
+      "home": "",
+      "value": "file:///tmp/a%20b",
+      "result": "/tmp/a b/themes"
+    },
+    {
+      "home": "",
+      "value": "file://server/share/x",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_HOST"
+    },
+    {
+      "home": "",
+      "value": "FILE:///C:/Data/x",
+      "result": "FILE:/C:/Data/x/themes"
+    },
+    {
+      "home": "",
+      "value": "/c",
+      "result": "/c/themes"
+    },
+    {
+      "home": "",
+      "value": "/c/a/b",
+      "result": "/c/a/b/themes"
+    },
+    {
+      "home": "",
+      "value": "/mnt/c/a/b",
+      "result": "/mnt/c/a/b/themes"
+    },
+    {
+      "home": "",
+      "value": "/MNT/c/a/b",
+      "result": "/MNT/c/a/b/themes"
+    },
+    {
+      "home": "",
+      "value": "/cygdrive/d/a/b",
+      "result": "/cygdrive/d/a/b/themes"
+    },
+    {
+      "home": "",
+      "value": "/foo/bar",
+      "result": "/foo/bar/themes"
+    },
+    {
+      "home": "",
+      "value": "//server/share",
+      "result": "/server/share/themes"
+    },
+    {
+      "home": "",
+      "value": "/c/a\\b",
+      "result": "/c/a\\b/themes"
+    },
+    {
+      "home": "",
+      "value": "/c/a\nb",
+      "result": "/c/a\nb/themes"
+    },
+    {
+      "home": "",
+      "value": "/c/a b",
+      "result": "/c/a b/themes"
+    },
+    {
+      "home": "",
+      "value": "C:\\Data\\folder",
+      "result": "C:\\Data\\folder/themes"
+    },
+    {
+      "home": "",
+      "value": "C:/Data/folder",
+      "result": "C:/Data/folder/themes"
+    },
+    {
+      "home": "",
+      "value": "C:relative",
+      "result": "C:relative/themes"
+    },
+    {
+      "home": "",
+      "value": "../a\\b",
+      "result": "../a\\b/themes"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/bad%2Fseparator",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_PATH"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/bad%ZZ",
+      "errorName": "URIError"
+    }
+  ]
+}

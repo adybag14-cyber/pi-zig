@@ -564,6 +564,7 @@ fn buildOptionsJson(gpa: std.mem.Allocator, base: std.json.ObjectMap, request: l
     var first = true;
     var iterator = base.iterator();
     while (iterator.next()) |entry| {
+        if (std.mem.eql(u8, entry.key_ptr.*, "samplingParams")) continue;
         try writeFieldPrefix(w, &first, entry.key_ptr.*);
         try std.json.Stringify.value(entry.value_ptr.*, .{}, w);
     }
@@ -575,9 +576,11 @@ fn buildOptionsJson(gpa: std.mem.Allocator, base: std.json.ObjectMap, request: l
         try writeFieldPrefix(w, &first, "headers");
         try writeHeaders(w, request.headers);
     }
-    if (request.sampling_params.len > 0) {
+    const sampling = try metadata.resolveSamplingParams(gpa, request.sampling_params, request.sampling_params_by_thinking_level, request.reasoning, request.thinking_level_map, request.thinking, request.request_sampling_params);
+    defer gpa.free(sampling);
+    if (sampling.len > 0) {
         try writeFieldPrefix(w, &first, "samplingParams");
-        try writeSamplingParams(w, request.sampling_params);
+        try writeSamplingParams(w, sampling);
     }
     try w.writeByte('}');
     return out.toOwnedSlice();
@@ -643,6 +646,25 @@ fn buildModelJson(
         try writeFieldPrefix(w, &first, "samplingParams");
         try writeSamplingParams(w, request.sampling_params);
     }
+    var has_levels = false;
+    for (request.sampling_params_by_thinking_level.levels) |level| if (level.base.len > 0 or level.overlay.len > 0) {
+        has_levels = true;
+        break;
+    };
+    if (has_levels) {
+        try writeFieldPrefix(w, &first, "samplingParamsByThinkingLevel");
+        try w.writeByte('{');
+        var first_level = true;
+        for (@import("../ai/thinking.zig").extended_levels) |level_name| {
+            const level = request.sampling_params_by_thinking_level.at(level_name);
+            if (level.base.len == 0 and level.overlay.len == 0) continue;
+            const merged = try metadata.mergeSamplingParams(gpa, &.{ level.base, level.overlay });
+            defer gpa.free(merged);
+            try writeFieldPrefix(w, &first_level, @tagName(level_name));
+            try writeSamplingParams(w, merged);
+        }
+        try w.writeByte('}');
+    }
     if (request.headers.len > 0) {
         try writeFieldPrefix(w, &first, "headers");
         try writeHeaders(w, request.headers);
@@ -660,7 +682,7 @@ fn buildModelJson(
 
 fn isStandardModelField(name: []const u8) bool {
     const fields = [_][]const u8{
-        "id", "name", "api", "provider", "baseUrl", "reasoning", "thinkingLevelMap", "input", "cost", "contextWindow", "maxTokens", "samplingParams", "headers", "compat",
+        "id", "name", "api", "provider", "baseUrl", "reasoning", "thinkingLevelMap", "input", "cost", "contextWindow", "maxTokens", "samplingParams", "samplingParamsByThinkingLevel", "headers", "compat",
     };
     for (fields) |field| if (std.mem.eql(u8, name, field)) return true;
     return false;
@@ -1362,4 +1384,32 @@ test "extension stream adapter selects a live ModelClient and defers terminal de
     try std.testing.expectEqualStrings("hello world", reused_response.content);
     try std.testing.expectEqualStrings("toolUse", reused_response.stop_reason);
     try std.testing.expectEqual(@as(usize, 1), reused_log.terminal_count);
+}
+
+test "extension stream receives effective thinking sampling with request overrides" {
+    const gpa = std.testing.allocator;
+    var level_defaults: metadata.SamplingParamsByThinkingLevel = .{};
+    level_defaults.levels[@intFromEnum(ai.ThinkingLevel.high)].base = &.{
+        .{ .name = "top_p", .value_json = "0.9" },
+        .{ .name = "top_k", .value_json = "64" },
+    };
+    const request: live_state.ExtensionStreamRequest = .{
+        .provider_id = "corp",
+        .model_id = "m",
+        .api = "openai-completions",
+        .base_url = "http://127.0.0.1:9",
+        .reasoning = true,
+        .thinking = .max,
+        .sampling_params = &.{.{ .name = "temperature", .value_json = "1" }},
+        .sampling_params_by_thinking_level = level_defaults,
+        .request_sampling_params = &.{.{ .name = "top_p", .value_json = "0.4" }},
+    };
+    var documents = try buildRequestDocuments(gpa, request, &.{.{ .role = "user", .content = "hello" }}, "[]");
+    defer documents.deinit(gpa);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, documents.options_json, .{});
+    defer parsed.deinit();
+    const params = parsed.value.object.get("samplingParams").?.object;
+    try std.testing.expectEqual(@as(f64, 0.4), params.get("top_p").?.float);
+    try std.testing.expectEqual(@as(i64, 64), params.get("top_k").?.integer);
+    try std.testing.expectEqual(@as(i64, 1), params.get("temperature").?.integer);
 }

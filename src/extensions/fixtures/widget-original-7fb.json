@@ -1,0 +1,89 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+  "sourceSha256": "2e1fbb5e695c78d6e05dfcd5d7d511e755ea4495db3af34969388a24a4c221b5",
+  "executedMethodSha256": "2cc708752406114f5b53f69b140275b6f89d697c4696b06d22fe75674bb42d34",
+  "capture": "Exact original setExtensionWidget/clearExtensionWidgets methods stripped by Node built-in TypeScript; factory branch runs with explicit host TUI/theme and no implementation replacement",
+  "factory": "globalThis.widgetFactory=(tui,theme)=>{trace.push(['factory',theme.name,tui.terminal.columns]);let phase='first';globalThis.widgetTui=tui;globalThis.changeWidget=()=>{phase='changed';tui.requestRender()};return {render(width){trace.push(['render',width]);return [theme.fg('accent',phase+':'+width)]},invalidate(){trace.push(['invalidate'])},dispose(){trace.push(['dispose',phase])}}}",
+  "first": [
+    "<accent>first:55</accent>"
+  ],
+  "changed": [
+    "<accent>changed:55</accent>"
+  ],
+  "resized": [
+    "<accent>changed:31</accent>"
+  ],
+  "replaced": [
+    "<accent>first:31</accent>"
+  ],
+  "cleared": 0,
+  "trace": [
+    [
+      "factory",
+      "fixture-theme",
+      55
+    ],
+    [
+      "render",
+      55
+    ],
+    [
+      "requestRender"
+    ],
+    [
+      "render",
+      55
+    ],
+    [
+      "invalidate"
+    ],
+    [
+      "render",
+      31
+    ],
+    [
+      "dispose",
+      "changed"
+    ],
+    [
+      "factory",
+      "fixture-theme",
+      31
+    ],
+    [
+      "render",
+      31
+    ],
+    [
+      "dispose",
+      "first"
+    ]
+  ],
+  "throws": [
+    {
+      "operation": "replace",
+      "identity": true,
+      "retained": true,
+      "attempts": 2,
+      "nextFactories": 1,
+      "remaining": 1
+    },
+    {
+      "operation": "clear",
+      "identity": true,
+      "retained": true,
+      "attempts": 2,
+      "nextFactories": 0,
+      "remaining": 0
+    },
+    {
+      "operation": "reset",
+      "identity": true,
+      "retained": true,
+      "attempts": 2,
+      "nextFactories": 0,
+      "remaining": 0
+    }
+  ]
+}

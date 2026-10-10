@@ -1,0 +1,87 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "83692682f095528f8b71652ddacff7075e36e893",
+  "pathOracle": {
+    "nodeVersion": "v24.14.0",
+    "cases": 3038,
+    "sha256": "d49caeb8243a6030de71d4c1e1513b65521edc6c764312443db83efa1e5077c2",
+    "executableSourceRetained": false,
+    "nativeTestsRequireNode": false
+  },
+  "windowsRegression": {
+    "aggregateSteps": 48,
+    "aggregateTests": 147,
+    "modulePassed": 1084,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "native-file-url-resolver-tests-2": {
+      "name": "native-file-url-resolver-tests-2",
+      "pid": 3796,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-resolver test-extension-engine -j2 --summary all",
+      "created_utc": "2026-10-04T10:15:08.4612870Z",
+      "launched_utc": "2026-10-04T10:15:08.4581200+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:15:13.0230932+00:00"
+    },
+    "native-path-relative-oracle": {
+      "name": "native-path-relative-oracle",
+      "pid": 43320,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-path -j2 --summary all",
+      "created_utc": "2026-10-04T10:29:17.0838270Z",
+      "launched_utc": "2026-10-04T10:29:17.0808563+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:29:20.0327248+00:00"
+    },
+    "native-path-url-process-tests": {
+      "name": "native-path-url-process-tests",
+      "pid": 6004,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-path test-extension-url test-extension-resolver test-native-worker -j2 --summary all",
+      "created_utc": "2026-10-04T10:28:22.1523070Z",
+      "launched_utc": "2026-10-04T10:28:22.1494075+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:28:42.6205928+00:00"
+    },
+    "native-path-url-full-regressions": {
+      "name": "native-path-url-full-regressions",
+      "pid": 2748,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T10:30:32.2318510Z",
+      "launched_utc": "2026-10-04T10:30:32.2285566+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:31:42.7202952+00:00"
+    },
+    "native-path-url-release-safe": {
+      "name": "native-path-url-release-safe",
+      "pid": 25768,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-04T10:33:24.6046910Z",
+      "launched_utc": "2026-10-04T10:33:24.6015256+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:34:47.8335019+00:00"
+    }
+  }
+}

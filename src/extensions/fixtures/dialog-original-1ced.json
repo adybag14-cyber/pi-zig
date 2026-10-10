@@ -1,0 +1,256 @@
+{
+  "authority": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "source": [
+    {
+      "path": "packages/coding-agent/src/modes/interactive/components/extension-selector.ts",
+      "sha256": "d83767b09d73264eb0cb9af54b6f13e0e9c15a429a6dd7b9c8e7498e013b7704"
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/components/extension-input.ts",
+      "sha256": "efd8f7c27b2a1f1a9215e0cca31a34b3d54db2783ade2914dfa1facf8e1945bd"
+    },
+    {
+      "path": "packages/tui/src/components/input.ts",
+      "sha256": "0ad90bf7464e4da90e75596007b365edc45fcb371c4dbee563d4122b13247a11"
+    },
+    {
+      "path": "packages/tui/src/keybindings.ts",
+      "sha256": "475760dd4e3d02eca46bb5ee8704cd387c397b40d7a1f8967bdac3c481f5f702"
+    }
+  ],
+  "cases": [
+    {
+      "kind": "select",
+      "keys": [
+        "\r"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": "Yes"
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "\u001b[B",
+        "\r"
+      ],
+      "states": [
+        {
+          "selected": 1,
+          "result": null
+        },
+        {
+          "selected": 1,
+          "result": "No"
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "j",
+        "j",
+        "\r"
+      ],
+      "states": [
+        {
+          "selected": 1,
+          "result": null
+        },
+        {
+          "selected": 1,
+          "result": null
+        },
+        {
+          "selected": 1,
+          "result": "No"
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "k",
+        "\r"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": null
+        },
+        {
+          "selected": 0,
+          "result": "Yes"
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "\u001b"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": false
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "\u0003"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": false
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "y",
+        "\r"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": null
+        },
+        {
+          "selected": 0,
+          "result": "Yes"
+        }
+      ]
+    },
+    {
+      "kind": "select",
+      "keys": [
+        "\n"
+      ],
+      "states": [
+        {
+          "selected": 0,
+          "result": "Yes"
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "\r"
+      ],
+      "states": [
+        {
+          "value": "",
+          "result": ""
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "\n"
+      ],
+      "states": [
+        {
+          "value": "",
+          "result": ""
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "a",
+        "界",
+        "\r"
+      ],
+      "states": [
+        {
+          "value": "a",
+          "result": null
+        },
+        {
+          "value": "a界",
+          "result": null
+        },
+        {
+          "value": "a界",
+          "result": "a界"
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "x",
+        "\u001b"
+      ],
+      "states": [
+        {
+          "value": "x",
+          "result": null
+        },
+        {
+          "value": "x",
+          "result": false
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "x",
+        "\u0003"
+      ],
+      "states": [
+        {
+          "value": "x",
+          "result": null
+        },
+        {
+          "value": "x",
+          "result": false
+        }
+      ]
+    },
+    {
+      "kind": "input",
+      "keys": [
+        "a",
+        "b",
+        "\u001b[D",
+        "X",
+        "\r"
+      ],
+      "states": [
+        {
+          "value": "a",
+          "result": null
+        },
+        {
+          "value": "ab",
+          "result": null
+        },
+        {
+          "value": "ab",
+          "result": null
+        },
+        {
+          "value": "aXb",
+          "result": null
+        },
+        {
+          "value": "aXb",
+          "result": "aXb"
+        }
+      ]
+    }
+  ]
+}

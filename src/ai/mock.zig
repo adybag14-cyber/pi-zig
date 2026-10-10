@@ -6,12 +6,18 @@ pub const MockResponse = struct {
     response: ai.ModelResponse,
     /// Optional text chunks for streaming simulation (owned).
     stream_chunks: []const []const u8 = &.{},
+    stream_chunk_delay_ms: u32 = 0,
 };
 
 pub const MockModel = struct {
     responses: []MockResponse,
     index: usize = 0,
     last_completion_options: ai.CompletionOptions = .{},
+    io: ?std.Io = null,
+
+    pub fn bindIo(self: *MockModel, io: std.Io) void {
+        self.io = io;
+    }
 
     pub fn client(self: *MockModel) ai.ModelClient {
         return .{
@@ -23,28 +29,18 @@ pub const MockModel = struct {
     }
 
     fn takeNext(self: *MockModel, gpa: std.mem.Allocator) !ai.ModelResponse {
-        if (self.index >= self.responses.len) {
-            return .{
-                .content = try gpa.dupe(u8, "(mock exhausted)"),
-                .tool_calls = try gpa.alloc(ai.ToolCall, 0),
-                .provider = try gpa.dupe(u8, "mock"),
-                .model = try gpa.dupe(u8, "mock"),
-                .stop_reason = try gpa.dupe(u8, "stop"),
-            };
-        }
-        const src = self.responses[self.index].response;
-        self.index += 1;
+        const exhausted = self.index >= self.responses.len;
+        const src: ai.ModelResponse = if (exhausted) .{ .content = "(mock exhausted)", .tool_calls = &.{}, .provider = "mock", .model = "mock", .stop_reason = "stop" } else self.responses[self.index].response;
+        if (!exhausted) self.index += 1;
         var tcs = try gpa.alloc(ai.ToolCall, src.tool_calls.len);
+        var initialized: usize = 0;
         errdefer {
-            for (tcs[0..]) |*tc| tc.deinit(gpa);
+            for (tcs[0..initialized]) |*tc| tc.deinit(gpa);
             gpa.free(tcs);
         }
         for (src.tool_calls, 0..) |tc, i| {
-            tcs[i] = .{
-                .id = try gpa.dupe(u8, tc.id),
-                .name = try gpa.dupe(u8, tc.name),
-                .arguments = try gpa.dupe(u8, tc.arguments),
-            };
+            tcs[i] = try cloneToolCall(gpa, tc);
+            initialized += 1;
         }
         const stop: []const u8 = if (src.stop_reason.len > 0)
             src.stop_reason
@@ -52,12 +48,19 @@ pub const MockModel = struct {
             "toolUse"
         else
             "stop";
+        const content = try gpa.dupe(u8, src.content);
+        errdefer gpa.free(content);
+        const provider = try gpa.dupe(u8, if (src.provider.len > 0) src.provider else "mock");
+        errdefer gpa.free(provider);
+        const model = try gpa.dupe(u8, if (src.model.len > 0) src.model else "mock");
+        errdefer gpa.free(model);
+        const stop_reason = try gpa.dupe(u8, stop);
         return .{
-            .content = try gpa.dupe(u8, src.content),
+            .content = content,
             .tool_calls = tcs,
-            .provider = try gpa.dupe(u8, if (src.provider.len > 0) src.provider else "mock"),
-            .model = try gpa.dupe(u8, if (src.model.len > 0) src.model else "mock"),
-            .stop_reason = try gpa.dupe(u8, stop),
+            .provider = provider,
+            .model = model,
+            .stop_reason = stop_reason,
             .usage = src.usage,
         };
     }
@@ -89,9 +92,15 @@ pub const MockModel = struct {
         const idx = self.index;
         const chunks: []const []const u8 = if (idx < self.responses.len) self.responses[idx].stream_chunks else &.{};
         var resp = try self.takeNext(gpa);
+        errdefer resp.deinit(gpa);
         if (on_delta) |h| {
             if (chunks.len > 0) {
-                for (chunks) |ch| {
+                const delay = self.responses[idx].stream_chunk_delay_ms;
+                for (chunks, 0..) |ch, chunk_index| {
+                    if (chunk_index > 0 and delay > 0) {
+                        const io = self.io orelse return error.MockClockUnavailable;
+                        try io.sleep(.fromMilliseconds(delay), .awake);
+                    }
                     h(delta_ctx, .{ .kind = .text_delta, .text = ch });
                 }
             } else if (resp.content.len > 0) {
@@ -147,6 +156,10 @@ pub const MockModel = struct {
             if (item != .object) return error.InvalidMockScript;
             const content_v = item.object.get("content") orelse return error.InvalidMockScript;
             if (content_v != .string) return error.InvalidMockScript;
+            const delay_ms: u32 = if (item.object.get("stream_chunk_delay_ms")) |delay| blk: {
+                if (delay != .integer or delay.integer < 0 or delay.integer > 60_000) return error.InvalidMockScript;
+                break :blk @intCast(delay.integer);
+            } else 0;
 
             var tcs: std.ArrayList(ai.ToolCall) = .empty;
             errdefer {
@@ -162,11 +175,9 @@ pub const MockModel = struct {
                         const name = tc_item.object.get("name") orelse return error.InvalidMockScript;
                         const args = tc_item.object.get("arguments") orelse return error.InvalidMockScript;
                         if (id != .string or name != .string or args != .string) return error.InvalidMockScript;
-                        try tcs.append(gpa, .{
-                            .id = try gpa.dupe(u8, id.string),
-                            .name = try gpa.dupe(u8, name.string),
-                            .arguments = try gpa.dupe(u8, args.string),
-                        });
+                        var owned = try cloneToolCall(gpa, .{ .id = id.string, .name = name.string, .arguments = args.string });
+                        errdefer owned.deinit(gpa);
+                        try tcs.append(gpa, owned);
                     }
                 }
             }
@@ -179,7 +190,11 @@ pub const MockModel = struct {
             if (item.object.get("stream_chunks")) |sc| {
                 if (sc == .array) {
                     for (sc.array.items) |ch| {
-                        if (ch == .string) try chunks.append(gpa, try gpa.dupe(u8, ch.string));
+                        if (ch == .string) {
+                            const owned = try gpa.dupe(u8, ch.string);
+                            errdefer gpa.free(owned);
+                            try chunks.append(gpa, owned);
+                        }
                     }
                 }
             }
@@ -189,14 +204,21 @@ pub const MockModel = struct {
             else
                 "";
 
-            try list.append(gpa, .{
-                .response = .{
-                    .content = try gpa.dupe(u8, content_v.string),
-                    .tool_calls = try tcs.toOwnedSlice(gpa),
-                    .stop_reason = if (stop_reason.len > 0) try gpa.dupe(u8, stop_reason) else "",
-                },
-                .stream_chunks = try chunks.toOwnedSlice(gpa),
-            });
+            const content = try gpa.dupe(u8, content_v.string);
+            errdefer gpa.free(content);
+            const owned_stop = if (stop_reason.len > 0) try gpa.dupe(u8, stop_reason) else "";
+            errdefer if (owned_stop.len > 0) gpa.free(owned_stop);
+            const owned_calls = try tcs.toOwnedSlice(gpa);
+            errdefer {
+                for (owned_calls) |*tc| tc.deinit(gpa);
+                gpa.free(owned_calls);
+            }
+            const owned_chunks = try chunks.toOwnedSlice(gpa);
+            errdefer {
+                for (owned_chunks) |chunk| gpa.free(chunk);
+                gpa.free(owned_chunks);
+            }
+            try list.append(gpa, .{ .response = .{ .content = content, .tool_calls = owned_calls, .stop_reason = owned_stop }, .stream_chunks = owned_chunks, .stream_chunk_delay_ms = delay_ms });
         }
 
         return .{
@@ -205,6 +227,31 @@ pub const MockModel = struct {
         };
     }
 };
+
+fn cloneToolCall(gpa: std.mem.Allocator, source: ai.ToolCall) !ai.ToolCall {
+    const id = try gpa.dupe(u8, source.id);
+    errdefer gpa.free(id);
+    const name = try gpa.dupe(u8, source.name);
+    errdefer gpa.free(name);
+    const arguments = try gpa.dupe(u8, source.arguments);
+    return .{ .id = id, .name = name, .arguments = arguments };
+}
+
+fn allocationCase(gpa: std.mem.Allocator) !void {
+    var mock = try MockModel.loadFromJson(gpa, "[{\"content\":\"paced text\",\"stream_chunks\":[\"paced \",\"text\"],\"stream_chunk_delay_ms\":1,\"tool_calls\":[{\"id\":\"one\",\"name\":\"read\",\"arguments\":\"{}\"}]}]");
+    defer mock.deinit(gpa);
+    var response = try mock.takeNext(gpa);
+    defer response.deinit(gpa);
+    try std.testing.expectEqualStrings("paced text", response.content);
+}
+test "paced native mock parsing and response ownership release every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationCase, .{});
+    for ([_][]const u8{ "-1", "60001", "true", "\"1\"" }) |value| {
+        const json = try std.fmt.allocPrint(std.testing.allocator, "[{{\"content\":\"x\",\"stream_chunk_delay_ms\":{s}}}]", .{value});
+        defer std.testing.allocator.free(json);
+        try std.testing.expectError(error.InvalidMockScript, MockModel.loadFromJson(std.testing.allocator, json));
+    }
+}
 
 test "mock model returns scripted tool call then final" {
     const gpa = std.testing.allocator;

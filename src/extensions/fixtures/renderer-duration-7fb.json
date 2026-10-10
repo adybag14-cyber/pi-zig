@@ -1,0 +1,41 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "name": "initial",
+      "outputPad": 0,
+      "durationMs": null,
+      "hasDuration": true
+    },
+    {
+      "name": "partial",
+      "outputPad": 0,
+      "durationMs": null,
+      "hasDuration": true
+    },
+    {
+      "name": "final",
+      "outputPad": 0,
+      "durationMs": 37,
+      "hasDuration": true
+    },
+    {
+      "name": "old",
+      "outputPad": 0,
+      "durationMs": null,
+      "hasDuration": true
+    },
+    {
+      "name": "zero",
+      "outputPad": 0,
+      "durationMs": 0,
+      "hasDuration": true
+    },
+    {
+      "name": "changedPadding",
+      "outputPad": 1,
+      "durationMs": 0,
+      "hasDuration": true
+    }
+  ]
+}

@@ -29,6 +29,9 @@ pub const github_copilot = @import("github_copilot.zig");
 pub const tool_arguments = @import("tool_arguments.zig");
 pub const cost = @import("cost.zig");
 pub const api = @import("api.zig");
+pub const classifier = @import("classifier.zig");
+pub const model_types = @import("model_types.zig");
+const catalog_projection_test = @import("catalog_projection_test.zig");
 
 pub const Provider = providers.Provider;
 pub const resolveApiKey = providers.resolveApiKey;
@@ -145,6 +148,9 @@ pub const ChatImage = struct {
 pub const ChatMessage = struct {
     role: []const u8,
     content: []const u8,
+    /// SDK text-block arrays retain their wire representation even without
+    /// images. Native CLI text messages keep the default string form.
+    content_as_array: bool = false,
     /// Internal allocator-ownership marker used by context projections that
     /// synthesize summary wrappers. Provider serializers ignore this field.
     owned_content: bool = false,
@@ -225,7 +231,18 @@ pub const ProviderResponse = struct {
 
 pub const ProviderResponseHandler = *const fn (?*anyopaque, ProviderResponse) anyerror!void;
 
+pub const PayloadModel = struct { id: []const u8, provider: []const u8, api: []const u8 };
+/// Returns an optional owned replacement JSON payload. The input and catalog
+/// identity are borrowed; Azure applies its deployment map before this hook.
+pub const PayloadHandler = *const fn (?*anyopaque, std.mem.Allocator, []const u8, PayloadModel) anyerror!?[]u8;
+
 pub const CompletionOptions = struct {
+    azure_options: @import("azure.zig").Options = .{},
+    headers: []const request_metadata.Header = &.{},
+    on_payload: ?PayloadHandler = null,
+    on_payload_ctx: ?*anyopaque = null,
+    /// Provider-specific request values override model and thinking-level defaults.
+    sampling_params: []const request_metadata.SamplingParam = &.{},
     /// Request-local output cap. Zero preserves the model/provider default.
     max_tokens: u64 = 0,
     /// Detached one-shot work such as compaction and branch summaries must not
@@ -310,6 +327,9 @@ pub const ModelClient = struct {
 };
 
 test {
+    _ = catalog_projection_test;
+    _ = @import("sampling_transport_tests.zig");
+    _ = @import("azure_transport_tests.zig");
     std.testing.refAllDecls(@This());
 }
 

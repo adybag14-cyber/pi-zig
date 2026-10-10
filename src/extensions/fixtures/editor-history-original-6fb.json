@@ -1,0 +1,442 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "history restores the complete draft cursor and independent arrays",
+      "value": {
+        "steps": [
+          {
+            "state": {
+              "lines": [
+                "new",
+                "second-new"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "new\nsecond-new",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": 0,
+            "draft": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          },
+          {
+            "state": {
+              "lines": [
+                "old",
+                "second-old"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "old\nsecond-old",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": 1,
+            "draft": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          },
+          {
+            "state": {
+              "lines": [
+                "old",
+                "second-old"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "old\nsecond-old",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": 1,
+            "draft": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          },
+          {
+            "state": {
+              "lines": [
+                "new",
+                "second-new"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 10,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "new\nsecond-new",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": 0,
+            "draft": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          },
+          {
+            "state": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "draft😀\nsecond",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": -1,
+            "draft": null,
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          },
+          {
+            "state": {
+              "lines": [
+                "draft😀",
+                "second"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2,
+              "custom": {
+                "value": 7
+              }
+            },
+            "text": "draft😀\nsecond",
+            "history": [
+              "new\nsecond-new",
+              "old\nsecond-old"
+            ],
+            "index": -1,
+            "draft": null,
+            "last": null,
+            "preferred": null,
+            "snapped": null,
+            "scroll": 0,
+            "undo": 1
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "new\nsecond-new"
+          ],
+          [
+            true,
+            "old\nsecond-old"
+          ],
+          [
+            true,
+            "new\nsecond-new"
+          ],
+          [
+            true,
+            "draft😀\nsecond"
+          ]
+        ],
+        "replaced": true,
+        "custom": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "undo browsing keeps current state object and restores draft snapshot",
+      "value": {
+        "retained": true,
+        "snapshot": {
+          "state": {
+            "lines": [
+              "draft"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 2
+          },
+          "text": "draft",
+          "history": [
+            "stored"
+          ],
+          "index": -1,
+          "draft": null,
+          "last": null,
+          "preferred": null,
+          "snapped": 4,
+          "scroll": 3,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "navigation invalid bounds resets only lastAction",
+      "value": {
+        "empty": {
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "text": "",
+          "history": [],
+          "index": -1,
+          "draft": {
+            "held": true
+          },
+          "last": null,
+          "preferred": 2,
+          "snapped": 3,
+          "scroll": 4,
+          "undo": 0
+        },
+        "bound": {
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "text": "",
+          "history": [
+            "one"
+          ],
+          "index": -1,
+          "draft": {
+            "held": true
+          },
+          "last": null,
+          "preferred": 2,
+          "snapped": 3,
+          "scroll": 4,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "missing draft returns empty through virtual setTextInternal",
+      "value": {
+        "calls": [
+          [
+            true,
+            [
+              ""
+            ]
+          ]
+        ],
+        "snapshot": {
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "text": "",
+          "history": [
+            "one"
+          ],
+          "index": -1,
+          "draft": null,
+          "last": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "edited recalled history exits browsing through text insertion",
+      "value": {
+        "edited": {
+          "state": {
+            "lines": [
+              "Xstored"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 1
+          },
+          "text": "Xstored",
+          "history": [
+            "stored"
+          ],
+          "index": -1,
+          "draft": null,
+          "last": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0,
+          "undo": 3
+        },
+        "undo": {
+          "state": {
+            "lines": [
+              "stored"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "text": "stored",
+          "history": [
+            "stored"
+          ],
+          "index": -1,
+          "draft": null,
+          "last": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0,
+          "undo": 2
+        }
+      }
+    },
+    {
+      "name": "history draft clone honors the actual structuredClone callback",
+      "value": {
+        "calls": [
+          {
+            "state": false,
+            "keys": [
+              "state",
+              "pastes",
+              "pasteCounter"
+            ]
+          },
+          {
+            "state": true,
+            "keys": [
+              "lines",
+              "cursorLine",
+              "cursorCol"
+            ]
+          }
+        ],
+        "cloneCount": 2,
+        "snapshot": {
+          "state": {
+            "lines": [
+              "one"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "text": "one",
+          "history": [
+            "one"
+          ],
+          "index": 0,
+          "draft": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "last": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0,
+          "undo": 1
+        }
+      }
+    },
+    {
+      "name": "global clone lookup precedes draft state getter",
+      "value": {
+        "calls": [
+          "state",
+          "clone",
+          "clone",
+          "state",
+          "state",
+          "state",
+          "state",
+          "state"
+        ],
+        "text": "stored"
+      }
+    }
+  ]
+}

@@ -9,12 +9,20 @@ pub const Estimate = struct {
     last_usage_index: ?usize,
 };
 
-const CHARS_PER_TOKEN: u64 = 4;
 const ESTIMATED_IMAGE_CHARS: u64 = 4800;
 pub const CONTEXT_SAFETY_TOKENS: u64 = 4096;
 
-fn ceilDiv4(chars: u64) u64 {
-    return (chars +| (CHARS_PER_TOKEN - 1)) / CHARS_PER_TOKEN;
+fn estimateChars(chars: u64) u64 {
+    // Exact ceil(chars / 3.5), without floating rounding or u64 overflow.
+    return @intCast((@as(u128, chars) * 2 + 6) / 7);
+}
+
+fn utf16Length(text: []const u8) u64 {
+    const view = std.unicode.Utf8View.init(text) catch return @intCast(text.len);
+    var iterator = view.iterator();
+    var count: u64 = 0;
+    while (iterator.nextCodepoint()) |point| count += if (point > 0xffff) @as(u64, 2) else 1;
+    return count;
 }
 
 fn stringifiedValueChars(value: std.json.Value) u64 {
@@ -22,7 +30,7 @@ fn stringifiedValueChars(value: std.json.Value) u64 {
     var out: std.Io.Writer.Allocating = .init(alloc);
     defer out.deinit();
     std.json.Stringify.value(value, .{}, &out.writer) catch return 0;
-    return @intCast(out.written().len);
+    return utf16Length(out.written());
 }
 
 /// Return the compact JSON length used by JavaScript's `JSON.stringify`.
@@ -31,10 +39,10 @@ fn stringifiedValueChars(value: std.json.Value) u64 {
 pub fn canonicalJsonChars(raw: []const u8) u64 {
     if (raw.len == 0) return 0;
     const alloc = std.heap.page_allocator;
-    var parsed = std.json.parseFromSlice(std.json.Value, alloc, raw, .{}) catch return @intCast(raw.len);
+    var parsed = std.json.parseFromSlice(std.json.Value, alloc, raw, .{}) catch return utf16Length(raw);
     defer parsed.deinit();
     const chars = stringifiedValueChars(parsed.value);
-    return if (chars == 0) @intCast(raw.len) else chars;
+    return if (chars == 0) utf16Length(raw) else chars;
 }
 
 fn argumentChars(value: std.json.Value) u64 {
@@ -54,9 +62,9 @@ fn argumentChars(value: std.json.Value) u64 {
 pub fn estimateToolCallsChars(raw: []const u8) u64 {
     if (raw.len == 0) return 0;
     const alloc = std.heap.page_allocator;
-    var parsed = std.json.parseFromSlice(std.json.Value, alloc, raw, .{}) catch return @intCast(raw.len);
+    var parsed = std.json.parseFromSlice(std.json.Value, alloc, raw, .{}) catch return utf16Length(raw);
     defer parsed.deinit();
-    if (parsed.value != .array) return @intCast(raw.len);
+    if (parsed.value != .array) return utf16Length(raw);
 
     var chars: u64 = 0;
     for (parsed.value.array.items) |item| {
@@ -65,7 +73,7 @@ pub fn estimateToolCallsChars(raw: []const u8) u64 {
         if (function != .object) continue;
         const name = function.object.get("name") orelse continue;
         if (name != .string) continue;
-        chars +|= @intCast(name.string.len);
+        chars +|= utf16Length(name.string);
         if (function.object.get("arguments")) |arguments| {
             chars +|= argumentChars(arguments);
         } else {
@@ -82,13 +90,13 @@ pub fn calculateContextTokens(usage: ai.Usage) u64 {
 }
 
 pub fn estimateMessageTokens(message: ai.ChatMessage) u64 {
-    var chars: u64 = @intCast(message.content.len);
+    var chars: u64 = utf16Length(message.content);
     chars += @as(u64, @intCast(message.imageCount())) * ESTIMATED_IMAGE_CHARS;
     if (std.mem.eql(u8, message.role, "assistant")) {
-        if (message.thinking) |thinking| chars += @intCast(thinking.len);
+        if (message.thinking) |thinking| chars += utf16Length(thinking);
         if (message.tool_calls_json) |calls| chars +|= estimateToolCallsChars(calls);
     }
-    return ceilDiv4(chars);
+    return estimateChars(chars);
 }
 
 fn timestampAtLeast(candidate: ?[]const u8, latest: ?[]const u8) bool {
@@ -169,7 +177,7 @@ fn estimateAddedToolsTokens(tools_json: []const u8, messages: []const ai.ChatMes
         std.json.Stringify.value(item, .{}, &out.writer) catch return 0;
     }
     out.writer.writeAll("]") catch return 0;
-    return if (first) 0 else ceilDiv4(@intCast(out.written().len));
+    return if (first) 0 else estimateChars(utf16Length(out.written()));
 }
 
 pub fn estimateContext(messages: []const ai.ChatMessage, tools_json: []const u8) Estimate {
@@ -179,7 +187,7 @@ pub fn estimateContext(messages: []const ai.ChatMessage, tools_json: []const u8)
         estimate.tokens += added_tool_tokens;
         estimate.trailing_tokens += added_tool_tokens;
     } else if (tools_json.len > 2) {
-        const tool_tokens = ceilDiv4(canonicalJsonChars(tools_json));
+        const tool_tokens = estimateChars(canonicalJsonChars(tools_json));
         estimate.tokens += tool_tokens;
         estimate.trailing_tokens += tool_tokens;
     }
@@ -196,10 +204,30 @@ pub fn clampMaxTokens(context_window: u64, configured_max: u64, messages: []cons
 
 test "tool-call estimation ignores transport wrappers and compacts arguments" {
     const calls = "[{\"id\":\"call_with_large_wrapper\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{ \\\"path\\\" : \\\"a.txt\\\" }\"}}]";
-    // "read" (4) + compact {"path":"a.txt"} (16) = 20 chars = 5 tokens.
+    // "read" (4) + compact {"path":"a.txt"} (16) = 20 chars = 6 tokens.
     const message = ai.ChatMessage{ .role = "assistant", .content = "", .tool_calls_json = calls };
     try std.testing.expectEqual(@as(u64, 20), estimateToolCallsChars(calls));
-    try std.testing.expectEqual(@as(u64, 5), estimateMessageTokens(message));
+    try std.testing.expectEqual(@as(u64, 6), estimateMessageTokens(message));
+}
+
+test "latest estimator matches actual upstream UTF16 and 3.5 character oracle" {
+    const gpa = std.testing.allocator;
+    const captured = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/context-estimate-7fb.json"), .{});
+    defer captured.deinit();
+    for (captured.value.object.get("texts").?.array.items) |row| {
+        const message: ai.ChatMessage = .{ .role = "user", .content = row.object.get("text").?.string };
+        try std.testing.expectEqual(@as(u64, @intCast(row.object.get("tokens").?.integer)), estimateMessageTokens(message));
+    }
+    const text = [_]u8{'x'} ** 3500;
+    const messages = [_]ai.ChatMessage{
+        .{ .role = "assistant", .content = "kept", .timestamp = "2026-01-01T00:00:00Z", .stop_reason = "stop", .usage = .{ .total_tokens = 2000 } },
+        .{ .role = "user", .content = &text, .timestamp = "2026-01-01T00:00:01Z" },
+    };
+    const result = estimateMessages(&messages);
+    const expected = captured.value.object.get("context").?.object;
+    try std.testing.expectEqual(@as(u64, @intCast(expected.get("tokens").?.integer)), result.tokens);
+    try std.testing.expectEqual(@as(u64, @intCast(expected.get("trailingTokens").?.integer)), result.trailing_tokens);
+    try std.testing.expectEqual(@as(u64, 5270498306774157605), estimateChars(std.math.maxInt(u64)));
 }
 
 test "tool catalog estimation uses compact JSON and no-context clamp keeps one token" {
@@ -218,9 +246,9 @@ test "latest valid assistant usage plus trailing estimate drives clamp" {
         .{ .role = "user", .content = "12345678", .timestamp = "2026-01-01T00:00:02Z" },
     };
     const estimate = estimateContext(&messages, "[]");
-    try std.testing.expectEqual(@as(u64, 6002), estimate.tokens);
-    try std.testing.expectEqual(@as(u64, 2), estimate.trailing_tokens);
-    try std.testing.expectEqual(@as(u64, 1902), clampMaxTokens(12_000, 4_000, &messages, "[]"));
+    try std.testing.expectEqual(@as(u64, 6003), estimate.tokens);
+    try std.testing.expectEqual(@as(u64, 3), estimate.trailing_tokens);
+    try std.testing.expectEqual(@as(u64, 1901), clampMaxTokens(12_000, 4_000, &messages, "[]"));
 }
 
 test "newer inserted prefix timestamp invalidates stale assistant usage" {
@@ -249,6 +277,6 @@ test "trusted usage counts only trailing deferred tool definitions" {
     };
     const without_added = estimateContext(&no_added_messages, tools);
     try std.testing.expect(with_added.tokens > without_added.tokens);
-    const full_catalog_tokens = ceilDiv4(tools.len);
+    const full_catalog_tokens = estimateChars(tools.len);
     try std.testing.expect(with_added.tokens - without_added.tokens < full_catalog_tokens);
 }

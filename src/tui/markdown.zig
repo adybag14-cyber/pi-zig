@@ -108,8 +108,29 @@ fn recomputeLastSpace(bytes: []const u8) ?usize {
 
 fn pushCurrentLine(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8), current: *std.ArrayList(u8)) !void {
     const trimmed = trimTrailingSpaces(current.items);
-    try lines.append(gpa, try gpa.dupe(u8, trimmed));
+    const owned = try gpa.dupe(u8, trimmed);
+    errdefer gpa.free(owned);
+    try lines.append(gpa, owned);
     current.clearRetainingCapacity();
+}
+
+test "markdown line admission releases its owned duplicate on every failed allocation" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            var current: std.ArrayList(u8) = .empty;
+            defer current.deinit(gpa);
+            var lines: std.ArrayList([]u8) = .empty;
+            defer {
+                for (lines.items) |line| gpa.free(line);
+                lines.deinit(gpa);
+            }
+            try current.appendSlice(gpa, "Ω🦊 canonical line  ");
+            try pushCurrentLine(gpa, &lines, &current);
+            try std.testing.expectEqualStrings("Ω🦊 canonical line", lines.items[0]);
+            try std.testing.expectEqual(@as(usize, 0), current.items.len);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
 
 /// Wrap visible terminal cells while retaining CSI, OSC 8, and graphics control
@@ -632,7 +653,12 @@ fn appendBlank(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8)) !void {
 fn appendWrapped(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8), text: []const u8, width: usize) !void {
     const wrapped = try wrapAnsi(gpa, text, width);
     defer gpa.free(wrapped);
-    for (wrapped) |line| try lines.append(gpa, line);
+    var admitted: usize = 0;
+    errdefer for (wrapped[admitted..]) |line| gpa.free(line);
+    for (wrapped) |line| {
+        try lines.append(gpa, line);
+        admitted += 1;
+    }
 }
 
 fn repeatUtf8(gpa: std.mem.Allocator, glyph: []const u8, count: usize) ![]u8 {

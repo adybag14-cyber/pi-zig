@@ -1,0 +1,34 @@
+name: macOS native lifecycle
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  qualify:
+    name: macOS lifecycle (${{ matrix.optimize }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        optimize: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Environment daemon and watch lifecycle
+        timeout-minutes: 10
+        run: zig build test-env -Ddiagnostic-tests=true -Doptimize=${{ matrix.optimize }} -j2 --summary all
+      - name: Local and remote capability lifecycle
+        if: ${{ !cancelled() }}
+        timeout-minutes: 10
+        run: zig build test-env-capability -Ddiagnostic-tests=true -Doptimize=${{ matrix.optimize }} -j2 --summary all
+      - name: Durable backend lifecycle
+        if: ${{ !cancelled() }}
+        timeout-minutes: 10
+        run: zig build test-durable-backend -Ddiagnostic-tests=true -Doptimize=${{ matrix.optimize }} -j2 --summary all

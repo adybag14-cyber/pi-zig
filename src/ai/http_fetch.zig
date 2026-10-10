@@ -57,7 +57,7 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
     const response_writer = options.response_writer orelse {
         const reader = response.reader(&.{});
         _ = reader.discardRemaining() catch |err| switch (err) {
-            error.ReadFailed => return response.bodyErr().?,
+            error.ReadFailed => return response.bodyErr() orelse error.ReadFailed,
         };
         return .{ .status = status, .provider = provider };
     };
@@ -74,7 +74,7 @@ pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOpt
     var decompress: std.http.Decompress = undefined;
     const reader = response.readerDecompressing(&transfer_buffer, &decompress, decompress_buffer);
     _ = reader.streamRemaining(response_writer) catch |err| switch (err) {
-        error.ReadFailed => return response.bodyErr().?,
+        error.ReadFailed => return response.bodyErr() orelse error.ReadFailed,
         else => |other| return other,
     };
 
@@ -114,6 +114,24 @@ pub fn fetchControlledObserved(
     abort_flag: ?*bool,
     observer: ?HeadObserver,
 ) !Result {
+    return fetchControlledScoped(client, options, timeout_ms, abort_flag, observer, false);
+}
+
+/// Mistral's request deadline ends at response headers. Caller cancellation
+/// continues to cover the body, and every branch is joined before return.
+pub fn fetchHeadersControlled(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool) !Result {
+    return fetchControlledScoped(client, options, timeout_ms, abort_flag, null, true);
+}
+const HeaderState = struct {
+    ready: std.atomic.Value(bool) = .init(false),
+    observer: ?HeadObserver,
+    fn observe(raw: ?*anyopaque, head: std.http.Client.Response.Head) !void {
+        const self: *HeaderState = @ptrCast(@alignCast(raw.?));
+        self.ready.store(true, .release);
+        if (self.observer) |observer| try observer.callback(observer.context, head);
+    }
+};
+fn fetchControlledScoped(client: *std.http.Client, options: std.http.Client.FetchOptions, timeout_ms: ?u64, abort_flag: ?*bool, observer: ?HeadObserver, headers_only: bool) !Result {
     if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return error.ProviderRequestAborted;
     if (timeout_ms == null and abort_flag == null) return fetchObserved(client, options, observer);
     if (timeout_ms == 0) return error.ProviderRequestTimeout;
@@ -125,26 +143,31 @@ pub fn fetchControlledObserved(
     };
     var queue: [3]Race = undefined;
     var select = std.Io.Select(Race).init(client.io, &queue);
-    select.async(.request, fetchTask, .{ client, options, observer });
-    if (timeout_ms) |millis| select.async(.timeout, timeoutTask, .{ client.io, millis });
-    if (abort_flag) |flag| select.async(.aborted, abortTask, .{ client.io, flag });
+    var header_state: HeaderState = .{ .observer = observer };
+    // Cancellation joins request teardown before the caller can reuse its
+    // client/writer, including if a later branch cannot obtain concurrency.
+    defer while (select.cancel()) |_| {};
+    const effective_observer: ?HeadObserver = if (headers_only) .{ .context = &header_state, .callback = HeaderState.observe } else observer;
+    try select.concurrent(.request, fetchTask, .{ client, options, effective_observer });
+    if (timeout_ms) |millis| try select.concurrent(.timeout, timeoutTask, .{ client.io, millis });
+    if (abort_flag) |flag| try select.concurrent(.aborted, abortTask, .{ client.io, flag });
 
-    const winner = try select.await();
-    switch (winner) {
-        .request => |result| {
-            while (select.cancel()) |_| {}
-            return result;
-        },
-        .timeout => |expired| {
-            while (select.cancel()) |_| {}
-            if (expired) return error.ProviderRequestTimeout;
-            return error.Canceled;
-        },
-        .aborted => |aborted| {
-            while (select.cancel()) |_| {}
-            if (aborted) return error.ProviderRequestAborted;
-            return error.Canceled;
-        },
+    while (true) {
+        const winner = try select.await();
+        switch (winner) {
+            .request => |result| {
+                return result;
+            },
+            .timeout => |expired| {
+                if (headers_only and header_state.ready.load(.acquire)) continue;
+                if (expired) return error.ProviderRequestTimeout;
+                return error.Canceled;
+            },
+            .aborted => |aborted| {
+                if (aborted) return error.ProviderRequestAborted;
+                return error.Canceled;
+            },
+        }
     }
 }
 
@@ -177,4 +200,150 @@ test "controlled fetch rejects immediate timeout and pre-abort before I/O" {
     try std.testing.expectError(error.ProviderRequestTimeout, fetchControlled(&client, options, 0, null));
     var aborted = true;
     try std.testing.expectError(error.ProviderRequestAborted, fetchControlled(&client, options, null, &aborted));
+}
+
+test "Mistral header deadline permits a long response body and still rejects late headers" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    var client: std.http.Client = .{ .allocator = gpa, .io = std.testing.io };
+    defer client.deinit();
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{ .{ .path = "/body", .body = "long-body", .body_delay_ms = 200 }, .{ .path = "/headers", .body = "late", .delay_ms = 200 } });
+    defer server.deinit();
+    const url = try server.url(gpa, "/body");
+    defer gpa.free(url);
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    const result = try fetchHeadersControlled(&client, .{ .location = .{ .url = url }, .response_writer = &output.writer }, 100, null);
+    try std.testing.expectEqual(@as(u16, 200), result.status);
+    try std.testing.expectEqualStrings("long-body", output.written());
+    const late = try server.url(gpa, "/headers");
+    defer gpa.free(late);
+    try std.testing.expectError(error.ProviderRequestTimeout, fetchHeadersControlled(&client, .{ .location = .{ .url = late } }, 30, null));
+}
+
+test "Mistral header deadline keeps caller cancellation active while body is pending" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/body", .body = "late-body", .body_delay_ms = 500 }});
+    defer server.deinit();
+    const url = try server.url(gpa, "/body");
+    defer gpa.free(url);
+    var client: std.http.Client = .{ .allocator = gpa, .io = std.testing.io };
+    defer client.deinit();
+    const Task = struct {
+        client: *std.http.Client,
+        url: []const u8,
+        aborted: bool = false,
+        result: ?anyerror = null,
+        fn run(self: *@This()) std.Io.Cancelable!void {
+            _ = fetchHeadersControlled(self.client, .{ .location = .{ .url = self.url } }, 100, &self.aborted) catch |cause| {
+                self.result = cause;
+                return;
+            };
+        }
+    };
+    var task: Task = .{ .client = &client, .url = url };
+    var group: std.Io.Group = .init;
+    defer group.cancel(std.testing.io);
+    try group.concurrent(std.testing.io, Task.run, .{&task});
+    try std.testing.io.sleep(.fromMilliseconds(200), .awake);
+    @atomicStore(bool, &task.aborted, true, .release);
+    try group.await(std.testing.io);
+    try std.testing.expectEqual(@as(?anyerror, error.ProviderRequestAborted), task.result);
+}
+
+test "controlled fetch races real response timeout and live abort with zero eager async capacity" {
+    const fixture = @import("http_fixture.zig");
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+    defer client.deinit();
+    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/complete", .body = "response-owned", .delay_ms = 20 }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/complete");
+    defer std.testing.allocator.free(url);
+    var output: std.Io.Writer.Allocating = .init(std.testing.allocator);
+    defer output.deinit();
+    var aborted = false;
+    const result = try fetchControlled(&client, .{ .location = .{ .url = url }, .response_writer = &output.writer }, 500, &aborted);
+    try std.testing.expectEqual(@as(u16, 200), result.status);
+    try std.testing.expectEqualStrings("response-owned", output.written());
+    try server.finish();
+}
+
+test "controlled fetch timeout cancels its real request and the client remains reusable without eager async" {
+    const fixture = @import("http_fixture.zig");
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = threaded.io() };
+    defer client.deinit();
+    {
+        const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/slow", .body = "late", .delay_ms = 200 }});
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator, "/slow");
+        defer std.testing.allocator.free(url);
+        try std.testing.expectError(error.ProviderRequestTimeout, fetchControlled(&client, .{ .location = .{ .url = url } }, 30, null));
+    }
+    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/reuse", .body = "reused" }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/reuse");
+    defer std.testing.allocator.free(url);
+    try std.testing.expectEqual(@as(u16, 200), (try fetchControlled(&client, .{ .location = .{ .url = url } }, 500, null)).status);
+    try server.finish();
+}
+
+test "controlled fetch resource unavailable cancels every partially started branch and releases request state" {
+    const fixture = @import("http_fixture.zig");
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = threaded.io() };
+    defer client.deinit();
+    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/slow", .body = "late", .delay_ms = 200 }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/slow");
+    defer std.testing.allocator.free(url);
+    const options: std.http.Client.FetchOptions = .{ .location = .{ .url = url } };
+    try std.testing.expectError(error.ConcurrencyUnavailable, fetchControlled(&client, options, 500, null));
+    threaded.concurrent_limit = .limited(1);
+    try std.testing.expectError(error.ConcurrencyUnavailable, fetchControlled(&client, options, 500, null));
+}
+
+test "controlled fetch live abort joins its request with zero eager async capacity" {
+    const fixture = @import("http_fixture.zig");
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = threaded.io() };
+    defer client.deinit();
+    var observed: std.Io.Event = .unset;
+    var release: std.Io.Event = .unset;
+    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/slow", .body = "late", .request_observed = &observed, .response_release = &release }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/slow");
+    defer std.testing.allocator.free(url);
+    const Task = struct {
+        client: *std.http.Client,
+        url: []const u8,
+        aborted: bool = false,
+        done: std.Io.Event = .unset,
+        failure: ?anyerror = null,
+        fn run(self: *@This()) std.Io.Cancelable!void {
+            defer self.done.set(std.testing.io);
+            _ = fetchControlled(self.client, .{ .location = .{ .url = self.url } }, null, &self.aborted) catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var task: Task = .{ .client = &client, .url = url };
+    var group: std.Io.Group = .init;
+    defer {
+        release.set(std.testing.io);
+        group.cancel(std.testing.io);
+    }
+    try group.concurrent(std.testing.io, Task.run, .{&task});
+    try observed.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
+    @atomicStore(bool, &task.aborted, true, .release);
+    try task.done.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
+    try std.testing.expectEqual(@as(?anyerror, error.ProviderRequestAborted), task.failure);
 }

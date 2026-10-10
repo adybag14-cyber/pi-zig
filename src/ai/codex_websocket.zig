@@ -61,7 +61,9 @@ pub const Client = struct {
     /// It must outlive the HTTP client and therefore travels with a cached
     /// WebSocket connection.
     proxy_arena: std.heap.ArenaAllocator,
-    http: std.http.Client,
+    // Connection.client and TLS CA state refer to this owner. A stable address
+    // is required while Client values move through futures and cache slots.
+    http: *std.http.Client,
     connection: *std.http.Client.Connection,
     created_ms: i64,
     last_used_ms: i64,
@@ -107,22 +109,20 @@ pub const Client = struct {
         const Race = union(enum) { connected: anyerror!Client, timeout: bool, aborted: bool };
         var queue: [3]Race = undefined;
         var select = Io.Select(Race).init(io, &queue);
-        select.async(.connected, connectWithProxy, .{ gpa, io, https_url, extra_headers, proxy_config });
-        if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ io, timeout_ms });
-        if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ io, flag });
+        defer drainConnectRace(&select);
+        try select.concurrent(.connected, connectWithProxy, .{ gpa, io, https_url, extra_headers, proxy_config });
+        if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ io, timeout_ms });
+        if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ io, flag });
         const winner = try select.await();
         switch (winner) {
             .connected => |result| {
-                drainConnectRace(&select);
                 return result;
             },
             .timeout => |expired| {
-                drainConnectRace(&select);
                 if (expired) return error.WebSocketConnectTimeout;
                 return error.Canceled;
             },
             .aborted => |aborted| {
-                drainConnectRace(&select);
                 if (aborted) return error.WebSocketAborted;
                 return error.Canceled;
             },
@@ -147,9 +147,11 @@ pub const Client = struct {
     ) !Client {
         var proxy_arena = std.heap.ArenaAllocator.init(gpa);
         errdefer proxy_arena.deinit();
-        var http: std.http.Client = .{ .allocator = gpa, .io = io };
+        const http = try gpa.create(std.http.Client);
+        errdefer gpa.destroy(http);
+        http.* = .{ .allocator = gpa, .io = io };
         errdefer http.deinit();
-        _ = try http_proxy.configureClient(&http, proxy_arena.allocator(), https_url, proxy_config);
+        _ = try http_proxy.configureClient(http, proxy_arena.allocator(), https_url, proxy_config);
 
         const uri = try std.Uri.parse(https_url);
         var key_bytes: [16]u8 = undefined;
@@ -167,7 +169,7 @@ pub const Client = struct {
         var req = try http.request(.GET, uri, .{
             .keep_alive = true,
             .redirect_behavior = .unhandled,
-            .headers = .{ .connection = .{ .override = "Upgrade" }, .accept_encoding = .omit },
+            .headers = .{ .connection = .{ .override = "Upgrade" }, .accept_encoding = .omit, .user_agent = .omit },
             .extra_headers = headers.items,
         });
         defer req.deinit();
@@ -180,8 +182,8 @@ pub const Client = struct {
         if (!std.mem.eql(u8, std.mem.trim(u8, accept, " \t"), &expected)) return error.WebSocketAcceptMismatch;
 
         const connection = req.connection orelse return error.WebSocketUpgradeRejected;
-        // Steal the upgraded stream from Request. It stays in the owning
-        // Client's used pool and is closed by http.deinit().
+        // Steal the upgraded stream from Request. The WebSocket owns the used
+        // pool entry and releases it as closing before destroying http.
         req.connection = null;
         connection.closing = false;
         const now = Io.Clock.real.now(io).toMilliseconds();
@@ -197,7 +199,10 @@ pub const Client = struct {
     }
 
     pub fn deinit(self: *Client) void {
+        self.connection.closing = true;
+        self.http.connection_pool.release(self.connection, self.io);
         self.http.deinit();
+        self.gpa.destroy(self.http);
         self.proxy_arena.deinit();
         self.* = undefined;
     }
@@ -285,22 +290,20 @@ pub const Client = struct {
         const Race = union(enum) { message: anyerror!Frame, timeout: bool, aborted: bool };
         var queue: [3]Race = undefined;
         var select = Io.Select(Race).init(self.io, &queue);
-        select.async(.message, readMessageTask, .{ self, gpa });
-        if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ self.io, timeout_ms });
-        if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ self.io, flag });
+        defer drainReadRace(&select, gpa);
+        try select.concurrent(.message, readMessageTask, .{ self, gpa });
+        if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ self.io, timeout_ms });
+        if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ self.io, flag });
         const winner = try select.await();
         switch (winner) {
             .message => |result| {
-                drainReadRace(&select, gpa);
                 return result;
             },
             .timeout => |expired| {
-                drainReadRace(&select, gpa);
                 if (expired) return error.WebSocketIdleTimeout;
                 return error.Canceled;
             },
             .aborted => |aborted| {
-                drainReadRace(&select, gpa);
                 if (aborted) return error.WebSocketAborted;
                 return error.Canceled;
             },
@@ -467,4 +470,104 @@ test "transport parser supports cached websocket spelling" {
     try std.testing.expectEqual(Transport.websocket_cached, Transport.parse("websocket-cached").?);
     try std.testing.expect(Transport.auto.usesCachedContext());
     try std.testing.expect(!Transport.websocket.usesCachedContext());
+}
+
+test "websocket controlled connect and frame receive progress with zero eager async capacity" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .websocket_upgrade = true, .body = "\x81\x05hello", .head_delay_ms = 20 });
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator);
+    defer std.testing.allocator.free(url);
+    var aborted = false;
+    var client = try Client.connectWithTimeoutAndAbort(std.testing.allocator, io, url, &.{}, 500, &aborted);
+    defer client.deinit();
+    var frame = try client.readMessageWithControl(std.testing.allocator, 500, &aborted);
+    defer frame.deinit(std.testing.allocator);
+    try std.testing.expectEqual(Opcode.text, frame.opcode);
+    try std.testing.expectEqualStrings("hello", frame.data);
+    try server.finish();
+}
+
+test "websocket controlled upgrade retains timeout and releases every partial concurrent startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .limited(2), .unlimited }) |limit| {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .websocket_upgrade = true, .body = "\x81\x05hello", .head_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        threaded.concurrent_limit = limit;
+        var aborted = false;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.WebSocketConnectTimeout, Client.connectWithTimeoutAndAbort(std.testing.allocator, io, url, &.{}, 30, &aborted));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, Client.connectWithTimeoutAndAbort(std.testing.allocator, io, url, &.{}, 500, &aborted));
+    }
+}
+
+test "websocket controlled frames retain idle timeout and release every partial concurrent startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .limited(2), .unlimited }) |limit| {
+        threaded.concurrent_limit = .unlimited;
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .websocket_upgrade = true, .body = "\x81\x05hello", .body_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client = try Client.connectWithProxy(std.testing.allocator, io, url, &.{}, .{});
+        defer client.deinit();
+        threaded.concurrent_limit = limit;
+        var aborted = false;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.WebSocketIdleTimeout, client.readMessageWithControl(std.testing.allocator, 30, &aborted));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, client.readMessageWithControl(std.testing.allocator, 500, &aborted));
+    }
+}
+
+test "websocket live abort interrupts an entered upgrade and an entered frame wait without eager async" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .websocket_upgrade = true, .body = "\x81\x05hello", .head_delay_ms = 500 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        const Adapter = struct {
+            io: Io,
+            url: []const u8,
+            pub fn run(self: *@This(), flag: *bool) !void {
+                var client = try Client.connectWithTimeoutAndAbort(std.testing.allocator, self.io, self.url, &.{}, 0, flag);
+                defer client.deinit();
+                return error.UnexpectedWebSocketCompletion;
+            }
+        };
+        var adapter: Adapter = .{ .io = io, .url = url };
+        try fixture.abortAfterRequest(Adapter, &adapter, &server.request_seen, error.WebSocketAborted);
+    }
+    {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .websocket_upgrade = true, .body = "\x81\x05hello", .body_delay_ms = 500 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client = try Client.connectWithProxy(std.testing.allocator, io, url, &.{}, .{});
+        defer client.deinit();
+        const Adapter = struct {
+            client: *Client,
+            pub fn run(self: *@This(), flag: *bool) !void {
+                var frame = try self.client.readMessageWithControl(std.testing.allocator, 0, flag);
+                defer frame.deinit(std.testing.allocator);
+                return error.UnexpectedWebSocketCompletion;
+            }
+        };
+        var adapter: Adapter = .{ .client = &client };
+        try fixture.abortAfterRequest(Adapter, &adapter, &server.head_seen, error.WebSocketAborted);
+    }
 }

@@ -844,7 +844,10 @@ fn normalizeOutput(gpa: std.mem.Allocator, value: []const u8) ![]u8 {
             gpa.free(normalized);
             continue;
         }
-        try lines.append(gpa, normalized);
+        lines.append(gpa, normalized) catch |err| {
+            gpa.free(normalized);
+            return err;
+        };
     }
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);

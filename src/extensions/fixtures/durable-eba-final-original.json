@@ -1,0 +1,939 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "variant": "normal",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "tail",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its end: 2 lines, 15 bytes dropped"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "retained",
+      "result": {
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 14 bytes dropped"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 0 lines, 4 bytes dropped"
+          }
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "retained"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "snapshot"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "replace-retained",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "hook"
+          }
+        ],
+        "diagnostics": []
+      },
+      "reports": [],
+      "trace": [
+        [
+          "snapshot"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "valid-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "invalid-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ]
+      },
+      "reports": [
+        "Tool target returned structuredOutput that does not match its schema: count: must be number"
+      ],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "no-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ]
+      },
+      "reports": [
+        "Tool target returned structuredOutput but declares no structuredOutputSchema"
+      ],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "error-no-value",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "isError": true
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": false,
+      "variant": "null-hook",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "normal",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "structuredOutput": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "tail",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its end: 2 lines, 15 bytes dropped"
+          }
+        ],
+        "structuredOutput": [
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "retained",
+      "result": {
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 14 bytes dropped"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 0 lines, 4 bytes dropped"
+          }
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "retained"
+          }
+        ],
+        "structuredOutput": "retained"
+      },
+      "reports": [],
+      "trace": [
+        [
+          "snapshot"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "replace-retained",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "hook"
+          }
+        ],
+        "diagnostics": [],
+        "structuredOutput": "hook"
+      },
+      "reports": [],
+      "trace": [
+        [
+          "snapshot"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "valid-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "invalid-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          },
+          {
+            "severity": "error",
+            "code": "invalid_structured_output",
+            "message": "Tool target returned structuredOutput that does not match its schema: count: must be number"
+          }
+        ],
+        "isError": true
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "no-schema",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          },
+          {
+            "severity": "error",
+            "code": "invalid_structured_output",
+            "message": "Tool target returned structuredOutput but declares no structuredOutputSchema"
+          }
+        ],
+        "isError": true,
+        "structuredOutput": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "error-no-value",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "isError": true
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "nested": true,
+      "variant": "null-hook",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ],
+        "details": {
+          "result": true
+        },
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "reported",
+            "message": "reported"
+          },
+          {
+            "severity": "info",
+            "code": "returned",
+            "message": "returned"
+          },
+          {
+            "severity": "warn",
+            "code": "truncated",
+            "message": "Output truncated to its beginning: 2 lines, 13 bytes dropped"
+          }
+        ],
+        "structuredOutput": [
+          {
+            "type": "text",
+            "text": "λ one\n"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "reports": [],
+      "trace": [
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "hook",
+          true,
+          true,
+          true
+        ]
+      ]
+    }
+  ]
+}

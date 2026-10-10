@@ -443,16 +443,22 @@ fn acceptCallback(listener: *net.Server, io: std.Io, abort_flag: ?*const bool) !
     const Race = union(enum) { accepted: anyerror!net.Stream, aborted: bool };
     var queue: [2]Race = undefined;
     var select = std.Io.Select(Race).init(io, &queue);
-    select.async(.accepted, acceptCallbackTask, .{ listener, io });
-    select.async(.aborted, callbackWatchAbort, .{ io, abort_flag.? });
+    defer while (select.cancel()) |pending| switch (pending) {
+        .accepted => |result| if (result) |accepted| {
+            var stream = accepted;
+            stream.close(io);
+        } else |_| {},
+        .aborted => {},
+    };
+    // The listener and abort watcher depend on one another's progress.
+    try select.concurrent(.accepted, acceptCallbackTask, .{ listener, io });
+    try select.concurrent(.aborted, callbackWatchAbort, .{ io, abort_flag.? });
     const winner = try select.await();
     switch (winner) {
         .accepted => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.LoginCancelled;
             return error.Canceled;
         },
@@ -562,6 +568,56 @@ pub fn openBrowser(io: std.Io, url: []const u8) !void {
     };
     var child = try std.process.spawn(io, .{ .argv = argv, .stdin = .ignore, .stdout = .ignore, .stderr = .ignore });
     _ = try child.wait(io);
+}
+
+const ConcurrencyAdapter = struct {
+    server: *CallbackServer,
+    pub fn wait(self: *@This(), flag: *const bool) !CallbackResult {
+        return self.server.wait(std.heap.page_allocator, "native-state", flag);
+    }
+};
+
+test "Codex OAuth loopback callback progresses with zero eager async capacity and retains route state validation" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const address = try net.IpAddress.parseLiteral("127.0.0.1:0");
+    var server: CallbackServer = .{ .io = io, .listener = try address.listen(io, .{ .reuse_address = true }) };
+    defer server.deinit();
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    try @import("callback_concurrency_test_support.zig").success(ConcurrencyAdapter, &adapter, server.listener.socket.address, &.{
+        .{ .target = "/wrong-route", .status = 404 },
+        .{ .target = CALLBACK_PATH ++ "?code=concurrent-code&state=wrong-state", .status = 400 },
+        .{ .target = CALLBACK_PATH ++ "?code=concurrent-code&state=native-state", .status = 200 },
+    });
+}
+
+test "Codex OAuth cancellation joins its listener race and the owned server remains reusable" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const address = try net.IpAddress.parseLiteral("127.0.0.1:0");
+    var server: CallbackServer = .{ .io = io, .listener = try address.listen(io, .{ .reuse_address = true }) };
+    defer server.deinit();
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    try @import("callback_concurrency_test_support.zig").cancellation(ConcurrencyAdapter, &adapter);
+    try @import("callback_concurrency_test_support.zig").success(ConcurrencyAdapter, &adapter, server.listener.socket.address, &.{.{ .target = CALLBACK_PATH ++ "?code=concurrent-code&state=native-state", .status = 200 }});
+}
+
+test "Codex OAuth unavailable concurrency cancels partial race startup without retiring the listener" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const address = try net.IpAddress.parseLiteral("127.0.0.1:0");
+    var server: CallbackServer = .{ .io = io, .listener = try address.listen(io, .{ .reuse_address = true }) };
+    defer server.deinit();
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    const support = @import("callback_concurrency_test_support.zig");
+    try support.unavailable(ConcurrencyAdapter, &adapter);
+    threaded.concurrent_limit = .limited(1);
+    try support.unavailable(ConcurrencyAdapter, &adapter);
+    threaded.concurrent_limit = .unlimited;
+    try support.success(ConcurrencyAdapter, &adapter, server.listener.socket.address, &.{.{ .target = CALLBACK_PATH ++ "?code=concurrent-code&state=native-state", .status = 200 }});
 }
 
 const HttpResponse = struct { status: u16, body: []u8 };

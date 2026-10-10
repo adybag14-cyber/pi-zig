@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "recordedUtc": "2026-10-05T13:02:39.3560488+00:00",
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentPublishedHead": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+  "selectedUpstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "upstreamVersion": "1.0.3",
+  "productionBackend": "legacy Node bridge",
+  "sourceEquivalence": {
+    "fileCount": 416,
+    "sha256": "4f6c8a3e16ff1fa6b4debdc15146c8c2d0708abb6c38381196212d54d7d6994e",
+    "byteIdentical": true,
+    "source": "CurrentMainworkingtreecompilation/data",
+    "nativeSource": "/tmp/pi-foundation-b78-native-source-20261005",
+    "verifiedUtc": "2026-10-05T12:58:53.2532820+00:00"
+  },
+  "windowsGraph": {
+    "dedicatedSkipped": 26,
+    "modulePassed": 1148,
+    "steps": 105,
+    "dedicatedPassed": 459,
+    "moduleSkipped": 28,
+    "failures": 0
+  },
+  "linuxGraph": {
+    "failures": 0,
+    "dedicatedPassed": 625,
+    "modulePassed": 1168,
+    "moduleSkipped": 8,
+    "steps": 105
+  },
+  "pythonImplementationFiles": 0,
+  "legacyJavascriptFiles": 5,
+  "cliProcessFixtures": 19,
+  "userExtensionInputs": "JS/TS fixture strings are external userinput; fixtureimplementation isZig",
+  "nativeFeatures": [
+    "Provider streams and ACK/cancel/replacement controls",
+    "Strong native URL/params and filesystem/CommonJS consumers",
+    "Optimized scanner ABI declaration with vendor bytes unchanged",
+    "PersistentLinuxfullscreen and editorpadding",
+    "Mandatoryconcurrency and ownership cleanup"
+  ],
+  "knownLimits": [
+    "LegacyNodebackenddefault",
+    "Customcomponentprocessintegrationpending",
+    "Windows/macpersistentfullscreenpending",
+    "BoundedIDN tables; fullUTS46notcertified",
+    "Durable/SSH/codemode/MCP finalintegrationpending"
+  ],
+  "jobs": {
+    "checkpoint-b78-zero-python-windows-debug": {
+      "name": "checkpoint-b78-zero-python-windows-debug",
+      "pid": 52844,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T12:53:57.9103040Z",
+      "launched_utc": "2026-10-05T12:53:57.9065133+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:55:30.7654670+00:00"
+    },
+    "checkpoint-b78-zero-python-linux-debug": {
+      "name": "checkpoint-b78-zero-python-linux-debug",
+      "pid": 7164,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1700s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T12:54:02.1285430Z",
+      "launched_utc": "2026-10-05T12:54:02.1252394+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:55:50.3144386+00:00"
+    },
+    "checkpoint-b78-zero-python-windows-releasesafe": {
+      "name": "checkpoint-b78-zero-python-windows-releasesafe",
+      "pid": 33784,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T12:58:53.3147660Z",
+      "launched_utc": "2026-10-05T12:58:53.3133373+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:05:44.6358317+00:00"
+    },
+    "checkpoint-b78-zero-python-linux-releasesafe": {
+      "name": "checkpoint-b78-zero-python-linux-releasesafe",
+      "pid": 53044,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1700s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T12:59:01.3467570Z",
+      "launched_utc": "2026-10-05T12:59:01.3436450+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:05:36.6619553+00:00"
+    }
+  },
+  "releaseSafe": {
+    "windows": "passed105steps",
+    "linuxGnu235": "passed105steps",
+    "sameFrozenRuntimeSource": true
+  },
+  "sourceSha256": "4f6c8a3e16ff1fa6b4debdc15146c8c2d0708abb6c38381196212d54d7d6994e",
+  "windowsSmoke": {
+    "status": "passed",
+    "offlineMarker": "b78-zero-python-smoke-ok",
+    "stderrBytes": 0,
+    "isolatedPath": true,
+    "job": {
+      "name": "checkpoint-b78-windows-release-smoke",
+      "pid": 37044,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-20261003\\zig-out\\bin\\pi.exe",
+      "command_line": "C:\\Users\\adyba\\pi-zig-update-20261003\\zig-out\\bin\\pi.exe -p --offline --mock-script C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\smoke-b78-zero-python\\mock.json --no-session --no-tools --no-extensions --no-context-files --no-skills --no-prompt-templates --no-themes checkpoint smoke",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T13:07:40.6006362+00:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\smoke-b78-zero-python\\work",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:07:40.7819475+00:00"
+    },
+    "binarySha256": "bf06f573b4e7d0b77f4bbcff85ca0311dfa8d0571512586fcb75de10835a7345"
+  },
+  "finalSource": {
+    "fileCount": 416,
+    "focusedJob": {
+      "name": "checkpoint-b78-project-final-format-proof",
+      "pid": 29480,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-project-settings-process -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T13:11:08.8274350Z",
+      "launched_utc": "2026-10-05T13:11:08.8246205+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:11:26.9891452+00:00"
+    },
+    "runtimeFilesUnchanged": true,
+    "finalFixtureFormatting": "Onlyone trailing-space reportliteral normalized afterfullgraphs; project-settings actualReleaseSafe process target passedagain",
+    "sha256": "00e308522f33ba029b72a184db2aa0e6145ea992c3501fe997034ab1973d58dc"
+  }
+}

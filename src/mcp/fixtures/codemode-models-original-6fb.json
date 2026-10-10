@@ -1,0 +1,860 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "docsPath": "C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\codemode.md",
+  "models": [
+    {
+      "type": "chat",
+      "provider": "fixture",
+      "id": "chat",
+      "headers": {
+        "Authorization": "PRIVATE_HEADER"
+      }
+    },
+    {
+      "type": "classifier",
+      "provider": "fixture",
+      "id": "classify",
+      "headers": {
+        "Authorization": "PRIVATE_HEADER"
+      }
+    },
+    {
+      "type": "image",
+      "provider": "fixture",
+      "id": "image",
+      "headers": {
+        "Authorization": "PRIVATE_HEADER"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "name": "models.getModelsOfType",
+      "args": [
+        "classifier"
+      ],
+      "result": [
+        {
+          "type": "classifier",
+          "provider": "fixture",
+          "id": "classify"
+        }
+      ],
+      "undefined": false
+    },
+    {
+      "name": "models.getAvailableOfType",
+      "args": [
+        "image"
+      ],
+      "result": [
+        {
+          "type": "image",
+          "provider": "fixture",
+          "id": "image"
+        }
+      ],
+      "undefined": false
+    },
+    {
+      "name": "models.getModelOfType",
+      "args": [
+        "chat",
+        "fixture",
+        "chat"
+      ],
+      "result": {
+        "type": "chat",
+        "provider": "fixture",
+        "id": "chat"
+      },
+      "undefined": false
+    },
+    {
+      "name": "models.getModelOfType",
+      "args": [
+        "chat",
+        "fixture",
+        "missing"
+      ],
+      "result": null,
+      "undefined": true
+    },
+    {
+      "name": "models.getModelsOfType",
+      "args": [
+        "bogus"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Unknown model type \"bogus\". Use \"chat\", \"image\", or \"classifier\"."
+      }
+    },
+    {
+      "name": "models.getModelsOfType",
+      "args": [
+        "image",
+        1
+      ],
+      "error": {
+        "name": "Error",
+        "message": "provider must be a string"
+      }
+    },
+    {
+      "name": "models.getModelOfType",
+      "args": [
+        "classifier",
+        "fixture"
+      ],
+      "error": {
+        "name": "Error",
+        "message": "models.getModelOfType(type, provider, id) expects three strings, got (a string, a string). The provider and the id are separate arguments, for example models.getModelOfType(\"classifier\", \"typesafe\", \"jev-latest\")."
+      }
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        null,
+        {
+          "state": {
+            "x": 1
+          },
+          "questions": {
+            "ok": {
+              "type": "bool",
+              "instructions": "Check",
+              "criteria": {
+                "true": "yes",
+                "false": "no"
+              }
+            }
+          }
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "models.classify() expects a classifier model as its first argument, got null. models.getModelOfType() returns undefined for an unknown provider or id. List the classifier models you can use with models.getAvailableOfType(\"classifier\")."
+      }
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        {
+          "type": "chat",
+          "provider": "fixture",
+          "id": "chat",
+          "headers": {
+            "Authorization": "PRIVATE_HEADER"
+          }
+        },
+        {
+          "state": {
+            "x": 1
+          },
+          "questions": {
+            "ok": {
+              "type": "bool",
+              "instructions": "Check",
+              "criteria": {
+                "true": "yes",
+                "false": "no"
+              }
+            }
+          }
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "\"fixture/chat\" is a chat model, not a classifier model. List the classifier models you can use with models.getAvailableOfType(\"classifier\")."
+      }
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        {
+          "provider": "fixture",
+          "id": "missing"
+        },
+        {
+          "state": {
+            "x": 1
+          },
+          "questions": {
+            "ok": {
+              "type": "bool",
+              "instructions": "Check",
+              "criteria": {
+                "true": "yes",
+                "false": "no"
+              }
+            }
+          }
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "Unknown classifier model \"fixture/missing\". List the classifier models you can use with models.getAvailableOfType(\"classifier\")."
+      }
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        {
+          "type": "classifier",
+          "provider": "fixture",
+          "id": "classify",
+          "headers": {
+            "Authorization": "PRIVATE_HEADER"
+          }
+        },
+        {
+          "state": [],
+          "questions": {}
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "models.classify() context.state must be an object, got an empty array. Expected context: { state: { ... }, images?: [{ type: \"image\", data: <base64>, mimeType }], questions: { <id>: { type: \"choice\", instructions, criteria: { <label>: <meaning> } } | { type: \"score\", instructions, criteria: [<lowest level>, ..., <highest level>] } | { type: \"bool\", instructions, criteria: { true: <meaning>, false: <meaning> } } } }. See \"Classify\" in C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\codemode.md."
+      }
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        {
+          "type": "classifier",
+          "provider": "fixture",
+          "id": "classify",
+          "headers": {
+            "Authorization": "PRIVATE_HEADER"
+          }
+        },
+        {
+          "state": {},
+          "questions": {
+            "q": {
+              "type": "bool",
+              "instructions": "x",
+              "criteria": {
+                "true": 1,
+                "false": "no"
+              }
+            }
+          }
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "models.classify() context.questions.q is a \"bool\" question, so criteria must be { true: string, false: string }. Expected context: { state: { ... }, images?: [{ type: \"image\", data: <base64>, mimeType }], questions: { <id>: { type: \"choice\", instructions, criteria: { <label>: <meaning> } } | { type: \"score\", instructions, criteria: [<lowest level>, ..., <highest level>] } | { type: \"bool\", instructions, criteria: { true: <meaning>, false: <meaning> } } } }. See \"Classify\" in C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\codemode.md."
+      }
+    },
+    {
+      "name": "models.generateImages",
+      "args": [
+        {
+          "type": "image",
+          "provider": "fixture",
+          "id": "image",
+          "headers": {
+            "Authorization": "PRIVATE_HEADER"
+          }
+        },
+        {
+          "prompt": "wrong"
+        }
+      ],
+      "error": {
+        "name": "Error",
+        "message": "models.generateImages() context.input must be a non-empty array of blocks, got undefined. Expected context: { input: [{ type: \"text\", text: <prompt> }, ...optional { type: \"image\", data: <base64>, mimeType } references] }. See \"Generate images\" in C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\codemode.md."
+      }
+    },
+    {
+      "name": "models.generateImages",
+      "args": [
+        {
+          "type": "image",
+          "provider": "fixture",
+          "id": "image",
+          "headers": {
+            "Authorization": "PRIVATE_HEADER"
+          }
+        },
+        {
+          "input": [
+            {
+              "type": "text",
+              "text": "paint"
+            }
+          ]
+        }
+      ],
+      "result": {
+        "stopReason": "stop",
+        "output": [
+          {
+            "type": "image",
+            "data": "AA==",
+            "mimeType": "image/png"
+          }
+        ],
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.3
+          }
+        }
+      },
+      "undefined": false
+    },
+    {
+      "name": "models.classify",
+      "args": [
+        {
+          "type": "classifier",
+          "provider": "fixture",
+          "id": "classify",
+          "headers": {
+            "Authorization": "ATTACKER"
+          },
+          "baseUrl": "https://untrusted.invalid"
+        },
+        {
+          "state": {
+            "x": 1
+          },
+          "questions": {
+            "ok": {
+              "type": "bool",
+              "instructions": "Check",
+              "criteria": {
+                "true": "yes",
+                "false": "no"
+              }
+            }
+          }
+        }
+      ],
+      "result": {
+        "stopReason": "stop",
+        "results": {
+          "ok": true
+        },
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.3
+          }
+        }
+      },
+      "undefined": false
+    }
+  ],
+  "maxActive": 4,
+  "resolved": [
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    },
+    {
+      "model": {
+        "type": "classifier",
+        "provider": "fixture",
+        "id": "classify",
+        "headers": {
+          "Authorization": "PRIVATE_HEADER"
+        }
+      },
+      "context": {
+        "state": {
+          "x": 1
+        },
+        "questions": {
+          "ok": {
+            "type": "bool",
+            "instructions": "Check",
+            "criteria": {
+              "true": "yes",
+              "false": "no"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "calls": [
+    {
+      "id": "outer/models.generateImages/1",
+      "name": "models.generateImages",
+      "args": "fixture/image",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/2",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/3",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/4",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/5",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/6",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/7",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/8",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/9",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/10",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    },
+    {
+      "id": "outer/models.classify/11",
+      "name": "models.classify",
+      "args": "fixture/classify",
+      "status": "ok",
+      "cost": 0.3
+    }
+  ],
+  "publications": 22,
+  "usageRows": [
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    },
+    {
+      "input": 1,
+      "output": 2,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "totalTokens": 3,
+      "cost": {
+        "input": 0.1,
+        "output": 0.2,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 0.3
+      }
+    }
+  ],
+  "imageCounts": [
+    1
+  ]
+}

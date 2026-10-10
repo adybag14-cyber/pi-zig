@@ -1,0 +1,52 @@
+{
+  "platform": "win32",
+  "node": "24.14.0",
+  "normalization": "OS-derived profile compared with the current host baseline, never a developer path",
+  "cases": [
+    {
+      "value": null,
+      "result": "@current-user-home",
+      "fallback": true,
+      "matchesBaseline": true
+    },
+    {
+      "value": "",
+      "errorName": "SystemError",
+      "errorMessage": "A system error occurred: uv_os_homedir returned ENOENT (no such file or directory)",
+      "errorCode": "ERR_SYSTEM_ERROR",
+      "info": {
+        "errno": -4058,
+        "code": "ENOENT",
+        "message": "no such file or directory",
+        "syscall": "uv_os_homedir"
+      }
+    },
+    {
+      "value": "ab",
+      "errorName": "SystemError",
+      "errorMessage": "A system error occurred: uv_os_homedir returned ENOENT (no such file or directory)",
+      "errorCode": "ERR_SYSTEM_ERROR",
+      "info": {
+        "errno": -4058,
+        "code": "ENOENT",
+        "message": "no such file or directory",
+        "syscall": "uv_os_homedir"
+      }
+    },
+    {
+      "value": "C:\\ProofHome",
+      "result": "C:\\ProofHome",
+      "fallback": false
+    },
+    {
+      "value": "C:\\ProofHome\\",
+      "result": "C:\\ProofHome\\",
+      "fallback": false
+    },
+    {
+      "value": "C:/",
+      "result": "C:/",
+      "fallback": false
+    }
+  ]
+}

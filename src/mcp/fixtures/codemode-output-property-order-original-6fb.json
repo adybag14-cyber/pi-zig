@@ -1,0 +1,13 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "raw": "{\"type\":\"object\",\"properties\":{\"2\":{\"type\":\"string\"},\"1\":{\"type\":\"boolean\"},\"01\":{\"type\":\"number\"},\"x\":{\"type\":\"string\"}},\"required\":[\"1\"]}",
+      "description": "Produce data\n\nCodemode: `tools.data(args)` resolves to `{ 1, 2?, 01?, x? }`."
+    },
+    {
+      "raw": "{\"type\":\"object\",\"properties\":{\"4294967295\":{\"type\":\"string\"},\"4294967294\":{\"type\":\"string\"},\"0\":{\"type\":\"string\"},\"00\":{\"type\":\"string\"}}}",
+      "description": "Produce data\n\nCodemode: `tools.data(args)` resolves to `{ 0?, 4294967294?, 4294967295?, 00? }`."
+    }
+  ]
+}

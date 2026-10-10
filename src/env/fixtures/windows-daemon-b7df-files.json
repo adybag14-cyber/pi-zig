@@ -1,0 +1,15 @@
+{
+  "upstream": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "reads": [
+    "6162",
+    "6566",
+    "",
+    ""
+  ],
+  "errors": [
+    "EISDIR",
+    "ENOENT"
+  ],
+  "statKind": "file",
+  "retainedWrite": "first-second"
+}

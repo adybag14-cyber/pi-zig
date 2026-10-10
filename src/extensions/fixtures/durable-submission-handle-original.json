@@ -1,0 +1,63 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "shape": {
+    "keys": [
+      "id"
+    ],
+    "prototypeKeys": [
+      "constructor",
+      "status",
+      "wait",
+      "abort"
+    ],
+    "name": "SubmissionHandle",
+    "arity": 2,
+    "methods": {
+      "status": {
+        "arity": 1,
+        "enumerable": false
+      },
+      "wait": {
+        "arity": 1,
+        "enumerable": false
+      },
+      "abort": {
+        "arity": 1,
+        "enumerable": false
+      }
+    }
+  },
+  "statusIdentity": true,
+  "waitIdentity": true,
+  "throwIdentity": true,
+  "trace": [
+    [
+      "status",
+      true,
+      7,
+      {
+        "ctx": 1
+      }
+    ],
+    [
+      "wait",
+      true,
+      8,
+      {
+        "ctx": 2
+      }
+    ],
+    [
+      "abort",
+      true,
+      8,
+      {
+        "ctx": 3
+      }
+    ]
+  ],
+  "brand": {
+    "name": "TypeError",
+    "message": "Cannot read private member #submissions from an object whose class did not declare it"
+  }
+}

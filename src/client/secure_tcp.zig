@@ -129,17 +129,16 @@ pub const SecureTcpTransport = struct {
         const Race = union(enum) { read: anyerror!usize, timeout: bool };
         var queue: [2]Race = undefined;
         var select = std.Io.Select(Race).init(self.io, &queue);
-        select.async(.read, readSomeTask, .{ self.activeReader(), scratch });
-        select.async(.timeout, timeoutTask, .{ self.io, timeout });
+        defer while (select.cancel()) |_| {};
+        try select.concurrent(.read, readSomeTask, .{ self.activeReader(), scratch });
+        try select.concurrent(.timeout, timeoutTask, .{ self.io, timeout });
         const winner = try select.await();
         switch (winner) {
             .read => |result| {
-                while (select.cancel()) |_| {}
                 const count = try result;
                 return self.finishRead(client, scratch[0..count]);
             },
             .timeout => |expired| {
-                while (select.cancel()) |_| {}
                 if (expired) return error.Timeout;
                 return error.Canceled;
             },
@@ -358,4 +357,64 @@ test "secure transport explicit proxy overrides environment and disable_proxy by
     defer direct_arena.deinit();
     const configured = try http_proxy.configureClientForTarget(&direct_client, direct_arena.allocator(), target, null, null);
     try std.testing.expect(!configured);
+}
+
+test "secure TCP controlled read delivers real native hello without an inline deadline delay" {
+    const gpa = std.testing.allocator;
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const address = try net.IpAddress.parseLiteral("127.0.0.1:0");
+    var listener = try address.listen(std.testing.io, .{ .reuse_address = true });
+    defer listener.deinit(std.testing.io);
+    const target = try std.fmt.allocPrint(gpa, "127.0.0.1:{d}", .{listener.socket.address.getPort()});
+    defer gpa.free(target);
+    var transport: SecureTcpTransport = .{};
+    try transport.connect(gpa, io, .{ .address = target, .disable_proxy = true });
+    defer transport.deinit();
+    const peer = try listener.accept(std.testing.io);
+    defer peer.close(std.testing.io);
+    var client = try client_mod.Client.init(gpa, .{});
+    defer client.deinit();
+    try client.connect(transport.byteTransport());
+    const protocol = @import("../protocol/root.zig");
+    const frame = try protocol.codec.encodeJsonFrame(gpa, "{\"type\":\"hello\",\"version\":1,\"connectionId\":\"native-low-capacity\",\"snapshot\":{\"serverId\":\"server-1\",\"protocolVersion\":1,\"revision\":0,\"sessions\":[],\"models\":[]}}");
+    defer gpa.free(frame);
+    var write_buffer: [1024]u8 = undefined;
+    var writer = peer.writer(std.testing.io, &write_buffer);
+    try writer.interface.writeAll(frame);
+    try writer.interface.flush();
+    var scratch: [4096]u8 = undefined;
+    const before = std.Io.Clock.awake.now(io).toMilliseconds();
+    try std.testing.expect(try transport.pumpOnceUntil(&client, &scratch, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } }));
+    try std.testing.expect(std.Io.Clock.awake.now(io).toMilliseconds() - before < 500);
+    try std.testing.expect(client.connected());
+}
+
+test "secure TCP controlled read enforces its idle deadline and cleans partial concurrent startup" {
+    const gpa = std.testing.allocator;
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const address = try net.IpAddress.parseLiteral("127.0.0.1:0");
+    var listener = try address.listen(std.testing.io, .{ .reuse_address = true });
+    defer listener.deinit(std.testing.io);
+    const target = try std.fmt.allocPrint(gpa, "127.0.0.1:{d}", .{listener.socket.address.getPort()});
+    defer gpa.free(target);
+    var transport: SecureTcpTransport = .{};
+    try transport.connect(gpa, io, .{ .address = target, .disable_proxy = true });
+    defer transport.deinit();
+    const peer = try listener.accept(std.testing.io);
+    defer peer.close(std.testing.io);
+    var client = try client_mod.Client.init(gpa, .{});
+    defer client.deinit();
+    try client.connect(transport.byteTransport());
+    var scratch: [4096]u8 = undefined;
+    const deadline: std.Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(30), .clock = .awake } };
+    threaded.concurrent_limit = .nothing;
+    try std.testing.expectError(error.ConcurrencyUnavailable, transport.pumpOnceUntil(&client, &scratch, deadline));
+    threaded.concurrent_limit = .limited(1);
+    try std.testing.expectError(error.ConcurrencyUnavailable, transport.pumpOnceUntil(&client, &scratch, deadline));
+    threaded.concurrent_limit = .unlimited;
+    try std.testing.expectError(error.Timeout, transport.pumpOnceUntil(&client, &scratch, deadline));
 }

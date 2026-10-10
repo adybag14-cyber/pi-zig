@@ -1,0 +1,80 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "200387122ca450d6387f033949423114a270b96c",
+  "upstreamVersion": "1.0.2",
+  "upstreamSourceArchiveSha256": "e5f3ea2edbea9b1942b8be477b94a03020ebab5256f7dcc65866eb237011738b",
+  "previousHostedPass": {
+    "commit": "4ac54248832b608257e0d0787cebdc5c2a10b87d",
+    "run": 37203730071,
+    "windows": "success",
+    "linux": "success",
+    "macos": "success"
+  },
+  "newRuntimeContracts": {
+    "samplingParamsByThinkingLevel": "pending_port",
+    "durableProviderSessionIdentities": "pending_port"
+  },
+  "windowsRegression": {
+    "aggregateSteps": 52,
+    "aggregateTests": 220,
+    "modulePassed": 1086,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "upstream-102-catalog-provenance": {
+      "name": "upstream-102-catalog-provenance",
+      "pid": 16604,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build maintenance -- import-catalog C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models.all.json 1.0.2 200387122ca450d6387f033949423114a270b96c C:\\Users\\adyba\\pi-upstream-source-20038712.tar sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f src/ai/catalog_source.json",
+      "created_utc": "2026-10-04T13:12:08.9530780Z",
+      "launched_utc": "2026-10-04T13:12:08.9501404+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T13:12:09.8166258+00:00"
+    },
+    "upstream-102-changelog": {
+      "name": "upstream-102-changelog",
+      "pid": 23608,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build maintenance -- import-changelog C:\\Users\\adyba\\pi-upstream-20261003 200387122ca450d6387f033949423114a270b96c",
+      "created_utc": "2026-10-04T13:13:03.3691880Z",
+      "launched_utc": "2026-10-04T13:13:03.3661759+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T13:13:03.6072353+00:00"
+    },
+    "upstream-102-catalog-generation": {
+      "name": "upstream-102-catalog-generation",
+      "pid": 12308,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build maintenance -- catalog --output src/ai/catalog_generated.zig",
+      "created_utc": "2026-10-04T13:13:03.6154250Z",
+      "launched_utc": "2026-10-04T13:13:03.6146029+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T13:13:04.3052141+00:00"
+    },
+    "upstream-102-provenance-regressions": {
+      "name": "upstream-102-provenance-regressions",
+      "pid": 29876,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T13:41:25.1814210Z",
+      "launched_utc": "2026-10-04T13:41:25.1782219+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T13:42:14.0264765+00:00"
+    }
+  }
+}

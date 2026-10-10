@@ -1,0 +1,13 @@
+{
+  "name": "session-futex32-first-darwin-cross-compile-20261010",
+  "pid": 31572,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable_backend_test.zig vendor/sqlite/sqlite3.c -Ivendor/sqlite -lc -target aarch64-macos -ODebug --test-no-exec -fno-emit-bin",
+  "created_utc": "2026-10-10T12:12:57.6784250Z",
+  "launched_utc": "2026-10-10T12:12:57.6745486+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition237-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-10T12:13:05.8476949+00:00"
+}

@@ -1,0 +1,92 @@
+{
+  "status": "qualified source deadline correction and fixture admission hardening all four modes",
+  "sourceDigest": "c1e890e35507a0544b042ce0c563f96da23ab7f87e6274d35eaf4e871da300b8",
+  "fileCount": 955,
+  "patch": "UI-DIALOG-DEADLINE-C4-FINAL-20261009-a.patch",
+  "patchSha256": "F6742294ED919535F0CABDF9AC379E16CA0B4E3AB38A88FA00B3D3CEA0660F6A",
+  "paths": 3,
+  "sourceAuthority": "Source6fb StdinBuffer actual original with controlled host clock; early readiness wakes are not timer expiry; 10/50ms deadlines unchanged",
+  "negativeProof": "ui-dialog-c4-directflush-negative-win-debug-20261009-a expected failure: premature 1ms Escape cancellation",
+  "gates": [
+    {
+      "job": "ui-dialog-c4-deadline-product-win-debug-20261009-a",
+      "completed": "2026-10-09T15:40:34.2071451+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 104/106 tests passed (2 skipped)",
+      "stderrSha256": "D45EE74F093EE7DA2F990CF8B0A4BBA36D477C6166D77D384C0C4F601ADC48C6"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-unit-win-rs-20261009-a",
+      "completed": "2026-10-09T15:45:55.5264604+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 104/106 tests passed (2 skipped)",
+      "stderrSha256": "E80812CE3729F9D2889804395BC94290A8818C37C6771D0CC0259B8319BA648C"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-unit-linux-debug-20261009-a",
+      "completed": "2026-10-09T15:45:43.9649595+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 106/106 tests passed",
+      "stderrSha256": "3EA30849855CDF5C377F86E6EBA9A7B08F7F5CA626C322D6A8E77B0BF491B797"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-unit-linux-rs-20261009-a",
+      "completed": "2026-10-09T15:45:59.4977183+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 106/106 tests passed",
+      "stderrSha256": "5E72DEB7479CC2AEA98F9757BC33BBAD741FED7C7F6E600F02DCE8F8B4A19C51"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-app-win-debug-20261009-a",
+      "completed": "2026-10-09T15:41:07.6372884+01:00",
+      "summary": "Build Summary: 10/10 steps succeeded",
+      "stderrSha256": "0A6C4D39E69D45721439B3E18ABDC5E690ACF08015510AEC94D3D9E0DDA222A3"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-app-win-rs-20261009-a",
+      "completed": "2026-10-09T15:50:43.9275705+01:00",
+      "summary": "Build Summary: 10/10 steps succeeded",
+      "stderrSha256": "AB4B34481B455FB95E621F19286B6E41ECDC1565965CC532E7F164F1CB6F83D5"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-app-linux-debug-20261009-a",
+      "completed": "2026-10-09T15:47:19.1183597+01:00",
+      "summary": "Build Summary: 10/10 steps succeeded",
+      "stderrSha256": "15FED36830085CE96FA1B303F09C06456CD762E191644B453A58788EDC653953"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-app-linux-rs-20261009-a",
+      "completed": "2026-10-09T15:55:28.4658463+01:00",
+      "summary": "Build Summary: 10/10 steps succeeded",
+      "stderrSha256": "D9FE1773314A079FBB87F2FAD28B69564EC9DF8FC34658F744142FA44431F3EA"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-burst-win-debug-20261009-a",
+      "completed": "2026-10-09T15:42:47.669373+01:00",
+      "summary": "Build Summary: 5/5 steps succeeded; 1/1 tests passed",
+      "stderrSha256": "6F216688E1B3DAAAFF08E71699B7E9BAD5F7158C38995055A6DFE804BF0FD4F9"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-burst-win-rs-20261009-a",
+      "completed": "2026-10-09T15:56:16.0534072+01:00",
+      "summary": "Build Summary: 5/5 steps succeeded; 1/1 tests passed",
+      "stderrSha256": "164A86FCFA3908F2910A092CD29FC20C03C9B27E63E8F3653F8A404B3C3B193D"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-burst-linux-debug-20261009-a",
+      "completed": "2026-10-09T15:51:18.7874723+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 1/1 tests passed",
+      "stderrSha256": "F44FB5314D68E4EF3BD41DC12E9AE802E14FB34B740E98BDA11342555E94B51D"
+    },
+    {
+      "job": "ui-dialog-c4-deadline-burst-linux-rs-20261009-a",
+      "completed": "2026-10-09T15:56:17.6314633+01:00",
+      "summary": "Build Summary: 3/3 steps succeeded; 1/1 tests passed",
+      "stderrSha256": "913F6164D8526E1F5F562168E3AFE52C56F724E7F2A563AA67B1A3739F43193F"
+    }
+  ],
+  "postHashesAllFour": true,
+  "originalC4BinarySha256": "15CFC9A2A45E64B95AD23EB02B3BF4648FC79CE1063CCF1033182F2A18DFC674",
+  "originalC4Replay": "initial plus six original both-mode passes, no local reproduction of hosted a界Z",
+  "hostedCauseConfirmed": false,
+  "note": "This fixes a proven independent readiness/deadline gap and adds unique per-call titles/results with original whole burst plus all four CSI boundaries. It does not claim the exact hosted a界Z failure has been causally reproduced or eliminated; hosted exact-head verification remains required.",
+  "mainEdits": false,
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-09T15:02:39.3969700+00:00"
+}

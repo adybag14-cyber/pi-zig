@@ -1,0 +1,96 @@
+{
+  "config": {
+    "mcpServers": {
+      "parked": {
+        "command": "must-not-run",
+        "args": [
+          "--flag"
+        ],
+        "enabled": false,
+        "exposure": "hidden"
+      },
+      "hidden": {
+        "url": "https://service.example/mcp",
+        "enabled": false,
+        "exposure": "hidden"
+      },
+      "stdio": {
+        "command": "must-not-run",
+        "enabled": false
+      }
+    }
+  },
+  "cases": [
+    {
+      "input": [
+        "list",
+        "--json"
+      ],
+      "code": 0,
+      "logs": [
+        "{\n  \"servers\": [\n    {\n      \"name\": \"parked\",\n      \"scope\": \"global\",\n      \"source\": \"<ROOT>\\\\mcp.json\",\n      \"enabled\": false,\n      \"exposure\": \"hidden\",\n      \"transport\": \"must-not-run --flag\",\n      \"state\": \"disabled\",\n      \"tools\": []\n    },\n    {\n      \"name\": \"hidden\",\n      \"scope\": \"global\",\n      \"source\": \"<ROOT>\\\\mcp.json\",\n      \"enabled\": false,\n      \"exposure\": \"hidden\",\n      \"transport\": \"https://service.example/mcp\",\n      \"state\": \"disabled\",\n      \"tools\": []\n    },\n    {\n      \"name\": \"stdio\",\n      \"scope\": \"global\",\n      \"source\": \"<ROOT>\\\\mcp.json\",\n      \"enabled\": false,\n      \"exposure\": \"codemode\",\n      \"transport\": \"must-not-run\",\n      \"state\": \"disabled\",\n      \"tools\": []\n    }\n  ],\n  \"errors\": []\n}"
+      ],
+      "errors": []
+    },
+    {
+      "input": [
+        "list"
+      ],
+      "code": 0,
+      "logs": [
+        "parked: disabled (hidden, global)",
+        "  must-not-run --flag",
+        "hidden: disabled (hidden, global)",
+        "  https://service.example/mcp",
+        "stdio: disabled (codemode, global)",
+        "  must-not-run"
+      ],
+      "errors": []
+    },
+    {
+      "input": [
+        "logout",
+        "missing"
+      ],
+      "code": 1,
+      "logs": [],
+      "errors": [
+        "No MCP server named \"missing\". Configured: parked, hidden, stdio."
+      ]
+    },
+    {
+      "input": [
+        "logout",
+        "stdio"
+      ],
+      "code": 1,
+      "logs": [],
+      "errors": [
+        "MCP server \"stdio\" does not use OAuth. Only HTTP servers without an Authorization header do."
+      ]
+    },
+    {
+      "input": [
+        "logout",
+        "hidden"
+      ],
+      "code": 0,
+      "logs": [
+        "No stored credentials for MCP server \"hidden\"."
+      ],
+      "errors": []
+    },
+    {
+      "input": [
+        "logout",
+        "missing"
+      ],
+      "code": 1,
+      "logs": [],
+      "errors": [
+        "No MCP server named \"missing\". <ROOT>\\.pi\\mcp.json is ignored because the project is not trusted. Start pi in the project to trust it. Configured: parked, hidden, stdio."
+      ],
+      "untrusted": true
+    }
+  ]
+}

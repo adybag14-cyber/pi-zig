@@ -1,0 +1,601 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "variant": "normal",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "first": 70,
+      "second": 70,
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "silent",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            },
+            "progress": false
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "first": 70,
+      "second": 70,
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "safe",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": false
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "first": 70,
+      "second": 70,
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "different-name",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ]
+      ],
+      "first": 70,
+      "failure": {
+        "name": "Error",
+        "message": "Nested call parent/leaf was already made with another tool or other arguments"
+      },
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "different-args",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ]
+      ],
+      "first": 70,
+      "failure": {
+        "name": "Error",
+        "message": "Nested call parent/leaf was already made with another tool or other arguments"
+      },
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "wrong-parent",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 99,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ]
+      ],
+      "first": 70,
+      "failure": {
+        "name": "Error",
+        "message": "Nested call parent/leaf was already made with another tool or other arguments"
+      },
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "variant": "missing-record",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "parent",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "parent/leaf",
+              "name": "target",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": true
+          }
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          7
+        ],
+        [
+          "task",
+          70
+        ]
+      ],
+      "first": 70,
+      "failure": {
+        "name": "Error",
+        "message": "Nested call parent/leaf was already made with another tool or other arguments"
+      },
+      "index": {
+        "calls": {
+          "leaf": 70
+        }
+      },
+      "live": {
+        "nestedTools": [
+          {
+            "callId": "parent/leaf",
+            "parentCallId": "parent",
+            "parentTaskId": 7,
+            "name": "target",
+            "taskId": 70,
+            "arguments": {
+              "count": 2
+            },
+            "status": "pending"
+          }
+        ]
+      }
+    }
+  ]
+}

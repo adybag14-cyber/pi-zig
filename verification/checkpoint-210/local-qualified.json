@@ -1,0 +1,39 @@
+{
+  "status": "qualified full Windows Linux Debug ReleaseSafe test and provider contracts; parity guard remains false",
+  "head": "0fdb6e667c7920de2eaf4487303e627c01059900",
+  "sourceManifest": "checkpoint210-sdk-keys-waiter73-final-inputs.json",
+  "compiledInputs": 953,
+  "results": [
+    {
+      "name": "checkpoint210-full-windows-debug-20261008",
+      "completedUtc": "2026-10-08T20:26:17.1552883+00:00",
+      "summary": "Build Summary: 255/255 steps succeeded; 2190/2261 tests passed (71 skipped)",
+      "stdoutSha256": "152A04F1AF9EBBC11C48338E0270C483339A464C8563E2E25B747B79F4E325B8",
+      "stderrSha256": "7668C71CA1CA9D12AC31C9D524E5E8D406B897279B30ABDDD369DED4AA79C4A1"
+    },
+    {
+      "name": "checkpoint210-full-native-linux-debug-20261008",
+      "completedUtc": "2026-10-08T20:27:22.8180666+00:00",
+      "summary": "Build Summary: 251/251 steps succeeded; 2382/2394 tests passed (12 skipped)",
+      "stdoutSha256": "152A04F1AF9EBBC11C48338E0270C483339A464C8563E2E25B747B79F4E325B8",
+      "stderrSha256": "2211B186B7C258ED37AB91A5CE95F7D6BA7FC352BEE3DCBD7D3E5162189F8FE5"
+    },
+    {
+      "name": "checkpoint210-full-windows-release-safe-20261008",
+      "completedUtc": "2026-10-08T21:21:04.2785475+00:00",
+      "summary": "Build Summary: 255/255 steps succeeded; 2190/2261 tests passed (71 skipped)",
+      "stdoutSha256": "152A04F1AF9EBBC11C48338E0270C483339A464C8563E2E25B747B79F4E325B8",
+      "stderrSha256": "9E408160BEABB8F81A022DB627CA79CC42E9F0330992081647DED949B57B7E51"
+    },
+    {
+      "name": "checkpoint210-full-native-linux-release-safe-20261008",
+      "completedUtc": "2026-10-08T21:19:29.1524431+00:00",
+      "summary": "Build Summary: 251/251 steps succeeded; 2382/2394 tests passed (12 skipped)",
+      "stdoutSha256": "152A04F1AF9EBBC11C48338E0270C483339A464C8563E2E25B747B79F4E325B8",
+      "stderrSha256": "3FDF468A89281B381AD5215877CB8CC4E771CAA4E5EBF95F5398E7C92911AFD5"
+    }
+  ],
+  "scope": "full Windows Linux Debug ReleaseSafe test and provider contracts; parity guard remains false",
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-08T21:21:48.2014718+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-callback-close-20261005",
+  "paths": [
+    {
+      "path": "src/mcp/session.zig",
+      "before_sha256": "809d4bdf5c46acfb1560fbcb596fbf09e4465c7df3162835bc8e1455ce7a2699",
+      "after_sha256": "58b17f5feccde278d61b27ec834c504f4c483b445ef55e227329f4b3a07f5b6b",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\mcp-callback-close-freeze-20261005\\session.zig.patch"
+    },
+    {
+      "path": "src/mcp/connection.zig",
+      "before_sha256": "157684933dd35dbed40e893cae12e81f559071d1a3f6423804aa6db63705dcbb",
+      "after_sha256": "1ec262b1ee78964acc584cc12c74be3f44bdf4ff55fa263e00ed1ca985b2402c",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\mcp-callback-close-freeze-20261005\\connection.zig.patch"
+    }
+  ],
+  "proof": [
+    "mcp-connection-callback-close-debug-20261005a",
+    "mcp-connection-callback-close-releasesafe-20261005a",
+    "mcp-connection-callback-close-final-debug-20261005a"
+  ],
+  "scope": "callback owner identity before locks/shutdown; progress/error/remote-error frames; failed or reentrant teardown leaves ownership intact; later caller retries",
+  "regression": "actual progress callback calls owner.close/owner.deinit/client.deinit, both with/without another closer holding close_mutex; later normal close/destruction; injected transport close failure preserved",
+  "proof_correction": "Initial generic wrapper filtered runs selected only test_0 and are not semantic proof.",
+  "actual_Debug": "mcp-connection-callback-close-direct-debug-20261005a PASS2/2, named new callback regression explicitly executed",
+  "actual_ReleaseSafe": "mcp-connection-callback-close-direct-releasesafe-20261005a unfiltered direct-session terminalPASS; exact count in stderr",
+  "paths_unchanged": true
+}

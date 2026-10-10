@@ -1,0 +1,68 @@
+{
+  "status": "frozen; Windows ReleaseSafe actual PTY and native runtime/component gates passed; Debug provider/wrapper/UTF16/undo/GPA gates passed",
+  "baseline": "1665296020007c26c5c82084029c093c930bce40",
+  "source": "C:\\Users\\adyba\\pi-zig-editor-autocomplete-166-20261005",
+  "frozen_source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-autocomplete-freeze-20261005\\final",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-autocomplete-freeze-20261005\\native-autocomplete.patch",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "77aa70b1b4377a6169ee93725b5f9dee72b4e6ec5488054dcc5af79af4e8c339",
+      "bytes": 59984
+    },
+    {
+      "path": "src/extensions/native_autocomplete.zig",
+      "sha256": "a59d62f8958c6a2b994df78c5d80661addfc016af228c10d09c92e48acc5205f",
+      "bytes": 21336
+    },
+    {
+      "path": "src/extensions/native_autocomplete_registry.zig",
+      "sha256": "9285db8b07c379d8cc9931539d10f3eba5b64c0078993b80adea165c4612056d",
+      "bytes": 10896
+    },
+    {
+      "path": "src/extensions/native_editor.zig",
+      "sha256": "76bced976ea82237c50c850b2a7fe10a6a5531691e5335d25930c78d9804785a",
+      "bytes": 45241
+    },
+    {
+      "path": "src/extensions/native_ui.zig",
+      "sha256": "5ca6bf511f61d85ad5d01ca405f9a63637ebc294c87854cc748b8f0114a90a0b",
+      "bytes": 100279
+    },
+    {
+      "path": "src/tui/editor.zig",
+      "sha256": "c998f56cb0a7bfb821de6a3c16d197ff1639882260296067214c8d8dfae554bb",
+      "bytes": 14308
+    },
+    {
+      "path": "src/editor_autocomplete_test.zig",
+      "sha256": "d35796f26212e40cb06ba325e31db5e8eac0b01503168591cebf30f1f30a010e",
+      "bytes": 9296
+    },
+    {
+      "path": "src/fullscreen_frontend_process_test.zig",
+      "sha256": "bffc258fe58e6a22fcb3147a25cc58c2e77e1a1b49c504ac2a2efbee8b424641",
+      "bytes": 55537
+    },
+    {
+      "path": "src/coding_agent/fullscreen_frontend.zig",
+      "sha256": "c52e7d0515b9375fb8bd2999abe3f9c23c516df13d2bbcf0bd15c92704157fcb",
+      "bytes": 68711
+    }
+  ],
+  "receipts": [
+    "native-autocomplete-gpa-final-20261005.json",
+    "native-autocomplete-published-base-unit-second-20261005.json",
+    "native-autocomplete-windows-pty-final-20261005.json"
+  ],
+  "linux_validation": "First replay exposed fixed core fallback wake issue; final replay pending separate receipt",
+  "worker_file_unchanged": true,
+  "limitations": [
+    "Whole Pi rewrite remains incomplete; default backend is unchanged.",
+    "Native base provides slash command snapshots; file and argument completion delegates to existing Main Tab fallback.",
+    "Mouse selection, attachment debounce timing and exact upstream select-list styling are not certified.",
+    "Automatic trigger token boundaries currently use native ASCII whitespace rules."
+  ],
+  "captured_utc": "2026-10-05T22:44:38.9814518+00:00"
+}

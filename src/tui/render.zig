@@ -8,6 +8,23 @@ const Theme = @import("../themes/theme.zig").Theme;
 
 /// When true, suppress terminal writes (used by unit tests to avoid pipe deadlock).
 var silent: bool = false;
+pub const SinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
+pub const ModalFn = *const fn (?*anyopaque, bool) anyerror!void;
+var frontend_sink: ?SinkFn = null;
+var frontend_modal: ?ModalFn = null;
+var frontend_context: ?*anyopaque = null;
+
+pub fn bindFrontend(sink: ?SinkFn, modal: ?ModalFn, context: ?*anyopaque) void {
+    frontend_sink = sink;
+    frontend_modal = modal;
+    frontend_context = context;
+}
+pub fn beginModal() !void {
+    if (frontend_modal) |callback| try callback(frontend_context, true);
+}
+pub fn endModal() void {
+    if (frontend_modal) |callback| callback(frontend_context, false) catch {};
+}
 
 pub const Palette = struct {
     accent_sgr: []const u8 = "36",
@@ -18,12 +35,14 @@ pub const Palette = struct {
 
 /// Set once during startup. The referenced theme must outlive terminal rendering.
 var palette: Palette = .{};
+var theme_resource: ?[]const u8 = null;
 
 pub fn setSilent(v: bool) void {
     silent = v;
 }
 
 pub fn setTheme(theme: *const Theme) void {
+    theme_resource = theme.resource_json;
     palette = .{
         .accent_sgr = theme.accent_sgr,
         .error_sgr = theme.error_sgr,
@@ -33,11 +52,15 @@ pub fn setTheme(theme: *const Theme) void {
 }
 
 pub fn resetTheme() void {
+    theme_resource = null;
     palette = .{};
 }
 
 pub fn activePalette() Palette {
     return palette;
+}
+pub fn activeThemeResource() ?[]const u8 {
+    return theme_resource;
 }
 
 pub fn style(buf: []u8, sgr: []const u8, text: []const u8) ![]const u8 {
@@ -50,6 +73,7 @@ fn boldStyle(buf: []u8, sgr: []const u8, text: []const u8) ![]const u8 {
 
 pub fn writeAll(io: Io, bytes: []const u8) !void {
     if (silent) return;
+    if (frontend_sink) |sink| return sink(frontend_context, bytes);
     // Prefer streaming stdout; fall back to debug print.
     Io.File.stdout().writeStreamingAll(io, bytes) catch {
         std.debug.print("{s}", .{bytes});

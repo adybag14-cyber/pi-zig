@@ -1,0 +1,115 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "nested": {
+    "tokenKeys": [
+      "definition"
+    ],
+    "definitionKeys": [
+      "kind",
+      "version",
+      "scope",
+      "family",
+      "initial"
+    ],
+    "definition": {
+      "kind": "pi.tool.nested-result",
+      "version": 1,
+      "scope": "task",
+      "family": true
+    },
+    "arity": 1,
+    "identity": true,
+    "undefined": true
+  },
+  "live": [
+    {
+      "value": {},
+      "sparse": false,
+      "result": true
+    },
+    {
+      "value": {
+        "generation": {}
+      },
+      "sparse": false,
+      "result": false
+    },
+    {
+      "value": {
+        "generation": null
+      },
+      "sparse": false,
+      "result": false
+    },
+    {
+      "value": {
+        "tools": [
+          {
+            "status": "running"
+          }
+        ]
+      },
+      "sparse": false,
+      "result": false
+    },
+    {
+      "value": {
+        "tools": [
+          {
+            "status": "done"
+          }
+        ]
+      },
+      "sparse": false,
+      "result": true
+    },
+    {
+      "value": {
+        "nestedTools": [
+          {
+            "status": "running"
+          }
+        ]
+      },
+      "sparse": false,
+      "result": false
+    },
+    {
+      "value": {
+        "nestedTools": [
+          {
+            "status": "pending"
+          }
+        ]
+      },
+      "sparse": false,
+      "result": true
+    },
+    {
+      "value": {
+        "tools": null,
+        "nestedTools": null
+      },
+      "sparse": false,
+      "result": true
+    },
+    {
+      "value": {
+        "tools": [
+          null,
+          {
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          null,
+          {
+            "status": "done"
+          }
+        ]
+      },
+      "sparse": true,
+      "result": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "result": {
+    "before": {
+      "definitionSame": true,
+      "activeSame": false,
+      "executeSame": false,
+      "parametersSame": true,
+      "keys": [
+        "name",
+        "label",
+        "description",
+        "parameters",
+        "outputSchema",
+        "constrainedSampling",
+        "prepareArguments",
+        "executionMode",
+        "execute"
+      ],
+      "description": "original"
+    },
+    "reused": true,
+    "lookupDescription": "mutated",
+    "activeDescription": "original"
+  }
+}

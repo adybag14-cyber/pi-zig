@@ -1,0 +1,4227 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "layout [] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [],
+        "current": -1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 0
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "a",
+            "hasCursor": false
+          },
+          {
+            "text": "b",
+            "hasCursor": false
+          },
+          {
+            "text": "c",
+            "hasCursor": false
+          },
+          {
+            "text": "d",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": "f",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 1
+          }
+        ],
+        "current": 5,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "ab",
+            "hasCursor": false
+          },
+          {
+            "text": "cd",
+            "hasCursor": false
+          },
+          {
+            "text": "ef",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "abcd",
+            "hasCursor": false
+          },
+          {
+            "text": "ef",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          }
+        ],
+        "current": 1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "abcdef",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "abcdef",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abcdef\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "abcdef",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 18
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "o",
+            "hasCursor": false
+          },
+          {
+            "text": "n",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "w",
+            "hasCursor": false
+          },
+          {
+            "text": "o",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "h",
+            "hasCursor": false
+          },
+          {
+            "text": "r",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "f",
+            "hasCursor": false
+          },
+          {
+            "text": "o",
+            "hasCursor": false
+          },
+          {
+            "text": "u",
+            "hasCursor": false
+          },
+          {
+            "text": "r",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 6,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 9,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 10,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 11,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 12,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 13,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 15,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 16,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 17,
+            "length": 1
+          }
+        ],
+        "current": 17,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "on",
+            "hasCursor": false
+          },
+          {
+            "text": "e ",
+            "hasCursor": false
+          },
+          {
+            "text": "tw",
+            "hasCursor": false
+          },
+          {
+            "text": "o ",
+            "hasCursor": false
+          },
+          {
+            "text": "th",
+            "hasCursor": false
+          },
+          {
+            "text": "re",
+            "hasCursor": false
+          },
+          {
+            "text": "e ",
+            "hasCursor": false
+          },
+          {
+            "text": "fo",
+            "hasCursor": false
+          },
+          {
+            "text": "ur",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 6,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 10,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 12,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 16,
+            "length": 2
+          }
+        ],
+        "current": 8,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "one ",
+            "hasCursor": false
+          },
+          {
+            "text": "two ",
+            "hasCursor": false
+          },
+          {
+            "text": "thre",
+            "hasCursor": false
+          },
+          {
+            "text": "e ",
+            "hasCursor": false
+          },
+          {
+            "text": "four",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 12,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 4
+          }
+        ],
+        "current": 4,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "one two ",
+            "hasCursor": false
+          },
+          {
+            "text": "three ",
+            "hasCursor": false
+          },
+          {
+            "text": "four",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 8
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 6
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 4
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "one two ",
+            "hasCursor": false
+          },
+          {
+            "text": "three four",
+            "hasCursor": true,
+            "cursorPos": 10
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 8
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 10
+          }
+        ],
+        "current": 1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"one two three four\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "one two three four",
+            "hasCursor": true,
+            "cursorPos": 18
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 18
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "a",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "b",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "c",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 6,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 1
+          }
+        ],
+        "current": 8,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "a ",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "b ",
+            "hasCursor": false
+          },
+          {
+            "text": "  ",
+            "hasCursor": false
+          },
+          {
+            "text": "c ",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 2
+          }
+        ],
+        "current": 4,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "a  ",
+            "hasCursor": false
+          },
+          {
+            "text": "b   ",
+            "hasCursor": false
+          },
+          {
+            "text": "c ",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 2
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "a  b   ",
+            "hasCursor": false
+          },
+          {
+            "text": "c ",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 7
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 2
+          }
+        ],
+        "current": 1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "a  b   c ",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 9
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"a  b   c \"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "a  b   c ",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 9
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 1",
+      "value": {
+        "layout": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "map": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "current": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "first": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "last": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        }
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "中",
+            "hasCursor": false
+          },
+          {
+            "text": "文",
+            "hasCursor": false
+          },
+          {
+            "text": "か",
+            "hasCursor": false
+          },
+          {
+            "text": "な",
+            "hasCursor": false
+          },
+          {
+            "text": "한",
+            "hasCursor": false
+          },
+          {
+            "text": "글",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 1
+          }
+        ],
+        "current": 5,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "中文",
+            "hasCursor": false
+          },
+          {
+            "text": "かな",
+            "hasCursor": false
+          },
+          {
+            "text": "한글",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "中文かな",
+            "hasCursor": false
+          },
+          {
+            "text": "한글",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          }
+        ],
+        "current": 1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "中文かな한글",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"中文かな한글\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "中文かな한글",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 1",
+      "value": {
+        "layout": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "map": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "current": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "first": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        },
+        "last": {
+          "error": "RangeError",
+          "message": "Maximum call stack size exceeded"
+        }
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "é",
+            "hasCursor": false
+          },
+          {
+            "text": "😀",
+            "hasCursor": false
+          },
+          {
+            "text": "🇺🇳",
+            "hasCursor": false
+          },
+          {
+            "text": "x",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 1
+          }
+        ],
+        "current": 3,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "é😀",
+            "hasCursor": false
+          },
+          {
+            "text": "🇺🇳x",
+            "hasCursor": true,
+            "cursorPos": 5
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 5
+          }
+        ],
+        "current": 1,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "é😀🇺🇳x",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 9
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "é😀🇺🇳x",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 9
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"é😀🇺🇳x\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "é😀🇺🇳x",
+            "hasCursor": true,
+            "cursorPos": 9
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 9
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"\\ud800a\\udfff\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "\ud800a\udfff",
+            "hasCursor": true,
+            "cursorPos": 3
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 3
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "f",
+            "hasCursor": false
+          },
+          {
+            "text": "i",
+            "hasCursor": false
+          },
+          {
+            "text": "r",
+            "hasCursor": false
+          },
+          {
+            "text": "s",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "l",
+            "hasCursor": false
+          },
+          {
+            "text": "a",
+            "hasCursor": false
+          },
+          {
+            "text": "s",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 3,
+            "length": 1
+          }
+        ],
+        "current": 9,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "fi",
+            "hasCursor": false
+          },
+          {
+            "text": "rs",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "la",
+            "hasCursor": false
+          },
+          {
+            "text": "st",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 2,
+            "length": 2
+          }
+        ],
+        "current": 5,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "firs",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "last",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 4
+          }
+        ],
+        "current": 3,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "first",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "last",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 4
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "first",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "last",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 4
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"first\",\"\",\"last\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "first",
+            "hasCursor": false
+          },
+          {
+            "text": "",
+            "hasCursor": false
+          },
+          {
+            "text": "last",
+            "hasCursor": true,
+            "cursorPos": 4
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 0
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 4
+          }
+        ],
+        "current": 2,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 0",
+      "value": {
+        "layout": [
+          {
+            "text": "",
+            "hasCursor": true,
+            "cursorPos": 31
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 0
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 1",
+      "value": {
+        "layout": [
+          {
+            "text": "a",
+            "hasCursor": false
+          },
+          {
+            "text": "b",
+            "hasCursor": false
+          },
+          {
+            "text": "c",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "[",
+            "hasCursor": false
+          },
+          {
+            "text": "p",
+            "hasCursor": false
+          },
+          {
+            "text": "a",
+            "hasCursor": false
+          },
+          {
+            "text": "s",
+            "hasCursor": false
+          },
+          {
+            "text": "t",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "#",
+            "hasCursor": false
+          },
+          {
+            "text": "1",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "+",
+            "hasCursor": false
+          },
+          {
+            "text": "1",
+            "hasCursor": false
+          },
+          {
+            "text": "2",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "l",
+            "hasCursor": false
+          },
+          {
+            "text": "i",
+            "hasCursor": false
+          },
+          {
+            "text": "n",
+            "hasCursor": false
+          },
+          {
+            "text": "e",
+            "hasCursor": false
+          },
+          {
+            "text": "s",
+            "hasCursor": false
+          },
+          {
+            "text": "]",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "s",
+            "hasCursor": false
+          },
+          {
+            "text": "u",
+            "hasCursor": false
+          },
+          {
+            "text": "f",
+            "hasCursor": false
+          },
+          {
+            "text": "f",
+            "hasCursor": false
+          },
+          {
+            "text": "i",
+            "hasCursor": false
+          },
+          {
+            "text": "x",
+            "hasCursor": true,
+            "cursorPos": 1
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 1,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 3,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 5,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 6,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 7,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 9,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 10,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 11,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 12,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 13,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 15,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 16,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 17,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 18,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 19,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 20,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 21,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 22,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 23,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 24,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 25,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 26,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 27,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 28,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 29,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 30,
+            "length": 1
+          }
+        ],
+        "current": 30,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 2",
+      "value": {
+        "layout": [
+          {
+            "text": "ab",
+            "hasCursor": false
+          },
+          {
+            "text": "c ",
+            "hasCursor": false
+          },
+          {
+            "text": "[p",
+            "hasCursor": false
+          },
+          {
+            "text": "as",
+            "hasCursor": false
+          },
+          {
+            "text": "te",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "#1",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "+1",
+            "hasCursor": false
+          },
+          {
+            "text": "2 ",
+            "hasCursor": false
+          },
+          {
+            "text": "li",
+            "hasCursor": false
+          },
+          {
+            "text": "ne",
+            "hasCursor": false
+          },
+          {
+            "text": "s]",
+            "hasCursor": false
+          },
+          {
+            "text": " ",
+            "hasCursor": false
+          },
+          {
+            "text": "su",
+            "hasCursor": false
+          },
+          {
+            "text": "ff",
+            "hasCursor": false
+          },
+          {
+            "text": "ix",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 2,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 6,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 10,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 11,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 13,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 16,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 18,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 20,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 22,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 24,
+            "length": 1
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 25,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 27,
+            "length": 2
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 29,
+            "length": 2
+          }
+        ],
+        "current": 16,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 4",
+      "value": {
+        "layout": [
+          {
+            "text": "abc ",
+            "hasCursor": false
+          },
+          {
+            "text": "[pas",
+            "hasCursor": false
+          },
+          {
+            "text": "te ",
+            "hasCursor": false
+          },
+          {
+            "text": "#1 ",
+            "hasCursor": false
+          },
+          {
+            "text": "+12 ",
+            "hasCursor": false
+          },
+          {
+            "text": "line",
+            "hasCursor": false
+          },
+          {
+            "text": "s] ",
+            "hasCursor": false
+          },
+          {
+            "text": "suff",
+            "hasCursor": false
+          },
+          {
+            "text": "ix",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 8,
+            "length": 3
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 11,
+            "length": 3
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 18,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 22,
+            "length": 3
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 25,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 29,
+            "length": 2
+          }
+        ],
+        "current": 8,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 8",
+      "value": {
+        "layout": [
+          {
+            "text": "abc ",
+            "hasCursor": false
+          },
+          {
+            "text": "[paste ",
+            "hasCursor": false
+          },
+          {
+            "text": "#1 +12 ",
+            "hasCursor": false
+          },
+          {
+            "text": "lines] ",
+            "hasCursor": false
+          },
+          {
+            "text": "suffix",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 7
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 11,
+            "length": 7
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 18,
+            "length": 7
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 25,
+            "length": 6
+          }
+        ],
+        "current": 4,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 12",
+      "value": {
+        "layout": [
+          {
+            "text": "abc ",
+            "hasCursor": false
+          },
+          {
+            "text": "[paste #1 ",
+            "hasCursor": false
+          },
+          {
+            "text": "+12 lines] ",
+            "hasCursor": false
+          },
+          {
+            "text": "suffix",
+            "hasCursor": true,
+            "cursorPos": 6
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 10
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 14,
+            "length": 11
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 25,
+            "length": 6
+          }
+        ],
+        "current": 3,
+        "first": false,
+        "last": true
+      }
+    },
+    {
+      "name": "layout [\"abc [paste #1 +12 lines] suffix\"] 80",
+      "value": {
+        "layout": [
+          {
+            "text": "abc [paste #1 +12 lines] suffix",
+            "hasCursor": true,
+            "cursorPos": 31
+          }
+        ],
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 31
+          }
+        ],
+        "current": 0,
+        "first": true,
+        "last": true
+      }
+    },
+    {
+      "name": "visual lookup strict rows and last segment ends",
+      "value": {
+        "positions": [
+          {
+            "row": 0,
+            "col": -1,
+            "value": 3
+          },
+          {
+            "row": 0,
+            "col": 0,
+            "value": 0
+          },
+          {
+            "row": 0,
+            "col": 2,
+            "value": 0
+          },
+          {
+            "row": 0,
+            "col": 3,
+            "value": 1
+          },
+          {
+            "row": 0,
+            "col": 4,
+            "value": 1
+          },
+          {
+            "row": 0,
+            "col": 5,
+            "value": 1
+          },
+          {
+            "row": 0,
+            "col": 9,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": -1,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": 0,
+            "value": 2
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": 5,
+            "value": 3
+          },
+          {
+            "row": 1,
+            "col": 9,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": -1,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 0,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 5,
+            "value": 3
+          },
+          {
+            "row": 2,
+            "col": 9,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": -1,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 0,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 5,
+            "value": 3
+          },
+          {
+            "row": 3,
+            "col": 9,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": -1,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 0,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 2,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 3,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 4,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 5,
+            "value": 3
+          },
+          {
+            "row": "0",
+            "col": 9,
+            "value": 3
+          }
+        ],
+        "empty": -1
+      }
+    },
+    {
+      "name": "sticky column decision table",
+      "value": [
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 4,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 8,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 0,
+          "source": 8,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 1,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 1,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 4,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 8,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 2,
+          "source": 8,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 1,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 4,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 4,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 8,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": null,
+          "current": 4,
+          "source": 8,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 4,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 8,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 0,
+          "source": 8,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 0
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 4,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 8,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 2,
+          "source": 8,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 0
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": 0
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 0
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 4,
+          "target": 3,
+          "result": 3,
+          "after": 0
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 8,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": 0,
+          "current": 4,
+          "source": 8,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 4,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 8,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 0,
+          "source": 8,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 1,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 1,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 4,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 8,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 2,
+          "source": 8,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 1,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 4,
+          "target": 3,
+          "result": 3,
+          "after": 2
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 8,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": 2,
+          "current": 4,
+          "source": 8,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 4,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 8,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 0,
+          "source": 8,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 1,
+          "target": 6,
+          "result": 5,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 4,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 8,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 2,
+          "source": 8,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 1,
+          "target": 6,
+          "result": 5,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 4,
+          "target": 3,
+          "result": 3,
+          "after": 5
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 4,
+          "target": 6,
+          "result": 5,
+          "after": null
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 8,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": 5,
+          "current": 4,
+          "source": 8,
+          "target": 6,
+          "result": 4,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 1,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 1,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 4,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 4,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 8,
+          "target": 3,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 0,
+          "source": 8,
+          "target": 6,
+          "result": 0,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": "3"
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 1,
+          "target": 3,
+          "result": "3",
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 1,
+          "target": 6,
+          "result": "3",
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 4,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 4,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 2
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 8,
+          "target": 3,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 2,
+          "source": 8,
+          "target": 6,
+          "result": 2,
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 1,
+          "target": 0,
+          "result": 0,
+          "after": "3"
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 1,
+          "target": 3,
+          "result": 3,
+          "after": "3"
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 1,
+          "target": 6,
+          "result": "3",
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 4,
+          "target": 0,
+          "result": 0,
+          "after": "3"
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 4,
+          "target": 3,
+          "result": 3,
+          "after": "3"
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 4,
+          "target": 6,
+          "result": "3",
+          "after": null
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 8,
+          "target": 0,
+          "result": 0,
+          "after": 4
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 8,
+          "target": 3,
+          "result": 3,
+          "after": 4
+        },
+        {
+          "preferred": "3",
+          "current": 4,
+          "source": 8,
+          "target": 6,
+          "result": 4,
+          "after": null
+        }
+      ]
+    },
+    {
+      "name": "actual segment override supplies atomic wrap chunks",
+      "value": {
+        "layout": [
+          {
+            "text": "ab",
+            "hasCursor": false
+          },
+          {
+            "text": "cdef",
+            "hasCursor": true,
+            "cursorPos": 2
+          }
+        ],
+        "calls": [
+          [
+            true,
+            "abcdef",
+            "grapheme"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual map and lookup receiver",
+      "value": {
+        "first": true,
+        "last": true,
+        "calls": [
+          [
+            "map",
+            true,
+            17
+          ],
+          [
+            "find",
+            true,
+            [
+              [
+                {
+                  "logicalLine": 0,
+                  "startCol": 0,
+                  "length": 9
+                }
+              ],
+              0,
+              5
+            ]
+          ],
+          [
+            "map",
+            true,
+            17
+          ],
+          [
+            "find",
+            true,
+            [
+              [
+                {
+                  "logicalLine": 0,
+                  "startCol": 0,
+                  "length": 9
+                }
+              ],
+              0,
+              5
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

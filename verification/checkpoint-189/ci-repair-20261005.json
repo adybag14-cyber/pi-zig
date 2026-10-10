@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "recordedUtc": "2026-10-05T10:40:58.7920394+00:00",
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "failedHostedRun": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37289854772",
+  "timerRepair": "Remove seven method-to-handle cycles by capturing primitive class identity and branding the actual receiver; original 5ms deadline unchanged; 96 GC/timeout teardown iterations",
+  "timerBeforeAfter": "Confirmed 80-byte native HandleState retention before repair; allocation and borrowed receiver regressions pass after repair. Hosted segmentation fault did not reproduce locally.",
+  "fixtureRepair": "Anchor fixture executable and opener paths before changing child cwd. Missing executable test names an absolute owned nonexistent path.",
+  "windowsGraph": {
+    "steps": 69,
+    "dedicatedPassed": 388,
+    "modulePassed": 1117,
+    "moduleSkipped": 28,
+    "dedicatedSkipped": 5,
+    "failures": 0
+  },
+  "linuxGraph": {
+    "modulePassed": 1137,
+    "moduleSkipped": 8,
+    "steps": 69,
+    "failures": 0,
+    "dedicatedPassed": 417
+  },
+  "sourceEquivalence": {
+    "isolated_source": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+    "native_source": "/tmp/pi-ci-d0-native-source-20261005",
+    "tracked_file_count": 759,
+    "manifest_sha256": "c5c8636588cc88ad21af7516e5149a3a9ebce9b7fe3794b7b06bcda30160dc34",
+    "byte_identical": true,
+    "verified_utc": "2026-10-05T10:37:46.1051713+00:00",
+    "manifest_files": [
+      "ci-d0-isolated-source.sha256",
+      "ci-d0-nativefs-source.sha256"
+    ]
+  },
+  "macos": "Original module passed 1134 tests with11 skips; remaining unnamed test artifact timed out. Cause unresolved; fresh hosted execution required.",
+  "jobs": {
+    "ci-d0-windows-full-native-repair-20261005": {
+      "name": "ci-d0-windows-full-native-repair-20261005",
+      "pid": 54548,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T10:36:52.4745380Z",
+      "launched_utc": "2026-10-05T10:36:52.4713605+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:38:25.8690507+00:00"
+    },
+    "ci-d0-linux-node24-nativefs-repair-20261005": {
+      "name": "ci-d0-linux-node24-nativefs-repair-20261005",
+      "pid": 14304,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --cd /tmp/pi-ci-d0-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 290s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu -Dsqlite-lib-dir=/tmp/pi-ci-d0-sqlite-lib -j2 --summary all --verbose --cache-dir /tmp/pi-ci-d0-nativefs-local --global-cache-dir /tmp/pi-ci-d0-native-global",
+      "created_utc": "2026-10-05T10:34:07.7692360Z",
+      "launched_utc": "2026-10-05T10:34:07.7664516+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:35:30.8184744+00:00"
+    },
+    "ci-d0-timer-owner-fixed-20261005": {
+      "name": "ci-d0-timer-owner-fixed-20261005",
+      "pid": 53804,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-05T10:07:36.0122930Z",
+      "launched_utc": "2026-10-05T10:07:36.0093166+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:07:42.4066151+00:00"
+    },
+    "ci-d0-timer-owner-fixed-releasesafe-20261005": {
+      "name": "ci-d0-timer-owner-fixed-releasesafe-20261005",
+      "pid": 10540,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-05T10:09:11.3080720Z",
+      "launched_utc": "2026-10-05T10:09:11.3048202+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:09:52.2357324+00:00"
+    }
+  }
+}

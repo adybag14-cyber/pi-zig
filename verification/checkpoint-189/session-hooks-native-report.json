@@ -1,0 +1,20 @@
+{
+  "rpcPrompts": 4,
+  "rpcCompactReplacement": true,
+  "rpcCompactSummary": "extension compact summary 164",
+  "rpcCompactFromHook": true,
+  "rpcAfterHookActionsImmediate": true,
+  "rpcCancellation": true,
+  "rpcCancellationActionsImmediate": true,
+  "durableCompactionUsageTotal": 50,
+  "treeTargetId": "m2",
+  "treeSummary": "extension tree summary 164",
+  "treeFromHook": true,
+  "treeLabel": "tree-label-164",
+  "durableTreeUsageTotal": 90,
+  "finalSessionName": "tree-hooked-164",
+  "rpcExit": 0,
+  "interactiveExit": 0,
+  "stderrBytes": 0,
+  "finalJsonlRecords": 15
+}

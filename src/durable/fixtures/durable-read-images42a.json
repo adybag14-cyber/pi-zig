@@ -1,0 +1,884 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "fixtures": [
+    {
+      "name": "tiny.gif",
+      "bytes": [
+        71,
+        73,
+        70,
+        56,
+        57,
+        97,
+        1,
+        0,
+        1,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0,
+        0,
+        255,
+        255,
+        255,
+        33,
+        249,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        2,
+        1,
+        68,
+        0,
+        59
+      ]
+    },
+    {
+      "name": "header.png",
+      "bytes": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13,
+        73,
+        72,
+        68,
+        82,
+        0,
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        6
+      ]
+    },
+    {
+      "name": "wide.png",
+      "bytes": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13,
+        73,
+        72,
+        68,
+        82,
+        0,
+        0,
+        7,
+        209,
+        0,
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "name": "unknown.gif",
+      "bytes": [
+        71,
+        73,
+        70,
+        56,
+        57,
+        97
+      ]
+    },
+    {
+      "name": "a.bmp",
+      "bytes": [
+        66,
+        77,
+        58,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        54,
+        0,
+        0,
+        0,
+        40,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        24,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "header.jpg",
+      "bytes": [
+        255,
+        216,
+        255,
+        192,
+        0,
+        11,
+        8,
+        0,
+        6,
+        0,
+        8,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "lossy.webp",
+      "bytes": [
+        82,
+        73,
+        70,
+        70,
+        0,
+        0,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80,
+        86,
+        80,
+        56,
+        32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8,
+        0,
+        6,
+        0
+      ]
+    },
+    {
+      "name": "lossless.webp",
+      "bytes": [
+        82,
+        73,
+        70,
+        70,
+        0,
+        0,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80,
+        86,
+        80,
+        56,
+        76,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        64,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "extended.webp",
+      "bytes": [
+        82,
+        73,
+        70,
+        70,
+        0,
+        0,
+        0,
+        0,
+        87,
+        69,
+        66,
+        80,
+        86,
+        80,
+        56,
+        88,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        0,
+        0,
+        5,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "zero.png",
+      "bytes": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13,
+        73,
+        72,
+        68,
+        82,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "grow-once.gif",
+      "bytes": [
+        71,
+        73,
+        70,
+        56,
+        57,
+        97,
+        1,
+        0,
+        1,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0,
+        0,
+        255,
+        255,
+        255,
+        33,
+        249,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        2,
+        1,
+        68,
+        0,
+        59
+      ]
+    },
+    {
+      "name": "grow-twice.gif",
+      "bytes": [
+        71,
+        73,
+        70,
+        56,
+        57,
+        97,
+        1,
+        0,
+        1,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0,
+        0,
+        255,
+        255,
+        255,
+        33,
+        249,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        2,
+        1,
+        68,
+        0,
+        59
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "gif",
+      "path": "tiny.gif",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "mimeType": "image/gif"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/gif]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "jpeg-header",
+      "path": "header.jpg",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "/9j/wAALCAAGAAgBAA==",
+            "mimeType": "image/jpeg"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/jpeg]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "webp-lossy-header",
+      "path": "lossy.webp",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "UklGRgAAAABXRUJQVlA4IAAAAAAAAAAAAAAIAAYA",
+            "mimeType": "image/webp"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/webp]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "webp-lossless-header",
+      "path": "lossless.webp",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "UklGRgAAAABXRUJQVlA4TAAAAAAAB0ABAAAAAAAA",
+            "mimeType": "image/webp"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/webp]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "webp-extended-header",
+      "path": "extended.webp",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "UklGRgAAAABXRUJQVlA4WAAAAAAAAAAABwAABQAA",
+            "mimeType": "image/webp"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/webp]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "fractional-width",
+      "path": "header.png",
+      "resize": {
+        "maxWidth": 7.5
+      },
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "header.png is an image (image/png) of 8x6, larger than 7.5x2000, and no image processor is configured to shrink it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "zero-dimension",
+      "path": "zero.png",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAAAAAAA",
+            "mimeType": "image/png"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/png]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "png-header",
+      "path": "header.png",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAG",
+            "mimeType": "image/png"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/png]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-wide",
+      "path": "wide.png",
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "wide.png is an image (image/png) of 2001x2, larger than 2000x2000, and no image processor is configured to shrink it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-header-size",
+      "path": "unknown.gif",
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "unknown.gif is an image (image/gif) whose size cannot be read"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bmp-needs-conversion",
+      "path": "a.bmp",
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "a.bmp is an image (image/bmp) that needs converting, and no image processor is configured"
+          }
+        ]
+      }
+    },
+    {
+      "name": "custom-width",
+      "path": "header.png",
+      "resize": {
+        "maxWidth": 4
+      },
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "header.png is an image (image/png) of 8x6, larger than 4x2000, and no image processor is configured to shrink it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "byte-limit",
+      "path": "tiny.gif",
+      "resize": {
+        "maxBytes": 4
+      },
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "tiny.gif is an image (image/gif) of 42B, too large to send, and no image processor is configured to shrink it"
+          }
+        ]
+      }
+    },
+    {
+      "name": "byte-equality",
+      "path": "tiny.gif",
+      "resize": {
+        "maxBytes": 56
+      },
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "mimeType": "image/gif"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/gif]."
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-vision",
+      "path": "tiny.gif",
+      "input": [
+        "text"
+      ],
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "mimeType": "image/gif"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/gif]. The current model does not support images; it sees a placeholder instead."
+          }
+        ]
+      }
+    },
+    {
+      "name": "prepare-undefined",
+      "path": "tiny.gif",
+      "processor": "undefined",
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "unsupported_image",
+            "message": "tiny.gif is an image (image/gif) that cannot be prepared for the model"
+          }
+        ]
+      }
+    },
+    {
+      "name": "prepare-image",
+      "path": "header.png",
+      "resize": {
+        "maxWidth": 4,
+        "maxHeight": 3,
+        "maxBytes": 500
+      },
+      "input": [
+        "text"
+      ],
+      "processor": "image",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            "mimeType": "image/gif"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/gif]. Converted from image/png to image/gif. Resized from 8x6 to 4x3. Multiply coordinates by 2.00 to map them to the original. The current model does not support images; it sees a placeholder instead."
+          }
+        ]
+      }
+    },
+    {
+      "name": "grow-once",
+      "path": "grow-once.gif",
+      "mutation": "once",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7AA==",
+            "mimeType": "image/gif"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "info",
+            "code": "image",
+            "message": "Read image file [image/gif]."
+          }
+        ]
+      },
+      "modelCalls": 2
+    },
+    {
+      "name": "grow-twice",
+      "path": "grow-twice.gif",
+      "mutation": "twice",
+      "error": {
+        "name": "Error",
+        "message": "grow-twice.gif changed while it was read"
+      },
+      "modelCalls": 2
+    }
+  ],
+  "calls": [
+    {
+      "name": "prepare-undefined",
+      "bytes": [
+        71,
+        73,
+        70,
+        56,
+        57,
+        97,
+        1,
+        0,
+        1,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0,
+        0,
+        255,
+        255,
+        255,
+        33,
+        249,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        44,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        2,
+        1,
+        68,
+        0,
+        59
+      ],
+      "mimeType": "image/gif",
+      "limits": {
+        "maxWidth": 2000,
+        "maxHeight": 2000,
+        "maxBytes": 4718592
+      }
+    },
+    {
+      "name": "prepare-image",
+      "bytes": [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10,
+        0,
+        0,
+        0,
+        13,
+        73,
+        72,
+        68,
+        82,
+        0,
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        6
+      ],
+      "mimeType": "image/png",
+      "limits": {
+        "maxWidth": 4,
+        "maxHeight": 3,
+        "maxBytes": 500
+      }
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "base": "91404c07cee5515acb2849002ff8671416ca260b",
+  "upstream": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "730a7cd8cac2d9646060b05132e9b8792de1b5bb2baa20e962ddb56f70ed9253"
+    },
+    {
+      "path": "src/coding_agent/bash_output.zig",
+      "sha256": "ccb4a579e907454c63f52fdbfa93d26d4078f4840c1ea38f875cb898cecf9bd7"
+    },
+    {
+      "path": "src/coding_agent/assets/bash-ansi-f109.json",
+      "sha256": "75dbdd9e0772e74720c93d959ab2d725debe9421bcc4fc73a42bf84118739872"
+    },
+    {
+      "path": "src/coding_agent/clipboard.zig",
+      "sha256": "e720b1d1f3390b47fb56fecaf984d9ce0cfa5ed0d33c2f2d8636ef3dff09eb2a"
+    },
+    {
+      "path": "src/coding_agent/root.zig",
+      "sha256": "e2263ce73d1bde9c4499e910d97eb9601dfbe943de498a045806508287bb804e"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "f56f11265b745b7c0d4cab3df82e4db70c031612793ba2635ed63b1505941c88"
+    },
+    {
+      "path": "src/latest_bash_output_test.zig",
+      "sha256": "dba8ae0e15de036a949da5e2d15321073c02210f71a1ea186ba1f8f04cee3418"
+    },
+    {
+      "path": "src/latest_bash_output_process_test.zig",
+      "sha256": "f1b7177f331cf6e9138e651c8fe7392e3731db4b40542b2650146740d15af93e"
+    }
+  ],
+  "validation": [
+    {
+      "name": "latest-f109-bash-allocation-vtable-windows-debug-20261007",
+      "pid": 49728,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-latest-bash-output test-latest-bash-output-process -j2 --summary all",
+      "created_utc": "2026-10-07T15:25:37.8643730Z",
+      "launched_utc": "2026-10-07T15:25:37.8605850+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-f10993b-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:26:03.3651222+00:00"
+    },
+    {
+      "name": "latest-f109-bash-qualified-windows-releasesafe-20261007",
+      "pid": 3896,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-latest-bash-output test-latest-bash-output-process -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T15:26:38.1933600Z",
+      "launched_utc": "2026-10-07T15:26:38.1912744+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-f10993b-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:29:55.7289961+00:00"
+    },
+    {
+      "name": "latest-f109-bash-qualified-linux-debug-safe-20261007",
+      "pid": 55484,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-latest-f109-bash-qualified-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 650s /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/latest-f109-bash-qualified-linux-20261007.sh",
+      "created_utc": "2026-10-07T15:26:46.4541580Z",
+      "launched_utc": "2026-10-07T15:26:46.4505182+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:30:03.5419822+00:00"
+    }
+  ],
+  "scope": "Streamed user bash/RPC ANSI+UTF8 sanitization and platform-independent Termux clipboard timeout. Other f109 MCP OAuth changes require separate integration before pin advancement."
+}

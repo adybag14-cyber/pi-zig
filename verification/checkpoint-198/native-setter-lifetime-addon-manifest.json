@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "validated_additive_repair",
+  "baseJournalDonor": "8a22cab02e86b384a36bf195b67a1db1e6dba826",
+  "baseJournalPatch": "D7CB27B8E249DA62EA903B2B58EBE14704B6FC91D0FE77BCFB50ED080A17262C",
+  "patchSha256": "02F01E58607496BF57E9016E11D13165F4BFA361C769494E1942E78669F7B82C",
+  "sourceFiles": 590,
+  "sourceFrozenUnchanged": true,
+  "changedFiles": [
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "E06209A960BB1432B5DB23153A73DDB06A58BD3398E666260D6CEDFA200B6BD9"
+    },
+    {
+      "path": "src/extensions/integration.zig",
+      "sha256": "71434E485536E870A142F112159221514FA235C269AD79247317D61B85B4BF5C"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "051361F6A5410B7FA92571E702F93ED7C43C8F122F5BD0784CB074C48A152DFD"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "sha256": "6C0FC3CE4422275BDEBA9ADF77C4031800BA1410714CCEA95BACAD59F5F0C7B0"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "253E4A9967038E197959CDB15A4F389C0B64F6E61C5362AAB172DA7475E31589"
+    }
+  ],
+  "piSha256": "A88F5B7146A50E467D1B8984B10B68D0271E34C7AD691B46F1238B9976ADAF12",
+  "gates": [
+    "journal-additive-final-frozen-02.json",
+    "original-activation-setter-oracle.json"
+  ],
+  "coverage": [
+    "Same callback getter ignores unknown hidden excluded and selects sticky deferred exactly as actual original AgentSession",
+    "Grouped setter action names are filtered to actual loadout",
+    "Bridge.isToolDeclared includes explicit SDK deferred and excludes hidden; uses composed isExtensionEnabled when available",
+    "Owner APIs retire before user editor dispose; all group catalog callbacks fence shutdown",
+    "User-returned action JSON cannot forge internal nativeSelectionSequence",
+    "Native worker typed metadata transcript consumer remains covered"
+  ],
+  "limits": [
+    "Root composed Main tracker/filter/UI context integration needs its exact composed-source replay",
+    "isExtensionEnabled and default_activation_fn branches are parent-owned interfaces; donor validates old-interface fallback and composed build must validate new branches",
+    "This repair does not certify arbitrary time-dependent getter invocation counts across original and native transport projection"
+  ]
+}

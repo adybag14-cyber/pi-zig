@@ -1,0 +1,7 @@
+const tuiColumnResults=[];
+function columnCase(name,run){try{tuiColumnResults.push({name,value:run()});}catch(error){tuiColumnResults.push({name,error:error.name});}}
+const columnLines=['abcdef','界😀e\u0301z','a\tb','\ud800a\udc00','\x1b[31mab\x1b[0mcd','\x1b[1;38;2;1;2;3m界z','a\x1b_pi:c\x07界z','\x1b]8;id=1;https://one.example\x07ab\x1b]8;;\x07cd','\x1b]8;;https://two.example\x1b\\界z\x1b]8;;\x1b\\','\x1b_Ga=T;payload\x1b\\','a\x1b[Ab\x1b[?badmZ'];
+for(const line of columnLines){columnCase('strip '+JSON.stringify(line),()=>stripTerminalSequences(line));for(const start of[-1,0,.5,1,2,4,NaN]){columnCase('link '+JSON.stringify([line,start]),()=>getOsc8LinkAtColumn(line,start));for(const length of[-1,0,.5,1,2,4,NaN])for(const strict of[false,true])columnCase('slice '+JSON.stringify([line,start,length,strict]),()=>sliceByColumn(line,start,length,strict));}}
+for(const base of columnLines)for(const overlay of['XY','界','\x1b[44mX\x1b[0m','\x1b_pi:c\x07X','\x1b]8;;https://overlay.example\x07Z'])for(const start of[0,1,3])for(const width of[0,1,3])for(const total of[1,4,8])columnCase('composite '+JSON.stringify([base,overlay,start,width,total]),()=>compositeTuiLine(base,overlay,start,width,total));
+columnCase('strip actual includes receiver and early identity',()=>{const item={includes(needle){return false;}};return stripTerminalSequences(item)===item;});
+columnCase('original includes throw',()=>{const original={};try{stripTerminalSequences({includes(){throw original;}});}catch(e){return e===original;}return false;});

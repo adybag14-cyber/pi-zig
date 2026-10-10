@@ -1,0 +1,57 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "1965a80693dd929d28dda72f1986056355fb167a",
+  "checks": [
+    "floating integer inputs validate finite i64 bounds before conversion",
+    "positive i64 endpoint uses exclusive float comparison",
+    "existing fractional conversion remains compatible",
+    "overflowing timeout-to-milliseconds is rejected before process creation",
+    "real read and shell calls reject huge inputs without file mutation or command execution"
+  ],
+  "windowsRegression": {
+    "aggregateSteps": 55,
+    "aggregateTests": 300,
+    "modulePassed": 1101,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "native-tool-number-full-regressions": {
+      "name": "native-tool-number-full-regressions",
+      "pid": 57872,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T22:17:24.8587770Z",
+      "launched_utc": "2026-10-04T22:17:24.8558417+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T22:18:37.7018401+00:00"
+    },
+    "native-tool-number-release": {
+      "name": "native-tool-number-release",
+      "pid": 50236,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -j2 -Doptimize=ReleaseSafe --summary all",
+      "created_utc": "2026-10-04T22:22:24.4593420Z",
+      "launched_utc": "2026-10-04T22:22:24.4560256+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T22:23:45.3640744+00:00"
+    }
+  },
+  "candidateBuild": {
+    "sourceCommit": "c1bf8240e591708c4dd3105f40e8a224f8e2135d",
+    "run": 37238345450,
+    "targets": 6,
+    "allTargets": "success",
+    "allDownloadedDigests": "verified",
+    "windowsVersionSmoke": "passed",
+    "publishedRelease": false
+  }
+}

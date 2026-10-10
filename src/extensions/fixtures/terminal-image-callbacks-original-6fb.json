@@ -1,0 +1,326 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "cases": [
+    {
+      "script": "const calls=[],options={get moveCursor(){calls.push('move');return false},get columns(){calls.push('columns');return 3},get rows(){calls.push('rows');return 2},get imageId(){calls.push('id');return 5}};return{sequence:api.encodeKitty('x',options),calls}",
+      "result": {
+        "sequence": "\u001b_Ga=T,f=100,q=2,C=1,c=3,r=2,i=5;x\u001b\\",
+        "calls": [
+          "move",
+          "columns",
+          "columns",
+          "rows",
+          "rows",
+          "id",
+          "id"
+        ]
+      }
+    },
+    {
+      "script": "const calls=[],options={get inline(){calls.push('inline');return false},get width(){calls.push('width');return '40%'},get height(){calls.push('height');return 'auto'},get name(){calls.push('name');return 'a界'},get preserveAspectRatio(){calls.push('aspect');return false}};return{sequence:api.encodeITerm2('Y W J j',options),calls}",
+      "result": {
+        "sequence": "\u001b]1337;File=inline=0;size=5;width=40%;height=auto;name=YeeVjA==;preserveAspectRatio=0:Y W J j\u0007",
+        "calls": [
+          "inline",
+          "width",
+          "width",
+          "height",
+          "height",
+          "name",
+          "name",
+          "aspect"
+        ]
+      }
+    },
+    {
+      "script": "const calls=[],image={get widthPx(){calls.push('iw');return 71},get heightPx(){calls.push('ih');return 103}},cells={get widthPx(){calls.push('cw');return 9},get heightPx(){calls.push('ch');return 18}};return{size:api.calculateImageCellSize(image,10,4,cells,true),calls}",
+      "result": {
+        "size": {
+          "columns": 6,
+          "rows": 4
+        },
+        "calls": [
+          "iw",
+          "ih",
+          "cw",
+          "ch",
+          "cw",
+          "ch",
+          "ch",
+          "cw"
+        ]
+      }
+    },
+    {
+      "script": "const reason={original:true};const results=[];for(const name of['encodeKitty','encodeITerm2'])try{api[name]('x',{get columns(){throw reason},get width(){throw reason}})}catch(e){results.push(e===reason)}const old=Buffer.from;try{Buffer.from=()=>{throw reason};results.push(api.getPngDimensions('x')===null,api.getGifDimensions('x')===null)}finally{Buffer.from=old}return results",
+      "result": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "script": "const calls=[],metadata={get imageId(){calls.push('id');return 31},get columns(){calls.push('columns');return 2},get rows(){calls.push('rows');return 3},get widthPx(){calls.push('width');return 23},get heightPx(){calls.push('height');return 37}};api.registerKittyImageMetadata(metadata);return{calls,value:api.getKittyImageMetadata(api.encodeKitty('x',{imageId:31}))}",
+      "result": {
+        "calls": [
+          "id",
+          "id",
+          "id",
+          "columns",
+          "rows",
+          "width",
+          "height"
+        ],
+        "value": {
+          "imageId": 31,
+          "columns": 2,
+          "rows": 3,
+          "widthPx": 23,
+          "heightPx": 37
+        }
+      }
+    },
+    {
+      "script": "const reason={};try{api.registerKittyImageMetadata({get imageId(){throw reason}})}catch(e){if(e!==reason)throw e}api.registerKittyImageMetadata({imageId:32,columns:2,rows:3,widthPx:23,heightPx:37});return api.getKittyImagePlacement(api.encodeKitty('x',{imageId:32}))",
+      "result": {
+        "imageId": 32,
+        "transmissionGeneration": 3,
+        "transmissionBytes": 25,
+        "estimatedDecodedBytes": 3404,
+        "rows": 3,
+        "sequence": "\u001b_Ga=p,q=2,i=32\u001b\\",
+        "replacementLine": "\u001b_Ga=p,q=2,i=32\u001b\\"
+      }
+    },
+    {
+      "script": "api.registerKittyImageMetadata({imageId:33,columns:2,rows:7,widthPx:20,heightPx:100});const e=String.fromCharCode(27),end=e+String.fromCharCode(92),line=e+'_Ga=T,i=33,r=0,z=4,x=1,q=2;abc'+end;return[api.getKittyImagePlacementRows(line),api.getKittyImagePlacement(line),api.cropKittyImageLine(line,'1',2),api.cropKittyImageLine(line,1,2),api.cropKittyImageLine(line,0,99)]",
+      "result": [
+        7,
+        {
+          "imageId": 33,
+          "transmissionGeneration": 4,
+          "transmissionBytes": 33,
+          "estimatedDecodedBytes": 8000,
+          "rows": 7,
+          "sequence": "\u001b_Ga=p,q=2,i=33,r=0,z=4,x=1\u001b\\",
+          "replacementLine": "\u001b_Ga=p,q=2,i=33,r=0,z=4,x=1\u001b\\"
+        },
+        "\u001b_Ga=T,i=33,z=4,x=1,q=2,y=14,h=86,r=2;abc\u001b\\",
+        "\u001b_Ga=T,i=33,z=4,x=1,q=2,y=14,h=29,r=2;abc\u001b\\",
+        "\u001b_Ga=T,i=33,r=0,z=4,x=1,q=2;abc\u001b\\"
+      ]
+    },
+    {
+      "script": "api.registerKittyImageMetadata({imageId:34,columns:2,rows:3,widthPx:20,heightPx:100});const e=String.fromCharCode(27),end=e+String.fromCharCode(92);return[e+'_Gi=x,i=34,r=0,r=2;x'+end,e+'_Gi=34,m=1;x'+end+e+'_Gm=0;尾😀'+end+'after',e+'_Gi=34,m=1;x'+end+e+'_Gm=0;broken',e+'_Gi=34r=3;x'+end].map(line=>({rows:api.getKittyImagePlacementRows(line),placement:api.getKittyImagePlacement(line)}))",
+      "result": [
+        {
+          "rows": 3,
+          "placement": {
+            "imageId": 34,
+            "transmissionGeneration": 5,
+            "transmissionBytes": 23,
+            "estimatedDecodedBytes": 8000,
+            "rows": 3,
+            "sequence": "\u001b_Ga=p,q=2,i=x,i=34,r=0,r=2\u001b\\",
+            "replacementLine": "\u001b_Ga=p,q=2,i=x,i=34,r=0,r=2\u001b\\"
+          }
+        },
+        {
+          "rows": 3,
+          "placement": {
+            "imageId": 34,
+            "transmissionGeneration": 5,
+            "transmissionBytes": 27,
+            "estimatedDecodedBytes": 8000,
+            "rows": 3,
+            "sequence": "\u001b_Ga=p,q=2,i=34\u001b\\",
+            "replacementLine": "\u001b_Ga=p,q=2,i=34\u001b\\after"
+          }
+        },
+        {
+          "rows": 3
+        },
+        {}
+      ]
+    },
+    {
+      "script": "const results=[];for(const imageId of[0,undefined,null,-1,2.5]){api.setCapabilities({images:'kitty',trueColor:true,hyperlinks:true});results.push(api.renderImage('x',{widthPx:0,heightPx:-1},{imageId,maxWidthCells:2,maxHeightCells:3}))}return results",
+      "result": [
+        {
+          "sequence": "\u001b_Ga=T,f=100,q=2,c=2,r=1;x\u001b\\",
+          "columns": 2,
+          "rows": 1,
+          "imageId": 0
+        },
+        {
+          "sequence": "\u001b_Ga=T,f=100,q=2,c=2,r=1;x\u001b\\",
+          "columns": 2,
+          "rows": 1
+        },
+        {
+          "sequence": "\u001b_Ga=T,f=100,q=2,c=2,r=1;x\u001b\\",
+          "columns": 2,
+          "rows": 1,
+          "imageId": null
+        },
+        {
+          "sequence": "\u001b_Ga=T,f=100,q=2,c=2,r=1,i=-1;x\u001b\\",
+          "columns": 2,
+          "rows": 1,
+          "imageId": -1
+        },
+        {
+          "sequence": "\u001b_Ga=T,f=100,q=2,c=2,r=1,i=2.5;x\u001b\\",
+          "columns": 2,
+          "rows": 1,
+          "imageId": 2.5
+        }
+      ]
+    },
+    {
+      "script": "api.registerKittyImageMetadata({imageId:35,columns:2,rows:7,widthPx:20,heightPx:100});const line=api.encodeKitty('x',{imageId:35}),calls=[],hidden={[Symbol.toPrimitive](hint){calls.push(hint);return hint==='default'?'1':1}};return {line:api.cropKittyImageLine(line,hidden,2),calls}",
+      "result": {
+        "line": "\u001b_Ga=T,f=100,q=2,i=35,y=14,h=86,r=2;x\u001b\\",
+        "calls": [
+          "number",
+          "number",
+          "number",
+          "number",
+          "default"
+        ]
+      }
+    },
+    {
+      "script": "const reason={},line=api.encodeKitty('x',{imageId:35}),results=[];for(const hidden of[{[Symbol.toPrimitive](hint){if(hint==='default')throw reason;return 1}},{[Symbol.toPrimitive]:null,valueOf(){return 1}},{[Symbol.toPrimitive](hint){return hint==='default'?{}:1}}])try{results.push(api.cropKittyImageLine(line,hidden,2))}catch(e){results.push(e===reason?'original':e.name)}return results",
+      "result": [
+        "original",
+        "\u001b_Ga=T,f=100,q=2,i=35,y=14,h=29,r=2;x\u001b\\",
+        "TypeError"
+      ]
+    },
+    {
+      "script": "const line=api.encodeKitty('x',{imageId:35}),key=Symbol.toPrimitive,old=Symbol,calls=[];try{globalThis.Symbol={toPrimitive:'incorrect'};return {line:api.cropKittyImageLine(line,{[key](hint){calls.push(hint);return hint==='default'?'1':1}},2),calls}}finally{globalThis.Symbol=old}",
+      "result": {
+        "line": "\u001b_Ga=T,f=100,q=2,i=35,y=14,h=86,r=2;x\u001b\\",
+        "calls": [
+          "number",
+          "number",
+          "number",
+          "number",
+          "default"
+        ]
+      }
+    },
+    {
+      "script": "const calls=[],key=process.platform==='win32'?'USERPROFILE':'HOME',old=process.env[key];try{process.env[key]='/proof-home';api.setCapabilities({images:null,trueColor:true,hyperlinks:false});const filename={startsWith(prefix){calls.push(prefix);return prefix==='/proof-home/'},slice(offset){calls.push(offset);return '/visible'},toString(){throw Error('unexpected filename coercion')}};return {text:api.imageFallback('image/png',undefined,filename),calls}}finally{if(old===undefined)delete process.env[key];else process.env[key]=old}",
+      "result": {
+        "text": "[Image: ~/visible [image/png]]",
+        "calls": [
+          "/proof-home/",
+          11
+        ]
+      }
+    },
+    {
+      "script": "const reason={},calls=[],key=process.platform==='win32'?'USERPROFILE':'HOME',old=process.env[key];try{process.env[key]='/proof-home';api.setCapabilities({images:null,trueColor:true,hyperlinks:false});try{api.imageFallback('image/png',undefined,{get startsWith(){calls.push('get');throw reason},toString(){throw Error('unexpected filename coercion')}})}catch(e){return {same:e===reason,calls}}}finally{if(old===undefined)delete process.env[key];else process.env[key]=old}",
+      "result": {
+        "same": true,
+        "calls": [
+          "get"
+        ]
+      }
+    },
+    {
+      "script": "const calls=[],key=process.platform==='win32'?'USERPROFILE':'HOME',old=process.env[key];try{process.env[key]='/proof-home';api.setCapabilities({images:null,trueColor:true,hyperlinks:true});try{api.imageFallback('image/png',undefined,{startsWith(prefix){calls.push(prefix);return false},toString(){calls.push('coerced');return '/tmp/other'}})}catch(e){return {name:e.name,code:e.code,calls}}}finally{if(old===undefined)delete process.env[key];else process.env[key]=old}",
+      "result": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "calls": [
+          "/proof-home/",
+          "/proof-home\\"
+        ]
+      }
+    },
+    {
+      "script": "const old=Buffer.from,results=[];try{for(const chunk of['VP8 ','VP8L','VP8X'])for(const value of[-1,Infinity,NaN,'12',4294967295,4294967303,Symbol('throw')]){Buffer.from=()=>({length:30,slice(start){return{toString(){return start===0?'RIFF':start===8?'WEBP':chunk}}},readUInt16LE(){return value},readUInt32LE(){return value},24:value,25:value,26:value,27:value,28:value,29:value});results.push(api.getWebpDimensions('x'))}return results}finally{Buffer.from=old}",
+      "result": [
+        {
+          "widthPx": 16383,
+          "heightPx": 16383
+        },
+        {
+          "widthPx": 0,
+          "heightPx": 0
+        },
+        {
+          "widthPx": 0,
+          "heightPx": 0
+        },
+        {
+          "widthPx": 12,
+          "heightPx": 12
+        },
+        {
+          "widthPx": 16383,
+          "heightPx": 16383
+        },
+        {
+          "widthPx": 7,
+          "heightPx": 7
+        },
+        null,
+        {
+          "widthPx": 16384,
+          "heightPx": 16384
+        },
+        {
+          "widthPx": 1,
+          "heightPx": 1
+        },
+        {
+          "widthPx": 1,
+          "heightPx": 1
+        },
+        {
+          "widthPx": 13,
+          "heightPx": 1
+        },
+        {
+          "widthPx": 16384,
+          "heightPx": 16384
+        },
+        {
+          "widthPx": 8,
+          "heightPx": 1
+        },
+        null,
+        {
+          "widthPx": 0,
+          "heightPx": 0
+        },
+        {
+          "widthPx": 1,
+          "heightPx": 1
+        },
+        {
+          "widthPx": 1,
+          "heightPx": 1
+        },
+        {
+          "widthPx": 789517,
+          "heightPx": 789517
+        },
+        {
+          "widthPx": 0,
+          "heightPx": 0
+        },
+        {
+          "widthPx": 460552,
+          "heightPx": 460552
+        },
+        null
+      ]
+    }
+  ]
+}

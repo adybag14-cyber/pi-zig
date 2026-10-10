@@ -1,0 +1,29 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-qualified-models-20261005",
+  "paths": [
+    {
+      "path": "src/main.zig",
+      "before_sha256": "177d268ff4d31017d6127f87235b29ddee8e6be560f9fba7e450e584801f6781",
+      "after_sha256": "2886d8bade9a6dd568bbf6d563ae08633638eae03fda79551e16814a3f94d361",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-cli-delta-20261005\\main.zig.patch"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "before_sha256": "7cf61df953cec9c2de88e91ee2123368dcf2b06f2bc518f26a54bbd55afd1c02",
+      "after_sha256": "d8dc91e84b89a1a9a904eff80a249dc48f39a9259472505b0295e75046509e92",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-cli-delta-20261005\\host.zig.patch"
+    },
+    {
+      "path": "src/fullscreen_frontend_process_test.zig",
+      "before_sha256": "a0c7147ad05755cc7a2dd114561e5066559d1f1303895b64fc9103030fa2abb9",
+      "after_sha256": "e5704c71c21186bb685252b1f03b9264a47bbadae7f8c537391971b034f35b3a",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-cli-delta-20261005\\fullscreen_frontend_process_test.zig.patch"
+    }
+  ],
+  "proof": "native-qualified-models-process-debug-20261005c terminal PASS215 +3skip; Runtime45/bindings147/actualConPTY23+3skip at22:10:07Z",
+  "scope": "Host native command/shortcut failure safe point + Main admitted-message allowance + unchanged actual CLI regression",
+  "ReleaseSafe": "pending combined final follow-on gate",
+  "frontend_rebased_patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-cli-delta-20261005\\fullscreen_frontend_process_test.main166.patch",
+  "frontend_rebased_before_sha256": "335e5e68618242b097b9c3900c5bdc6e5c82fdc6cd3bf3d6da3a933c0f276d77",
+  "frontend_rebased_after_sha256": "75f15785f5f4207fcd8645a18dad2fca45479bbcf30437281746cca59837ff4b"
+}

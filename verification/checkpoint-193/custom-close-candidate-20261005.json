@@ -1,0 +1,26 @@
+{
+  "status": "narrow repair frozen; parent can integrate independently of renderer mailbox",
+  "captured_utc": "2026-10-05T18:58:30.368281+00:00",
+  "files": [
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "before_sha256": "1BCC12E867DF7FFD754E80574915B536F471BDBC75B519885D1D430F586939B1",
+      "sha256": "7AF5BA4A70449D19C3AE74B4A2C35C663695986353D2FEE7D5BBD01B5697D0E0",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-custom-close-lifecycle-repair-20261005\\js_runtime.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_components.zig",
+      "before_sha256": "AD6A23A0FC72B46B0F6676FFB3756B48009C3BFEECC2BD5E48030688830F9B8D",
+      "sha256": "8B6A5281296763633927016A2B8342F0DE63473E9DEC6F66BADB816479F93824",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-custom-close-lifecycle-repair-20261005\\native_components.zig.patch"
+    }
+  ],
+  "regression_sha256": "5F2D20191E79FD8E4064D3005C364497766FEF4EBB29577D1D143D5971252616",
+  "proof": {
+    "Debug": "native-custom-close-primary-final-debug-20261005b:177 passed (39Runtime138bindings),13/13steps18:56:42Z",
+    "BoundaryUnit": "native-custom-close-boundary-unit-20261005a:1 passed,18:49:39Z",
+    "before": "original close gate confirmed0; factory deferredACK and negative cleanup exposed separately; no expectations removed"
+  },
+  "source_worktree": "C:\\Users\\adyba\\pi-zig-renderer-mailbox-20261005",
+  "integration": "Apply only narrow patch hunks; js_runtime.before/after contain unrelated producer context, not intended whole-file copies. native_components.primary-ack.patch isolates primary exception preservation; complete native_components.zig.patch also stages factory rejection behind close ACK and adds GC/identity unit."
+}

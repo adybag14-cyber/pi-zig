@@ -134,6 +134,7 @@ pub const SessionEntry = struct {
     tool_name: ?[]const u8 = null,
     /// Whether a tool-result entry represents a failed/aborted invocation.
     tool_is_error: bool = false,
+    tool_duration_ms: ?u64 = null,
     /// Optional single image carried by a tool result. Stored as raw base64 + MIME
     /// so provider adapters can replay it without lossy text conversion.
     image_b64: ?[]const u8 = null,
@@ -222,6 +223,7 @@ pub const SessionEntry = struct {
                 .role = role,
                 .content = content,
                 .tool_is_error = self.tool_is_error,
+                .tool_duration_ms = self.tool_duration_ms,
                 .bash_exit_code = self.bash_exit_code,
                 .bash_cancelled = self.bash_cancelled,
                 .bash_truncated = self.bash_truncated,
@@ -1197,6 +1199,7 @@ pub const Session = struct {
                 }
                 try line.writer.writeAll("],\"isError\":");
                 try line.writer.writeAll(if (e.tool_is_error) "true" else "false");
+                if (e.tool_duration_ms) |duration| try line.writer.print(",\"durationMs\":{d}", .{duration});
                 if (e.added_tool_names.len > 0) {
                     try line.writer.writeAll(",\"addedToolNames\":[");
                     for (e.added_tool_names, 0..) |name, i| {
@@ -1782,10 +1785,14 @@ pub const Session = struct {
                     }
                 }
                 var tool_is_error = false;
+                var tool_duration_ms: ?u64 = null;
                 if (parsed.value.object.get("message")) |msg2| {
                     if (msg2 == .object) {
                         if (msg2.object.get("isError")) |ie| {
                             if (ie == .bool) tool_is_error = ie.bool;
+                        }
+                        if (msg2.object.get("durationMs")) |duration| {
+                            if (duration == .integer and duration.integer >= 0) tool_duration_ms = @intCast(duration.integer);
                         }
                     }
                 }
@@ -1818,6 +1825,7 @@ pub const Session = struct {
                     .tool_calls_json = if (tool_calls_json) |t| try gpa.dupe(u8, t) else null,
                     .tool_name = tool_name_owned,
                     .tool_is_error = tool_is_error,
+                    .tool_duration_ms = tool_duration_ms,
                     .image_b64 = if (image_b64_owned) |data| try gpa.dupe(u8, data) else null,
                     .image_mime = if (image_mime_owned) |mime| try gpa.dupe(u8, mime) else null,
                     .images = try cloneSessionImages(gpa, extra_images_owned),
@@ -1873,6 +1881,7 @@ pub const Session = struct {
                 .tool_calls_json = if (e.tool_calls_json) |t| try gpa.dupe(u8, t) else null,
                 .tool_name = if (e.tool_name) |t| try gpa.dupe(u8, t) else null,
                 .tool_is_error = e.tool_is_error,
+                .tool_duration_ms = e.tool_duration_ms,
                 .image_b64 = if (e.image_b64) |data| try gpa.dupe(u8, data) else null,
                 .image_mime = if (e.image_mime) |mime| try gpa.dupe(u8, mime) else null,
                 .images = try cloneSessionImages(gpa, e.images),
@@ -2026,12 +2035,9 @@ fn wallishSeconds() i64 {
     }
     // POSIX: clock_gettime(CLOCK_REALTIME) via libc when linked
     if (builtin.link_libc) {
-        const c = @cImport({
-            @cInclude("time.h");
-        });
-        var ts: c.timespec = undefined;
-        if (c.clock_gettime(c.CLOCK_REALTIME, &ts) == 0) {
-            return @intCast(ts.tv_sec);
+        var ts: std.c.timespec = undefined;
+        if (std.c.clock_gettime(.REALTIME, &ts) == 0) {
+            return @intCast(ts.sec);
         }
     }
     // Fallback: process-local monotonic from 2024 anchor
@@ -2980,6 +2986,30 @@ test "tool result addedToolNames survive JSONL and fork" {
     var forked = try loaded.fork(gpa, "forked");
     defer forked.deinit();
     try std.testing.expectEqualStrings("other_tool", forked.entries.items[0].added_tool_names[1]);
+}
+
+test "latest tool duration preserves absent and zero through JSONL reload clone and fork" {
+    const gpa = std.testing.allocator;
+    var session = try Session.init(gpa, "duration", "/tmp");
+    defer session.deinit();
+    _ = try session.appendToolResultStatus(null, "never executed", "blocked", "tool", true);
+    _ = try session.appendToolResultStatus(session.lastEntryId(), "immediate result", "fast", "tool", false);
+    session.entries.items[1].tool_duration_ms = 0;
+    _ = try session.appendToolResultStatus(session.lastEntryId(), "failed result", "failed", "tool", true);
+    session.entries.items[2].tool_duration_ms = 123;
+    const jsonl = try session.toJsonl(gpa);
+    defer gpa.free(jsonl);
+    try std.testing.expectEqual(@as(usize, 2), std.mem.count(u8, jsonl, "\"durationMs\""));
+    var loaded = try Session.parseJsonl(gpa, jsonl);
+    defer loaded.deinit();
+    var forked = try loaded.fork(gpa, "duration-fork");
+    defer forked.deinit();
+    for ([_]?u64{ null, 0, 123 }, forked.entries.items) |expected, *entry| {
+        try std.testing.expectEqual(expected, entry.tool_duration_ms);
+        var cloned = try entry.dupe(gpa);
+        defer cloned.deinit(gpa);
+        try std.testing.expectEqual(expected, cloned.tool_duration_ms);
+    }
 }
 
 test "tool result usage survives JSONL reload fork and stats" {

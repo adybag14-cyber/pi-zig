@@ -154,6 +154,15 @@ pub const PrepareNextTurnResult = struct {
 
 pub const PrepareNextTurnFn = *const fn (?*anyopaque, TurnSummary) ?PrepareNextTurnResult;
 pub const ShouldStopAfterTurnFn = *const fn (?*anyopaque, TurnSummary) bool;
+pub const FinishTurnDecision = enum { end, continue_turn };
+pub const FinishTurnFn = *const fn (?*anyopaque, std.mem.Allocator, *const session_mod.Session, TurnSummary) anyerror!?FinishTurnDecision;
+pub const PrepareRequestResult = struct {
+    client: ?ai.ModelClient = null,
+    /// Borrowed canonical request messages; arena allocations remain alive
+    /// through the provider call and are released at that request boundary.
+    messages: ?[]const ai.ChatMessage = null,
+};
+pub const PrepareRequestFn = *const fn (?*anyopaque, std.mem.Allocator, *const session_mod.Session, []const ai.ChatMessage) anyerror!?PrepareRequestResult;
 /// Drain extension/runtime side effects on the agent thread. The callback may
 /// mutate the live run configuration and client, append owned steering/follow-up
 /// text, persist session entries, or request a graceful stop.
@@ -243,6 +252,20 @@ pub const AgentConfig = struct {
     /// Additional tool schemas and dispatcher supplied by a trusted runtime.
     /// `extra_tools_json` must be an OpenAI-compatible JSON tool array.
     extra_tools_json: []const u8 = "[]",
+    /// Independently owned configured native tools; lifecycle hooks retain hook_ctx.
+    configured_tools_json: []const u8 = "[]",
+    configured_tools_json_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
+    configured_tool_ctx: ?*anyopaque = null,
+    configured_tool_fn: ?ExternalToolCallStreamingFn = null,
+    configured_tool_exists_fn: ?ExternalToolExistsFn = null,
+    builtin_extension_ctx: ?*anyopaque = null,
+    builtin_extension_tool_fn: ?ExternalToolCallStreamingFn = null,
+    builtin_extension_runtime_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig, []const u8, []const u8, []const u8, ExternalToolProgressFn, ?*anyopaque, ?*bool) anyerror!?tools.ToolResult = null,
+    builtin_extension_exists_fn: ?ExternalToolExistsFn = null,
+    builtin_extension_schemas_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
+    builtin_extension_schemas_runtime_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig) anyerror![]u8 = null,
+    /// Applies active builtin loadout hooks after the complete schema merge.
+    builtin_extension_prepare_loadout_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig, []const u8) anyerror![]u8 = null,
     external_tool_fn: ?ExternalToolFn = null,
     /// Streaming dispatcher used when an external runtime can deliver tool
     /// progress before the final result. The legacy dispatcher remains as a
@@ -265,6 +288,12 @@ pub const AgentConfig = struct {
     /// any tool batch have fully finalized. It runs before steering/follow-up
     /// queues are polled, matching upstream shouldStopAfterTurn ordering.
     should_stop_after_turn_fn: ?ShouldStopAfterTurnFn = null,
+    /// Current Pi hook runs after assistant/tool finalization and before turn_end.
+    /// Decisions never reopen error/aborted responses.
+    finish_turn_fn: ?FinishTurnFn = null,
+    /// Applied before context transformation on every request, including first
+    /// request and native overflow/transient retry requests.
+    prepare_request_fn: ?PrepareRequestFn = null,
     /// Next-turn snapshot hook, applied after turn_end and before should-stop / queues.
     prepare_next_turn_fn: ?PrepareNextTurnFn = null,
     /// Ordered extension side effects are captured from arbitrary callbacks and
@@ -335,6 +364,7 @@ pub const AgentEvent = struct {
     /// JSON-ish args for tool_execution_start
     args_json: []const u8 = "",
     is_error: bool = false,
+    duration_ms: ?u64 = null,
     details_json: ?[]const u8 = null,
     image_b64: ?[]const u8 = null,
     image_mime: ?[]const u8 = null,
@@ -670,7 +700,8 @@ pub fn runWithImages(
         defer freeChatMessages(gpa, chat);
         var transform_arena: std.heap.ArenaAllocator = .init(gpa);
         defer transform_arena.deinit();
-        const request_chat = try transformChatContext(&config, transform_arena.allocator(), chat);
+        const prepared_chat = try prepareRequest(&config, transform_arena.allocator(), sess, &active_client, chat);
+        const request_chat = try transformChatContext(&config, transform_arena.allocator(), prepared_chat);
         try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
         if (extension_stop_requested) {
             _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
@@ -684,7 +715,21 @@ pub fn runWithImages(
         else
             try tools.toolSchemasJsonWithOptions(gpa, config.tool_filter, .{ .experimental_strict = config.experimental_strict_tools });
         defer gpa.free(builtin_schemas);
-        const schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
+        const external_schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
+        const dynamic_configured = if (config.configured_tools_json_fn) |get| try get(config.configured_tool_ctx, gpa) else null;
+        defer if (dynamic_configured) |value| gpa.free(value);
+        const dynamic_builtins = if (config.builtin_extension_schemas_runtime_fn) |get| try get(config.builtin_extension_ctx, gpa, &config) else if (config.builtin_extension_schemas_fn) |get| try get(config.builtin_extension_ctx, gpa) else null;
+        defer if (dynamic_builtins) |value| gpa.free(value);
+        const configured_json = if (dynamic_builtins) |value| try mergeToolSchemaArrays(gpa, dynamic_configured orelse config.configured_tools_json, value) else dynamic_configured orelse config.configured_tools_json;
+        defer if (dynamic_builtins != null) gpa.free(configured_json);
+        const merged_schemas = if (std.mem.eql(u8, configured_json, "[]")) external_schemas else blk: {
+            defer gpa.free(external_schemas);
+            const configured_schemas = try filteredConfiguredSchemas(gpa, configured_json, config.tool_filter);
+            defer gpa.free(configured_schemas);
+            break :blk try mergeToolSchemaArrays(gpa, external_schemas, configured_schemas);
+        };
+        defer gpa.free(merged_schemas);
+        const schemas = if (config.builtin_extension_prepare_loadout_fn) |prepare| try prepare(config.builtin_extension_ctx, gpa, &config, merged_schemas) else try gpa.dupe(u8, merged_schemas);
         defer gpa.free(schemas);
 
         var delta_count = DeltaCount{};
@@ -719,7 +764,7 @@ pub fn runWithImages(
             const failed_id = try appendAssistantAttempt(gpa, sess, response);
             try sess.excludeEntryFromActiveContext(failed_id);
             response_persisted = true;
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = response.content });
             response.deinit(gpa);
             try compactSession(io, sess, active_client, config, .overflow, on_event, event_ctx);
@@ -729,7 +774,8 @@ pub fn runWithImages(
                 defer freeChatMessages(gpa, chat2);
                 var retry_arena: std.heap.ArenaAllocator = .init(gpa);
                 defer retry_arena.deinit();
-                const request_chat2 = try transformChatContext(&config, retry_arena.allocator(), chat2);
+                const prepared_chat2 = try prepareRequest(&config, retry_arena.allocator(), sess, &active_client, chat2);
+                const request_chat2 = try transformChatContext(&config, retry_arena.allocator(), prepared_chat2);
                 emit(on_event, event_ctx, .{ .kind = .message_start, .name = "assistant" });
                 break :retry_call try completeAssistant(gpa, active_client, request_chat2, schemas, StreamCtx.onDelta, &sctx);
             };
@@ -746,7 +792,7 @@ pub fn runWithImages(
             const failed_id = try appendAssistantAttempt(gpa, sess, response);
             try sess.excludeEntryFromActiveContext(failed_id);
             response_persisted = true;
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = response.content });
             const delay_ms = ai.retry.delayMs(config.retry_base_delay_ms, retry_attempt);
             emit(on_event, event_ctx, .{
@@ -779,7 +825,8 @@ pub fn runWithImages(
                 defer freeChatMessages(gpa, retry_chat);
                 var retry_arena: std.heap.ArenaAllocator = .init(gpa);
                 defer retry_arena.deinit();
-                const retry_request = try transformChatContext(&config, retry_arena.allocator(), retry_chat);
+                const prepared_retry = try prepareRequest(&config, retry_arena.allocator(), sess, &active_client, retry_chat);
+                const retry_request = try transformChatContext(&config, retry_arena.allocator(), prepared_retry);
                 emit(on_event, event_ctx, .{ .kind = .message_start, .name = "assistant" });
                 break :retry_call try completeAssistant(gpa, active_client, retry_request, schemas, StreamCtx.onDelta, &sctx);
             };
@@ -808,15 +855,8 @@ pub fn runWithImages(
 
         if (config.abort_flag) |f| {
             if (@atomicLoad(bool, f, .acquire)) {
-                gpa.free(last_text);
-                last_text = try gpa.dupe(u8, response.content);
-                _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
-                return .{
-                    .final_text = last_text,
-                    .turns = turns + 1,
-                    .hit_turn_limit = false,
-                    .text_deltas = total_deltas,
-                };
+                if (response.stop_reason.len > 0) gpa.free(response.stop_reason);
+                response.stop_reason = try gpa.dupe(u8, "aborted");
             }
         }
 
@@ -826,7 +866,7 @@ pub fn runWithImages(
         gpa.free(last_text);
         last_text = try gpa.dupe(u8, response.content);
         if (!response_persisted) {
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = last_text });
         }
         // Actions emitted while an assistant tool call is streaming must not be
@@ -835,18 +875,17 @@ pub fn runWithImages(
         // all tool-result entries have been appended.
 
         if (std.mem.eql(u8, stop_reason, "error") or std.mem.eql(u8, stop_reason, "aborted")) {
+            _ = try finishTurn(config, gpa, sess, last_text, stop_reason, 0);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
-            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) {
-                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
-                continue;
-            }
+            _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
 
         if (response.tool_calls.len == 0) {
+            const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, 0);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            if (shouldStopAfterTurn(config, last_text, stop_reason, 0)) {
+            if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, 0))) {
                 // A user stop policy is authoritative. Emit/flush agent_end so
                 // extension cleanup remains durable, but do not consume queued
                 // steering or follow-up messages after the stop decision.
@@ -866,6 +905,10 @@ pub fn runWithImages(
             try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
             try collectFollowUpMessages(gpa, &config, &pending_messages);
             if (pending_messages.items.len > 0) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
+            if (decision == .continue_turn) {
                 applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
                 continue;
             }
@@ -913,9 +956,10 @@ pub fn runWithImages(
                 const p = sess.lastEntryId();
                 _ = try sess.appendToolResultStatusWithMedia(p, result_content, tc.id, tc.name, true, &.{}, null, null);
             }
+            const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, response.tool_calls.len);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
+            if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len))) {
                 _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
                 return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
             }
@@ -929,9 +973,10 @@ pub fn runWithImages(
             try executeToolBatchSequential(gpa, io, cwd, &config, schemas, sess, response.tool_calls, on_event, event_ctx)
         else
             try executeToolBatchParallel(gpa, io, cwd, &config, schemas, sess, response.tool_calls, on_event, event_ctx);
+        const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, response.tool_calls.len);
         emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
         try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-        if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
+        if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len))) {
             _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
@@ -946,6 +991,10 @@ pub fn runWithImages(
         try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
         try collectFollowUpMessages(gpa, &config, &pending_messages);
         if (pending_messages.items.len > 0) {
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
+            continue;
+        }
+        if (decision == .continue_turn) {
             applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
             continue;
         }
@@ -1161,6 +1210,141 @@ fn shouldStopAfterTurn(config: AgentConfig, assistant_text: []const u8, stop_rea
     });
 }
 
+fn finishTurn(config: AgentConfig, gpa: std.mem.Allocator, sess: *const session_mod.Session, assistant_text: []const u8, stop_reason: []const u8, tool_results: usize) !?FinishTurnDecision {
+    const callback = config.finish_turn_fn orelse return null;
+    return callback(config.hook_ctx, gpa, sess, .{ .assistant_text = assistant_text, .stop_reason = stop_reason, .tool_results = tool_results });
+}
+
+fn prepareRequest(config: *const AgentConfig, allocator: std.mem.Allocator, sess: *const session_mod.Session, client: *ai.ModelClient, messages: []const ai.ChatMessage) ![]const ai.ChatMessage {
+    const callback = config.prepare_request_fn orelse return messages;
+    const update = (try callback(config.hook_ctx, allocator, sess, messages)) orelse return messages;
+    if (update.client) |replacement| client.* = replacement;
+    return update.messages orelse messages;
+}
+
+test "finish turn runs before turn_end and end preserves follow-up queue" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-end", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    var queue: std.ArrayList([]const u8) = .empty;
+    defer {
+        for (queue.items) |message| gpa.free(message);
+        queue.deinit(gpa);
+    }
+    try queue.append(gpa, try gpa.dupe(u8, "keep queued"));
+    const State = struct {
+        finished: bool = false,
+        turn_ends: usize = 0,
+        wrong_order: bool = false,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, sess: *const session_mod.Session, summary: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try std.testing.expectEqualStrings("first", summary.assistant_text);
+            try std.testing.expectEqualStrings("assistant", sess.entries.items[sess.entries.items.len - 1].role);
+            self.finished = true;
+            return .end;
+        }
+        fn event(context: ?*anyopaque, value: AgentEvent) void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            if (value.kind == .turn_end) {
+                self.turn_ends += 1;
+                if (!self.finished) self.wrong_order = true;
+            }
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .follow_up_queue = &queue }, State.event, &state);
+    defer result.deinit(gpa);
+    try std.testing.expect(!state.wrong_order);
+    try std.testing.expectEqual(@as(usize, 1), state.turn_ends);
+    try std.testing.expectEqual(@as(usize, 1), model.index);
+    try std.testing.expectEqual(@as(usize, 1), queue.items.len);
+}
+
+test "finish continue requests one context-only turn and prepare request includes first turn" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-continue", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"second\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    const State = struct {
+        finishes: usize = 0,
+        preparations: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, _: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.finishes += 1;
+            return if (self.finishes == 1) .continue_turn else null;
+        }
+        fn prepare(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, messages: []const ai.ChatMessage) anyerror!?PrepareRequestResult {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.preparations += 1;
+            try std.testing.expect(messages.len > 0);
+            return null;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .prepare_request_fn = State.prepare }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 2), model.index);
+    try std.testing.expectEqual(@as(usize, 2), state.preparations);
+    try std.testing.expectEqual(@as(usize, 2), state.finishes);
+    try std.testing.expectEqualStrings("second", result.final_text);
+}
+
+test "finish continue does not double a naturally selected follow-up request" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-natural", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"second\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    var queue: std.ArrayList([]const u8) = .empty;
+    defer {
+        for (queue.items) |message| gpa.free(message);
+        queue.deinit(gpa);
+    }
+    try queue.append(gpa, try gpa.dupe(u8, "follow-up"));
+    const State = struct {
+        calls: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, _: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.calls += 1;
+            return if (self.calls == 1) .continue_turn else null;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .follow_up_queue = &queue }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 2), model.index);
+    try std.testing.expectEqual(@as(usize, 0), queue.items.len);
+}
+
+test "finish turn observes hard errors but cannot continue them" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-hard-error", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"bad request\",\"stop_reason\":\"error\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    const State = struct {
+        calls: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, summary: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.calls += 1;
+            try std.testing.expectEqualStrings("error", summary.stop_reason);
+            return .continue_turn;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .retry_enabled = false }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), state.calls);
+    try std.testing.expectEqual(@as(usize, 1), model.index);
+}
+
 fn batchRequiresSequential(config: AgentConfig, calls: []const ai.ToolCall) bool {
     if (config.tool_execution == .sequential) return true;
     const mode_fn = config.external_tool_mode_fn orelse return false;
@@ -1301,6 +1485,15 @@ fn executeExternalTool(
     progress_fn: ?ExternalToolProgressFn,
     progress_ctx: ?*anyopaque,
 ) !?tools.ToolResult {
+    if (config.builtin_extension_exists_fn) |exists| if (exists(config.builtin_extension_ctx, name)) {
+        if (config.builtin_extension_runtime_fn) |execute| return execute(config.builtin_extension_ctx, allocator, config, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
+        const execute = config.builtin_extension_tool_fn orelse return error.BuiltinExtensionDispatcherMissing;
+        return execute(config.builtin_extension_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
+    };
+    if (config.configured_tool_exists_fn) |exists| if (exists(config.configured_tool_ctx, name)) {
+        const execute = config.configured_tool_fn orelse return error.ConfiguredToolDispatcherMissing;
+        return execute(config.configured_tool_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
+    };
     if (config.external_tool_call_streaming_fn) |execute_streaming| {
         const callback = progress_fn orelse discardExternalToolProgress;
         return try execute_streaming(config.hook_ctx, allocator, tool_call_id, name, arguments_json, callback, progress_ctx, config.abort_flag);
@@ -1337,6 +1530,7 @@ fn cloneToolResult(gpa: std.mem.Allocator, source: *const tools.ToolResult) !too
     return .{
         .content = content,
         .is_error = source.is_error,
+        .duration_ms = source.duration_ms,
         .image_b64 = image_b64,
         .image_mime = image_mime,
         .images = images,
@@ -1545,6 +1739,7 @@ fn emitToolEnd(on_event: ?EventHandler, event_ctx: ?*anyopaque, tc: *const ai.To
         .args_json = tc.arguments,
         .text = result.content,
         .is_error = result.is_error,
+        .duration_ms = result.duration_ms,
         .details_json = result.details_json,
         .image_b64 = result.image_b64,
         .image_mime = result.image_mime,
@@ -1624,6 +1819,83 @@ fn queueSequentialRawProgress(raw_ctx: ?*anyopaque, update: ExternalToolUpdate) 
     ctx.events.putOne(ctx.io, .{ .update = owned }) catch {};
 }
 
+const ConcurrencyToolProbe = struct {
+    const schemas = "[{\"type\":\"function\",\"function\":{\"name\":\"native_queue\",\"parameters\":{\"type\":\"object\"}}}]";
+    owner: std.Thread.Id,
+    updates: usize = 0,
+    wrong_thread: bool = false,
+    fn exists(_: ?*anyopaque, _: []const u8) bool {
+        return true;
+    }
+    fn execute(_: ?*anyopaque, gpa: std.mem.Allocator, id: []const u8, _: []const u8, _: []const u8, callback: ExternalToolProgressFn, context: ?*anyopaque, _: ?*bool) !?tools.ToolResult {
+        // Exceed either queue's capacity before finishing. Eager execution
+        // cannot progress because the owner has not started draining yet.
+        for (0..48) |_| callback(context, .{ .content = "native queued progress" });
+        return .{ .content = try gpa.dupe(u8, id), .is_error = false };
+    }
+    fn event(raw: ?*anyopaque, value: AgentEvent) void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (value.kind == .tool_execution_update) {
+            self.updates += 1;
+            if (self.owner != std.Thread.getCurrentId()) self.wrong_thread = true;
+        }
+    }
+    fn config(self: *@This()) AgentConfig {
+        return .{ .hook_ctx = self, .external_tool_exists_fn = exists, .external_tool_call_streaming_fn = execute };
+    }
+};
+
+test "sequential tool progress drains its bounded queue on the owner with zero eager async capacity" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    const call: ai.ToolCall = .{ .id = "sequential-result", .name = "bash", .arguments = "{\"command\":\"unused external fixture\"}" };
+    var result = try executeSequentialRawTool(std.testing.allocator, threaded.io(), ".", &config, &call, call.arguments, ConcurrencyToolProbe.event, &probe);
+    defer result.deinit(std.testing.allocator);
+    try std.testing.expectEqualStrings("sequential-result", result.content);
+    try std.testing.expectEqual(@as(usize, 48), probe.updates);
+    try std.testing.expect(!probe.wrong_thread);
+}
+
+test "parallel tool progress drains both bounded queues and persists source order with zero eager async capacity" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    var session = try session_mod.Session.init(std.testing.allocator, "native-low-capacity", ".");
+    defer session.deinit();
+    const calls = [_]ai.ToolCall{
+        .{ .id = "first-result", .name = "native_queue", .arguments = "{}" },
+        .{ .id = "second-result", .name = "native_queue", .arguments = "{}" },
+    };
+    _ = try executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe);
+    try std.testing.expectEqual(@as(usize, 96), probe.updates);
+    try std.testing.expect(!probe.wrong_thread);
+    try std.testing.expectEqual(@as(usize, 2), session.entries.items.len);
+    try std.testing.expectEqualStrings("first-result", session.entries.items[0].content);
+    try std.testing.expectEqualStrings("second-result", session.entries.items[1].content);
+}
+
+test "tool concurrency exhaustion joins previously started producers before releasing queues and arenas" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    const call: ai.ToolCall = .{ .id = "sequential-result", .name = "bash", .arguments = "{\"command\":\"unused external fixture\"}" };
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeSequentialRawTool(std.testing.allocator, threaded.io(), ".", &config, &call, call.arguments, ConcurrencyToolProbe.event, &probe));
+    var session = try session_mod.Session.init(std.testing.allocator, "native-low-capacity", ".");
+    defer session.deinit();
+    const calls = [_]ai.ToolCall{
+        .{ .id = "first-result", .name = "native_queue", .arguments = "{}" },
+        .{ .id = "second-result", .name = "native_queue", .arguments = "{}" },
+    };
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe));
+    threaded.concurrent_limit = .limited(1);
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe));
+    try std.testing.expectEqual(@as(usize, 0), session.entries.items.len);
+}
+
 fn sequentialRawToolWorker(
     state: *SequentialRawToolState,
     io: Io,
@@ -1694,14 +1966,15 @@ fn executeSequentialRawTool(
     var events: Io.Queue(SequentialRawToolEvent) = .init(&queue_storage);
     defer events.close(io);
     var group: Io.Group = .init;
-    group.async(io, sequentialRawToolWorker, .{ &state, io, cwd, config, tc, arguments, &events });
+    defer {
+        events.close(io);
+        group.cancel(io);
+    }
+    try group.concurrent(io, sequentialRawToolWorker, .{ &state, io, cwd, config, tc, arguments, &events });
 
     while (true) {
         const event = events.getOne(io) catch |err| switch (err) {
-            error.Canceled => {
-                group.cancel(io);
-                return error.Canceled;
-            },
+            error.Canceled => return error.Canceled,
             error.Closed => break,
         };
         switch (event) {
@@ -1744,6 +2017,7 @@ fn persistToolResult(
         .id = tc.id,
         .text = result.content,
         .is_error = result.is_error,
+        .duration_ms = result.duration_ms,
         .details_json = result.details_json,
         .image_b64 = result.image_b64,
         .image_mime = result.image_mime,
@@ -1753,6 +2027,7 @@ fn persistToolResult(
     });
     const p = sess.lastEntryId();
     _ = try sess.appendToolResultStatusWithImages(p, result.content, tc.id, tc.name, result.is_error, result.added_tool_names, result.image_b64, result.image_mime, result.images);
+    sess.entries.items[sess.entries.items.len - 1].tool_duration_ms = result.duration_ms;
     if (result.usage) |usage| {
         const entry = &sess.entries.items[sess.entries.items.len - 1];
         entry.meta.usage_input = usage.input;
@@ -1782,11 +2057,47 @@ const PreparedInvocation = struct {
     }
 };
 
+/// Execute a script's nested tool through the same argument preparation,
+/// schema validation, permission/before hook, dispatch and result hook as an
+/// ordinary agent call. Transcript storage remains with the outer codemode
+/// invocation; callers own the returned native result.
+pub fn executeNestedTool(
+    gpa: std.mem.Allocator,
+    io: Io,
+    cwd: []const u8,
+    initial_config: *const AgentConfig,
+    schemas_json: []const u8,
+    id: []const u8,
+    name: []const u8,
+    arguments_json: []const u8,
+    abort_flag: ?*bool,
+) !tools.ToolResult {
+    var config = initial_config.*;
+    config.abort_flag = abort_flag;
+    // The adapter supplies its permitted nested registry as this config's
+    // filter; this entrypoint preserves it through dispatch.
+    const call: ai.ToolCall = .{ .id = @constCast(id), .name = @constCast(name), .arguments = @constCast(arguments_json) };
+    var prepared = try prepareToolInvocation(gpa, &config, schemas_json, &call);
+    defer prepared.deinit(gpa);
+    if (prepared.immediate) |*result| return cloneToolResult(gpa, result);
+    const started = Io.Clock.awake.now(io);
+    var raw = executeRawTool(gpa, io, cwd, &config, &call, prepared.arguments, null, null) catch |cause| tools.ToolResult{
+        .content = try std.fmt.allocPrint(gpa, "tool execution failed: {s}", .{@errorName(cause)}),
+        .is_error = true,
+    };
+    defer raw.deinit(gpa);
+    raw.duration_ms = executionDurationMs(io, started);
+    return finalizeToolResult(gpa, io, &config, &call, prepared.arguments, &raw);
+}
+
 fn prepareToolInvocation(gpa: std.mem.Allocator, config: *const AgentConfig, schemas_json: []const u8, tc: *const ai.ToolCall) !PreparedInvocation {
     var prepared = PreparedInvocation{ .arguments = tc.arguments };
     errdefer prepared.deinit(gpa);
-    const external_claims = if (config.external_tool_exists_fn) |exists| exists(config.hook_ctx, tc.name) else false;
-    if (external_claims) {
+    const configured_claims = (if (config.configured_tool_exists_fn) |exists| exists(config.configured_tool_ctx, tc.name) else false) or (if (config.builtin_extension_exists_fn) |exists| exists(config.builtin_extension_ctx, tc.name) else false);
+    const external_claims = !configured_claims and (if (config.external_tool_exists_fn) |exists| exists(config.hook_ctx, tc.name) else false);
+    if (configured_claims) {
+        // Configured schemas validate original arguments; extension preparation does not own them.
+    } else if (external_claims) {
         if (config.external_prepare_arguments_fn) |prepare_external| {
             const transformed = prepare_external(config.hook_ctx, gpa, tc.name, tc.arguments) catch |err| {
                 prepared.immediate = .{
@@ -1868,6 +2179,7 @@ fn executeToolBatchSequential(
             continue;
         }
 
+        const execution_started = Io.Clock.awake.now(io);
         var raw: tools.ToolResult = executeSequentialRawTool(
             gpa,
             io,
@@ -1882,6 +2194,7 @@ fn executeToolBatchSequential(
             .is_error = true,
         };
         defer raw.deinit(gpa);
+        raw.duration_ms = executionDurationMs(io, execution_started);
         emitToolUpdates(on_event, event_ctx, tc, &raw);
         var final = try finalizeToolResult(gpa, io, config, tc, prepared.arguments, &raw);
         defer final.deinit(gpa);
@@ -1900,7 +2213,13 @@ const ParallelToolState = struct {
     owned_arguments: ?[]u8 = null,
     result: ?tools.ToolResult = null,
     error_name: ?[]const u8 = null,
+    duration_ms: ?u64 = null,
 };
+
+fn executionDurationMs(io: Io, started: Io.Timestamp) u64 {
+    const elapsed = @max(@as(i96, 0), started.durationTo(Io.Clock.awake.now(io)).toNanoseconds());
+    return @intCast(@min(@as(i96, std.math.maxInt(u64)), @divTrunc(elapsed + 500_000, 1_000_000)));
+}
 
 const ParallelToolEvent = union(enum) {
     update: struct {
@@ -1954,6 +2273,7 @@ fn parallelToolWorker(
         .io = io,
         .events = events,
     };
+    const execution_started = Io.Clock.awake.now(io);
     state.result = executeRawTool(
         allocator,
         io,
@@ -1967,6 +2287,8 @@ fn parallelToolWorker(
         state.error_name = @errorName(err);
         break :blk null;
     };
+    state.duration_ms = executionDurationMs(io, execution_started);
+    if (state.result) |*result| result.duration_ms = state.duration_ms;
     events.putOne(io, .{ .complete = state.index }) catch |err| switch (err) {
         error.Canceled => return error.Canceled,
         error.Closed => return,
@@ -2015,6 +2337,12 @@ fn executeToolBatchParallel(
     @memset(finals, null);
 
     var group: Io.Group = .init;
+    // A producer can fill the bounded queue before the owner starts draining.
+    // Join all acquired workers on every exit before releasing their arenas.
+    defer {
+        events.close(io);
+        group.cancel(io);
+    }
     var active_tasks: usize = 0;
     var considered: usize = 0;
     for (calls, 0..) |*tc, i| {
@@ -2034,17 +2362,14 @@ fn executeToolBatchParallel(
             states[i].arguments = owned;
             prepared.owned_arguments = null;
         }
-        group.async(io, parallelToolWorker, .{ &states[i], io, cwd, config, &events });
+        try group.concurrent(io, parallelToolWorker, .{ &states[i], io, cwd, config, &events });
         active_tasks += 1;
     }
 
     var completed: usize = 0;
     while (completed < active_tasks) {
         const event = events.getOne(io) catch |err| switch (err) {
-            error.Canceled => {
-                group.cancel(io);
-                return error.Canceled;
-            },
+            error.Canceled => return error.Canceled,
             error.Closed => break,
         };
         switch (event) {
@@ -2078,6 +2403,7 @@ fn executeToolBatchParallel(
                     raw_error = .{
                         .content = try std.fmt.allocPrint(gpa, "tool execution failed: {s}", .{state.error_name orelse "unknown"}),
                         .is_error = true,
+                        .duration_ms = state.duration_ms,
                     };
                     break :blk &raw_error.?;
                 };
@@ -2182,6 +2508,24 @@ fn compactSession(
 
 fn emit(handler: ?EventHandler, ctx: ?*anyopaque, event: AgentEvent) void {
     if (handler) |h| h(ctx, event);
+}
+
+fn filteredConfiguredSchemas(gpa: std.mem.Allocator, source: []const u8, filter: tools.ToolFilter) ![]u8 {
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    const parsed = try std.json.parseFromSlice(std.json.Value, a, source, .{ .allocate = .alloc_always });
+    if (parsed.value != .array) return error.InvalidToolSchemas;
+    var selected: std.json.Value = .{ .array = .init(a) };
+    for (parsed.value.array.items) |item| {
+        if (item != .object) return error.InvalidToolSchemas;
+        const function = item.object.get("function") orelse return error.InvalidToolSchemas;
+        if (function != .object) return error.InvalidToolSchemas;
+        const name = function.object.get("name") orelse return error.InvalidToolSchemas;
+        if (name != .string) return error.InvalidToolSchemas;
+        if (filter.isEnabled(name.string)) try selected.array.append(item);
+    }
+    return @import("../durable/backend/json.zig").stringify(gpa, selected);
 }
 
 fn mergeToolSchemaArrays(gpa: std.mem.Allocator, builtins_json: []const u8, extras_json: []const u8) ![]u8 {
@@ -3233,6 +3577,7 @@ test "parallel tool end events follow completion order while persistence follows
         io: Io,
         end_order: [2]u8 = .{ 0, 0 },
         end_count: usize = 0,
+        missing_duration: bool = false,
 
         fn exec(ptr: ?*anyopaque, allocator: std.mem.Allocator, name: []const u8, _: []const u8) anyerror!?tools.ToolResult {
             const self: *@This() = @ptrCast(@alignCast(ptr.?));
@@ -3244,6 +3589,7 @@ test "parallel tool end events follow completion order while persistence follows
         fn event(ptr: ?*anyopaque, e: AgentEvent) void {
             const self: *@This() = @ptrCast(@alignCast(ptr.?));
             if (e.kind != .tool_execution_end or self.end_count >= self.end_order.len) return;
+            if (e.duration_ms == null) self.missing_duration = true;
             self.end_order[self.end_count] = if (std.mem.eql(u8, e.id, "c1")) 1 else if (std.mem.eql(u8, e.id, "c2")) 2 else 9;
             self.end_count += 1;
         }
@@ -3258,12 +3604,14 @@ test "parallel tool end events follow completion order while persistence follows
     defer result.deinit(gpa);
 
     try std.testing.expectEqual(@as(usize, 2), ctx.end_count);
+    try std.testing.expect(!ctx.missing_duration);
     try std.testing.expectEqualSlices(u8, &.{ 2, 1 }, &ctx.end_order);
 
     var tool_ids: [2][]const u8 = undefined;
     var tool_count: usize = 0;
     for (sess.entries.items) |entry| {
         if (!std.mem.eql(u8, entry.role, "tool")) continue;
+        try std.testing.expect(entry.tool_duration_ms != null);
         if (tool_count < tool_ids.len) tool_ids[tool_count] = entry.tool_call_id orelse "";
         tool_count += 1;
     }
@@ -4276,6 +4624,7 @@ test "streaming external update is emitted before tool execution returns" {
     const State = struct {
         update_events: usize = 0,
         update_seen_before_return: bool = false,
+        execution_duration: ?u64 = null,
         order: [3]EventKind = undefined,
         order_len: usize = 0,
 
@@ -4301,6 +4650,7 @@ test "streaming external update is emitted before tool execution returns" {
             return .{
                 .content = try allocator.dupe(u8, "live-complete"),
                 .is_error = false,
+                .duration_ms = 999_999,
             };
         }
 
@@ -4315,6 +4665,7 @@ test "streaming external update is emitted before tool execution returns" {
                     if (event.kind == .tool_execution_update and std.mem.eql(u8, event.text, "live-now")) {
                         self.update_events += 1;
                     }
+                    if (event.kind == .tool_execution_end) self.execution_duration = event.duration_ms;
                 },
                 else => {},
             }
@@ -4331,6 +4682,14 @@ test "streaming external update is emitted before tool execution returns" {
     defer result.deinit(gpa);
 
     try std.testing.expect(state.update_seen_before_return);
+    try std.testing.expect(state.execution_duration != null);
+    try std.testing.expect(state.execution_duration.? < 999_999);
+    var duration_persisted = false;
+    for (sess.entries.items) |entry| if (std.mem.eql(u8, entry.role, "tool")) {
+        try std.testing.expectEqual(state.execution_duration, entry.tool_duration_ms);
+        duration_persisted = true;
+    };
+    try std.testing.expect(duration_persisted);
     try std.testing.expectEqual(@as(usize, 1), state.update_events);
     try std.testing.expectEqual(@as(usize, 3), state.order_len);
     try std.testing.expectEqual(EventKind.tool_execution_start, state.order[0]);
@@ -4833,10 +5192,19 @@ test "automatic retry recovers transient assistant errors and emits canonical ev
         delay_ms: u64 = 999,
         success: bool = false,
         saw_expected_error: bool = false,
+        failed_messages: usize = 0,
+        successful_messages: usize = 0,
+        message_error_preserved: bool = false,
 
         fn onEvent(raw: ?*anyopaque, event: AgentEvent) void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             switch (event.kind) {
+                .message_end => if (std.mem.eql(u8, event.name, "assistant")) {
+                    if (event.is_error) {
+                        self.failed_messages += 1;
+                        self.message_error_preserved = std.mem.eql(u8, event.error_message orelse "", "503 Service Unavailable");
+                    } else self.successful_messages += 1;
+                },
                 .auto_retry_start => {
                     self.starts += 1;
                     self.attempt = event.attempt;
@@ -4869,6 +5237,9 @@ test "automatic retry recovers transient assistant errors and emits canonical ev
     try std.testing.expectEqual(@as(u64, 0), probe.delay_ms);
     try std.testing.expect(probe.success);
     try std.testing.expect(probe.saw_expected_error);
+    try std.testing.expectEqual(@as(usize, 1), probe.failed_messages);
+    try std.testing.expectEqual(@as(usize, 1), probe.successful_messages);
+    try std.testing.expect(probe.message_error_preserved);
 
     var assistant_entries: usize = 0;
     for (sess.entries.items) |entry| {

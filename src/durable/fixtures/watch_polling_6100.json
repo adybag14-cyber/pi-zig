@@ -1,0 +1,12 @@
+{
+  "upstream": "6100fe5a8358709a26050b8da97ccd188ae93101",
+  "node": "v24.14.0",
+  "mode": "polling",
+  "missingReported": true,
+  "nestedReported": true,
+  "excludedReported": false,
+  "renameReported": true,
+  "callbacksAfterClose": 0,
+  "errors": [],
+  "budgetCode": "invalid"
+}

@@ -1,0 +1,238 @@
+{
+  "upstream": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "node": "v24.14.0",
+  "writes": [
+    {
+      "type": "conversation",
+      "value": {
+        "id": 1
+      }
+    }
+  ],
+  "initial": [
+    {
+      "type": "entry",
+      "value": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "cut"
+      }
+    },
+    {
+      "type": "document.create",
+      "record": {
+        "id": 3,
+        "kind": "as-of",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "rewindable",
+        "fork": "asOf"
+      },
+      "content": {
+        "kind": "base",
+        "version": 1,
+        "value": {
+          "n": 1
+        }
+      }
+    },
+    {
+      "type": "document.create",
+      "record": {
+        "id": 4,
+        "kind": "current",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "current"
+      },
+      "content": {
+        "kind": "base",
+        "version": 1,
+        "value": {
+          "n": 1
+        }
+      }
+    },
+    {
+      "type": "document.create",
+      "record": {
+        "id": 5,
+        "kind": "initial",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "initial"
+      },
+      "content": {
+        "kind": "base",
+        "version": 1,
+        "value": {
+          "n": 1
+        }
+      }
+    }
+  ],
+  "changes": [
+    {
+      "type": "document.change",
+      "id": 3,
+      "content": {
+        "kind": "delta",
+        "version": 1,
+        "ops": [
+          [
+            "s",
+            [
+              "n"
+            ],
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "type": "document.change",
+      "id": 4,
+      "content": {
+        "kind": "base",
+        "version": 1,
+        "value": {
+          "n": 2
+        }
+      }
+    }
+  ],
+  "child": {
+    "id": 6,
+    "parent": {
+      "conversationId": 1,
+      "at": 2
+    }
+  },
+  "docs": {
+    "items": [
+      {
+        "id": 7,
+        "kind": "as-of",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 6
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 4
+      },
+      {
+        "id": 8,
+        "kind": "current",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 6
+        },
+        "history": "latest",
+        "fork": "current",
+        "createdAt": 4
+      }
+    ]
+  },
+  "values": [
+    {
+      "record": {
+        "id": 7,
+        "kind": "as-of",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 6
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 4
+      },
+      "version": 1,
+      "value": {
+        "n": 1
+      },
+      "deltasSinceBase": 0
+    },
+    {
+      "record": {
+        "id": 8,
+        "kind": "current",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 6
+        },
+        "history": "latest",
+        "fork": "current",
+        "createdAt": 4
+      },
+      "version": 1,
+      "value": {
+        "n": 2
+      },
+      "deltasSinceBase": 0
+    }
+  ],
+  "publications": [
+    {
+      "seq": 4,
+      "changes": [
+        {
+          "type": "conversation",
+          "value": {
+            "id": 6,
+            "parent": {
+              "conversationId": 1,
+              "at": 2
+            }
+          }
+        },
+        {
+          "type": "document.copy",
+          "record": {
+            "id": 7,
+            "kind": "as-of",
+            "scope": {
+              "kind": "conversation",
+              "conversationId": 6
+            },
+            "history": "rewindable",
+            "fork": "asOf",
+            "createdAt": 4
+          },
+          "conversationId": 6,
+          "source": {
+            "id": 3,
+            "at": 2
+          }
+        },
+        {
+          "type": "document.copy",
+          "record": {
+            "id": 8,
+            "kind": "current",
+            "scope": {
+              "kind": "conversation",
+              "conversationId": 6
+            },
+            "history": "latest",
+            "fork": "current",
+            "createdAt": 4
+          },
+          "conversationId": 6,
+          "source": {
+            "id": 4,
+            "at": "current"
+          }
+        }
+      ]
+    }
+  ]
+}

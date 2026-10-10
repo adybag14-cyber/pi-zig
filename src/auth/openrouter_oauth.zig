@@ -273,21 +273,25 @@ fn acceptCallback(listener: *net.Server, io: std.Io, abort_flag: ?*const bool, t
     const Race = union(enum) { accepted: anyerror!net.Stream, aborted: bool, timeout: bool };
     var queue: [3]Race = undefined;
     var select = std.Io.Select(Race).init(io, &queue);
-    select.async(.accepted, acceptCallbackTask, .{ listener, io });
-    if (abort_flag) |flag| select.async(.aborted, callbackWatchAbort, .{ io, flag });
-    select.async(.timeout, callbackSleepMs, .{ io, timeout_ms });
+    defer while (select.cancel()) |pending| switch (pending) {
+        .accepted => |result| if (result) |accepted| {
+            var stream = accepted;
+            stream.close(io);
+        } else |_| {},
+        .aborted, .timeout => {},
+    };
+    try select.concurrent(.accepted, acceptCallbackTask, .{ listener, io });
+    if (abort_flag) |flag| try select.concurrent(.aborted, callbackWatchAbort, .{ io, flag });
+    try select.concurrent(.timeout, callbackSleepMs, .{ io, timeout_ms });
     const winner = try select.await();
     switch (winner) {
         .accepted => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             return if (aborted) error.LoginCancelled else error.Canceled;
         },
         .timeout => |expired| {
-            while (select.cancel()) |_| {}
             return if (expired) error.OpenRouterOAuthLoginTimeout else error.Canceled;
         },
     }
@@ -484,4 +488,70 @@ test "OpenRouter OAuth callback host defaults and honors override" {
     try env.put("PI_OAUTH_CALLBACK_HOST", "127.0.0.2");
     try std.testing.expectEqualStrings("127.0.0.2", callbackHost(&env));
     try std.testing.expectEqualStrings("127.0.0.1", callbackHost(null));
+}
+
+const ConcurrencyAdapter = struct {
+    server: *CallbackServer,
+    pub fn wait(self: *@This(), flag: *const bool) !CallbackResult {
+        return self.server.waitCode(flag);
+    }
+};
+
+fn concurrencySuccess(server: *CallbackServer) !void {
+    const gpa = std.testing.allocator;
+    const valid = try std.fmt.allocPrint(gpa, "{s}?code=concurrent-code", .{server.callback_path});
+    defer gpa.free(valid);
+    var adapter: ConcurrencyAdapter = .{ .server = server };
+    try @import("callback_concurrency_test_support.zig").success(ConcurrencyAdapter, &adapter, server.listener.socket.address, &.{
+        .{ .target = "/wrong-route", .status = 404 },
+        .{ .target = server.callback_path, .status = 400 },
+        .{ .target = valid, .status = 200 },
+    });
+    try std.testing.expect(server.claimed);
+}
+
+test "OpenRouter OAuth loopback callback progresses with zero eager async capacity and retains route code validation" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var server = try startCallbackServer(std.heap.page_allocator, threaded.io(), "127.0.0.1");
+    defer server.deinit();
+    try concurrencySuccess(&server);
+}
+
+test "OpenRouter OAuth cancellation joins its listener race and the owned server remains reusable" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var server = try startCallbackServer(std.heap.page_allocator, threaded.io(), "127.0.0.1");
+    defer server.deinit();
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    try @import("callback_concurrency_test_support.zig").cancellation(ConcurrencyAdapter, &adapter);
+    try std.testing.expect(!server.claimed);
+    try concurrencySuccess(&server);
+}
+
+test "OpenRouter OAuth unavailable concurrency cancels every partial race startup without retiring the listener" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    var server = try startCallbackServer(std.heap.page_allocator, threaded.io(), "127.0.0.1");
+    defer server.deinit();
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    const support = @import("callback_concurrency_test_support.zig");
+    try support.unavailable(ConcurrencyAdapter, &adapter);
+    threaded.concurrent_limit = .limited(1);
+    try support.unavailable(ConcurrencyAdapter, &adapter);
+    threaded.concurrent_limit = .limited(2);
+    try support.unavailable(ConcurrencyAdapter, &adapter);
+    threaded.concurrent_limit = .unlimited;
+    try concurrencySuccess(&server);
+}
+
+test "OpenRouter OAuth existing login deadline interrupts accept with zero eager async capacity" {
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var server = try startCallbackServer(std.heap.page_allocator, threaded.io(), "127.0.0.1");
+    defer server.deinit();
+    server.started_ms = std.Io.Clock.real.now(threaded.io()).toMilliseconds() - @as(i64, @intCast(LOGIN_TIMEOUT_MS)) + 30;
+    var adapter: ConcurrencyAdapter = .{ .server = &server };
+    try @import("callback_concurrency_test_support.zig").failure(ConcurrencyAdapter, &adapter, error.OpenRouterOAuthLoginTimeout);
+    try std.testing.expect(!server.claimed);
 }

@@ -1,0 +1,31 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-models-actions-20261005",
+  "paths": [
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "before_sha256": "ce3bbdb211c9d66cb01ec58d02d69a7f692bb61d9bf99b5bc0e4b4c7734802a0",
+      "after_sha256": "dfc769260fc8ed65dd9ad13d2991ec36dbc028a85cfdeaa02828094daa05e822",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-actions-delta-20261005\\native_bindings.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "before_sha256": "a80be0d1f6a9c3eccf42dd6b9f06b23b0ee05bfdaccb24eeebef3584d9b42fa0",
+      "after_sha256": "30d11788b39d255b2d56a36d377365fe415be02f22e387550312f03bf4eaa706",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-actions-delta-20261005\\native_worker.zig.patch"
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "before_sha256": "1567413a9696c83bdacc7db342017d0abebcf12f116a50c7839912c8cb889286",
+      "after_sha256": "ddaebb39185e02dac227ede5811fd6a64915326b08d1eb9f553029bff8250c78",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-actions-delta-20261005\\js_runtime.zig.patch"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "before_sha256": "2932bcd75f0477c14e7011d4fc3a2aaab54b3ea1fa3048e6ac062f3911d01396",
+      "after_sha256": "7893c8b25f6952cbef0e0c91522d77e14be8e984a3138247f2d886983098677d",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-prethrow-actions-delta-20261005\\native_runtime_process_test.zig.patch"
+    }
+  ],
+  "Debug": "native-prethrow-actions-final-debug-20261005b PASS190/190",
+  "ReleaseSafe": "native-prethrow-actions-final-releasesafe-20261005a PASS190/190 at21:40:04.734Z"
+}

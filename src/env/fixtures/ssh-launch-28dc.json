@@ -1,0 +1,160 @@
+{
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "sourceSha256": "1cc1942600f5def793966bbadcb319e142ed8501f7da91741026181cb206dd6f",
+  "definitions": [
+    {
+      "name": "quotePosix",
+      "originalSha256": "a35140b3d258279f84ec6025950cfd866accbf7beb8d761d4c52c86e63d82fca"
+    },
+    {
+      "name": "quotePowerShell",
+      "originalSha256": "0b4e54a9d4808bf302eb0cd004e0e65b6cae4889561c75d3f74f1af4b134b041"
+    },
+    {
+      "name": "launchCommand",
+      "originalSha256": "b14fde95da2af84a3e06f118badcbb19d7973524a54793932737d329ff4f8d0d"
+    }
+  ],
+  "cases": [
+    {
+      "platform": "linux",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": false,
+      "command": "'/home/owner/daemon'"
+    },
+    {
+      "platform": "linux",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner/daemon'"
+    },
+    {
+      "platform": "linux",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": false,
+      "command": "'/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "linux",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "android",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": false,
+      "command": "'/home/owner/daemon'"
+    },
+    {
+      "platform": "android",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner/daemon'"
+    },
+    {
+      "platform": "android",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": false,
+      "command": "'/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "android",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "darwin",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": false,
+      "command": "'/home/owner/daemon'"
+    },
+    {
+      "platform": "darwin",
+      "shell": null,
+      "path": "/home/owner/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner/daemon'"
+    },
+    {
+      "platform": "darwin",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": false,
+      "command": "'/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "darwin",
+      "shell": null,
+      "path": "/home/owner space's Ω/daemon",
+      "loginShell": true,
+      "command": "exec \"$SHELL\" -lc 'exec \"$0\" \"$@\"' '/home/owner space'\\''s Ω/daemon'"
+    },
+    {
+      "platform": "windows",
+      "shell": "cmd",
+      "path": "C:\\Users\\Owner\\daemon.exe",
+      "loginShell": false,
+      "command": "C:\\Users\\Owner\\daemon.exe"
+    },
+    {
+      "platform": "windows",
+      "shell": "cmd",
+      "path": "C:\\Users\\Owner\\daemon.exe",
+      "loginShell": true,
+      "command": "C:\\Users\\Owner\\daemon.exe"
+    },
+    {
+      "platform": "windows",
+      "shell": "cmd",
+      "path": "C:\\Owner space's Ω\\daemon.exe",
+      "loginShell": false,
+      "command": "\"C:\\Owner space's Ω\\daemon.exe\""
+    },
+    {
+      "platform": "windows",
+      "shell": "cmd",
+      "path": "C:\\Owner space's Ω\\daemon.exe",
+      "loginShell": true,
+      "command": "\"C:\\Owner space's Ω\\daemon.exe\""
+    },
+    {
+      "platform": "windows",
+      "shell": "powershell",
+      "path": "C:\\Users\\Owner\\daemon.exe",
+      "loginShell": false,
+      "command": "& 'C:\\Users\\Owner\\daemon.exe'"
+    },
+    {
+      "platform": "windows",
+      "shell": "powershell",
+      "path": "C:\\Users\\Owner\\daemon.exe",
+      "loginShell": true,
+      "command": "& 'C:\\Users\\Owner\\daemon.exe'"
+    },
+    {
+      "platform": "windows",
+      "shell": "powershell",
+      "path": "C:\\Owner space's Ω\\daemon.exe",
+      "loginShell": false,
+      "command": "& 'C:\\Owner space''s Ω\\daemon.exe'"
+    },
+    {
+      "platform": "windows",
+      "shell": "powershell",
+      "path": "C:\\Owner space's Ω\\daemon.exe",
+      "loginShell": true,
+      "command": "& 'C:\\Owner space''s Ω\\daemon.exe'"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+(nested,variant)=>{
+ const reports=[],trace=[];
+ const input={kind:nested?'nested':'model'},call={id:'c1',name:'target',arguments:{}},context={original:true};
+ const tool={name:'target'};
+ if(variant==='valid-schema'||variant==='invalid-schema'||variant==='error-no-value')tool.structuredOutputSchema={type:'object',properties:{count:{type:'number'}},required:['count']};
+ let result={output:[{type:'text',text:'λ one\n'},{type:'image',data:'YQ==',mimeType:'image/png'},{type:'text',text:'界 two\nthree'}],details:{result:true},diagnostics:[{severity:'info',code:'returned',message:'returned'}]};
+ if(variant==='retained'||variant==='replace-retained')delete result.output;
+ if(variant==='valid-schema')result.structuredOutput={count:2};
+ if(variant==='invalid-schema')result.structuredOutput={count:'bad'};
+ if(variant==='no-schema')result.structuredOutput={count:2};
+ if(variant==='error-no-value')result.isError=true;
+ const snapshot={text:'retained λ\n',droppedBytes:14,droppedLines:2};
+ const reported={output:{snapshot(){trace.push(['snapshot']);return snapshot}},limits:{maxBytes:8,maxLines:2,retain:variant==='tail'?'tail':'head'},details:{reported:true},diagnostics:[{severity:'info',code:'reported',message:'reported'}]};
+ const runtime={hooks:{async each(name,callback){trace.push(['hooks',name]);await callback(async(actualCall,final,actualRuntime,actualContext)=>{trace.push(['hook',actualCall===call,actualRuntime===runtime,actualContext===context]);if(variant==='replace-retained')return{output:[{type:'text',text:'hook'}],diagnostics:[]};if(variant==='null-hook')return null;return undefined;})}},report(error){reports.push(error.message)}};
+ return{runtime,input,call,tool,result,reported,snapshot,context,reports,trace};
+}

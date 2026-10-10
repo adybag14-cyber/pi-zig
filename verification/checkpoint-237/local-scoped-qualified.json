@@ -1,0 +1,39 @@
+{
+  "status": "qualified generation tool output query scheduler and completion publication timing",
+  "head": "0aaa0edcdb9c59787a5edc95f8911807e6d4a604",
+  "sourceManifest": "checkpoint237-publication-fixed-final-inputs.json",
+  "compiledInputs": 1520,
+  "results": [
+    {
+      "name": "checkpoint237-publication-fixed-final-windows-debug-20261008",
+      "completedUtc": "2026-10-10T11:44:34.9333930+00:00",
+      "summary": "Build Summary: 35/35 steps succeeded; 403/408 tests passed (5 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "87A84D2AACF92444332CBC4F757C9DBA4D8EBA1FFB36FBB84CA86BCFE9A777BC"
+    },
+    {
+      "name": "checkpoint237-publication-fixed-final-windows-release-safe-20261008",
+      "completedUtc": "2026-10-10T11:53:58.8911263+00:00",
+      "summary": "Build Summary: 35/35 steps succeeded; 403/408 tests passed (5 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "E6F3E41410B26B3939F7A7691C10284B9BEE6779C26B8CA4A420F8706964A468"
+    },
+    {
+      "name": "checkpoint237-publication-fixed-final-native-linux-debug-20261010",
+      "completedUtc": "2026-10-10T11:43:52.2157830+00:00",
+      "summary": "Build Summary: 35/35 steps succeeded; 404/406 tests passed (2 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "CA46569ED7DF787F15FC4E19F6126726CF952F38D6AC8B40F246F6A9DAEFDF24"
+    },
+    {
+      "name": "checkpoint237-publication-fixed-final-native-linux-release-safe-20261010",
+      "completedUtc": "2026-10-10T11:48:12.8000683+00:00",
+      "summary": "Build Summary: 35/35 steps succeeded; 404/406 tests passed (2 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "D0ECBB4E4FA4FE92B05EEF03CF8964CD275942196A8AC6A8818B25A2494EA0D2"
+    }
+  ],
+  "scope": "generation tool output query scheduler and completion publication timing",
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-10T11:55:35.2956540+00:00"
+}

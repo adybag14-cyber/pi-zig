@@ -1,0 +1,12 @@
+async(admit,toolToken,variant)=>{
+ const trace=[],context={original:true},index={calls:{}},live={},tasks=new Map;let sequence=70;
+ const runtime={taskId:7,conversationId:1,async commit(change,actualContext){trace.push(['commit',actualContext===context]);await change({async doc(token,id){trace.push(['doc',token.definition.kind,id]);if(token.definition.kind==='pi.tool.nested')return index;if(token.definition.kind==='pi.live')return live;throw Error('unexpected document')},async task(id){trace.push(['task',id]);return tasks.get(id)},async createTask(token,input,options){trace.push(['createTask',token===toolToken,input,options]);const id=sequence++;tasks.set(id,{input});return id}});trace.push(['committed'])}};
+ const options={key:'leaf',progress:variant==='silent'?false:undefined,abandonOnRestart:variant!=='safe'},args={count:2,optional:undefined};
+ const first=await admit(runtime,'parent','target',args,options,context);
+ let second,failure;
+ if(variant==='different-name'||variant==='different-args'||variant==='wrong-parent'||variant==='missing-record'){
+  if(variant==='wrong-parent')tasks.get(first).input.parent=99;if(variant==='missing-record')tasks.delete(first);
+  try{second=await admit(runtime,'parent',variant==='different-name'?'other':'target',variant==='different-args'?{count:3}:args,options,context)}catch(error){failure={name:error.name,message:error.message}}
+ }else second=await admit(runtime,'parent','target',{optional:undefined,count:2},options,context);
+ return{trace,first,second,failure,index,live};
+}

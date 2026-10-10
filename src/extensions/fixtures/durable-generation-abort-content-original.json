@@ -1,0 +1,200 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "partial",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "partial"
+                  }
+                ],
+                "stopReason": "aborted",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "aborted"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted"
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "unstarted",
+      "trace": [
+        [
+          "entry",
+          true,
+          4,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "append",
+          "tool",
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "b",
+                "toolName": "second",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<harness>\n[error] Tool second was aborted\n</harness>"
+                  }
+                ],
+                "isError": true,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "aborted",
+                  "message": "Tool second was aborted"
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "append",
+          "tool",
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "a",
+                "toolName": "first",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<harness>\n[error] Tool first was aborted\n</harness>"
+                  }
+                ],
+                "isError": true,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "aborted",
+                  "message": "Tool first was aborted"
+                }
+              ]
+            }
+          }
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "aborted"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted"
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {},
+        "tools": {}
+      }
+    }
+  ]
+}

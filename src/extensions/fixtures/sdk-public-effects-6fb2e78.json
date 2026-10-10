@@ -1,0 +1,103 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "phase": "inside",
+      "owner": "A",
+      "piName": "A-via-pi",
+      "managerName": "A-via-pi",
+      "thinking": "high",
+      "ctxThinking": "high",
+      "active": [],
+      "custom": [
+        {
+          "customType": "from-pi",
+          "data": {
+            "owner": "A"
+          },
+          "label": "label-A"
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "owner": "A",
+      "name": "A-via-pi",
+      "thinking": "high",
+      "active": [],
+      "levels": [
+        "off",
+        "low",
+        "high"
+      ]
+    },
+    {
+      "phase": "outside",
+      "owner": "A",
+      "custom": [
+        {
+          "customType": "from-pi",
+          "data": {
+            "owner": "A"
+          },
+          "label": "label-A"
+        },
+        {
+          "customType": "outside-event",
+          "data": {
+            "owner": "A"
+          }
+        }
+      ]
+    },
+    {
+      "phase": "inside",
+      "owner": "B",
+      "piName": "B-via-pi",
+      "managerName": "B-via-pi",
+      "thinking": "high",
+      "ctxThinking": "high",
+      "active": [],
+      "custom": [
+        {
+          "customType": "from-pi",
+          "data": {
+            "owner": "B"
+          },
+          "label": "label-B"
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "owner": "B",
+      "name": "B-via-pi",
+      "thinking": "high",
+      "active": [],
+      "levels": [
+        "off",
+        "low",
+        "high"
+      ]
+    },
+    {
+      "phase": "outside",
+      "owner": "B",
+      "custom": [
+        {
+          "customType": "from-pi",
+          "data": {
+            "owner": "B"
+          },
+          "label": "label-B"
+        },
+        {
+          "customType": "outside-event",
+          "data": {
+            "owner": "B"
+          }
+        }
+      ]
+    }
+  ]
+}

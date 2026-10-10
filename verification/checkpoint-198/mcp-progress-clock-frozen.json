@@ -1,0 +1,27 @@
+{
+  "status": "frozen",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "scope": "Deadline clock and actual transport fixture only",
+  "files": [
+    {
+      "path": "src/mcp/session.zig",
+      "sha256": "32eb47105ee504da87cb3452d119c34a73affb5296e9c1bd8c68ccf8e0fedf79"
+    },
+    {
+      "path": "src/mcp/runtime_tests.zig",
+      "sha256": "1f993e30e62655ca295fa24a15c98a3f9ddcd1525b52be96b7efbefcede46738"
+    }
+  ],
+  "patch_sha256": "ced44080b06286fa9df8a7ba4167fc386e2fdbd352fa03bb8f749cec42fd393b",
+  "proofs": [
+    "latest-duration-mcp-final-windows-debug-20261007",
+    "latest-tool-duration-final-windows-releasesafe-20261007",
+    "latest-duration-mcp-final-linux-debug-20261007",
+    "latest-duration-mcp-final-linux-releasesafe-20261007",
+    "latest-mcp-progress-clock-windows-releasesafe-20261007"
+  ],
+  "limits": [
+    "Hosted macOS qualification remains pending"
+  ]
+}

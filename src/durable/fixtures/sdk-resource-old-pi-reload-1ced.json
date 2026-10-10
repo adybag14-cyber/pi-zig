@@ -1,0 +1,87 @@
+[
+  {
+    "phase": "old-loaded",
+    "error": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+    "errorName": "Error"
+  },
+  {
+    "phase": "old-A-created",
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "phase": "old-A-bound",
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "phase": "reload-identity",
+    "same": false
+  },
+  {
+    "phase": "old-after-reload",
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "phase": "new-after-reload",
+    "error": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+    "errorName": "Error"
+  },
+  {
+    "phase": "old-after-B-created",
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "phase": "new-after-B-created",
+    "names": [
+      "own2"
+    ],
+    "sessionName": "B"
+  },
+  {
+    "phase": "old-after-B-bound",
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "phase": "new-after-B-bound",
+    "names": [
+      "own2"
+    ],
+    "sessionName": "B"
+  },
+  {
+    "phase": "old-after-A-disposed",
+    "error": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload().",
+    "errorName": "Error"
+  },
+  {
+    "phase": "new-after-A-disposed",
+    "names": [
+      "own2"
+    ],
+    "sessionName": "B"
+  },
+  {
+    "phase": "old-after-B-disposed",
+    "error": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload().",
+    "errorName": "Error"
+  },
+  {
+    "phase": "new-after-B-disposed",
+    "error": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload().",
+    "errorName": "Error"
+  }
+]

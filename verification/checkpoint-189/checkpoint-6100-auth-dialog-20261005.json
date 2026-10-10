@@ -1,0 +1,11 @@
+{
+  "browserDialog": true,
+  "callbackCompletion": true,
+  "cooperativeCancellation": true,
+  "credentialPersisted": true,
+  "deviceCodeDialog": true,
+  "exit": 0,
+  "osc8Hyperlink": true,
+  "stderrBytes": 0,
+  "terminalRestored": true
+}

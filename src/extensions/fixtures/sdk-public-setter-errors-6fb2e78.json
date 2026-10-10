@@ -1,0 +1,15 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "modelRejected": true,
+  "modelSyncThrow": false,
+  "thinkingSame": true,
+  "modelA": true,
+  "defaultThinking": "low",
+  "models": [
+    "a"
+  ],
+  "thinking": [
+    "low"
+  ],
+  "events": []
+}

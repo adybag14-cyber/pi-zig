@@ -1,0 +1,154 @@
+{
+  "upstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "referenceCompiler": "Rust1.97.1 (source asks1.96.0)",
+  "info": {
+    "protocol": 1,
+    "version": "0.1.0",
+    "os": "windows",
+    "arch": "x86_64",
+    "separator": "\\"
+  },
+  "scans": [
+    {
+      "range": {
+        "startLine": 0
+      },
+      "scan": {
+        "end": 14,
+        "firstLineBytes": 2,
+        "firstLineEnd": 5,
+        "lastLineStart": 14,
+        "newlines": 3,
+        "selectedBytes": 13,
+        "start": 0
+      }
+    },
+    {
+      "range": {
+        "startLine": 0,
+        "endLine": 1
+      },
+      "scan": {
+        "end": 5,
+        "firstLineBytes": 2,
+        "firstLineEnd": 5,
+        "lastLineStart": 0,
+        "newlines": 3,
+        "selectedBytes": 2,
+        "start": 0
+      }
+    },
+    {
+      "range": {
+        "startLine": 1,
+        "endLine": 2
+      },
+      "scan": {
+        "end": 10,
+        "firstLineBytes": 4,
+        "firstLineEnd": 10,
+        "lastLineStart": 6,
+        "newlines": 3,
+        "selectedBytes": 4,
+        "start": 6
+      }
+    },
+    {
+      "range": {
+        "startLine": 2
+      },
+      "scan": {
+        "end": 14,
+        "firstLineBytes": 4,
+        "firstLineEnd": 13,
+        "lastLineStart": 14,
+        "newlines": 3,
+        "selectedBytes": 5,
+        "start": 11
+      }
+    },
+    {
+      "range": {
+        "startLine": 10
+      },
+      "scan": {
+        "end": 14,
+        "firstLineBytes": 0,
+        "firstLineEnd": 14,
+        "lastLineStart": 14,
+        "newlines": 3,
+        "selectedBytes": 0,
+        "start": 14
+      }
+    }
+  ],
+  "errors": [
+    {
+      "op": "pread",
+      "code": "EBADF"
+    },
+    {
+      "op": "lstat",
+      "code": "ENOENT"
+    },
+    {
+      "op": "rm",
+      "code": "ERR_FS_EISDIR"
+    }
+  ],
+  "binary": [
+    {
+      "offset": 0,
+      "length": 5,
+      "bytes": [
+        239,
+        187,
+        191,
+        65,
+        13
+      ]
+    },
+    {
+      "offset": 3,
+      "length": 8,
+      "bytes": [
+        65,
+        13,
+        10,
+        240,
+        159,
+        154,
+        128,
+        10
+      ]
+    },
+    {
+      "offset": 14,
+      "length": 7,
+      "bytes": []
+    }
+  ],
+  "fileInfo": {
+    "name": "bytes.txt",
+    "kind": "file",
+    "size": 14,
+    "dev": 0,
+    "ino": 0
+  },
+  "retainedAfterRename": [
+    239,
+    187,
+    191,
+    65,
+    13,
+    10,
+    240,
+    159,
+    154,
+    128,
+    10,
+    255,
+    66,
+    10
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "status": "frozen fixture platform-behavior repair",
+  "source": "C:\\Users\\adyba\\pi-zig-update-20261003",
+  "path": "src/env/files.zig",
+  "sha256": "8b42cb64b6f667dd16c5ceec762febb5df91617375c254a426bc99259157eac0",
+  "failure": "Hosted macOS filesystem returns EILSEQ/BadPathName for invalid UTF8 filename creation",
+  "repair": "Keep lossy decoder assertions on every platform. Catch only BadPathName from actual creation, require empty directory and valid Unicode roundtrip; otherwise retain invalid native byte readdir/raw/error assertions. No Darwin skip or production change.",
+  "jobs": [
+    {
+      "name": "checkpoint197-invalid-name-windows-debug",
+      "pid": 29140,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -j2 --summary all",
+      "created_utc": "2026-10-05T22:21:56.6947960Z",
+      "launched_utc": "2026-10-05T22:21:56.6914037+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:22:04.1834441+00:00"
+    },
+    {
+      "name": "checkpoint197-invalid-name-linux-debug",
+      "pid": 13832,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-spurious-source-20261005 --exec /usr/bin/timeout 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -j2 --summary all --cache-dir /tmp/pi-env-lazy-ssh-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T22:23:10.0713230Z",
+      "launched_utc": "2026-10-05T22:23:10.0688832+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:23:16.9586867+00:00"
+    },
+    {
+      "name": "checkpoint197-invalid-name-macos-semantic",
+      "pid": 17264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/env_test.zig src/durable/process_probe.c -target aarch64-macos -lc -fno-emit-bin",
+      "created_utc": "2026-10-05T22:23:24.1830610Z",
+      "launched_utc": "2026-10-05T22:23:24.1798930+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:23:25.0419429+00:00"
+    }
+  ],
+  "limits": [
+    "Actual Darwin runtime awaits hosted CI; cross compilation is not runtime proof"
+  ]
+}

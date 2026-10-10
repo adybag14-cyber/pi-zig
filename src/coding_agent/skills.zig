@@ -186,7 +186,11 @@ pub fn filterByNames(gpa: std.mem.Allocator, skills: []Skill, allow: []const []c
 }
 
 /// Build a short skills summary for the system prompt.
+pub const FileReadTool = enum { read, bash, indirect };
 pub fn summarize(gpa: std.mem.Allocator, skills: []const Skill) ![]u8 {
+    return summarizeWithReader(gpa, skills, .read);
+}
+pub fn summarizeWithReader(gpa: std.mem.Allocator, skills: []const Skill, reader: FileReadTool) ![]u8 {
     var visible: usize = 0;
     for (skills) |skill| {
         if (!skill.disable_model_invocation) visible += 1;
@@ -197,11 +201,14 @@ pub fn summarize(gpa: std.mem.Allocator, skills: []const Skill) ![]u8 {
     errdefer out.deinit(gpa);
     try out.appendSlice(
         gpa,
-        "\n\nThe following skills provide specialized instructions for specific tasks.\n" ++
-            "Use the read tool to load a skill's file when the task matches its description.\n" ++
-            "When a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n" ++
-            "<available_skills>\n",
+        "\n\nThe following skills provide specialized instructions for specific tasks.\n",
     );
+    try out.appendSlice(gpa, switch (reader) {
+        .read => "Use the read tool to load a skill's file when the task matches its description.\n",
+        .bash => "Use bash to load a skill's file when the task matches its description.\n",
+        .indirect => "Load a skill's file when the task matches its description.\n",
+    });
+    try out.appendSlice(gpa, "When a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n");
     for (skills) |skill| {
         if (skill.disable_model_invocation) continue;
         try out.appendSlice(gpa, "  <skill>\n    <name>");

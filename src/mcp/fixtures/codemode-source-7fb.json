@@ -1,0 +1,42 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "input": "return 1;",
+      "result": {
+        "code": "return 1;",
+        "options": {}
+      }
+    },
+    {
+      "input": " \t// @options: {\"timeout_ms\":123,\"max_output_tokens\":0}\r\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "maxOutputTokens": 0,
+          "timeoutMs": 123
+        }
+      }
+    },
+    {
+      "input": "\n\t",
+      "error": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+    },
+    {
+      "input": "// @options: {}",
+      "error": "The @options line must be followed by JavaScript source on subsequent lines"
+    },
+    {
+      "input": "// @options: null\nreturn 1;",
+      "error": "@options must be a JSON object with supported fields `max_output_tokens` and `timeout_ms`"
+    },
+    {
+      "input": "// @options: {\"timeout_ms\":0}\nreturn 1;",
+      "error": "@options field `timeout_ms` must be a positive integer up to 2147483647"
+    },
+    {
+      "input": "// @options: {\"max_output_tokens\":-1}\nreturn 1;",
+      "error": "@options field `max_output_tokens` must be a non-negative safe integer"
+    }
+  ]
+}

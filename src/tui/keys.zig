@@ -11,14 +11,14 @@ pub const modifier_num_lock: u16 = 128;
 pub const lock_mask: u16 = modifier_caps_lock | modifier_num_lock;
 pub const supported_modifier_mask: u16 = modifier_shift | modifier_alt | modifier_ctrl | modifier_super;
 
-var kitty_protocol_active: bool = false;
+var kitty_protocol_active: std.atomic.Value(bool) = .init(false);
 
 pub fn setKittyProtocolActive(active: bool) void {
-    kitty_protocol_active = active;
+    kitty_protocol_active.store(active, .release);
 }
 
 pub fn isKittyProtocolActive() bool {
-    return kitty_protocol_active;
+    return kitty_protocol_active.load(.acquire);
 }
 
 pub const EventType = enum {
@@ -104,7 +104,7 @@ pub const ParseOptions = struct {
 pub fn parseOptionsFromEnvironment(environ: *const std.process.Environ.Map) ParseOptions {
     const has_wt = environ.get("WT_SESSION") != null;
     const ssh = environ.get("SSH_CONNECTION") != null or environ.get("SSH_CLIENT") != null or environ.get("SSH_TTY") != null;
-    return .{ .kitty_active = kitty_protocol_active, .windows_terminal = has_wt and !ssh };
+    return .{ .kitty_active = isKittyProtocolActive(), .windows_terminal = has_wt and !ssh };
 }
 
 const ParsedSequence = struct {
@@ -390,13 +390,24 @@ fn parseLegacy(data: []const u8, options: ParseOptions) ?ParsedKey {
 }
 
 pub fn parseKeyWithOptions(data: []const u8, options: ParseOptions) ?ParsedKey {
-    if (parseKittySequence(data)) |sequence| return sequenceToParsed(sequence);
-    if (parseModifyOtherKeys(data)) |sequence| return sequenceToParsed(sequence);
+    if (parseKittySequence(data)) |sequence| {
+        if (sequence.shifted_key) |shifted| if (sequence.modifiers & modifier_shift != 0 and isKnownSymbol(@intCast(shifted))) {
+            var logical = sequence;
+            logical.codepoint = @intCast(shifted);
+            logical.modifiers &= ~modifier_shift;
+            return sequenceToParsed(logical);
+        };
+        return sequenceToParsed(sequence);
+    }
+    if (parseModifyOtherKeys(data)) |sequence| {
+        if (logicalShiftedSymbol(sequence)) |logical| return logical;
+        return sequenceToParsed(sequence);
+    }
     return parseLegacy(data, options);
 }
 
 pub fn parseKey(data: []const u8) ?ParsedKey {
-    return parseKeyWithOptions(data, .{ .kitty_active = kitty_protocol_active });
+    return parseKeyWithOptions(data, .{ .kitty_active = isKittyProtocolActive() });
 }
 
 fn namedKeyId(key: NamedKey) []const u8 {
@@ -434,12 +445,20 @@ fn namedKeyId(key: NamedKey) []const u8 {
 
 fn parseExpectedKeyId(key_id: []const u8) ?ParsedKey {
     var modifiers: u16 = 0;
-    var last: []const u8 = "";
-    var fields = std.mem.splitScalar(u8, key_id, '+');
-    while (fields.next()) |part| {
-        if (std.ascii.eqlIgnoreCase(part, "shift")) modifiers |= modifier_shift else if (std.ascii.eqlIgnoreCase(part, "ctrl")) modifiers |= modifier_ctrl else if (std.ascii.eqlIgnoreCase(part, "alt")) modifiers |= modifier_alt else if (std.ascii.eqlIgnoreCase(part, "super")) modifiers |= modifier_super else last = part;
+    var last = key_id;
+    while (true) {
+        var consumed = false;
+        inline for (.{ .{ "shift+", modifier_shift }, .{ "ctrl+", modifier_ctrl }, .{ "alt+", modifier_alt }, .{ "super+", modifier_super } }) |entry| {
+            if (!consumed and std.ascii.startsWithIgnoreCase(last, entry[0])) {
+                if (modifiers & entry[1] != 0) return null;
+                modifiers |= entry[1];
+                last = last[entry[0].len..];
+                consumed = true;
+            }
+        }
+        if (!consumed) break;
     }
-    if (last.len == 0) return null;
+    if (last.len == 0 or (std.mem.indexOfScalar(u8, last, '+') != null and !std.mem.eql(u8, last, "+"))) return null;
     const named: ?NamedKey = if (std.ascii.eqlIgnoreCase(last, "escape") or std.ascii.eqlIgnoreCase(last, "esc")) .escape else if (std.ascii.eqlIgnoreCase(last, "enter") or std.ascii.eqlIgnoreCase(last, "return")) .enter else if (std.ascii.eqlIgnoreCase(last, "tab")) .tab else if (std.ascii.eqlIgnoreCase(last, "space")) .space else if (std.ascii.eqlIgnoreCase(last, "backspace")) .backspace else if (std.ascii.eqlIgnoreCase(last, "delete")) .delete else if (std.ascii.eqlIgnoreCase(last, "insert")) .insert else if (std.ascii.eqlIgnoreCase(last, "clear")) .clear else if (std.ascii.eqlIgnoreCase(last, "home")) .home else if (std.ascii.eqlIgnoreCase(last, "end")) .end else if (std.ascii.eqlIgnoreCase(last, "pageup")) .page_up else if (std.ascii.eqlIgnoreCase(last, "pagedown")) .page_down else if (std.ascii.eqlIgnoreCase(last, "up")) .up else if (std.ascii.eqlIgnoreCase(last, "down")) .down else if (std.ascii.eqlIgnoreCase(last, "left")) .left else if (std.ascii.eqlIgnoreCase(last, "right")) .right else if (std.ascii.eqlIgnoreCase(last, "f1")) .f1 else if (std.ascii.eqlIgnoreCase(last, "f2")) .f2 else if (std.ascii.eqlIgnoreCase(last, "f3")) .f3 else if (std.ascii.eqlIgnoreCase(last, "f4")) .f4 else if (std.ascii.eqlIgnoreCase(last, "f5")) .f5 else if (std.ascii.eqlIgnoreCase(last, "f6")) .f6 else if (std.ascii.eqlIgnoreCase(last, "f7")) .f7 else if (std.ascii.eqlIgnoreCase(last, "f8")) .f8 else if (std.ascii.eqlIgnoreCase(last, "f9")) .f9 else if (std.ascii.eqlIgnoreCase(last, "f10")) .f10 else if (std.ascii.eqlIgnoreCase(last, "f11")) .f11 else if (std.ascii.eqlIgnoreCase(last, "f12")) .f12 else null;
     if (named) |key| return .{ .key = .{ .named = key }, .modifiers = modifiers };
     const view = std.unicode.Utf8View.init(last) catch return null;
@@ -453,11 +472,53 @@ fn parseExpectedKeyId(key_id: []const u8) ?ParsedKey {
 pub fn matchesKeyWithOptions(data: []const u8, key_id: []const u8, options: ParseOptions) bool {
     const actual = parseKeyWithOptions(data, options) orelse return false;
     const expected = parseExpectedKeyId(key_id) orelse return false;
-    return actual.eql(expected);
+    if (actual.eql(expected)) return true;
+    const sequence = parseKittySequence(data) orelse parseModifyOtherKeys(data) orelse return false;
+    if (sequenceToParsed(sequence)) |physical| if (physical.eql(expected)) return true;
+    if (logicalShiftedSymbol(sequence)) |logical| return logical.eql(expected);
+    return false;
+}
+fn logicalShiftedSymbol(sequence: ParsedSequence) ?ParsedKey {
+    if (sequence.modifiers & modifier_shift == 0) return null;
+    const logical = sequence.shifted_key orelse sequence.codepoint;
+    if (logical < 0 or logical > 127 or std.mem.indexOfScalar(u8, "~!@#$%^&*()_+|{}:<>?", @intCast(logical)) == null) return null;
+    const candidate: ParsedKey = .{ .key = .{ .codepoint = @intCast(logical) }, .modifiers = sequence.modifiers & ~modifier_shift, .event_type = sequence.event_type };
+    return candidate;
+}
+
+test "6fb shifted symbols preserve produced and physical key identities and reject duplicate modifiers" {
+    const options: ParseOptions = .{ .kitty_active = true };
+    try std.testing.expect(matchesKeyWithOptions("\x1b[61:43;2u", "+", options));
+    try std.testing.expect(matchesKeyWithOptions("\x1b[61:43;2u", "shift+=", options));
+    try std.testing.expect(matchesKeyWithOptions("\x1b[61:43;6u", "ctrl++", options));
+    try std.testing.expect(matchesKeyWithOptions("\x1b[27;6;43~", "ctrl++", options));
+    try std.testing.expect(!matchesKeyWithOptions("\x03", "ctrl+ctrl+c", options));
+    try std.testing.expect(!matchesKeyWithOptions("\x03", "junk+ctrl+c", options));
+    const parsed = parseKeyWithOptions("\x1b[61:43;6u", options).?;
+    try std.testing.expectEqual(@as(u21, '+'), parsed.key.codepoint);
+    try std.testing.expectEqual(modifier_ctrl, parsed.effectiveModifiers());
+}
+
+test "6fb key parsing and matching replay authentic Source shifted symbol and modifier corpus" {
+    const gpa = std.testing.allocator;
+    const captured = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/keys-6fb-original.json"), .{});
+    defer captured.deinit();
+    for (captured.value.object.get("rows").?.array.items) |row| {
+        const options: ParseOptions = .{ .kitty_active = row.object.get("kitty").?.bool };
+        const sequence = row.object.get("sequence").?.string;
+        var entries = row.object.get("matches").?.object.iterator();
+        while (entries.next()) |entry| try std.testing.expectEqual(entry.value_ptr.bool, matchesKeyWithOptions(sequence, entry.key_ptr.*, options));
+        const expected = row.object.get("parsed").?;
+        if (parseKeyWithOptions(sequence, options)) |parsed| {
+            const text = try parsed.formatAlloc(gpa);
+            defer gpa.free(text);
+            try std.testing.expectEqualStrings(expected.string, text);
+        } else try std.testing.expect(expected == .null);
+    }
 }
 
 pub fn matchesKey(data: []const u8, key_id: []const u8) bool {
-    return matchesKeyWithOptions(data, key_id, .{ .kitty_active = kitty_protocol_active });
+    return matchesKeyWithOptions(data, key_id, .{ .kitty_active = isKittyProtocolActive() });
 }
 
 pub fn isKeyRelease(data: []const u8) bool {

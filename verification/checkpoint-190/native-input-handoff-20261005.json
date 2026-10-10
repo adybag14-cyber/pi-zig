@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "e004d249fb5555dde2b728c1b9bdfa3b783aaf57",
+  "changes": [
+    "Drain bounded ready keyboard bursts before publishing submitted commands, preventing trailing draft input from entering newly opened modals",
+    "Retain pending terminal input when entering and restoring POSIX raw mode with TCSANOW",
+    "Observe completed synchronized terminal updates in process fixtures",
+    "Add actual input-burst and fragmented terminal-update regressions"
+  ],
+  "windows": {
+    "name": "darwin-input-main-windows-native-ui",
+    "pid": 41000,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-fullscreen-frontend-process test-fullscreen-frontend-components -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+    "created_utc": "2026-10-05T17:29:38.3995880Z",
+    "launched_utc": "2026-10-05T17:29:38.3951967+00:00",
+    "identity_captured": true,
+    "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-05T17:30:21.1861759+00:00"
+  },
+  "windowsResult": "17/17 build steps;38 passed;3 platform skips",
+  "macos": {
+    "headSha": "9de7cc7068aaa816fe7dfe6ee5835a387693abbb",
+    "runId": 37348832070,
+    "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37348832070",
+    "conclusion": "success",
+    "result": "10/10 build steps;13 passed;3 platform skips",
+    "scope": "Actual fullscreen process suite, including all three previously failing macOS cases"
+  },
+  "limits": [
+    "This focused diagnostic proves the four-file repair; the full three-platform CI must run again on the published integration commit",
+    "Final Pi parity and native default are still pending"
+  ]
+}

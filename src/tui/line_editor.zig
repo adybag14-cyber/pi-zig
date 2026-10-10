@@ -10,9 +10,10 @@ const terminal = @import("terminal.zig");
 const rich_keys = @import("keys.zig");
 const keybindings = @import("keybindings.zig");
 const mouse = @import("mouse.zig");
+const platform = @import("platform_terminal.zig");
 
 pub fn available(io: Io) bool {
-    if (comptime builtin.os.tag != .linux) return false;
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos and builtin.os.tag != .windows) return false;
     return Io.File.stdin().isTty(io) catch false;
 }
 
@@ -22,13 +23,158 @@ pub fn windowsRightClickPasteEnabled(term_program: ?[]const u8) bool {
     return !std.ascii.eqlIgnoreCase(std.mem.trim(u8, program, " \t\r\n"), "vscode");
 }
 
+/// File.Reader reports ReadFailed for many distinct operating-system errors.
+/// Only the causes used for a disconnected interactive terminal are quiet
+/// shutdowns; resource, permission, descriptor and cancellation errors remain
+/// visible to the caller. Piped/file input does not use this classification.
+pub fn terminalInputError(err: anyerror, read_error: ?Io.File.Reader.Error) anyerror {
+    return switch (err) {
+        error.NotATerminal, error.ProcessOrphaned => error.DeadTerminal,
+        error.ReadFailed => if (read_error) |cause| switch (cause) {
+            error.InputOutput, error.SocketUnconnected => error.DeadTerminal,
+            else => err,
+        } else err,
+        else => err,
+    };
+}
+
+test "dead terminal input classification preserves unrelated reader errors" {
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ReadFailed, error.InputOutput));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ReadFailed, error.SocketUnconnected));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.NotATerminal, null));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ProcessOrphaned, null));
+    try std.testing.expectEqual(error.ReadFailed, terminalInputError(error.ReadFailed, null));
+    const genuine = [_]Io.File.Reader.Error{ error.SystemResources, error.IsDir, error.ConnectionResetByPeer, error.NotOpenForReading, error.WouldBlock, error.AccessDenied, error.LockViolation, error.Unexpected, error.Canceled };
+    for (genuine) |cause| try std.testing.expectEqual(error.ReadFailed, terminalInputError(error.ReadFailed, cause));
+    try std.testing.expectEqual(error.Unexpected, terminalInputError(error.Unexpected, error.InputOutput));
+    try std.testing.expectEqual(error.EndOfStream, terminalInputError(error.EndOfStream, error.InputOutput));
+    try std.testing.expectEqual(error.OutOfMemory, terminalInputError(error.OutOfMemory, error.InputOutput));
+}
+
+test "interactive byte reads inspect File Reader cause and preserve genuine failures" {
+    var buffer: [1]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), std.testing.io, &buffer);
+    reader.interface = Io.Reader.failing;
+    reader.interface.buffer = &buffer;
+    reader.err = error.InputOutput;
+    try std.testing.expectError(error.DeadTerminal, readByte(&reader));
+    reader.err = error.SocketUnconnected;
+    try std.testing.expectError(error.DeadTerminal, readByte(&reader));
+    reader.err = error.AccessDenied;
+    try std.testing.expectError(error.ReadFailed, readByte(&reader));
+    reader.err = null;
+    try std.testing.expectError(error.ReadFailed, readByte(&reader));
+}
+
+fn terminalAttributes(fd: std.posix.fd_t) !std.posix.termios {
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
+    // Zig's tcgetattr currently erases EIO into Unexpected and prints an errno
+    // diagnostic. Inspect errno before that mapping so a vanished tty is quiet.
+    while (true) {
+        var attributes: std.posix.termios = undefined;
+        switch (std.posix.errno(std.posix.system.tcgetattr(fd, &attributes))) {
+            .SUCCESS => return attributes,
+            .INTR => continue,
+            .IO, .NOTTY => return error.DeadTerminal,
+            else => |err| return std.posix.unexpectedErrno(err),
+        }
+    }
+}
+
+fn setTerminalAttributes(fd: std.posix.fd_t, attributes: std.posix.termios) !void {
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
+    while (true) {
+        // Reader handoffs must retain input queued after the last painted
+        // frame. FLUSH discards that input on both raw entry and restoration.
+        switch (std.posix.errno(std.posix.system.tcsetattr(fd, .NOW, &attributes))) {
+            .SUCCESS => return,
+            .INTR => continue,
+            .IO, .NOTTY => return error.DeadTerminal,
+            else => |err| return std.posix.unexpectedErrno(err),
+        }
+    }
+}
+
+test "raw-mode transitions preserve bytes queued on an actual terminal" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    const linux = std.os.linux;
+    const opened = linux.open("/dev/ptmx", .{ .ACCMODE = .RDWR, .NOCTTY = true }, 0);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(opened));
+    const master: linux.fd_t = @intCast(opened);
+    defer _ = linux.close(master);
+    var unlocked: c_int = 0;
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.ioctl(master, linux.T.IOCSPTLCK, @intFromPtr(&unlocked))));
+    const peer_result = linux.ioctl(master, linux.T.IOCGPTPEER, @as(u32, @bitCast(linux.O{ .ACCMODE = .RDWR, .NOCTTY = true, .NONBLOCK = true })));
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(peer_result));
+    const peer: linux.fd_t = @intCast(peer_result);
+    defer _ = linux.close(peer);
+    var attributes = try terminalAttributes(peer);
+    attributes.lflag.ICANON = false;
+    attributes.lflag.ECHO = false;
+    attributes.cc[@intFromEnum(std.posix.V.MIN)] = 1;
+    attributes.cc[@intFromEnum(std.posix.V.TIME)] = 0;
+    try setTerminalAttributes(peer, attributes);
+    const pending = "queued-draft";
+    try std.testing.expectEqual(pending.len, linux.write(master, pending.ptr, pending.len));
+    var fd: linux.pollfd = .{ .fd = peer, .events = linux.POLL.IN, .revents = 0 };
+    try std.testing.expectEqual(@as(usize, 1), linux.poll(@ptrCast(&fd), 1, 100));
+    // Switching reader ownership must change modes without silently flushing
+    // bytes that arrived after the previous owner's final visible frame.
+    try setTerminalAttributes(peer, attributes);
+    var received: [pending.len]u8 = undefined;
+    const count = linux.read(peer, &received, received.len);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(count));
+    try std.testing.expectEqual(pending.len, count);
+    try std.testing.expectEqualStrings(pending, &received);
+}
+
+test "Linux terminal hangup maps real raw-mode ioctl EIO without a generic Unexpected" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    const linux = std.os.linux;
+    const master_result = linux.open("/dev/ptmx", .{ .ACCMODE = .RDWR, .NOCTTY = true }, 0);
+    if (linux.errno(master_result) != .SUCCESS) return error.SkipZigTest;
+    const master: linux.fd_t = @intCast(master_result);
+    var master_open = true;
+    defer if (master_open) {
+        _ = linux.close(master);
+    };
+    var unlocked: c_int = 0;
+    try std.testing.expectEqual(std.posix.E.SUCCESS, linux.errno(linux.ioctl(master, linux.T.IOCSPTLCK, @intFromPtr(&unlocked))));
+    const peer_result = linux.ioctl(master, linux.T.IOCGPTPEER, @as(u32, @bitCast(linux.O{ .ACCMODE = .RDWR, .NOCTTY = true })));
+    try std.testing.expectEqual(std.posix.E.SUCCESS, linux.errno(peer_result));
+    const peer: linux.fd_t = @intCast(peer_result);
+    defer _ = linux.close(peer);
+    const attributes = try terminalAttributes(peer);
+    _ = linux.close(master);
+    master_open = false;
+    try std.testing.expectError(error.DeadTerminal, terminalAttributes(peer));
+    try std.testing.expectError(error.DeadTerminal, setTerminalAttributes(peer, attributes));
+    var raw: RawMode = .{ .original = attributes, .restore = false };
+    raw.leave();
+}
+
 pub const RawMode = struct {
-    original: std.posix.termios,
+    const WindowsState = struct { input: u32, output: u32, input_cp: u32, output_cp: u32 };
+    original: if (builtin.os.tag == .windows) WindowsState else std.posix.termios,
+    restore: bool = true,
 
     pub fn enter() !RawMode {
-        if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+        if (comptime builtin.os.tag == .windows) {
+            var original: WindowsState = .{ .input = 0, .output = 0, .input_cp = platform.win.GetConsoleCP(), .output_cp = platform.win.GetConsoleOutputCP() };
+            if (!platform.win.GetConsoleMode(Io.File.stdin().handle, &original.input).toBool() or !platform.win.GetConsoleMode(Io.File.stdout().handle, &original.output).toBool()) return error.DeadTerminal;
+            const input = (original.input & ~@as(u32, 1 | 2 | 4 | 8 | 0x40)) | 0x200 | 0x80;
+            if (!platform.win.SetConsoleMode(Io.File.stdin().handle, input).toBool()) return error.DeadTerminal;
+            errdefer _ = platform.win.SetConsoleMode(Io.File.stdin().handle, original.input);
+            if (!platform.win.SetConsoleMode(Io.File.stdout().handle, original.output | 4).toBool()) return error.DeadTerminal;
+            errdefer _ = platform.win.SetConsoleMode(Io.File.stdout().handle, original.output);
+            if (!platform.win.SetConsoleCP(65001).toBool()) return error.TerminalCodePageFailed;
+            errdefer _ = platform.win.SetConsoleCP(original.input_cp);
+            if (!platform.win.SetConsoleOutputCP(65001).toBool()) return error.TerminalCodePageFailed;
+            return .{ .original = original };
+        }
+        if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
         const fd = Io.File.stdin().handle;
-        const original = try std.posix.tcgetattr(fd);
+        const original = try terminalAttributes(fd);
         var raw = original;
         raw.lflag.ICANON = false;
         raw.lflag.ECHO = false;
@@ -39,13 +185,19 @@ pub const RawMode = struct {
         raw.iflag.IXON = false;
         raw.cc[@intFromEnum(std.posix.V.MIN)] = 1;
         raw.cc[@intFromEnum(std.posix.V.TIME)] = 0;
-        try std.posix.tcsetattr(fd, .FLUSH, raw);
+        try setTerminalAttributes(fd, raw);
         return .{ .original = original };
     }
 
     pub fn leave(self: *RawMode) void {
-        if (comptime builtin.os.tag == .linux) {
-            std.posix.tcsetattr(Io.File.stdin().handle, .FLUSH, self.original) catch {};
+        if (!self.restore) return;
+        if (comptime builtin.os.tag == .linux or builtin.os.tag == .macos) {
+            setTerminalAttributes(Io.File.stdin().handle, self.original) catch {};
+        } else if (comptime builtin.os.tag == .windows) {
+            _ = platform.win.SetConsoleMode(Io.File.stdin().handle, self.original.input);
+            _ = platform.win.SetConsoleMode(Io.File.stdout().handle, self.original.output);
+            _ = platform.win.SetConsoleCP(self.original.input_cp);
+            _ = platform.win.SetConsoleOutputCP(self.original.output_cp);
         }
     }
 };
@@ -129,7 +281,10 @@ fn redraw(io: Io, editor: *const Editor, prompt: []const u8, state: *RenderState
 }
 
 fn readByte(reader: *Io.File.Reader) !u8 {
-    return reader.interface.takeByte();
+    return platform.readByte(reader) catch |err| {
+        if (terminalInputError(err, reader.err) == error.DeadTerminal) return error.DeadTerminal;
+        return err;
+    };
 }
 
 fn readUtf8(reader: *Io.File.Reader, first: u8, out: *[4]u8) ![]const u8 {
@@ -183,7 +338,217 @@ pub const ShortcutHandler = struct {
     }
 };
 
-const Disposition = enum { keep_editing, submit, cancel, interrupt, exit };
+pub const Disposition = enum { keep_editing, submit, cancel, interrupt, exit };
+
+/// Incremental terminal framing shared with the fullscreen owner. Returned
+/// bytes stay valid until the next feed; incomplete UTF-8/CSI/paste never blocks.
+pub const InputDecoder = struct {
+    gpa: std.mem.Allocator,
+    pending: std.ArrayList(u8) = .empty,
+    paste: bool = false,
+    delivered: bool = false,
+    pub const Input = union(enum) { key: []const u8, paste: []const u8 };
+
+    pub fn init(gpa: std.mem.Allocator) InputDecoder {
+        return .{ .gpa = gpa };
+    }
+    pub fn deinit(self: *InputDecoder) void {
+        self.pending.deinit(self.gpa);
+    }
+    pub fn feed(self: *InputDecoder, byte: u8) !?Input {
+        if (self.delivered) {
+            self.pending.clearRetainingCapacity();
+            self.delivered = false;
+        }
+        if (self.pending.items.len >= 8 * 1024 * 1024) return error.TerminalInputLimit;
+        try self.pending.append(self.gpa, byte);
+        const value = self.pending.items;
+        if (self.paste) {
+            if (!std.mem.endsWith(u8, value, "\x1b[201~")) return null;
+            self.paste = false;
+            self.delivered = true;
+            return .{ .paste = value[0 .. value.len - 6] };
+        }
+        if (value[0] == 0x1b) {
+            if (value.len == 1) return null;
+            if (value[1] == '[') {
+                if (value.len < 3 or byte < 0x40 or byte > 0x7e) return null;
+                if (std.mem.eql(u8, value, "\x1b[200~")) {
+                    self.pending.clearRetainingCapacity();
+                    self.paste = true;
+                    return null;
+                }
+            } else if (value[1] == ']') {
+                if (byte != 7 and !std.mem.endsWith(u8, value, "\x1b\\")) return null;
+            } else if (value[1] == 'O' and value.len < 3) return null;
+        } else if (value[0] >= 0x80) {
+            const length = std.unicode.utf8ByteSequenceLength(value[0]) catch 1;
+            if (value.len < length) return null;
+        }
+        self.delivered = true;
+        return .{ .key = value };
+    }
+    pub fn flushEscape(self: *InputDecoder) ?Input {
+        if (!self.paste and !self.delivered and self.pending.items.len == 1 and self.pending.items[0] == 0x1b) {
+            self.delivered = true;
+            return .{ .key = self.pending.items };
+        }
+        return null;
+    }
+    /// Source StdinBuffer flushes an unfinished sequence as one input after
+    /// 50 ms of inactivity; a lone Escape has its separate 10 ms deadline.
+    pub fn flushPending(self: *InputDecoder) ?Input {
+        if (self.paste or self.delivered or self.pending.items.len == 0) return null;
+        self.delivered = true;
+        return .{ .key = self.pending.items };
+    }
+    pub fn pendingTimeoutMs(self: *const InputDecoder) i64 {
+        return if (self.pending.items.len == 1 and self.pending.items[0] == 0x1b) 10 else 50;
+    }
+};
+
+test "terminal decoder preserves OSC fragments terminators and timed incomplete sequences" {
+    var decoder = InputDecoder.init(std.testing.allocator);
+    defer decoder.deinit();
+    for ([_][]const u8{ "\x1b]10;rgb:aaaa/bbbb/cccc\x07", "\x1b]11;#010203\x1b\\" }) |sequence| {
+        for (sequence, 0..) |byte, index| {
+            const packet = try decoder.feed(byte);
+            if (index + 1 == sequence.len) {
+                try std.testing.expectEqualStrings(sequence, packet.?.key);
+            } else try std.testing.expect(packet == null);
+        }
+    }
+    try std.testing.expectEqualStrings("x", (try decoder.feed('x')).?.key);
+    try std.testing.expect(try decoder.feed(0x1b) == null);
+    try std.testing.expectEqual(@as(i64, 10), decoder.pendingTimeoutMs());
+    try std.testing.expect(try decoder.feed(']') == null);
+    try std.testing.expectEqual(@as(i64, 50), decoder.pendingTimeoutMs());
+    try std.testing.expectEqualStrings("\x1b]", decoder.flushPending().?.key);
+    try std.testing.expect(decoder.flushPending() == null);
+    try std.testing.expectEqualStrings("y", (try decoder.feed('y')).?.key);
+    for ("\x1b[200~\x1b]10;#ffffff") |byte| try std.testing.expect(try decoder.feed(byte) == null);
+    try std.testing.expect(decoder.flushPending() == null);
+    for ("\x1b[201~", 0..) |byte, index| {
+        const packet = try decoder.feed(byte);
+        if (index == 5) try std.testing.expectEqualStrings("\x1b]10;#ffffff", packet.?.paste) else try std.testing.expect(packet == null);
+    }
+}
+
+test "terminal decoder replays authentic Source StdinBuffer fragmentation paste and timeout capture" {
+    const gpa = std.testing.allocator;
+    const captured = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/terminal-input-original-7fb.json"), .{});
+    defer captured.deinit();
+    for (captured.value.object.get("cases").?.array.items) |case| {
+        var decoder = InputDecoder.init(gpa);
+        defer decoder.deinit();
+        const expected = case.object.get("afterTimeout").?.array.items[0].object;
+        var delivered = false;
+        for (case.object.get("parts").?.array.items) |part| for (part.string) |byte| {
+            if (try decoder.feed(byte)) |packet| {
+                try std.testing.expect(!delivered);
+                delivered = true;
+                try std.testing.expectEqualStrings(expected.get("kind").?.string, if (packet == .key) "key" else "paste");
+                try std.testing.expectEqualStrings(expected.get("value").?.string, if (packet == .key) packet.key else packet.paste);
+            }
+        };
+        if (!delivered) try std.testing.expectEqualStrings(expected.get("value").?.string, decoder.flushPending().?.key);
+    }
+}
+
+pub fn applyInputSequence(gpa: std.mem.Allocator, editor: *Editor, bindings: *const keybindings.Manager, sequence: []const u8, shortcut: ?ShortcutHandler) !Disposition {
+    if (sequence.len == 0) return .keep_editing;
+    if (sequence[0] == 0x1b) return dispatchTerminalSequence(gpa, editor, bindings, sequence, shortcut);
+    if (sequence.len == 1) {
+        const byte = sequence[0];
+        if (byte == 0x7f or byte == 8) return dispatchKey(gpa, editor, bindings, "backspace", shortcut);
+        if (byte == 13) return dispatchKey(gpa, editor, bindings, "enter", shortcut);
+        if (byte == 9) return dispatchKey(gpa, editor, bindings, "tab", shortcut);
+        if (byte == 10) return dispatchKey(gpa, editor, bindings, "ctrl+j", shortcut);
+        if (byte >= 1 and byte <= 26) {
+            var buffer: [16]u8 = undefined;
+            if (ctrlKeyId(byte, &buffer)) |key| return dispatchKey(gpa, editor, bindings, key, shortcut);
+        }
+    }
+    if (shortcut) |handler| switch (try handler.handle(gpa, sequence)) {
+        .not_handled => {},
+        .handled_continue => return .keep_editing,
+        .handled_interrupt => return .interrupt,
+    };
+    if (sequence.len == 1) if (bindings.actionFor(sequence)) |action| return applyEditorAction(editor, action);
+    try editor.insert(sequence);
+    return .keep_editing;
+}
+
+pub fn renderEditorLines(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize) !@import("layout.zig").RenderedLines {
+    return renderEditorLinesPadded(gpa, editor, width_raw, 0);
+}
+
+pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize, padding_x: u8) !@import("layout.zig").RenderedLines {
+    return renderEditorLinesFocused(gpa, editor, width_raw, padding_x, true);
+}
+
+pub fn renderEditorLinesFocused(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize, padding_x: u8, focused: bool) !@import("layout.zig").RenderedLines {
+    const width = @max(@as(usize, 3), width_raw);
+    const padding = @min(@min(@as(usize, padding_x), 3), (width - 3) / 2);
+    const content_width = width - 2 - 2 * padding;
+    var lines: std.ArrayList([]u8) = .empty;
+    errdefer {
+        for (lines.items) |line| gpa.free(line);
+        lines.deinit(gpa);
+    }
+    var line: std.ArrayList(u8) = .empty;
+    defer line.deinit(gpa);
+    try line.appendNTimes(gpa, ' ', padding);
+    try line.appendSlice(gpa, "> ");
+    var column: usize = 0;
+    var index: usize = 0;
+    const text = editor.slice();
+    while (index < text.len) {
+        const cluster = @import("terminal_text.zig").nextCluster(text, index) orelse break;
+        const end = cluster.end;
+        const bytes = text[index..end];
+        const cell_width = @import("terminal_text.zig").visibleWidth(bytes);
+        if (text[index] == '\n' or (column > 0 and column + cell_width > content_width)) {
+            if (text[index] == '\n' and editor.cursor == index) {
+                if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+                try @import("cursor_markers.zig").appendFake(gpa, &line, " ");
+            }
+            try appendEditorLine(gpa, &lines, line.items);
+            line.clearRetainingCapacity();
+            try line.appendNTimes(gpa, ' ', padding);
+            try line.appendSlice(gpa, "  ");
+            column = 0;
+            if (text[index] == '\n') {
+                index += 1;
+                continue;
+            }
+        }
+        if (editor.cursor == index) {
+            if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+            try @import("cursor_markers.zig").appendFake(gpa, &line, bytes);
+        } else try line.appendSlice(gpa, bytes);
+        column += cell_width;
+        index = end;
+    }
+    if (editor.cursor == text.len) {
+        if (column >= content_width) {
+            try appendEditorLine(gpa, &lines, line.items);
+            line.clearRetainingCapacity();
+            try line.appendNTimes(gpa, ' ', padding);
+            try line.appendSlice(gpa, "  ");
+        }
+        if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+        try @import("cursor_markers.zig").appendFake(gpa, &line, " ");
+    }
+    try appendEditorLine(gpa, &lines, line.items);
+    return .{ .items = try lines.toOwnedSlice(gpa) };
+}
+
+fn appendEditorLine(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8), text: []const u8) !void {
+    const owned = try gpa.dupe(u8, text);
+    errdefer gpa.free(owned);
+    try lines.append(gpa, owned);
+}
 
 fn applyEditorAction(editor: *Editor, action: keybindings.Action) !Disposition {
     switch (action) {
@@ -507,8 +872,15 @@ pub fn readLineWithCompleterAndShortcutsPrefill(gpa: std.mem.Allocator, io: Io, 
     var raw = try RawMode.enter();
     defer raw.leave();
     try render.writeAll(io, terminal.bracketed_paste_enable);
-    defer render.writeAll(io, terminal.bracketed_paste_disable) catch {};
+    defer if (raw.restore) render.writeAll(io, terminal.bracketed_paste_disable) catch {};
+    return readEditedLine(gpa, io, reader, editor, bindings, prompt, completer, shortcut, prefill) catch |err| {
+        // Mark the terminal before both cleanup defers run.
+        if (err == error.DeadTerminal) raw.restore = false;
+        return err;
+    };
+}
 
+fn readEditedLine(gpa: std.mem.Allocator, io: Io, reader: *Io.File.Reader, editor: *Editor, bindings: *const keybindings.Manager, prompt: []const u8, completer: ?Completer, shortcut: ?ShortcutHandler, prefill: []const u8) ![]u8 {
     try editor.setText(prefill);
     var render_state: RenderState = .{};
     try redraw(io, editor, prompt, &render_state);
@@ -714,4 +1086,31 @@ test "Windows right click requests non-interrupting clipboard paste" {
         try std.testing.expect(!windowsRightClickPasteEnabled("vscode"));
         try std.testing.expect(!windowsRightClickPasteEnabled(" VSCode \r\n"));
     }
+}
+
+fn cursorAllocationProbe(gpa: std.mem.Allocator) !void {
+    var editor = Editor.init(gpa);
+    defer editor.deinit();
+    try editor.setText("a👨‍👩‍👧‍👦界\nb");
+    editor.cursor = 1;
+    for ([_]bool{ false, true }) |focused| {
+        var lines = try renderEditorLinesFocused(gpa, &editor, 8, 1, focused);
+        defer lines.deinit(gpa);
+        try @import("cursor_markers.zig").resolveLines(gpa, lines.items, true);
+    }
+}
+test "editor fake cursor owns grapheme frames and releases every failed allocator boundary" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, cursorAllocationProbe, .{});
+}
+test "unfocused editor retains fake cursor without emitting hardware cursor marker" {
+    const gpa = std.testing.allocator;
+    var editor = Editor.init(gpa);
+    defer editor.deinit();
+    try editor.setText("👨‍👩‍👧‍👦x");
+    editor.cursor = 0;
+    var lines = try renderEditorLinesFocused(gpa, &editor, 20, 0, false);
+    defer lines.deinit(gpa);
+    const markers = @import("cursor_markers.zig");
+    try std.testing.expect(std.mem.indexOf(u8, lines.items[0], markers.cursor) == null);
+    try std.testing.expect(std.mem.indexOf(u8, lines.items[0], markers.fake_start ++ "👨‍👩‍👧‍👦" ++ markers.fake_end) != null);
 }

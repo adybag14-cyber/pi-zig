@@ -1,0 +1,288 @@
+{
+  "upstream": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "node": "v24.14.0",
+  "initialized": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "tools": {},
+      "resources": {}
+    },
+    "serverInfo": {
+      "name": "reference",
+      "version": "1"
+    },
+    "instructions": "Native contract"
+  },
+  "tools": [
+    {
+      "name": "first",
+      "inputSchema": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "second",
+      "inputSchema": {}
+    }
+  ],
+  "resources": [
+    {
+      "uri": "file:///resource",
+      "name": "file:///resource"
+    }
+  ],
+  "templates": [
+    {
+      "uriTemplate": "file:///{name}",
+      "name": "file:///{name}"
+    }
+  ],
+  "resource": {
+    "contents": [
+      {
+        "uri": "file:///resource",
+        "text": "resource-text"
+      }
+    ]
+  },
+  "tool": {
+    "structuredContent": {
+      "ok": true
+    },
+    "isError": false,
+    "content": []
+  },
+  "result": {
+    "done": true
+  },
+  "progress": [
+    {
+      "progressToken": 8,
+      "progress": 1
+    }
+  ],
+  "remote": {
+    "name": "McpError",
+    "code": -32042,
+    "message": "Original remote message",
+    "data": {
+      "detail": 7
+    }
+  },
+  "errors": [
+    {
+      "message": "OriginalMcpProgress",
+      "identity": true
+    }
+  ],
+  "pending": {
+    "state": "closed",
+    "error": {
+      "name": "McpConnectionClosedError",
+      "message": "MCP connection closed"
+    },
+    "closeMs": 2
+  },
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "pi-zig",
+            "version": "1.0.3"
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "notifications/initialized"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/list"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/list",
+        "params": {
+          "cursor": "next"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "resources/list"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "resources/templates/list"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "resources/read",
+        "params": {
+          "uri": "file:///resource"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tools/call",
+        "params": {
+          "name": "first",
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "progress",
+        "params": {
+          "_meta": {
+            "progressToken": 8
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/mcp",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "failure"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/mcp",
+      "headers": {
+        "accept": "*/*",
+        "mcp-session-id": "reference-session",
+        "mcp-protocol-version": "2025-11-25"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/pending",
+      "headers": {
+        "accept": "application/json, text/event-stream",
+        "content-type": "application/json"
+      },
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "pi-zig",
+            "version": "1.0.3"
+          }
+        }
+      }
+    }
+  ]
+}

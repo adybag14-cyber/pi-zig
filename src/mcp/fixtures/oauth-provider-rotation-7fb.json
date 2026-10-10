@@ -1,0 +1,11 @@
+{
+  "first": "rotated",
+  "refreshToken": "saved-refresh",
+  "tokenRequests": 1,
+  "settingsCalls": 1,
+  "lockCalls": 2,
+  "challenges": 2,
+  "expiryFuture": true,
+  "retainedClient": "client",
+  "scopeError": "McpOAuthAuthorizationRequiredError"
+}

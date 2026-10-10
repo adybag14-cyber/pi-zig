@@ -1,0 +1,64 @@
+{
+  "checkpoint": 201,
+  "status": "in_progress",
+  "parity_complete": false,
+  "release_guard": false,
+  "upstream_pin": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "latest_reviewed_commit": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "compiled_inputs": 709,
+  "source_archive_sha256": "e8b425ac93aa46e57b6f0932ee2b73fad723934a335924ae042ea7a06a3f4074",
+  "gates": [
+    {
+      "name": "checkpoint201-final-fixed-windows-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:17:26.6703065+00:00",
+      "summary": "Build Summary: 199/199 steps succeeded; 1306/1374 tests passed (68 skipped)",
+      "log_sha256": "44e1ba872dee58bfeeb36b43e39099d9001861fe838d471680004669b27842ea"
+    },
+    {
+      "name": "checkpoint201-final-fixed-windows-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:21:39.0073022+00:00",
+      "summary": "Build Summary: 199/199 steps succeeded; 1306/1374 tests passed (68 skipped)",
+      "log_sha256": "643859e2a823a35b03bdbc990e6c4d48033a6198d4ce7e8ecef0fbe6e6f4b45c"
+    },
+    {
+      "name": "checkpoint201-final-fixed-native-linux-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:31:44.3334487+00:00",
+      "summary": "Build Summary: 195/195 steps succeeded; 1495/1507 tests passed (12 skipped)",
+      "log_sha256": "6a7c798680218a868b34f56a71d1787f5aee666beb4ba179b0411d76c0ddda06"
+    },
+    {
+      "name": "checkpoint201-final-fixed-native-linux-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:58:54.1643137+00:00",
+      "summary": "Build Summary: 195/195 steps succeeded; 1495/1507 tests passed (12 skipped)",
+      "log_sha256": "fbd7c4b9bc653e50d6309f439609b8151d3ab1c70136b010825b9f9e06807c22"
+    }
+  ],
+  "scope": [
+    "Native SDK resource discovery inline factories and owned availability DTO endpoint",
+    "Native public durable memory JSONL SQLite Session and Harness creation",
+    "Validated codemode nested-tool adapter branch store and output foundation",
+    "Native OAuth forms metadata per-server state proper-lockfile-compatible refresh lease provider and callback subset",
+    "Default static SQLite3.53.4 with official archive SHA3 provenance",
+    "Renderer startup ACK and observer-gated idle failure fixture preserving assertions",
+    "Complete bindings test-helper linkage and explicit external SQLite override paths"
+  ],
+  "retained_failed_receipts": [
+    "checkpoint201-final-default-windows-releasesafe-20261007",
+    "checkpoint201-final-default-native-linux-debug-20261007",
+    "checkpoint201-external-sqlite-override-windows-debug-20261007"
+  ],
+  "limitations": [
+    "macOS full source qualification remains required",
+    "Native SDK chat and full session/resource lifecycle still in later lane",
+    "Full durable tasks documents runtime and original SQLite physical format ongoing",
+    "Full Theme/default/TUI hydration ongoing",
+    "Complete authorize/sign-in and configured OAuth manager are later qualified/unqualified lanes, not this checkpoint",
+    "Codemode public builtin/model/search/declaration integration ongoing",
+    "Legacy repository JS host remains until native parity passes"
+  ],
+  "created_utc": "2026-10-07T20:00:22.4643259+00:00"
+}

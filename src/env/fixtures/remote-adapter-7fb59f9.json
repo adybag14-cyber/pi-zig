@@ -1,0 +1,31 @@
+{
+  "upstream": "7fb59f9",
+  "daemon": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\original-target\\debug\\pi-env.exe",
+  "files": {
+    "retainedHash": "7b9775e8d9f3677f8e0018be101f039629ed5497fe8cf7248114cd5ca285f1ed",
+    "retainedSize": 5242899,
+    "text": "﻿A\r\n🚀\nlast�",
+    "lines": [
+      "A\r",
+      "🚀",
+      "last�"
+    ],
+    "missing": "not_found",
+    "directory": "is_directory",
+    "closed": "Binary reader is closed"
+  },
+  "exec": {
+    "unicode": {
+      "exitCode": 37
+    },
+    "timeout": {
+      "code": "timeout",
+      "name": "ExecutionError"
+    },
+    "callback": "callback_error",
+    "abort": "aborted",
+    "cleanup": {
+      "exitCode": 1
+    }
+  }
+}

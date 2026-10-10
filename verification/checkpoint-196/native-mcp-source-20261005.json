@@ -1,0 +1,138 @@
+{
+  "created_utc": "2026-10-05T21:17:13.3693825+00:00",
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-runtime-20261005",
+  "branch": "port/pi-mcp-runtime-20261005",
+  "base": "fb08f5f26524b1eb84d183851291670c8098fa04",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "original_capture": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "state": "source frozen; all admitted focused Windows/Linux Debug/ReleaseSafe gates terminal passed",
+  "files": [
+    {
+      "path": "src/mcp/protocol.zig",
+      "sha256": "6e400e0150e479dbab24c107cad72a2213bcf7b221b983ac7bad2581ea529c61",
+      "bytes": 3254,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/sse.zig",
+      "sha256": "8926e1f4ebf769318a3d57f5b68e216c17231327c872c8270c984bd64975c8a1",
+      "bytes": 5221,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/transport.zig",
+      "sha256": "77580378a4f8c394e018877acc8a4f37c01f7f3a814cf95f5c93190981319292",
+      "bytes": 1300,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/stdio_transport.zig",
+      "sha256": "19ffa8a46e9e7f42d607e379d228648b40f7c4a46dd875575e7114d26663e49e",
+      "bytes": 11301,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/http_transport.zig",
+      "sha256": "042645d312a1d6b75536be07ad9e4e8b178f89220cd279a10e151745f8660158",
+      "bytes": 19257,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/session.zig",
+      "sha256": "87e6c713be8d872b27e393847862cc0add50712edac18f73b40abcf7ab9c777d",
+      "bytes": 22353,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/connection.zig",
+      "sha256": "157684933dd35dbed40e893cae12e81f559071d1a3f6423804aa6db63705dcbb",
+      "bytes": 6432,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/capabilities.zig",
+      "sha256": "b07189deeaf5f08eccada9e63bc1f4914ad86943796905a8255e28ab5851164f",
+      "bytes": 6966,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/config.zig",
+      "sha256": "aeb2610a22e4d07c73c3d0c7c975b9d6ab0c9690fbeced20b557cbb2275553c7",
+      "bytes": 17653,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/content.zig",
+      "sha256": "c4594276261b600ec996c45d4563ec9cda89281b9d8c868e0113144adcb52be1",
+      "bytes": 3090,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/runtime_fixture.zig",
+      "sha256": "b834e8c56e54e11d67ee96db7ec9926cda0e1cb9a01976617f15f810677e5d21",
+      "bytes": 4514,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/runtime_tests.zig",
+      "sha256": "d4e890189b04ad45a76b962c8107f09ff5a19fa13fdf800ddb8ab6bf4e7485d4",
+      "bytes": 31265,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp_runtime_fixture.zig",
+      "sha256": "c1a8eb12f87caa7578a8c84ac6a3f46491f384da651119cb5795ee750dadac5f",
+      "bytes": 58,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp_runtime_test.zig",
+      "sha256": "447fc9ad3ec3b15c62731b241910d99681c021b6d526be6278357412ef5f9743",
+      "bytes": 127,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/fixtures/contracts_031b.json",
+      "sha256": "7b089f1a90ad19a75fe469d957fa1bb98e05442450fb99d1b6a8289c50c02bbf",
+      "bytes": 9827,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/fixtures/client_031b.json",
+      "sha256": "9e4522f1390bd737196e8da8634f79d71db20eba5f567819972a21662c5973d5",
+      "bytes": 6412,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/fixtures/config_load_031b.json",
+      "sha256": "210a0a08572f83acd23e1d5021f444d3df8d1267b49c55e29e6bd961cf86313f",
+      "bytes": 2536,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/NATIVE_RUNTIME_CONTRACT.md",
+      "sha256": "64c3482aaaf6ffaed29942b6bf68ad61f41f6fe7a72e1cebc265e921cbeeb7f1",
+      "bytes": 7899,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/root.zig",
+      "sha256": "c44a483fe9229d9f52dae31136b26c5d19f41e468a9b4d8bb3f6e525aeae6b86",
+      "bytes": 794,
+      "integration": "narrow additive patch"
+    },
+    {
+      "path": "src/mcp/methods.zig",
+      "sha256": "d25ad042e028e428eb807242dca43052d26562bab0ef6b56fe93f9116b95426d",
+      "bytes": 1004,
+      "integration": "narrow additive patch"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "da4e4fa717ce538dbd8b049076d1f228b6e708493c1ede8e509bc6810e318b58",
+      "bytes": 51199,
+      "integration": "narrow additive patch"
+    }
+  ],
+  "notes": "Only21 paths are MCP increment; old legacy client/CLI unchanged. Previous storage/scheduler/PowerShell frozen sources and Main untouched. Apply3existing-file patch additively; do not copy wholebuild over newMain. Native API slice; OAuth/codemode/fullasync bridge limitations in contract."
+}

@@ -1,0 +1,87 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "83692682f095528f8b71652ddacff7075e36e893",
+  "previousHostedPass": {
+    "commit": "893254e1d9631416968d6a522de960bebfa998ed",
+    "run": 37200468839,
+    "windows": "success",
+    "linux": "success",
+    "macos": "success"
+  },
+  "windowsRegression": {
+    "aggregateSteps": 52,
+    "aggregateTests": 208,
+    "modulePassed": 1085,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "native-api-readonly-subscriptions": {
+      "name": "native-api-readonly-subscriptions",
+      "pid": 9316,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T12:11:57.8198390Z",
+      "launched_utc": "2026-10-04T12:11:57.8170332+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T12:12:00.5380419+00:00"
+    },
+    "native-session-readonly-contracts": {
+      "name": "native-session-readonly-contracts",
+      "pid": 5012,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-native-worker -j2 --summary all",
+      "created_utc": "2026-10-04T12:24:09.0407930Z",
+      "launched_utc": "2026-10-04T12:24:09.0378644+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T12:24:20.6903006+00:00"
+    },
+    "native-session-tree-and-hook-ownership": {
+      "name": "native-session-tree-and-hook-ownership",
+      "pid": 9116,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T12:30:56.6097200Z",
+      "launched_utc": "2026-10-04T12:30:56.6069563+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T12:30:59.5351464+00:00"
+    },
+    "native-readonly-session-full-regressions": {
+      "name": "native-readonly-session-full-regressions",
+      "pid": 1768,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T12:33:37.6970660Z",
+      "launched_utc": "2026-10-04T12:33:37.6941816+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T12:34:33.5259373+00:00"
+    },
+    "native-readonly-session-release-safe": {
+      "name": "native-readonly-session-release-safe",
+      "pid": 36980,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-04T12:35:11.0178790Z",
+      "launched_utc": "2026-10-04T12:35:11.0150137+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T12:36:27.8493965+00:00"
+    }
+  }
+}

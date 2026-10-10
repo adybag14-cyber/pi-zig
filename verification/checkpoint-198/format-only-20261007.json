@@ -1,0 +1,59 @@
+{
+  "status": "format_only",
+  "base": "bae77017de59785b75876e9b885db47771c810d2",
+  "tool": "Zig 0.16.0 standard formatter",
+  "changes": [
+    {
+      "path": "build.zig",
+      "beforeSha256": "af3f1e810777cd51753805bd780621b797200a413c995525307df3abcf7584ad",
+      "afterSha256": "0e2643afbd7fb6ebb8613f9204c438b44060bf9370b58ac8ca3ae21ec75f5df4"
+    },
+    {
+      "path": "src/agent/tools.zig",
+      "beforeSha256": "c859f0ed36d0b7bad5cfdefc9b6c0cbad60f09c650fd6f096a8aac32707b01c3",
+      "afterSha256": "9fec7fbb01bb43d3137db65592579d10a62bd0c74d4e52a10b238cc45b4ec429"
+    },
+    {
+      "path": "src/ai/openai_responses.zig",
+      "beforeSha256": "34a79a24d1e2106941b3e145d2bd7f184f3c8f993c2b0f9e2440fe471c3ccea2",
+      "afterSha256": "5f93ae5e76e489166181a9a144d501dd1a41f8b5b21067f152781c6b06a00c3c"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "beforeSha256": "6af3c779f556a712f71c0cd50c2b27fa5dff0e8af52e7ecdd8dbc2076a184af6",
+      "afterSha256": "eb1339d6ed0adfdfd8bc6ed440755dad0b2768ef1c9a430223403326baeb2804"
+    },
+    {
+      "path": "src/latest_duration_failure_test.zig",
+      "beforeSha256": "172d4d1c23560a6f1fa15f081f4bb3448def334f46480db5e8d01bb34bb75760",
+      "afterSha256": "33b194dc2d64f37176cd5030863d64f0bec8a585d0dac3bfe3d8a3fb3372657f"
+    },
+    {
+      "path": "src/main.zig",
+      "beforeSha256": "8e535f206163708183b8c4e47ae2592bec30aceb0a8d9d1241db73bed0917c31",
+      "afterSha256": "d1a1c6804fa5a998de7c1a69db42fe413a25b5e2e2ec64105426ff49ec1fb9ad"
+    },
+    {
+      "path": "src/tool_selection_process_test.zig",
+      "beforeSha256": "e51a9c5db43378bb657eef180f9c84ce64525a48966c4e1e5313d2528db87c01",
+      "afterSha256": "480e8f9ebe71fd4405a2b47a65a18e8b485e1321dbbcd0a00657c30d35b958ac"
+    }
+  ],
+  "limits": [
+    "Four fullgraphs qualifypre-format compiledsource; formattedhead hasseparatefocused/localandhostedqualification"
+  ],
+  "validation": {
+    "name": "checkpoint198-format-focused-debug-20261007",
+    "pid": 7964,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-tool-selection-process test-tool-activation-atomic test-tool-duration test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+    "created_utc": "2026-10-07T13:46:34.0738180Z",
+    "launched_utc": "2026-10-07T13:46:34.0709832+00:00",
+    "identity_captured": true,
+    "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-07T13:47:21.9785307+00:00"
+  },
+  "summary": "Build Summary: 23/23 steps succeeded; 309/311 tests passed (2 skipped)"
+}

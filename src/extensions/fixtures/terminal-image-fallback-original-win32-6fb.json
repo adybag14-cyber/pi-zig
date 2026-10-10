@@ -1,0 +1,488 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "platform": "win32",
+  "node": "24.14.0",
+  "home": "C:\\Users\\image-home",
+  "cases": [
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": null,
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": null,
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "",
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "relative a界.png",
+      "result": "[Image: relative a界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home",
+      "result": "[Image: ~ [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home/a b界.png",
+      "result": "[Image: ~/a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home\\a b界.png",
+      "result": "[Image: ~\\a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home-other/a.png",
+      "result": "[Image: C:\\Users\\image-home-other/a.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "/tmp/a b界.png",
+      "result": "[Image: /tmp/a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:\\tmp\\a b界.png",
+      "result": "[Image: C:\\tmp\\a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:/tmp/a b界.png",
+      "result": "[Image: C:/tmp/a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "C:relative.png",
+      "result": "[Image: C:relative.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "\\\\server\\share\\a b界.png",
+      "result": "[Image: \\\\server\\share\\a b界.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "file:///tmp/a.png",
+      "result": "[Image: file:///tmp/a.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "/tmp/a\u0000b.png",
+      "result": "[Image: /tmp/a\u0000b.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": null,
+      "filename": "/tmp/😀#?%.png",
+      "result": "[Image: /tmp/😀#?%.png [image/png]]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": null,
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": null,
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "",
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "relative a界.png",
+      "result": "[Image: relative a界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home",
+      "result": "[Image: ~ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home/a b界.png",
+      "result": "[Image: ~/a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home\\a b界.png",
+      "result": "[Image: ~\\a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home-other/a.png",
+      "result": "[Image: C:\\Users\\image-home-other/a.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/a b界.png",
+      "result": "[Image: /tmp/a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\tmp\\a b界.png",
+      "result": "[Image: C:\\tmp\\a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:/tmp/a b界.png",
+      "result": "[Image: C:/tmp/a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:relative.png",
+      "result": "[Image: C:relative.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "\\\\server\\share\\a b界.png",
+      "result": "[Image: \\\\server\\share\\a b界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "file:///tmp/a.png",
+      "result": "[Image: file:///tmp/a.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/a\u0000b.png",
+      "result": "[Image: /tmp/a\u0000b.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": false,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/😀#?%.png",
+      "result": "[Image: /tmp/😀#?%.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": null,
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": null,
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "",
+      "result": "[Image: [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "relative a界.png",
+      "result": "[Image: relative a界.png [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home\u001b\\~\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home/a%20b%E7%95%8C.png\u001b\\~/a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home\\a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home/a%20b%E7%95%8C.png\u001b\\~\\a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:\\Users\\image-home-other/a.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home-other/a.png\u001b\\C:\\Users\\image-home-other/a.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "/tmp/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\/tmp/a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:\\tmp\\a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\C:\\tmp\\a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:/tmp/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\C:/tmp/a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "C:relative.png",
+      "result": "[Image: C:relative.png [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "\\\\server\\share\\a b界.png",
+      "result": "[Image: \u001b]8;;file://server/share/a%20b%E7%95%8C.png\u001b\\\\\\server\\share\\a b界.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "file:///tmp/a.png",
+      "result": "[Image: file:///tmp/a.png [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "/tmp/a\u0000b.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%00b.png\u001b\\/tmp/a\u0000b.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": null,
+      "filename": "/tmp/😀#?%.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/%F0%9F%98%80%23%3F%25.png\u001b\\/tmp/😀#?%.png\u001b]8;;\u001b\\ [image/png]]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": null,
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": null,
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "",
+      "result": "[Image: [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "relative a界.png",
+      "result": "[Image: relative a界.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home\u001b\\~\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home/a%20b%E7%95%8C.png\u001b\\~/a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home\\a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home/a%20b%E7%95%8C.png\u001b\\~\\a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\Users\\image-home-other/a.png",
+      "result": "[Image: \u001b]8;;file:///C:/Users/image-home-other/a.png\u001b\\C:\\Users\\image-home-other/a.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\/tmp/a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:\\tmp\\a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\C:\\tmp\\a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:/tmp/a b界.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%20b%E7%95%8C.png\u001b\\C:/tmp/a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "C:relative.png",
+      "result": "[Image: C:relative.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "\\\\server\\share\\a b界.png",
+      "result": "[Image: \u001b]8;;file://server/share/a%20b%E7%95%8C.png\u001b\\\\\\server\\share\\a b界.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "file:///tmp/a.png",
+      "result": "[Image: file:///tmp/a.png [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/a\u0000b.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/a%00b.png\u001b\\/tmp/a\u0000b.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    },
+    {
+      "hyperlinks": true,
+      "dimensions": {
+        "widthPx": 71,
+        "heightPx": 103
+      },
+      "filename": "/tmp/😀#?%.png",
+      "result": "[Image: \u001b]8;;file:///C:/tmp/%F0%9F%98%80%23%3F%25.png\u001b\\/tmp/😀#?%.png\u001b]8;;\u001b\\ [image/png] 71x103]"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "commits": [
+    [
+      {
+        "type": "conversation",
+        "value": {
+          "id": 1
+        }
+      }
+    ],
+    [
+      {
+        "type": "submission",
+        "value": {
+          "id": 2,
+          "type": "input",
+          "conversationId": 1,
+          "requestId": "shared",
+          "status": "queued"
+        }
+      },
+      {
+        "type": "submission",
+        "value": {
+          "id": 3,
+          "type": "input",
+          "conversationId": 1,
+          "requestId": "shared",
+          "status": "queued"
+        }
+      }
+    ],
+    [
+      {
+        "type": "submission",
+        "value": {
+          "id": 3,
+          "type": "input",
+          "conversationId": 1,
+          "requestId": "moved",
+          "status": "queued"
+        }
+      }
+    ]
+  ],
+  "reads": [
+    {},
+    {
+      "shared": {
+        "id": 3,
+        "type": "input",
+        "conversationId": 1,
+        "requestId": "shared",
+        "status": "queued"
+      }
+    },
+    {
+      "moved": {
+        "id": 3,
+        "type": "input",
+        "conversationId": 1,
+        "requestId": "moved",
+        "status": "queued"
+      }
+    }
+  ],
+  "reopened": {
+    "moved": {
+      "id": 3,
+      "type": "input",
+      "conversationId": 1,
+      "requestId": "moved",
+      "status": "queued"
+    }
+  }
+}

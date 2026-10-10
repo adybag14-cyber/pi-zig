@@ -14,8 +14,19 @@
 const std = @import("std");
 const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
+const native_catalog = @import("native_catalog_publisher.zig");
 const actions_mod = @import("actions.zig");
+const command_names = @import("command_names.zig");
+const tool_activation = @import("tool_activation.zig");
 const file_permissions = @import("../file_permissions.zig");
+threadlocal var ui_prompt_draining_host: ?*Host = null;
+
+const DeferredUiPrompt = struct {
+    hook: []u8,
+    method: []u8,
+    context: ?*anyopaque,
+    consume: *const fn (?*anyopaque, *EmitResult) anyerror!void,
+};
 
 pub const ToolCost = struct {
     input: f64 = 0,
@@ -142,16 +153,22 @@ pub const ExtensionTool = struct {
     name: []const u8,
     description: []const u8,
     parameters_json: []const u8,
+    discovery_json: ?[]const u8 = null,
     execution_mode: ToolExecutionMode = .parallel,
     has_render_call: bool = false,
     has_render_result: bool = false,
     has_prepare_arguments: bool = false,
     render_shell_self: bool = false,
+    default_active: bool = true,
+    exposure: enum { direct, model_only, codemode, deferred, hidden } = .direct,
+    model_declarable: bool = true,
+    model_hidden: bool = false,
 
     pub fn deinit(self: *ExtensionTool, gpa: std.mem.Allocator) void {
         gpa.free(self.name);
         gpa.free(self.description);
         gpa.free(self.parameters_json);
+        if (self.discovery_json) |value| gpa.free(value);
         self.* = undefined;
     }
 };
@@ -214,6 +231,8 @@ pub const CommandOutput = struct {
     thinking_level: ?[]u8 = null,
     abort: bool = false,
     is_error: bool = false,
+    /// Internal CLI admission marker; user JSON cannot author this field.
+    native_invocation_failed: bool = false,
     terminate: bool = false,
     actions: actions_mod.Batch = .{},
 
@@ -308,10 +327,19 @@ pub const ExtensionManifest = struct {
     message_renderers: []const []const u8 = &.{},
     entry_renderers: []const []const u8 = &.{},
     has_markdown_transformer: bool = false,
+    has_tool_renderers: bool = false,
     entry: []const u8 = "",
     script_runtime: ?*js_runtime.Runtime = null,
+    metadata_arena: ?*std.heap.ArenaAllocator = null,
 
     pub fn deinit(self: *ExtensionManifest, gpa: std.mem.Allocator) void {
+        if (self.metadata_arena) |arena| {
+            if (self.script_runtime) |runtime| runtime.deinit();
+            arena.deinit();
+            gpa.destroy(arena);
+            self.* = undefined;
+            return;
+        }
         gpa.free(self.name);
         gpa.free(self.version);
         for (self.hooks) |h| gpa.free(h);
@@ -379,6 +407,9 @@ pub const EmitResult = struct {
 };
 
 pub const Host = struct {
+    pub const FooterModels = struct { scoped: []const @import("../ai/providers.zig").ModelInfo, available: ?[]const @import("../ai/providers.zig").ModelInfo };
+    footer_models_context: ?*anyopaque = null,
+    footer_models_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror!FooterModels = null,
     gpa: std.mem.Allocator,
     io: Io,
     extensions: std.ArrayList(ExtensionManifest) = .empty,
@@ -389,22 +420,335 @@ pub const Host = struct {
     /// Program used for upstream JavaScript/TypeScript extension execution.
     /// The default resolves through PATH and can be replaced by embedders.
     js_runtime_program: []const u8 = "node",
+    // Internal/embedder selection. Production keeps the legacy backend until
+    // the complete native extension API has passed its compatibility gates.
+    script_backend: js_runtime.Backend = .legacy,
+    native_runtime_options: js_runtime.Runtime.NativeOptions = .{},
     /// Shared native UI bridge and invocation-context snapshot propagated to
     /// every persistent script worker, including workers loaded later.
     script_ui_bridge: ?js_runtime.UiBridge = null,
+    script_renderer_bridge: ?js_runtime.RendererBridge = null,
+    script_editor_bridge: ?js_runtime.EditorBridge = null,
+    script_widget_bridge: ?js_runtime.WidgetBridge = null,
+    native_group_runtime: ?*js_runtime.Runtime = null,
+    native_catalog_source: ?native_catalog.Source = null,
+    native_catalog_publisher: ?*native_catalog.Publisher = null,
+    metadata_revision: u64 = 0,
+    metadata_owner_generation: u64 = 0,
+    registration_owner_generation: u64 = 0,
+    registration_sequence: u64 = 0,
+    registration_acknowledged_sequence: u64 = 0,
+    tool_registration_events: std.ArrayList(tool_activation.Event) = .empty,
+    activation_tracker: ?tool_activation.Tracker = null,
+    activation_explicit_selection: bool = false,
+    native_tool_selection: tool_activation.Selection = .{},
     script_context_json: ?[]u8 = null,
+    settings_snapshot_json: ?[]u8 = null,
+    ui_prompt_mutex: Io.Mutex = .init,
+    ui_prompt_drain_mutex: Io.Mutex = .init,
+    ui_prompt_events: std.ArrayList(DeferredUiPrompt) = .empty,
+    ui_prompt_failure: ?anyerror = null,
+    renderer_action_mutex: Io.Mutex = .init,
+    renderer_action_queue: ?*actions_mod.Queue = null,
+
+    /// Called only by the owner between invocations. Build every manifest
+    /// replacement before moving any Runtime view or releasing old metadata.
+    pub fn synchronizeNativeMetadata(self: *Host) !bool {
+        const runtime = self.native_group_runtime orelse return false;
+        var changed = false;
+        while (try runtime.peekMetadata()) |record| {
+            defer record.deinit();
+            try self.applyNativeMetadata(record.bytes, runtime.owner_generation);
+            runtime.commitMetadata(record.revision);
+            changed = true;
+        }
+        return changed;
+    }
+
+    fn applyNativeMetadata(self: *Host, bytes: []const u8, owner_generation: u64) !void {
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, bytes, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return error.InvalidNativeMetadata;
+        const object = parsed.value.object;
+        const version = object.get("version") orelse return error.InvalidNativeMetadata;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeMetadata;
+        const generation_value = object.get("ownerGeneration") orelse return error.InvalidNativeMetadata;
+        const revision_value = object.get("revision") orelse return error.InvalidNativeMetadata;
+        if (generation_value != .string or revision_value != .string) return error.InvalidNativeMetadata;
+        const generation = try std.fmt.parseUnsigned(u64, generation_value.string, 10);
+        const revision = try std.fmt.parseUnsigned(u64, revision_value.string, 10);
+        if (generation != owner_generation) return;
+        if (generation == self.metadata_owner_generation and revision <= self.metadata_revision) return;
+        const values = object.get("extensions") orelse return error.InvalidNativeMetadata;
+        if (values != .array or values.array.items.len > 4096) return error.InvalidNativeMetadata;
+        if (self.registration_owner_generation != 0 and self.registration_owner_generation != generation) return error.InvalidToolRegistrationOwner;
+        var events: std.ArrayList(tool_activation.Event) = .empty;
+        defer events.deinit(self.gpa);
+        var events_committed = false;
+        defer if (!events_committed) for (events.items) |*event| event.deinit(self.gpa);
+        var last_registration = self.registration_sequence;
+        if (object.get("toolRegistrations")) |registrations| {
+            if (registrations != .array or registrations.array.items.len > 4096) return error.InvalidToolRegistrationEvent;
+            for (registrations.array.items) |value| {
+                var event = try tool_activation.Event.parse(self.gpa, value);
+                errdefer event.deinit(self.gpa);
+                if (event.owner_generation != generation) return error.InvalidToolRegistrationSequence;
+                if (event.sequence <= self.registration_sequence) {
+                    if (event.sequence > self.registration_acknowledged_sequence) {
+                        var identical = false;
+                        for (self.tool_registration_events.items) |pending| if (pending.sequence == event.sequence) {
+                            identical = pending.eql(event);
+                            break;
+                        };
+                        if (!identical) return error.InvalidToolRegistrationReplay;
+                    }
+                    event.deinit(self.gpa);
+                    continue;
+                }
+                if (event.sequence != last_registration + 1) return error.InvalidToolRegistrationSequence;
+                try events.append(self.gpa, event);
+                last_registration = event.sequence;
+            }
+        }
+        if (object.get("registrationSequence")) |sequence| {
+            if (try tool_activation.Event.identifier(sequence) != last_registration) return error.InvalidToolRegistrationSequence;
+        }
+        const Replacement = struct { index: usize, manifest: ExtensionManifest };
+        var replacements: std.ArrayList(Replacement) = .empty;
+        defer replacements.deinit(self.gpa);
+        errdefer for (replacements.items) |*replacement| replacement.manifest.deinit(self.gpa);
+        for (values.array.items) |value| {
+            if (value != .object) return error.InvalidNativeMetadata;
+            const identity = value.object.get("extensionId") orelse return error.InvalidNativeMetadata;
+            const source = value.object.get("sourcePath") orelse return error.InvalidNativeMetadata;
+            if (identity != .integer or identity.integer <= 0 or source != .string) return error.InvalidNativeMetadata;
+            var owner_index: ?usize = null;
+            for (self.extensions.items, 0..) |extension, index| {
+                const view = extension.script_runtime orelse continue;
+                if (view.backend != .native or view.owner_generation != generation or view.extension_id != @as(u64, @intCast(identity.integer))) continue;
+                if (!std.mem.eql(u8, view.source_path, source.string)) return error.InvalidNativeMetadata;
+                owner_index = index;
+                break;
+            }
+            const index = owner_index orelse continue; // Removed or not yet admitted owner.
+            for (replacements.items) |previous| if (previous.index == index) return error.InvalidNativeMetadata;
+            const arena = try self.gpa.create(std.heap.ArenaAllocator);
+            arena.* = .init(self.gpa);
+            var retained = false;
+            defer if (!retained) {
+                arena.deinit();
+                self.gpa.destroy(arena);
+            };
+            var temporary: Host = .{ .gpa = arena.allocator(), .io = self.io };
+            const raw = try stringifyValue(arena.allocator(), value);
+            try temporary.loadJsonMode(raw, ".", true);
+            if (temporary.extensions.items.len != 1) return error.InvalidNativeMetadata;
+            var manifest = temporary.extensions.items[0];
+            manifest.metadata_arena = arena;
+            // CLI overrides belong to the live Host, independent of new defaults.
+            for (manifest.flags) |*flag| for (self.extensions.items[index].flags) |previous| {
+                if (!std.mem.eql(u8, flag.name, previous.name) or flag.kind != previous.kind) continue;
+                if (previous.value) |old| {
+                    flag.value = switch (old) {
+                        .boolean => |boolean| .{ .boolean = boolean },
+                        .string => |text| .{ .string = try arena.allocator().dupe(u8, text) },
+                    };
+                }
+            };
+            try replacements.append(self.gpa, .{ .index = index, .manifest = manifest });
+            retained = true;
+        }
+        if (events.items.len > 4096 -| self.tool_registration_events.items.len) return error.NativeRegistrationJournalLimit;
+        try self.tool_registration_events.ensureUnusedCapacity(self.gpa, events.items.len);
+        for (replacements.items) |*replacement| {
+            const old = &self.extensions.items[replacement.index];
+            replacement.manifest.script_runtime = old.script_runtime;
+            old.script_runtime = null;
+            old.deinit(self.gpa);
+            old.* = replacement.manifest;
+        }
+        self.metadata_owner_generation = generation;
+        self.metadata_revision = revision;
+        self.tool_registration_events.appendSliceAssumeCapacity(events.items);
+        self.registration_owner_generation = generation;
+        self.registration_sequence = last_registration;
+        events_committed = true;
+    }
+
+    /// Borrowed only until the next owner admission/acknowledgement. Main
+    /// prepares its tracker clone from these events, then clears after commit.
+    pub fn registrationEvents(self: *const Host) []const tool_activation.Event {
+        return self.tool_registration_events.items;
+    }
+    pub fn clearRegistrationEvents(self: *Host, sequence: u64) !void {
+        if (sequence > self.registration_sequence or sequence < self.registration_acknowledged_sequence) return error.InvalidToolRegistrationAcknowledgement;
+        while (self.tool_registration_events.items.len != 0 and self.tool_registration_events.items[0].sequence <= sequence) {
+            var event = self.tool_registration_events.orderedRemove(0);
+            event.deinit(self.gpa);
+        }
+        self.registration_acknowledged_sequence = sequence;
+    }
 
     pub fn deinit(self: *Host) void {
+        self.stopNativeCatalogPublisher();
+        for (self.tool_registration_events.items) |*event| event.deinit(self.gpa);
+        self.tool_registration_events.deinit(self.gpa);
         for (self.extensions.items) |*e| e.deinit(self.gpa);
         self.extensions.deinit(self.gpa);
+        if (self.native_group_runtime) |runtime| runtime.deinit();
+        if (self.activation_tracker) |*tracker| tracker.deinit();
+        if (self.renderer_action_queue) |queue| {
+            queue.deinit();
+            self.gpa.destroy(queue);
+        }
         if (self.last_hook.len > 0) self.gpa.free(self.last_hook);
         if (self.script_context_json) |context| self.gpa.free(context);
+        if (self.settings_snapshot_json) |settings| self.gpa.free(settings);
+        for (self.ui_prompt_events.items) |event| {
+            std.heap.page_allocator.free(event.hook);
+            std.heap.page_allocator.free(event.method);
+        }
+        self.ui_prompt_events.deinit(std.heap.page_allocator);
         self.* = undefined;
     }
 
+    pub fn stopNativeCatalogPublisher(self: *Host) void {
+        if (self.native_catalog_publisher) |value| value.deinit();
+        self.native_catalog_publisher = null;
+    }
+    fn ensureNativeCatalog(self: *Host) !void {
+        if (self.script_backend != .native or self.native_catalog_publisher != null) return;
+        const source = self.native_catalog_source orelse return;
+        const owner = self.native_group_runtime orelse return;
+        self.native_catalog_publisher = try native_catalog.Publisher.create(self.gpa, owner, source, .{
+            .codemode = !self.hasTool("codemode"),
+            .tool_search = !self.hasTool("tool_search"),
+            .mcp = !self.hasCommand("mcp"),
+        });
+    }
     pub fn setScriptUiBridge(self: *Host, bridge: ?js_runtime.UiBridge) void {
         self.script_ui_bridge = bridge;
         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| runtime.setUiBridge(bridge);
+    }
+
+    pub fn setScriptRendererBridge(self: *Host, bridge: ?js_runtime.RendererBridge) !void {
+        if (self.native_group_runtime) |owner| try owner.setRendererBridge(bridge);
+        self.script_renderer_bridge = bridge;
+    }
+    pub fn setScriptEditorBridge(self: *Host, bridge: ?js_runtime.EditorBridge) !void {
+        if (self.native_group_runtime) |owner| try owner.setEditorBridge(bridge);
+        self.script_editor_bridge = bridge;
+    }
+    pub fn setScriptWidgetBridge(self: *Host, bridge: ?js_runtime.WidgetBridge) !void {
+        if (self.native_group_runtime) |owner| try owner.setWidgetBridge(bridge);
+        self.script_widget_bridge = bridge;
+    }
+    /// Invalidate only after a replacement is committed and shutdown settled.
+    /// A cancelled before-switch/fork decision must not call this endpoint.
+    pub fn invalidateNativeContexts(self: *Host, reason: ?[]const u8) !usize {
+        if (self.native_group_runtime) |owner| return owner.invalidateContexts(reason);
+        return 0;
+    }
+
+    fn captureRendererActions(self: *Host, extension: *const ExtensionManifest, invocation: []const u8, raw: []const u8) !void {
+        if (!usesNativeRuntime(extension)) return;
+        var batch = try actions_mod.Batch.parseNative(self.gpa, extension.name, invocation, raw);
+        defer batch.deinit(self.gpa);
+        if (batch.isEmpty()) return;
+        self.renderer_action_mutex.lockUncancelable(self.io);
+        defer self.renderer_action_mutex.unlock(self.io);
+        if (self.renderer_action_queue == null) {
+            const queue = try self.gpa.create(actions_mod.Queue);
+            queue.* = actions_mod.Queue.init(self.gpa, self.io);
+            self.renderer_action_queue = queue;
+        }
+        const queue = self.renderer_action_queue.?;
+        if (batch.items.len > 4096 -| queue.count()) return error.ExtensionRendererActionQueueLimit;
+        try queue.enqueue(&batch);
+    }
+
+    pub fn rendererActionCount(self: *Host) usize {
+        self.renderer_action_mutex.lockUncancelable(self.io);
+        defer self.renderer_action_mutex.unlock(self.io);
+        return (if (self.renderer_action_queue) |queue| queue.count() else 0) + (if (self.native_group_runtime) |owner| owner.rendererActionCount() else 0);
+    }
+
+    pub fn transferRendererActions(self: *Host, destination: *actions_mod.Queue) !void {
+        self.renderer_action_mutex.lockUncancelable(self.io);
+        defer self.renderer_action_mutex.unlock(self.io);
+        if (self.renderer_action_queue) |queue| try queue.transferTo(destination);
+        if (self.native_group_runtime) |owner| try owner.transferRendererActions(destination);
+    }
+
+    /// Frontend observers run synchronously, but extension hooks must never
+    /// reenter the Runtime mutex held by the dialog's current invocation.
+    pub fn deferUiPromptEvent(self: *Host, hook: []const u8, method: []const u8, context: ?*anyopaque, consume: *const fn (?*anyopaque, *EmitResult) anyerror!void) void {
+        if (!self.hasHook(hook)) return;
+        self.ui_prompt_mutex.lockUncancelable(self.io);
+        defer self.ui_prompt_mutex.unlock(self.io);
+        const allocator = std.heap.page_allocator;
+        if (self.ui_prompt_events.items.len >= 256) {
+            self.ui_prompt_failure = error.ExtensionUiPromptQueueLimit;
+            return;
+        }
+        const owned_hook = allocator.dupe(u8, hook) catch |err| {
+            self.ui_prompt_failure = err;
+            return;
+        };
+        const owned_method = allocator.dupe(u8, method) catch |err| {
+            allocator.free(owned_hook);
+            self.ui_prompt_failure = err;
+            return;
+        };
+        self.ui_prompt_events.append(allocator, .{ .hook = owned_hook, .method = owned_method, .context = context, .consume = consume }) catch |err| {
+            allocator.free(owned_hook);
+            allocator.free(owned_method);
+            self.ui_prompt_failure = err;
+        };
+    }
+
+    /// Drain in FIFO after the current worker has released its invocation lock,
+    /// before the Host result reaches its caller. Hook action batches retain
+    /// their ownership through the supplied integration consumer.
+    pub fn flushUiPromptEvents(self: *Host) anyerror!void {
+        if (ui_prompt_draining_host == self) return;
+        self.ui_prompt_drain_mutex.lockUncancelable(self.io);
+        defer self.ui_prompt_drain_mutex.unlock(self.io);
+        const previous = ui_prompt_draining_host;
+        ui_prompt_draining_host = self;
+        defer ui_prompt_draining_host = previous;
+        var count: usize = 0;
+        while (true) {
+            self.ui_prompt_mutex.lockUncancelable(self.io);
+            if (self.ui_prompt_failure) |err| {
+                self.ui_prompt_failure = null;
+                self.ui_prompt_mutex.unlock(self.io);
+                return err;
+            }
+            if (self.ui_prompt_events.items.len == 0) {
+                self.ui_prompt_mutex.unlock(self.io);
+                return;
+            }
+            if (count >= 512) {
+                self.ui_prompt_mutex.unlock(self.io);
+                return error.ExtensionUiPromptDispatchLimit;
+            }
+            const event = self.ui_prompt_events.orderedRemove(0);
+            self.ui_prompt_mutex.unlock(self.io);
+            defer std.heap.page_allocator.free(event.hook);
+            defer std.heap.page_allocator.free(event.method);
+            var payload: std.Io.Writer.Allocating = .init(self.gpa);
+            defer payload.deinit();
+            try payload.writer.writeAll("{\"reason\":\"ui_prompt\",\"method\":");
+            try std.json.Stringify.value(event.method, .{}, &payload.writer);
+            try payload.writer.writeAll(",\"kind\":");
+            try std.json.Stringify.value(event.method, .{}, &payload.writer);
+            try payload.writer.writeByte('}');
+            var emitted = try self.executeHook(event.hook, payload.written());
+            defer emitted.deinit(self.gpa);
+            try event.consume(event.context, &emitted);
+            count += 1;
+        }
     }
 
     /// Return the persistent JavaScript worker that owns an extension action.
@@ -422,9 +766,15 @@ pub const Host = struct {
         var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidJavaScriptExtensionContext;
-        const owned = try self.gpa.dupe(u8, raw);
+        var sequence_buffer: [32]u8 = undefined;
+        if (self.script_backend == .native) {
+            const acknowledgement = try std.fmt.bufPrint(&sequence_buffer, "{d}", .{self.registration_acknowledged_sequence});
+            try parsed.value.object.put(parsed.arena.allocator(), "nativeRegistrationSequence", .{ .string = acknowledgement });
+        }
+        const owned = try stringifyValue(self.gpa, parsed.value);
         errdefer self.gpa.free(owned);
-        for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| try runtime.setContextJson(raw);
+        for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| try runtime.setContextJson(owned);
+        try self.ensureNativeCatalog();
         if (self.script_context_json) |old| self.gpa.free(old);
         self.script_context_json = owned;
     }
@@ -492,7 +842,11 @@ pub const Host = struct {
     }
 
     fn loadScript(self: *Host, source_path: []const u8) !void {
-        var started = try js_runtime.Runtime.start(self.gpa, self.io, source_path, self.js_runtime_program);
+        if (self.script_backend == .native) return self.loadNativeGroupSource(source_path);
+        var started = try switch (self.script_backend) {
+            .legacy => js_runtime.Runtime.start(self.gpa, self.io, source_path, self.js_runtime_program),
+            .native => js_runtime.Runtime.startNative(self.gpa, self.io, source_path, self.native_runtime_options),
+        };
         errdefer started.runtime.deinit();
         started.runtime.timeout_ms = if (self.hook_timeout_seconds <= 0)
             0
@@ -507,7 +861,94 @@ pub const Host = struct {
         self.extensions.items[previous_len].script_runtime = started.runtime;
     }
 
+    fn loadNativeGroupSource(self: *Host, source_path: []const u8) !void {
+        var created = false;
+        var group = self.native_group_runtime;
+        var raw_manifest: []u8 = undefined;
+        if (group) |existing| {
+            var request: std.Io.Writer.Allocating = .init(self.gpa);
+            defer request.deinit();
+            try request.writer.writeAll("{\"kind\":\"group_add_source\",\"sourcePath\":");
+            try std.json.Stringify.value(source_path, .{}, &request.writer);
+            try request.writer.writeByte('}');
+            raw_manifest = try existing.invokeGroupRequest(1, request.written(), null);
+        } else {
+            var startup_options = self.native_runtime_options;
+            startup_options.startup_context_json = self.script_context_json orelse startup_options.startup_context_json;
+            const started = try js_runtime.Runtime.startNativeGroup(self.gpa, self.io, &.{source_path}, startup_options);
+            group = started.runtime;
+            created = true;
+            var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, started.manifest_json, .{}) catch |err| {
+                self.gpa.free(started.manifest_json);
+                started.runtime.deinit();
+                return err;
+            };
+            defer parsed.deinit();
+            defer self.gpa.free(started.manifest_json);
+            if (parsed.value != .array or parsed.value.array.items.len != 1) {
+                started.runtime.deinit();
+                return error.InvalidJavaScriptExtensionHandshake;
+            }
+            raw_manifest = stringifyValue(self.gpa, parsed.value.array.items[0]) catch |err| {
+                started.runtime.deinit();
+                return err;
+            };
+        }
+        errdefer if (created) group.?.deinit();
+        defer self.gpa.free(raw_manifest);
+        var manifest = try std.json.parseFromSlice(std.json.Value, self.gpa, raw_manifest, .{});
+        defer manifest.deinit();
+        if (manifest.value != .object) return error.InvalidJavaScriptExtensionHandshake;
+        const identity = manifest.value.object.get("extensionId") orelse return error.InvalidJavaScriptExtensionHandshake;
+        if (identity != .integer or identity.integer <= 0 or identity.integer > 9_007_199_254_740_991) return error.InvalidJavaScriptExtensionHandshake;
+        var committed = false;
+        errdefer if (!committed and !created) {
+            var cleanup_buffer: [128]u8 = undefined;
+            const cleanup = std.fmt.bufPrint(&cleanup_buffer, "{{\"kind\":\"group_remove_source\",\"ownerId\":{d}}}", .{identity.integer}) catch unreachable;
+            if (group.?.invokeGroupRequest(1, cleanup, null)) |result| self.gpa.free(result) else |_| {}
+        };
+        const view = try group.?.extensionView(@intCast(identity.integer), source_path);
+        errdefer view.deinit();
+        view.timeout_ms = if (self.hook_timeout_seconds <= 0) 0 else @as(u64, @intCast(self.hook_timeout_seconds)) *| 1000;
+        view.setUiBridge(self.script_ui_bridge);
+        if (self.script_context_json) |context| try view.setContextJson(context);
+        if (created) if (self.script_renderer_bridge) |bridge| try group.?.setRendererBridge(bridge);
+        if (created) if (self.script_editor_bridge) |bridge| try group.?.setEditorBridge(bridge);
+        if (created) if (self.script_widget_bridge) |bridge| try group.?.setWidgetBridge(bridge);
+        const previous_len = self.extensions.items.len;
+        try self.loadJsonMode(raw_manifest, std.fs.path.dirname(source_path) orelse ".", true);
+        if (self.extensions.items.len != previous_len + 1) return error.InvalidJavaScriptExtensionHandshake;
+        self.extensions.items[previous_len].script_runtime = view;
+        self.native_group_runtime = group;
+        committed = true;
+    }
+
     pub fn loadJson(self: *Host, raw: []const u8, base_dir: []const u8) !void {
+        return self.loadJsonMode(raw, base_dir, false);
+    }
+
+    fn loadJsonMode(self: *Host, raw: []const u8, base_dir: []const u8, native_shadows: bool) !void {
+        // Build the entire manifest before publishing it. All partially
+        // initialized strings/lists share one owner when allocation fails.
+        const arena = try self.gpa.create(std.heap.ArenaAllocator);
+        arena.* = .init(self.gpa);
+        errdefer {
+            arena.deinit();
+            self.gpa.destroy(arena);
+        }
+        var temporary: Host = .{ .gpa = arena.allocator(), .io = self.io };
+        // Borrow existing descriptors for cross-extension collision checks;
+        // only the new descriptor belongs to this provisional arena.
+        try temporary.extensions.appendSlice(arena.allocator(), self.extensions.items);
+        const previous_count = temporary.extensions.items.len;
+        try temporary.loadJsonModeImpl(raw, base_dir, native_shadows);
+        std.debug.assert(temporary.extensions.items.len == previous_count + 1);
+        var manifest = temporary.extensions.items[previous_count];
+        manifest.metadata_arena = arena;
+        try self.extensions.append(self.gpa, manifest);
+    }
+
+    fn loadJsonModeImpl(self: *Host, raw: []const u8, base_dir: []const u8, native_shadows: bool) !void {
         var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidManifest;
@@ -539,7 +980,7 @@ pub const Host = struct {
                 if (tool_value != .object) return error.InvalidManifest;
                 const tool_name = tool_value.object.get("name") orelse return error.InvalidManifest;
                 if (tool_name != .string or tool_name.string.len == 0) return error.InvalidManifest;
-                if (containsTool(tools_list.items, tool_name.string) or self.hasTool(tool_name.string)) return error.DuplicateToolName;
+                if (containsTool(tools_list.items, tool_name.string) or (!native_shadows and self.hasTool(tool_name.string))) return error.DuplicateToolName;
                 const description_value = tool_value.object.get("description");
                 const description = if (description_value) |value|
                     (if (value == .string) value.string else return error.InvalidManifest)
@@ -551,6 +992,11 @@ pub const Host = struct {
                     break :blk try stringifyValue(self.gpa, value);
                 } else try self.gpa.dupe(u8, "{\"type\":\"object\",\"properties\":{}}");
                 errdefer self.gpa.free(parameters_json);
+                var discovery_fields: std.json.ObjectMap = .empty;
+                defer discovery_fields.deinit(self.gpa);
+                for ([_][]const u8{ "namespace", "promptGuidelines", "outputSchema" }) |field| if (tool_value.object.get(field)) |value| try discovery_fields.put(self.gpa, field, value);
+                const discovery_json = if (discovery_fields.count() > 0) try stringifyValue(self.gpa, .{ .object = discovery_fields }) else null;
+                errdefer if (discovery_json) |value| self.gpa.free(value);
                 const execution_mode: ToolExecutionMode = if (tool_value.object.get("executionMode")) |mode| blk: {
                     if (mode != .string) return error.InvalidManifest;
                     if (std.mem.eql(u8, mode.string, "sequential")) break :blk .sequential;
@@ -560,6 +1006,12 @@ pub const Host = struct {
                 const has_render_call = try optionalBoolean(tool_value.object, "hasRenderCall", false);
                 const has_render_result = try optionalBoolean(tool_value.object, "hasRenderResult", false);
                 const has_prepare_arguments = try optionalBoolean(tool_value.object, "hasPrepareArguments", false);
+                const default_active = try optionalBoolean(tool_value.object, "defaultActive", true);
+                const model_declarable = if (tool_value.object.get("exposure")) |exposure| blk: {
+                    if (exposure != .string) return error.InvalidManifest;
+                    break :blk std.mem.eql(u8, exposure.string, "direct") or std.mem.eql(u8, exposure.string, "model-only");
+                } else true;
+                const model_hidden = if (tool_value.object.get("exposure")) |exposure| std.mem.eql(u8, exposure.string, "hidden") else false;
                 const render_shell_self = if (tool_value.object.get("renderShell")) |shell| blk: {
                     if (shell != .string) return error.InvalidManifest;
                     if (std.mem.eql(u8, shell.string, "self")) break :blk true;
@@ -570,11 +1022,16 @@ pub const Host = struct {
                     .name = try self.gpa.dupe(u8, tool_name.string),
                     .description = try self.gpa.dupe(u8, description),
                     .parameters_json = parameters_json,
+                    .discovery_json = discovery_json,
                     .execution_mode = execution_mode,
                     .has_render_call = has_render_call,
                     .has_render_result = has_render_result,
                     .has_prepare_arguments = has_prepare_arguments,
                     .render_shell_self = render_shell_self,
+                    .default_active = default_active,
+                    .exposure = if (tool_value.object.get("exposure")) |value| (if (std.mem.eql(u8, value.string, "model-only")) .model_only else if (std.mem.eql(u8, value.string, "codemode")) .codemode else if (std.mem.eql(u8, value.string, "deferred")) .deferred else if (std.mem.eql(u8, value.string, "hidden")) .hidden else .direct) else .direct,
+                    .model_declarable = model_declarable,
+                    .model_hidden = model_hidden,
                 });
             }
         }
@@ -590,7 +1047,7 @@ pub const Host = struct {
                 if (command_value != .object) return error.InvalidManifest;
                 const command_name = command_value.object.get("name") orelse return error.InvalidManifest;
                 if (command_name != .string or command_name.string.len == 0) return error.InvalidManifest;
-                if (containsCommand(commands_list.items, command_name.string) or self.hasCommand(command_name.string)) return error.DuplicateCommandName;
+                if (containsCommand(commands_list.items, command_name.string) or (!native_shadows and self.hasCommand(command_name.string))) return error.DuplicateCommandName;
                 const description_value = command_value.object.get("description");
                 const description = if (description_value) |value|
                     (if (value == .string) value.string else return error.InvalidManifest)
@@ -720,6 +1177,7 @@ pub const Host = struct {
         }
         try parseUniqueStringArray(self.gpa, parsed.value.object, "entryRenderers", &entry_renderers_list);
         const has_markdown_transformer = try optionalBoolean(parsed.value.object, "hasMarkdownTransformer", false);
+        const has_tool_renderers = try optionalBoolean(parsed.value.object, "hasToolRenderers", false);
 
         var entry: []const u8 = "";
         if (parsed.value.object.get("entry")) |e| {
@@ -743,6 +1201,7 @@ pub const Host = struct {
             .message_renderers = try message_renderers_list.toOwnedSlice(self.gpa),
             .entry_renderers = try entry_renderers_list.toOwnedSlice(self.gpa),
             .has_markdown_transformer = has_markdown_transformer,
+            .has_tool_renderers = has_tool_renderers,
             .entry = entry,
             .script_runtime = null,
         });
@@ -825,6 +1284,7 @@ pub const Host = struct {
                 continue;
             };
             defer self.gpa.free(raw);
+            try self.flushUiPromptEvents();
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) continue;
             validateJson(self.gpa, trimmed) catch {
@@ -834,7 +1294,7 @@ pub const Host = struct {
                 });
                 continue;
             };
-            var action_batch = actions_mod.Batch.parse(self.gpa, ext.name, hook, trimmed) catch |err| {
+            var action_batch = (if (usesNativeRuntime(ext)) actions_mod.Batch.parseNative(self.gpa, ext.name, hook, trimmed) else actions_mod.Batch.parse(self.gpa, ext.name, hook, trimmed)) catch |err| {
                 try errors.append(self.gpa, .{
                     .extension_name = try self.gpa.dupe(u8, ext.name),
                     .message = try std.fmt.allocPrint(self.gpa, "extension returned invalid action queue: {s}", .{@errorName(err)}),
@@ -863,12 +1323,15 @@ pub const Host = struct {
         flags_json: []const u8,
     ) ![]u8 {
         if (ext.script_runtime) |runtime| {
-            return switch (kind) {
+            const result = try switch (kind) {
                 .hook => runtime.invokeHook(name, argument, flags_json),
                 .tool => runtime.invokeTool(name, argument, flags_json),
                 .command => runtime.invokeCommand(name, argument, flags_json),
                 .shortcut => runtime.invokeShortcut(name, flags_json),
             };
+            errdefer self.gpa.free(result);
+            try self.flushUiPromptEvents();
+            return result;
         }
         if (ext.entry.len == 0) return error.ExtensionHasNoExecutableEntry;
         const mode = switch (kind) {
@@ -894,21 +1357,74 @@ pub const Host = struct {
         return self.gpa.dupe(u8, std.mem.trim(u8, result.stdout, " \t\r\n"));
     }
 
+    /// Registration defaults for the source-order winning tool. This is not
+    /// the selected active set, which the owner maintains independently.
+    pub fn defaultToolActivation(self: *const Host, name: []const u8) ?bool {
+        for (self.extensions.items) |extension| for (extension.tools) |tool| {
+            if (std.mem.eql(u8, tool.name, name)) return tool.default_active and tool.model_declarable;
+        };
+        return null;
+    }
+
+    /// Request a cached SDK snapshot on the worker owner thread. The returned
+    /// value belongs to the caller and has no QuickJS references. Null means
+    /// the requested runtime has not published or has been retired.
+    pub fn sdkAvailabilitySnapshot(self: *Host, gpa: std.mem.Allocator, runtime_id: u64) !?@import("native_sdk_availability_protocol.zig").Snapshot {
+        const runtime = self.native_group_runtime orelse return null;
+        if (runtime_id > 9007199254740991) return error.InvalidNativeSDKRuntime;
+        const request = if (runtime_id == 0)
+            try self.gpa.dupe(u8, "{\"kind\":\"sdk_availability_snapshot\"}")
+        else
+            try std.fmt.allocPrint(self.gpa, "{{\"kind\":\"sdk_availability_snapshot\",\"runtimeId\":{d}}}", .{runtime_id});
+        defer self.gpa.free(request);
+        const response = try runtime.invokeGroupRequest(1, request, null);
+        defer self.gpa.free(response);
+        return @import("native_sdk_availability_protocol.zig").decodeResponse(gpa, response);
+    }
+
     pub fn hasCommand(self: *const Host, name: []const u8) bool {
+        if (self.script_backend == .native) {
+            const resolved = self.resolvedCommandNames() catch return false;
+            defer command_names.deinit(self.gpa, resolved);
+            for (resolved) |command| if (std.mem.eql(u8, command.invocation_name, name)) return true;
+            return false;
+        }
         for (self.extensions.items) |ext| {
             for (ext.commands) |command| if (std.mem.eql(u8, command.name, name)) return true;
         }
         return false;
     }
 
+    pub fn resolvedCommandNames(self: *const Host) ![]command_names.Resolved {
+        var registrations: std.ArrayList(command_names.Registration) = .empty;
+        defer registrations.deinit(self.gpa);
+        for (self.extensions.items, 0..) |extension, index| for (extension.commands) |command| {
+            try registrations.append(self.gpa, .{ .owner_index = index, .name = command.name });
+        };
+        return command_names.resolve(self.gpa, registrations.items);
+    }
+
     /// Execute an extension-owned slash command. Commands are immediate native
     /// actions: they may emit a user-visible message, provide a prompt for the
     /// agent, request termination, or combine those actions in one JSON result.
     pub fn executeCommand(self: *Host, name: []const u8, raw_arguments: []const u8) !?CommandOutput {
-        for (self.extensions.items) |*ext| {
+        var owner_index: ?usize = null;
+        var registered_name: []const u8 = name;
+        if (self.script_backend == .native) {
+            const resolved = try self.resolvedCommandNames();
+            defer command_names.deinit(self.gpa, resolved);
+            for (resolved) |command| if (std.mem.eql(u8, command.invocation_name, name)) {
+                owner_index = command.owner_index;
+                registered_name = command.name;
+                break;
+            };
+            if (owner_index == null) return null;
+        }
+        for (self.extensions.items, 0..) |*ext, index| {
+            if (owner_index) |selected| if (selected != index) continue;
             var owns = false;
             for (ext.commands) |command| {
-                if (std.mem.eql(u8, command.name, name)) {
+                if (std.mem.eql(u8, command.name, registered_name)) {
                     owns = true;
                     break;
                 }
@@ -917,12 +1433,12 @@ pub const Host = struct {
             if (ext.entry.len == 0 and ext.script_runtime == null) return try errorCommandOutput(self.gpa, "extension command has no executable entry");
             const flags_json = try self.flagsJson(ext);
             defer self.gpa.free(flags_json);
-            const raw = self.runExtension(ext, .command, name, raw_arguments, flags_json) catch |err|
-                return try errorCommandOutputFmt(self.gpa, "extension command execution failed: {s}", .{@errorName(err)});
+            const raw = self.runExtension(ext, .command, registered_name, raw_arguments, flags_json) catch |err|
+                return try self.failedCommandOutput(ext, err, "command");
             defer self.gpa.free(raw);
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return CommandOutput{};
-            return parseCommandOutput(self.gpa, ext.name, name, trimmed) catch try errorCommandOutput(self.gpa, "extension command returned invalid JSON result");
+            return parseCommandOutputMode(self.gpa, ext.name, name, trimmed, usesNativeRuntime(ext)) catch try errorCommandOutput(self.gpa, "extension command returned invalid JSON result");
         }
         return null;
     }
@@ -937,6 +1453,22 @@ pub const Host = struct {
             }
         }
         return false;
+    }
+
+    fn failedCommandOutput(self: *Host, extension: *const ExtensionManifest, failure: anyerror, kind: []const u8) !CommandOutput {
+        if (extension.script_runtime) |runtime| {
+            if (runtime.backend == .native and failure == error.JavaScriptExtensionExecutionFailed) {
+                const message = try self.gpa.dupe(u8, runtime.lastError() orelse @errorName(failure));
+                errdefer self.gpa.free(message);
+                var queue = actions_mod.Queue.init(self.gpa, self.io);
+                defer queue.deinit();
+                try self.transferRendererActions(&queue);
+                // Admit at this invocation boundary, rather than waiting for
+                // shutdown or a later unrelated invocation to drain the owner.
+                return .{ .message = message, .is_error = true, .native_invocation_failed = true, .actions = .{ .items = try queue.drain() } };
+            }
+        }
+        return errorCommandOutputFmt(self.gpa, "extension {s} execution failed: {s}", .{ kind, @errorName(failure) });
     }
 
     pub fn executeShortcut(self: *Host, key: []const u8) !?CommandOutput {
@@ -956,11 +1488,11 @@ pub const Host = struct {
             const flags_json = try self.flagsJson(ext);
             defer self.gpa.free(flags_json);
             const raw = self.runExtension(ext, .shortcut, key, "{}", flags_json) catch |err|
-                return try errorCommandOutputFmt(self.gpa, "extension shortcut execution failed: {s}", .{@errorName(err)});
+                return try self.failedCommandOutput(ext, err, "shortcut");
             defer self.gpa.free(raw);
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return CommandOutput{};
-            return parseCommandOutput(self.gpa, ext.name, key, trimmed) catch try errorCommandOutput(self.gpa, "extension shortcut returned invalid JSON result");
+            return parseCommandOutputMode(self.gpa, ext.name, key, trimmed, usesNativeRuntime(ext)) catch try errorCommandOutput(self.gpa, "extension shortcut returned invalid JSON result");
         }
         return null;
     }
@@ -1045,14 +1577,15 @@ pub const Host = struct {
                     break :blk runtime.invokeToolCallStreaming(tool_call_id, name, arguments_json, flags_json, abort_flag, LiveUpdateAdapter.forward, &adapter) catch |err|
                         return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
                 }
-                break :blk runtime.invokeTool(name, arguments_json, flags_json) catch |err|
+                break :blk runtime.invokeToolCall(tool_call_id, name, arguments_json, flags_json, abort_flag) catch |err|
                     return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
             } else self.runExtension(ext, .tool, name, arguments_json, flags_json) catch |err|
                 return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
             defer self.gpa.free(raw);
+            self.flushUiPromptEvents() catch |err| return try errorToolOutputFmt(self.gpa, "extension UI prompt hook failed: {s}", .{@errorName(err)});
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return try errorToolOutput(self.gpa, "extension tool returned no result");
-            var output = parseToolOutput(self.gpa, ext.name, name, trimmed) catch
+            var output = parseToolOutputMode(self.gpa, ext.name, name, trimmed, usesNativeRuntime(ext)) catch
                 return try errorToolOutput(self.gpa, "extension tool returned invalid JSON result");
             errdefer output.deinit(self.gpa);
             if (captured_updates.items.len > 0) {
@@ -1091,6 +1624,7 @@ pub const Host = struct {
             try payload.writer.print(",\"expanded\":{},\"outputPad\":{d},\"width\":{d}}}", .{ expanded, output_pad, width });
             const raw = try runtime.invokeRenderer("render_message", custom_type, payload.written());
             defer self.gpa.free(raw);
+            try self.captureRendererActions(ext, "render_message", raw);
             return try parseRenderedLines(self.gpa, raw);
         }
         return null;
@@ -1116,6 +1650,7 @@ pub const Host = struct {
             try payload.writer.print(",\"expanded\":{},\"width\":{d}}}", .{ expanded, width });
             const raw = try runtime.invokeRenderer("render_entry", custom_type, payload.written());
             defer self.gpa.free(raw);
+            try self.captureRendererActions(ext, "render_entry", raw);
             return try parseRenderedLines(self.gpa, raw);
         }
         return null;
@@ -1148,6 +1683,7 @@ pub const Host = struct {
             try payload.writer.print(",\"isStreaming\":{},\"availableWidth\":{d}}}", .{ is_streaming, available_width });
             const raw = runtime.invokeRenderer("transform_markdown", "", payload.written()) catch continue;
             defer self.gpa.free(raw);
+            try self.captureRendererActions(ext, "transform_markdown", raw);
             const next = parseTransformedMarkdown(self.gpa, raw) catch continue;
             self.gpa.free(current);
             current = next;
@@ -1171,6 +1707,7 @@ pub const Host = struct {
             try payload.writer.writeByte('}');
             const raw = try runtime.invokeRenderer("prepare_tool_arguments", tool_name, payload.written());
             defer self.gpa.free(raw);
+            try self.captureRendererActions(ext, "prepare_tool_arguments", raw);
             var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{});
             defer parsed.deinit();
             if (parsed.value != .object) return error.InvalidPreparedToolArguments;
@@ -1192,10 +1729,30 @@ pub const Host = struct {
         expanded: bool,
         width: usize,
     ) !?[]u8 {
+        return self.renderToolCallPadded(tool_name, tool_call_id, arguments_json, expanded, width, 1);
+    }
+
+    pub fn renderToolCallPadded(
+        self: *Host,
+        tool_name: []const u8,
+        tool_call_id: []const u8,
+        arguments_json: []const u8,
+        expanded: bool,
+        width: usize,
+        output_pad: usize,
+    ) !?[]u8 {
         try validateObjectJson(self.gpa, arguments_json);
         for (self.extensions.items) |*ext| {
-            const tool = findTool(ext.tools, tool_name) orelse continue;
-            if (!tool.has_render_call) return null;
+            const tool = findTool(ext.tools, tool_name);
+            if (tool == null and !ext.has_tool_renderers) continue;
+            if (tool == null and ext.has_tool_renderers) for (self.extensions.items) |other| {
+                if (findTool(other.tools, tool_name) != null) {
+                    const current = ext.script_runtime orelse return error.NativeCrossWorkerRendererResolutionUnsupported;
+                    const base = other.script_runtime orelse return error.NativeCrossWorkerRendererResolutionUnsupported;
+                    if (current.shared_owner == null or current.shared_owner != base.shared_owner) return error.NativeCrossWorkerRendererResolutionUnsupported;
+                }
+            };
+            if (!ext.has_tool_renderers and !tool.?.has_render_call) return null;
             const runtime = ext.script_runtime orelse return null;
             var payload: std.Io.Writer.Allocating = .init(self.gpa);
             defer payload.deinit();
@@ -1203,10 +1760,13 @@ pub const Host = struct {
             try std.json.Stringify.value(tool_call_id, .{}, &payload.writer);
             try payload.writer.writeAll(",\"args\":");
             try payload.writer.writeAll(arguments_json);
-            try payload.writer.print(",\"expanded\":{},\"isPartial\":false,\"executionStarted\":true,\"argsComplete\":true,\"width\":{d}}}", .{ expanded, width });
+            try payload.writer.print(",\"expanded\":{},\"isPartial\":false,\"executionStarted\":true,\"argsComplete\":true,\"outputPad\":{d},\"width\":{d}}}", .{ expanded, output_pad, width });
             const raw = try runtime.invokeRenderer("render_tool_call", tool_name, payload.written());
             defer self.gpa.free(raw);
-            return try parseRenderedLines(self.gpa, raw);
+            try self.captureRendererActions(ext, "render_tool_call", raw);
+            if (try parseRenderedLines(self.gpa, raw)) |lines| return lines;
+            if (runtime.shared_owner != null) return null;
+            if (!ext.has_tool_renderers) return null;
         }
         return null;
     }
@@ -1285,10 +1845,36 @@ pub const Host = struct {
         show_images: bool,
         width: usize,
     ) !?[]u8 {
+        return self.renderToolResultRichImagesTimed(tool_name, tool_call_id, content, is_error, details_json, images, expanded, is_partial, show_images, width, null, 1);
+    }
+
+    pub fn renderToolResultRichImagesTimed(
+        self: *Host,
+        tool_name: []const u8,
+        tool_call_id: []const u8,
+        content: []const u8,
+        is_error: bool,
+        details_json: ?[]const u8,
+        images: []const ToolImage,
+        expanded: bool,
+        is_partial: bool,
+        show_images: bool,
+        width: usize,
+        duration_ms: ?u64,
+        output_pad: usize,
+    ) !?[]u8 {
         if (details_json) |details| try validateJson(self.gpa, details);
         for (self.extensions.items) |*ext| {
-            const tool = findTool(ext.tools, tool_name) orelse continue;
-            if (!tool.has_render_result) return null;
+            const tool = findTool(ext.tools, tool_name);
+            if (tool == null and !ext.has_tool_renderers) continue;
+            if (tool == null and ext.has_tool_renderers) for (self.extensions.items) |other| {
+                if (findTool(other.tools, tool_name) != null) {
+                    const current = ext.script_runtime orelse return error.NativeCrossWorkerRendererResolutionUnsupported;
+                    const base = other.script_runtime orelse return error.NativeCrossWorkerRendererResolutionUnsupported;
+                    if (current.shared_owner == null or current.shared_owner != base.shared_owner) return error.NativeCrossWorkerRendererResolutionUnsupported;
+                }
+            };
+            if (!ext.has_tool_renderers and !tool.?.has_render_result) return null;
             const runtime = ext.script_runtime orelse return null;
             var payload: std.Io.Writer.Allocating = .init(self.gpa);
             defer payload.deinit();
@@ -1316,10 +1902,15 @@ pub const Host = struct {
                 try payload.writer.writeAll(details)
             else
                 try payload.writer.writeAll("null");
-            try payload.writer.print(",\"isError\":{}}},\"isError\":{},\"expanded\":{},\"isPartial\":{},\"showImages\":{},\"executionStarted\":true,\"argsComplete\":true,\"width\":{d}}}", .{ is_error, is_error, expanded, is_partial, show_images, width });
+            try payload.writer.print(",\"isError\":{}}},\"isError\":{},\"expanded\":{},\"isPartial\":{},\"showImages\":{},\"executionStarted\":true,\"argsComplete\":true,\"outputPad\":{d},\"width\":{d}", .{ is_error, is_error, expanded, is_partial, show_images, output_pad, width });
+            if (!is_partial) if (duration_ms) |duration| try payload.writer.print(",\"durationMs\":{d}", .{duration});
+            try payload.writer.writeByte('}');
             const raw = try runtime.invokeRenderer("render_tool_result", tool_name, payload.written());
             defer self.gpa.free(raw);
-            return try parseRenderedLines(self.gpa, raw);
+            try self.captureRendererActions(ext, "render_tool_result", raw);
+            if (try parseRenderedLines(self.gpa, raw)) |lines| return lines;
+            if (runtime.shared_owner != null) return null;
+            if (!ext.has_tool_renderers) return null;
         }
         return null;
     }
@@ -1331,11 +1922,29 @@ pub const Host = struct {
         return false;
     }
 
+    /// Release native visual-row state only after its frontend row retires.
+    /// Final execution and subsequent resize/expand redraws retain that state.
+    pub fn retireToolRenderer(self: *Host, tool_name: []const u8, tool_call_id: []const u8, generation: ?u64) !void {
+        for (self.extensions.items) |*extension| {
+            if (findTool(extension.tools, tool_name) == null and !extension.has_tool_renderers) continue;
+            const runtime = extension.script_runtime orelse continue;
+            if (runtime.backend != .native) continue;
+            var payload: std.Io.Writer.Allocating = .init(self.gpa);
+            defer payload.deinit();
+            try payload.writer.writeAll("{\"toolCallId\":");
+            try std.json.Stringify.value(tool_call_id, .{}, &payload.writer);
+            if (generation) |value| try payload.writer.print(",\"rowGeneration\":{d}", .{value});
+            try payload.writer.writeByte('}');
+            const response = try runtime.invokeRenderer("renderer_retire", tool_name, payload.written());
+            self.gpa.free(response);
+        }
+    }
+
     pub fn applyCliFlag(self: *Host, name: []const u8, value: ?[]const u8) !void {
         for (self.extensions.items) |*ext| {
             for (ext.flags) |*flag| {
                 if (!std.mem.eql(u8, flag.name, name)) continue;
-                try flag.setCliValue(self.gpa, value);
+                try flag.setCliValue(if (ext.metadata_arena) |arena| arena.allocator() else self.gpa, value);
                 return;
             }
         }
@@ -1467,14 +2076,21 @@ fn containsTool(items: []const ExtensionTool, needle: []const u8) bool {
     return false;
 }
 
+fn usesNativeRuntime(extension: *const ExtensionManifest) bool {
+    return if (extension.script_runtime) |runtime| runtime.backend == .native else false;
+}
+
 fn stringifyValue(gpa: std.mem.Allocator, value: std.json.Value) ![]u8 {
-    var out: std.Io.Writer.Allocating = .init(gpa);
-    errdefer out.deinit();
-    try std.json.Stringify.value(value, .{}, &out.writer);
-    return try out.toOwnedSlice();
+    // Allocating writers report WriteFailed when their allocator fails.
+    // The standard owned-value helper preserves the OutOfMemory identity.
+    return std.json.Stringify.valueAlloc(gpa, value, .{});
 }
 
 fn parseCommandOutput(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, raw: []const u8) !CommandOutput {
+    return parseCommandOutputMode(gpa, extension_name, invocation, raw, false);
+}
+
+fn parseCommandOutputMode(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, raw: []const u8, native_origins: bool) !CommandOutput {
     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
     defer parsed.deinit();
     if (parsed.value != .object) return error.InvalidCommandOutput;
@@ -1519,7 +2135,7 @@ fn parseCommandOutput(gpa: std.mem.Allocator, extension_name: []const u8, invoca
     const abort = try parseOptionalBool(parsed.value.object.get("abort"), false);
     const is_error = try parseOptionalBool(parsed.value.object.get("isError"), false);
     const terminate = try parseOptionalBool(parsed.value.object.get("terminate"), false);
-    var action_batch = try actions_mod.Batch.parse(gpa, extension_name, invocation, raw);
+    var action_batch = try if (native_origins) actions_mod.Batch.parseNative(gpa, extension_name, invocation, raw) else actions_mod.Batch.parse(gpa, extension_name, invocation, raw);
     errdefer action_batch.deinit(gpa);
     return .{
         .message = message,
@@ -1703,6 +2319,10 @@ fn parseToolImages(gpa: std.mem.Allocator, value: ?std.json.Value) ![]ToolImage 
 }
 
 fn parseToolOutput(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, raw: []const u8) !ToolOutput {
+    return parseToolOutputMode(gpa, extension_name, invocation, raw, false);
+}
+
+fn parseToolOutputMode(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, raw: []const u8, native_origins: bool) !ToolOutput {
     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
     defer parsed.deinit();
     if (parsed.value != .object) return error.InvalidToolOutput;
@@ -1754,7 +2374,7 @@ fn parseToolOutput(gpa: std.mem.Allocator, extension_name: []const u8, invocatio
         if (value != .bool) return error.InvalidToolOutput;
         break :blk value.bool;
     } else false;
-    var action_batch = try actions_mod.Batch.parse(gpa, extension_name, invocation, raw);
+    var action_batch = try if (native_origins) actions_mod.Batch.parseNative(gpa, extension_name, invocation, raw) else actions_mod.Batch.parse(gpa, extension_name, invocation, raw);
     errdefer action_batch.deinit(gpa);
     return .{
         .content = try gpa.dupe(u8, content_value.string),
@@ -2772,4 +3392,89 @@ test "JavaScript extension prepareArguments transforms raw tool input" {
     defer output.deinit(gpa);
     try std.testing.expectEqualStrings("converted:4", output.content);
     try std.testing.expect((try host.prepareToolArguments("unknown", "{}")) == null);
+}
+
+test "native runtime late journal repeated unacknowledged records remain ordered and reject changed replays" {
+    const gpa = std.testing.allocator;
+    var host: Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native };
+    defer host.deinit();
+    var events = [_]tool_activation.Event{
+        .{ .owner_generation = 42, .sequence = 1, .owner_id = 1, .source_path = "source", .name = "sticky", .default_active = false },
+        .{ .owner_generation = 42, .sequence = 2, .owner_id = 1, .source_path = "source", .name = "sticky", .default_active = true, .activated = true },
+        .{ .owner_generation = 42, .sequence = 3, .owner_id = 1, .source_path = "source", .name = "sticky", .default_active = false },
+    };
+    for (1..4) |count| {
+        var revision_buffer: [20]u8 = undefined;
+        const revision = try std.fmt.bufPrint(&revision_buffer, "{d}", .{count});
+        const raw = try std.json.Stringify.valueAlloc(gpa, .{ .version = 1, .ownerGeneration = "42", .revision = revision, .registrationSequence = count, .toolRegistrations = events[0..count], .extensions = [_]std.json.Value{} }, .{});
+        defer gpa.free(raw);
+        try host.applyNativeMetadata(raw, 42);
+        try std.testing.expectEqual(count, host.registrationEvents().len);
+    }
+    events[0].default_active = true;
+    const forged = try std.json.Stringify.valueAlloc(gpa, .{ .version = 1, .ownerGeneration = "42", .revision = "4", .registrationSequence = 3, .toolRegistrations = &events, .extensions = [_]std.json.Value{} }, .{});
+    defer gpa.free(forged);
+    try std.testing.expectError(error.InvalidToolRegistrationReplay, host.applyNativeMetadata(forged, 42));
+    try std.testing.expectEqual(@as(u64, 3), host.metadata_revision);
+    try host.clearRegistrationEvents(3);
+    events[0].default_active = false;
+    const acknowledged = try std.json.Stringify.valueAlloc(gpa, .{ .version = 1, .ownerGeneration = "42", .revision = "4", .registrationSequence = 3, .toolRegistrations = &events, .extensions = [_]std.json.Value{} }, .{});
+    defer gpa.free(acknowledged);
+    try host.applyNativeMetadata(acknowledged, 42);
+    try std.testing.expectEqual(@as(usize, 0), host.registrationEvents().len);
+}
+
+test "native runtime late metadata manifest replacement is atomic under every allocation failure and generation revision fences" {
+    const Probe = struct {
+        fn appendInitial(host: *Host, gpa: std.mem.Allocator, raw: []const u8) !void {
+            const arena = try gpa.create(std.heap.ArenaAllocator);
+            arena.* = .init(gpa);
+            errdefer {
+                arena.deinit();
+                gpa.destroy(arena);
+            }
+            var original: Host = .{ .gpa = arena.allocator(), .io = std.testing.io };
+            try original.loadJson(raw, ".");
+            var manifest = original.extensions.items[0];
+            manifest.metadata_arena = arena;
+            try host.extensions.append(gpa, manifest);
+        }
+        fn run(gpa: std.mem.Allocator) !void {
+            var host: Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native };
+            defer host.deinit();
+            // Setup also uses the supplied allocator; arena ownership avoids
+            // attributing frees of unrelated setup allocations to this sweep.
+            try appendInitial(&host, gpa, "{\"name\":\"old\",\"tools\":[{\"name\":\"same\",\"description\":\"old\",\"parameters\":{\"type\":\"object\"}}],\"commands\":[{\"name\":\"old\"}]}");
+            try appendInitial(&host, gpa, "{\"name\":\"second-old\",\"commands\":[{\"name\":\"second-old\"}]}");
+            var runtime: js_runtime.Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42, .extension_id = 7, .closed = true };
+            host.extensions.items[0].script_runtime = &runtime;
+            defer host.extensions.items[0].script_runtime = null;
+            var second_runtime = runtime;
+            second_runtime.source_path = @constCast("second.mjs");
+            second_runtime.extension_id = 8;
+            host.extensions.items[1].script_runtime = &second_runtime;
+            defer host.extensions.items[1].script_runtime = null;
+            const raw = "{\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"2\",\"extensions\":[{\"extensionId\":7,\"sourcePath\":\"source.mjs\",\"name\":\"new\",\"commands\":[{\"name\":\"late\"}],\"tools\":[{\"name\":\"same\",\"description\":\"new\",\"parameters\":{\"type\":\"object\",\"required\":[\"new\"]},\"hasRenderCall\":true}]},{\"extensionId\":8,\"sourcePath\":\"second.mjs\",\"name\":\"second-new\",\"commands\":[{\"name\":\"second-new\"}]}]}";
+            host.applyNativeMetadata(raw, 42) catch |err| {
+                try std.testing.expectEqualStrings("old", host.extensions.items[0].name);
+                try std.testing.expectEqualStrings("old", host.extensions.items[0].commands[0].name);
+                try std.testing.expectEqualStrings("old", host.extensions.items[0].tools[0].description);
+                try std.testing.expectEqualStrings("second-old", host.extensions.items[1].commands[0].name);
+                try std.testing.expect(!host.extensions.items[0].tools[0].has_render_call);
+                try std.testing.expectEqual(@as(u64, 0), host.metadata_revision);
+                return err;
+            };
+            try std.testing.expectEqualStrings("new", host.extensions.items[0].name);
+            try std.testing.expectEqualStrings("late", host.extensions.items[0].commands[0].name);
+            try std.testing.expect(host.extensions.items[0].tools[0].has_render_call);
+            try std.testing.expect(host.extensions.items[0].script_runtime.? == &runtime);
+            try std.testing.expectEqualStrings("second-new", host.extensions.items[1].commands[0].name);
+            try std.testing.expect(host.extensions.items[1].script_runtime.? == &second_runtime);
+            try host.applyNativeMetadata("{\"version\":1,\"ownerGeneration\":\"41\",\"revision\":\"99\"}", 42);
+            try host.applyNativeMetadata("{\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"1\"}", 42);
+            try std.testing.expectEqualStrings("new", host.extensions.items[0].name);
+            try std.testing.expectEqual(@as(u64, 2), host.metadata_revision);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }

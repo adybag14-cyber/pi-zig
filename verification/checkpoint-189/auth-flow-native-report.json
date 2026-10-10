@@ -1,0 +1,15 @@
+{
+  "anthropicCredentialReplaced": true,
+  "apiKeyProviderStage": true,
+  "configuredSourceVisible": "configured API key",
+  "corpCredentialStored": true,
+  "environmentSourceVisible": "OPENAI_API_KEY",
+  "exit": 0,
+  "explicitProviderScopedStage": "anthropic",
+  "secretsAbsentFromTerminal": true,
+  "stagedAuthenticationType": true,
+  "stderrBytes": 0,
+  "storedTypeMismatchVisible": true,
+  "subscriptionProviderStage": true,
+  "terminalRestored": true
+}

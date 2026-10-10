@@ -1,0 +1,132 @@
+{
+  "created_utc": "2026-10-05T19:29:28.4057389+00:00",
+  "state": "all final gates terminal passed; frozen12 unchanged; older scheduler11/storage63 unchanged",
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-powershell-20261005",
+  "base": "fb08f5f26524b1eb84d183851291670c8098fa04",
+  "source_manifest": "durable-powershell-frozen-source-20261005.json",
+  "source_manifest_sha256": "a0e77d2f22906054d38e703531b7dee6bf3ee291b6344c3dc115505052df0016",
+  "integration_patch": "durable-powershell-additive-lf-20261005.patch",
+  "integration_patch_sha256": "f9ce90584ef858b9832a86e58c438266c6f4334b248817b43c2f78573a318e66",
+  "authority": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "authority_verification": "durable-powershell-authority-031b-20261005.json",
+  "authority_verification_sha256": "aaea25affd71317c39c3d5eb929359696c9aaddd7dbf361b0ec89e8e3af3bfce",
+  "reference_capture": "actual latest createPowerShellTool + real NodeExecutionEnv + real installed pwsh/Windows PowerShell;15 cases; original98d source/export/tests SHA equal031b",
+  "toolchain": "final Zig0.16.0",
+  "counts": {
+    "windows_full_each": {
+      "steps": 134,
+      "summary_pass": 629,
+      "summary_skip": 39,
+      "summary_total": 668,
+      "root_module_pass": 1220,
+      "root_module_skip": 32,
+      "root_module_total": 1252,
+      "sqlite_main_pass": 11,
+      "sqlite_main_skip": 6,
+      "sqlite_main_total": 17
+    },
+    "linux_full_each": {
+      "steps": 130,
+      "summary_pass": 796,
+      "summary_skip": 2,
+      "summary_total": 798,
+      "root_module_pass": 1244,
+      "root_module_skip": 8,
+      "root_module_total": 1252,
+      "sqlite_main_pass": 11,
+      "sqlite_main_skip": 6,
+      "sqlite_main_total": 17
+    },
+    "linux_dedicated_each": {
+      "steps": 23,
+      "pass": 101,
+      "skip": 2,
+      "total": 103,
+      "powershell_pass": 6,
+      "powershell_skip": 2,
+      "powershell_total": 8
+    }
+  },
+  "linux_stage": "/tmp/pi-durable-powershell-20261005.7TDXdl",
+  "macos": "ARM64 semantic compilation only; runtime unverified",
+  "new_files": [
+    "src/durable/tool_bash.zig",
+    "src/durable/tool_powershell.zig",
+    "src/durable/powershell_tests.zig",
+    "src/durable/command_fixture.zig",
+    "src/durable_powershell_test.zig",
+    "src/durable/fixtures/powershell_98d2_windows.json",
+    "src/durable/POWERSHELL_CONTRACT.md"
+  ],
+  "api": "tools.PowerShellInput; tools.PowerShellOptions; ToolSet.powershell; durable.tool_bash/tool_powershell; durable_harness.builtins.createPowerShellTool -> PowerShellBinding{tool,install,drop}; default four CodingTools preserved",
+  "limits": "Native prepare receives execution/context, not full upstream ToolExecutionApi; no QuickJS user prepare callback bridge in this increment; real Linux PowerShell language execution unverified without installed interpreter; existing foundation/scheduler limits retained",
+  "notes": "Preliminary Windows ReleaseSafe job predating fixture cwd correction and initial Linux fixture failure retained but excluded from final proof jobs. No Main/older frozen edits, commit, stage, or push. Apply Shell/build patches additively to preserve parent_owner and other Root changes.",
+  "jobs": [
+    {
+      "name": "durable-powershell-source-oracle-final",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 27316,
+      "created_utc": "2026-10-05T18:50:20.4382400+00:00",
+      "completed_utc": "2026-10-05T18:50:23.3861391+00:00",
+      "record_sha256": "b67b5c4b4880d6cd38e57cbfe12b7c38277983fe40c708eff828cc73c5150961",
+      "stdout_sha256": "13573e3d1283258dea241d8d41eab7b49215aade97263f42060cc4e50b3c5418",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-powershell-final-linux-2",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 55204,
+      "created_utc": "2026-10-05T19:06:57.5981650+00:00",
+      "completed_utc": "2026-10-05T19:08:27.0158716+00:00",
+      "record_sha256": "69858f1e61dde259fc3e11533ed72689ff22ae742ca261c5c819138dab3fb2b3",
+      "stdout_sha256": "7655b14ef1d052c5ca36968eedd11fc2c2db5c7150e7bcf20ecd5b8bb84aee64",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-powershell-macos-arm64-semantic",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 44820,
+      "created_utc": "2026-10-05T19:05:16.5504710+00:00",
+      "completed_utc": "2026-10-05T19:05:17.1613052+00:00",
+      "record_sha256": "5fbdd2274dac86b2a091b9c7bc2dd087176c2d46acccab5522cb35acd93671f3",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "durable-powershell-final-full-windows-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 25452,
+      "created_utc": "2026-10-05T19:15:06.2823550+00:00",
+      "completed_utc": "2026-10-05T19:15:46.6828080+00:00",
+      "record_sha256": "481494f438b97453d069faf1ce5a2f47efc98393f197c0338ff1b7bda9d92aab",
+      "stdout_sha256": "152a04f1af9ebbc11c48338e0270c483339a464c8563e2e25b747b79f4e325b8",
+      "stderr_sha256": "29571f7549d1211df80f5f0732290c0c2ddb26d56fc9d44e9dc7a390c7572ba4"
+    },
+    {
+      "name": "durable-powershell-final-full-windows-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 43028,
+      "created_utc": "2026-10-05T19:15:46.6986560+00:00",
+      "completed_utc": "2026-10-05T19:18:15.6168827+00:00",
+      "record_sha256": "fcdf9a71786f0beabb416039bf84159906067d757e99b23a5570f9d0d4b93b38",
+      "stdout_sha256": "152a04f1af9ebbc11c48338e0270c483339a464c8563e2e25b747b79f4e325b8",
+      "stderr_sha256": "f27bd5e69d791094ac22fc5c0e53fb12d618f9f330292e87fb4137dbb143c4f9"
+    },
+    {
+      "name": "durable-powershell-full-linux-both",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 13244,
+      "created_utc": "2026-10-05T19:14:45.3187680+00:00",
+      "completed_utc": "2026-10-05T19:27:35.8053989+00:00",
+      "record_sha256": "8525351b5c24040a2fae84a7d384cf5eb2fe91a785485094e2cc7b195266831f",
+      "stdout_sha256": "aa65cc54e676536c72692a451212c73a0f6b0139eb57f2a46548a0280d24b8bc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

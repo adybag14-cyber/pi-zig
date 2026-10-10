@@ -1,0 +1,21 @@
+export default pi => {
+  let saved;
+  pi.registerCommand('capture-component-ui', { handler(_args, ctx) { saved = ctx.ui; return { captured: true }; } });
+  pi.registerCommand('retained-component', { async handler(mode) {
+    let disposed = 0;
+    const original = { componentFailure: mode };
+    try {
+      const value = await saved.custom(async (tui, _theme, _keys, done) => {
+        await new Promise(resolve => setTimeout(resolve, 2));
+        setTimeout(() => tui.requestRender(), 2);
+        return {
+          render(width) { if (mode === 'render-error') throw original; return ['retained-component:' + width]; },
+          handleInput(data) { if (mode === 'input-error') throw original; if (data === 'finish') done('component-result'); },
+          invalidate() {},
+          dispose() { disposed++; },
+        };
+      });
+      return { value, disposed };
+    } catch (error) { return { original: error === original, disposed }; }
+  } });
+}

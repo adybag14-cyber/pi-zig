@@ -3,6 +3,7 @@
 //! Responses-style input replay, function calls/results, tools, reasoning,
 //! streaming output events, usage accounting, cancellation, and custom headers.
 const std = @import("std");
+const azure = @import("azure.zig");
 const Io = std.Io;
 const http_proxy = @import("http_proxy.zig");
 const retry_mod = @import("retry.zig");
@@ -208,23 +209,21 @@ fn receiveHeadWithControl(
     const Race = union(enum) { head: anyerror!std.http.Client.Response, timeout: bool, aborted: bool };
     var queue: [3]Race = undefined;
     var select = Io.Select(Race).init(io, &queue);
-    select.async(.head, receiveHeadTask, .{req});
-    if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ io, timeout_ms });
-    if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ io, flag });
+    defer while (select.cancel()) |_| {};
+    try select.concurrent(.head, receiveHeadTask, .{req});
+    if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ io, timeout_ms });
+    if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ io, flag });
 
     const winner = try select.await();
     switch (winner) {
         .head => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .timeout => |expired| {
-            while (select.cancel()) |_| {}
             if (expired) return error.CodexResponseHeaderIdleTimeout;
             return error.Canceled;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.CodexHttpAborted;
             return error.Canceled;
         },
@@ -263,23 +262,21 @@ fn readSomeWithControl(
     const Race = union(enum) { read: anyerror!usize, timeout: bool, aborted: bool };
     var queue: [3]Race = undefined;
     var select = Io.Select(Race).init(io, &queue);
-    select.async(.read, readSomeTask, .{ reader, buffer });
-    if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ io, timeout_ms });
-    if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ io, flag });
+    defer while (select.cancel()) |_| {};
+    try select.concurrent(.read, readSomeTask, .{ reader, buffer });
+    if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ io, timeout_ms });
+    if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ io, flag });
 
     const winner = try select.await();
     switch (winner) {
         .read => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .timeout => |expired| {
-            while (select.cancel()) |_| {}
             if (expired) return error.CodexResponseBodyIdleTimeout;
             return error.Canceled;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.CodexHttpAborted;
             return error.Canceled;
         },
@@ -343,6 +340,9 @@ fn postHttpCaptureRetry(
     var req = try client.request(.POST, uri, .{
         .redirect_behavior = .unhandled,
         .keep_alive = false,
+        // All application headers were already merged case-insensitively.
+        // std.http otherwise adds its own user-agent beside the caller's.
+        .headers = .{ .user_agent = .omit },
         .extra_headers = headers,
     });
     defer req.deinit();
@@ -477,6 +477,7 @@ pub const ResponsesClient = struct {
     thinking_level_map: ?thinking_mod.ThinkingLevelMap = null,
     custom_headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     max_tokens: u64 = 0,
     context_window: u64 = 0,
@@ -487,6 +488,7 @@ pub const ResponsesClient = struct {
     auth_mode: AuthMode = .bearer,
     api_version: ?[]const u8 = null,
     protocol_mode: ProtocolMode = .standard,
+    azure_options: azure.Options = .{},
     transport: codex_ws.Transport = .sse,
     /// Maximum idle time for Codex HTTP response headers and each body read.
     /// Zero disables the deadline.
@@ -554,10 +556,19 @@ pub const ResponsesClient = struct {
         delta_ctx: ?*anyopaque,
     ) !ai.ModelResponse {
         try self.ensureTokenFresh();
+        const azure_protocol = self.protocol_mode == .azure or self.auth_mode == .azure_api_key;
+        var azure_options = azure.Options.merge(self.azure_options, request_options.azure_options);
+        if (azure_options.api_version == null) azure_options.api_version = self.api_version;
+        const azure_config = if (azure_protocol) azure.resolveConfig(gpa, self.base_url, self.environ, azure_options) catch |err| return azure.configurationErrorResponse(ai.ModelResponse, gpa, self.provider_id, self.model, err) else null;
+        defer if (azure_config) |config| config.deinit(gpa);
+        const deployment = if (azure_protocol) try azure.resolveDeploymentName(gpa, self.model, self.environ, azure_options) else null;
+        defer if (deployment) |value| gpa.free(value);
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
-        const payload = if (self.protocol_mode == .codex)
+        const sampling = try metadata.resolveSamplingParams(gpa, self.sampling_params, self.sampling_params_by_thinking_level, self.reasoning, self.thinking_level_map, self.thinking, request_options.sampling_params);
+        defer gpa.free(sampling);
+        const original_payload = if (self.protocol_mode == .codex)
             try buildCodexRequestBody(gpa, self.model, messages, tools_json, .{
                 .stream = streaming,
                 .thinking = self.thinking,
@@ -565,7 +576,7 @@ pub const ResponsesClient = struct {
                 .input_image = self.input_image,
                 .thinking_level_map = self.thinking_level_map,
                 .max_tokens = effective_max_tokens,
-                .sampling_params = self.sampling_params,
+                .sampling_params = sampling,
                 .compat = self.compat,
                 .session_id = codexCacheSessionId(effective_session_id, effective_cache_retention),
                 .cache_retention = effective_cache_retention,
@@ -574,24 +585,30 @@ pub const ResponsesClient = struct {
                 .tool_choice = request_options.tool_choice,
             })
         else
-            try buildRequestBody(gpa, self.model, messages, tools_json, .{
+            try buildRequestBody(gpa, deployment orelse self.model, messages, tools_json, .{
                 .stream = streaming,
                 .thinking = self.thinking,
                 .reasoning = self.reasoning,
                 .input_image = self.input_image,
                 .thinking_level_map = self.thinking_level_map,
                 .max_tokens = effective_max_tokens,
-                .sampling_params = self.sampling_params,
+                .sampling_params = sampling,
                 .compat = self.compat,
                 .session_id = codexCacheSessionId(effective_session_id, effective_cache_retention),
                 .cache_retention = effective_cache_retention,
                 .provider_id = self.provider_id,
                 .api_id = protocolApiName(self.protocol_mode),
                 .tool_choice = request_options.tool_choice,
+                .catalog_model = self.model,
             });
-        defer gpa.free(payload);
+        defer gpa.free(original_payload);
+        const hook_payload = if (request_options.on_payload) |hook| try hook(request_options.on_payload_ctx, gpa, original_payload, .{ .id = self.model, .provider = self.provider_id, .api = protocolApiName(self.protocol_mode) }) else null;
+        defer if (hook_payload) |value| gpa.free(value);
+        const payload = hook_payload orelse original_payload;
         const url = if (self.protocol_mode == .codex)
             try resolveCodexUrl(gpa, self.base_url)
+        else if (azure_config) |config|
+            try azure.endpoint(gpa, config.base_url, "responses", config.api_version)
         else if (self.api_version) |version|
             try std.fmt.allocPrint(gpa, "{s}/responses?api-version={s}", .{ self.base_url, version })
         else
@@ -614,13 +631,15 @@ pub const ResponsesClient = struct {
         defer if (codex_account_id) |value| gpa.free(value);
         try putHeader(gpa, &headers, "content-type", "application/json");
         if (self.protocol_mode == .codex) {
-            // Codex applies custom headers first, then mandatory identity/auth headers.
+            // Application defaults precede model/caller overrides. Account
+            // and authorization remain authoritative after those overrides.
+            try putHeader(gpa, &headers, "originator", "pi");
+            try putHeader(gpa, &headers, "user-agent", ai.pi_user_agent.value);
             for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
+            for (request_options.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
             try putHeader(gpa, &headers, "authorization", authorization.?);
             codex_account_id = try extractCodexAccountId(gpa, self.api_key);
             try putHeader(gpa, &headers, "chatgpt-account-id", codex_account_id.?);
-            try putHeader(gpa, &headers, "originator", "pi");
-            try putHeader(gpa, &headers, "user-agent", "pi-zig/0.3.0");
             try putHeader(gpa, &headers, "openai-beta", "responses=experimental");
             try putHeader(gpa, &headers, "content-type", "application/json");
             if (codexCacheSessionId(effective_session_id, effective_cache_retention)) |sid| {
@@ -659,6 +678,7 @@ pub const ResponsesClient = struct {
             }
             for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
         }
+        if (self.protocol_mode != .codex) for (request_options.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
         try putHeader(gpa, &headers, "accept", if (streaming) "text/event-stream" else "application/json");
 
         var live = ResponsesLive.init(gpa, on_delta, delta_ctx, streaming, self.abort_flag);
@@ -775,7 +795,7 @@ pub const ResponsesClient = struct {
         if (response.api.len > 0) gpa.free(response.api);
         response.api = try gpa.dupe(u8, protocolApiName(self.protocol_mode));
         _ = cost_mod.calculate(self.model_cost, &response.usage);
-        const request_tier = requestedServiceTier(self.sampling_params);
+        const request_tier = parseResponseServiceTier(gpa, payload);
         const response_tier = if (streaming) live.service_tier else parseResponseServiceTier(gpa, live.body.items);
         applyServiceTierCost(self.model, effectiveServiceTier(self.protocol_mode, response_tier, request_tier), &response.usage);
         try response.ensureStopReason(gpa);
@@ -796,7 +816,7 @@ pub const ResponsesClient = struct {
         if (response.api.len > 0) gpa.free(response.api);
         response.api = try gpa.dupe(u8, protocolApiName(self.protocol_mode));
         _ = cost_mod.calculate(self.model_cost, &response.usage);
-        const request_tier = requestedServiceTier(self.sampling_params);
+        const request_tier = parseResponseServiceTier(gpa, payload);
         applyServiceTierCost(self.model, effectiveServiceTier(self.protocol_mode, live.service_tier, request_tier), &response.usage);
         try response.ensureStopReason(gpa);
 
@@ -1286,6 +1306,7 @@ fn putHeader(gpa: std.mem.Allocator, headers: *std.ArrayList(std.http.Header), n
 }
 
 pub const RequestOptions = struct {
+    catalog_model: ?[]const u8 = null,
     stream: bool = false,
     thinking: ai.ThinkingLevel = .off,
     reasoning: bool = true,
@@ -1708,7 +1729,7 @@ pub fn buildRequestBody(
     try w.writeAll("{\"model\":");
     try std.json.Stringify.value(model, .{}, w);
     try w.writeAll(",\"input\":");
-    try writeResponseInput(gpa, w, messages, tools_json, options.compat, options.provider_id, options.api_id, model, options.input_image);
+    try writeResponseInput(gpa, w, messages, tools_json, options.compat, options.provider_id, options.api_id, options.catalog_model orelse model, options.input_image);
     if (!hasSampling(options.sampling_params, "stream")) try w.print(",\"stream\":{s}", .{if (options.stream) "true" else "false"});
     if (!hasSampling(options.sampling_params, "store")) try w.writeAll(",\"store\":false");
     if (options.session_id) |sid| {
@@ -2655,6 +2676,52 @@ test "responses cache modes and codex request shape" {
     try std.testing.expect(std.mem.indexOf(u8, codex, "\"role\":\"system\"") == null);
 }
 
+test "latest Codex caller headers override defaults on the actual HTTP transport" {
+    const gpa = std.testing.allocator;
+    const token = "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjdC00MiJ9fQ.sig";
+    const authorization = try std.fmt.allocPrint(gpa, "Bearer {s}", .{token});
+    defer gpa.free(authorization);
+    const fixture = @import("http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{
+        .path = "/codex/responses",
+        .body = "{\"id\":\"r\",\"status\":\"completed\",\"output\":[{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"ok\"}]}]}",
+        .expected_request_headers = &.{
+            .{ .name = "originator", .value = "caller-app" },
+            .{ .name = "user-agent", .value = "caller-agent" },
+            .{ .name = "authorization", .value = authorization },
+            .{ .name = "chatgpt-account-id", .value = "acct-42" },
+        },
+    }});
+    defer server.deinit();
+    const url = try server.url(gpa, "");
+    defer gpa.free(url);
+    var client = ResponsesClient{
+        .gpa = gpa,
+        .io = std.testing.io,
+        .api_key = token,
+        .base_url = url,
+        .model = "gpt-test",
+        .protocol_mode = .codex,
+        .provider_retry = .{ .max_retries = 0, .timeout_ms = 1_000 },
+        .custom_headers = &.{ .{ .name = "Originator", .value = "model-app" }, .{ .name = "User-Agent", .value = "model-agent" } },
+    };
+    defer client.deinit();
+    var response = client.client().completeWithOptions(gpa, &.{.{ .role = "user", .content = "hello" }}, "[]", .{
+        .headers = &.{
+            .{ .name = "ORIGINATOR", .value = "caller-app" },
+            .{ .name = "USER-AGENT", .value = "caller-agent" },
+            .{ .name = "Authorization", .value = "rejected-override" },
+            .{ .name = "ChatGPT-Account-ID", .value = "rejected-account" },
+        },
+    }) catch |err| {
+        try server.finish();
+        return err;
+    };
+    defer response.deinit(gpa);
+    try server.finish();
+    try std.testing.expectEqualStrings("ok", response.content);
+}
+
 test "codex URL and JWT account extraction" {
     const gpa = std.testing.allocator;
     const a = try resolveCodexUrl(gpa, "https://chatgpt.com/backend-api");
@@ -3207,4 +3274,113 @@ test "ordinary Responses parser remains tolerant of malformed provider event" {
     defer live.deinit();
     try live.handleEventJson("{not-json");
     try std.testing.expectEqual(@as(usize, 0), live.error_message.len);
+}
+
+test "Responses controlled header and SSE body progress with zero eager async capacity" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const body = "data: [DONE]\n\n";
+    const head = try std.fmt.allocPrint(std.testing.allocator, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {d}\r\nConnection: close\r\n\r\n", .{body.len});
+    defer std.testing.allocator.free(head);
+    const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head = head, .body = body, .head_delay_ms = 20 });
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator);
+    defer std.testing.allocator.free(url);
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+    defer client.deinit();
+    var req = try client.request(.GET, try std.Uri.parse(url), .{});
+    defer req.deinit();
+    try req.sendBodiless();
+    var aborted = false;
+    var response = try receiveHeadWithControl(&req, io, 500, &aborted);
+    try std.testing.expectEqual(std.http.Status.ok, response.head.status);
+    var buffer: [64]u8 = undefined;
+    var body_storage: [64]u8 = undefined;
+    const count = try readSomeWithControl(response.reader(&body_storage), io, &buffer, 500, &aborted);
+    try std.testing.expectEqualStrings(body, buffer[0..count]);
+    try server.finish();
+}
+
+test "Responses controlled header keeps idle timeout and cancels partial concurrency startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .unlimited }) |limit| {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        try req.sendBodiless();
+        threaded.concurrent_limit = limit;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.CodexResponseHeaderIdleTimeout, receiveHeadWithControl(&req, io, 30, null));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, receiveHeadWithControl(&req, io, 30, null));
+    }
+}
+
+test "Responses controlled SSE body keeps idle timeout and cancels partial concurrency startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .unlimited }) |limit| {
+        threaded.concurrent_limit = .unlimited;
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .body_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        try req.sendBodiless();
+        var response = try receiveHeadWithControl(&req, io, 0, null);
+        threaded.concurrent_limit = limit;
+        var buffer: [64]u8 = undefined;
+        var body_storage: [64]u8 = undefined;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.CodexResponseBodyIdleTimeout, readSomeWithControl(response.reader(&body_storage), io, &buffer, 30, null));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, readSomeWithControl(response.reader(&body_storage), io, &buffer, 30, null));
+    }
+}
+
+test "Responses live abort interrupts entered header and body waits without eager async" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]bool{ false, true }) |body_wait| {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head_delay_ms = if (body_wait) 0 else 500, .body_delay_ms = if (body_wait) 500 else 0 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        const Adapter = struct {
+            req: *std.http.Client.Request,
+            io: Io,
+            body_wait: bool,
+            pub fn run(self: *@This(), flag: *bool) !void {
+                try self.req.sendBodiless();
+                var response = try receiveHeadWithControl(self.req, self.io, 0, if (self.body_wait) null else flag);
+                if (self.body_wait) {
+                    var storage: [64]u8 = undefined;
+                    var output: [64]u8 = undefined;
+                    _ = try readSomeWithControl(response.reader(&storage), self.io, &output, 0, flag);
+                }
+                return error.UnexpectedResponsesCompletion;
+            }
+        };
+        var adapter: Adapter = .{ .req = &req, .io = io, .body_wait = body_wait };
+        try fixture.abortAfterRequest(Adapter, &adapter, if (body_wait) &server.head_seen else &server.request_seen, error.CodexHttpAborted);
+    }
 }

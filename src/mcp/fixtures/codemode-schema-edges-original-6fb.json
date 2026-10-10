@@ -1,0 +1,144 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "": {
+            "type": "number"
+          },
+          "😀": {
+            "type": "string"
+          },
+          "a": {
+            "type": "boolean"
+          }
+        }
+      },
+      "maxChars": 8,
+      "type": "{ a?: boolean; \"😀\"?: string; \"\"?: number; }",
+      "bounded": "unknown",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: { a?: boolean; \"😀\"?: string; \"\"?: number; }): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "const": "😀😀😀"
+      },
+      "maxChars": 8,
+      "type": "\"😀😀😀\"",
+      "bounded": "\"😀😀😀\"",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: \"😀😀😀\"): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "$defs": {
+          "a/b~c": {
+            "type": "number"
+          }
+        },
+        "$ref": "#/$defs/a~1b~0c"
+      },
+      "maxChars": 8,
+      "type": "number",
+      "bounded": "number",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: number): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "$defs": {
+          "a b": {
+            "type": "number"
+          }
+        },
+        "$ref": "#/$defs/a%20b"
+      },
+      "maxChars": 8,
+      "type": "number",
+      "bounded": "number",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: number): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "$ref": "#/%ZZ"
+      },
+      "maxChars": 8,
+      "error": {
+        "name": "URIError",
+        "message": "URI malformed"
+      }
+    },
+    {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "string",
+            "description": " first\n second﻿"
+          }
+        }
+      },
+      "maxChars": 8,
+      "type": "{\n  // first\n  // second\n  a?: string;\n}",
+      "bounded": "unknown",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: {\n  // first\n  // second\n  a?: string;\n}): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "$ref": "#/$defs/shared"
+          },
+          "b": {
+            "$ref": "#/$defs/shared"
+          }
+        },
+        "$defs": {
+          "shared": {
+            "type": "number"
+          }
+        }
+      },
+      "maxChars": 8,
+      "type": "{ a?: number; b?: number; }",
+      "bounded": "unknown",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: { a?: number; b?: number; }): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "array",
+        "items": [],
+        "prefixItems": [
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "maxChars": 8,
+      "type": "[number]",
+      "bounded": "[number]",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: [number]): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "array",
+        "items": null
+      },
+      "maxChars": 8,
+      "type": "Array<unknown>",
+      "bounded": "unknown",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: Array<unknown>): Promise<unknown>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "additionalProperties": null
+      },
+      "maxChars": 8,
+      "type": "{ [key: string]: unknown; }",
+      "bounded": "unknown",
+      "sample": "Trim me\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { unicode(args: { [key: string]: unknown; }): Promise<unknown>; };\n```"
+    }
+  ]
+}

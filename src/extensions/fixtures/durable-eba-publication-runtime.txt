@@ -1,0 +1,16 @@
+async(create,scenario)=>{
+ const trace=[],context={original:true},cache=new WeakMap;let count=0;
+ const wrap=(target,path)=>{if(target===null||typeof target!=='object')return target;if(cache.has(target))return cache.get(target);const proxy=new Proxy(target,{get(target,key){return wrap(Reflect.get(target,key),path+'.'+String(key))},set(target,key,value){trace.push(['set',path+'.'+String(key),JSON.parse(JSON.stringify(value))]);return Reflect.set(target,key,value)},deleteProperty(target,key){trace.push(['delete',path+'.'+String(key)]);return Reflect.deleteProperty(target,key)},defineProperty(target,key,descriptor){trace.push(['define',path+'.'+String(key)]);return Reflect.defineProperty(target,key,descriptor)}});cache.set(target,proxy);return proxy};
+ const live=wrap(scenario==='missing'?{}:{tools:[{taskId:7,status:'running',details:{tree:{old:1,remove:2},list:[{old:1}]}}]},'live');
+ const original=live.tools?.[0]?.details,originalTree=original?.tree,originalList=original?.list;
+ let snapshot={text:'first λ\n',droppedBytes:0,droppedLines:0};
+ const reported={output:{snapshot:()=>snapshot},details:{tree:{old:2},list:[{old:2}]},diagnostics:[{severity:'info',code:'first',message:'first'}]};
+ const runtime={taskId:7,conversationId:1,settings:{progress:{outputIntervalMs:0}},signal:{aborted:scenario==='aborted'},report:error=>trace.push(['report',error]),async commit(change,actualContext){trace.push(['commit',actualContext===context]);if(scenario==='failure'&&++count===1)throw 'commit failed';if(scenario==='aborted'&&++count===1)throw 'commit aborted';await change({async doc(token,id){trace.push(['doc',token.definition.kind,id]);return live}});trace.push(['committed'])}};
+ const progress=create(runtime,reported,scenario!=='disabled',context),outcomes=[];
+ try{await progress.markAndWait();outcomes.push('first resolved')}catch(error){outcomes.push(['first rejected',error])}
+ snapshot={text:'λ\nnext\n',droppedBytes:12,droppedLines:1};reported.details={tree:{old:3,new:4},list:[{old:3},{extra:5}]};reported.diagnostics.push({severity:'warn',code:'second',message:'second'});
+ await progress.markAndWait();outcomes.push('second resolved');
+ await progress.markAndWait();outcomes.push('third resolved');
+ const pending=await progress.stop();
+ return{trace,outcomes,pending:pending.length,live,identities:{details:live.tools?.[0]?.details===original,tree:live.tools?.[0]?.details?.tree===originalTree,list:live.tools?.[0]?.details?.list===originalList}};
+}

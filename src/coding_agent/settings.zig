@@ -137,7 +137,38 @@ pub const MermaidMode = enum {
 
 pub const TerminalImageProtocol = enum { kitty, iterm2, none };
 
+test "fullscreen wheel setting replays original finite floor clamp and nonnumeric auto policy" {
+    const gpa = std.testing.allocator;
+    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/wheel-settings-original-1ced.json"), .{});
+    defer original.deinit();
+    for (original.value.object.get("rows").?.array.items) |row| {
+        const encoded = row.object.get("json") orelse continue;
+        if (encoded == .null) continue;
+        const text = try std.fmt.allocPrint(gpa, "{{\"fullscreenWheelScrollLines\":{s}}}", .{encoded.string});
+        defer gpa.free(text);
+        var value = try parse(gpa, text);
+        defer value.deinit(gpa);
+        const actual = value.fullscreen_wheel_scroll_lines orelse .auto;
+        const expected = row.object.get("result").?;
+        if (expected == .string) try std.testing.expect(actual == .auto) else {
+            try std.testing.expect(actual == .fixed);
+            try std.testing.expectEqual(@as(f64, @floatFromInt(expected.integer)), actual.fixed);
+        }
+    }
+    var global = try parse(gpa, "{\"fullscreenWheelScrollLines\":7}");
+    defer global.deinit(gpa);
+    var project = try parse(gpa, "{\"fullscreenWheelScrollLines\":\"auto\"}");
+    defer project.deinit(gpa);
+    try mergeInto(gpa, &global, project);
+    try std.testing.expect(global.fullscreen_wheel_scroll_lines.? == .auto);
+}
+
 pub const Settings = struct {
+    pub fn effectiveTuiMode(self: Settings) TuiMode {
+        return self.tui_mode orelse .fullscreen;
+    }
+
+    source_json: ?[]u8 = null,
     model: ?[]const u8 = null,
     provider: ?[]const u8 = null,
     /// Initial native built-in selection. Extension and SDK tools are not
@@ -146,6 +177,10 @@ pub const Settings = struct {
     /// Persistent model-cycle scope. CLI --models overrides this list for one
     /// run; Ctrl+S appends a newly persisted default when the scope is non-empty.
     enabled_models: ?[]const []const u8 = null,
+    codemode_mode: ?@import("../mcp/codemode_loadout.zig").Mode = null,
+    codemode_inline_budget: ?f64 = null,
+    codemode_mode_present: bool = false,
+    codemode_budget_present: bool = false,
     max_turns: usize = 16,
     /// Tracks whether maxTurns was present so a project can explicitly override
     /// a non-default global value back to the upstream default of 16.
@@ -209,6 +244,7 @@ pub const Settings = struct {
     tui_mode: ?TuiMode = null,
     fullscreen_exit_output: ?FullscreenExitOutput = null,
     fullscreen_scrollbar: ?FullscreenScrollbar = null,
+    fullscreen_wheel_scroll_lines: ?@import("../tui/wheel_scroll.zig").Lines = null,
     fullscreen_copy_on_select: ?bool = null,
     /// Anonymous install/update ping. Environment PI_TELEMETRY remains authoritative.
     enable_install_telemetry: ?bool = null,
@@ -253,6 +289,7 @@ pub const Settings = struct {
             for (command) |part| gpa.free(part);
             gpa.free(command);
         }
+        if (self.source_json) |value| gpa.free(value);
         if (self.tools) |t| {
             for (t) |x| gpa.free(x);
             gpa.free(t);
@@ -264,6 +301,13 @@ pub const Settings = struct {
         self.* = undefined;
     }
 };
+
+test "Pi 1 fullscreen default preserves explicit regular mode" {
+    const defaults: Settings = .{};
+    try std.testing.expectEqual(TuiMode.fullscreen, defaults.effectiveTuiMode());
+    const regular: Settings = .{ .tui_mode = .regular };
+    try std.testing.expectEqual(TuiMode.regular, regular.effectiveTuiMode());
+}
 
 pub const Diagnostic = struct {
     path: []u8,
@@ -637,6 +681,7 @@ pub const EditableKey = enum {
     tui_mode,
     fullscreen_exit_output,
     fullscreen_scrollbar,
+    fullscreen_wheel_scroll_lines,
     enable_install_telemetry,
     http_idle_timeout_ms,
     websocket_connect_timeout_ms,
@@ -802,6 +847,7 @@ fn applyEditableMutation(arena: std.mem.Allocator, root: *std.json.ObjectMap, mu
             try root.put(arena, "fullscreenScrollbar", value);
             _ = root.orderedRemove("fullscreen_scrollbar");
         },
+        .fullscreen_wheel_scroll_lines => try root.put(arena, "fullscreenWheelScrollLines", value),
         .enable_install_telemetry => {
             try root.put(arena, "enableInstallTelemetry", value);
             _ = root.orderedRemove("enable_install_telemetry");
@@ -977,6 +1023,11 @@ fn editableMatches(settings: Settings, mutation: EditableMutation) bool {
             .string => |v| FullscreenScrollbar.parse(v) != null and settings.fullscreen_scrollbar != null and settings.fullscreen_scrollbar.? == FullscreenScrollbar.parse(v).?,
             else => false,
         },
+        .fullscreen_wheel_scroll_lines => switch (mutation.value) {
+            .string => |value| std.mem.eql(u8, value, "auto") and settings.fullscreen_wheel_scroll_lines != null and settings.fullscreen_wheel_scroll_lines.? == .auto,
+            .integer => |value| value >= 1 and value <= 100 and settings.fullscreen_wheel_scroll_lines != null and settings.fullscreen_wheel_scroll_lines.? == .fixed and settings.fullscreen_wheel_scroll_lines.?.fixed == @as(f64, @floatFromInt(value)),
+            else => false,
+        },
         .enable_install_telemetry => switch (mutation.value) {
             .boolean => |v| settings.enable_install_telemetry != null and settings.enable_install_telemetry.? == v,
             else => false,
@@ -1072,6 +1123,7 @@ pub fn isEditableExplicit(settings: Settings, key: EditableKey) bool {
         .tui_mode => settings.tui_mode != null,
         .fullscreen_exit_output => settings.fullscreen_exit_output != null,
         .fullscreen_scrollbar => settings.fullscreen_scrollbar != null,
+        .fullscreen_wheel_scroll_lines => settings.fullscreen_wheel_scroll_lines != null,
         .enable_install_telemetry => settings.enable_install_telemetry != null,
         .http_idle_timeout_ms => settings.http_idle_timeout_ms != null,
         .websocket_connect_timeout_ms => settings.websocket_connect_timeout_ms != null,
@@ -1186,6 +1238,9 @@ fn removeEditableMutation(root: *std.json.ObjectMap, key: EditableKey) void {
         .fullscreen_scrollbar => {
             _ = root.orderedRemove("fullscreenScrollbar");
             _ = root.orderedRemove("fullscreen_scrollbar");
+        },
+        .fullscreen_wheel_scroll_lines => {
+            _ = root.orderedRemove("fullscreenWheelScrollLines");
         },
         .enable_install_telemetry => {
             _ = root.orderedRemove("enableInstallTelemetry");
@@ -1429,23 +1484,76 @@ pub fn loadFile(gpa: std.mem.Allocator, io: Io, path: []const u8) !Settings {
     return try parse(gpa, raw);
 }
 
+fn resolvedDefaultTools(gpa: std.mem.Allocator, value: std.json.Value) ![]const []const u8 {
+    const selection = @import("tool_selection.zig");
+    var entries: std.ArrayList([]const u8) = .empty;
+    defer entries.deinit(gpa);
+    var plain: std.ArrayList([]const u8) = .empty;
+    defer plain.deinit(gpa);
+    if (value == .array) for (value.array.items) |entry| if (entry == .string) {
+        try entries.append(gpa, entry.string);
+        if (!selection.isModifier(entry.string)) try plain.append(gpa, entry.string);
+    };
+    const base = if (plain.items.len > 0 or entries.items.len == 0) plain.items else &selection.default_tool_names;
+    const resolved = try selection.apply(gpa, base, entries.items);
+    defer gpa.free(resolved);
+    var result: std.ArrayList([]const u8) = .empty;
+    errdefer {
+        for (result.items) |name| gpa.free(name);
+        result.deinit(gpa);
+    }
+    for (resolved) |name| {
+        const copy = try gpa.dupe(u8, name);
+        errdefer gpa.free(copy);
+        try result.append(gpa, copy);
+    }
+    return result.toOwnedSlice(gpa);
+}
 pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     const content = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, content, .{});
     defer parsed.deinit();
-    if (parsed.value != .object) return .{};
+    var canonical = try @import("extension_settings.zig").fromValues(gpa, parsed.value, .{ .object = .empty }, false);
+    defer canonical.deinit();
 
     var s: Settings = .{};
     errdefer s.deinit(gpa);
+    s.source_json = try @import("../durable/backend/json.zig").stringify(gpa, canonical.value);
+
+    if (canonical.value.object.get("codemode")) |value| {
+        if (value == .object) {
+            if (value.object.get("mode")) |mode| {
+                s.codemode_mode_present = true;
+                s.codemode_mode = if (mode == .string and std.mem.eql(u8, mode.string, "only")) .only else .on;
+            }
+            if (value.object.get("inlineBudget")) |budget| {
+                s.codemode_budget_present = true;
+                const number: ?f64 = switch (budget) {
+                    .integer => @floatFromInt(budget.integer),
+                    .float => budget.float,
+                    .number_string => std.fmt.parseFloat(f64, budget.number_string) catch null,
+                    else => null,
+                };
+                if (number) |n| if (std.math.isFinite(n) and n >= 0) {
+                    s.codemode_inline_budget = n;
+                };
+            }
+        } else {
+            // A project scalar replaces the global object before the extension reads defaults.
+            s.codemode_mode_present = true;
+            s.codemode_budget_present = true;
+            s.codemode_mode = .on;
+        }
+    }
 
     // Accept upstream keys (defaultModel/defaultProvider) and short aliases
-    if (parsed.value.object.get("model") orelse parsed.value.object.get("defaultModel") orelse parsed.value.object.get("default_model")) |v| {
+    if (canonical.value.object.get("model") orelse canonical.value.object.get("defaultModel") orelse canonical.value.object.get("default_model")) |v| {
         if (v == .string) s.model = try gpa.dupe(u8, v.string);
     }
-    if (parsed.value.object.get("provider") orelse parsed.value.object.get("defaultProvider") orelse parsed.value.object.get("default_provider")) |v| {
+    if (canonical.value.object.get("provider") orelse canonical.value.object.get("defaultProvider") orelse canonical.value.object.get("default_provider")) |v| {
         if (v == .string) s.provider = try gpa.dupe(u8, v.string);
     }
-    if (parsed.value.object.get("enabledModels") orelse parsed.value.object.get("enabled_models")) |v| {
+    if (canonical.value.object.get("enabledModels") orelse canonical.value.object.get("enabled_models")) |v| {
         if (v == .array) {
             var models: std.ArrayList([]const u8) = .empty;
             errdefer {
@@ -1455,66 +1563,70 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             for (v.array.items) |item| {
                 if (item != .string) continue;
                 const value = std.mem.trim(u8, item.string, " \t\r\n");
-                if (value.len > 0) try models.append(gpa, try gpa.dupe(u8, value));
+                if (value.len > 0) {
+                    const copy = try gpa.dupe(u8, value);
+                    errdefer gpa.free(copy);
+                    try models.append(gpa, copy);
+                }
             }
             s.enabled_models = try models.toOwnedSlice(gpa);
         }
     }
-    if (parsed.value.object.get("max_turns") orelse parsed.value.object.get("maxTurns")) |v| {
+    if (canonical.value.object.get("max_turns") orelse canonical.value.object.get("maxTurns")) |v| {
         if (v == .integer and v.integer >= 0) {
             s.max_turns = @intCast(v.integer);
             s.max_turns_explicit = true;
         }
     }
-    if (parsed.value.object.get("thinkingLevel") orelse parsed.value.object.get("thinking_level") orelse parsed.value.object.get("defaultThinkingLevel")) |v| {
+    if (canonical.value.object.get("thinkingLevel") orelse canonical.value.object.get("thinking_level") orelse canonical.value.object.get("defaultThinkingLevel")) |v| {
         if (v == .string) s.thinking_level = try gpa.dupe(u8, v.string);
     }
-    if (parsed.value.object.get("theme")) |v| {
+    if (canonical.value.object.get("theme")) |v| {
         if (v == .string and v.string.len > 0) s.theme = try gpa.dupe(u8, v.string);
     }
-    if (parsed.value.object.get("transport")) |v| {
+    if (canonical.value.object.get("transport")) |v| {
         if (v == .string) s.transport = codex_ws.Transport.parse(v.string);
     }
-    if (parsed.value.object.get("steeringMode") orelse parsed.value.object.get("steering_mode")) |v| {
+    if (canonical.value.object.get("steeringMode") orelse canonical.value.object.get("steering_mode")) |v| {
         if (v == .string) s.steering_mode = DeliveryMode.parse(v.string);
     }
-    if (parsed.value.object.get("followUpMode") orelse parsed.value.object.get("follow_up_mode")) |v| {
+    if (canonical.value.object.get("followUpMode") orelse canonical.value.object.get("follow_up_mode")) |v| {
         if (v == .string) s.follow_up_mode = DeliveryMode.parse(v.string);
     }
-    if (parsed.value.object.get("httpProxy") orelse parsed.value.object.get("http_proxy")) |v| {
+    if (canonical.value.object.get("httpProxy") orelse canonical.value.object.get("http_proxy")) |v| {
         if (v == .string) {
             const trimmed = std.mem.trim(u8, v.string, " \t\r\n");
             if (trimmed.len > 0) s.http_proxy = try gpa.dupe(u8, trimmed);
         }
     }
-    if (parsed.value.object.get("lastChangelogVersion") orelse parsed.value.object.get("last_changelog_version")) |v| {
+    if (canonical.value.object.get("lastChangelogVersion") orelse canonical.value.object.get("last_changelog_version")) |v| {
         if (v == .string) {
             const trimmed = std.mem.trim(u8, v.string, " \t\r\n");
             if (trimmed.len > 0) s.last_changelog_version = try gpa.dupe(u8, trimmed);
         }
     }
-    if (parsed.value.object.get("collapseChangelog") orelse parsed.value.object.get("collapse_changelog")) |v| {
+    if (canonical.value.object.get("collapseChangelog") orelse canonical.value.object.get("collapse_changelog")) |v| {
         if (v == .bool) s.collapse_changelog = v.bool;
     }
-    if (parsed.value.object.get("quietStartup") orelse parsed.value.object.get("quiet_startup")) |v| {
+    if (canonical.value.object.get("quietStartup") orelse canonical.value.object.get("quiet_startup")) |v| {
         if (v == .bool) s.quiet_startup = v.bool;
     }
-    if (parsed.value.object.get("hideThinkingBlock") orelse parsed.value.object.get("hide_thinking_block")) |v| {
+    if (canonical.value.object.get("hideThinkingBlock") orelse canonical.value.object.get("hide_thinking_block")) |v| {
         if (v == .bool) s.hide_thinking_block = v.bool;
     }
-    if (parsed.value.object.get("showCacheMissNotices") orelse parsed.value.object.get("show_cache_miss_notices")) |v| {
+    if (canonical.value.object.get("showCacheMissNotices") orelse canonical.value.object.get("show_cache_miss_notices")) |v| {
         if (v == .bool) s.show_cache_miss_notices = v.bool;
     }
-    if (parsed.value.object.get("doubleEscapeAction") orelse parsed.value.object.get("double_escape_action")) |v| {
+    if (canonical.value.object.get("doubleEscapeAction") orelse canonical.value.object.get("double_escape_action")) |v| {
         if (v == .string) s.double_escape_action = DoubleEscapeAction.parse(v.string);
     }
-    if (parsed.value.object.get("treeFilterMode") orelse parsed.value.object.get("tree_filter_mode")) |v| {
+    if (canonical.value.object.get("treeFilterMode") orelse canonical.value.object.get("tree_filter_mode")) |v| {
         if (v == .string) s.tree_filter_mode = TreeFilterMode.parse(v.string);
     }
-    if (parsed.value.object.get("fullscreenCopyOnSelect") orelse parsed.value.object.get("fullscreen_copy_on_select")) |v| {
+    if (canonical.value.object.get("fullscreenCopyOnSelect") orelse canonical.value.object.get("fullscreen_copy_on_select")) |v| {
         if (v == .bool) s.fullscreen_copy_on_select = v.bool;
     }
-    if (parsed.value.object.get("terminal")) |v| {
+    if (canonical.value.object.get("terminal")) |v| {
         if (v == .object) {
             if (v.object.get("showImages") orelse v.object.get("show_images")) |show| {
                 if (show == .bool) s.show_images = show.bool;
@@ -1549,7 +1661,7 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("images")) |v| {
+    if (canonical.value.object.get("images")) |v| {
         if (v == .object) {
             if (v.object.get("autoResize") orelse v.object.get("auto_resize")) |resize| {
                 if (resize == .bool) s.auto_resize_images = resize.bool;
@@ -1559,49 +1671,57 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("enableSkillCommands") orelse parsed.value.object.get("enable_skill_commands")) |v| {
+    if (canonical.value.object.get("enableSkillCommands") orelse canonical.value.object.get("enable_skill_commands")) |v| {
         if (v == .bool) s.enable_skill_commands = v.bool;
-    } else if (parsed.value.object.get("skills")) |v| {
+    } else if (canonical.value.object.get("skills")) |v| {
         // Upstream migration compatibility for older nested skill settings.
         if (v == .object) if (v.object.get("enableSkillCommands") orelse v.object.get("enable_skill_commands")) |enabled| {
             if (enabled == .bool) s.enable_skill_commands = enabled.bool;
         };
     }
-    if (parsed.value.object.get("editorPaddingX") orelse parsed.value.object.get("editor_padding_x")) |v| {
+    if (canonical.value.object.get("editorPaddingX") orelse canonical.value.object.get("editor_padding_x")) |v| {
         if (v == .integer and v.integer >= 0) s.editor_padding_x = @intCast(@min(v.integer, 3));
     }
-    if (parsed.value.object.get("outputPad") orelse parsed.value.object.get("output_pad")) |v| {
+    if (canonical.value.object.get("outputPad") orelse canonical.value.object.get("output_pad")) |v| {
         if (v == .integer) s.output_pad = if (v.integer == 0) 0 else 1;
     }
-    if (parsed.value.object.get("autocompleteMaxVisible") orelse parsed.value.object.get("autocomplete_max_visible")) |v| {
+    if (canonical.value.object.get("autocompleteMaxVisible") orelse canonical.value.object.get("autocomplete_max_visible")) |v| {
         if (v == .integer) s.autocomplete_max_visible = @intCast(@max(@as(i64, 3), @min(v.integer, 20)));
     }
-    if (parsed.value.object.get("showHardwareCursor") orelse parsed.value.object.get("show_hardware_cursor")) |v| {
+    if (canonical.value.object.get("showHardwareCursor") orelse canonical.value.object.get("show_hardware_cursor")) |v| {
         if (v == .bool) s.show_hardware_cursor = v.bool;
     }
-    if (parsed.value.object.get("markdown")) |v| {
+    if (canonical.value.object.get("markdown")) |v| {
         if (v == .object) if (v.object.get("mermaid")) |mode| {
             if (mode == .string) s.mermaid_mode = MermaidMode.parse(mode.string);
         };
     }
-    if (parsed.value.object.get("warnings")) |v| {
+    if (canonical.value.object.get("warnings")) |v| {
         if (v == .object) if (v.object.get("anthropicExtraUsage") orelse v.object.get("anthropic_extra_usage")) |enabled| {
             if (enabled == .bool) s.warning_anthropic_extra_usage = enabled.bool;
         };
     }
-    if (parsed.value.object.get("tuiMode") orelse parsed.value.object.get("tui_mode")) |v| {
+    if (canonical.value.object.get("tuiMode") orelse canonical.value.object.get("tui_mode")) |v| {
         if (v == .string) s.tui_mode = TuiMode.parse(v.string);
     }
-    if (parsed.value.object.get("fullscreenExitOutput") orelse parsed.value.object.get("fullscreen_exit_output")) |v| {
+    if (canonical.value.object.get("fullscreenExitOutput") orelse canonical.value.object.get("fullscreen_exit_output")) |v| {
         if (v == .string) s.fullscreen_exit_output = FullscreenExitOutput.parse(v.string);
     }
-    if (parsed.value.object.get("fullscreenScrollbar") orelse parsed.value.object.get("fullscreen_scrollbar")) |v| {
+    if (canonical.value.object.get("fullscreenScrollbar") orelse canonical.value.object.get("fullscreen_scrollbar")) |v| {
         if (v == .string) s.fullscreen_scrollbar = FullscreenScrollbar.parse(v.string);
     }
-    if (parsed.value.object.get("enableInstallTelemetry") orelse parsed.value.object.get("enable_install_telemetry")) |v| {
+    if (canonical.value.object.get("fullscreenWheelScrollLines")) |v| {
+        const number: ?f64 = switch (v) {
+            .integer => |value| @floatFromInt(value),
+            .float => |value| value,
+            else => null,
+        };
+        s.fullscreen_wheel_scroll_lines = if (number) |value| if (std.math.isFinite(value)) .{ .fixed = @max(1, @min(100, @floor(value))) } else .auto else .auto;
+    }
+    if (canonical.value.object.get("enableInstallTelemetry") orelse canonical.value.object.get("enable_install_telemetry")) |v| {
         if (v == .bool) s.enable_install_telemetry = v.bool;
     }
-    if (parsed.value.object.get("npmCommand") orelse parsed.value.object.get("npm_command")) |v| {
+    if (canonical.value.object.get("npmCommand") orelse canonical.value.object.get("npm_command")) |v| {
         if (v == .array and v.array.items.len > 0 and v.array.items.len <= 64) {
             var command: std.ArrayList([]const u8) = .empty;
             errdefer {
@@ -1624,21 +1744,21 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("httpIdleTimeoutMs") orelse parsed.value.object.get("http_idle_timeout_ms")) |v| {
+    if (canonical.value.object.get("httpIdleTimeoutMs") orelse canonical.value.object.get("http_idle_timeout_ms")) |v| {
         if (v == .integer and v.integer >= 0) {
             s.http_idle_timeout_ms = @intCast(v.integer);
         } else if (v == .string and std.ascii.eqlIgnoreCase(v.string, "disabled")) {
             s.http_idle_timeout_ms = 0;
         }
     }
-    if (parsed.value.object.get("websocketConnectTimeoutMs") orelse parsed.value.object.get("websocket_connect_timeout_ms")) |v| {
+    if (canonical.value.object.get("websocketConnectTimeoutMs") orelse canonical.value.object.get("websocket_connect_timeout_ms")) |v| {
         if (v == .integer and v.integer >= 0) {
             s.websocket_connect_timeout_ms = @intCast(v.integer);
         } else if (v == .string and std.ascii.eqlIgnoreCase(v.string, "disabled")) {
             s.websocket_connect_timeout_ms = 0;
         }
     }
-    if (parsed.value.object.get("compaction")) |v| {
+    if (canonical.value.object.get("compaction")) |v| {
         if (v == .object) {
             if (v.object.get("enabled")) |enabled| {
                 if (enabled == .bool) s.compaction_enabled = enabled.bool;
@@ -1651,10 +1771,10 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("autoCompactionEnabled") orelse parsed.value.object.get("auto_compaction_enabled")) |v| {
+    if (canonical.value.object.get("autoCompactionEnabled") orelse canonical.value.object.get("auto_compaction_enabled")) |v| {
         if (v == .bool) s.compaction_enabled = v.bool;
     }
-    if (parsed.value.object.get("branchSummary") orelse parsed.value.object.get("branch_summary")) |v| {
+    if (canonical.value.object.get("branchSummary") orelse canonical.value.object.get("branch_summary")) |v| {
         if (v == .object) {
             if (v.object.get("reserveTokens") orelse v.object.get("reserve_tokens")) |reserve| {
                 if (reserve == .integer and reserve.integer >= 0) s.branch_summary_reserve_tokens = @intCast(reserve.integer);
@@ -1664,7 +1784,7 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("retry")) |v| {
+    if (canonical.value.object.get("retry")) |v| {
         if (v == .object) {
             if (v.object.get("enabled")) |enabled| {
                 if (enabled == .bool) s.retry_enabled = enabled.bool;
@@ -1697,27 +1817,27 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             }
         }
     }
-    if (parsed.value.object.get("autoRetryEnabled") orelse parsed.value.object.get("auto_retry_enabled")) |v| {
+    if (canonical.value.object.get("autoRetryEnabled") orelse canonical.value.object.get("auto_retry_enabled")) |v| {
         if (v == .bool) s.retry_enabled = v.bool;
     }
-    if (parsed.value.object.get("compactionReserveTokens") orelse parsed.value.object.get("compaction_reserve_tokens")) |v| {
+    if (canonical.value.object.get("compactionReserveTokens") orelse canonical.value.object.get("compaction_reserve_tokens")) |v| {
         if (v == .integer and v.integer >= 0) s.compaction_reserve_tokens = @intCast(v.integer);
     }
-    if (parsed.value.object.get("compactionKeepRecentTokens") orelse parsed.value.object.get("compaction_keep_recent_tokens")) |v| {
+    if (canonical.value.object.get("compactionKeepRecentTokens") orelse canonical.value.object.get("compaction_keep_recent_tokens")) |v| {
         if (v == .integer and v.integer >= 0) s.compaction_keep_recent_tokens = @intCast(v.integer);
     }
-    if (parsed.value.object.get("branchSummaryReserveTokens") orelse parsed.value.object.get("branch_summary_reserve_tokens")) |v| {
+    if (canonical.value.object.get("branchSummaryReserveTokens") orelse canonical.value.object.get("branch_summary_reserve_tokens")) |v| {
         if (v == .integer and v.integer >= 0) s.branch_summary_reserve_tokens = @intCast(v.integer);
     }
-    if (parsed.value.object.get("branchSummarySkipPrompt") orelse parsed.value.object.get("branch_summary_skip_prompt")) |v| {
+    if (canonical.value.object.get("branchSummarySkipPrompt") orelse canonical.value.object.get("branch_summary_skip_prompt")) |v| {
         if (v == .bool) s.branch_summary_skip_prompt = v.bool;
     }
-    if (parsed.value.object.get("defaultProjectTrust")) |v| {
+    if (canonical.value.object.get("defaultProjectTrust")) |v| {
         if (v == .string) {
             if (std.mem.eql(u8, v.string, "always")) s.default_project_trust = .always else if (std.mem.eql(u8, v.string, "never")) s.default_project_trust = .never else if (std.mem.eql(u8, v.string, "ask")) s.default_project_trust = .ask;
         }
     }
-    if (parsed.value.object.get("defaultTools") orelse parsed.value.object.get("tools")) |v| {
+    if (!canonical.value.object.contains("defaultTools")) if (canonical.value.object.get("tools")) |v| {
         if (v == .array) {
             var list: std.ArrayList([]const u8) = .empty;
             errdefer {
@@ -1725,10 +1845,22 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
                 list.deinit(gpa);
             }
             for (v.array.items) |item| {
-                if (item == .string) try list.append(gpa, try gpa.dupe(u8, item.string));
+                if (item == .string) {
+                    const copy = try gpa.dupe(u8, item.string);
+                    errdefer gpa.free(copy);
+                    try list.append(gpa, copy);
+                }
             }
             s.tools = try list.toOwnedSlice(gpa);
         }
+    };
+    if (canonical.value.object.get("defaultTools")) |raw_tools| {
+        const resolved = try resolvedDefaultTools(gpa, raw_tools);
+        if (s.tools) |old| {
+            for (old) |name| gpa.free(name);
+            gpa.free(old);
+        }
+        s.tools = resolved;
     }
     return s;
 }
@@ -1833,18 +1965,16 @@ fn mergeInto(gpa: std.mem.Allocator, dst: *Settings, src: Settings) !void {
 
 fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, include_global_only: bool) !void {
     if (src.model) |m| {
+        const copied = try gpa.dupe(u8, m);
         if (dst.model) |old| gpa.free(old);
-        dst.model = try gpa.dupe(u8, m);
+        dst.model = copied;
     }
     if (src.provider) |p| {
+        const copied = try gpa.dupe(u8, p);
         if (dst.provider) |old| gpa.free(old);
-        dst.provider = try gpa.dupe(u8, p);
+        dst.provider = copied;
     }
     if (src.enabled_models) |models| {
-        if (dst.enabled_models) |old| {
-            for (old) |model| gpa.free(model);
-            gpa.free(old);
-        }
         const copied = try gpa.alloc([]const u8, models.len);
         var initialized: usize = 0;
         errdefer {
@@ -1855,26 +1985,34 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
             copied[index] = try gpa.dupe(u8, model);
             initialized += 1;
         }
+        if (dst.enabled_models) |old| {
+            for (old) |model| gpa.free(model);
+            gpa.free(old);
+        }
         dst.enabled_models = copied;
     }
     if (src.thinking_level) |t| {
+        const copied = try gpa.dupe(u8, t);
         if (dst.thinking_level) |old| gpa.free(old);
-        dst.thinking_level = try gpa.dupe(u8, t);
+        dst.thinking_level = copied;
     }
     if (src.theme) |t| {
+        const copied = try gpa.dupe(u8, t);
         if (dst.theme) |old| gpa.free(old);
-        dst.theme = try gpa.dupe(u8, t);
+        dst.theme = copied;
     }
     if (src.transport) |transport| dst.transport = transport;
     if (src.steering_mode) |mode| dst.steering_mode = mode;
     if (src.follow_up_mode) |mode| dst.follow_up_mode = mode;
     if (include_global_only) if (src.http_proxy) |proxy| {
+        const copied = try gpa.dupe(u8, proxy);
         if (dst.http_proxy) |old| gpa.free(old);
-        dst.http_proxy = try gpa.dupe(u8, proxy);
+        dst.http_proxy = copied;
     };
     if (include_global_only) if (src.last_changelog_version) |version| {
+        const copied = try gpa.dupe(u8, version);
         if (dst.last_changelog_version) |old| gpa.free(old);
-        dst.last_changelog_version = try gpa.dupe(u8, version);
+        dst.last_changelog_version = copied;
     };
     if (src.collapse_changelog) |collapse| dst.collapse_changelog = collapse;
     if (src.quiet_startup) |quiet| dst.quiet_startup = quiet;
@@ -1898,9 +2036,18 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.show_hardware_cursor) |show| dst.show_hardware_cursor = show;
     if (src.mermaid_mode) |mode| dst.mermaid_mode = mode;
     if (src.warning_anthropic_extra_usage) |enabled| dst.warning_anthropic_extra_usage = enabled;
+    if (src.codemode_mode_present or src.codemode_mode != null) {
+        dst.codemode_mode = src.codemode_mode;
+        dst.codemode_mode_present = true;
+    }
+    if (src.codemode_budget_present or src.codemode_inline_budget != null) {
+        dst.codemode_inline_budget = src.codemode_inline_budget;
+        dst.codemode_budget_present = true;
+    }
     if (src.tui_mode) |mode| dst.tui_mode = mode;
     if (src.fullscreen_exit_output) |mode| dst.fullscreen_exit_output = mode;
     if (src.fullscreen_scrollbar) |mode| dst.fullscreen_scrollbar = mode;
+    if (src.fullscreen_wheel_scroll_lines) |lines| dst.fullscreen_wheel_scroll_lines = lines;
     if (src.fullscreen_copy_on_select) |enabled| dst.fullscreen_copy_on_select = enabled;
     if (include_global_only) {
         if (src.enable_install_telemetry) |enabled| dst.enable_install_telemetry = enabled;
@@ -1936,13 +2083,43 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.retry_provider_max_retries) |max_retries| dst.retry_provider_max_retries = max_retries;
     if (src.retry_provider_max_retry_delay_ms) |max_delay_ms| dst.retry_provider_max_retry_delay_ms = max_delay_ms;
     if (src.tools) |t| {
+        var list: std.ArrayList([]const u8) = .empty;
+        errdefer {
+            for (list.items) |name| gpa.free(name);
+            list.deinit(gpa);
+        }
+        for (t) |name| {
+            const copy = try gpa.dupe(u8, name);
+            errdefer gpa.free(copy);
+            try list.append(gpa, copy);
+        }
+        const copied = try list.toOwnedSlice(gpa);
         if (dst.tools) |old| {
-            for (old) |x| gpa.free(x);
+            for (old) |name| gpa.free(name);
             gpa.free(old);
         }
-        var list: std.ArrayList([]const u8) = .empty;
-        for (t) |x| try list.append(gpa, try gpa.dupe(u8, x));
-        dst.tools = try list.toOwnedSlice(gpa);
+        dst.tools = copied;
+    }
+    if (src.source_json) |source| {
+        const json = @import("../durable/backend/json.zig");
+        var previous = try json.Owned.parse(gpa, dst.source_json orelse "{}");
+        defer previous.deinit();
+        var incoming = try json.Owned.parse(gpa, source);
+        defer incoming.deinit();
+        var merged_source = try @import("extension_settings.zig").fromValues(gpa, previous.value, incoming.value, true);
+        defer merged_source.deinit();
+        const encoded_source = try json.stringify(gpa, merged_source.value);
+        errdefer gpa.free(encoded_source);
+        if (merged_source.value.object.get("defaultTools")) |raw_tools| {
+            const resolved = try resolvedDefaultTools(gpa, raw_tools);
+            if (dst.tools) |old| {
+                for (old) |name| gpa.free(name);
+                gpa.free(old);
+            }
+            dst.tools = resolved;
+        }
+        if (dst.source_json) |old| gpa.free(old);
+        dst.source_json = encoded_source;
     }
     if (src.max_turns_explicit) {
         dst.max_turns = src.max_turns;
@@ -2035,7 +2212,7 @@ pub fn formatSettings(gpa: std.mem.Allocator, s: Settings) ![]u8 {
         if (s.show_hardware_cursor orelse false) "true" else "false",
         if (s.mermaid_mode) |mode| mode.wireName() else "streaming",
         if (s.warning_anthropic_extra_usage orelse true) "true" else "false",
-        if (s.tui_mode) |mode| mode.wireName() else "regular",
+        s.effectiveTuiMode().wireName(),
         if (s.fullscreen_exit_output) |mode| mode.wireName() else "transcript",
         if (s.fullscreen_scrollbar) |mode| mode.wireName() else "auto",
     });
@@ -2316,7 +2493,7 @@ test "parse and merge settings" {
     try std.testing.expectEqual(@as(usize, 2), s.tools.?.len);
 }
 
-test "defaultTools replaces inherited built-in defaults and preserves an empty list" {
+test "defaultTools plain lists replace inherited selection and empty project modifiers retain it" {
     const gpa = std.testing.allocator;
     var global = try parse(gpa, "{\"defaultTools\":[\"read\",\"bash\"]}");
     defer global.deinit(gpa);
@@ -2329,7 +2506,8 @@ test "defaultTools replaces inherited built-in defaults and preserves an empty l
     var empty = try parse(gpa, "{\"defaultTools\":[]}");
     defer empty.deinit(gpa);
     try mergeInto(gpa, &global, empty);
-    try std.testing.expectEqual(@as(usize, 0), global.tools.?.len);
+    try std.testing.expectEqual(@as(usize, 1), global.tools.?.len);
+    try std.testing.expectEqualStrings("powershell", global.tools.?[0]);
 }
 
 test "parse accepts upstream defaultModel defaultProvider thinkingLevel keys" {
@@ -2764,4 +2942,103 @@ test "extended interactive settings parse merge format and scoped persistence" {
     try std.testing.expectEqual(@as(usize, 32), inherited.max_turns);
     try std.testing.expectError(error.ProjectNotTrusted, setEditableScoped(gpa, io, agent_dir, cwd, false, .project, .output_pad, .{ .integer = 0 }));
     try std.testing.expectError(error.GlobalOnlySetting, setEditableScoped(gpa, io, agent_dir, cwd, true, .project, .enable_install_telemetry, .{ .boolean = false }));
+}
+
+test "codemode settings admit finite nonnegative budgets and preserve per-key project precedence" {
+    const gpa = std.testing.allocator;
+    var global = try parse(gpa, "{\"codemode\":{\"mode\":\"only\",\"inlineBudget\":12.5}}");
+    defer global.deinit(gpa);
+    var project = try parse(gpa, "{\"codemode\":{\"inlineBudget\":0}}");
+    defer project.deinit(gpa);
+    var merged: Settings = .{};
+    defer merged.deinit(gpa);
+    try mergeInto(gpa, &merged, global);
+    try mergeIntoScoped(gpa, &merged, project, false);
+    try std.testing.expectEqual(@as(?@import("../mcp/codemode_loadout.zig").Mode, .only), merged.codemode_mode);
+    try std.testing.expectEqual(@as(?f64, 0), merged.codemode_inline_budget);
+    for ([_][]const u8{ "{\"codemode\":{\"inlineBudget\":-1}}", "{\"codemode\":{\"inlineBudget\":\"10\"}}", "{\"codemode\":null}" }) |bytes| {
+        var rejected = try parse(gpa, bytes);
+        defer rejected.deinit(gpa);
+        try std.testing.expectEqual(@as(?f64, null), rejected.codemode_inline_budget);
+    }
+}
+
+test "codemode settings replay original scoped replacement and invalid-value fallback rather than retaining global budget" {
+    const gpa = std.testing.allocator;
+    var fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/codemode-settings-precedence-original-6fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("rows").?.array.items) |row| {
+        const global_json = try std.json.Stringify.valueAlloc(gpa, row.object.get("global").?, .{});
+        defer gpa.free(global_json);
+        const project_json = try std.json.Stringify.valueAlloc(gpa, row.object.get("project").?, .{});
+        defer gpa.free(project_json);
+        var global = try parse(gpa, global_json);
+        defer global.deinit(gpa);
+        var project = try parse(gpa, project_json);
+        defer project.deinit(gpa);
+        var merged: Settings = .{};
+        defer merged.deinit(gpa);
+        try mergeInto(gpa, &merged, global);
+        try mergeIntoScoped(gpa, &merged, project, false);
+        try std.testing.expectEqualStrings(row.object.get("mode").?.string, @tagName(merged.codemode_mode orelse .on));
+        const budget = row.object.get("inlineBudget").?;
+        const expected: f64 = switch (budget) {
+            .integer => @floatFromInt(budget.integer),
+            .float => budget.float,
+            .number_string => try std.fmt.parseFloat(f64, budget.number_string),
+            else => return error.InvalidOriginalBudget,
+        };
+        try std.testing.expectEqual(expected, merged.codemode_inline_budget orelse 3000);
+    }
+}
+
+test "defaultTools settings replay original modifier composition empty lists malformed values and filtering" {
+    const gpa = std.testing.allocator;
+    const json = @import("../durable/backend/json.zig");
+    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/default-tools-settings-original-6fb.json"));
+    defer fixture.deinit();
+    for (fixture.value.object.get("rows").?.array.items, 0..) |row, index| {
+        const global_json = try json.stringify(gpa, row.object.get("global").?);
+        defer gpa.free(global_json);
+        const project_json = try json.stringify(gpa, row.object.get("project").?);
+        defer gpa.free(project_json);
+        var global = try parse(gpa, global_json);
+        defer global.deinit(gpa);
+        var project = try parse(gpa, project_json);
+        defer project.deinit(gpa);
+        var merged: Settings = .{};
+        defer merged.deinit(gpa);
+        try mergeInto(gpa, &merged, global);
+        try mergeIntoScoped(gpa, &merged, project, false);
+        const expected = row.object.get("result").?;
+        if (expected == .null) {
+            try std.testing.expect(merged.tools == null);
+            continue;
+        }
+        if (expected.array.items.len != merged.tools.?.len) {
+            std.debug.print("defaultTools original case{} count mismatch\n", .{index});
+            return error.OriginalDefaultToolsMismatch;
+        }
+        for (expected.array.items, merged.tools.?) |entry, actual| try std.testing.expectEqualStrings(entry.string, actual);
+    }
+}
+
+test "settings snapshots and replacement fields release every induced allocation failure" {
+    const Sweep = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            var global = try parse(gpa, "{\"defaultModel\":\"first\",\"defaultProvider\":\"one\",\"defaultThinkingLevel\":\"low\",\"theme\":\"dark\",\"enabledModels\":[\"one/first\"],\"defaultTools\":[\"read\",\"write\"],\"custom\":{\"value\":1}}");
+            defer global.deinit(gpa);
+            var project = try parse(gpa, "{\"defaultModel\":\"second\",\"defaultProvider\":\"two\",\"defaultThinkingLevel\":\"high\",\"theme\":\"light\",\"enabledModels\":[\"two/second\"],\"defaultTools\":[\"-read\",\"+codemode\"],\"custom\":{\"next\":2}}");
+            defer project.deinit(gpa);
+            var merged: Settings = .{};
+            defer merged.deinit(gpa);
+            try mergeInto(gpa, &merged, global);
+            try mergeIntoScoped(gpa, &merged, project, false);
+            try std.testing.expectEqualStrings("second", merged.model.?);
+            try std.testing.expectEqualStrings("write", merged.tools.?[0]);
+            try std.testing.expectEqualStrings("codemode", merged.tools.?[1]);
+            try std.testing.expect(merged.source_json != null);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
 }

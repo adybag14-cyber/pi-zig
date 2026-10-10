@@ -1,10 +1,16 @@
 //! Built-in coding tools: read, write, edit, bash, grep, find, ls.
 const std = @import("std");
+const tool_selection = @import("../coding_agent/tool_selection.zig");
 const tool_manager = @import("tool_manager.zig");
 const Io = std.Io;
 const builtin = @import("builtin");
 const truncate_mod = @import("truncate.zig");
 const image_process = @import("../ai/image_process.zig");
+const schema_regexp = @import("../extensions/regexp.zig");
+const durable_filesystem = @import("../durable/filesystem.zig");
+const durable_read = @import("../durable/read.zig");
+const durable_types = @import("../durable/types.zig");
+const image_magic = @import("../ai/images.zig");
 
 pub const ToolCost = struct {
     input: f64 = 0,
@@ -101,6 +107,8 @@ pub const ToolUpdate = struct {
 pub const ToolResult = struct {
     content: []u8,
     is_error: bool,
+    /// Owner-measured execution time. Absent for calls that never execute.
+    duration_ms: ?u64 = null,
     /// Optional binary image result encoded as base64. Built-ins are text-only
     /// today, but external/future tools can return vision content losslessly.
     image_b64: ?[]u8 = null,
@@ -193,6 +201,29 @@ pub fn isBuiltin(name: []const u8) bool {
     return false;
 }
 
+fn mcpPatternMatches(pattern: []const u8, name: []const u8) bool {
+    var p: usize = 0;
+    var n: usize = 0;
+    var star: ?usize = null;
+    var retry: usize = 0;
+    while (n < name.len) {
+        if (p < pattern.len and pattern[p] == name[n]) {
+            p += 1;
+            n += 1;
+        } else if (p < pattern.len and pattern[p] == '*') {
+            star = p;
+            p += 1;
+            retry = n;
+        } else if (star) |index| {
+            p = index + 1;
+            retry += 1;
+            n = retry;
+        } else return false;
+    }
+    while (p < pattern.len and pattern[p] == '*') p += 1;
+    return p == pattern.len;
+}
+
 pub const ToolFilter = struct {
     /// If non-null, only these tools are enabled.
     allow: ?[]const []const u8 = null,
@@ -202,18 +233,25 @@ pub const ToolFilter = struct {
     /// Tools to exclude (applied after allow).
     exclude: ?[]const []const u8 = null,
     no_tools: bool = false,
+    /// Runtime SDK loadouts contain literal names and explicitly filter MCP.
+    allow_is_loadout: bool = false,
+    modifiers: ?[]const []const u8 = null,
+    default_activation_ctx: ?*anyopaque = null,
+    default_activation_fn: ?*const fn (?*anyopaque, []const u8) bool = null,
 
     pub fn isEnabled(self: ToolFilter, name: []const u8) bool {
+        if (std.mem.startsWith(u8, name, "mcp__")) return self.isMcpEnabled(name);
         if (self.no_tools) return false;
+        var enabled = true;
         if (self.allow) |a| {
             var found = false;
             for (a) |t| {
-                if (std.mem.eql(u8, t, name)) {
+                if (if (self.allow_is_loadout) std.mem.eql(u8, t, name) else mcpPatternMatches(t, name)) {
                     found = true;
                     break;
                 }
             }
-            if (!found) return false;
+            enabled = found;
         } else if (isBuiltin(name)) {
             if (self.builtin_allow) |a| {
                 var found = false;
@@ -221,15 +259,54 @@ pub const ToolFilter = struct {
                     found = true;
                     break;
                 };
-                if (!found) return false;
+                enabled = found;
             }
         }
+        if (self.allow == null and !isBuiltin(name)) if (self.default_activation_fn) |lookup| {
+            enabled = lookup(self.default_activation_ctx, name);
+        };
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
         if (self.exclude) |ex| {
             for (ex) |t| {
-                if (std.mem.eql(u8, t, name)) return false;
+                if (mcpPatternMatches(t, name)) return false;
             }
         }
-        return true;
+        return enabled;
+    }
+
+    /// Extension definitions can shadow builtin names. Their activation is
+    /// determined by the registered definition and owner, not builtin defaults.
+    pub fn isExtensionEnabled(self: ToolFilter, name: []const u8) bool {
+        if (self.no_tools) return false;
+        var enabled = if (self.default_activation_fn) |lookup| lookup(self.default_activation_ctx, name) else true;
+        if (self.allow) |allowed| {
+            enabled = false;
+            for (allowed) |pattern| if (if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name)) {
+                enabled = true;
+                break;
+            };
+        }
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
+        if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;
+        return enabled;
+    }
+
+    /// Upstream keeps MCP tools when a nonempty allowlist contains no MCP selector.
+    pub fn isMcpEnabled(self: ToolFilter, name: []const u8) bool {
+        if (self.no_tools) return false;
+        var enabled = true;
+        if (self.allow) |allowed| {
+            var filters_mcp = self.allow_is_loadout or allowed.len == 0;
+            var matches = false;
+            for (allowed) |pattern| {
+                filters_mcp = filters_mcp or std.mem.startsWith(u8, pattern, "mcp__");
+                matches = matches or if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name);
+            }
+            enabled = !filters_mcp or matches;
+        }
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
+        if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;
+        return enabled;
     }
 
     pub fn enabledNames(self: ToolFilter, gpa: std.mem.Allocator) ![]const []const u8 {
@@ -379,12 +456,13 @@ pub fn validateArgumentsAgainstToolSchemas(
     return null;
 }
 
-fn validateSchemaValue(
+pub fn validateSchemaValue(
     gpa: std.mem.Allocator,
     schema: std.json.Value,
     value: std.json.Value,
     path: []const u8,
-) !?[]u8 {
+) anyerror!?[]u8 {
+    if (schema == .bool) return if (schema.bool) null else try std.fmt.allocPrint(gpa, "{s}: false schema rejects this value", .{path});
     if (schema != .object) return null;
     const object = schema.object;
 
@@ -460,27 +538,36 @@ fn validateSchemaValue(
                         if (try validateSchemaValue(gpa, entry.value_ptr.*, child_value, child)) |err| return err;
                     }
                 }
-                if (object.get("additionalProperties")) |additional| {
-                    if (additional == .bool and !additional.bool) {
-                        var actual = value.object.iterator();
-                        while (actual.next()) |entry| {
-                            if (!properties.object.contains(entry.key_ptr.*)) {
-                                const child = try childPath(gpa, path, entry.key_ptr.*);
-                                defer gpa.free(child);
-                                return try std.fmt.allocPrint(gpa, "{s}: additional property is not allowed", .{child});
-                            }
-                        }
-                    } else if (additional == .object) {
-                        var actual = value.object.iterator();
-                        while (actual.next()) |entry| {
-                            if (properties.object.contains(entry.key_ptr.*)) continue;
-                            const child = try childPath(gpa, path, entry.key_ptr.*);
-                            defer gpa.free(child);
-                            if (try validateSchemaValue(gpa, additional, entry.value_ptr.*, child)) |err| return err;
+            }
+        }
+        if (object.get("minProperties")) |minimum| if (jsonNonNegativeUsize(minimum)) |count| {
+            if (value.object.count() < count) return try std.fmt.allocPrint(gpa, "{s}: expected at least {d} properties", .{ path, count });
+        };
+        if (object.get("maxProperties")) |maximum| if (jsonNonNegativeUsize(maximum)) |count| {
+            if (value.object.count() > count) return try std.fmt.allocPrint(gpa, "{s}: expected at most {d} properties", .{ path, count });
+        };
+        var actual = value.object.iterator();
+        while (actual.next()) |entry| {
+            const child = try childPath(gpa, path, entry.key_ptr.*);
+            defer gpa.free(child);
+            const properties = object.get("properties");
+            var covered = properties != null and properties.? == .object and properties.?.object.contains(entry.key_ptr.*);
+            if (object.get("propertyNames")) |name_schema| if (try validateSchemaValue(gpa, name_schema, .{ .string = entry.key_ptr.* }, child)) |err| return err;
+            if (object.get("patternProperties")) |patterns| {
+                if (patterns == .object) {
+                    var iterator = patterns.object.iterator();
+                    while (iterator.next()) |pattern| {
+                        if (try schema_regexp.matches(gpa, pattern.key_ptr.*, entry.key_ptr.*)) {
+                            covered = true;
+                            if (try validateSchemaValue(gpa, pattern.value_ptr.*, entry.value_ptr.*, child)) |err| return err;
                         }
                     }
                 }
             }
+            if (!covered) if (object.get("additionalProperties")) |additional| {
+                if (additional == .bool and !additional.bool) return try std.fmt.allocPrint(gpa, "{s}: additional property is not allowed", .{child});
+                if (try validateSchemaValue(gpa, additional, entry.value_ptr.*, child)) |err| return err;
+            };
         }
     }
 
@@ -491,16 +578,25 @@ fn validateSchemaValue(
         if (object.get("maxItems")) |maximum| if (jsonNonNegativeUsize(maximum)) |n| {
             if (value.array.items.len > n) return try std.fmt.allocPrint(gpa, "{s}: expected at most {d} items", .{ path, n });
         };
-        if (object.get("items")) |item_schema| {
-            for (value.array.items, 0..) |item, index| {
-                const child = try std.fmt.allocPrint(gpa, "{s}[{d}]", .{ path, index });
-                defer gpa.free(child);
-                if (try validateSchemaValue(gpa, item_schema, item, child)) |err| return err;
+        const items = object.get("items");
+        const prefix = object.get("prefixItems");
+        const tuple = if (prefix != null and prefix.? == .array) prefix else if (items != null and items.? == .array) items else null;
+        for (value.array.items, 0..) |item, index| {
+            const child = try std.fmt.allocPrint(gpa, "{s}[{d}]", .{ path, index });
+            defer gpa.free(child);
+            if (tuple) |entries| {
+                if (index < entries.array.items.len) {
+                    if (try validateSchemaValue(gpa, entries.array.items[index], item, child)) |err| return err;
+                    continue;
+                }
             }
+            const remainder = if (items != null and items.? == .array) object.get("additionalItems") else items;
+            if (remainder) |item_schema| if (try validateSchemaValue(gpa, item_schema, item, child)) |err| return err;
         }
     }
 
     if (value == .string) {
+        if (object.get("pattern")) |pattern| if (pattern == .string and !try schema_regexp.matches(gpa, pattern.string, value.string)) return try std.fmt.allocPrint(gpa, "{s}: string does not match pattern", .{path});
         if (object.get("minLength")) |minimum| if (jsonNonNegativeUsize(minimum)) |n| {
             const length = std.unicode.utf8CountCodepoints(value.string) catch value.string.len;
             if (length < n) {
@@ -533,6 +629,29 @@ fn validateSchemaValue(
     return null;
 }
 
+test "tool schema validation enforces real TypeBox records tuples patterns and boolean schemas" {
+    const gpa = std.testing.allocator;
+    const schemas = "[{\"type\":\"function\",\"function\":{\"name\":\"typed\",\"parameters\":{\"type\":\"object\",\"properties\":{\"pair\":{\"type\":\"array\",\"items\":[{\"type\":\"string\"},{\"type\":\"integer\"}],\"minItems\":2,\"additionalItems\":false},\"record\":{\"type\":\"object\",\"patternProperties\":{\"^value_[0-9]+$\":{\"type\":\"integer\"}},\"additionalProperties\":false},\"code\":{\"type\":\"string\",\"pattern\":\"^.$\"}},\"required\":[\"pair\",\"record\",\"code\"],\"additionalProperties\":false}}}]";
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed", "{\"pair\":[\"ok\",1.0],\"record\":{\"value_42\":2},\"code\":\"🌍\"}")) == null);
+    for ([_][]const u8{
+        "{\"pair\":[\"ok\",\"wrong\"],\"record\":{},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1,2],\"record\":{},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{\"value_42\":\"wrong\"},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{\"other\":2},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{},\"code\":\"ab\"}",
+    }) |arguments| {
+        const invalid = (try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed", arguments)) orelse return error.ExpectedInvalidToolArguments;
+        defer gpa.free(invalid);
+    }
+    const modern = "[{\"type\":\"function\",\"function\":{\"name\":\"modern\",\"parameters\":{\"type\":\"array\",\"prefixItems\":[{\"type\":\"string\"}],\"items\":false}}}]";
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, modern, "modern", "[\"ok\"]")) == null);
+    const extra = (try validateArgumentsAgainstToolSchemas(gpa, modern, "modern", "[\"ok\",1]")) orelse return error.ExpectedInvalidToolArguments;
+    defer gpa.free(extra);
+    const closed = "[{\"type\":\"function\",\"function\":{\"name\":\"closed\",\"parameters\":{\"type\":\"object\",\"additionalProperties\":false}}}]";
+    const unknown = (try validateArgumentsAgainstToolSchemas(gpa, closed, "closed", "{\"unknown\":true}")) orelse return error.ExpectedInvalidToolArguments;
+    defer gpa.free(unknown);
+}
+
 fn childPath(gpa: std.mem.Allocator, parent: []const u8, child: []const u8) ![]u8 {
     if (std.mem.eql(u8, parent, "root")) return try gpa.dupe(u8, child);
     return try std.fmt.allocPrint(gpa, "{s}.{s}", .{ parent, child });
@@ -559,7 +678,7 @@ fn jsonValueMatchesType(value: std.json.Value, expected: []const u8) bool {
     if (std.mem.eql(u8, expected, "array")) return value == .array;
     if (std.mem.eql(u8, expected, "string")) return value == .string;
     if (std.mem.eql(u8, expected, "number")) return value == .integer or value == .float or value == .number_string;
-    if (std.mem.eql(u8, expected, "integer")) return value == .integer;
+    if (std.mem.eql(u8, expected, "integer")) return value == .integer or (value == .float and std.math.isFinite(value.float) and @trunc(value.float) == value.float);
     if (std.mem.eql(u8, expected, "boolean")) return value == .bool;
     if (std.mem.eql(u8, expected, "null")) return value == .null;
     return true;
@@ -753,14 +872,22 @@ fn parseBoolField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []c
     };
 }
 
-fn parseIntField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []const u8, default: i64) i64 {
-    var parsed = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch return default;
+fn parseIntField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []const u8, default: i64) !i64 {
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch |err| switch (err) {
+        error.OutOfMemory => return err,
+        else => return default,
+    };
     defer parsed.deinit();
     if (parsed.value != .object) return default;
     const v = parsed.value.object.get(field) orelse return default;
     return switch (v) {
         .integer => |i| i,
-        .float => |f| @intFromFloat(f),
+        .float => |f| blk: {
+            // i64's positive endpoint rounds to 2^63 in f64, so the upper
+            // comparison must be exclusive before conversion.
+            if (!std.math.isFinite(f) or f < -9_223_372_036_854_775_808.0 or f >= 9_223_372_036_854_775_808.0) return error.InvalidToolInteger;
+            break :blk @intFromFloat(f);
+        },
         else => default,
     };
 }
@@ -770,21 +897,51 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         return try errMsg(ctx.gpa, "read: missing path", .{});
     defer ctx.gpa.free(path_owned);
 
-    const offset_raw = parseIntField(ctx.gpa, arguments_json, "offset", 0); // 0 = unset; 1-indexed when set
-    const limit_raw = parseIntField(ctx.gpa, arguments_json, "limit", 0); // 0 = no limit
+    const offset_raw = try parseIntField(ctx.gpa, arguments_json, "offset", 0); // 0 = unset; 1-indexed when set
+    const limit_raw = try parseIntField(ctx.gpa, arguments_json, "limit", 0); // 0 = no limit
 
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_owned);
     defer ctx.gpa.free(full);
 
-    const data = std.Io.Dir.cwd().readFileAlloc(ctx.io, full, ctx.gpa, .limited(32 * 1024 * 1024)) catch |err| {
-        return try errMsg(ctx.gpa, "read failed: {s}", .{@errorName(err)});
-    };
+    var fs = try durable_filesystem.FileSystem.init(ctx.gpa, ctx.io, ctx.cwd, null);
+    defer fs.deinit();
+    const read_context: durable_types.Context = .{ .abort_flag = if (ctx.abort_flag) |flag| @ptrCast(flag) else null };
+    var opened = try fs.openBinaryReader(full, .{}, read_context);
+    if (opened == .failure) {
+        defer opened.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{opened.failure.message});
+    }
+    var reader = opened.value;
+    defer reader.deinit();
+    var header_result = try reader.read(0, image_magic.sniff_bytes, read_context);
+    if (header_result == .failure) {
+        defer header_result.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{header_result.failure.message});
+    }
+    const header = header_result.value;
+    defer ctx.gpa.free(header);
 
     // Images ignore line slicing and become structured tool content. Safe
     // provider-native payloads remain byte-for-byte; oversized, rotated and
     // BMP inputs are normalized according to `images.autoResize`.
-    if (image_process.inspect(data)) |inspection| {
+    if (image_magic.detectSupportedMime(header) != null) image: {
+        var metadata = try reader.info(read_context);
+        if (metadata == .failure) {
+            defer metadata.failure.deinit(ctx.gpa);
+            return try errMsg(ctx.gpa, "read failed: {s}", .{metadata.failure.message});
+        }
+        defer metadata.value.deinit(ctx.gpa);
+        // Image normalization needs the encoded payload. Text files use only
+        // the bounded header/scan/selection path below.
+        if (metadata.value.size > 32 * 1024 * 1024) return try errMsg(ctx.gpa, "read failed: StreamTooLong", .{});
+        var image_bytes = try reader.read(0, metadata.value.size, read_context);
+        if (image_bytes == .failure) {
+            defer image_bytes.failure.deinit(ctx.gpa);
+            return try errMsg(ctx.gpa, "read failed: {s}", .{image_bytes.failure.message});
+        }
+        const data = image_bytes.value;
         defer ctx.gpa.free(data);
+        const inspection = image_process.inspect(data) orelse break :image;
         var normalized = try image_process.processBytes(ctx.gpa, ctx.io, data, .{
             .auto_resize = ctx.auto_resize_images,
             .environ = ctx.environ,
@@ -813,30 +970,16 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         return .{ .content = content, .is_error = false };
     }
 
-    // Apply line offset/limit when requested (upstream pi read tool)
-    if (offset_raw > 0 or limit_raw > 0) {
-        defer ctx.gpa.free(data);
-        const start_line: usize = if (offset_raw > 0) @intCast(offset_raw) else 1;
-        const max_lines: ?usize = if (limit_raw > 0) @intCast(limit_raw) else null;
-        var out: std.ArrayList(u8) = .empty;
-        errdefer out.deinit(ctx.gpa);
-        var line_no: usize = 1;
-        var kept: usize = 0;
-        var it = std.mem.splitScalar(u8, data, '\n');
-        while (it.next()) |line| {
-            defer line_no += 1;
-            if (line_no < start_line) continue;
-            if (max_lines) |ml| {
-                if (kept >= ml) break;
-            }
-            if (out.items.len > 0) try out.append(ctx.gpa, '\n');
-            try out.appendSlice(ctx.gpa, line);
-            kept += 1;
-        }
-        return try maybeTruncate(ctx.gpa, try out.toOwnedSlice(ctx.gpa), false);
+    const start_line: u64 = if (offset_raw > 0) @intCast(offset_raw - 1) else 0;
+    const end_line: ?u64 = if (limit_raw > 0) std.math.add(u64, start_line, @intCast(limit_raw)) catch return try errMsg(ctx.gpa, "read: invalid line range", .{}) else null;
+    var selected_result = try durable_read.selection(&reader, .{ .startLine = start_line, .endLine = end_line }, read_context);
+    if (selected_result == .failure) {
+        defer selected_result.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{selected_result.failure.message});
     }
-
-    return try maybeTruncate(ctx.gpa, data, false);
+    var selected = selected_result.value;
+    defer selected.deinit(ctx.gpa);
+    return ownedResult(try durable_read.legacyText(ctx.gpa, selected), false);
 }
 
 fn executeWrite(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
@@ -1096,7 +1239,7 @@ fn executeBash(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         if (@atomicLoad(bool, f, .acquire)) return try errMsg(ctx.gpa, "bash: aborted before start", .{});
     }
 
-    const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
+    const timeout_sec: i64 = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
     const argv: []const []const u8 = if (builtin.os.tag == .windows)
         &[_][]const u8{ "cmd.exe", "/C", command }
     else
@@ -1113,7 +1256,7 @@ fn executePowerShell(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     if (builtin.os.tag != .windows) return try errMsg(ctx.gpa, "powershell: only available on Windows", .{});
     if (ctx.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
         return try errMsg(ctx.gpa, "powershell: aborted before start", .{});
-    const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
+    const timeout_sec: i64 = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
     const utf8_command = try std.fmt.allocPrint(ctx.gpa, "try {{ [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 }} catch {{}}\n{s}", .{command});
     defer ctx.gpa.free(utf8_command);
     const argv = powershell_command_prefix ++ [_][]const u8{utf8_command};
@@ -1146,6 +1289,7 @@ fn buildBashEnvironment(ctx: ToolContext) !?std.process.Environ.Map {
 }
 
 fn executeProcessTool(ctx: ToolContext, tool_label: []const u8, argv: []const []const u8, timeout_sec: i64) !ToolResult {
+    if (timeout_sec > @divTrunc(std.math.maxInt(i64), 1000)) return error.InvalidToolTimeout;
     var child_environment = try buildBashEnvironment(ctx);
     defer if (child_environment) |*environment| environment.deinit();
     const child_environment_ptr: ?*const std.process.Environ.Map = if (child_environment) |*environment| environment else null;
@@ -1444,8 +1588,8 @@ fn executeGrep(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     defer if (glob_opt) |g| ctx.gpa.free(g);
     const ignore_case = parseBoolField(ctx.gpa, arguments_json, "ignoreCase");
     const literal = parseBoolField(ctx.gpa, arguments_json, "literal");
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 100)));
-    const context_lines: usize = @intCast(@max(0, parseIntField(ctx.gpa, arguments_json, "context", 0)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 100)));
+    const context_lines: usize = @intCast(@max(0, try parseIntField(ctx.gpa, arguments_json, "context", 0)));
 
     const search_root = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(search_root);
@@ -1648,7 +1792,7 @@ fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     defer ctx.gpa.free(pattern);
     const path_opt = try parseStringField(ctx.gpa, arguments_json, "path");
     defer if (path_opt) |p| ctx.gpa.free(p);
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 1000)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 1000)));
 
     const search_root = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(search_root);
@@ -1686,7 +1830,7 @@ fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
 fn executeLs(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     const path_opt = try parseStringField(ctx.gpa, arguments_json, "path");
     defer if (path_opt) |p| ctx.gpa.free(p);
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 500)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 500)));
 
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(full);
@@ -2038,6 +2182,25 @@ test "read supports offset and limit lines" {
     try std.testing.expectEqualStrings("L2\nL3", r.content);
 }
 
+test "read tool selects a native bounded range from a file larger than 32 MiB" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    const file = try temporary.dir.createFile(io, "large.txt", .{});
+    defer file.close(io);
+    const size = 33 * 1024 * 1024;
+    try file.setLength(io, size);
+    try file.writePositionalAll(io, "\ntail😀", size - 9);
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(io, &path_buffer);
+    const context: ToolContext = .{ .gpa = gpa, .io = io, .cwd = path_buffer[0..length] };
+    var result = try execute(context, "read", "{\"path\":\"large.txt\",\"offset\":2}");
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expectEqualStrings("tail😀", result.content);
+}
+
 test "read tool truncates oversized file output" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
@@ -2197,4 +2360,25 @@ test "tool image arrays deep clone and deinitialize" {
     try std.testing.expectEqual(@as(usize, 2), cloned.len);
     try std.testing.expectEqualStrings("AQ==", cloned[1].data_b64);
     try std.testing.expect(cloned[0].data_b64.ptr != input[0].data_b64.ptr);
+}
+
+test "native tool numeric input rejects extreme floats without process execution or file mutation" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(io, &buffer);
+    const ctx: ToolContext = .{ .gpa = gpa, .io = io, .cwd = buffer[0..length] };
+    try tmp.dir.writeFile(io, .{ .sub_path = "safe.txt", .data = "unchanged\n" });
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "read", "{\"path\":\"safe.txt\",\"offset\":1e100}"));
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "read", "{\"path\":\"safe.txt\",\"limit\":-1e100}"));
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "bash", "{\"command\":\"echo must-not-start\",\"timeout\":1e100}"));
+    try std.testing.expectError(error.InvalidToolTimeout, execute(ctx, "bash", "{\"command\":\"echo must-not-start\",\"timeout\":9223372036854775807}"));
+    const bytes = try tmp.dir.readFileAlloc(io, "safe.txt", gpa, .limited(100));
+    defer gpa.free(bytes);
+    try std.testing.expectEqualStrings("unchanged\n", bytes);
+    try std.testing.expectEqual(@as(i64, 12), try parseIntField(gpa, "{\"limit\":12.5}", "limit", 0));
+    try std.testing.expectEqual(std.math.minInt(i64), try parseIntField(gpa, "{\"limit\":-9223372036854775808.0}", "limit", 0));
+    try std.testing.expectError(error.InvalidToolInteger, parseIntField(gpa, "{\"limit\":9223372036854775808.0}", "limit", 0));
 }

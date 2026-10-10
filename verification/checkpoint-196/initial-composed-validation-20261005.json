@@ -1,0 +1,76 @@
+{
+  "status": "initial composed snapshot passed before three further admissions",
+  "sourceArchiveSha256": "c8930fc9ad19be3890c0a8416e5e306f97cc55fd56f1b4da0c2e0883ced1c63c",
+  "sourceInputs": "checkpoint196-initial-inputs.json",
+  "jobs": [
+    {
+      "receipt": {
+        "name": "checkpoint196-composed-windows-debug",
+        "pid": 43412,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T21:37:31.0675190Z",
+        "launched_utc": "2026-10-05T21:37:31.0619903+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T21:40:33.3099012+00:00"
+      },
+      "summary": "Build Summary: 153/153 steps succeeded; 853/899 tests passed (46 skipped)"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint196-composed-windows-releasesafe",
+        "pid": 2576,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T21:40:33.3248270Z",
+        "launched_utc": "2026-10-05T21:40:33.3235438+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T21:48:12.5300457+00:00"
+      },
+      "summary": "Build Summary: 153/153 steps succeeded; 853/899 tests passed (46 skipped)"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint196-composed-linux-debug",
+        "pid": 39344,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint196-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=Debug -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T21:37:31.0564790Z",
+        "launched_utc": "2026-10-05T21:37:31.0534071+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T21:39:52.0091567+00:00"
+      },
+      "summary": "Build Summary: 149/149 steps succeeded; 1025/1029 tests passed (4 skipped)"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint196-composed-linux-releasesafe",
+        "pid": 15928,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint196-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T21:39:52.0215270Z",
+        "launched_utc": "2026-10-05T21:39:52.0209244+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T21:52:53.6173911+00:00"
+      },
+      "summary": "Build Summary: 149/149 steps succeeded; 1025/1029 tests passed (4 skipped)"
+    }
+  ],
+  "subsequentChanges": [
+    "Native prethrow action FIFO preservation",
+    "MCP client/CLI native transport adapter",
+    "Production daemon startup/request event wait correction"
+  ]
+}

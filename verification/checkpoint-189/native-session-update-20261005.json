@@ -1,0 +1,54 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "binarySourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "session-update",
+  "reportGates": 10,
+  "semanticReportMatch": true,
+  "managerHelper": "Compiled Zig executable replaces fake npm shell script; exactlytwo logged argv calls",
+  "processBoundary": "Onlytaskowned copied prefix binary is treated as managed; original source binary rejected; --check executesno manager",
+  "durable": "Startup rename is actualsession_info entry; live resume writes only target history",
+  "nativeLinuxTestsPassed": 10,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "baseline": {
+      "name": "session-update-python-baseline",
+      "pid": 39828,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/session_update_e2e.py /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-update-python-report.txt",
+      "created_utc": "2026-10-05T11:44:37.4783890Z",
+      "launched_utc": "2026-10-05T11:44:37.4754472+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:44:38.7578676+00:00"
+    },
+    "windows": {
+      "name": "session-update-native-windows",
+      "pid": 14840,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/session_update_process_test.zig",
+      "created_utc": "2026-10-05T12:03:59.7012570Z",
+      "launched_utc": "2026-10-05T12:03:59.7003442+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:04:01.4778261+00:00"
+    },
+    "native": {
+      "name": "session-update-native-final",
+      "pid": 12188,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_TOOL_TEST_HELPER=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/pi-tool-fixture PI_SESSION_UPDATE_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-update-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/session_update_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-session-update-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T12:03:53.6886810Z",
+      "launched_utc": "2026-10-05T12:03:53.6855607+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:03:59.6913421+00:00"
+    }
+  }
+}

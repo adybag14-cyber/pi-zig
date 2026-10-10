@@ -1,0 +1,237 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "base": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "both",
+      "callers": [
+        "model",
+        "tools"
+      ]
+    },
+    {
+      "name": "model",
+      "callers": [
+        "model"
+      ]
+    },
+    {
+      "name": "tools",
+      "callers": [
+        "tools"
+      ]
+    },
+    {
+      "name": "neither",
+      "callers": []
+    },
+    {
+      "name": "unknown",
+      "callers": [
+        "other"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "selection-0",
+      "state": null,
+      "tools": [
+        "default",
+        "both",
+        "model"
+      ],
+      "callable": [
+        "default",
+        "both",
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-1",
+      "state": {
+        "tools": []
+      },
+      "tools": [],
+      "callable": [],
+      "identities": true
+    },
+    {
+      "name": "selection-2",
+      "state": {
+        "modelTools": []
+      },
+      "tools": [],
+      "callable": [
+        "default",
+        "both",
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-3",
+      "state": {
+        "tools": [
+          "tools",
+          "default",
+          "model",
+          "both",
+          "default",
+          "missing"
+        ],
+        "modelTools": [
+          "both",
+          "model",
+          "tools",
+          "default",
+          "both"
+        ]
+      },
+      "tools": [
+        "both",
+        "model",
+        "default"
+      ],
+      "callable": [
+        "tools",
+        "default",
+        "both"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-4",
+      "state": {
+        "tools": {
+          "remove": [
+            "default",
+            "neither"
+          ]
+        },
+        "modelTools": {
+          "remove": [
+            "model"
+          ]
+        }
+      },
+      "tools": [
+        "both"
+      ],
+      "callable": [
+        "both",
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-5",
+      "state": {
+        "tools": [
+          "tools"
+        ],
+        "modelTools": [
+          "tools"
+        ]
+      },
+      "tools": [],
+      "callable": [
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-6",
+      "state": {
+        "modelTools": [
+          "model",
+          "default"
+        ]
+      },
+      "tools": [
+        "model",
+        "default"
+      ],
+      "callable": [
+        "default",
+        "both",
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-7",
+      "state": {
+        "tools": [
+          "default",
+          "both"
+        ],
+        "modelTools": [
+          "model",
+          "both"
+        ]
+      },
+      "tools": [
+        "both"
+      ],
+      "callable": [
+        "default",
+        "both"
+      ],
+      "identities": true
+    },
+    {
+      "name": "selection-8",
+      "state": {
+        "tools": {
+          "remove": []
+        },
+        "modelTools": {
+          "remove": []
+        }
+      },
+      "tools": [
+        "default",
+        "both",
+        "model"
+      ],
+      "callable": [
+        "default",
+        "both",
+        "tools"
+      ],
+      "identities": true
+    },
+    {
+      "name": "override-wrap",
+      "tools": [
+        "both",
+        "model"
+      ],
+      "callable": [
+        "default",
+        "tools"
+      ],
+      "replacement": true,
+      "wrapped": true
+    },
+    {
+      "name": "odd-null",
+      "error": "TypeError"
+    },
+    {
+      "name": "odd-3",
+      "error": "TypeError"
+    },
+    {
+      "name": "odd-model",
+      "tools": [
+        "odd"
+      ],
+      "callable": []
+    }
+  ]
+}

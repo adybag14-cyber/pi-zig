@@ -1,0 +1,166 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "1665296020007c26c5c82084029c093c930bce40",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+  "toolchain": "Zig 0.16.0",
+  "files": [
+    {
+      "path": "build.zig",
+      "bytes": 59359,
+      "sha256": "eace66b70a5538cb54645d79fa9fa7d3476d232e5412b26b98097d84bfe043c6"
+    },
+    {
+      "path": "src/durable/shell.zig",
+      "bytes": 34899,
+      "sha256": "fe24cbacac6956b7e8430b9e81ff684a97eb596654279ca116d89501cb799b5d"
+    },
+    {
+      "path": "src/durable/types.zig",
+      "bytes": 3424,
+      "sha256": "c74e0727677e86caeafe21fa511c4f55f1af0bb5e4c950f843d5e56c3ff47781"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 5529,
+      "sha256": "d8067b40a3ae48413ba131eba12dd786cc16e6addfd0a38c9f18dfdbbbb69799"
+    },
+    {
+      "path": "src/env/root.zig",
+      "bytes": 2707,
+      "sha256": "9ec1803f87c40cc7209b756c909808546ff5d5c856ebb91ddc1de12a495787d8"
+    },
+    {
+      "path": "src/env/remote_env.zig",
+      "bytes": 66623,
+      "sha256": "cf7c0332025969e8825b525d92742bb1fe8b3e7a1d99ed5d77760d405ee85c3f"
+    },
+    {
+      "path": "src/env/remote_path.zig",
+      "bytes": 8457,
+      "sha256": "5365f03baeb355126b6f46861d956e5e8c3aeea5f1f9aae98c4da2e670ff6dee"
+    },
+    {
+      "path": "src/env/fixtures/remote-adapter-7fb59f9.json",
+      "bytes": 735,
+      "sha256": "60df570406a511a631a0950f25f2482e2268d60e333823353277b4a8d5540559"
+    },
+    {
+      "path": "src/env/fixtures/remote-path-7fb59f9.json",
+      "bytes": 24391,
+      "sha256": "1304c939011b3d5c5ffab9c5e663d70e97dffe894bc4b54aeaae38fc0a6f5325"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\remote-env-adapter-7fb59f9.patch",
+  "patch_sha256": "4111e129127a317ba1ba667c45bffceccfb05ff3b7a177d59b6fe1f849602894",
+  "tests": [
+    {
+      "name": "windows-final-release-safe",
+      "pid": 50804,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T09:57:01.474011Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T09:57:01.8254635Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:57:40.4587089Z"
+    },
+    {
+      "name": "linux-final-release-safe",
+      "pid": 52112,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-completion-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "created_utc": "2026-10-07T09:57:01.473208Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 320,
+      "started_utc": "2026-10-07T09:57:01.8265851Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:57:37.6448412Z"
+    },
+    {
+      "name": "linux-final-debug",
+      "pid": 25828,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-completion-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "created_utc": "2026-10-07T09:55:06.295063Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 320,
+      "started_utc": "2026-10-07T09:55:06.6309725Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:55:16.5446142Z"
+    },
+    {
+      "name": "windows-final-debug",
+      "pid": 54264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "created_utc": "2026-10-07T09:53:29.979804Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T09:53:30.2364945Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:53:43.69886Z"
+    },
+    {
+      "name": "native-adapter-original-daemon",
+      "pid": 56148,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\adapter-reference-test.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\adapter-reference-test.exe\"",
+      "created_utc": "2026-10-07T09:54:37.112755Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 120,
+      "started_utc": "2026-10-07T09:54:37.3969001Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:54:38.6454182Z"
+    },
+    {
+      "name": "original-adapter-capture",
+      "pid": 48644,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --no-warnings --experimental-loader file:///C:/Users/adyba/pi-zig-update-evidence-20261003/env-completion-20261007/loader.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\adapter-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\original-target\\debug\\pi-env.exe C:\\Users\\adyba\\pi-zig-env-completion-20261007\\zig-out\\bin\\pi-env-process-fixture.exe",
+      "created_utc": "2026-10-07T09:51:50.959824Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "status": "passed",
+      "deadline_seconds": 120,
+      "started_utc": "2026-10-07T09:51:51.2467791Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:51:52.6009938Z"
+    },
+    {
+      "name": "original-latest-build",
+      "pid": 54912,
+      "executable": "C:\\Users\\adyba\\.cargo\\bin\\cargo.exe",
+      "command_line": "\"C:\\Users\\adyba\\.cargo\\bin\\cargo.exe\" +1.97.1 build --locked --manifest-path packages/env/daemon/Cargo.toml --target-dir C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\original-target",
+      "created_utc": "2026-10-07T09:50:43.398471Z",
+      "directory": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T09:50:43.7179422Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T09:50:49.6823997Z"
+    }
+  ],
+  "known_limits": [
+    "Native watch facade pending",
+    "Daemon file operations still serialized; worker/FIFO slice separate",
+    "Durable concrete local ExecutionEnv storage integration pending",
+    "Complete Node daemon error message equivalence not claimed",
+    "SSH Windows server, host-key scan management and packaged cross-platform distribution pending"
+  ],
+  "native_implementation": [
+    "Zig",
+    "direct C dependencies"
+  ],
+  "implementationScriptsAdded": false,
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "frozen_utc": "2026-10-07T09:58:31.8398562Z"
+}

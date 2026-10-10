@@ -1,0 +1,75 @@
+[
+  {
+    "input": [
+      "add",
+      "server",
+      "--url",
+      "https://service.example/mcp"
+    ],
+    "code": 0,
+    "logs": [
+      "Added global MCP server \"server\" in <ROOT>/mcp.json.",
+      "Check it with: pi mcp list. If it requires sign-in: pi mcp login server"
+    ],
+    "errors": [],
+    "config": {
+      "mcpServers": {
+        "server": {
+          "url": "https://service.example/mcp"
+        }
+      }
+    }
+  },
+  {
+    "input": [
+      "add",
+      "server",
+      "command",
+      "--arg"
+    ],
+    "code": 0,
+    "logs": [
+      "Replaced global MCP server \"server\" in <ROOT>/mcp.json.",
+      "Check it with: pi mcp list"
+    ],
+    "errors": [],
+    "config": {
+      "mcpServers": {
+        "server": {
+          "command": "command",
+          "args": [
+            "--arg"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "input": [
+      "remove",
+      "server"
+    ],
+    "code": 0,
+    "logs": [
+      "Removed global MCP server \"server\" from <ROOT>/mcp.json."
+    ],
+    "errors": [],
+    "config": {
+      "mcpServers": {}
+    }
+  },
+  {
+    "input": [
+      "remove",
+      "server"
+    ],
+    "code": 1,
+    "logs": [],
+    "errors": [
+      "No global MCP server named \"server\" in <ROOT>/mcp.json."
+    ],
+    "config": {
+      "mcpServers": {}
+    }
+  }
+]

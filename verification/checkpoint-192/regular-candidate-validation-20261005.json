@@ -1,0 +1,169 @@
+{
+  "source_freeze": "regular-focus-source-freeze-20261005.json",
+  "patch": "regular-focus-delta-20261005/regular-focus.patch",
+  "pinned_zig": "0.16.0",
+  "upstream_tui_authority": "regular-focus-upstream-authority-20261005.json",
+  "jobs": [
+    {
+      "name": "regular-final-debug-bindings-components-20261005",
+      "pid": 20508,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-fullscreen-frontend-components -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T18:01:43.054519Z",
+      "launched_utc": "2026-10-05T19:01:43.051274+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T19:01:59.9913426+01:00"
+    },
+    {
+      "name": "regular-final-optimized-components-sqlite-20261005",
+      "pid": 54308,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-fullscreen-frontend-components test-fullscreen-keys -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T17:48:12.51113Z",
+      "launched_utc": "2026-10-05T18:48:12.5078199+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:48:36.7521365+01:00"
+    },
+    {
+      "name": "regular-final-release-win-cli-20261005",
+      "pid": 53264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-win-release-candidate",
+      "created_utc": "2026-10-05T17:49:33.921623Z",
+      "launched_utc": "2026-10-05T18:49:33.9179142+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:51:36.4065978+01:00"
+    },
+    {
+      "name": "regular-final-release-win-cells-20261005",
+      "pid": 12676,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-win-test.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-win-test.exe\"",
+      "created_utc": "2026-10-05T17:52:07.90066Z",
+      "launched_utc": "2026-10-05T18:52:07.8973881+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:52:21.8751751+01:00"
+    },
+    {
+      "name": "regular-final-linux-release-cli-20261005",
+      "pid": 30132,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Dtarget=x86_64-linux-gnu -Doptimize=ReleaseSafe -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-linux-candidate",
+      "created_utc": "2026-10-05T17:52:37.642085Z",
+      "launched_utc": "2026-10-05T18:52:37.6381458+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:55:04.5887514+01:00"
+    },
+    {
+      "name": "regular-final-linux-release-cells-20261005",
+      "pid": 49352,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --cd /mnt/c/Users/adyba/pi-zig-regular-custom-20261005 -- /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/regular-linux-candidate/bin/pi /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/regular-final-linux-test",
+      "created_utc": "2026-10-05T17:59:10.713209Z",
+      "launched_utc": "2026-10-05T18:59:10.7103831+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:59:26.7121496+01:00"
+    },
+    {
+      "name": "regular-final-macos-cli-cross-20261005",
+      "pid": 30228,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Dtarget=aarch64-macos -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-macos-candidate",
+      "created_utc": "2026-10-05T17:52:37.642083Z",
+      "launched_utc": "2026-10-05T18:52:37.6382093+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:53:08.5306771+01:00"
+    },
+    {
+      "name": "regular-final-macos-fixture-cross-20261005",
+      "pid": 29484,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/fullscreen_frontend_process_test.zig -target aarch64-macos -lc --test-no-exec -femit-bin=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-macos-test",
+      "created_utc": "2026-10-05T18:02:19.942558Z",
+      "launched_utc": "2026-10-05T19:02:19.938527+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T19:02:22.117137+01:00"
+    }
+  ],
+  "counts": {
+    "debug_bindings": 133,
+    "debug_components": 21,
+    "optimized_bindings": 133,
+    "optimized_components": 21,
+    "optimized_key_component_pass": 106,
+    "optimized_key_component_skip": 2,
+    "actual_windows_process_pass": 19,
+    "actual_windows_process_skip": 3,
+    "actual_linux_process_pass": 19,
+    "actual_linux_process_skip": 0
+  },
+  "binaries": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-win-release-candidate\\bin\\pi.exe",
+      "sha256": "fb213ec7ab9aaf96bf59c8c7f014edf3f49c6d8d6f650c8b3040f64d93fbb377",
+      "bytes": 15383040
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-linux-candidate\\bin\\pi",
+      "sha256": "aa1626169ee27241f57782bed9972f58be7403414fe7ef8e8db3df1fcdc82c16",
+      "bytes": 15008128
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-macos-candidate\\bin\\pi",
+      "sha256": "1943c6b8f519e254808d8778d99dc36d5087e88eb9a1ce4fbe29aa474bac1d29",
+      "bytes": 38202608
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-win-test.exe",
+      "sha256": "e93e4483873dd5df893b8103de1d1d5034affcd90ae430321912a04b386f282d",
+      "bytes": 2366976
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-linux-test",
+      "sha256": "22ca2d5dca6b46a4442f4d4e99db6bb56c69a694a73cba2e9459ad3bd5fe441e",
+      "bytes": 22382434
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\regular-final-macos-test",
+      "sha256": "ff92e52ca8702a03018dfcf453a125764c96e8442abbe3f5586903232acbcd50",
+      "bytes": 2459496
+    }
+  ],
+  "before_failure_evidence": [
+    "darwin-burst-before-real-win2-20261005",
+    "darwin-queued-raw-before-real-20261005",
+    "regular-focus-final-layout-before-regression-20261005"
+  ],
+  "macos_runtime_scope": "Published four-file repair passed hosted 37348832070 at9de7cc; this seven-file regular/focus increment has cross-compilation proof only and still needs hosted runtime validation",
+  "remaining_scope": [
+    "One foreground custom scene/FIFO; arbitrary multi-overlay ancestry and a full mounted base-component tree are not implemented here",
+    "Native widget/header/footer factories and renderer architecture are separate owner work",
+    "Zero target-generation metadata remains accepted for compatibility with pre-focus internal consumers; emitted frontend controls carry current nonzero target generation after focus changes",
+    "The new increment has not been integrated or pushed to Main"
+  ],
+  "created_utc": "2026-10-05T18:05:15.5225225+00:00"
+}

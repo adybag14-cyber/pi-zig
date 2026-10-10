@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "fb08f5f26524b1eb84d183851291670c8098fa04",
+  "changes": [
+    "Admitted native scheduler task state/recovery/reservation/ownership cascade and Session close observer increment",
+    "Explicit admitted custom closes invoke the configured close boundary exactly once before initial scene delivery",
+    "Cleanup acknowledgement preserves an existing render/factory rejection; asynchronous factory rejection waits for close acknowledgement",
+    "Frontend safely acknowledges undelivered or stale close fences without detaching another scene"
+  ],
+  "validation": {
+    "windowsDebug": "133/133 steps;677 passed;39 skips",
+    "windowsReleaseSafe": "133/133 steps;677 passed;39 skips",
+    "linuxDebug": "129/129 steps;846/846 passed",
+    "linuxReleaseSafe": "129/129 steps;846/846 passed",
+    "jobs": [
+      {
+        "name": "native-close-scheduler-main-full-debug-20261005",
+        "pid": 54420,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T19:11:10.8506080Z",
+        "launched_utc": "2026-10-05T19:11:10.8470240+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:12:58.3894057+00:00"
+      },
+      {
+        "name": "native-close-scheduler-main-full-releasesafe-20261005",
+        "pid": 3128,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T19:17:07.3610040Z",
+        "launched_utc": "2026-10-05T19:17:07.3577762+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:22:53.4649912+00:00"
+      },
+      {
+        "name": "native-close-scheduler-main-linux-debug-20261005",
+        "pid": 720,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-native-close-scheduler-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:17:21.7163340Z",
+        "launched_utc": "2026-10-05T19:17:21.7130785+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:19:31.7208795+00:00"
+      },
+      {
+        "name": "native-close-scheduler-main-linux-releasesafe-20261005",
+        "pid": 18136,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-native-close-scheduler-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:24:12.9726190Z",
+        "launched_utc": "2026-10-05T19:24:12.9692563+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:32:47.8569302+00:00"
+      }
+    ],
+    "snapshotSha256": "03a438b172329678842b1c67cfa07f2d4044f58880626745f65eed906f1011de",
+    "previousHostedFailure": {
+      "runId": 37356495883,
+      "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37356495883",
+      "windows": "success",
+      "ubuntu": "one early custom-close callback count failure",
+      "macos": "same early custom-close callback count failure",
+      "assertionsRetained": true
+    }
+  },
+  "limits": [
+    "Scheduler is explicit-drive with documented async-join/facade differences; full durable Harness parity is not certified",
+    "Expanded repair requires fresh hosted execution; local gates do not imply hosted success",
+    "Renderer mailbox producer/consumer, PowerShell and latest source pin remain separate validated candidates",
+    "Default remains legacy and final native release stays blocked"
+  ]
+}

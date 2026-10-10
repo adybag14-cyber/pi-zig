@@ -1,0 +1,1215 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "frame 0 0 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 0 0 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 0 1 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 0 1 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 0 99 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 0 99 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 0 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 0 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 1 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 1 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 99 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 1 99 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 0 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 0 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 1 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 1 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 99 false",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 2 99 true",
+      "value": {
+        "frame": {
+          "error": "RangeError"
+        },
+        "fields": {
+          "lastWidth": 1,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 0 false",
+      "value": {
+        "frame": [
+          "────",
+          "ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007 ",
+          "é😀 ",
+          "z   ",
+          "las ",
+          "t   ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 3,
+          "scrollOffset": 0,
+          "visible": 5,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 0 true",
+      "value": {
+        "frame": [
+          "────",
+          "ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007 ",
+          "é😀 ",
+          "z   ",
+          "las ",
+          "t   ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 3,
+          "scrollOffset": 0,
+          "visible": 5,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 1 false",
+      "value": {
+        "frame": [
+          "────",
+          " ab ",
+          " \u001b_pi:fc\u0007c\u001b_pi:/fc\u0007  ",
+          " é  ",
+          " 😀 ",
+          " z  ",
+          " la ",
+          " st ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 1 true",
+      "value": {
+        "frame": [
+          "────",
+          " ab ",
+          " \u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007  ",
+          " é  ",
+          " 😀 ",
+          " z  ",
+          " la ",
+          " st ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 99 false",
+      "value": {
+        "frame": [
+          "────",
+          " ab ",
+          " \u001b_pi:fc\u0007c\u001b_pi:/fc\u0007  ",
+          " é  ",
+          " 😀 ",
+          " z  ",
+          " la ",
+          " st ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 4 99 true",
+      "value": {
+        "frame": [
+          "────",
+          " ab ",
+          " \u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007  ",
+          " é  ",
+          " 😀 ",
+          " z  ",
+          " la ",
+          " st ",
+          "────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 0 false",
+      "value": {
+        "frame": [
+          "────────",
+          "ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007     ",
+          "é😀z    ",
+          "last    ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 7,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 0 true",
+      "value": {
+        "frame": [
+          "────────",
+          "ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007     ",
+          "é😀z    ",
+          "last    ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 7,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 1 false",
+      "value": {
+        "frame": [
+          "────────",
+          " ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007    ",
+          " é😀z   ",
+          " last   ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 6,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 1 true",
+      "value": {
+        "frame": [
+          "────────",
+          " ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007    ",
+          " é😀z   ",
+          " last   ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 6,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 99 false",
+      "value": {
+        "frame": [
+          "────────",
+          "   ab   ",
+          "   \u001b_pi:fc\u0007c\u001b_pi:/fc\u0007    ",
+          "   é    ",
+          "   😀   ",
+          "   z    ",
+          "   la   ",
+          "   st   ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 8 99 true",
+      "value": {
+        "frame": [
+          "────────",
+          "   ab   ",
+          "   \u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007    ",
+          "   é    ",
+          "   😀   ",
+          "   z    ",
+          "   la   ",
+          "   st   ",
+          "────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 0 false",
+      "value": {
+        "frame": [
+          "────────────────────",
+          "ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                 ",
+          "é😀z                ",
+          "last                ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 19,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 0 true",
+      "value": {
+        "frame": [
+          "────────────────────",
+          "ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                 ",
+          "é😀z                ",
+          "last                ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 19,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 1 false",
+      "value": {
+        "frame": [
+          "────────────────────",
+          " ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                ",
+          " é😀z               ",
+          " last               ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 18,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 1 true",
+      "value": {
+        "frame": [
+          "────────────────────",
+          " ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                ",
+          " é😀z               ",
+          " last               ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 18,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 99 false",
+      "value": {
+        "frame": [
+          "────────────────────",
+          "         ab         ",
+          "         \u001b_pi:fc\u0007c\u001b_pi:/fc\u0007          ",
+          "         é          ",
+          "         😀         ",
+          "         z          ",
+          "         la         ",
+          "         st         ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 20 99 true",
+      "value": {
+        "frame": [
+          "────────────────────",
+          "         ab         ",
+          "         \u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007          ",
+          "         é          ",
+          "         😀         ",
+          "         z          ",
+          "         la         ",
+          "         st         ",
+          "────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 0 false",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          "ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                                                             ",
+          "é😀z                                                                            ",
+          "last                                                                            ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 79,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 0 true",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          "ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                                                             ",
+          "é😀z                                                                            ",
+          "last                                                                            ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 79,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 1 false",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          " ab\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                                                            ",
+          " é😀z                                                                           ",
+          " last                                                                           ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 78,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 1 true",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          " ab\u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                                                            ",
+          " é😀z                                                                           ",
+          " last                                                                           ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 78,
+          "scrollOffset": 0,
+          "visible": 3,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 99 false",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          "                                       ab                                       ",
+          "                                       \u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                        ",
+          "                                       é                                        ",
+          "                                       😀                                       ",
+          "                                       z                                        ",
+          "                                       la                                       ",
+          "                                       st                                       ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "frame 80 99 true",
+      "value": {
+        "frame": [
+          "────────────────────────────────────────────────────────────────────────────────",
+          "                                       ab                                       ",
+          "                                       \u001b_pi:c\u0007\u001b_pi:fc\u0007c\u001b_pi:/fc\u0007                                        ",
+          "                                       é                                        ",
+          "                                       😀                                       ",
+          "                                       z                                        ",
+          "                                       la                                       ",
+          "                                       st                                       ",
+          "────────────────────────────────────────────────────────────────────────────────"
+        ],
+        "fields": {
+          "lastWidth": 2,
+          "scrollOffset": 0,
+          "visible": 7,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "borders 0 0",
+      "value": {
+        "top": "true:",
+        "bottom": "true:"
+      }
+    },
+    {
+      "name": "borders 0 1",
+      "value": {
+        "top": "true:",
+        "bottom": "true:"
+      }
+    },
+    {
+      "name": "borders 0 12",
+      "value": {
+        "top": "true:",
+        "bottom": "true:"
+      }
+    },
+    {
+      "name": "borders 0 100000",
+      "value": {
+        "top": "true:",
+        "bottom": "true:"
+      }
+    },
+    {
+      "name": "borders 1 0",
+      "value": {
+        "top": "true:─",
+        "bottom": "true:─"
+      }
+    },
+    {
+      "name": "borders 1 1",
+      "value": {
+        "top": "true:.",
+        "bottom": "true:."
+      }
+    },
+    {
+      "name": "borders 1 12",
+      "value": {
+        "top": "true:.",
+        "bottom": "true:."
+      }
+    },
+    {
+      "name": "borders 1 100000",
+      "value": {
+        "top": "true:.",
+        "bottom": "true:."
+      }
+    },
+    {
+      "name": "borders 2 0",
+      "value": {
+        "top": "true:──",
+        "bottom": "true:──"
+      }
+    },
+    {
+      "name": "borders 2 1",
+      "value": {
+        "top": "true:..",
+        "bottom": "true:.."
+      }
+    },
+    {
+      "name": "borders 2 12",
+      "value": {
+        "top": "true:..",
+        "bottom": "true:.."
+      }
+    },
+    {
+      "name": "borders 2 100000",
+      "value": {
+        "top": "true:..",
+        "bottom": "true:.."
+      }
+    },
+    {
+      "name": "borders 3 0",
+      "value": {
+        "top": "true:───",
+        "bottom": "true:───"
+      }
+    },
+    {
+      "name": "borders 3 1",
+      "value": {
+        "top": "true:...",
+        "bottom": "true:..."
+      }
+    },
+    {
+      "name": "borders 3 12",
+      "value": {
+        "top": "true:...",
+        "bottom": "true:..."
+      }
+    },
+    {
+      "name": "borders 3 100000",
+      "value": {
+        "top": "true:...",
+        "bottom": "true:..."
+      }
+    },
+    {
+      "name": "borders 4 0",
+      "value": {
+        "top": "true:────",
+        "bottom": "true:────"
+      }
+    },
+    {
+      "name": "borders 4 1",
+      "value": {
+        "top": "true:─...",
+        "bottom": "true:─..."
+      }
+    },
+    {
+      "name": "borders 4 12",
+      "value": {
+        "top": "true:─...",
+        "bottom": "true:─..."
+      }
+    },
+    {
+      "name": "borders 4 100000",
+      "value": {
+        "top": "true:─...",
+        "bottom": "true:─..."
+      }
+    },
+    {
+      "name": "borders 7 0",
+      "value": {
+        "top": "true:───────",
+        "bottom": "true:───────"
+      }
+    },
+    {
+      "name": "borders 7 1",
+      "value": {
+        "top": "true:─── ...",
+        "bottom": "true:─── ..."
+      }
+    },
+    {
+      "name": "borders 7 12",
+      "value": {
+        "top": "true:─── ...",
+        "bottom": "true:─── ..."
+      }
+    },
+    {
+      "name": "borders 7 100000",
+      "value": {
+        "top": "true:─── ...",
+        "bottom": "true:─── ..."
+      }
+    },
+    {
+      "name": "borders 10 0",
+      "value": {
+        "top": "true:──────────",
+        "bottom": "true:──────────"
+      }
+    },
+    {
+      "name": "borders 10 1",
+      "value": {
+        "top": "true:─── ↑ 1...",
+        "bottom": "true:─── ↓ 1..."
+      }
+    },
+    {
+      "name": "borders 10 12",
+      "value": {
+        "top": "true:─── ↑ 1...",
+        "bottom": "true:─── ↓ 1..."
+      }
+    },
+    {
+      "name": "borders 10 100000",
+      "value": {
+        "top": "true:─── ↑ 1...",
+        "bottom": "true:─── ↓ 1..."
+      }
+    },
+    {
+      "name": "borders 12 0",
+      "value": {
+        "top": "true:────────────",
+        "bottom": "true:────────────"
+      }
+    },
+    {
+      "name": "borders 12 1",
+      "value": {
+        "top": "true:─ ↑ 1 more ─",
+        "bottom": "true:─ ↓ 1 more ─"
+      }
+    },
+    {
+      "name": "borders 12 12",
+      "value": {
+        "top": "true:─── ↑ 12 ...",
+        "bottom": "true:─── ↓ 12 ..."
+      }
+    },
+    {
+      "name": "borders 12 100000",
+      "value": {
+        "top": "true:─── ↑ 100...",
+        "bottom": "true:─── ↓ 100..."
+      }
+    },
+    {
+      "name": "borders 20 0",
+      "value": {
+        "top": "true:────────────────────",
+        "bottom": "true:────────────────────"
+      }
+    },
+    {
+      "name": "borders 20 1",
+      "value": {
+        "top": "true:───── ↑ 1 more ─────",
+        "bottom": "true:───── ↓ 1 more ─────"
+      }
+    },
+    {
+      "name": "borders 20 12",
+      "value": {
+        "top": "true:──── ↑ 12 more ─────",
+        "bottom": "true:──── ↓ 12 more ─────"
+      }
+    },
+    {
+      "name": "borders 20 100000",
+      "value": {
+        "top": "true:── ↑ 100000 more ───",
+        "bottom": "true:── ↓ 100000 more ───"
+      }
+    },
+    {
+      "name": "borders 80 0",
+      "value": {
+        "top": "true:────────────────────────────────────────────────────────────────────────────────",
+        "bottom": "true:────────────────────────────────────────────────────────────────────────────────"
+      }
+    },
+    {
+      "name": "borders 80 1",
+      "value": {
+        "top": "true:─────────────────────────────────── ↑ 1 more ───────────────────────────────────",
+        "bottom": "true:─────────────────────────────────── ↓ 1 more ───────────────────────────────────"
+      }
+    },
+    {
+      "name": "borders 80 12",
+      "value": {
+        "top": "true:────────────────────────────────── ↑ 12 more ───────────────────────────────────",
+        "bottom": "true:────────────────────────────────── ↓ 12 more ───────────────────────────────────"
+      }
+    },
+    {
+      "name": "borders 80 100000",
+      "value": {
+        "top": "true:──────────────────────────────── ↑ 100000 more ─────────────────────────────────",
+        "bottom": "true:──────────────────────────────── ↓ 100000 more ─────────────────────────────────"
+      }
+    },
+    {
+      "name": "scroll follows cursor and reverses with resize",
+      "value": [
+        {
+          "row": 0,
+          "frame": [
+            "───────────────",
+            "line 0\u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007        ",
+            "line 1         ",
+            "line 2         ",
+            "line 3         ",
+            "line 4         ",
+            "── ↓ 15 more ──"
+          ],
+          "fields": {
+            "lastWidth": 14,
+            "scrollOffset": 0,
+            "visible": 5,
+            "autocomplete": 0
+          }
+        },
+        {
+          "row": 5,
+          "frame": [
+            "── ↑ 1 more ───",
+            "line 1         ",
+            "line 2         ",
+            "line 3         ",
+            "line 4         ",
+            "line 5\u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007        ",
+            "── ↓ 14 more ──"
+          ],
+          "fields": {
+            "lastWidth": 14,
+            "scrollOffset": 1,
+            "visible": 5,
+            "autocomplete": 0
+          }
+        },
+        {
+          "row": 19,
+          "frame": [
+            "── ↑ 15 more ──",
+            "line 15        ",
+            "line 16        ",
+            "line 17        ",
+            "line 18        ",
+            "line 19\u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007       ",
+            "───────────────"
+          ],
+          "fields": {
+            "lastWidth": 14,
+            "scrollOffset": 15,
+            "visible": 5,
+            "autocomplete": 0
+          }
+        },
+        {
+          "row": 18,
+          "frame": [
+            "── ↑ 15 more ──",
+            "line 15        ",
+            "line 16        ",
+            "line 17        ",
+            "line 18\u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007       ",
+            "line 19        ",
+            "───────────────"
+          ],
+          "fields": {
+            "lastWidth": 14,
+            "scrollOffset": 15,
+            "visible": 5,
+            "autocomplete": 0
+          }
+        },
+        {
+          "row": 2,
+          "frame": [
+            "── ↑ 2 more ───",
+            "line 2\u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007        ",
+            "line 3         ",
+            "line 4         ",
+            "line 5         ",
+            "line 6         ",
+            "── ↓ 13 more ──"
+          ],
+          "fields": {
+            "lastWidth": 14,
+            "scrollOffset": 2,
+            "visible": 5,
+            "autocomplete": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "autocomplete renders actual list receiver and content width",
+      "value": {
+        "frame": [
+          "──────────",
+          "  abcdef\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007 ",
+          "──────────",
+          "  one     ",
+          "  界      ",
+          "  very long autocomplete row  "
+        ],
+        "fields": {
+          "lastWidth": 6,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 3
+        },
+        "calls": [
+          [
+            true,
+            6
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual render layout border and array methods",
+      "value": {
+        "frame": [
+          "TOP",
+          "a\u001b_pi:c\u0007\u001b_pi:fc\u0007b\u001b_pi:/fc\u0007c         ",
+          "tail        ",
+          "BOTTOM"
+        ],
+        "fields": {
+          "lastWidth": 11,
+          "scrollOffset": 0,
+          "visible": 2,
+          "autocomplete": 0
+        },
+        "calls": [
+          [
+            "layout",
+            true,
+            11
+          ],
+          [
+            "find",
+            true,
+            1
+          ],
+          [
+            "slice",
+            true,
+            [
+              0,
+              7
+            ]
+          ],
+          [
+            "top",
+            true,
+            [
+              12,
+              0
+            ]
+          ],
+          [
+            "bottom",
+            true,
+            [
+              12,
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw border callback throw",
+      "value": {
+        "same": true,
+        "fields": {
+          "lastWidth": 19,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    },
+    {
+      "name": "split surrogate cursor position remains UTF16",
+      "value": {
+        "frame": [
+          "──────────",
+          "a\ud83d\u001b_pi:c\u0007\u001b_pi:fc\u0007\ude00\u001b_pi:/fc\u0007z      ",
+          "──────────"
+        ],
+        "fields": {
+          "lastWidth": 9,
+          "scrollOffset": 0,
+          "visible": 1,
+          "autocomplete": 0
+        }
+      }
+    }
+  ]
+}

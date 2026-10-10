@@ -1,0 +1,4235 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "exports": [
+    {
+      "name": "Box",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setBgFn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidateCache",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "matchCache",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "applyBg",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "CURSOR_MARKER",
+      "type": "string"
+    },
+    {
+      "name": "CancellableLoader",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "signal",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "aborted",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "dispose",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "CombinedAutocompleteProvider",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "applyCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 5
+        },
+        {
+          "name": "extractAtPrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "extractPathPrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "expandHomePath",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "resolveScopedFuzzyQuery",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scopedPathForDisplay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getFileSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scoreEntry",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "getBaseDirSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "getFuzzyFileSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "shouldTriggerFileCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "Container",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "Editor",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "validPasteIds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "segment",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getAutocompleteMaxVisible",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setAutocompleteMaxVisible",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setAutocompleteProvider",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "addToHistory",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "isEditorEmpty",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isOnFirstVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isOnLastVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "navigateHistory",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "exitHistoryBrowsing",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setTextInternal",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "renderTopBorder",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "renderBottomBorder",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "layoutText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "expandPasteMarkers",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getExpandedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "insertTextAtCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "normalizeText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "insertTextAtCursorInternal",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "insertCharacter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "handlePaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "addNewLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "shouldSubmitOnBackslashEnter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "submitValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleBackspace",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setCursorCol",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "moveToVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "computeVerticalMoveColumn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "moveToLineStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "moveToLineEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteToStartOfLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteToEndOfLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteWordForward",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleForwardDelete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "buildVisualLineMap",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "findVisualLineAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "findCurrentVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "moveCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "pageScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "moveWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "yank",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "yankPop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "insertYankedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "deleteYankedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "pushUndoSnapshot",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "undo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "jumpToChar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "moveWordForwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isSlashMenuAllowed",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isAtStartOfMessage",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isInSlashCommandContext",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getBestAutocompleteMatchIndex",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "createAutocompleteList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "tryTriggerAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleTabCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleSlashCommandCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "forceFileAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "requestAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "startAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "setAutocompleteTriggerCharacters",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getAutocompleteDebounceMs",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "runAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 6
+        },
+        {
+          "name": "isAutocompleteRequestCurrent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 5
+        },
+        {
+          "name": "applyAutocompleteSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "cancelAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearAutocompleteUi",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "cancelAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "isShowingAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "updateAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "HStack",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "getImageId",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "insertCharacter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleBackspace",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleForwardDelete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteToLineStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteToLineEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "deleteWordForward",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "yank",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "yankPop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "pushUndo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "undo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "moveWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "moveWordForwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handlePaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "Key",
+      "type": "object"
+    },
+    {
+      "name": "KeybindingsManager",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "rebuild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "matches",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getDefinition",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getConflicts",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setUserBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getUserBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getResolvedBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "Loader",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "start",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "stop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setMessage",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "restartAnimation",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getRenderedIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "updateDisplay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "Markdown",
+      "type": "function",
+      "length": 6,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 6
+        },
+        {
+          "name": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "applyDefaultStyle",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getDefaultStylePrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getStylePrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getDefaultInlineStyleContext",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "renderToken",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "renderInlineTokens",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getOrderedListMarker",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getUnorderedListMarker",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "renderList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "getLongestWordWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "wrapCellText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "renderTable",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "Marked",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "walkTokens",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "use",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setOptions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "lexer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "parser",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "parseMarkdown",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "onError",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "MouseRegion",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "ProcessTerminal",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "kittyProtocolActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "modifyOtherKeysActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "start",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "setupStdinBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "queryAndEnableKittyProtocol",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleKeyboardProtocolNegotiationSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "readKeyboardProtocolNegotiationSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setKeyboardProtocolNegotiationBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "clearKeyboardProtocolNegotiationBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "flushKeyboardProtocolNegotiationBufferAsInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scheduleKeyboardProtocolNegotiationBufferFlush",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearKeyboardProtocolNegotiationBufferFlushTimer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "forwardInputSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "enableModifyOtherKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "disableModifyOtherKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "enableWindowsVTInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "drainInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "stop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "write",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "columns",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "rows",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "moveBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "hideCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "showCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearFromCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearScreen",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setTitle",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setProgramStatus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "writeProgramStatus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setProgress",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "clearProgressInterval",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "ScrollView",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scrollTop",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "isFollowingEnd",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "viewportHeight",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "scrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "isScrollbarVisible",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "isScrollbarActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "setScrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getContentWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "markScrollbarActivity",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "hideTransientScrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setScrollbarActive",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scrollTo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scrollBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scrollToStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scrollToEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "updateLayout",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "SelectList",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "setFilter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setSelectedIndex",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getVisibleRange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "renderItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 5
+        },
+        {
+          "name": "getPrimaryColumnWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getPrimaryColumnBounds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "truncatePrimary",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "getDisplayValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "notifySelectionChange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getSelectedItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "SettingsList",
+      "type": "function",
+      "length": 5,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 5
+        },
+        {
+          "name": "updateValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "selectItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "renderMainList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getDisplayItems",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getVisibleRange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "activateItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "closeSubmenu",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "applyFilter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "addHintLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "Spacer",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "StdinBuffer",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "process",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "emitDataSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "flush",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "destroy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "TUI_KEYBINDINGS",
+      "type": "object"
+    },
+    {
+      "name": "Text",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setCustomBgFn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "TruncatedText",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "TuiAltScreen",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "viewportTop",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "isFollowingOutput",
+          "enumerable": false,
+          "configurable": true,
+          "get": "function",
+          "set": "undefined"
+        },
+        {
+          "name": "setWheelScrollLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getCopyOnSelect",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setCopyOnSelect",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "hasActiveSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "copyActiveSelectionToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "resetTextSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getScreenLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "setLayoutRoot",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getMountedRoots",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getPrimaryScrollView",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "beforeTerminalStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "beforeTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "afterTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "deleteKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "prepareKittyScreen",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "resetRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scrollBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "scrollToTop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scrollToBottom",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scrollToPrompt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "toggleSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "closeSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "updateSearchQuery",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "navigateSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getSearchNavigationDirectionAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "handleSearchMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "refreshSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "flash",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "shouldDeferViewportInputToOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "clearComponentMouseGesture",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleViewportInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "decodeMouseButton",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "createMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "dispatchMouseToLayout",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "applyMouseDispatchResult",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "dispatchMouseToTarget",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getComponentClickCount",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "clearTextSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "parseWheelEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "routeWheel",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "parseSgrMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleRightClickPaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "handleScrollToEndIndicatorMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getScrollbarTargetAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "setScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "updateScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "stopScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "scrollScrollbarToPointer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        },
+        {
+          "name": "handleScrollbarMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "stopScrollbarDrag",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getScrollSelectionPoint",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "getSelectionPoint",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "getSelectionSourceLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getWordSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getLineSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "updateSelectionFocus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getClickCount",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "updateSelectionAutoScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "autoScrollSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "stopSelectionAutoScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "handleSelectionMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getSelectionBounds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "getSelectionColumns",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "getActiveSelectionText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "copySelectionToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "copyTextToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "applySearchTextHighlight",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "applySearchHighlights",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "applySelectionHighlight",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "applySelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "isMouseSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "compositeScrollToEndIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "compositeFlashes",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "doRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "TuiMainScreen",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "captureRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "restoreRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "resetRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "beforeTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "collectKittyImageIds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "deleteKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        },
+        {
+          "name": "getKittyImageReservedRows",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "expandChangedRangeForKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        },
+        {
+          "name": "deleteChangedKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        },
+        {
+          "name": "doRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "positionHardwareCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "VStack",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        },
+        {
+          "name": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "allocateImageId",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "backgroundAnsi",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "calculateImageRows",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "colorToHex",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "colorToOkhsl",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "colorToOklch",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "colorToRgb",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "compositeTuiLine",
+      "type": "function",
+      "length": 5,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 5
+        }
+      ]
+    },
+    {
+      "name": "decodeKittyPrintable",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "deleteAllKittyImages",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "deleteKittyImage",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "detectCapabilities",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "encodeITerm2",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "encodeKitty",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "foregroundAnsi",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "formatProgramStatus",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "fuzzyFilter",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "fuzzyMatch",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "getCapabilities",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "getCellDimensions",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "getGifDimensions",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "getImageDimensions",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "getJpegDimensions",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "getKeybindings",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "getNativeClipboard",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "getOsc8LinkAtColumn",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "getPngDimensions",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "getTerminalColorMode",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "getWebpDimensions",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "hyperlink",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "imageFallback",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "indexedColor",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "isAppleTerminalSession",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "isFocusable",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "isKeyRelease",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "isKeyRepeat",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "isKittyProtocolActive",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "isViewportTUI",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "matchesKey",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "mixColors",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "okhslColor",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "oklabToOkhslLightness",
+      "type": "function",
+      "length": 1,
+      "prototype": null
+    },
+    {
+      "name": "oklchColor",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "parseColor",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "parseKey",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "parseTerminalColorSchemeReport",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "renderFakeCursor",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "renderImage",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "renderLatex",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "resetCapabilitiesCache",
+      "type": "function",
+      "length": 0,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 0
+        }
+      ]
+    },
+    {
+      "name": "rgbColor",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "setCapabilities",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "setCapabilityOverrides",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "setCellDimensions",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "setImageTranscoder",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "setKeybindings",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "setKittyProtocolActive",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "sliceByColumn",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "stripTerminalSequences",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "styleText",
+      "type": "function",
+      "length": 3,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 3
+        }
+      ]
+    },
+    {
+      "name": "styleTextWithAnsi",
+      "type": "function",
+      "length": 4,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "truncateToWidth",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "visibleWidth",
+      "type": "function",
+      "length": 1,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "wrapTextWithAnsi",
+      "type": "function",
+      "length": 2,
+      "prototype": [
+        {
+          "name": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "length": 2
+        }
+      ]
+    }
+  ]
+}

@@ -70,6 +70,15 @@ pub const Editor = struct {
     pub fn setText(self: *Editor, value: []const u8) !void {
         return self.setTextAt(value, value.len);
     }
+    pub fn replaceWithUndo(self: *Editor, value: []const u8, cursor: usize) !void {
+        const replacement = try self.gpa.dupe(u8, value);
+        errdefer self.gpa.free(replacement);
+        try self.pushUndo();
+        self.text.deinit(self.gpa);
+        self.text = .fromOwnedSlice(replacement);
+        self.cursor = @min(cursor, value.len);
+        self.resetTransient();
+    }
 
     pub fn setTextAt(self: *Editor, value: []const u8, cursor: usize) !void {
         self.text.clearRetainingCapacity();
@@ -91,16 +100,16 @@ pub const Editor = struct {
         switch (action) {
             .cursor_left => self.cursor = nav.previousScalar(self.text.items, self.cursor),
             .cursor_right => self.cursor = nav.nextScalar(self.text.items, self.cursor),
-            .cursor_word_left => self.cursor = nav.findWordBackward(self.text.items, self.cursor),
-            .cursor_word_right => self.cursor = nav.findWordForward(self.text.items, self.cursor),
+            .cursor_word_left => self.cursor = try nav.findWordBackward(self.gpa, self.text.items, self.cursor),
+            .cursor_word_right => self.cursor = try nav.findWordForward(self.gpa, self.text.items, self.cursor),
             .cursor_line_start => self.cursor = self.lineStart(self.cursor),
             .cursor_line_end => self.cursor = self.lineEnd(self.cursor),
             .cursor_up => self.moveVertical(false),
             .cursor_down => self.moveVertical(true),
             .delete_char_backward => try self.deleteBackward(),
             .delete_char_forward => try self.deleteForward(),
-            .delete_word_backward => try self.killRange(nav.findWordBackward(self.text.items, self.cursor), self.cursor, true),
-            .delete_word_forward => try self.killRange(self.cursor, nav.findWordForward(self.text.items, self.cursor), false),
+            .delete_word_backward => try self.killRange(try nav.findWordBackward(self.gpa, self.text.items, self.cursor), self.cursor, true),
+            .delete_word_forward => try self.killRange(self.cursor, try nav.findWordForward(self.gpa, self.text.items, self.cursor), false),
             .delete_to_line_start => try self.killRange(self.lineStart(self.cursor), self.cursor, true),
             .delete_to_line_end => try self.killRange(self.cursor, self.lineEndIncludingNewline(self.cursor), false),
             .yank => try self.yank(),
@@ -123,7 +132,9 @@ pub const Editor = struct {
     }
 
     fn pushUndo(self: *Editor) !void {
-        try self.undo_stack.append(self.gpa, .{ .text = try self.gpa.dupe(u8, self.text.items), .cursor = self.cursor });
+        const contents = try self.gpa.dupe(u8, self.text.items);
+        errdefer self.gpa.free(contents);
+        try self.undo_stack.append(self.gpa, .{ .text = contents, .cursor = self.cursor });
     }
 
     fn undo(self: *Editor) void {

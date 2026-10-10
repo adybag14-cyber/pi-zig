@@ -1,0 +1,11 @@
+{
+  "status": "workflow syntax validated",
+  "path": ".github/workflows/upstream-contract.yml",
+  "sha256": "db8a13df73fdd49526ee72ff98b1831a52438e5a6da348800615b4a225fde2dc",
+  "permissions": "contents:read",
+  "schedule": "17 6 * * * UTC",
+  "manual": true,
+  "bounds": "10minutes,depth1upstreammain",
+  "validator": "existing external YAML reference parser; no repository JS/Python implementation",
+  "activation": "scheduled workflow requires default-branch publication; currentdraft has not activated it"
+}

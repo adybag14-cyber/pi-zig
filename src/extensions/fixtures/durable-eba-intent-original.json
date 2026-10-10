@@ -1,0 +1,665 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "variant": "intent-valid",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "intent-coerced",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "intent-hook-repair",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 3
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "intent-safe",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "safe"
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "intent-valid",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "intent-coerced",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "intent-hook-repair",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 3
+          },
+          "replay": "unsafe"
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "intent-safe",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      },
+      "ending": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "execute",
+          "arguments": {
+            "count": 2
+          },
+          "replay": "safe"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,2317 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "word false \"abc def  ghi\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"abc def  ghi\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 9
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"one.two@example.com\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 15
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 16
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 19
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"one.two@example.com\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 16
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 15
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"中文かな한글\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"中文かな한글\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"ภาษาไทย ทดสอบ\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"ภาษาไทย ทดสอบ\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"é😀🇺🇳 !? x\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 11
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 13
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"é😀🇺🇳 !? x\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 12
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 9
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"[paste #1 +12 lines] tail\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 20
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 25
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"[paste #1 +12 lines] tail\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 21
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"\\ud800x\\udfff\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"\\ud800x\\udfff\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word false \"first\\nsecond\\n\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "word true \"first\\nsecond\\n\"",
+      "value": [
+        {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "grapheme and visual cursor 4",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": 3,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": 3,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "grapheme and visual cursor 8",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "grapheme and visual cursor 20",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 8
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 2,
+            "col": 7
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "jump multi-line excludes current position",
+      "value": [
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 1,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      ]
+    },
+    {
+      "name": "custom word segment keeps ASCII punctuation boundaries",
+      "value": {
+        "calls": [
+          [
+            true,
+            "hello.world",
+            "word"
+          ],
+          [
+            true,
+            "hello.world",
+            "word"
+          ]
+        ],
+        "forward": {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        },
+        "backward": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      }
+    },
+    {
+      "name": "word forward manually leaves iterator unclosed",
+      "value": {
+        "calls": [
+          "next0"
+        ],
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      }
+    },
+    {
+      "name": "cursor movement updates actual open picker",
+      "value": {
+        "calls": [
+          true
+        ],
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null
+        }
+      }
+    }
+  ]
+}

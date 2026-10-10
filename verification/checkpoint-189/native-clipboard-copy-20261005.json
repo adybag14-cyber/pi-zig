@@ -1,0 +1,68 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "clipboard-copy",
+  "cases": 3,
+  "semanticReportMatch": true,
+  "helperImplementation": "Compiled Zig clipboard fixture; no repository shell implementation",
+  "productionBackend": "extension export case still uses legacy Node bridge",
+  "regularMode": "Explicit regular mode preserves original assistant occurrence gate independent of persistent fullscreen repaint",
+  "nativeLinuxTestsPassed": 5,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "clipboard-copy-python-baseline": {
+      "name": "clipboard-copy-python-baseline",
+      "pid": 55096,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/clipboard_copy_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/clipboard-copy-python-report.json",
+      "created_utc": "2026-10-05T11:04:13.9395960Z",
+      "launched_utc": "2026-10-05T11:04:13.9367643+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:04:14.7450371+00:00"
+    },
+    "clipboard-native-helper-build": {
+      "name": "clipboard-native-helper-build",
+      "pid": 34912,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build-exe src/test_support/clipboard_helper.zig -target x86_64-linux-gnu -O ReleaseSafe -femit-bin=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/pi-clipboard-fixture --cache-dir /tmp/pi-clipboard-helper-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T11:05:12.9738590Z",
+      "launched_utc": "2026-10-05T11:05:12.9714657+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:05:26.7326351+00:00"
+    },
+    "clipboard-copy-native-live": {
+      "name": "clipboard-copy-native-live",
+      "pid": 40340,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_CLIPBOARD_TEST_HELPER=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/pi-clipboard-fixture PI_CLIPBOARD_COPY_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/clipboard-copy-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/clipboard_copy_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-clipboard-copy-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T11:07:05.0345920Z",
+      "launched_utc": "2026-10-05T11:07:05.0321956+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:07:08.4352939+00:00"
+    },
+    "clipboard-copy-native-windows": {
+      "name": "clipboard-copy-native-windows",
+      "pid": 37240,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/clipboard_copy_process_test.zig",
+      "created_utc": "2026-10-05T11:08:02.5523310Z",
+      "launched_utc": "2026-10-05T11:08:02.5496548+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:08:04.4233561+00:00"
+    }
+  }
+}

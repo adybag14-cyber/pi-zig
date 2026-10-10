@@ -1,0 +1,95 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "input": "ctrl++",
+      "result": true
+    },
+    {
+      "input": "+",
+      "result": true
+    },
+    {
+      "input": "shift+=",
+      "result": true
+    },
+    {
+      "input": "ctrl+ctrl+c",
+      "result": false
+    },
+    {
+      "input": "Ctrl+c",
+      "result": false
+    },
+    {
+      "input": "pageup",
+      "result": false
+    },
+    {
+      "input": "pageUp",
+      "result": true
+    },
+    {
+      "input": "ctrl+pageUp",
+      "result": true
+    },
+    {
+      "input": "unknown",
+      "result": false
+    },
+    {
+      "input": "é",
+      "result": false
+    },
+    {
+      "input": "",
+      "result": false
+    },
+    {
+      "input": " ",
+      "result": false
+    },
+    {
+      "input": [],
+      "result": true
+    },
+    {
+      "input": [
+        "up",
+        "down"
+      ],
+      "result": true
+    },
+    {
+      "input": [
+        "up",
+        3
+      ],
+      "result": false
+    },
+    {
+      "input": null,
+      "result": false
+    },
+    {
+      "input": 1,
+      "result": false
+    },
+    {
+      "input": true,
+      "result": false
+    },
+    {
+      "input": [
+        "ctrl+ctrl+c"
+      ],
+      "result": false
+    },
+    {
+      "input": [
+        "super+alt+shift+ctrl+f12"
+      ],
+      "result": true
+    }
+  ]
+}

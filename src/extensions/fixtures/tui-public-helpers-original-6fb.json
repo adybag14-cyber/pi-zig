@@ -1,0 +1,470 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "focus null",
+      "value": false
+    },
+    {
+      "name": "focus undefined",
+      "error": "TypeError"
+    },
+    {
+      "name": "focus 0",
+      "error": "TypeError"
+    },
+    {
+      "name": "focus text",
+      "error": "TypeError"
+    },
+    {
+      "name": "focus [object Object]",
+      "value": false
+    },
+    {
+      "name": "focus ()=>{}",
+      "value": false
+    },
+    {
+      "name": "focus [object Object]",
+      "value": true
+    },
+    {
+      "name": "focus [object Object]",
+      "value": true
+    },
+    {
+      "name": "focus [object Object]",
+      "value": true
+    },
+    {
+      "name": "focus proxy has raw receiver",
+      "value": {
+        "value": true,
+        "events": [
+          [
+            true,
+            "focused"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "focus original trap throw",
+      "value": true
+    },
+    {
+      "name": "viewport null",
+      "error": "TypeError"
+    },
+    {
+      "name": "viewport undefined",
+      "error": "TypeError"
+    },
+    {
+      "name": "viewport 0",
+      "value": false
+    },
+    {
+      "name": "viewport text",
+      "value": false
+    },
+    {
+      "name": "viewport [object Object]",
+      "value": false
+    },
+    {
+      "name": "viewport [object Object]",
+      "value": true
+    },
+    {
+      "name": "viewport [object Object]",
+      "value": false
+    },
+    {
+      "name": "viewport proxy key",
+      "value": {
+        "value": true,
+        "events": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "scheme \"\""
+    },
+    {
+      "name": "scheme \"\\u001b[?997;1n\"",
+      "value": "dark"
+    },
+    {
+      "name": "scheme \"\\u001b[?997;2n\"",
+      "value": "light"
+    },
+    {
+      "name": "scheme \"\\u001b[?997;1n\\u001b[?997;2n\"",
+      "value": "light"
+    },
+    {
+      "name": "scheme \"\\u001b[?997;2n\\u001b[?997;1n\"",
+      "value": "dark"
+    },
+    {
+      "name": "scheme \"\\u001b[?997;0n\""
+    },
+    {
+      "name": "scheme \"\\u001b[?997;2n\\n\""
+    },
+    {
+      "name": "scheme \"prefix\\u001b[?997;2n\""
+    },
+    {
+      "name": "scheme null",
+      "error": "TypeError"
+    },
+    {
+      "name": "scheme 42",
+      "error": "TypeError"
+    },
+    {
+      "name": "scheme actual match method",
+      "value": {
+        "result": "light",
+        "receiver": true
+      }
+    },
+    {
+      "name": "status idle",
+      "value": "\u001b]7501;state=idle:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status working",
+      "value": "\u001b]7501;state=working:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status blocked",
+      "value": "\u001b]7501;state=blocked:app=pi-zig:kind=question:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status done",
+      "value": "\u001b]7501;state=done:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status error",
+      "value": "\u001b]7501;state=error:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status clear",
+      "value": "\u001b]7501;state=clear:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status unknown",
+      "value": "\u001b]7501;state=unknown:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status undefined",
+      "value": "\u001b]7501;state=undefined:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "status null",
+      "value": "\u001b]7501;state=null:app=pi-zig:msg=aGVsbG8gIHdvcmxk\u001b\\"
+    },
+    {
+      "name": "app \"\"",
+      "value": "\u001b]7501;state=blocked:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"",
+      "value": "\u001b]7501;state=blocked:app=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"",
+      "value": "\u001b]7501;state=blocked:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app \"bad space\"",
+      "value": "\u001b]7501;state=blocked:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app \"good_.+-\"",
+      "value": "\u001b]7501;state=blocked:app=good_.+-:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app 42",
+      "value": "\u001b]7501;state=blocked:app=42:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "app null",
+      "value": "\u001b]7501;state=blocked:app=null:kind=other:msg=55WM8J+YgA==\u001b\\"
+    },
+    {
+      "name": "message \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx😀z\"",
+      "value": "\u001b]7501;state=done:msg=eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eA==\u001b\\"
+    },
+    {
+      "name": "message \"界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界界\"",
+      "value": "\u001b]7501;state=done:msg=55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM55WM\u001b\\"
+    },
+    {
+      "name": "message \"\\ud800 lone \\udc00\"",
+      "value": "\u001b]7501;state=done:msg=77+9IGxvbmUg77+9\u001b\\"
+    },
+    {
+      "name": "message null",
+      "value": "\u001b]7501;state=done\u001b\\"
+    },
+    {
+      "name": "message 42",
+      "error": "TypeError"
+    },
+    {
+      "name": "status getter order",
+      "value": {
+        "value": "\u001b]7501;state=blocked:app=ok:kind=question:msg=aGk=\u001b\\",
+        "events": [
+          "state",
+          "app",
+          "app",
+          "app",
+          "state",
+          "kind",
+          "kind",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "status raw replace throw",
+      "value": true
+    },
+    {
+      "name": "latex [\"\",null]",
+      "value": ""
+    },
+    {
+      "name": "latex [\"\",{\"display\":true}]",
+      "value": ""
+    },
+    {
+      "name": "latex [\"\",{\"display\":1}]",
+      "value": ""
+    },
+    {
+      "name": "latex [\"\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"x^2\",null]",
+      "value": "x²"
+    },
+    {
+      "name": "latex [\"x^2\",{\"display\":true}]",
+      "value": "x²"
+    },
+    {
+      "name": "latex [\"x^2\",{\"display\":1}]",
+      "value": "x²"
+    },
+    {
+      "name": "latex [\"x^2\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\alpha+\\\\beta\",null]",
+      "value": "α+β"
+    },
+    {
+      "name": "latex [\"\\\\alpha+\\\\beta\",{\"display\":true}]",
+      "value": "α+β"
+    },
+    {
+      "name": "latex [\"\\\\alpha+\\\\beta\",{\"display\":1}]",
+      "value": "α+β"
+    },
+    {
+      "name": "latex [\"\\\\alpha+\\\\beta\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\frac{a+b}{c}\",null]",
+      "value": "(a+b)/c"
+    },
+    {
+      "name": "latex [\"\\\\frac{a+b}{c}\",{\"display\":true}]",
+      "value": "a+b\n───\n c"
+    },
+    {
+      "name": "latex [\"\\\\frac{a+b}{c}\",{\"display\":1}]",
+      "value": "(a+b)/c"
+    },
+    {
+      "name": "latex [\"\\\\frac{a+b}{c}\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\sqrt{x_1}\",null]",
+      "value": "√x₁"
+    },
+    {
+      "name": "latex [\"\\\\sqrt{x_1}\",{\"display\":true}]",
+      "value": "√x₁"
+    },
+    {
+      "name": "latex [\"\\\\sqrt{x_1}\",{\"display\":1}]",
+      "value": "√x₁"
+    },
+    {
+      "name": "latex [\"\\\\sqrt{x_1}\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}\",null]",
+      "value": "a │ b\nc │ d"
+    },
+    {
+      "name": "latex [\"\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}\",{\"display\":true}]",
+      "value": "a │ b\nc │ d"
+    },
+    {
+      "name": "latex [\"\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}\",{\"display\":1}]",
+      "value": "a │ b\nc │ d"
+    },
+    {
+      "name": "latex [\"\\\\begin{matrix}a&b\\\\\\\\c&d\\\\end{matrix}\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\unsupported{x}\",null]"
+    },
+    {
+      "name": "latex [\"\\\\unsupported{x}\",{\"display\":true}]"
+    },
+    {
+      "name": "latex [\"\\\\unsupported{x}\",{\"display\":1}]"
+    },
+    {
+      "name": "latex [\"\\\\unsupported{x}\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\\\frac{a}\",null]"
+    },
+    {
+      "name": "latex [\"\\\\frac{a}\",{\"display\":true}]"
+    },
+    {
+      "name": "latex [\"\\\\frac{a}\",{\"display\":1}]"
+    },
+    {
+      "name": "latex [\"\\\\frac{a}\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"界😀\",null]",
+      "value": "界😀"
+    },
+    {
+      "name": "latex [\"界😀\",{\"display\":true}]",
+      "value": "界😀"
+    },
+    {
+      "name": "latex [\"界😀\",{\"display\":1}]",
+      "value": "界😀"
+    },
+    {
+      "name": "latex [\"界😀\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [\"\\ud800x\\udc00\",null]",
+      "value": "\ud800x\udc00"
+    },
+    {
+      "name": "latex [\"\\ud800x\\udc00\",{\"display\":true}]",
+      "value": "\ud800x\udc00"
+    },
+    {
+      "name": "latex [\"\\ud800x\\udc00\",{\"display\":1}]",
+      "value": "\ud800x\udc00"
+    },
+    {
+      "name": "latex [\"\\ud800x\\udc00\",null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [42,null]"
+    },
+    {
+      "name": "latex [42,{\"display\":true}]"
+    },
+    {
+      "name": "latex [42,{\"display\":1}]"
+    },
+    {
+      "name": "latex [42,null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [null,null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [null,{\"display\":true}]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [null,{\"display\":1}]",
+      "error": "TypeError"
+    },
+    {
+      "name": "latex [null,null]",
+      "error": "TypeError"
+    },
+    {
+      "name": "apple darwin Apple_Terminal",
+      "value": true
+    },
+    {
+      "name": "apple darwin iTerm.app",
+      "value": false
+    },
+    {
+      "name": "apple darwin undefined",
+      "value": false
+    },
+    {
+      "name": "apple win32 Apple_Terminal",
+      "value": false
+    },
+    {
+      "name": "apple win32 iTerm.app",
+      "value": false
+    },
+    {
+      "name": "apple win32 undefined",
+      "value": false
+    },
+    {
+      "name": "apple linux Apple_Terminal",
+      "value": false
+    },
+    {
+      "name": "apple linux iTerm.app",
+      "value": false
+    },
+    {
+      "name": "apple linux undefined",
+      "value": false
+    },
+    {
+      "name": "apple short circuit getters",
+      "value": {
+        "result": false,
+        "events": [
+          "platform"
+        ]
+      }
+    }
+  ]
+}

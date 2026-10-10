@@ -1,0 +1,65 @@
+{
+  "status": "frozen; final Debug180 and ReleaseSafe180 passed; original raw provider gates terminal passed",
+  "source": "C:\\Users\\adyba\\pi-zig-renderer-mailbox-20261005",
+  "baseline_source": "C:\\Users\\adyba\\pi-zig-group-owner-20261005",
+  "captured_utc": "2026-10-05T19:22:04.983468+00:00",
+  "files": [
+    {
+      "path": "src/extensions/renderer_protocol.zig",
+      "before_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "sha256": "3AFE087A81EBFCE8B5CD782751F3AEB9461E42D7AAFA296EED174E76B5E02134"
+    },
+    {
+      "path": "src/extensions/native_renderers.zig",
+      "before_sha256": "65829147193A4BBCDEAC02409EF88DDEBBDB699C0C3FBF7025E0BF64D47A693F",
+      "sha256": "DBDA848A482B244E694192BD74A3FBE0FA7AC5D0A18F3E2E71B3FE1AD3331094"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "before_sha256": "BF28B24FE69D88590A5AE4BC495DA9729E6B401B56C73289529C70FFB7957D73",
+      "sha256": "4FA35432C2523EFA95192A9CDD95CA25E4FCEC3FBB18222F681C3B327F70B7A7"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "before_sha256": "4A926F9C852EFA56A16A88760BBC8A2E0AE5A791FC92BD75467651B8E2CCAEFB",
+      "sha256": "F25679084F81200DE99BE62E04AAEE0B0B1D451A589C62A791FE41DA4DD0307C"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "before_sha256": "426D990D53A8266F9CAF3B2831FBFDAC0DC2F7B0E817D86584880E95ACF41BF8",
+      "sha256": "A80BE0D1F6A9C3ECCF42DD6B9F06B23B0EE05BFDACCB24EEEBEF3584D9B42FA0"
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "before_sha256": "98343032A93F18876B4D3B9C40B24F388EB3C3010D1A8CF84BC36395666E2FFD",
+      "sha256": "1567413A9696C83BDACC7DB342017D0ABEBCF12F116A50C7839912C8CB889286"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "before_sha256": "ABCB5181FD74A6AAF821A5C2AF72DB1820B4EFFF9A2E7D6C50E9E3439B6BEA6C",
+      "sha256": "CB8EE0E5C422C72A07E46385FEBA498A7DB0D6B8B23A0192A92EAA7C35B93CCF"
+    },
+    {
+      "path": "src/extensions/native_components.zig",
+      "before_sha256": "AD6A23A0FC72B46B0F6676FFB3756B48009C3BFEECC2BD5E48030688830F9B8D",
+      "sha256": "8B6A5281296763633927016A2B8342F0DE63473E9DEC6F66BADB816479F93824"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "before_sha256": "4753C053B18A172FB8A483DF3FE1F8BFB8045D04BDAA27338FE09BE5BC820E2E",
+      "sha256": "F2F733527F897707E02771B10F26BB3192F3B2A895B7718DE12CE7D671C4472D"
+    }
+  ],
+  "debug": "native-renderer-producer-final-debug-20261005a:180 passed (Runtime42,bindings138),13/13steps19:20:41Z",
+  "protocol": "native-renderer-protocol-revision-20261005a:4 passed; schema unchanged; lower revision coalescing rejected",
+  "integration": "Use narrow patches against current Main; native_components and js_runtime closeBoundary repair hunks already parent-admitted, avoid reverting current regular/frontend/Controller/engine/timers changes. New renderer_protocol file uses same DTO/API plus revision check as consumer snapshot.",
+  "verified_utc": "2026-10-05T19:27:00.603554+00:00",
+  "candidate_sha256": "CAFFCB12EA30809500F1674D842383E9315484EEC109630AE72D44484559474A",
+  "gates": {
+    "debug": "native-renderer-producer-final-debug-20261005a:180/180,13steps19:20:41Z",
+    "release_safe": "native-renderer-producer-final-releasesafe-20261005a:180/180,13steps19:24:34Z",
+    "original_oauth": "native-mailbox-original-oauth-releasesafe-20261005a:3pass3existingWindowsPTYskips19:25:38Z",
+    "original_models": "native-mailbox-original-models-releasesafe-20261005a:3pass3existingWindowsPTYskips19:25:38Z",
+    "original_stream": "native-mailbox-original-stream-releasesafe-20261005a:3pass3existingWindowsPTYskips19:25:38Z"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "83692682f095528f8b71652ddacff7075e36e893",
+  "previousHostedFailure": {
+    "commit": "8b294bf96939c6127055e21da163609833ce2415",
+    "run": 37195863527,
+    "windows": "success",
+    "linux": "failure",
+    "macos": "failure",
+    "firstFailure": "Raw cwd sentinel passed to descriptor path lookup",
+    "sourceFix": "src/extensions/node_path.zig opens and closes an owned directory handle",
+    "hostedFixConfirmed": false
+  },
+  "windowsRegression": {
+    "aggregateSteps": 50,
+    "aggregateTests": 163,
+    "modulePassed": 1084,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "native-commonjs-real-process": {
+      "name": "native-commonjs-real-process",
+      "pid": 21060,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-worker test-extension-commonjs -j2 --summary all",
+      "created_utc": "2026-10-04T10:51:08.4405020Z",
+      "launched_utc": "2026-10-04T10:51:08.4375746+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:51:21.8438403+00:00"
+    },
+    "native-create-require-process-2": {
+      "name": "native-create-require-process-2",
+      "pid": 26224,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-worker test-extension-commonjs -j2 --summary all",
+      "created_utc": "2026-10-04T11:00:36.3523630Z",
+      "launched_utc": "2026-10-04T11:00:36.3494525+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T11:00:48.0585951+00:00"
+    },
+    "native-cwd-descriptor-contract": {
+      "name": "native-cwd-descriptor-contract",
+      "pid": 18924,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-path test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T10:48:58.9593610Z",
+      "launched_utc": "2026-10-04T10:48:58.9566746+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:49:01.9048086+00:00"
+    },
+    "native-commonjs-schema-precedence": {
+      "name": "native-commonjs-schema-precedence",
+      "pid": 17124,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-worker test-extension-resolver test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T10:55:41.6267680Z",
+      "launched_utc": "2026-10-04T10:55:41.6238995+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:55:55.1163124+00:00"
+    },
+    "external-typebox-commonjs-host-refresh": {
+      "name": "external-typebox-commonjs-host-refresh",
+      "pid": 23676,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-20261003\\zig-out\\bin\\pi.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-20261003\\zig-out\\bin\\pi.exe\" --internal-native-extension-worker C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-1.3.27-input\\extension.mjs",
+      "created_utc": "2026-10-04T10:56:07.9885460Z",
+      "launched_utc": "2026-10-04T10:56:07.9853867+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-1.3.27-input",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T10:56:08.4703179+00:00"
+    },
+    "native-commonjs-full-regressions": {
+      "name": "native-commonjs-full-regressions",
+      "pid": 23656,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T11:02:56.5141590Z",
+      "launched_utc": "2026-10-04T11:02:56.5110633+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T11:03:55.5061519+00:00"
+    },
+    "native-commonjs-release-safe": {
+      "name": "native-commonjs-release-safe",
+      "pid": 44080,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-04T11:06:15.1067620Z",
+      "launched_utc": "2026-10-04T11:06:15.1036070+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T11:07:32.2825192+00:00"
+    }
+  }
+}

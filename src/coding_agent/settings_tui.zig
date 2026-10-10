@@ -78,6 +78,7 @@ const items = [_]Item{
     .{ .key = .tui_mode, .label = "TUI mode", .description = "Use regular output or the alternate-screen fullscreen shell" },
     .{ .key = .fullscreen_exit_output, .label = "Fullscreen exit output", .description = "Print the transcript or only a resume hint when fullscreen exits" },
     .{ .key = .fullscreen_scrollbar, .label = "Fullscreen scrollbar", .description = "Automatic, always-visible, or hidden fullscreen scrollbar" },
+    .{ .key = .fullscreen_wheel_scroll_lines, .label = "Fullscreen wheel scroll", .description = "Automatic acceleration or lines per wheel event" },
     .{ .key = .enable_install_telemetry, .label = "Install telemetry", .description = "Send the anonymous version/update installation ping" },
     .{ .key = .default_project_trust, .label = "Default project trust", .description = "Fallback when no saved or extension trust decision exists" },
 };
@@ -233,6 +234,14 @@ const max_retry_delay_options = [_]Option{
     .{ .label = "1m", .value = .{ .integer = 60_000 } },
 };
 
+const wheel_options = [_]Option{
+    .{ .label = "auto", .value = .{ .string = "auto" } },
+    .{ .label = "1", .value = .{ .integer = 1 } },
+    .{ .label = "2", .value = .{ .integer = 2 } },
+    .{ .label = "3", .value = .{ .integer = 3 } },
+    .{ .label = "5", .value = .{ .integer = 5 } },
+    .{ .label = "10", .value = .{ .integer = 10 } },
+};
 fn staticOptions(key: settings_mod.EditableKey) []const Option {
     return switch (key) {
         .compaction_enabled,
@@ -262,6 +271,7 @@ fn staticOptions(key: settings_mod.EditableKey) []const Option {
         .tui_mode => &tui_mode_options,
         .fullscreen_exit_output => &fullscreen_exit_options,
         .fullscreen_scrollbar => &scrollbar_options,
+        .fullscreen_wheel_scroll_lines => &wheel_options,
         .editor_padding_x => &padding_options,
         .output_pad => &output_pad_options,
         .autocomplete_max_visible => &autocomplete_options,
@@ -423,9 +433,10 @@ const Selector = struct {
             .show_hardware_cursor => .{ .boolean = source.show_hardware_cursor orelse false },
             .mermaid_mode => .{ .string = if (source.mermaid_mode) |mode| mode.wireName() else "streaming" },
             .warning_anthropic_extra_usage => .{ .boolean = source.warning_anthropic_extra_usage orelse true },
-            .tui_mode => .{ .string = if (source.tui_mode) |mode| mode.wireName() else "regular" },
+            .tui_mode => .{ .string = source.effectiveTuiMode().wireName() },
             .fullscreen_exit_output => .{ .string = if (source.fullscreen_exit_output) |mode| mode.wireName() else "transcript" },
             .fullscreen_scrollbar => .{ .string = if (source.fullscreen_scrollbar) |mode| mode.wireName() else "auto" },
+            .fullscreen_wheel_scroll_lines => if (source.fullscreen_wheel_scroll_lines orelse .auto == .fixed) .{ .integer = @intFromFloat(source.fullscreen_wheel_scroll_lines.?.fixed) } else .{ .string = "auto" },
             .enable_install_telemetry => .{ .boolean = source.enable_install_telemetry orelse true },
             .http_idle_timeout_ms => .{ .integer = @intCast(source.http_idle_timeout_ms orelse 300_000) },
             .websocket_connect_timeout_ms => .{ .integer = @intCast(source.websocket_connect_timeout_ms orelse 15_000) },
@@ -540,6 +551,30 @@ const Selector = struct {
 
     fn nextValue(self: *const Selector, key: settings_mod.EditableKey, direction: isize) ?settings_mod.EditableValue {
         if (key == .theme) return self.themeValue(direction);
+        if (key == .fullscreen_wheel_scroll_lines) {
+            var values: [7]settings_mod.EditableValue = undefined;
+            values[0] = .{ .string = "auto" };
+            var numbers: [6]i64 = .{ 1, 2, 3, 5, 10, 0 };
+            var count: usize = 5;
+            const current = self.currentValue(key);
+            if (current == .integer) {
+                var found = false;
+                for (numbers[0..count]) |value| found = found or value == current.integer;
+                if (!found) {
+                    numbers[count] = current.integer;
+                    count += 1;
+                }
+            }
+            std.mem.sort(i64, numbers[0..count], {}, std.sort.asc(i64));
+            for (numbers[0..count], 1..) |value, index| values[index] = .{ .integer = value };
+            var index: usize = 0;
+            for (values[0 .. count + 1], 0..) |value, candidate| if (valueEqual(current, value)) {
+                index = candidate;
+                break;
+            };
+            const next: usize = @intCast(@mod(@as(isize, @intCast(index)) + direction, @as(isize, @intCast(count + 1))));
+            return values[next];
+        }
         const options = staticOptions(key);
         if (options.len == 0) return null;
         const current = self.currentValue(key);

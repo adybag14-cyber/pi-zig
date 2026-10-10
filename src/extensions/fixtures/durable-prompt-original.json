@@ -1,0 +1,776 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "variants": [
+    [],
+    [
+      {
+        "role": "system",
+        "sections": {
+          "a": "A",
+          "b": "B"
+        },
+        "timestamp": 1
+      }
+    ],
+    [
+      {
+        "role": "system",
+        "sections": {
+          "a": "A",
+          "b": "B"
+        },
+        "timestamp": 1
+      },
+      {
+        "role": "system",
+        "sections": {
+          "a": null,
+          "c": "C"
+        },
+        "timestamp": 2
+      }
+    ]
+  ],
+  "desireds": [
+    [],
+    [
+      [
+        "a",
+        "A"
+      ]
+    ],
+    [
+      [
+        "b",
+        "B"
+      ],
+      [
+        "a",
+        "A"
+      ]
+    ],
+    [
+      [
+        "c",
+        "C"
+      ],
+      [
+        "a",
+        "X"
+      ]
+    ]
+  ],
+  "rows": [
+    {
+      "variant": 0,
+      "desired": 0,
+      "head": false,
+      "replay": [],
+      "planned": []
+    },
+    {
+      "variant": 0,
+      "desired": 0,
+      "head": true,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {},
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 1,
+      "head": false,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 1,
+      "head": true,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 2,
+      "head": false,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": "B",
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 2,
+      "head": true,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": "B",
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 3,
+      "head": false,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": "C",
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 0,
+      "desired": 3,
+      "head": true,
+      "replay": [],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": "C",
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 0,
+      "head": false,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": null,
+                "b": null
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 0,
+      "head": true,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {},
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 1,
+      "head": false,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": null
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 1,
+      "head": true,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 2,
+      "head": false,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": null,
+                "b": null
+              },
+              "timestamp": 5
+            }
+          ]
+        },
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": "B",
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 2,
+      "head": true,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": "B",
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 3,
+      "head": false,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": null,
+                "b": null
+              },
+              "timestamp": 5
+            }
+          ]
+        },
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": "C",
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 1,
+      "desired": 3,
+      "head": true,
+      "replay": [
+        [
+          "a",
+          "A"
+        ],
+        [
+          "b",
+          "B"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": "C",
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 0,
+      "head": false,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": null,
+                "c": null
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 0,
+      "head": true,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {},
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            },
+            {
+              "target": 2,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 1,
+      "head": false,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": null,
+                "c": null,
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 1,
+      "head": true,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            },
+            {
+              "target": 2,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 2,
+      "head": false,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": null,
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 2,
+      "head": true,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": "B",
+                "a": "A"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            },
+            {
+              "target": 2,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 3,
+      "head": false,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "b": null,
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "variant": 2,
+      "desired": 3,
+      "head": true,
+      "replay": [
+        [
+          "b",
+          "B"
+        ],
+        [
+          "c",
+          "C"
+        ]
+      ],
+      "planned": [
+        {
+          "model": [
+            {
+              "role": "system",
+              "content": "",
+              "sections": {
+                "c": "C",
+                "a": "X"
+              },
+              "timestamp": 5
+            }
+          ],
+          "edits": [
+            {
+              "target": 1,
+              "action": "omit"
+            },
+            {
+              "target": 2,
+              "action": "omit"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

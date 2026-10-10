@@ -1,0 +1,25 @@
+async(create,scenario)=>{
+ const trace=[],timers=new Map(),writes=[];let time=0,seq=0,p;
+ const oldNow=Date.now,oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout;
+ Date.now=()=>time;
+ globalThis.setTimeout=(callback,delay)=>{const id=++seq;timers.set(id,{callback,delay});trace.push(['timer',id,delay]);return id};
+ globalThis.clearTimeout=id=>{trace.push(['clear',id??null]);timers.delete(id)};
+ const jobs=async()=>{for(let i=0;i<16;i++)await Promise.resolve()};
+ try{
+  p=create(()=>{trace.push(['write',time]);const deferred=Promise.withResolvers();writes.push(deferred);if(scenario==='reentrant'&&writes.length===1)p.mark();return deferred.promise},error=>trace.push(['error',error]),100);
+  if(scenario==='idle'){const pending=await p.stop();return{trace,pending:pending.length}}
+  const first=p.markAndWait();first.then(()=>trace.push(['first','resolved']),error=>trace.push(['first','rejected',error]));
+  if(scenario==='reentrant'){writes[0].resolve(0);writes[1].resolve(0);await jobs()}
+  else{
+   p.mark();
+   if(scenario==='stop-flight'){const stopping=p.stop();writes[0].resolve(0);const pending=await stopping;await jobs();return{trace,pending:pending.length}}
+   if(scenario==='failure')writes[0].reject('write-failure');else writes[0].resolve(scenario==='bytes-delay'?204800:0);
+   await jobs();
+   if(scenario==='stop-pending'){const second=p.markAndWait();second.catch(()=>{});const pending=await p.stop();await jobs();return{trace,pending:pending.length}}
+   time=scenario==='bytes-delay'?2000:100;
+   for(const[id,timer]of[...timers]){timers.delete(id);timer.callback()}
+   if(writes[1])writes[1].resolve(1);await jobs();
+  }
+  const pending=await p.stop();await jobs();return{trace,pending:pending.length};
+ }finally{Date.now=oldNow;globalThis.setTimeout=oldSet;globalThis.clearTimeout=oldClear}
+}

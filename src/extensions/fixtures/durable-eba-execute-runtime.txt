@@ -1,0 +1,30 @@
+(make,nested,variant)=>{
+ const f=make(nested),trace=f.inspect().trace,marker={originalFailure:true},env={environment:'original'};
+ const limits={maxBytes:8,maxLines:2,retain:variant==='tail'?'tail':'head'};
+ f.runtime.settings={progress:{outputIntervalMs:0}};f.runtime.signal={aborted:false};f.runtime.registry={originalRegistry:true};f.runtime.models={originalModels:true};
+ for(const name of['memo','getTask','waitForTask','conversation','snapshotAsOf','watchDoc'])f.runtime[name]=function(){};
+ f.runtime.env=async(ctx)=>{trace.push(['env',ctx===f.context]);if(variant==='env-thrown')throw marker;return env};
+ f.runtime.hooks={async each(event,callback){trace.push(['hooks',event]);if(variant==='after-thrown'&&event==='afterTool')await callback(()=>{throw marker})}};
+ f.runtime.report=error=>trace.push(['report',error?.message??error]);
+ const originalCommit=f.runtime.commit;
+ f.runtime.commit=(change,ctx)=>originalCommit(async tx=>{tx.createTask=async(task,input,options)=>{trace.push(['createTask',task===f.userTask,input,options]);return 201};return change(tx)},ctx);
+ f.userTask={userTask:'original'};
+ let apiShape,apiEffects;
+ const tool={name:'absent',outputLimits:limits,...(variant==='safe'?{replay:'safe'}:{}),async execute(args,api,ctx){
+  trace.push(['execute',this===tool,args===f.arguments,ctx===f.context]);
+  apiShape={keys:Object.keys(api),aliases:Object.fromEntries(['agent','memo','getTask','waitForTask','conversation','snapshot','snapshotAsOf','watchDoc'].map(name=>[name,api[name]===f.runtime[name]])),env:api.env===env,window:api.outputWindow??null};
+  if(variant==='aborted'){f.runtime.signal.aborted=true;throw marker}
+  if(variant==='thrown')throw marker;
+  if(variant==='reported'||variant==='tail'){api.output('first λ\nnext\n');api.diagnostic({severity:'info',code:'reported',message:'reported'});await api.details({meta:1},ctx);apiEffects=api.retainedOutput();return{}}
+  if(variant==='transactions'||variant==='safe'){
+   const returned=await api.commit(async()=>{trace.push(['change']);return marker},ctx);
+   const id=await api.createTask(f.userTask,{x:1},{ownership:{kind:'task',taskId:7}},ctx);
+   const explicit=await api.createTask(f.userTask,{x:2},{ownership:{kind:'task',taskId:7},abandonOnRestart:false},ctx);
+   apiEffects={returned:returned===marker,id,explicit};
+  }
+  return{output:[{type:'text',text:'done'}]};
+ }};
+ f.tool=tool;f.arguments={count:2};f.marker=marker;f.limits=limits;
+ f.inspectExecution=()=>({apiShape:apiShape??null,apiEffects:apiEffects??null,...f.inspect()});
+ return f;
+}

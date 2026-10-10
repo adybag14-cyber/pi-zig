@@ -1,0 +1,247 @@
+{
+  "upstream": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "unchangedAt": "98d2e1947aa9c75dff4c20474d541873dadc1d05",
+  "node": "v24.14.0",
+  "cases": [
+    {
+      "scenario": "completed",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "completed",
+            "result": "done"
+          }
+        }
+      },
+      "late": "Task 2 is terminal",
+      "cleanup": [],
+      "reports": []
+    },
+    {
+      "scenario": "noop",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "Task job phase start returned without durable progress"
+            }
+          }
+        }
+      },
+      "late": "Task 2 invocation has ended",
+      "cleanup": [
+        {
+          "id": 2,
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "Task job phase start returned without durable progress"
+            }
+          }
+        }
+      ],
+      "reports": []
+    },
+    {
+      "scenario": "failed",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "OriginalPhaseFailure"
+            }
+          }
+        }
+      },
+      "late": "Task 2 invocation has ended",
+      "cleanup": [
+        {
+          "id": 2,
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "OriginalPhaseFailure"
+            }
+          }
+        }
+      ],
+      "reports": []
+    },
+    {
+      "scenario": "terminalThenError",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "completed",
+            "result": "done"
+          }
+        }
+      },
+      "late": "Task 2 is terminal",
+      "cleanup": [],
+      "reports": []
+    },
+    {
+      "scenario": "waitingSelf",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "Task 2 cannot wait on itself or its owner 2"
+            }
+          }
+        }
+      },
+      "late": "Task 2 invocation has ended",
+      "cleanup": [
+        {
+          "id": 2,
+          "outcome": {
+            "status": "faulted",
+            "error": {
+              "message": "Task 2 cannot wait on itself or its owner 2"
+            }
+          }
+        }
+      ],
+      "reports": []
+    },
+    {
+      "scenario": "aborted",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": true,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "aborted",
+            "reason": "stopped"
+          }
+        }
+      },
+      "cleanup": [],
+      "reports": []
+    },
+    {
+      "scenario": "cascade",
+      "records": [
+        {
+          "id": 2,
+          "conversationId": 1,
+          "kind": "job",
+          "version": 1,
+          "input": null,
+          "background": false,
+          "abortRequested": true,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted",
+              "reason": "stopped"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "conversationId": 1,
+          "kind": "job",
+          "version": 1,
+          "input": null,
+          "owner": 2,
+          "background": false,
+          "abortRequested": true,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted",
+              "reason": "stopped"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "conversationId": 1,
+          "kind": "job",
+          "version": 1,
+          "input": null,
+          "background": true,
+          "abortRequested": false,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": "done"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "recoveryBeforeResume",
+      "record": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "job",
+        "version": 1,
+        "input": null,
+        "background": false,
+        "abortRequested": false,
+        "state": {
+          "status": "pending",
+          "checkpoint": {
+            "phase": "start",
+            "count": 7
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "summary-request-options",
+  "reportGates": 13,
+  "semanticReportMatch": true,
+  "nativeLinuxTestsPassed": 9,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "actualWireAssertions": "Three streaming requests with session affinity; one non-streaming summary capped at2048, with all four affinity header names and both cache fields absent; one persisted branch summary",
+  "jobs": {
+    "summary-options-python-baseline": {
+      "name": "summary-options-python-baseline",
+      "pid": 48976,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/summary_request_options_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/summary-options-python-report.txt",
+      "created_utc": "2026-10-05T10:37:38.9313440Z",
+      "launched_utc": "2026-10-05T10:37:38.9287834+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:37:40.1151530+00:00"
+    },
+    "summary-options-native-live": {
+      "name": "summary-options-native-live",
+      "pid": 41360,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_SUMMARY_OPTIONS_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/summary-options-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/summary_options_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-summary-native-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T10:40:17.9418880Z",
+      "launched_utc": "2026-10-05T10:40:17.9391743+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:40:21.3637484+00:00"
+    },
+    "summary-options-native-windows": {
+      "name": "summary-options-native-windows",
+      "pid": 29884,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/summary_options_process_test.zig",
+      "created_utc": "2026-10-05T10:43:04.5844940Z",
+      "launched_utc": "2026-10-05T10:43:04.5813961+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:43:06.3797105+00:00"
+    }
+  }
+}

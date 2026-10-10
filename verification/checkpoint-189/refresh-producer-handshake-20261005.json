@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "4809956e11f214985dc0f4f89b70b4285a8b3265",
+  "hostedFailure": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37315198560",
+  "exactFailure": "Macrotatedrefresh cancellation testexpectedCanceled butfixed40ms cancellation arrivedaftercallback120ms completion",
+  "repair": "Test waitsfor actualproducer-start file, sets callerabortthenreleasescallback; callbackstillreceivesindependentunabortedrefreshsignal",
+  "assertions": "Rotatedrefresh/access/tenant/count persist, callerCanceled, ordinary20msdeadline restored, follow-upworkerreuse; unexpectedsuccess credentialfreedbeforefailure",
+  "productionFilesChanged": false,
+  "sourcePath": "src/extensions/provider_oauth.zig",
+  "sourceSha256": "7d8555cce74814254e9f30389f4a1e5f55b805aa7e809bb501b9a67d25b83220",
+  "jobs": {
+    "refresh-producer-handshake-windows-debug": {
+      "name": "refresh-producer-handshake-windows-debug",
+      "pid": 49844,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T13:33:42.3969620Z",
+      "launched_utc": "2026-10-05T13:33:42.3932911+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:34:13.1140239+00:00"
+    },
+    "refresh-producer-handshake-windows-release": {
+      "name": "refresh-producer-handshake-windows-release",
+      "pid": 53576,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-provider-contracts -Doptimize=ReleaseSafe -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T13:40:09.9090990Z",
+      "launched_utc": "2026-10-05T13:40:09.9059411+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:43:05.4843177+00:00"
+    },
+    "refresh-producer-handshake-linux-debug": {
+      "name": "refresh-producer-handshake-linux-debug",
+      "pid": 26608,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T13:40:20.0210520Z",
+      "launched_utc": "2026-10-05T13:40:20.0178428+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T13:40:34.6272290+00:00"
+    }
+  },
+  "hostedRepairVerification": "pendingfreshcommit CI"
+}

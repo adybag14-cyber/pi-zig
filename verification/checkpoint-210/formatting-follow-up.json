@@ -1,0 +1,34 @@
+{
+  "status": "format and native generator follow-up qualified",
+  "fullQualificationSource": "0fdb6e667c7920de2eaf4487303e627c01059900",
+  "publishedParent": "c0c0166aaf21630fdad76a89fb68f81c4e1a7e83",
+  "changes": [
+    {
+      "path": "src/mcp/agent_tools.zig",
+      "parentSha256": "269a00a447eae603ffcedde296f3b467878b4d24e91ea7f0387d4ad2a94658fa",
+      "updatedSha256": "a5cd89cf567b8aed70b54fef4ef41afc87a4df322d67a79359584894fc0192da"
+    },
+    {
+      "path": "src/mcp/codemode_declarations.zig",
+      "parentSha256": "6b9cdf2a980e4901882fe6a31c4e37216ad46e67b1985f7b02930f4f07658d39",
+      "updatedSha256": "fc0fbc69da21ac5196cffee6135d58e4993bb93e91102e029b91f1883d90e469"
+    },
+    {
+      "path": "src/tui/unicode17/generated_graphemes.zig",
+      "parentSha256": "be72cadf7f3c0106a4afbb19e529f0eb0e805cff99f6edf18f2a905a721fbfe8",
+      "updatedSha256": "d19abd4f20391c4c911c4b67479c357af45f6163fdbc992b0b4b643c5ebf61d3"
+    },
+    {
+      "path": "tools/unicode_graphemes.zig",
+      "parentSha256": "d7eda2edc3dab4d7ad9d36ba0917eca69702889885792e601f77e31110f9a0ba",
+      "updatedSha256": "0ca6dff1738b4b36c83cafea968591bfa032e2ae447c30a11bc70eb04f8cd2fc"
+    }
+  ],
+  "checks": [
+    "zig fmt --check build.zig src tools",
+    "native Unicode generator regeneration and --check",
+    "test-tui-utf16-input and test-codemode: 44/44 tests, 22/22 steps"
+  ],
+  "scope": "Full local receipts remain attached to the original frozen source; this follow-up requires fresh hosted head validation",
+  "verifiedUtc": "2026-10-08T22:26:28.2962855+00:00"
+}

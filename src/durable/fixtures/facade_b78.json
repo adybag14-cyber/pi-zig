@@ -1,0 +1,43 @@
+{
+  "upstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "node": "v24.14.0",
+  "text": "﻿hello\nworld\r\ntail",
+  "lines": [
+    "hello",
+    "world\r",
+    "tail"
+  ],
+  "empty": [],
+  "bytes": [
+    239,
+    187,
+    191,
+    104,
+    101,
+    0,
+    0,
+    0
+  ],
+  "existsNew": true,
+  "existsOld": false,
+  "canonicalMatches": true,
+  "listing": [
+    {
+      "name": "two",
+      "kind": "file",
+      "size": 8
+    }
+  ],
+  "errors": [
+    "unknown",
+    "is_directory",
+    "invalid",
+    "not_found"
+  ],
+  "removed": true,
+  "join": "b",
+  "tempDirectoryPrefix": true,
+  "tempFilePrefix": true,
+  "tempFileSuffix": true,
+  "tempFileSize": 0
+}

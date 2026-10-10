@@ -1,0 +1,233 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "helperHashes": {
+    "mode": "c16cb00c780f8a4397836f96f0292b9aa61ce5bc62fa0155bdcf458a4d96f829",
+    "budget": "7e1a8456256b141d336b447e1399f21881ccc5c3c01ad52339460dbb3a1510aa"
+  },
+  "rows": [
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {},
+      "mode": "only",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {}
+      },
+      "mode": "only",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": null
+      },
+      "mode": "on",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": false
+      },
+      "mode": "on",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": 0
+      },
+      "mode": "on",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": "bad"
+      },
+      "mode": "on",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": []
+      },
+      "mode": "on",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "mode": null
+        }
+      },
+      "mode": "on",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "mode": false
+        }
+      },
+      "mode": "on",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "mode": 0
+        }
+      },
+      "mode": "on",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "mode": "bad"
+        }
+      },
+      "mode": "on",
+      "inlineBudget": 12.5
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "inlineBudget": null
+        }
+      },
+      "mode": "only",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "inlineBudget": -1
+        }
+      },
+      "mode": "only",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "inlineBudget": "20"
+        }
+      },
+      "mode": "only",
+      "inlineBudget": 3000
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "inlineBudget": 0
+        }
+      },
+      "mode": "only",
+      "inlineBudget": 0
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 12.5
+        }
+      },
+      "project": {
+        "codemode": {
+          "inlineBudget": 100000000000000000000
+        }
+      },
+      "mode": "only",
+      "inlineBudget": 100000000000000000000
+    }
+  ]
+}

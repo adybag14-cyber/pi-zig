@@ -25,10 +25,27 @@ pub const RenderedLines = struct {
             for (out.items) |line| gpa.free(line);
             out.deinit(gpa);
         }
-        for (lines) |line| try out.append(gpa, try gpa.dupe(u8, line));
+        for (lines) |line| {
+            const owned = try gpa.dupe(u8, line);
+            errdefer gpa.free(owned);
+            try out.append(gpa, owned);
+        }
         return .{ .items = try out.toOwnedSlice(gpa) };
     }
 };
+
+fn renderedCloneOwnership(gpa: std.mem.Allocator) !void {
+    const source = [_][]const u8{ "first independently owned line", "second independently owned line" };
+    var copied = try RenderedLines.clone(gpa, &source);
+    defer copied.deinit(gpa);
+    copied.items[0][0] = 'X';
+    try std.testing.expectEqualStrings("first independently owned line", source[0]);
+    try std.testing.expectEqualStrings("second independently owned line", copied.items[1]);
+}
+
+test "rendered line clones release both duplicated bytes and failed list admission" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, renderedCloneOwnership, .{});
+}
 
 pub const Viewport = struct {
     width: usize,
@@ -387,7 +404,11 @@ pub const StaticLines = struct {
             for (out.items) |line| gpa.free(line);
             out.deinit(gpa);
         }
-        for (self.lines) |line| try out.append(gpa, try padLineAlloc(gpa, line, width));
+        for (self.lines) |line| {
+            const owned = try padLineAlloc(gpa, line, width);
+            errdefer gpa.free(owned);
+            try out.append(gpa, owned);
+        }
         return .{ .items = try out.toOwnedSlice(gpa) };
     }
 
@@ -724,7 +745,9 @@ fn layoutComponent(
                 }
                 var child_y = y;
                 for (entries, sizes) |entry, child_height| {
-                    try children.append(gpa, try layoutComponent(gpa, entry.component, x, child_y, width, child_height, intersect(clip, rect), viewport, primary_scroll));
+                    var child = try layoutComponent(gpa, entry.component, x, child_y, width, child_height, intersect(clip, rect), viewport, primary_scroll);
+                    errdefer child.deinit(gpa);
+                    try children.append(gpa, child);
                     child_y += @as(isize, @intCast(child_height +| stack.gap));
                 }
                 return .{ .component = component, .rect = rect, .clip = intersect(clip, rect), .children = try children.toOwnedSlice(gpa) };
@@ -756,7 +779,9 @@ fn layoutComponent(
                 if (child_width == 0) {
                     try children.append(gpa, .{ .component = entry.component, .rect = .{ .x = child_x, .y = child_y, .width = 0, .height = child_height }, .clip = .{ .x = child_x, .y = child_y, .width = 0, .height = 0 } });
                 } else {
-                    try children.append(gpa, try layoutComponent(gpa, entry.component, child_x, child_y, child_width, child_height, intersect(clip, rect), viewport, primary_scroll));
+                    var child = try layoutComponent(gpa, entry.component, child_x, child_y, child_width, child_height, intersect(clip, rect), viewport, primary_scroll);
+                    errdefer child.deinit(gpa);
+                    try children.append(gpa, child);
                 }
                 child_x += @as(isize, @intCast(child_width +| stack.gap));
             }

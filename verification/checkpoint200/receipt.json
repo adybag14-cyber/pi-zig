@@ -1,0 +1,63 @@
+{
+  "checkpoint": 200,
+  "status": "in_progress",
+  "parity_complete": false,
+  "release_guard": false,
+  "upstream_pin": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "latest_reviewed_commit": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "compiled_inputs": 672,
+  "source_archive_sha256": "1c7bddeb0f2e85428656e44d0e5db206055345bfb5e9fa13e8da599aba45a2c5",
+  "gates": [
+    {
+      "name": "checkpoint200-counter-final-windows-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T17:44:02.7386645+00:00",
+      "summary": "Build Summary: 191/191 steps succeeded; 1212/1275 tests passed (63 skipped)",
+      "log_sha256": "2de062f28a75ee53bccd4f06ce5d76c8a09197b8d899c4f918e12038e3b4b5d4"
+    },
+    {
+      "name": "checkpoint200-counter-final-windows-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T17:46:05.7866026+00:00",
+      "summary": "Build Summary: 191/191 steps succeeded; 1212/1275 tests passed (63 skipped)",
+      "log_sha256": "0a5773d34638924ac4f94a06b6e54542e6e5d28505298bdb140e5ca91c36704a"
+    },
+    {
+      "name": "checkpoint200-counter-final-native-linux-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T17:25:49.9195121+00:00",
+      "summary": "Build Summary: 187/187 steps succeeded; 1399/1409 tests passed (10 skipped)",
+      "log_sha256": "2f11415acff2add7af748561a968fa3705deabb95be109cf47d99ba241ee4de2"
+    },
+    {
+      "name": "checkpoint200-counter-final-native-linux-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T17:46:37.1331822+00:00",
+      "summary": "Build Summary: 187/187 steps succeeded; 1399/1409 tests passed (10 skipped)",
+      "log_sha256": "a080f99f751b31c88b4fe82e961c4a0a6351c026d0a3f72e4e3dbcd93872bed2"
+    }
+  ],
+  "scope": [
+    "Typed captured-context invalidation at committed reload and session replacement",
+    "RPC before-switch and before-fork cancellation with settled shutdown and fresh session start",
+    "macOS editor factory readiness acknowledgements preserving render deadlines",
+    "macOS FSEvents owner-thread retirement",
+    "macOS Debug and ReleaseSafe streamed lifecycle CI",
+    "Serialized failure-injector counters for concurrent native MCP allocation sweep"
+  ],
+  "retained_failed_receipts": [
+    "checkpoint200-final-native-linux-debug-20261007",
+    "checkpoint200-context-wiring-windows-debug-20261007",
+    "checkpoint200-context-macos-windows-debug-20261007",
+    "checkpoint200-context-macos-native-linux-debug-20261007"
+  ],
+  "limitations": [
+    "macOS runtime qualification requires hosted jobs on this final head",
+    "Full native SDK chat/session/resource parity remains ongoing",
+    "Full public durable Harness and orchestration remains ongoing",
+    "Theme and general TUI API parity remains ongoing",
+    "Configured MCP production OAuth and codemode integration remains ongoing",
+    "Legacy repository JS host remains until native parity gates pass"
+  ],
+  "created_utc": "2026-10-07T17:47:30.3806736+00:00"
+}

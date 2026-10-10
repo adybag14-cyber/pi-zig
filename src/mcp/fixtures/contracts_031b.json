@@ -1,0 +1,456 @@
+{
+  "upstream": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "node": "v24.14.0",
+  "configs": [
+    {
+      "name": "server-a",
+      "input": {},
+      "result": "server \"server-a\" needs either \"command\" (stdio) or \"url\" (streamable HTTP)"
+    },
+    {
+      "name": "server-a",
+      "input": null,
+      "result": "server \"server-a\" must be an object"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "echo"
+      },
+      "result": {
+        "command": "echo"
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "args": [
+          1
+        ]
+      },
+      "result": "server \"server-a\": args must be an array of strings"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "env": {
+          "A": 1
+        }
+      },
+      "result": "server \"server-a\": env must map names to strings"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "cwd": 1
+      },
+      "result": "server \"server-a\": cwd must be a string"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "enabled": null
+      },
+      "result": "server \"server-a\": enabled must be a boolean"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "timeout": 0
+      },
+      "result": "server \"server-a\": timeout must be a positive number of seconds"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "timeout": 1.5
+      },
+      "result": {
+        "command": "x",
+        "timeout": 1.5
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "http://localhost:1/mcp",
+        "headers": {
+          "A": "x"
+        }
+      },
+      "result": {
+        "url": "http://localhost:1/mcp",
+        "headers": {
+          "A": "x"
+        }
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "ftp://example/x"
+      },
+      "result": "server \"server-a\": url must be an http or https URL"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "http://example/x",
+        "auth": {
+          "provider": "p"
+        }
+      },
+      "result": "server \"server-a\": auth requires an https URL, or http on localhost, 127.0.0.1, or [::1]"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example/x",
+        "auth": {
+          "provider": "p"
+        }
+      },
+      "result": {
+        "url": "https://example/x",
+        "auth": {
+          "provider": "p"
+        }
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "http://[::1]:1/",
+        "auth": {
+          "provider": "p"
+        }
+      },
+      "result": {
+        "url": "http://[::1]:1/",
+        "auth": {
+          "provider": "p"
+        }
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example/x",
+        "oauth": {
+          "clientRegistration": "cimd",
+          "clientId": "id"
+        }
+      },
+      "result": "server \"server-a\": oauth.clientRegistration \"cimd\" cannot be combined with oauth.clientId or oauth.clientName"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example/x",
+        "oauth": {
+          "callbackUrl": "http://localhost:10/callback",
+          "callbackPort": 11
+        }
+      },
+      "result": "server \"server-a\": oauth.callbackUrl and oauth.callbackPort name different ports"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example/x",
+        "oauth": {
+          "callbackUrl": "http://localhost/callback?"
+        }
+      },
+      "result": {
+        "url": "https://example/x",
+        "oauth": {
+          "callbackUrl": "http://localhost/callback?"
+        }
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example/x",
+        "oauth": {
+          "clientRegistration": "cimd",
+          "callbackUrl": "http://[::1]/callback"
+        }
+      },
+      "result": "server \"server-a\": oauth.clientRegistration \"cimd\" requires oauth.callbackUrl on localhost or 127.0.0.1 with path /callback"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "exposure": "codemode-deferred",
+        "toolExposure": {
+          "*": "hidden",
+          "exact": "direct",
+          "show*": "codemode-deferred"
+        }
+      },
+      "result": {
+        "command": "x",
+        "exposure": "codemode",
+        "toolExposure": {
+          "*": "hidden",
+          "exact": "direct",
+          "show*": "codemode"
+        }
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "exposure": "bad"
+      },
+      "result": "server \"server-a\": exposure must be one of \"codemode\", \"deferred\", \"direct\", \"hidden\""
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "toolExposure": {
+          "a": "bad"
+        }
+      },
+      "result": "server \"server-a\": toolExposure \"a\" must be one of \"codemode\", \"deferred\", \"direct\", \"hidden\""
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "type": "sse"
+      },
+      "result": "server \"server-a\": legacy SSE transport is not supported; use the streamable HTTP URL"
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "url": "https://example",
+        "type": "streamable-http"
+      },
+      "result": {
+        "url": "https://example",
+        "type": "streamable-http"
+      }
+    },
+    {
+      "name": "server-a",
+      "input": {
+        "command": "x",
+        "description": false
+      },
+      "result": "server \"server-a\": description must be a string"
+    },
+    {
+      "name": "bad.name",
+      "input": {
+        "command": "x"
+      },
+      "result": "invalid server name \"bad.name\" (use letters, digits, \"_\" and \"-\")"
+    }
+  ],
+  "content": [
+    {
+      "input": {
+        "content": [
+          {
+            "type": "text",
+            "text": "hello"
+          },
+          {
+            "type": "image",
+            "data": "YQ==",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "audio",
+            "data": "",
+            "mimeType": "audio/wav"
+          },
+          {
+            "type": "resource_link",
+            "name": "r",
+            "uri": "file:///r"
+          }
+        ]
+      },
+      "result": [
+        {
+          "type": "text",
+          "text": "hello"
+        },
+        {
+          "type": "image",
+          "data": "YQ==",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "[audio audio/wav omitted]"
+        },
+        {
+          "type": "text",
+          "text": "r: file:///r"
+        }
+      ]
+    },
+    {
+      "input": {
+        "content": [
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "file:///x",
+              "text": "embedded"
+            }
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "file:///i",
+              "blob": "YQ==",
+              "mimeType": "image/png"
+            }
+          },
+          {
+            "type": "resource",
+            "resource": {
+              "uri": "file:///b",
+              "blob": "YQ=="
+            }
+          },
+          {
+            "type": "future"
+          }
+        ]
+      },
+      "result": [
+        {
+          "type": "text",
+          "text": "embedded"
+        },
+        {
+          "type": "image",
+          "data": "YQ==",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "[binary resource file:///b (unknown type) omitted]"
+        },
+        {
+          "type": "text",
+          "text": "[unsupported MCP content future]"
+        }
+      ]
+    },
+    {
+      "input": {
+        "structuredContent": {
+          "ok": true,
+          "nested": {
+            "value": 3
+          }
+        }
+      },
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"ok\": true,\n  \"nested\": {\n    \"value\": 3\n  }\n}"
+        }
+      ]
+    }
+  ],
+  "sse": [
+    {
+      "input": "77u/aWQ6IGluaXRpYWwKCjogY29tbWVudAppZDogcmVjb3JkCmV2ZW50OiBtZXNzYWdlCnJldHJ5OiAwMDEyCmRhdGE6IGjDqfCfmIAKZGF0YTogbmV4dA0KCmRhdGE6IGZpbmFs",
+      "maxEventBytes": 100,
+      "events": [
+        {
+          "event": "message",
+          "data": "hé😀\nnext",
+          "id": "record"
+        },
+        {
+          "data": "final"
+        }
+      ],
+      "ids": [
+        "initial",
+        "record"
+      ],
+      "retries": [
+        12
+      ]
+    },
+    {
+      "input": "ZGF0YTogeA0NCgo=",
+      "maxEventBytes": 100,
+      "events": [
+        {
+          "data": "x\r"
+        }
+      ],
+      "ids": [],
+      "retries": []
+    },
+    {
+      "input": "aWQ6IGEAYgpyZXRyeTogbm9wZQpkYXRhOgoK",
+      "maxEventBytes": 100,
+      "events": [
+        {
+          "data": ""
+        }
+      ],
+      "ids": [],
+      "retries": []
+    },
+    {
+      "input": "ZGF0YTogMTIzCmRhdGE6IDQ1NgoK",
+      "maxEventBytes": 6,
+      "events": [],
+      "ids": [],
+      "retries": [],
+      "error": "MCP SSE event exceeds 6 bytes"
+    }
+  ],
+  "exposureConfig": {
+    "command": "x",
+    "exposure": "deferred",
+    "toolExposure": {
+      "show*": "direct",
+      "*": "hidden",
+      "exact": "codemode"
+    }
+  },
+  "exposures": [
+    {
+      "name": "show_it",
+      "result": "direct"
+    },
+    {
+      "name": "exact",
+      "result": "codemode"
+    },
+    {
+      "name": "other",
+      "result": "hidden"
+    },
+    {
+      "name": "show.[]",
+      "result": "direct"
+    }
+  ],
+  "namespace": "mcp__server_a"
+}

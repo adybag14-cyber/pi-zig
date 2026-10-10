@@ -360,6 +360,17 @@ pub fn complete(
     enable_skill_commands: bool,
 ) !?Result {
     const bounded_cursor = @min(cursor, line.len);
+    var prefix: usize = 0;
+    while (prefix < bounded_cursor and std.ascii.isWhitespace(line[prefix])) : (prefix += 1) {}
+    if (prefix > 0) {
+        var result = (try complete(gpa, io, environ, cwd, line[prefix..], bounded_cursor - prefix, models, prompt_templates, extension_commands, session, enable_skill_commands)) orelse return null;
+        errdefer result.deinit(gpa);
+        const preserved = try std.fmt.allocPrint(gpa, "{s}{s}", .{ line[0..prefix], result.text });
+        gpa.free(result.text);
+        result.text = preserved;
+        result.cursor += prefix;
+        return result;
+    }
     if (try completeCommand(gpa, line, bounded_cursor, prompt_templates, extension_commands, enable_skill_commands)) |result| return result;
     if (commandAndArg(line, bounded_cursor)) |parsed| {
         if (std.ascii.eqlIgnoreCase(parsed.command, "model")) return try completeModel(gpa, line, bounded_cursor, parsed.arg_start, models);
@@ -387,6 +398,9 @@ test "completion expands commands models and tree ids" {
     var command = (try complete(gpa, std.testing.io, &env, ".", "/mod", 4, &models, &.{}, &.{}, &session, true)).?;
     defer command.deinit(gpa);
     try std.testing.expectEqualStrings("/model ", command.text);
+    var indented = (try complete(gpa, std.testing.io, &env, ".", " \t/mod", 6, &models, &.{}, &.{}, &session, true)).?;
+    defer indented.deinit(gpa);
+    try std.testing.expectEqualStrings(" \t/model ", indented.text);
 
     var model = (try complete(gpa, std.testing.io, &env, ".", "/model cs4", 10, &models, &.{}, &.{}, &session, true)).?;
     defer model.deinit(gpa);

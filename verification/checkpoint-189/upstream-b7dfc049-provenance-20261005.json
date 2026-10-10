@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "a4071b7aa185bb0a1968b7292a1828e35a708838",
+  "previousUpstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "upstreamCommit": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "upstreamCommitUtc": "2026-10-05T15:32:22Z",
+  "upstreamVersion": "1.0.3",
+  "latestRelease": "v1.0.3",
+  "latestReleasePublishedUtc": "2026-10-05T08:38:23Z",
+  "addedCommits": 14,
+  "totalDeltaFromPreviousPiBaseline": 929,
+  "upstreamSourceArchiveSha256": "460959d333eaf3e4668d48088ca4b5b1c14e6b26d4550f7a563916c4a27bdf80",
+  "catalogRevision": "sha256-c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f",
+  "catalogModels": 1621,
+  "catalogProviders": 42,
+  "catalogSourceSha256": "16abfb0dc8e0a930580e9c42d400cb08a2bac9c53e00648c4a4093d6ef4a1f43",
+  "changes": [
+    "Catalog/changelog native imports verified against latest source archive",
+    "HTTP2 pending-stream cancellation retry text and regression",
+    "MCP OIDC application_type inference via native canonical URL parser; explicit metadata/scopes retained with allocation-failure tests"
+  ],
+  "validation": {
+    "mcpReleaseJob": {
+      "name": "upstream-b7df-mcp-registration-release",
+      "pid": 20040,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-oauth -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-05T16:43:25.1239450Z",
+      "launched_utc": "2026-10-05T16:43:25.1202037+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-b7df-contracts-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:44:02.6871472+00:00"
+    },
+    "catalogCheck": "passed",
+    "retry": "8/8 tests",
+    "focusedMain": "20/20 steps;212/212 tests",
+    "mcpDebug": "5/5 steps;9/9 tests",
+    "focusedJob": {
+      "name": "upstream-b7df-main-focused-debug",
+      "pid": 48472,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-oauth test-catalog-projection test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T16:45:22.2468050Z",
+      "launched_utc": "2026-10-05T16:45:22.2425597+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:46:10.8947673+00:00"
+    }
+  },
+  "limits": [
+    "Registration request-body helper is implemented; complete MCP network/OAuth integration remains pending",
+    "Latest env/durable/codemode/MCPtool-filter contracts are separate active ports",
+    "Default remains legacy and final parity/release is uncertified"
+  ]
+}

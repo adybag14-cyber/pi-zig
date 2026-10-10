@@ -1,0 +1,40 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "hashes": [
+    {
+      "path": "packages/tui/src/utils.ts",
+      "sha256": "258ff73a0ff4d2b05f8a60515a9cc37eb96c9fc03a4072ac6db2906cad1862d9"
+    },
+    {
+      "path": "packages/tui/src/components/text.ts",
+      "sha256": "e46790ea0b4a3db105306e057664b4246983c189218346dacd8ea6f0c9ee7152"
+    },
+    {
+      "path": "packages/tui/src/components/spacer.ts",
+      "sha256": "b511acec1d33885dad23e7ab2108b2d04dff0589b3bfda53b1f7458be4381e66"
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/components/themed-text.ts",
+      "sha256": "7003c90ab15dc37c1a10e744bbf24c597e91fe7415d59b75c085b2e5c1749817"
+    },
+    {
+      "path": "packages/tui/src/tui.ts",
+      "sha256": "92dcb7f5f9a3a9575421d8de366be5cc78890be8df38d86c4ed3c0d77c7f88a4"
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+      "sha256": "2e1fbb5e695c78d6e05dfcd5d7d511e755ea4495db3af34969388a24a4c221b5"
+    }
+  ],
+  "source": "actual upstream Text plus utils, unmodified built-in TypeScript strip",
+  "text": "界😀",
+  "paddingX": 0,
+  "paddingY": 0,
+  "width": 1,
+  "lines": [
+    " ",
+    "界",
+    " ",
+    "😀"
+  ]
+}

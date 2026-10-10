@@ -4,10 +4,13 @@ const std = @import("std");
 const Io = std.Io;
 const layout = @import("layout.zig");
 const terminal = @import("terminal.zig");
+const program_status = @import("program_status.zig");
 const terminal_text = @import("terminal_text.zig");
 const osc52 = @import("osc52.zig");
 const mouse = @import("mouse.zig");
 const widgets = @import("widgets.zig");
+const keys = @import("keys.zig");
+const keybindings = @import("keybindings.zig");
 
 pub const mouse_enable = "\x1b[?1000h\x1b[?1002h\x1b[?1006h";
 pub const mouse_disable = "\x1b[?1006l\x1b[?1002l\x1b[?1000l";
@@ -185,6 +188,8 @@ pub const Application = struct {
     gpa: std.mem.Allocator,
     root: layout.Component,
     focused: ?layout.Component = null,
+    bindings: ?*const keybindings.Manager = null,
+    show_hardware_cursor: bool = true,
     overlays: std.ArrayList(OverlayEntry) = .empty,
     overlay_frames: std.ArrayList(OverlayFrame) = .empty,
     current_frame: ?layout.LayoutFrame = null,
@@ -194,6 +199,10 @@ pub const Application = struct {
     painted_height: usize = 0,
     next_overlay_id: u64 = 1,
     started: bool = false,
+    program_status_protocol: program_status.Protocol,
+    program_status_override: ?[]const u8 = null,
+    program_status_owner: bool = false,
+    alternate_screen: bool = true,
     clock_io: ?Io = null,
     selection: ?Selection = null,
     copy_on_select: bool = true,
@@ -212,6 +221,7 @@ pub const Application = struct {
         return .{
             .gpa = gpa,
             .root = root,
+            .program_status_protocol = program_status.Protocol.init(gpa),
             .search = SearchState.init(gpa),
             .composition = CompositionState.init(gpa),
         };
@@ -225,20 +235,59 @@ pub const Application = struct {
         self.overlays.deinit(self.gpa);
         self.search.deinit();
         self.composition.deinit();
+        self.program_status_protocol.deinit();
         self.* = undefined;
     }
 
     pub fn start(self: *Application, io: Io) !void {
         if (self.started) return;
-        try writeAll(io, enter_sequence);
+        try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
+        if (self.program_status_owner) {
+            const negotiation = try self.program_status_protocol.start(self.program_status_override);
+            defer self.gpa.free(negotiation);
+            try writeAll(io, negotiation);
+        }
         self.clock_io = io;
         self.started = true;
     }
 
     pub fn stop(self: *Application, io: Io) !void {
         if (!self.started) return;
-        try writeAll(io, leave_sequence);
+        if (try self.program_status_protocol.stop()) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
+        try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
         self.started = false;
+    }
+
+    /// A native dialog takes input and paint ownership while the same terminal
+    /// remains live. Preserve its negotiated status support and cached report.
+    pub fn suspendPresentation(self: *Application, io: Io) !void {
+        if (!self.started) return;
+        try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
+        self.started = false;
+    }
+    pub fn resumePresentation(self: *Application, io: Io) !void {
+        if (self.started) return;
+        try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
+        self.clock_io = io;
+        self.started = true;
+    }
+
+    pub fn setProgramStatus(self: *Application, io: Io, status: program_status.Status) !void {
+        if (try self.program_status_protocol.set(status)) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
+    }
+    pub fn consumeProgramStatusReply(self: *Application, io: Io, sequence: []const u8) !bool {
+        const result = try self.program_status_protocol.response(sequence);
+        if (result.report) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
+        return result.consumed;
     }
 
     pub fn setFocus(self: *Application, component: ?layout.Component) void {
@@ -344,7 +393,43 @@ pub const Application = struct {
             }
             return;
         }
+        if (keys.parseKeyWithOptions(data, .{ .kitty_active = true })) |key| {
+            if (key.event_type == .release) return;
+            const key_id = try key.formatAlloc(self.gpa);
+            defer self.gpa.free(key_id);
+            if (self.handleViewportKey(key_id)) return;
+        }
         if (self.inputTarget()) |target| try target.handleInput(data);
+    }
+
+    pub fn handleViewportKey(self: *Application, key_id: []const u8) bool {
+        // A focused dialog keeps its navigation keys; nonmodal overlays that
+        // leave focus on the editor do not steal transcript navigation.
+        for (self.overlays.items) |entry| {
+            if (self.focused) |focused| {
+                if (focused.eql(entry.component)) return false;
+                if (entry.options.focus) |focus| if (focused.eql(focus)) return false;
+            }
+            if (entry.options.modal) return false;
+        }
+        const defaults = keybindings.Manager.init(self.gpa);
+        const bindings = self.bindings orelse &defaults;
+        const action = bindings.viewportActionFor(key_id) orelse return false;
+        const frame = if (self.current_frame) |*value| value else return false;
+        const scroll = frame.primary_scroll_view orelse return false;
+        const page: isize = @intCast(@max(@as(usize, 1), scroll.viewport_height -| 4));
+        const half_page: isize = @intCast(@max(@as(usize, 1), scroll.viewport_height / 2));
+        switch (action) {
+            .top => scroll.scrollToStart(),
+            .bottom => scroll.scrollToEnd(),
+            .page_up => _ = scroll.scrollBy(-page),
+            .page_down => _ = scroll.scrollBy(page),
+            .half_page_up => _ = scroll.scrollBy(-half_page),
+            .half_page_down => _ = scroll.scrollBy(half_page),
+            .line_up => _ = scroll.scrollBy(-1),
+            .line_down => _ = scroll.scrollBy(1),
+        }
+        return true;
     }
 
     fn inputTarget(self: *const Application) ?layout.Component {
@@ -558,9 +643,11 @@ pub const Application = struct {
         const width = @max(@as(usize, 1), width_raw);
         const height = @max(@as(usize, 1), height_raw);
         self.clearCurrentFrames();
-        var root_frame = try layout.renderFrame(self.gpa, self.root, width, height);
-        errdefer root_frame.deinit(self.gpa);
-        self.current_frame = root_frame;
+        self.current_frame = try layout.renderFrame(self.gpa, self.root, width, height);
+        // The retained frame owns the bytes from this point, including partial
+        // overlay/search/padding work. Failed paint must clear that same owner.
+        errdefer self.clearCurrentFrames();
+        try @import("cursor_markers.zig").resolveLines(self.gpa, self.current_frame.?.lines.items, self.show_hardware_cursor);
 
         for (self.overlays.items) |entry| try self.renderOverlay(entry, width, height);
         const frame = &self.current_frame.?;
@@ -585,6 +672,7 @@ pub const Application = struct {
         const position = overlayPosition(entry.options.placement, width, height, overlay_width, overlay_height);
         var overlay_frame = try layout.renderFrame(self.gpa, entry.component, overlay_width, overlay_height);
         errdefer overlay_frame.deinit(self.gpa);
+        try @import("cursor_markers.zig").resolveLines(self.gpa, overlay_frame.lines.items, self.show_hardware_cursor);
         try self.composite(&overlay_frame, position.x, position.y, width, height);
         try self.overlay_frames.append(self.gpa, .{ .id = entry.id, .x = position.x, .y = position.y, .frame = overlay_frame });
     }
@@ -608,13 +696,22 @@ pub const Application = struct {
 
     pub fn renderAnsi(self: *Application, width: usize, height: usize) ![]u8 {
         const view = try self.render(width, height);
+        // Every writer here is memory backed. Its WriteFailed represents the
+        // allocator failure; the terminal I/O is performed separately in paint.
+        return self.renderAnsiAlloc(view) catch |err| switch (err) {
+            error.WriteFailed => error.OutOfMemory,
+            else => err,
+        };
+    }
+
+    fn renderAnsiAlloc(self: *Application, view: View) ![]u8 {
         var out: std.Io.Writer.Allocating = .init(self.gpa);
         errdefer out.deinit();
         try out.writer.writeAll(synchronized_begin);
         const full = self.painted_lines.items.len == 0 or self.painted_width != view.width or self.painted_height != view.height;
         if (full) {
             self.full_redraw_count += 1;
-            try out.writer.writeAll("\x1b[2J\x1b[H\x1b[3J");
+            try out.writer.writeAll(if (self.alternate_screen) "\x1b[2J\x1b[H\x1b[3J" else "\x1b[2J\x1b[H");
             for (view.lines, 0..) |line, row| {
                 if (row > 0) try out.writer.writeAll("\r\n");
                 try out.writer.writeAll(line);
@@ -632,7 +729,7 @@ pub const Application = struct {
             if (changes > 0) self.incremental_redraw_count += 1;
         }
         if (view.cursor) |cursor| {
-            try out.writer.print("\x1b[{d};{d}H{s}", .{ cursor.row + 1, cursor.column + 1, terminal.show_cursor });
+            try out.writer.print("\x1b[{d};{d}H{s}", .{ cursor.row + 1, cursor.column + 1, if (self.show_hardware_cursor) terminal.show_cursor else terminal.hide_cursor });
         } else {
             try out.writer.writeAll(terminal.hide_cursor);
         }
@@ -645,6 +742,13 @@ pub const Application = struct {
         const bytes = try self.renderAnsi(width, height);
         defer self.gpa.free(bytes);
         try writeAll(io, bytes);
+    }
+
+    pub fn invalidatePaint(self: *Application) void {
+        self.painted_lines.deinit(self.gpa);
+        self.painted_lines = .{};
+        self.painted_width = 0;
+        self.painted_height = 0;
     }
 
     fn updatePainted(self: *Application, lines: []const []u8, width: usize, height: usize) !void {
@@ -741,9 +845,10 @@ pub const Application = struct {
     }
 };
 
-fn writeAll(io: Io, bytes: []const u8) !void {
-    std.Io.File.stdout().writeStreamingAll(io, bytes) catch {
-        std.debug.print("{s}", .{bytes});
+pub fn writeAll(io: Io, bytes: []const u8) !void {
+    std.Io.File.stdout().writeStreamingAll(io, bytes) catch |err| {
+        if (err == error.InputOutput or err == error.BrokenPipe or err == error.SocketUnconnected) return error.DeadTerminal;
+        return err;
     };
 }
 
@@ -817,7 +922,7 @@ fn padLineAlloc(gpa: std.mem.Allocator, line: []const u8, width: usize) ![]u8 {
 }
 
 fn composeLineAlloc(gpa: std.mem.Allocator, base: []const u8, overlay: []const u8, column: usize, width: usize) ![]u8 {
-    const before = try terminal_text.sliceByColumnsAlloc(gpa, base, 0, column);
+    const before = try terminal_text.sliceBeforeColumnsAlloc(gpa, base, column);
     defer gpa.free(before);
     const clipped = try terminal_text.truncateAlloc(gpa, overlay, width -| column, .{ .ellipsis = "", .reset_style = false });
     defer gpa.free(clipped);
@@ -879,6 +984,99 @@ test "application overlays compose, focus and restore deterministically" {
     try std.testing.expect(std.mem.indexOf(u8, view.lines[2], "dialog") != null);
     try std.testing.expect(app.removeOverlay(id));
     try std.testing.expect(input.focused);
+}
+
+test "fullscreen routes Home End to the focused editor and Ctrl Home End to transcript" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{ "line 1", "line 2", "line 3", "line 4", "line 5", "line 6", "line 7", "line 8", "line 9", "line 10", "line 11", "line 12" } };
+    var transcript = layout.ScrollView.init(text.component(), true);
+    transcript.primary = true;
+    var input = widgets.Input.init(gpa);
+    defer input.deinit();
+    try input.setValue("first\nsecond");
+    const entries = [_]layout.StackEntry{
+        .{ .component = transcript.component(), .grow = 1 },
+        .{ .component = input.component(), .basis = 3, .shrink = 0 },
+    };
+    var stack = layout.Stack{ .axis = .vertical, .entries = &entries };
+    var app = Application.init(gpa, stack.component());
+    defer app.deinit();
+    app.setFocus(input.component());
+    _ = try app.render(20, 6);
+    const bottom = transcript.scroll_top;
+    try std.testing.expect(bottom > 0);
+    try app.handleInput("\x1bOH");
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[F");
+    try std.testing.expectEqual(@as(usize, 12), input.editor.cursor);
+    try app.handleInput("\x1b[57423u");
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[5;5~");
+    try app.handleInput("\x1b[6;5~");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try app.handleInput("\x1b[1;5H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[1;5F");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try std.testing.expect(transcript.following_end);
+    try app.handleInput("\x1b[57423;5:3u");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try std.testing.expect(transcript.following_end);
+    try app.handleInput("\x1b[57423;5:2u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[57424;5:3u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[6~");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try app.handleInput("\x1b[5~");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[8^");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try app.handleInput("\x1b[7^");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+}
+
+test "fullscreen custom navigation respects remaps releases and focused overlays" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{ "one", "two", "three", "four", "five", "six" } };
+    var transcript = layout.ScrollView.init(text.component(), true);
+    transcript.primary = true;
+    var input = widgets.Input.init(gpa);
+    defer input.deinit();
+    try input.setValue("editor");
+    var bindings = keybindings.Manager{
+        .gpa = gpa,
+        .parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"tui.altScreen.top\":[\"alt+home\"],\"tui.altScreen.bottom\":[],\"tui.altScreen.lineDown\":\"ctrl+j\"}", .{ .allocate = .alloc_always }),
+    };
+    defer bindings.deinit();
+    var app = Application.init(gpa, transcript.component());
+    defer app.deinit();
+    app.bindings = &bindings;
+    app.setFocus(input.component());
+    _ = try app.render(20, 3);
+    const bottom = transcript.scroll_top;
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[57423;3:3u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[106;5u");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try std.testing.expect(!app.handleViewportKey("ctrl+end"));
+    try std.testing.expect(!app.handleViewportKey("ctrl+home"));
+    var overlay = widgets.Input.init(gpa);
+    defer overlay.deinit();
+    try overlay.setValue("dialog");
+    const id = try app.pushOverlay(overlay.component(), .{ .modal = true });
+    try app.handleInput("\x1bOH");
+    try std.testing.expectEqual(@as(usize, 0), overlay.editor.cursor);
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try std.testing.expect(app.removeOverlay(id));
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expect(bottom > 0);
 }
 
 test "application extracts cursor and emits differential synchronized output" {
@@ -1007,4 +1205,51 @@ test "alternate-screen lifecycle sequences include paste mouse and cursor restor
     try std.testing.expect(std.mem.indexOf(u8, enter_sequence, terminal.bracketed_paste_enable) != null);
     try std.testing.expect(std.mem.indexOf(u8, enter_sequence, "\x1b[?1006h") != null);
     try std.testing.expect(std.mem.endsWith(u8, leave_sequence, terminal.alternate_screen_leave));
+}
+
+test "actual Source1ced overlay boundaries retain surviving APC cursor and discard covered wide glyph cursor" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-original-1ced.json"));
+}
+
+test "expanded actual Source1ced APC boundary corpus covers leading and trailing wide joined and combining cursors" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-expanded-original-1ced.json"));
+}
+
+fn replayCursorBoundaries(raw: []const u8) !void {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("boundaries").?.array.items) |item| {
+        const line = item.object.get("line").?.string;
+        const before_end: usize = @intCast(item.object.get("beforeEnd").?.integer);
+        const after_start: usize = @intCast(item.object.get("afterStart").?.integer);
+        const after_len: usize = @intCast(item.object.get("afterLen").?.integer);
+        const actual = try composeLineAlloc(gpa, line, "XXXXX"[0 .. after_start - before_end], before_end, after_start + after_len);
+        defer gpa.free(actual);
+        const expected = try std.fmt.allocPrint(gpa, "{s}{s}{s}", .{ item.object.get("before").?.string, "XXXXX"[0 .. after_start - before_end], item.object.get("after").?.string });
+        defer gpa.free(expected);
+        const marker_actual = std.mem.indexOf(u8, actual, widgets.cursor_marker);
+        const marker_expected = std.mem.indexOf(u8, expected, widgets.cursor_marker);
+        if ((marker_expected != null) != (marker_actual != null)) std.debug.print("Cursor boundary mismatch: beforeEnd={d},afterStart={d},afterLen={d}; line={any}; expected={any}; actual={any}\n", .{ before_end, after_start, after_len, line, expected, actual });
+        try std.testing.expectEqual(marker_expected != null, marker_actual != null);
+        if (marker_actual) |at| try std.testing.expectEqual(terminal_text.visibleWidth(expected[0..marker_expected.?]), terminal_text.visibleWidth(actual[0..at]));
+    }
+}
+
+test "regular and alternate compositor resolve focused hardware cursor and unfocused fake cursor before overlay" {
+    const gpa = std.testing.allocator;
+    const markers = @import("cursor_markers.zig");
+    var root = layout.StaticLines{ .lines = &.{"a" ++ markers.cursor ++ markers.fake_start ++ "界" ++ markers.fake_end ++ "z " ++ markers.fake_start ++ "x" ++ markers.fake_end} };
+    for ([_]bool{ false, true }) |alternate| for ([_]bool{ false, true }) |hardware| {
+        var app = Application.init(gpa, root.component());
+        defer app.deinit();
+        app.alternate_screen = alternate;
+        app.show_hardware_cursor = hardware;
+        const frame = try app.render(12, 3);
+        try std.testing.expectEqual(@as(usize, 1), frame.cursor.?.column);
+        try std.testing.expectEqual(@as(usize, 0), frame.cursor.?.row);
+        try std.testing.expect(std.mem.indexOf(u8, frame.lines[0], markers.fake_start) == null);
+        try std.testing.expect(std.mem.indexOf(u8, frame.lines[0], "\x1b[7mx\x1b[27m") != null);
+        try std.testing.expectEqual(!hardware, std.mem.indexOf(u8, frame.lines[0], "\x1b[7m界\x1b[27m") != null);
+    };
 }

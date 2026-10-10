@@ -1,0 +1,78 @@
+[
+  {
+    "path": "src/coding_agent/fullscreen_frontend.zig",
+    "sha256": "B39C615AD51D9E2E5B1417A203CF08EB66036A13FA825DBE5CB8DDFA65A74F19"
+  },
+  {
+    "path": "src/extensions/host.zig",
+    "sha256": "36DD41F5F231F0E6FF9D089D182951986030CEE42F17A918741F20C2EF702937"
+  },
+  {
+    "path": "src/extensions/js_runtime.zig",
+    "sha256": "06D73F7AB850F54D9A3FBE58C4EE743FDC77B3E659AB07C80E782B7A49927EF0"
+  },
+  {
+    "path": "src/extensions/native_bindings.zig",
+    "sha256": "3654F37721CF3DCEF0AE7DC345C2DDADE362C1AD5E7B5C3D125070FE7C0C6A0E"
+  },
+  {
+    "path": "src/extensions/native_ui.zig",
+    "sha256": "91019620B97907A1B49A1E45F6901E58CDC1EBA7C48D5CB39F92C572475B9FFC"
+  },
+  {
+    "path": "src/extensions/native_worker.zig",
+    "sha256": "AE45CBCE4EE4CF5B84DA45E62399F130651A04A51337E021F84529E6773063BC"
+  },
+  {
+    "path": "src/extensions/native_tui.zig",
+    "sha256": "298EB8470960631F3F2D418E47E6D0D9C731EC2AFC92FA0CF7E26B9ADDD4F784"
+  },
+  {
+    "path": "src/extensions/ui.zig",
+    "sha256": "EFADAAF198C538AEABD0E123AE15172AD333C047E5AE4ECDFC99D61A268BD3BD"
+  },
+  {
+    "path": "src/main.zig",
+    "sha256": "07BF52A1246C9D76F49BD6D3B9B34D21EBCC5F203AD692E9CCE3B018D709E5D3"
+  },
+  {
+    "path": "src/fullscreen_frontend_process_test.zig",
+    "sha256": "BC84122DA6434D1E4652FFD2F084B8783D0C7FC14797AC8A6EDDEE3AC342FEDE"
+  },
+  {
+    "path": "src/native_bindings_test.zig",
+    "sha256": "C528ADEB42A768462EF50E8EB22F4EDDD764C9226BCEBE137D1645DDC8C81659"
+  },
+  {
+    "path": "src/extensions/native_widgets.zig",
+    "sha256": "C1EDDD5A2B0448E501EA6109B1614CC4B42322A04CE8E8C5925F59F228F539E7"
+  },
+  {
+    "path": "src/extensions/widget_protocol.zig",
+    "sha256": "BA8A1FC7885862510812EAF6484B9453C98F95122EEF7C905417CC4582B325E1"
+  },
+  {
+    "path": "src/extensions/native_text_wrap.zig",
+    "sha256": "045572ED2D55D82605F0B63DF5CD76047D9D1B75BC2ACEADB4EC3F9E92CE9D36"
+  },
+  {
+    "path": "src/widget_array_oracle_test.zig",
+    "sha256": "37E0AF3DF17C771A79BD2D8D1967898E839AA1F6BE43A0323E7C7B6AD7B37328"
+  },
+  {
+    "path": "src/extensions/fixtures/widget-original-7fb.json",
+    "sha256": "B7D867EB60182DACF8DE63AFB68C9DA04B2DB696BC8FF976323FA9314B37C574"
+  },
+  {
+    "path": "src/extensions/fixtures/widget-array-original-7fb.json",
+    "sha256": "49D76F03B6065CFABCC65D1FCF2B6B83E4205D0833A51E6B7475144E787CF415"
+  },
+  {
+    "path": "src/extensions/fixtures/widget-styled-original-7fb.json",
+    "sha256": "5F18159021D4202A9DA815A1CAD3A1C48A4FECF36A484557E83BB84A34696E07"
+  },
+  {
+    "path": "src/extensions/fixtures/widget-text-primitive-original-7fb.json",
+    "sha256": "D9F23E8DCF5BD5620B258397C32BB2E866C99DA80AE7EF161A79CE64F06C656C"
+  }
+]

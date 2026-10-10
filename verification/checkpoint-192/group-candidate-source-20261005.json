@@ -1,0 +1,104 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-group-owner-20261005",
+  "baseline": "d26c1d62b2b1512af7f9cbbe87243bf3be09b90a",
+  "captured_source": "C:\\Users\\adyba\\pi-zig-renderers-20261005",
+  "status": "frozen; final Debug and ReleaseSafe and original raw protocol gates terminal passed",
+  "captured_utc": "2026-10-05T18:03:26.188059+00:00",
+  "files": [
+    {
+      "path": "build.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "351C75C5FF286231A74C2F9B14B4298128AB8C1066FF46BC0C414589C733FF3A",
+      "sha256": "F5AAF7F4E388497E8D2AF6B274F614BA227C55D837798F17117FE3B4E1B827D2"
+    },
+    {
+      "path": "src/main.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "1583E296C5D0F87B0F81517431FFEB069E609F02FA8422B35894B75645E47FAD",
+      "sha256": "7E6EB097C3BD8E25D88EE0D42D11795C04A86CFAE6D41ADD884CDD6B6FF831B3"
+    },
+    {
+      "path": "src/extensions/actions.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "4594EDF83FB72ECACCFC42C681316609A0E6640A61780A4C5179E0B70D4D4937",
+      "sha256": "E5E401AE5E6A300DB1047BAA55BF560E821FDDC12330A36116F9EA035B0BCF36"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "8D4F94F0B4AD3A569D4C6555A21B41D3F50E4FF3E79F17614F9D09D1422E7D73",
+      "sha256": "6ED4F2179FE2F29A7CAB2877B1AE701F4667334B2819B854E85FE2A9E0E59455"
+    },
+    {
+      "path": "src/extensions/timers.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "DDF964A39DDEDFCB541E7B6D2A22C84ADFF36867E6DA62241A07F4B48BD070FA",
+      "sha256": "65A3B6D9D697D925000EDA641467077D4EB1F0492C956FDF97CBF1DB09F270AD"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "211EA727E77C017D276F21B59182CF7A7FA4FA886DCDF3BBCE3A70F8EB0E9D7F",
+      "sha256": "ABCB5181FD74A6AAF821A5C2AF72DB1820B4EFFF9A2E7D6C50E9E3439B6BEA6C"
+    },
+    {
+      "path": "src/extensions/integration.zig",
+      "baseline": "d26c1d6",
+      "before_sha256": "FB56691CBEF6A74E1471E30AD85FB6479ADEFE1EE2FDA3228DB293F1504B4DAF",
+      "sha256": "04E57BC7D7C021307759D8993192A76575DEDEF80767535EC6D190F1949C4FA1"
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "7D120B4C87D0633F57441EE98F9AA41578E9F883863F6F8BC3F14882E0448A85",
+      "sha256": "98343032A93F18876B4D3B9C40B24F388EB3C3010D1A8CF84BC36395666E2FFD"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "79D424458F62D8254B1961126559C125A700EEB43103A0D7732939B1B415A1F3",
+      "sha256": "4A926F9C852EFA56A16A88760BBC8A2E0AE5A791FC92BD75467651B8E2CCAEFB"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "52D3A1F758CCE3E7E47B18FF114A00903B3DEF1829A736221CAFDD3336AF2719",
+      "sha256": "426D990D53A8266F9CAF3B2831FBFDAC0DC2F7B0E817D86584880E95ACF41BF8"
+    },
+    {
+      "path": "src/extensions/native_renderers.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "DEA4F4F4CBF758DE0D782A42A6B38E1103D3EC2191E810F1B247B81095D0B051",
+      "sha256": "65829147193A4BBCDEAC02409EF88DDEBBDB699C0C3FBF7025E0BF64D47A693F"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "baseline": "new",
+      "before_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "sha256": "BF28B24FE69D88590A5AE4BC495DA9729E6B401B56C73289529C70FFB7957D73"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "68F4C9E68C805B075818564326DFD2A5323965D40518EDB94BFF3707A138BE66",
+      "sha256": "4753C053B18A172FB8A483DF3FE1F8BFB8045D04BDAA27338FE09BE5BC820E2E"
+    },
+    {
+      "path": "src/native_bindings_test.zig",
+      "baseline": "captured-renderer",
+      "before_sha256": "6FCF6D81279C90E422603330869AA06371D7DADFA4AFF719D8F2E1738D1F40E3",
+      "sha256": "051BA2B203240A4F816BCD7E7FA956748704CE41F36596FD457F8B1E4408CA8F"
+    }
+  ],
+  "verified_utc": "2026-10-05T18:06:45.774923+00:00",
+  "candidate_sha256": "DD9D2BA242046082322D1E344C0B65E17B375F1D5A48D736D8D70BFCF3B31A42",
+  "gates": {
+    "debug": "native-group-fifo-final-debug-20261005a: 169 passed",
+    "release_safe": "native-group-fifo-final-releasesafe-20261005a: 169 passed",
+    "actions_debug": "native-group-actions-oom-20261005a: 5 passed",
+    "actions_release_safe": "native-group-actions-oom-releasesafe-20261005a: 5 passed",
+    "original_oauth": "native-group-original-oauth-releasesafe-20261005a: 3 passed; 3 existing Windows PTY skips",
+    "original_models": "native-group-original-models-releasesafe-20261005a: 3 passed; 3 existing Windows PTY skips",
+    "original_stream": "native-group-original-stream-releasesafe-20261005a: 3 passed; 3 existing Windows PTY skips"
+  }
+}

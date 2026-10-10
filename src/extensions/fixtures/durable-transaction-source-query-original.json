@@ -1,0 +1,255 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "order": "ascending",
+      "first": {
+        "items": [
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m1",
+                "timestamp": 1
+              }
+            ],
+            "kind": "pi.user",
+            "id": 8,
+            "conversationId": 1
+          },
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m2",
+                "timestamp": 2
+              }
+            ],
+            "kind": "pi.user",
+            "id": 9,
+            "conversationId": 1
+          }
+        ],
+        "next": {
+          "after": 9,
+          "order": "ascending"
+        }
+      },
+      "second": {
+        "items": [
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m3",
+                "timestamp": 3
+              }
+            ],
+            "kind": "pi.user",
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m4",
+                "timestamp": 4
+              }
+            ],
+            "kind": "pi.user",
+            "id": 11,
+            "conversationId": 1
+          }
+        ]
+      }
+    },
+    {
+      "order": "descending",
+      "first": {
+        "items": [
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m4",
+                "timestamp": 4
+              }
+            ],
+            "kind": "pi.user",
+            "id": 11,
+            "conversationId": 1
+          },
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m3",
+                "timestamp": 3
+              }
+            ],
+            "kind": "pi.user",
+            "id": 10,
+            "conversationId": 1
+          }
+        ],
+        "next": {
+          "after": 10,
+          "order": "descending"
+        }
+      },
+      "second": {
+        "items": [
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m2",
+                "timestamp": 2
+              }
+            ],
+            "kind": "pi.user",
+            "id": 9,
+            "conversationId": 1
+          },
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "m1",
+                "timestamp": 1
+              }
+            ],
+            "kind": "pi.user",
+            "id": 8,
+            "conversationId": 1
+          }
+        ]
+      }
+    },
+    {
+      "taskFirst": {
+        "items": [
+          {
+            "id": 14,
+            "conversationId": 1,
+            "kind": "pi.generation",
+            "version": 1,
+            "input": {},
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "checkpoint": {
+                "phase": "prepare",
+                "attempt": 1
+              }
+            }
+          },
+          {
+            "id": 13,
+            "conversationId": 1,
+            "kind": "pi.generation",
+            "version": 1,
+            "input": {},
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "checkpoint": {
+                "phase": "prepare",
+                "attempt": 1
+              }
+            }
+          }
+        ],
+        "next": {
+          "after": 13,
+          "order": "descending"
+        }
+      },
+      "taskSecond": {
+        "items": [
+          {
+            "id": 12,
+            "conversationId": 1,
+            "kind": "pi.generation",
+            "version": 1,
+            "input": {},
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "checkpoint": {
+                "phase": "prepare",
+                "attempt": 1
+              }
+            }
+          }
+        ]
+      },
+      "childFirst": {
+        "items": [
+          {
+            "id": 21,
+            "owner": {
+              "conversationId": 1,
+              "taskId": 12
+            }
+          }
+        ],
+        "next": {
+          "after": 21,
+          "order": "descending"
+        }
+      },
+      "childSecond": {
+        "items": [
+          {
+            "id": 15,
+            "owner": {
+              "conversationId": 1,
+              "taskId": 12
+            }
+          }
+        ]
+      },
+      "conversations": {
+        "items": [
+          {
+            "id": 1
+          },
+          {
+            "id": 15,
+            "owner": {
+              "conversationId": 1,
+              "taskId": 12
+            }
+          },
+          {
+            "id": 21,
+            "owner": {
+              "conversationId": 1,
+              "taskId": 12
+            }
+          }
+        ]
+      },
+      "arities": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "writeError": {
+        "name": "ReadAfterWrite",
+        "message": "Tx.scanEntries() cannot read tables after the first table write"
+      },
+      "closedError": {
+        "name": "Error",
+        "message": "Transaction has settled"
+      }
+    }
+  ]
+}

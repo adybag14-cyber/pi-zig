@@ -1,0 +1,1369 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "custom exact class shape",
+      "value": {
+        "name": "CustomEditor",
+        "length": 4,
+        "own": [
+          "state",
+          "focused",
+          "tui",
+          "theme",
+          "paddingX",
+          "lastWidth",
+          "renderedVisibleLineCount",
+          "renderedAutocompleteHeight",
+          "scrollOffset",
+          "borderColor",
+          "autocompleteProvider",
+          "autocompleteTriggerCharacters",
+          "autocompleteTriggerPattern",
+          "autocompleteDebouncePattern",
+          "autocompleteList",
+          "autocompleteState",
+          "autocompletePrefix",
+          "autocompleteMaxVisible",
+          "autocompleteAbort",
+          "autocompleteDebounceTimer",
+          "autocompleteRequestTask",
+          "autocompleteStartToken",
+          "autocompleteRequestId",
+          "pastes",
+          "pasteCounter",
+          "pasteBuffer",
+          "isInPaste",
+          "history",
+          "historyIndex",
+          "historyDraft",
+          "killRing",
+          "lastAction",
+          "jumpMode",
+          "preferredVisualCol",
+          "snappedFromCursorCol",
+          "undoStack",
+          "onSubmit",
+          "onChange",
+          "disableSubmit",
+          "keybindings",
+          "workingStatusIndicator",
+          "embedWorkingStatus",
+          "actionHandlers",
+          "onEscape",
+          "onCtrlD",
+          "onPasteImage",
+          "onExtensionShortcut"
+        ],
+        "methods": {
+          "setWorkingStatusIndicator": {
+            "name": "setWorkingStatusIndicator",
+            "length": 1,
+            "enumerable": false
+          },
+          "renderTopBorder": {
+            "name": "renderTopBorder",
+            "length": 2,
+            "enumerable": false
+          },
+          "onAction": {
+            "name": "onAction",
+            "length": 2,
+            "enumerable": false
+          },
+          "handleInput": {
+            "name": "handleInput",
+            "length": 1,
+            "enumerable": false
+          }
+        }
+      }
+    },
+    {
+      "name": "working border 0 0 ",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 0 0 work",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 0 0 long working status",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 0 7 ",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 0 7 work",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 0 7 long working status",
+      "value": {
+        "text": "<>",
+        "calls": [
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 0 ",
+      "value": {
+        "text": "<─>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "─"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 0 work",
+      "value": {
+        "text": "<>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            ""
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 0 long working status",
+      "value": {
+        "text": "<>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            ""
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 7 ",
+      "value": {
+        "text": "<.>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "."
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 7 work",
+      "value": {
+        "text": "<>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            ""
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 1 7 long working status",
+      "value": {
+        "text": "<>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            ""
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 0 ",
+      "value": {
+        "text": "<───>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 0 work",
+      "value": {
+        "text": "<──>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "color",
+            true,
+            "──"
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 0 long working status",
+      "value": {
+        "text": "<──>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "color",
+            true,
+            "──"
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 7 ",
+      "value": {
+        "text": "<...>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "..."
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 7 work",
+      "value": {
+        "text": "<──>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "color",
+            true,
+            "──"
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 3 7 long working status",
+      "value": {
+        "text": "<──>*<>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "spinner",
+            true,
+            3
+          ],
+          [
+            "color",
+            true,
+            "──"
+          ],
+          [
+            "color",
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 0 ",
+      "value": {
+        "text": "<─────>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "─────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 0 work",
+      "value": {
+        "text": "<───>*<─>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "─"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 0 long working status",
+      "value": {
+        "text": "<───>*<─>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "─"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 7 ",
+      "value": {
+        "text": "<──...>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "color",
+            true,
+            "──..."
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 7 work",
+      "value": {
+        "text": "<───>*<─>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "─"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 5 7 long working status",
+      "value": {
+        "text": "<───>*<─>",
+        "calls": [
+          [
+            "full",
+            true,
+            1
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "spinner",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "─"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 0 ",
+      "value": {
+        "text": "<──────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "──────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 0 work",
+      "value": {
+        "text": "<── >work< ──>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ──"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 0 long working status",
+      "value": {
+        "text": "<───>*<──────>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "spinner",
+            true,
+            10
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "──────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 7 ",
+      "value": {
+        "text": "<─── ↑ 7...>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "color",
+            true,
+            "─── ↑ 7..."
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 7 work",
+      "value": {
+        "text": "<── >*< ─────>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "spinner",
+            true,
+            10
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 10 7 long working status",
+      "value": {
+        "text": "<── >*< ─────>",
+        "calls": [
+          [
+            "full",
+            true,
+            5
+          ],
+          [
+            "spinner",
+            true,
+            10
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 0 ",
+      "value": {
+        "text": "<────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "color",
+            true,
+            "────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 0 work",
+      "value": {
+        "text": "<── >work< ────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 0 long working status",
+      "value": {
+        "text": "<───>*<────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "spinner",
+            true,
+            20
+          ],
+          [
+            "color",
+            true,
+            "───"
+          ],
+          [
+            "color",
+            true,
+            "────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 7 ",
+      "value": {
+        "text": "<───── ↑ 7 more ─────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "color",
+            true,
+            "───── ↑ 7 more ─────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 7 work",
+      "value": {
+        "text": "<── >*< ───────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "spinner",
+            true,
+            20
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ───────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 20 7 long working status",
+      "value": {
+        "text": "<── >*< ───────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            15
+          ],
+          [
+            "spinner",
+            true,
+            20
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ───────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 0 ",
+      "value": {
+        "text": "<────────────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "color",
+            true,
+            "────────────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 0 work",
+      "value": {
+        "text": "<── >work< ────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 0 long working status",
+      "value": {
+        "text": "<── >long working status< ─────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 7 ",
+      "value": {
+        "text": "<─────────────── ↑ 7 more ───────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "color",
+            true,
+            "─────────────── ↑ 7 more ───────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 7 work",
+      "value": {
+        "text": "<── >work< ─────── ↑ 7 more ───────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────── ↑ 7 more ───────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 40 7 long working status",
+      "value": {
+        "text": "<── >*< ────────── ↑ 7 more ───────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            35
+          ],
+          [
+            "spinner",
+            true,
+            40
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ────────── ↑ 7 more ───────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 0 ",
+      "value": {
+        "text": "<────────────────────────────────────────────────────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "────────────────────────────────────────────────────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 0 work",
+      "value": {
+        "text": "<── >work< ────────────────────────────────────────────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ────────────────────────────────────────────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 0 long working status",
+      "value": {
+        "text": "<── >long working status< ─────────────────────────────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────────────────────────────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 7 ",
+      "value": {
+        "text": "<─────────────────────────────────── ↑ 7 more ───────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "─────────────────────────────────── ↑ 7 more ───────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 7 work",
+      "value": {
+        "text": "<── >work< ─────────────────────────── ↑ 7 more ───────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ─────────────────────────── ↑ 7 more ───────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "working border 80 7 long working status",
+      "value": {
+        "text": "<── >long working status< ──────────── ↑ 7 more ───────────────────────────────────>",
+        "calls": [
+          [
+            "full",
+            true,
+            75
+          ],
+          [
+            "color",
+            true,
+            "── "
+          ],
+          [
+            "color",
+            true,
+            " ──────────── ↑ 7 more ───────────────────────────────────"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "app input ordering optional handlers and action receiver",
+      "value": {
+        "events": [
+          [
+            "shortcut",
+            true,
+            "S"
+          ],
+          [
+            "shortcut",
+            true,
+            "P"
+          ],
+          [
+            "paste",
+            true
+          ],
+          [
+            "shortcut",
+            true,
+            "E"
+          ],
+          [
+            "registeredEscape",
+            true
+          ],
+          [
+            "shortcut",
+            true,
+            "D"
+          ],
+          [
+            "registeredExit",
+            true
+          ],
+          [
+            "shortcut",
+            true,
+            "A"
+          ],
+          [
+            "action",
+            true
+          ],
+          [
+            "shortcut",
+            true,
+            "x"
+          ]
+        ],
+        "calls": [
+          [
+            "P",
+            "app.clipboard.pasteImage",
+            true
+          ],
+          [
+            "E",
+            "app.clipboard.pasteImage",
+            true
+          ],
+          [
+            "E",
+            "app.interrupt",
+            true
+          ],
+          [
+            "D",
+            "app.clipboard.pasteImage",
+            true
+          ],
+          [
+            "D",
+            "app.interrupt",
+            true
+          ],
+          [
+            "D",
+            "app.exit",
+            true
+          ],
+          [
+            "A",
+            "app.clipboard.pasteImage",
+            true
+          ],
+          [
+            "A",
+            "app.interrupt",
+            true
+          ],
+          [
+            "A",
+            "app.exit",
+            true
+          ],
+          [
+            "A",
+            "tui.editor.historyPrevious",
+            true
+          ],
+          [
+            "A",
+            "tui.editor.historyNext",
+            true
+          ],
+          [
+            "A",
+            "app.action",
+            true
+          ],
+          [
+            "x",
+            "app.clipboard.pasteImage",
+            true
+          ],
+          [
+            "x",
+            "app.interrupt",
+            true
+          ],
+          [
+            "x",
+            "app.exit",
+            true
+          ],
+          [
+            "x",
+            "tui.editor.historyPrevious",
+            true
+          ],
+          [
+            "x",
+            "tui.editor.historyNext",
+            true
+          ],
+          [
+            "x",
+            "app.action",
+            true
+          ]
+        ],
+        "text": "x"
+      }
+    },
+    {
+      "name": "dynamic escape handler and picker fallthrough",
+      "value": {
+        "events": [
+          true
+        ],
+        "text": "E",
+        "state": "regular"
+      }
+    },
+    {
+      "name": "ordinary replaced keybinding field controls dispatch",
+      "value": [
+        [
+          "anything",
+          "app.clipboard.pasteImage",
+          true
+        ],
+        [
+          "anything",
+          "app.interrupt",
+          true
+        ],
+        [
+          "anything",
+          "app.exit",
+          true
+        ],
+        [
+          "exit",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "raw custom shortcut throw",
+      "value": {
+        "same": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "status": "frozen_incremental_harness_creation_slice",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "fefc394b0767883feaf5ad7a623009a46257d7de plus frozen durable-vm-session-additive.patch",
+  "prerequisite_sha256": "7d3fa71653631c7cca399ab78b46e2d9417e6c79636966ebc71e81d0267defa4",
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-harness-creation-additive.patch",
+  "patch_sha256": "193b9f876ddb29dcd4b6ec8330e0e276e92d75c9df32dd49a69bb20d80619865",
+  "files": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 45036,
+      "sha256": "ce09f1ba881d375e6491440b320f68911955010c3f66dc89cc85400c9d5a9c95"
+    },
+    {
+      "path": "src/extensions/native_durable.zig",
+      "bytes": 34659,
+      "sha256": "12072d948f253bdff4e114c617d78be7921d163710adaa9c168b6d27fd387c31"
+    },
+    {
+      "path": "src/extensions/NATIVE_DURABLE_CONTRACT.md",
+      "bytes": 6002,
+      "sha256": "20c52f612b1ba97294602826fb508bbddd8a6c234411bb682d9bac8674393f12"
+    },
+    {
+      "path": "src/extensions/native_durable_harness.zig",
+      "bytes": 20641,
+      "sha256": "bde8d97fe37339a8aed6e4f9ebb74b81a987c428c4cbbbbb42e100efd2d68d2f"
+    },
+    {
+      "path": "src/native_durable_test.zig",
+      "bytes": 19106,
+      "sha256": "2b4fb1fee08ce077aec308ea305cb52605d10e09e0384b41901dce0948257110"
+    },
+    {
+      "path": "src/durable/fixtures/harness-creation-7fb59f9.json",
+      "bytes": 5575,
+      "sha256": "15d596daa81d593887989a33754efbd5e4cc3f951349ae30549740f772122b56"
+    }
+  ],
+  "fmt": "all four changed Zig files fmt/check passed before gates",
+  "tests": [
+    {
+      "name": "durable-harness-public-windows-debug",
+      "pid": 34020,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:02:19.106735Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T18:02:19.4791591Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:02:28.9985653Z"
+    },
+    {
+      "name": "durable-harness-public-windows-rs",
+      "pid": 64264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:03:39.27605Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T18:03:39.5424209Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:04:36.3482627Z"
+    },
+    {
+      "name": "durable-harness-public-linux-debug",
+      "pid": 51952,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-harness-public-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:02:31.060397Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T18:02:31.3287797Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:02:47.8372101Z"
+    },
+    {
+      "name": "durable-harness-public-linux-rs",
+      "pid": 66120,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-harness-public-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:03:39.28918Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T18:03:39.6034721Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:04:43.3760585Z"
+    }
+  ],
+  "counts": {
+    "linux": "45/46 pass 1skip Debug/ReleaseSafe",
+    "windows": "43/47 pass 4skip Debug/ReleaseSafe",
+    "vm": "10/10 all four gates; module, owned constructors and owner cycles exhaustive GPA injection"
+  },
+  "source_build": "Exact7fb official build:offline in pi-upstream-sdk-reference-7fb-20261007, reused read-only",
+  "original_captures": [
+    {
+      "name": "durable-harness-creation-original-final-authority",
+      "receipt": {
+        "name": "durable-harness-creation-original-final-authority",
+        "pid": 34040,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-harness-creation-source-capture.mjs",
+        "identity_captured": true,
+        "created_utc": "2026-10-07T17:32:37.92262Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:32:38.3066896Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:32:38.5309589Z"
+      },
+      "stdout_sha256": "15d596daa81d593887989a33754efbd5e4cc3f951349ae30549740f772122b56"
+    },
+    {
+      "name": "durable-harness-caller-registry-original-authority",
+      "receipt": {
+        "name": "durable-harness-caller-registry-original-authority",
+        "pid": 64972,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-harness-creation-caller-registry-source-capture.mjs",
+        "identity_captured": true,
+        "created_utc": "2026-10-07T17:46:01.677042Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:46:02.0342851Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:46:02.3094745Z"
+      },
+      "stdout_sha256": "15d596daa81d593887989a33754efbd5e4cc3f951349ae30549740f772122b56"
+    },
+    {
+      "name": "durable-harness-rollback-original-authority",
+      "receipt": {
+        "name": "durable-harness-rollback-original-authority",
+        "pid": 64152,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --expose-gc C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-harness-rollback-source-capture.mjs",
+        "identity_captured": true,
+        "created_utc": "2026-10-07T17:50:35.854389Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:50:36.1841219Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:50:36.4100259Z"
+      },
+      "stdout_sha256": "1991f7468584470f8cbf64456cddfb9a72853b614b64871fcee6fe4f290c3b28"
+    },
+    {
+      "name": "durable-harness-agent-original-authority",
+      "receipt": {
+        "name": "durable-harness-agent-original-authority",
+        "pid": 66448,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-harness-agent-source-capture.mjs",
+        "identity_captured": true,
+        "created_utc": "2026-10-07T17:55:40.161191Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:55:40.5302347Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:55:40.7612501Z"
+      },
+      "stdout_sha256": "04f760f4e9a5397167a4b8a9113f6891a0b6b759427e90570ab62bec8467425d"
+    }
+  ],
+  "limits": [
+    "Qualified Harness creation only on idle native storage; task recovery/dispatch and registry publication still ongoing",
+    "Full task/submission/draft/token/context/view/observer facade still ongoing",
+    "Task-owned agent inheritance and changing agent on a fork still need document facade",
+    "Close waiter cancellation, arbitrary JS Storage/FS and physical original SQLite interoperability remain from prior slice",
+    "VM-only targets/backend checks link dynamic SQLite explicitly; Root owns newly exposed default distribution/static SQLite dependency integration",
+    "macOS runtime remains separately hosted qualified by Root"
+  ]
+}

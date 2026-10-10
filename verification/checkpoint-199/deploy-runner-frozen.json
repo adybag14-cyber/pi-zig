@@ -1,0 +1,82 @@
+{
+  "status": "frozen",
+  "base": "91404c07cee5515acb2849002ff8671416ca260b",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\deploy-runner-policy-system-directory.patch",
+  "patch_sha256": "f85d6c9319b5e024920ddf5dbd2b6bbad341553ec6a0f0bbaad2ac8b00394050",
+  "file": {
+    "path": "src/env/deploy.zig",
+    "sha256": "01d741eb05810ac66d738493b288a566801ed80ba59af8716de62cd948631c18"
+  },
+  "fmt": {
+    "status": "passed",
+    "source_unchanged": true
+  },
+  "tests": [
+    {
+      "name": "deploy-914-windows-debug",
+      "pid": 60060,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:50:03.44398Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T14:50:03.7641138Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:50:28.6427655Z"
+    },
+    {
+      "name": "deploy-914-linux-debug",
+      "pid": 56664,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-deploy-914-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:53:40.225212Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T14:53:40.4338448Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:53:58.054905Z"
+    },
+    {
+      "name": "deploy-914-windows-release-safe",
+      "pid": 26456,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:53:49.042913Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T14:53:49.3024234Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:54:39.0682866Z"
+    },
+    {
+      "name": "deploy-914-linux-release-safe",
+      "pid": 40000,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-deploy-914-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:58:06.688282Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T14:58:07.0254127Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:59:00.6889407Z"
+    }
+  ],
+  "counts": {
+    "windows": "68 pass, 9 skips, 77 total (Debug/ReleaseSafe)",
+    "linux": "75 pass, 2 skips, 77 total (Debug/ReleaseSafe)"
+  },
+  "policy": "Only the local Windows deployment fixture follows existing ssh_process.Options.timeout_ms default60000 instead of overriding10000; production defaults are unchanged. Existing actual-process 50ms Timeout and closed-output Timeout guards remain and pass.",
+  "environment": "WindowsPowerShell path comes from GetSystemDirectoryW; inherited PowerShell7 PSModulePath remains removed; no profile or interactive window.",
+  "diagnostics": "Error name, elapsed milliseconds, public engine path and effective deadline are emitted only by the test fixture; encoded commands and payloads are not disclosed.",
+  "limit": "Earlier hosted failure error name was not logged. Timeout/cold startup remains unconfirmed; unchanged subsequent all-OS hosted run passed.",
+  "utc": "2026-10-07T14:59:55.5331429Z"
+}

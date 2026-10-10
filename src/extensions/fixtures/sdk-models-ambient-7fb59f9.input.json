@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "bf33fe3bc390e0db48342a2c93f0c4c20b78319587e50a0e6617ddeb01958ead",
+  "input": "import {createModels} from '@earendil-works/pi-ai';const rows=[],m=createModels();m.setProvider({id:'ambient',auth:{apiKey:{resolve:async()=>({auth:{headers:{ambient:'yes'}},env:{PROFILE:'fixture'}})}},getModels:()=>[],async refreshModels(ctx){rows.push({network:ctx.allowNetwork,type:ctx.credential?.type,keyAbsent:ctx.credential?.key===undefined,properties:ctx.credential?Object.keys(ctx.credential).sort():[],env:ctx.credential?.env});}});const result=await m.refresh();console.log(JSON.stringify({aborted:result.aborted,errors:result.errors.size,rows}));"
+}

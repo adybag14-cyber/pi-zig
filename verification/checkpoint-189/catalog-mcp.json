@@ -1,0 +1,113 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "legacyToolingRetired": false,
+  "upstreamCommit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+  "jobs": {
+    "typed-catalog-import": {
+      "name": "typed-catalog-import",
+      "pid": 45872,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build maintenance -j2 -- import-catalog C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models.all.json 1.0.1 4c6fb7cfe8c538a668726f6f8b3554098c39faee C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\pi-upstream-source.tar sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\catalog-source-v2.json",
+      "created_utc": "2026-10-03T18:44:58.5938790Z",
+      "launched_utc": "2026-10-03T18:44:58.5909275+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T18:45:02.1482954+00:00"
+    },
+    "latest-typed-catalog-projection": {
+      "name": "latest-typed-catalog-projection",
+      "pid": 54408,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build maintenance -j2 -- catalog",
+      "created_utc": "2026-10-03T18:50:16.2724520Z",
+      "launched_utc": "2026-10-03T18:50:16.2693476+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T18:50:17.0033029+00:00"
+    },
+    "latest-provider-regressions": {
+      "name": "latest-provider-regressions",
+      "pid": 55132,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T19:02:39.0549610Z",
+      "launched_utc": "2026-10-03T19:02:39.0519702+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T19:03:35.1686998+00:00"
+    },
+    "mcp-oauth-contract-tests": {
+      "name": "mcp-oauth-contract-tests",
+      "pid": 48420,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/mcp/oauth.zig",
+      "created_utc": "2026-10-03T19:11:10.5689160Z",
+      "launched_utc": "2026-10-03T19:11:10.5657415+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T19:11:12.7539633+00:00"
+    },
+    "windows-release-safe": {
+      "name": "windows-release-safe",
+      "pid": 53936,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2",
+      "created_utc": "2026-10-03T19:22:02.1849500Z",
+      "launched_utc": "2026-10-03T19:22:02.1818196+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T19:23:24.4345920+00:00"
+    },
+    "mcp-stdio-contract-tests": {
+      "name": "mcp-stdio-contract-tests",
+      "pid": 55324,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/mcp/client.zig",
+      "created_utc": "2026-10-03T20:40:53.6250790Z",
+      "launched_utc": "2026-10-03T20:40:53.6219123+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T20:40:55.9456059+00:00"
+    },
+    "mcp-stdio-process-fixture": {
+      "name": "mcp-stdio-process-fixture",
+      "pid": 25876,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-stdio -j2 --summary all",
+      "created_utc": "2026-10-03T20:43:08.1233120Z",
+      "launched_utc": "2026-10-03T20:43:08.1201839+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T20:43:10.3596656+00:00"
+    },
+    "latest-catalog-mcp-regressions": {
+      "name": "latest-catalog-mcp-regressions",
+      "pid": 54304,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T20:43:25.3255640Z",
+      "launched_utc": "2026-10-03T20:43:25.3228318+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T20:44:31.0371139+00:00"
+    }
+  }
+}

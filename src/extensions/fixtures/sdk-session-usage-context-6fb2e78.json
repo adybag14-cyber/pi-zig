@@ -1,0 +1,102 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "before": {
+    "userMessages": 0,
+    "assistantMessages": 0,
+    "toolCalls": 0,
+    "toolResults": 0,
+    "totalMessages": 0,
+    "tokens": {
+      "input": 0,
+      "output": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "total": 0
+    },
+    "cost": 0,
+    "contextUsage": {
+      "tokens": 0,
+      "contextWindow": 4096,
+      "percent": 0
+    }
+  },
+  "after": {
+    "userMessages": 1,
+    "assistantMessages": 1,
+    "toolCalls": 1,
+    "toolResults": 1,
+    "totalMessages": 3,
+    "tokens": {
+      "input": 13,
+      "output": 7,
+      "cacheRead": 2,
+      "cacheWrite": 3,
+      "total": 25
+    },
+    "cost": 0.3,
+    "contextUsage": {
+      "tokens": 21,
+      "contextWindow": 4096,
+      "percent": 0.5126953125
+    }
+  },
+  "contextUsage": {
+    "tokens": 21,
+    "contextWindow": 4096,
+    "percent": 0.5126953125
+  },
+  "lastText": "reply",
+  "roles": [
+    "user",
+    "assistant",
+    "toolResult"
+  ],
+  "contextRows": [
+    {
+      "tokens": 0,
+      "contextWindow": 4096,
+      "percent": 0
+    },
+    {
+      "tokens": 21,
+      "contextWindow": 4096,
+      "percent": 0.5126953125
+    },
+    {
+      "tokens": 21,
+      "contextWindow": 4096,
+      "percent": 0.5126953125
+    }
+  ],
+  "afterDispose": {
+    "stats": {
+      "userMessages": 1,
+      "assistantMessages": 1,
+      "toolCalls": 1,
+      "toolResults": 1,
+      "totalMessages": 3,
+      "tokens": {
+        "input": 13,
+        "output": 7,
+        "cacheRead": 2,
+        "cacheWrite": 3,
+        "total": 25
+      },
+      "cost": 0.3,
+      "contextUsage": {
+        "tokens": 21,
+        "contextWindow": 4096,
+        "percent": 0.5126953125
+      }
+    },
+    "contextUsage": {
+      "tokens": 21,
+      "contextWindow": 4096,
+      "percent": 0.5126953125
+    }
+  },
+  "stale": {
+    "name": "Error",
+    "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+  }
+}

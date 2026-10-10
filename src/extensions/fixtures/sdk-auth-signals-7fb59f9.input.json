@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "13d92b9c791362e8883a2d697cf15ad090e93e555e777bdba2d32e19be2b1066",
+  "input": "import {ModelRuntime} from '@earendil-works/pi-coding-agent';let seen=[];const r=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{async read(id,options){if(id==='p')seen.push(options?.signal);return undefined},async list(options){seen.push(options?.signal);return []}}});r.registerNativeProvider({id:'p',auth:{apiKey:{async check({signal}){seen.push(signal);return {type:'api_key',source:'fixture'}},resolve:async()=>undefined}},getModels:()=>[]});await r.getAvailable();await r.getAvailable();seen=[];await r.getAvailable();const local={count:seen.length,oneSignal:new Set(seen).size===1,native:seen.every(s=>s instanceof AbortSignal)};seen=[];const controller=new AbortController();await r.getAvailable(undefined,{signal:controller.signal});const supplied={count:seen.length,same:seen.every(s=>s===controller.signal)};console.log(JSON.stringify({local,supplied}));"
+}

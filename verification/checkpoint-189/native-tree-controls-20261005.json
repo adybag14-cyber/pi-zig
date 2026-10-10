@@ -1,0 +1,67 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "tree-controls",
+  "reportGates": 10,
+  "semanticReportMatch": true,
+  "excludedRandomField": "labelTarget is verified against the matching assistant entry in each independently created session",
+  "baselineEnvironment": "Unchanged assertions pass with explicit SSH_CONNECTION; original local clipboard environment did not emit OSC 52",
+  "nativeLinuxTestsPassed": 7,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "tree-controls-python-baseline": {
+      "name": "tree-controls-python-baseline",
+      "pid": 52504,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/tree_controls_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/tree-controls-python-report.txt",
+      "created_utc": "2026-10-05T10:30:59.1743320Z",
+      "launched_utc": "2026-10-05T10:30:59.1710661+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T10:31:02.0167623+00:00"
+    },
+    "tree-controls-python-remote-baseline": {
+      "name": "tree-controls-python-remote-baseline",
+      "pid": 54984,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env \"SSH_CONNECTION=192.0.2.1 1234 192.0.2.2 22\" python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/tree_controls_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/tree-controls-python-remote-report.txt",
+      "created_utc": "2026-10-05T10:31:31.6240690Z",
+      "launched_utc": "2026-10-05T10:31:31.6213466+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:31:34.1098205+00:00"
+    },
+    "tree-controls-native-live": {
+      "name": "tree-controls-native-live",
+      "pid": 9012,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_TREE_CONTROLS_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/tree-controls-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/tree_controls_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-tree-native-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T10:34:04.7130450Z",
+      "launched_utc": "2026-10-05T10:34:04.7101828+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:34:10.1842692+00:00"
+    },
+    "tree-controls-native-windows": {
+      "name": "tree-controls-native-windows",
+      "pid": 47984,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/tree_controls_process_test.zig",
+      "created_utc": "2026-10-05T10:34:31.7819090Z",
+      "launched_utc": "2026-10-05T10:34:31.7787273+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:34:33.7962052+00:00"
+    }
+  }
+}

@@ -1,0 +1,559 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "commits": [
+    [
+      {
+        "type": "conversation",
+        "value": {
+          "id": 1
+        }
+      },
+      {
+        "type": "conversation",
+        "value": {
+          "id": 2
+        }
+      },
+      {
+        "type": "conversation",
+        "value": {
+          "id": 3,
+          "parent": {
+            "conversationId": 1,
+            "at": 10
+          }
+        }
+      }
+    ],
+    [
+      {
+        "type": "entry",
+        "value": {
+          "id": 9,
+          "conversationId": 1,
+          "message": {
+            "role": "user",
+            "content": "nine"
+          }
+        }
+      },
+      {
+        "type": "entry",
+        "value": {
+          "id": 10,
+          "conversationId": 1,
+          "message": {
+            "role": "user",
+            "content": "ten"
+          },
+          "head": 9
+        }
+      },
+      {
+        "type": "entry",
+        "value": {
+          "id": 11,
+          "conversationId": 1,
+          "message": {
+            "role": "user",
+            "content": "eleven"
+          }
+        }
+      },
+      {
+        "type": "entry",
+        "value": {
+          "id": 4,
+          "conversationId": 3,
+          "message": {
+            "role": "user",
+            "content": "child"
+          }
+        }
+      }
+    ],
+    [
+      {
+        "type": "task",
+        "value": {
+          "id": 13,
+          "conversationId": 1,
+          "kind": "scan.task",
+          "version": 1,
+          "input": null,
+          "state": {
+            "status": "pending",
+            "checkpoint": {}
+          },
+          "background": false,
+          "abortRequested": false
+        }
+      },
+      {
+        "type": "task",
+        "value": {
+          "id": 14,
+          "conversationId": 1,
+          "kind": "scan.task",
+          "version": 1,
+          "input": null,
+          "state": {
+            "status": "pending",
+            "checkpoint": {}
+          },
+          "background": false,
+          "abortRequested": false
+        }
+      }
+    ],
+    [
+      {
+        "type": "document.create",
+        "record": {
+          "id": 15,
+          "kind": "scan.doc",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "all",
+          "fork": "current",
+          "key": "15"
+        },
+        "content": {
+          "kind": "base",
+          "version": 1,
+          "value": {
+            "id": 15
+          }
+        }
+      },
+      {
+        "type": "document.create",
+        "record": {
+          "id": 16,
+          "kind": "scan.doc",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "all",
+          "fork": "current",
+          "key": "16"
+        },
+        "content": {
+          "kind": "base",
+          "version": 1,
+          "value": {
+            "id": 16
+          }
+        }
+      }
+    ],
+    [
+      {
+        "type": "submission",
+        "value": {
+          "id": 17,
+          "type": "input",
+          "conversationId": 1,
+          "requestId": "17",
+          "status": "queued"
+        }
+      },
+      {
+        "type": "submission",
+        "value": {
+          "id": 18,
+          "type": "input",
+          "conversationId": 1,
+          "requestId": "18",
+          "status": "queued"
+        }
+      }
+    ]
+  ],
+  "reads": [
+    {
+      "method": "scanDocuments",
+      "query": {
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "at": "current"
+      },
+      "limit": 1,
+      "value": {
+        "items": [
+          {
+            "id": 15,
+            "kind": "scan.doc",
+            "scope": {
+              "kind": "conversation",
+              "conversationId": 1
+            },
+            "history": "all",
+            "fork": "current",
+            "key": "15",
+            "createdAt": 4
+          }
+        ],
+        "next": {
+          "after": 15,
+          "order": "ascending"
+        }
+      }
+    },
+    {
+      "method": "scanDocuments",
+      "query": {
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "at": "current",
+        "order": "descending"
+      },
+      "limit": 1,
+      "cursor": {
+        "after": 15,
+        "order": "sideways"
+      },
+      "value": {
+        "items": [
+          {
+            "id": 16,
+            "kind": "scan.doc",
+            "scope": {
+              "kind": "conversation",
+              "conversationId": 1
+            },
+            "history": "all",
+            "fork": "current",
+            "key": "16",
+            "createdAt": 4
+          }
+        ]
+      }
+    },
+    {
+      "method": "scanDocuments",
+      "query": {
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "at": "current"
+      },
+      "limit": 1,
+      "cursor": {
+        "after": 1.5
+      },
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid storage cursor"
+      }
+    },
+    {
+      "method": "scanSubmissions",
+      "query": {
+        "status": "queued",
+        "order": "descending"
+      },
+      "limit": 1,
+      "value": {
+        "items": [
+          {
+            "id": 18,
+            "type": "input",
+            "conversationId": 1,
+            "requestId": "18",
+            "status": "queued"
+          }
+        ],
+        "next": {
+          "after": 18,
+          "order": "descending"
+        }
+      }
+    },
+    {
+      "method": "scanSubmissions",
+      "query": {},
+      "limit": 1,
+      "cursor": {
+        "after": 18,
+        "order": "descending"
+      },
+      "value": {
+        "items": [
+          {
+            "id": 17,
+            "type": "input",
+            "conversationId": 1,
+            "requestId": "17",
+            "status": "queued"
+          }
+        ]
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {},
+      "limit": 1,
+      "value": {
+        "items": [
+          {
+            "id": 1
+          }
+        ],
+        "next": {
+          "after": 1,
+          "order": "ascending"
+        }
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {},
+      "limit": 1,
+      "cursor": {
+        "after": 1,
+        "order": "ascending"
+      },
+      "value": {
+        "items": [
+          {
+            "id": 2
+          }
+        ],
+        "next": {
+          "after": 2,
+          "order": "ascending"
+        }
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {
+        "order": "descending"
+      },
+      "limit": 2,
+      "value": {
+        "items": [
+          {
+            "id": 3,
+            "parent": {
+              "conversationId": 1,
+              "at": 10
+            }
+          },
+          {
+            "id": 2
+          }
+        ],
+        "next": {
+          "after": 2,
+          "order": "descending"
+        }
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {},
+      "limit": 1,
+      "cursor": {
+        "after": 3,
+        "order": "descending"
+      },
+      "value": {
+        "items": [
+          {
+            "id": 2
+          }
+        ],
+        "next": {
+          "after": 2,
+          "order": "descending"
+        }
+      }
+    },
+    {
+      "method": "scanEntries",
+      "query": {
+        "conversationId": 3
+      },
+      "limit": 2,
+      "value": {
+        "items": [
+          {
+            "id": 4,
+            "conversationId": 3,
+            "message": {
+              "role": "user",
+              "content": "child"
+            }
+          },
+          {
+            "id": 10,
+            "conversationId": 1,
+            "message": {
+              "role": "user",
+              "content": "ten"
+            },
+            "head": 9
+          }
+        ],
+        "next": {
+          "after": 10,
+          "order": "descending"
+        }
+      }
+    },
+    {
+      "method": "scanEntries",
+      "query": {
+        "conversationId": 3,
+        "order": "ascending"
+      },
+      "limit": 2,
+      "value": {
+        "items": [
+          {
+            "id": 9,
+            "conversationId": 1,
+            "message": {
+              "role": "user",
+              "content": "nine"
+            }
+          },
+          {
+            "id": 10,
+            "conversationId": 1,
+            "message": {
+              "role": "user",
+              "content": "ten"
+            },
+            "head": 9
+          }
+        ],
+        "next": {
+          "after": 10,
+          "order": "ascending"
+        }
+      }
+    },
+    {
+      "method": "scanTasks",
+      "query": {},
+      "limit": 1,
+      "value": {
+        "items": [
+          {
+            "id": 13,
+            "conversationId": 1,
+            "kind": "scan.task",
+            "version": 1,
+            "input": null,
+            "state": {
+              "status": "pending",
+              "checkpoint": {}
+            },
+            "background": false,
+            "abortRequested": false
+          }
+        ],
+        "next": {
+          "after": 13,
+          "order": "ascending"
+        }
+      }
+    },
+    {
+      "method": "scanTasks",
+      "query": {},
+      "limit": 1,
+      "cursor": {
+        "after": 14,
+        "order": "descending"
+      },
+      "value": {
+        "items": [
+          {
+            "id": 13,
+            "conversationId": 1,
+            "kind": "scan.task",
+            "version": 1,
+            "input": null,
+            "state": {
+              "status": "pending",
+              "checkpoint": {}
+            },
+            "background": false,
+            "abortRequested": false
+          }
+        ]
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {
+        "order": "ascending"
+      },
+      "limit": 1,
+      "cursor": {
+        "after": 3,
+        "order": "descending"
+      },
+      "error": {
+        "name": "TypeError",
+        "message": "The cursor continues a descending scan; the query asks for ascending"
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {},
+      "limit": 1,
+      "cursor": {
+        "after": 1.25
+      },
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid storage cursor"
+      }
+    },
+    {
+      "method": "scanConversations",
+      "query": {
+        "order": "sideways"
+      },
+      "limit": 1,
+      "error": {
+        "name": "TypeError",
+        "message": "Invalid scan order: sideways"
+      }
+    }
+  ],
+  "head": {
+    "id": 10,
+    "conversationId": 1,
+    "message": {
+      "role": "user",
+      "content": "ten"
+    },
+    "head": 9
+  },
+  "entry": {
+    "entry": {
+      "id": 10,
+      "conversationId": 1,
+      "message": {
+        "role": "user",
+        "content": "ten"
+      },
+      "head": 9
+    },
+    "commitSeq": 2
+  }
+}

@@ -1,0 +1,421 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "name": "normal",
+      "commits": [
+        [
+          {
+            "type": "conversation",
+            "value": {
+              "id": 1
+            }
+          }
+        ],
+        [
+          {
+            "type": "task",
+            "value": {
+              "id": 2,
+              "conversationId": 1,
+              "kind": "test.task",
+              "version": 1,
+              "input": null,
+              "state": {
+                "status": "pending",
+                "checkpoint": {
+                  "phase": "first"
+                }
+              },
+              "background": false,
+              "abortRequested": false
+            }
+          },
+          {
+            "type": "task",
+            "value": {
+              "id": 2,
+              "conversationId": 1,
+              "kind": "test.task",
+              "version": 1,
+              "input": null,
+              "state": {
+                "status": "pending",
+                "checkpoint": {
+                  "phase": "second"
+                }
+              },
+              "background": false,
+              "abortRequested": false
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.create",
+            "record": {
+              "id": 3,
+              "kind": "test.latest",
+              "scope": {
+                "kind": "session"
+              }
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 0
+              }
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.create",
+            "record": {
+              "id": 4,
+              "kind": "test.history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "all",
+              "fork": "current",
+              "key": "line"
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 0
+              }
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.change",
+            "id": 3,
+            "content": {
+              "kind": "delta",
+              "version": 1,
+              "ops": [
+                [
+                  "s",
+                  [
+                    "n"
+                  ],
+                  1
+                ]
+              ]
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.change",
+            "id": 3,
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 2
+              }
+            }
+          }
+        ],
+        [
+          {
+            "type": "task",
+            "value": {
+              "id": 2,
+              "conversationId": 1,
+              "kind": "test.task",
+              "version": 1,
+              "input": null,
+              "state": {
+                "status": "terminal",
+                "outcome": {
+                  "status": "completed",
+                  "result": null
+                }
+              },
+              "background": false,
+              "abortRequested": false
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.retire",
+            "id": 3
+          }
+        ],
+        [
+          {
+            "type": "document.change",
+            "id": 4,
+            "content": {
+              "kind": "delta",
+              "version": 1,
+              "ops": [
+                [
+                  "s",
+                  [
+                    "n"
+                  ],
+                  1
+                ]
+              ]
+            }
+          }
+        ],
+        [
+          {
+            "type": "conversation",
+            "value": {
+              "id": 6,
+              "parent": {
+                "conversationId": 1,
+                "at": 42
+              }
+            }
+          }
+        ],
+        [
+          {
+            "type": "document.copy",
+            "record": {
+              "id": 5,
+              "kind": "test.history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 6
+              },
+              "history": "all",
+              "fork": "current",
+              "key": "line"
+            },
+            "source": {
+              "id": 4,
+              "at": "current"
+            }
+          }
+        ]
+      ],
+      "seqs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "files": {
+        "doc-4.jsonl": "7b22666f726d6174223a312c2274797065223a227265636f7264222c22736571223a342c226f7264696e616c223a302c227061796c6f6164223a7b2274797065223a22646f63756d656e74222c226964223a342c22636f6e74656e74223a7b226b696e64223a2262617365222c2276657273696f6e223a312c2276616c7565223a7b226e223a307d7d7d7d0a7b22666f726d6174223a312c2274797065223a227265636f7264222c22736571223a392c226f7264696e616c223a302c227061796c6f6164223a7b2274797065223a22646f63756d656e74222c226964223a342c22636f6e74656e74223a7b226b696e64223a2264656c7461222c2276657273696f6e223a312c226f7073223a5b5b2273222c5b226e225d2c315d5d7d7d7d0a",
+        "doc-5.jsonl": "7b22666f726d6174223a312c2274797065223a227265636f7264222c22736571223a31312c226f7264696e616c223a302c227061796c6f6164223a7b2274797065223a22646f63756d656e74222c226964223a352c22636f6e74656e74223a7b226b696e64223a2262617365222c2276657273696f6e223a312c2276616c7565223a7b226e223a317d7d7d7d0a",
+        "main.jsonl": "7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a312c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a317d7d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a322c22777269746573223a5b7b2274797065223a227461736b2e73696465636172222c226964223a322c226f7264696e616c223a307d2c7b2274797065223a227461736b2e73696465636172222c226964223a322c226f7264696e616c223a317d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a332c22777269746573223a5b7b2274797065223a22646f63756d656e742e637265617465222c227265636f7264223a7b226964223a332c226b696e64223a22746573742e6c6174657374222c2273636f7065223a7b226b696e64223a2273657373696f6e227d7d2c226f7264696e616c223a307d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a342c22777269746573223a5b7b2274797065223a22646f63756d656e742e637265617465222c227265636f7264223a7b226964223a342c226b696e64223a22746573742e686973746f7279222c2273636f7065223a7b226b696e64223a22636f6e766572736174696f6e222c22636f6e766572736174696f6e4964223a317d2c22686973746f7279223a22616c6c222c22666f726b223a2263757272656e74222c226b6579223a226c696e65227d2c226f7264696e616c223a307d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a352c22777269746573223a5b7b2274797065223a22646f63756d656e742e6368616e6765222c226964223a332c226f7264696e616c223a307d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a362c22777269746573223a5b7b2274797065223a22646f63756d656e742e6368616e6765222c226964223a332c226f7264696e616c223a307d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a372c22777269746573223a5b7b2274797065223a227461736b222c2276616c7565223a7b226964223a322c22636f6e766572736174696f6e4964223a312c226b696e64223a22746573742e7461736b222c2276657273696f6e223a312c22696e707574223a6e756c6c2c227374617465223a7b22737461747573223a227465726d696e616c222c226f7574636f6d65223a7b22737461747573223a22636f6d706c65746564222c22726573756c74223a6e756c6c7d7d2c226261636b67726f756e64223a66616c73652c2261626f7274526571756573746564223a66616c73657d7d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a382c22777269746573223a5b7b2274797065223a22646f63756d656e742e726574697265222c226964223a337d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a392c22777269746573223a5b7b2274797065223a22646f63756d656e742e6368616e6765222c226964223a342c226f7264696e616c223a307d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a31302c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a362c22706172656e74223a7b22636f6e766572736174696f6e4964223a312c226174223a34327d7d7d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a31312c22777269746573223a5b7b2274797065223a22646f63756d656e742e637265617465222c227265636f7264223a7b226964223a352c226b696e64223a22746573742e686973746f7279222c2273636f7065223a7b226b696e64223a22636f6e766572736174696f6e222c22636f6e766572736174696f6e4964223a367d2c22686973746f7279223a22616c6c222c22666f726b223a2263757272656e74222c226b6579223a226c696e65227d2c226f7264696e616c223a307d5d7d0a"
+      },
+      "operations": [
+        "append:main.jsonl",
+        "append:task-2.jsonl",
+        "flush:task-2.jsonl",
+        "append:main.jsonl",
+        "append:doc-3.jsonl",
+        "flush:doc-3.jsonl",
+        "append:main.jsonl",
+        "append:doc-4.jsonl",
+        "flush:doc-4.jsonl",
+        "append:main.jsonl",
+        "append:doc-3.jsonl",
+        "flush:doc-3.jsonl",
+        "append:main.jsonl",
+        "append:doc-3.jsonl",
+        "flush:doc-3.jsonl",
+        "append:main.jsonl",
+        "flush:main.jsonl",
+        "write:doc-3.jsonl.reclaim",
+        "flush:doc-3.jsonl.reclaim",
+        "rename:doc-3.jsonl.reclaim>doc-3.jsonl",
+        "append:main.jsonl",
+        "flush:main.jsonl",
+        "remove:task-2.jsonl",
+        "append:main.jsonl",
+        "flush:main.jsonl",
+        "remove:doc-3.jsonl",
+        "append:doc-4.jsonl",
+        "flush:doc-4.jsonl",
+        "append:main.jsonl",
+        "append:main.jsonl",
+        "append:doc-5.jsonl",
+        "flush:doc-5.jsonl",
+        "append:main.jsonl"
+      ],
+      "task": {
+        "id": 2,
+        "conversationId": 1,
+        "kind": "test.task",
+        "version": 1,
+        "input": null,
+        "state": {
+          "status": "terminal",
+          "outcome": {
+            "status": "completed",
+            "result": null
+          }
+        },
+        "background": false,
+        "abortRequested": false
+      },
+      "document": {
+        "record": {
+          "id": 4,
+          "kind": "test.history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "all",
+          "fork": "current",
+          "key": "line",
+          "createdAt": 4
+        },
+        "version": 1,
+        "value": {
+          "n": 1
+        },
+        "deltasSinceBase": 1
+      },
+      "copy": {
+        "record": {
+          "id": 5,
+          "kind": "test.history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 6
+          },
+          "history": "all",
+          "fork": "current",
+          "key": "line",
+          "createdAt": 11
+        },
+        "version": 1,
+        "value": {
+          "n": 1
+        },
+        "deltasSinceBase": 0
+      },
+      "nextId": 7
+    },
+    {
+      "name": "short-sidecar",
+      "commits": [
+        [
+          {
+            "type": "conversation",
+            "value": {
+              "id": 1
+            }
+          }
+        ]
+      ],
+      "failedCommit": [
+        {
+          "type": "task",
+          "value": {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "test.task",
+            "version": 1,
+            "input": null,
+            "state": {
+              "status": "pending",
+              "checkpoint": {
+                "phase": "first"
+              }
+            },
+            "background": false,
+            "abortRequested": false
+          }
+        },
+        {
+          "type": "task",
+          "value": {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "test.task",
+            "version": 1,
+            "input": null,
+            "state": {
+              "status": "pending",
+              "checkpoint": {
+                "phase": "second-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              }
+            },
+            "background": false,
+            "abortRequested": false
+          }
+        }
+      ],
+      "failure": {
+        "name": "JsonlStoragePoisonedError",
+        "message": "JSONL storage is poisoned and must be reopened",
+        "cause": "JSONL append to task-2.jsonl failed: injected-short"
+      },
+      "before": {
+        "main.jsonl": "7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a312c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a317d7d5d7d0a",
+        "task-2.jsonl": "7b22666f726d6174223a312c2274797065223a227265636f7264222c22736571223a322c226f7264696e616c223a302c227061796c6f6164223a7b2274797065223a227461736b222c2276616c7565223a7b226964223a322c22636f6e766572736174696f6e4964223a312c226b696e64223a22746573742e7461736b222c2276657273696f6e223a312c22696e707574223a6e756c6c2c227374617465223a7b22737461747573223a2270656e64696e67222c22636865636b706f696e74223a7b227068617365223a226669727374227d7d2c226261636b67726f756e64223a66616c73652c2261626f7274526571756573746564223a66616c73657d7d7d0a7b22666f726d6174223a312c2274797065223a227265636f7264222c22736571223a322c226f7264696e616c223a312c227061796c6f6164223a7b2274797065223a227461736b222c2276616c7565223a7b226964223a322c22636f6e766572736174696f6e4964223a312c226b696e64223a22746573742e7461736b222c2276657273696f6e223a312c22696e707574223a6e756c6c2c227374617465223a7b22737461747573223a2270656e64696e67222c22636865636b706f696e74223a7b227068617365223a227365636f6e642d7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878"
+      },
+      "after": {
+        "main.jsonl": "7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a312c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a317d7d5d7d0a",
+        "task-2.jsonl": ""
+      },
+      "nextId": 2
+    },
+    {
+      "name": "after-main-marker",
+      "failure": {
+        "name": "JsonlStoragePoisonedError",
+        "message": "JSONL storage is poisoned and must be reopened"
+      },
+      "files": {
+        "main.jsonl": "7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a312c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a317d7d5d7d0a7b22666f726d6174223a312c2274797065223a22636f6d6d6974222c22736571223a322c22777269746573223a5b7b2274797065223a22636f6e766572736174696f6e222c2276616c7565223a7b226964223a327d7d5d7d0a"
+      },
+      "conversation": {
+        "id": 2
+      },
+      "nextId": 3
+    },
+    {
+      "name": "torn-main",
+      "input": "7b22756e66696e6973686564223a",
+      "outcome": {
+        "opened": true,
+        "files": {
+          "main.jsonl": ""
+        }
+      }
+    },
+    {
+      "name": "bad-main",
+      "input": "6e6f70650a",
+      "outcome": {
+        "name": "JsonlCorruptionError",
+        "message": "Malformed complete main.jsonl line 1"
+      }
+    },
+    {
+      "name": "bad-utf8",
+      "input": "ff0a",
+      "outcome": {
+        "name": "JsonlCorruptionError",
+        "message": "Invalid UTF-8 in complete main.jsonl line 1"
+      }
+    }
+  ]
+}

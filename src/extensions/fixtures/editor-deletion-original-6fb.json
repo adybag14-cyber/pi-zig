@@ -1,0 +1,3084 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "grapheme delete true \"\"",
+      "value": {
+        "steps": [
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ]
+        ],
+        "restored": {
+          "text": "",
+          "expanded": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 0,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"\"",
+      "value": {
+        "steps": [
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ]
+        ],
+        "restored": {
+          "text": "",
+          "expanded": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 0,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete true \"abc def\"",
+      "value": {
+        "steps": [
+          {
+            "text": "abc de",
+            "expanded": "abc de",
+            "cursor": {
+              "line": 0,
+              "col": 6
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "abc d",
+            "expanded": "abc d",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "abc ",
+            "expanded": "abc ",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "abc",
+            "expanded": "abc",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab",
+            "expanded": "ab",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "a",
+            "expanded": "a",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "abc de"
+          ],
+          [
+            true,
+            "abc d"
+          ],
+          [
+            true,
+            "abc "
+          ],
+          [
+            true,
+            "abc"
+          ],
+          [
+            true,
+            "ab"
+          ],
+          [
+            true,
+            "a"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "a"
+          ]
+        ],
+        "restored": {
+          "text": "a",
+          "expanded": "a",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 7,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"abc def\"",
+      "value": {
+        "steps": [
+          {
+            "text": "bc def",
+            "expanded": "bc def",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "c def",
+            "expanded": "c def",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": " def",
+            "expanded": " def",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "def",
+            "expanded": "def",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ef",
+            "expanded": "ef",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "f",
+            "expanded": "f",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "bc def"
+          ],
+          [
+            true,
+            "c def"
+          ],
+          [
+            true,
+            " def"
+          ],
+          [
+            true,
+            "def"
+          ],
+          [
+            true,
+            "ef"
+          ],
+          [
+            true,
+            "f"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "f"
+          ]
+        ],
+        "restored": {
+          "text": "f",
+          "expanded": "f",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 7,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete true \"a😀é🇺🇳z\"",
+      "value": {
+        "steps": [
+          {
+            "text": "a😀é🇺🇳",
+            "expanded": "a😀é🇺🇳",
+            "cursor": {
+              "line": 0,
+              "col": 9
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "a😀é",
+            "expanded": "a😀é",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "a😀",
+            "expanded": "a😀",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "a",
+            "expanded": "a",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a😀é🇺🇳"
+          ],
+          [
+            true,
+            "a😀é"
+          ],
+          [
+            true,
+            "a😀"
+          ],
+          [
+            true,
+            "a"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "a"
+          ]
+        ],
+        "restored": {
+          "text": "a",
+          "expanded": "a",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 5,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"a😀é🇺🇳z\"",
+      "value": {
+        "steps": [
+          {
+            "text": "😀é🇺🇳z",
+            "expanded": "😀é🇺🇳z",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "é🇺🇳z",
+            "expanded": "é🇺🇳z",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "🇺🇳z",
+            "expanded": "🇺🇳z",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "z",
+            "expanded": "z",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "😀é🇺🇳z"
+          ],
+          [
+            true,
+            "é🇺🇳z"
+          ],
+          [
+            true,
+            "🇺🇳z"
+          ],
+          [
+            true,
+            "z"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "z"
+          ]
+        ],
+        "restored": {
+          "text": "z",
+          "expanded": "z",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 5,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete true \"\\ud800x\\udfff\"",
+      "value": {
+        "steps": [
+          {
+            "text": "\ud800x",
+            "expanded": "\ud800x",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "\ud800",
+            "expanded": "\ud800",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "\ud800x"
+          ],
+          [
+            true,
+            "\ud800"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "\ud800"
+          ]
+        ],
+        "restored": {
+          "text": "\ud800",
+          "expanded": "\ud800",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 3,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"\\ud800x\\udfff\"",
+      "value": {
+        "steps": [
+          {
+            "text": "x\udfff",
+            "expanded": "x\udfff",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "\udfff",
+            "expanded": "\udfff",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "x\udfff"
+          ],
+          [
+            true,
+            "\udfff"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "\udfff"
+          ]
+        ],
+        "restored": {
+          "text": "\udfff",
+          "expanded": "\udfff",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 3,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete true \"one\\ntwo\\nthree\"",
+      "value": {
+        "steps": [
+          {
+            "text": "one\ntwo\nthre",
+            "expanded": "one\ntwo\nthre",
+            "cursor": {
+              "line": 2,
+              "col": 4
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntwo\nthr",
+            "expanded": "one\ntwo\nthr",
+            "cursor": {
+              "line": 2,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntwo\nth",
+            "expanded": "one\ntwo\nth",
+            "cursor": {
+              "line": 2,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntwo\nt",
+            "expanded": "one\ntwo\nt",
+            "cursor": {
+              "line": 2,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntwo\n",
+            "expanded": "one\ntwo\n",
+            "cursor": {
+              "line": 2,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntwo",
+            "expanded": "one\ntwo",
+            "cursor": {
+              "line": 1,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\ntw",
+            "expanded": "one\ntw",
+            "cursor": {
+              "line": 1,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one\nt",
+            "expanded": "one\nt",
+            "cursor": {
+              "line": 1,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 9,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "one\ntwo\nthre"
+          ],
+          [
+            true,
+            "one\ntwo\nthr"
+          ],
+          [
+            true,
+            "one\ntwo\nth"
+          ],
+          [
+            true,
+            "one\ntwo\nt"
+          ],
+          [
+            true,
+            "one\ntwo\n"
+          ],
+          [
+            true,
+            "one\ntwo"
+          ],
+          [
+            true,
+            "one\ntw"
+          ],
+          [
+            true,
+            "one\nt"
+          ],
+          [
+            true,
+            "one\ntw"
+          ]
+        ],
+        "restored": {
+          "text": "one\ntw",
+          "expanded": "one\ntw",
+          "cursor": {
+            "line": 1,
+            "col": 2
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 8,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"one\\ntwo\\nthree\"",
+      "value": {
+        "steps": [
+          {
+            "text": "ne\ntwo\nthree",
+            "expanded": "ne\ntwo\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "e\ntwo\nthree",
+            "expanded": "e\ntwo\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "\ntwo\nthree",
+            "expanded": "\ntwo\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "two\nthree",
+            "expanded": "two\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "wo\nthree",
+            "expanded": "wo\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "o\nthree",
+            "expanded": "o\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "\nthree",
+            "expanded": "\nthree",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "three",
+            "expanded": "three",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 9,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "ne\ntwo\nthree"
+          ],
+          [
+            true,
+            "e\ntwo\nthree"
+          ],
+          [
+            true,
+            "\ntwo\nthree"
+          ],
+          [
+            true,
+            "two\nthree"
+          ],
+          [
+            true,
+            "wo\nthree"
+          ],
+          [
+            true,
+            "o\nthree"
+          ],
+          [
+            true,
+            "\nthree"
+          ],
+          [
+            true,
+            "three"
+          ],
+          [
+            true,
+            "\nthree"
+          ]
+        ],
+        "restored": {
+          "text": "\nthree",
+          "expanded": "\nthree",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 8,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete true \"中文かな한글\"",
+      "value": {
+        "steps": [
+          {
+            "text": "中文かな한",
+            "expanded": "中文かな한",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "中文かな",
+            "expanded": "中文かな",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "中文か",
+            "expanded": "中文か",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "中文",
+            "expanded": "中文",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "中",
+            "expanded": "中",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "中文かな한"
+          ],
+          [
+            true,
+            "中文かな"
+          ],
+          [
+            true,
+            "中文か"
+          ],
+          [
+            true,
+            "中文"
+          ],
+          [
+            true,
+            "中"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "中"
+          ]
+        ],
+        "restored": {
+          "text": "中",
+          "expanded": "中",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 6,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "grapheme delete false \"中文かな한글\"",
+      "value": {
+        "steps": [
+          {
+            "text": "文かな한글",
+            "expanded": "文かな한글",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "かな한글",
+            "expanded": "かな한글",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "な한글",
+            "expanded": "な한글",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "한글",
+            "expanded": "한글",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "글",
+            "expanded": "글",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "文かな한글"
+          ],
+          [
+            true,
+            "かな한글"
+          ],
+          [
+            true,
+            "な한글"
+          ],
+          [
+            true,
+            "한글"
+          ],
+          [
+            true,
+            "글"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "글"
+          ]
+        ],
+        "restored": {
+          "text": "글",
+          "expanded": "글",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 6,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "word kills accumulate true",
+      "value": {
+        "steps": [
+          {
+            "text": "one.two word\nnext ",
+            "expanded": "one.two word\nnext ",
+            "cursor": {
+              "line": 1,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "line"
+            ],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one.two word\n",
+            "expanded": "one.two word\n",
+            "cursor": {
+              "line": 1,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "next line"
+            ],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one.two word",
+            "expanded": "one.two word",
+            "cursor": {
+              "line": 0,
+              "col": 12
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "\nnext line"
+            ],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one.two ",
+            "expanded": "one.two ",
+            "cursor": {
+              "line": 0,
+              "col": 8
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "word\nnext line"
+            ],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one.",
+            "expanded": "one.",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "two word\nnext line"
+            ],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "one",
+            "expanded": "one",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              ".two word\nnext line"
+            ],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two word\nnext line"
+            ],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "yanked": {
+          "text": "one.two word\nnext line",
+          "expanded": "one.two word\nnext line",
+          "cursor": {
+            "line": 1,
+            "col": 9
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": "yank",
+          "ring": [
+            "one.two word\nnext line"
+          ],
+          "undo": 9,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "word kills accumulate false",
+      "value": {
+        "steps": [
+          {
+            "text": ".two word\nnext line",
+            "expanded": ".two word\nnext line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one"
+            ],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "two word\nnext line",
+            "expanded": "two word\nnext line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one."
+            ],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": " word\nnext line",
+            "expanded": " word\nnext line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two"
+            ],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "\nnext line",
+            "expanded": "\nnext line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two word"
+            ],
+            "undo": 5,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "next line",
+            "expanded": "next line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two word\n"
+            ],
+            "undo": 6,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": " line",
+            "expanded": " line",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two word\nnext"
+            ],
+            "undo": 7,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "kill",
+            "ring": [
+              "one.two word\nnext line"
+            ],
+            "undo": 8,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "yanked": {
+          "text": "one.two word\nnext line",
+          "expanded": "one.two word\nnext line",
+          "cursor": {
+            "line": 1,
+            "col": 9
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": "yank",
+          "ring": [
+            "one.two word\nnext line"
+          ],
+          "undo": 9,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "backspace renumbers ascending registry [paste #1]",
+      "value": {
+        "deleted": {
+          "text": " [paste #2 +20 lines]\n[paste #1undefined] [paste #3 1234 chars]",
+          "expanded": " three\n[paste #1undefined] four",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [
+            [
+              1,
+              "two"
+            ],
+            [
+              2,
+              "three"
+            ],
+            [
+              3,
+              "four"
+            ]
+          ],
+          "counter": 3,
+          "last": null,
+          "ring": [],
+          "undo": 1,
+          "history": -1,
+          "draft": null
+        },
+        "restored": {
+          "text": "[paste #1] [paste #3 +20 lines]\n[paste #2] [paste #4 1234 chars]",
+          "expanded": "one three\ntwo four",
+          "cursor": {
+            "line": 0,
+            "col": 10
+          },
+          "pastes": [
+            [
+              4,
+              "four"
+            ],
+            [
+              2,
+              "two"
+            ],
+            [
+              1,
+              "one"
+            ],
+            [
+              3,
+              "three"
+            ]
+          ],
+          "counter": 4,
+          "last": null,
+          "ring": [],
+          "undo": 0,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "backspace renumbers ascending registry [paste #1 +12 lines]",
+      "value": {
+        "deleted": {
+          "text": " [paste #2 +20 lines]\n[paste #1undefined] [paste #3 1234 chars]",
+          "expanded": " three\n[paste #1undefined] four",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [
+            [
+              1,
+              "two"
+            ],
+            [
+              2,
+              "three"
+            ],
+            [
+              3,
+              "four"
+            ]
+          ],
+          "counter": 3,
+          "last": null,
+          "ring": [],
+          "undo": 1,
+          "history": -1,
+          "draft": null
+        },
+        "restored": {
+          "text": "[paste #1 +12 lines] [paste #3 +20 lines]\n[paste #2] [paste #4 1234 chars]",
+          "expanded": "one three\ntwo four",
+          "cursor": {
+            "line": 0,
+            "col": 20
+          },
+          "pastes": [
+            [
+              4,
+              "four"
+            ],
+            [
+              2,
+              "two"
+            ],
+            [
+              1,
+              "one"
+            ],
+            [
+              3,
+              "three"
+            ]
+          ],
+          "counter": 4,
+          "last": null,
+          "ring": [],
+          "undo": 0,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "backspace renumbers ascending registry [paste #1 1001 chars]",
+      "value": {
+        "deleted": {
+          "text": " [paste #2 +20 lines]\n[paste #1undefined] [paste #3 1234 chars]",
+          "expanded": " three\n[paste #1undefined] four",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "pastes": [
+            [
+              1,
+              "two"
+            ],
+            [
+              2,
+              "three"
+            ],
+            [
+              3,
+              "four"
+            ]
+          ],
+          "counter": 3,
+          "last": null,
+          "ring": [],
+          "undo": 1,
+          "history": -1,
+          "draft": null
+        },
+        "restored": {
+          "text": "[paste #1 1001 chars] [paste #3 +20 lines]\n[paste #2] [paste #4 1234 chars]",
+          "expanded": "one three\ntwo four",
+          "cursor": {
+            "line": 0,
+            "col": 21
+          },
+          "pastes": [
+            [
+              4,
+              "four"
+            ],
+            [
+              2,
+              "two"
+            ],
+            [
+              1,
+              "one"
+            ],
+            [
+              3,
+              "three"
+            ]
+          ],
+          "counter": 4,
+          "last": null,
+          "ring": [],
+          "undo": 0,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "forward marker deletion keeps registry",
+      "value": {
+        "text": "tail",
+        "expanded": "tail",
+        "cursor": {
+          "line": 0,
+          "col": 0
+        },
+        "pastes": [
+          [
+            2,
+            "payload"
+          ]
+        ],
+        "counter": 2,
+        "last": null,
+        "ring": [],
+        "undo": 2,
+        "history": -1,
+        "draft": null
+      }
+    },
+    {
+      "name": "fish word whitespace undo coalescing",
+      "value": {
+        "steps": [
+          {
+            "text": "a",
+            "expanded": "a",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 1,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab",
+            "expanded": "ab",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 1,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab ",
+            "expanded": "ab ",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab c",
+            "expanded": "ab c",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd",
+            "expanded": "ab cd",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd ",
+            "expanded": "ab cd ",
+            "cursor": {
+              "line": 0,
+              "col": 6
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd  ",
+            "expanded": "ab cd  ",
+            "cursor": {
+              "line": 0,
+              "col": 7
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd  e",
+            "expanded": "ab cd  e",
+            "cursor": {
+              "line": 0,
+              "col": 8
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd  e😀",
+            "expanded": "ab cd  e😀",
+            "cursor": {
+              "line": 0,
+              "col": 10
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd  e😀界",
+            "expanded": "ab cd  e😀界",
+            "cursor": {
+              "line": 0,
+              "col": 11
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": "type-word",
+            "ring": [],
+            "undo": 4,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd ",
+            "expanded": "ab cd ",
+            "cursor": {
+              "line": 0,
+              "col": 6
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 3,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab cd",
+            "expanded": "ab cd",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 2,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "ab",
+            "expanded": "ab",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 1,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          },
+          {
+            "text": "",
+            "expanded": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "pastes": [],
+            "counter": 0,
+            "last": null,
+            "ring": [],
+            "undo": 0,
+            "history": -1,
+            "draft": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a"
+          ],
+          [
+            true,
+            "ab"
+          ],
+          [
+            true,
+            "ab "
+          ],
+          [
+            true,
+            "ab c"
+          ],
+          [
+            true,
+            "ab cd"
+          ],
+          [
+            true,
+            "ab cd "
+          ],
+          [
+            true,
+            "ab cd  "
+          ],
+          [
+            true,
+            "ab cd  e"
+          ],
+          [
+            true,
+            "ab cd  e😀"
+          ],
+          [
+            true,
+            "ab cd  e😀界"
+          ],
+          [
+            true,
+            "ab cd "
+          ],
+          [
+            true,
+            "ab cd"
+          ],
+          [
+            true,
+            "ab"
+          ],
+          [
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "skip undo coalescing leaves caller responsibility",
+      "value": {
+        "text": "AB",
+        "expanded": "AB",
+        "cursor": {
+          "line": 0,
+          "col": 2
+        },
+        "pastes": [],
+        "counter": 0,
+        "last": null,
+        "ring": [],
+        "undo": 0,
+        "history": -1,
+        "draft": null
+      }
+    },
+    {
+      "name": "actual insertion and deletion autocomplete callbacks",
+      "value": {
+        "calls": [
+          [
+            "trigger",
+            true,
+            []
+          ],
+          [
+            "trigger",
+            true,
+            []
+          ],
+          [
+            "trigger",
+            true,
+            []
+          ],
+          [
+            "trigger",
+            true,
+            []
+          ],
+          [
+            "trigger",
+            true,
+            []
+          ],
+          [
+            "update",
+            true
+          ],
+          [
+            "update",
+            true
+          ],
+          [
+            "update",
+            true
+          ]
+        ],
+        "snapshot": {
+          "text": "/a x@y界",
+          "expanded": "/a x@y界",
+          "cursor": {
+            "line": 0,
+            "col": 7
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": null,
+          "ring": [],
+          "undo": 3,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "word deletion invokes actual movement override",
+      "value": {
+        "calls": [
+          true
+        ],
+        "snapshot": {
+          "text": "ab",
+          "expanded": "ab",
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "pastes": [],
+          "counter": 0,
+          "last": "kill",
+          "ring": [
+            "cdef"
+          ],
+          "undo": 2,
+          "history": -1,
+          "draft": null
+        }
+      }
+    }
+  ]
+}

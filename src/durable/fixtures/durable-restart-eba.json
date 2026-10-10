@@ -1,0 +1,169 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "mode": "existing-flagged",
+      "before": {
+        "abandonOnRestart": true,
+        "abortRequested": false,
+        "abortReason": null
+      },
+      "after": {
+        "abandonOnRestart": true,
+        "abortRequested": true,
+        "abortReason": "restart",
+        "outcome": {
+          "status": "aborted"
+        }
+      },
+      "events": [
+        {
+          "phase": "abort",
+          "reason": "restart"
+        }
+      ],
+      "reports": 0
+    },
+    {
+      "mode": "existing-default",
+      "before": {
+        "abandonOnRestart": null,
+        "abortRequested": false,
+        "abortReason": null
+      },
+      "after": {
+        "abandonOnRestart": null,
+        "abortRequested": false,
+        "abortReason": null,
+        "outcome": {
+          "status": "completed",
+          "result": "result"
+        }
+      },
+      "events": [
+        {
+          "phase": "run",
+          "reason": null
+        }
+      ],
+      "reports": 0
+    },
+    {
+      "mode": "new-after-open",
+      "before": {
+        "abandonOnRestart": true,
+        "abortRequested": false,
+        "abortReason": null
+      },
+      "after": {
+        "abandonOnRestart": true,
+        "abortRequested": false,
+        "abortReason": null,
+        "outcome": {
+          "status": "completed",
+          "result": "result"
+        }
+      },
+      "events": [
+        {
+          "phase": "run",
+          "reason": null
+        }
+      ],
+      "reports": 0
+    },
+    {
+      "mode": "existing-requested",
+      "before": {
+        "abandonOnRestart": true,
+        "abortRequested": true,
+        "abortReason": null
+      },
+      "after": {
+        "abandonOnRestart": true,
+        "abortRequested": true,
+        "abortReason": null,
+        "outcome": {
+          "status": "aborted"
+        }
+      },
+      "events": [
+        {
+          "phase": "abort",
+          "reason": null
+        }
+      ],
+      "reports": 0
+    },
+    {
+      "mode": "completing-holder",
+      "before": {
+        "abandonOnRestart": true,
+        "abortRequested": false,
+        "abortReason": null
+      },
+      "after": {
+        "abandonOnRestart": true,
+        "abortRequested": true,
+        "abortReason": "restart",
+        "outcome": {
+          "status": "completed",
+          "result": "held"
+        }
+      },
+      "events": [
+        {
+          "phase": "abort",
+          "reason": "restart"
+        }
+      ],
+      "child": {
+        "abortReason": "restart",
+        "outcome": {
+          "status": "aborted"
+        }
+      },
+      "reports": 0
+    },
+    {
+      "mode": "upgrade-request-above-restart",
+      "before": {
+        "abortReason": "restart",
+        "status": "pending"
+      },
+      "after": [
+        {
+          "abortReason": null,
+          "outcome": {
+            "status": "orphaned",
+            "reason": "missing_task"
+          }
+        },
+        {
+          "abortReason": null,
+          "outcome": {
+            "status": "aborted"
+          }
+        },
+        {
+          "abortReason": null,
+          "outcome": {
+            "status": "aborted"
+          }
+        }
+      ],
+      "reports": 0
+    },
+    {
+      "mode": "fail-fast-request-wins",
+      "after": {
+        "abortReason": null,
+        "outcome": {
+          "status": "orphaned",
+          "reason": "missing_task"
+        }
+      },
+      "reports": 0
+    }
+  ]
+}

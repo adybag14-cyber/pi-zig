@@ -1,0 +1,68 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "cases": [
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme);return[md.renderToken({type:'paragraph'},20),md.renderToken({type:'heading',depth:1},20),md.renderToken({type:'blockquote'},20),md.renderInlineTokens([{type:'strong'}]),md.renderInlineTokens([{type:'link',text:'x',href:'/u'}])]",
+      "result": [
+        [
+          ""
+        ],
+        [
+          ""
+        ],
+        [],
+        "",
+        " (/u)"
+      ]
+    },
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme),tokens={*[Symbol.iterator](){yield{type:'text',text:'one'};yield{type:'codespan',text:'two'}}};return md.renderInlineTokens(tokens)",
+      "result": "onetwo"
+    },
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme),root={type:'list',ordered:false,start:'',loose:false,items:[{raw:'- one',task:false,tokens:{*[Symbol.iterator](){yield{type:'text',text:'one'}}}}]};return md.renderList(root,0,20)",
+      "result": [
+        "- one"
+      ]
+    },
+    {
+      "script": "const md=new Markdown('',0,0,{...identityTheme,highlightCode(){return new Set(['one','two'])}});return md.renderToken({type:'code',raw:'',lang:'js',text:'ignored'},20)",
+      "result": [
+        "```js",
+        "  one",
+        "  two",
+        "```"
+      ]
+    },
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme),seen=[];md.getStylePrefix=function(fn){seen.push(fn.name);return ''};md.renderInlineTokens=function(tokens,ctx){seen.push(ctx.applyText.name);return ''};md.renderToken({type:'heading',depth:1,tokens:[]},20);md.renderToken({type:'blockquote',tokens:[{type:'paragraph',tokens:[]}]},20);return seen",
+      "result": [
+        "headingStyleFn",
+        "headingStyleFn",
+        "quoteStyle",
+        "applyText"
+      ]
+    },
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme),style={color(text){md.defaultTextStyle={bold:true};return 'C('+text+')'}};md.defaultTextStyle=style;md.theme={...identityTheme,bold:text=>'B('+text+')'};return md.applyDefaultStyle('x')",
+      "result": "B(C(x))"
+    },
+    {
+      "script": "const md=new Markdown('',0,0,identityTheme),reason={},log=[],tokens={[Symbol.iterator](){return{next(){return{value:{get type(){throw reason}},done:false}},return(){log.push('close');throw Error('secondary')}}}};try{md.renderInlineTokens(tokens)}catch(e){return{same:e===reason,log}}",
+      "result": {
+        "same": true,
+        "log": [
+          "close"
+        ]
+      }
+    },
+    {
+      "script": "const other={...identityTheme,highlightCode(){return ['NEW']}},theme={...identityTheme,codeBlockBorder(text){md.theme=other;return text}},md=new Markdown('',0,0,theme);return md.renderToken({type:'code',raw:'',lang:'js',text:'old'},20)",
+      "result": [
+        "```js",
+        "  NEW",
+        "```"
+      ]
+    }
+  ]
+}

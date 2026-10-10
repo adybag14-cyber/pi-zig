@@ -1,0 +1,62 @@
+{
+  "status": "qualified native subset",
+  "inputs": 645,
+  "gates": [
+    {
+      "name": "codemode-identity-traversal-windows-debug-20261007",
+      "pid": 63224,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-codemode -j2 --summary all",
+      "created_utc": "2026-10-07T19:05:45.9337950Z",
+      "launched_utc": "2026-10-07T19:05:45.9299599+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:07:46.2764688+00:00"
+    },
+    {
+      "name": "codemode-identity-traversal-windows-releasesafe-20261007",
+      "pid": 52404,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-codemode -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T19:08:18.6473160Z",
+      "launched_utc": "2026-10-07T19:08:18.6429383+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:10:18.7637593+00:00"
+    },
+    {
+      "name": "codemode-identity-traversal-native-linux-debug-20261007",
+      "pid": 66544,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-codemode-identity-traversal-final-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-codemode -Doptimize=Debug -j2 --summary all --cache-dir /tmp/pi-codemode-identity-traversal-cache-20261007",
+      "created_utc": "2026-10-07T19:08:18.6536040Z",
+      "launched_utc": "2026-10-07T19:08:18.6498041+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:11:17.7974561+00:00"
+    },
+    {
+      "name": "codemode-identity-traversal-native-linux-releasesafe-20261007",
+      "pid": 34684,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-codemode-identity-traversal-final-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-codemode -Doptimize=ReleaseSafe -j2 --summary all --cache-dir /tmp/pi-codemode-identity-traversal-cache-20261007",
+      "created_utc": "2026-10-07T19:11:17.8124480Z",
+      "launched_utc": "2026-10-07T19:11:17.8117475+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:13:30.2958990+00:00"
+    }
+  ],
+  "patch_sha256": "a15d2d387e39dff4371be0461e123d14555a6c5bfd2a962b91c6162c10e589f4",
+  "semantics": "Object pointer identity equivalent to strict identity while retained roots prevent reuse; graph traversal order and limit preserved; all induced allocations retained",
+  "macos_runtime": "pending diagnostic45e6d6c run37672651784",
+  "baseline_trace": "37670268209 owner sweep completed0..2011, worker0..1230 progressed then deadline; no unmatched memory counters"
+}

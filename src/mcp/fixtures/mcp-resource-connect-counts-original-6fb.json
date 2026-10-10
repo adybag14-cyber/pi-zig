@@ -1,0 +1,219 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "omittedTools": true,
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "omittedTools": true,
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": null,
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": null,
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": false,
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": false,
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": 0,
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": 0,
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": "",
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": "",
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": {},
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": {},
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": [],
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": [],
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": true,
+      "failing": false,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 1,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    },
+    {
+      "tools": true,
+      "failing": true,
+      "state": "connected",
+      "hasResources": true,
+      "resources": 0,
+      "templates": 0,
+      "calls": [
+        "initialize",
+        "tools/list",
+        "resources/list",
+        "resources/templates/list"
+      ]
+    }
+  ]
+}

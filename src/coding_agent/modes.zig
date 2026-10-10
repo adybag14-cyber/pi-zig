@@ -119,6 +119,7 @@ pub const JsonEmitter = struct {
                 std.json.Stringify.value(event.name, .{}, &aw.writer) catch return;
                 aw.writer.writeAll(",\"isError\":") catch return;
                 aw.writer.writeAll(if (event.is_error) "true" else "false") catch return;
+                if (event.duration_ms) |duration| aw.writer.print(",\"durationMs\":{d}", .{duration}) catch return;
                 aw.writer.writeAll(",\"result\":") catch return;
                 writeToolResultObject(&aw.writer, event) catch return;
                 aw.writer.writeAll("}\n") catch return;

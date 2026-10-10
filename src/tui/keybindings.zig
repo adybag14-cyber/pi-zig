@@ -43,8 +43,8 @@ const definitions = [_]Definition{
     .{ .id = "tui.editor.cursorRight", .legacy = "cursorRight", .action = .cursor_right, .defaults = &.{ "right", "ctrl+f" } },
     .{ .id = "tui.editor.cursorWordLeft", .legacy = "cursorWordLeft", .action = .cursor_word_left, .defaults = &.{ "alt+left", "ctrl+left", "alt+b" } },
     .{ .id = "tui.editor.cursorWordRight", .legacy = "cursorWordRight", .action = .cursor_word_right, .defaults = &.{ "alt+right", "ctrl+right", "alt+f" } },
-    .{ .id = "tui.editor.cursorLineStart", .legacy = "cursorLineStart", .action = .cursor_line_start, .defaults = &.{ "home", "ctrl+home", "ctrl+a" } },
-    .{ .id = "tui.editor.cursorLineEnd", .legacy = "cursorLineEnd", .action = .cursor_line_end, .defaults = &.{ "end", "ctrl+end", "ctrl+e" } },
+    .{ .id = "tui.editor.cursorLineStart", .legacy = "cursorLineStart", .action = .cursor_line_start, .defaults = &.{ "home", "ctrl+a" } },
+    .{ .id = "tui.editor.cursorLineEnd", .legacy = "cursorLineEnd", .action = .cursor_line_end, .defaults = &.{ "end", "ctrl+e" } },
     .{ .id = "tui.editor.deleteCharBackward", .legacy = "deleteCharBackward", .action = .delete_char_backward, .defaults = &.{"backspace"} },
     .{ .id = "tui.editor.deleteCharForward", .legacy = "deleteCharForward", .action = .delete_char_forward, .defaults = &.{ "delete", "ctrl+d" } },
     .{ .id = "tui.editor.deleteWordBackward", .legacy = "deleteWordBackward", .action = .delete_word_backward, .defaults = &.{ "ctrl+w", "alt+backspace" } },
@@ -60,6 +60,33 @@ const definitions = [_]Definition{
     .{ .id = "app.clipboard.pasteImage", .legacy = "pasteImage", .action = .clipboard_paste, .defaults = if (builtin.os.tag == .windows) &.{"alt+v"} else &.{"ctrl+v"} },
     .{ .id = "app.clear", .legacy = "clear", .action = .clear, .defaults = &.{"ctrl+c"} },
     .{ .id = "app.exit", .legacy = "exit", .action = .exit, .defaults = &.{"ctrl+d"} },
+};
+
+/// Shared editor/action defaults for native extension keybinding objects.
+pub fn defaultKeysForAction(id: []const u8) []const []const u8 {
+    for (definitions) |definition| if (std.mem.eql(u8, id, definition.id)) return definition.defaults;
+    if (std.mem.eql(u8, id, "app.interrupt")) return &.{"escape"};
+    if (std.mem.eql(u8, id, "tui.editor.historyPrevious")) return &.{"up"};
+    if (std.mem.eql(u8, id, "tui.editor.historyNext")) return &.{"down"};
+    if (std.mem.eql(u8, id, "tui.select.up")) return &.{"up"};
+    if (std.mem.eql(u8, id, "tui.select.down")) return &.{"down"};
+    if (std.mem.eql(u8, id, "tui.select.pageUp")) return &.{"pageup"};
+    if (std.mem.eql(u8, id, "tui.select.pageDown")) return &.{"pagedown"};
+    if (std.mem.eql(u8, id, "tui.select.confirm")) return &.{"enter"};
+    if (std.mem.eql(u8, id, "tui.select.cancel")) return &.{ "escape", "ctrl+c" };
+    return &.{};
+}
+
+pub const ViewportAction = enum { page_up, page_down, half_page_up, half_page_down, line_up, line_down, top, bottom };
+const viewport_definitions = .{
+    .{ "tui.altScreen.pageUp", ViewportAction.page_up, &.{"pageup"} },
+    .{ "tui.altScreen.pageDown", ViewportAction.page_down, &.{"pagedown"} },
+    .{ "tui.altScreen.halfPageUp", ViewportAction.half_page_up, &.{} },
+    .{ "tui.altScreen.halfPageDown", ViewportAction.half_page_down, &.{} },
+    .{ "tui.altScreen.lineUp", ViewportAction.line_up, &.{} },
+    .{ "tui.altScreen.lineDown", ViewportAction.line_down, &.{} },
+    .{ "tui.altScreen.top", ViewportAction.top, &.{"ctrl+home"} },
+    .{ "tui.altScreen.bottom", ViewportAction.bottom, &.{"ctrl+end"} },
 };
 
 pub const Manager = struct {
@@ -81,6 +108,13 @@ pub const Manager = struct {
         var parsed = std.json.parseFromSlice(std.json.Value, gpa, raw, .{ .allocate = .alloc_always }) catch return error.InvalidKeybindingsJson;
         errdefer parsed.deinit();
         if (parsed.value != .object) return error.InvalidKeybindingsJson;
+        var index: usize = 0;
+        while (index < parsed.value.object.count()) {
+            const id = parsed.value.object.keys()[index];
+            if (std.mem.eql(u8, id, "$schema") or !validBindingValue(parsed.value.object.values()[index])) {
+                _ = parsed.value.object.orderedRemove(id);
+            } else index += 1;
+        }
         return .{ .gpa = gpa, .parsed = parsed };
     }
 
@@ -104,6 +138,23 @@ pub const Manager = struct {
         return false;
     }
 
+    /// Match a named TUI action against a complete raw terminal sequence.
+    /// Explicit empty arrays disable defaults and overrides retain Source order.
+    pub fn matchesActionName(self: *const Manager, action: []const u8, sequence: []const u8) bool {
+        if (self.parsed) |parsed| if (parsed.value == .object) if (parsed.value.object.get(action)) |value| {
+            return switch (value) {
+                .string => |key| @import("keys.zig").matchesKey(sequence, key),
+                .array => |array| blk: {
+                    for (array.items) |item| if (item == .string and @import("keys.zig").matchesKey(sequence, item.string)) break :blk true;
+                    break :blk false;
+                },
+                else => false,
+            };
+        };
+        for (defaultKeysForAction(action)) |key| if (@import("keys.zig").matchesKey(sequence, key)) return true;
+        return false;
+    }
+
     pub fn actionFor(self: *const Manager, input_key: []const u8) ?Action {
         var input_buf: [96]u8 = undefined;
         const normalized_input = normalizeKey(input_key, &input_buf) orelse return null;
@@ -117,6 +168,23 @@ pub const Manager = struct {
                         if (std.mem.eql(u8, normalized, normalized_input)) return def.action;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    /// Fullscreen bindings have their own precedence and never become editor
+    /// actions. Explicit JSON arrays replace defaults, including empty arrays.
+    pub fn viewportActionFor(self: *const Manager, input_key: []const u8) ?ViewportAction {
+        var input_buf: [96]u8 = undefined;
+        const normalized = normalizeKey(input_key, &input_buf) orelse return null;
+        inline for (viewport_definitions) |definition| {
+            const configured = if (self.parsed) |parsed| parsed.value.object.get(definition[0]) else null;
+            if (configured) |value| {
+                if (valueMatches(value, normalized)) return definition[1];
+            } else {
+                const defaults: []const []const u8 = definition[2];
+                for (defaults) |key| if (std.mem.eql(u8, normalized, key)) return definition[1];
             }
         }
         return null;
@@ -147,6 +215,40 @@ pub const Manager = struct {
         return null;
     }
 };
+
+pub fn validBindingValue(value: std.json.Value) bool {
+    return switch (value) {
+        .string => |key| validKeyId(key),
+        .array => |array| blk: {
+            for (array.items) |item| if (item != .string or !validKeyId(item.string)) break :blk false;
+            break :blk true;
+        },
+        else => false,
+    };
+}
+pub fn validKeyId(id: []const u8) bool {
+    var remaining = id;
+    var seen: u8 = 0;
+    var count: u8 = 0;
+    while (true) {
+        var consumed = false;
+        inline for (.{ "ctrl+", "shift+", "alt+", "super+" }, 0..) |prefix, index| {
+            if (!consumed and std.mem.startsWith(u8, remaining, prefix)) {
+                const bit: u8 = @as(u8, 1) << @intCast(index);
+                if (seen & bit != 0) return false;
+                seen |= bit;
+                count += 1;
+                remaining = remaining[prefix.len..];
+                consumed = true;
+            }
+        }
+        if (!consumed) break;
+    }
+    if (count > 4 or remaining.len == 0) return false;
+    if (remaining.len == 1) return std.ascii.isLower(remaining[0]) or std.ascii.isDigit(remaining[0]) or std.mem.indexOfScalar(u8, "`-=[]\\;',./!@#$%^&*()_+|~{}:<>?", remaining[0]) != null;
+    for ([_][]const u8{ "escape", "esc", "enter", "return", "tab", "space", "backspace", "delete", "insert", "clear", "home", "end", "pageUp", "pageDown", "up", "down", "left", "right", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12" }) |name| if (std.mem.eql(u8, remaining, name)) return true;
+    return false;
+}
 
 fn valueMatches(value: std.json.Value, normalized_input: []const u8) bool {
     switch (value) {
@@ -197,17 +299,27 @@ pub fn normalizeKey(input: []const u8, out: *[96]u8) ?[]const u8 {
     var shift = false;
     var alt = false;
     var super = false;
-    var base: ?[]const u8 = null;
-    var it = std.mem.splitScalar(u8, input, '+');
-    while (it.next()) |part_raw| {
-        const part = std.mem.trim(u8, part_raw, " \t\r\n");
-        if (part.len == 0) return null;
-        if (std.ascii.eqlIgnoreCase(part, "ctrl")) ctrl = true else if (std.ascii.eqlIgnoreCase(part, "shift")) shift = true else if (std.ascii.eqlIgnoreCase(part, "alt")) alt = true else if (std.ascii.eqlIgnoreCase(part, "super")) super = true else {
-            if (base != null) return null;
-            base = part;
-        }
+    var base_value = input;
+    while (true) {
+        if (std.ascii.startsWithIgnoreCase(base_value, "ctrl+")) {
+            if (ctrl) return null;
+            ctrl = true;
+            base_value = base_value[5..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "shift+")) {
+            if (shift) return null;
+            shift = true;
+            base_value = base_value[6..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "alt+")) {
+            if (alt) return null;
+            alt = true;
+            base_value = base_value[4..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "super+")) {
+            if (super) return null;
+            super = true;
+            base_value = base_value[6..];
+        } else break;
     }
-    var base_value = base orelse return null;
+    if (base_value.len == 0 or (std.mem.indexOfScalar(u8, base_value, '+') != null and !std.mem.eql(u8, base_value, "+"))) return null;
     if (std.ascii.eqlIgnoreCase(base_value, "esc")) base_value = "escape";
     if (std.ascii.eqlIgnoreCase(base_value, "return")) base_value = "enter";
 
@@ -232,11 +344,55 @@ pub fn normalizeKey(input: []const u8, out: *[96]u8) ?[]const u8 {
     return out[0..pos];
 }
 
+test "named selection keybindings accept raw terminal sequences configurable arrays and explicit disable" {
+    var manager = Manager.init(std.testing.allocator);
+    defer manager.deinit();
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\r"));
+    try std.testing.expect(manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.cancel", "\x03"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.up", "k"));
+    manager.parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, "{\"tui.select.up\":[\"ctrl+k\",\"alt+up\"],\"tui.select.cancel\":[],\"tui.select.confirm\":\"ctrl+y\"}", .{});
+    try std.testing.expect(!manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x0b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[1;3A"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\x19"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.confirm", "\r"));
+}
+
+test "current keybinding value schema replays actual TypeBox validation and drops invalid configured values" {
+    var normalized: [96]u8 = undefined;
+    try std.testing.expectEqualStrings("ctrl++", normalizeKey("ctrl++", &normalized).?);
+    try std.testing.expect(normalizeKey("ctrl+ctrl+c", &normalized) == null);
+    const gpa = std.testing.allocator;
+    const capture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/keybinding-schema-6fb-original.json"), .{});
+    defer capture.deinit();
+    for (capture.value.object.get("rows").?.array.items) |row| try std.testing.expectEqual(row.object.get("result").?.bool, validBindingValue(row.object.get("input").?));
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.writeFile(std.testing.io, .{ .sub_path = "keybindings.json", .data = "{\"$schema\":\"schema.json\",\"tui.select.up\":[\"up\",3],\"tui.select.cancel\":[],\"tui.select.confirm\":\"ctrl++\"}" });
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const len = try scratch.dir.realPath(std.testing.io, &buffer);
+    var manager = try Manager.load(gpa, std.testing.io, buffer[0..len]);
+    defer manager.deinit();
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\x1b[61:43;6u"));
+    try std.testing.expect(manager.parsed.?.value.object.get("$schema") == null);
+}
+
 test "keybinding defaults normalize modifier order" {
     var manager = Manager.init(std.testing.allocator);
     defer manager.deinit();
     try std.testing.expectEqual(Action.cursor_left, manager.actionFor("ctrl+b").?);
     try std.testing.expectEqual(Action.cursor_word_left, manager.actionFor("ctrl+left").?);
+    try std.testing.expectEqual(Action.cursor_line_start, manager.actionFor("home").?);
+    try std.testing.expectEqual(Action.cursor_line_end, manager.actionFor("end").?);
+    try std.testing.expect(manager.actionFor("ctrl+home") == null);
+    try std.testing.expect(manager.actionFor("ctrl+end") == null);
+    try std.testing.expectEqual(ViewportAction.top, manager.viewportActionFor("ctrl+home").?);
+    try std.testing.expectEqual(ViewportAction.bottom, manager.viewportActionFor("ctrl+end").?);
     try std.testing.expectEqual(Action.clipboard_paste, manager.actionFor(if (builtin.os.tag == .windows) "alt+v" else "ctrl+v").?);
     var buf: [96]u8 = undefined;
     try std.testing.expectEqualStrings("ctrl+shift+p", normalizeKey("shift+ctrl+P", &buf).?);

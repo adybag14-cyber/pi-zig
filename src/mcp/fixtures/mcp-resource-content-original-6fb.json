@@ -1,0 +1,1834 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97,
+            98,
+            99,
+            251,
+            255
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 3B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            255,
+            254,
+            253
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (unknown type, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97,
+            98,
+            99,
+            251,
+            255
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 3B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            255,
+            254,
+            253
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/octet-stream",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/octet-stream, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": " TEXT/plain ; charset=utf-8",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/json",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/problem+json",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/a+xml",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97,
+            98,
+            99,
+            251,
+            255
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 3B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            255,
+            254,
+            253
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "application/xml",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (application/xml, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aGVsbG8=",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aG V?sbG8=",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aGVsbG8",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YWJj-_8=",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "//79",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YQ====",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YQ=garbage",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "a",
+          "mimeType": "image/png"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            104,
+            101,
+            108,
+            108,
+            111
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 5B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97,
+            98,
+            99,
+            251,
+            255
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 3B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            255,
+            254,
+            253
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 1B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [
+            97
+          ],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "IMAGE/png",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "[Binary resource file:///fixture.Payload?x=1 (IMAGE/png, 0B) saved to SAVED.Payload]"
+        }
+      ],
+      "saved": [
+        {
+          "bytes": [],
+          "extension": ".Payload"
+        }
+      ]
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aGVsbG8=",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aG V?sbG8=",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "aGVsbG8",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YWJj-_8=",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "//79",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YQ====",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "YQ=garbage",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "image/png; charset=utf-8",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "image",
+          "data": "a",
+          "mimeType": "image/png; charset=utf-8"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": ""
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "aGVsbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "aG V?sbG8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "aGVsbG8"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "YWJj-_8="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "abc��"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "//79"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "���"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "YQ===="
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "YQ=garbage"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "a"
+        }
+      ],
+      "saved": []
+    },
+    {
+      "resource": {
+        "uri": "file:///fixture.Payload?x=1",
+        "mimeType": "text/plain ",
+        "blob": "a"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": ""
+        }
+      ],
+      "saved": []
+    }
+  ]
+}

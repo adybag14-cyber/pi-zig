@@ -1,0 +1,585 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourceSha256": "5ee58f0e99805aee09f1b4edbf3f7ef68bf5fb7aa2b36d131518c836809b0724",
+  "sharedSha256": "8a0799a8be599181789c8c6cf3b29f7ea3c6f6f3ffcac5817fcf6e5d0a0a6436",
+  "isolation": "Original wireInput/wireQuestion/parseAnswers plus original isRecord/requiredNumber executed after built-in type erasure; unused transport/error imports excluded; no provider call made.",
+  "payloads": [
+    {
+      "context": {
+        "state": {
+          "text": "世界🦊"
+        },
+        "questions": {
+          "yes": {
+            "type": "bool",
+            "instructions": "Decide",
+            "criteria": {
+              "true": "Allowed",
+              "false": "Blocked"
+            }
+          },
+          "pick": {
+            "type": "choice",
+            "instructions": "Choose",
+            "criteria": {
+              "a": "A",
+              "b": ""
+            }
+          },
+          "rank": {
+            "type": "score",
+            "instructions": "Score",
+            "criteria": [
+              "low",
+              "high"
+            ]
+          }
+        }
+      },
+      "body": {
+        "model": "decision-test",
+        "input": "{\"text\":\"世界🦊\"}",
+        "questions": [
+          {
+            "type": "predicate",
+            "name": "yes",
+            "instructions": "Decide\n\nTrue means: Allowed\nFalse means: Blocked"
+          },
+          {
+            "type": "choice",
+            "name": "pick",
+            "instructions": "Choose",
+            "choices": [
+              {
+                "value": "a",
+                "description": "A"
+              },
+              {
+                "value": "b"
+              }
+            ]
+          },
+          {
+            "type": "score",
+            "name": "rank",
+            "instructions": "Score",
+            "levels": [
+              {
+                "label": "low"
+              },
+              {
+                "label": "high"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "context": {
+        "state": {
+          "text": "世界🦊"
+        },
+        "questions": {
+          "yes": {
+            "type": "bool",
+            "instructions": "Decide",
+            "criteria": {
+              "true": "Allowed",
+              "false": "Blocked"
+            }
+          },
+          "pick": {
+            "type": "choice",
+            "instructions": "Choose",
+            "criteria": {
+              "a": "A",
+              "b": ""
+            }
+          },
+          "rank": {
+            "type": "score",
+            "instructions": "Score",
+            "criteria": [
+              "low",
+              "high"
+            ]
+          }
+        },
+        "images": []
+      },
+      "body": {
+        "model": "decision-test",
+        "input": "{\"text\":\"世界🦊\"}",
+        "questions": [
+          {
+            "type": "predicate",
+            "name": "yes",
+            "instructions": "Decide\n\nTrue means: Allowed\nFalse means: Blocked"
+          },
+          {
+            "type": "choice",
+            "name": "pick",
+            "instructions": "Choose",
+            "choices": [
+              {
+                "value": "a",
+                "description": "A"
+              },
+              {
+                "value": "b"
+              }
+            ]
+          },
+          {
+            "type": "score",
+            "name": "rank",
+            "instructions": "Score",
+            "levels": [
+              {
+                "label": "low"
+              },
+              {
+                "label": "high"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "context": {
+        "state": {
+          "text": "世界🦊"
+        },
+        "questions": {
+          "yes": {
+            "type": "bool",
+            "instructions": "Decide",
+            "criteria": {
+              "true": "Allowed",
+              "false": "Blocked"
+            }
+          },
+          "pick": {
+            "type": "choice",
+            "instructions": "Choose",
+            "criteria": {
+              "a": "A",
+              "b": ""
+            }
+          },
+          "rank": {
+            "type": "score",
+            "instructions": "Score",
+            "criteria": [
+              "low",
+              "high"
+            ]
+          }
+        },
+        "images": [
+          {
+            "type": "image",
+            "mimeType": "image/png",
+            "data": "AA=="
+          },
+          {
+            "type": "image",
+            "mimeType": "image/jpeg",
+            "data": "AQ=="
+          }
+        ]
+      },
+      "body": {
+        "model": "decision-test",
+        "input": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "{\"text\":\"世界🦊\"}"
+              },
+              {
+                "type": "input_image",
+                "image_url": "data:image/png;base64,AA=="
+              },
+              {
+                "type": "input_image",
+                "image_url": "data:image/jpeg;base64,AQ=="
+              }
+            ]
+          }
+        ],
+        "questions": [
+          {
+            "type": "predicate",
+            "name": "yes",
+            "instructions": "Decide\n\nTrue means: Allowed\nFalse means: Blocked"
+          },
+          {
+            "type": "choice",
+            "name": "pick",
+            "instructions": "Choose",
+            "choices": [
+              {
+                "value": "a",
+                "description": "A"
+              },
+              {
+                "value": "b"
+              }
+            ]
+          },
+          {
+            "type": "score",
+            "name": "rank",
+            "instructions": "Score",
+            "levels": [
+              {
+                "label": "low"
+              },
+              {
+                "label": "high"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "rawContext": "{\"state\":{\"10\":\"ten\",\"2\":\"two\",\"01\":\"leading\",\"4294967295\":\"ordinary\",\"nested\":{\"8\":8,\"3\":3}},\"questions\":{\"10\":{\"type\":\"choice\",\"instructions\":\"Order\",\"criteria\":{\"10\":\"ten\",\"2\":\"two\",\"01\":\"leading\"}},\"2\":{\"type\":\"bool\",\"instructions\":\"Decide\",\"criteria\":{\"true\":\"\",\"false\":\"\"}}}}",
+      "context": {
+        "state": {
+          "2": "two",
+          "10": "ten",
+          "01": "leading",
+          "4294967295": "ordinary",
+          "nested": {
+            "3": 3,
+            "8": 8
+          }
+        },
+        "questions": {
+          "2": {
+            "type": "bool",
+            "instructions": "Decide",
+            "criteria": {
+              "true": "",
+              "false": ""
+            }
+          },
+          "10": {
+            "type": "choice",
+            "instructions": "Order",
+            "criteria": {
+              "2": "two",
+              "10": "ten",
+              "01": "leading"
+            }
+          }
+        }
+      },
+      "body": {
+        "model": "decision-test",
+        "input": "{\"2\":\"two\",\"10\":\"ten\",\"01\":\"leading\",\"4294967295\":\"ordinary\",\"nested\":{\"3\":3,\"8\":8}}",
+        "questions": [
+          {
+            "type": "predicate",
+            "name": "2",
+            "instructions": "Decide"
+          },
+          {
+            "type": "choice",
+            "name": "10",
+            "instructions": "Order",
+            "choices": [
+              {
+                "value": "2",
+                "description": "two"
+              },
+              {
+                "value": "10",
+                "description": "ten"
+              },
+              {
+                "value": "01",
+                "description": "leading"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "context": {
+    "state": {
+      "text": "世界🦊"
+    },
+    "questions": {
+      "yes": {
+        "type": "bool",
+        "instructions": "Decide",
+        "criteria": {
+          "true": "Allowed",
+          "false": "Blocked"
+        }
+      },
+      "pick": {
+        "type": "choice",
+        "instructions": "Choose",
+        "criteria": {
+          "a": "A",
+          "b": ""
+        }
+      },
+      "rank": {
+        "type": "score",
+        "instructions": "Score",
+        "criteria": [
+          "low",
+          "high"
+        ]
+      }
+    }
+  },
+  "responses": [
+    {
+      "name": "normal",
+      "answers": [
+        {
+          "name": "yes",
+          "type": "predicate",
+          "probability": 0.9
+        },
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      ],
+      "expected": {
+        "yes": {
+          "type": "bool",
+          "probability": 0.9
+        },
+        "pick": {
+          "type": "choice",
+          "choice": "a",
+          "probabilities": {
+            "a": 0.9,
+            "b": 0.1
+          },
+          "confidence": 0.8
+        },
+        "rank": {
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      }
+    },
+    {
+      "name": "last-name-wins",
+      "answers": [
+        {
+          "name": "yes",
+          "type": "predicate",
+          "probability": 0.9
+        },
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        },
+        {
+          "name": "yes",
+          "type": "predicate",
+          "probability": 0.3
+        }
+      ],
+      "expected": {
+        "yes": {
+          "type": "bool",
+          "probability": 0.3
+        },
+        "pick": {
+          "type": "choice",
+          "choice": "a",
+          "probabilities": {
+            "a": 0.9,
+            "b": 0.1
+          },
+          "confidence": 0.8
+        },
+        "rank": {
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      }
+    },
+    {
+      "name": "missing",
+      "answers": [
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      ],
+      "error": "OpenAI Decisions did not return an answer for yes"
+    },
+    {
+      "name": "refusal",
+      "answers": [
+        {
+          "name": "yes",
+          "type": "refusal"
+        },
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      ],
+      "error": "OpenAI Decisions refused to answer yes"
+    },
+    {
+      "name": "wrong-kind",
+      "answers": [
+        {
+          "name": "yes",
+          "type": "score",
+          "score": 1
+        },
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      ],
+      "error": "OpenAI Decisions did not return a predicate answer for yes"
+    },
+    {
+      "name": "wrong-probability",
+      "answers": [
+        {
+          "name": "yes",
+          "type": "predicate",
+          "probability": "bad"
+        },
+        {
+          "name": "pick",
+          "type": "choice",
+          "choice": "a",
+          "confidence": 0.8,
+          "probabilities": [
+            {
+              "value": "a",
+              "probability": 0.9
+            },
+            {
+              "value": "b",
+              "probability": 0.1
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "type": "score",
+          "score": 1,
+          "confidence": 0.7
+        }
+      ],
+      "error": "OpenAI Decisions returned an invalid probability for yes"
+    }
+  ],
+  "tooMany": "OpenAI Decisions accepts at most 128 images, got 129"
+}
