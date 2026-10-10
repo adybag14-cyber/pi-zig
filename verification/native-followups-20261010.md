@@ -80,3 +80,27 @@ The earlier focused diagnostic matrix at `98fdfde` passed 8 tests on Windows,
 Linux, and macOS (run 38066201519). That matrix does not qualify the later error
 follow-on or replace the full release gates. The broader follow-on's
 ReleaseSafe and Linux runs remain pending.
+## Composition and allocation coverage follow-on
+
+The four-mode qualified terminal EOF packet and Storage/Context packet are now
+composed here. Windows Debug at `a1de803` passed 474 tests, with five skipped;
+the standalone engine target failed compilation because its module root was
+`src/extensions`, excluding imported storage files under `src/durable`.
+`67c9a30` roots the standalone extension targets at `src` and keeps each focused
+on its own module tests. The engine target then passed all 15 tests. The other
+changed standalone entry points still require their focused validation.
+
+The broader hosted codemode/engine/WeakRef/issuer diagnostic at `f295747` passed
+Windows and Linux. Five exhaustive allocation tests exceeded their two-minute
+macOS deadlines; its other 68 tests passed. The follow-on partitions all four
+host, worker, discovery and adapter sweeps and the model sweep into eight
+complete ranges on macOS. The previous shard target selected only the two main
+ownership sweeps, so it did not complete the adapter's remaining ranges.
+
+The native Zig coverage checker requires every named sweep to report all
+ranges, rejects duplicates and inconsistent totals, and verifies exact bounds.
+Its two unit tests passed on Windows Debug at `0e492b4`, with all 1,667 source
+hashes unchanged. The hosted range execution and its completion evidence remain
+pending; the checker passing does not itself qualify those sweeps. No allocation
+index is intentionally sampled or dropped. Final platform modes, full CI and
+native parity remain open.
