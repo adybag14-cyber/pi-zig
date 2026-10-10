@@ -280,6 +280,22 @@ fn allocate(engine: *js.Engine, entries: c.JSValue, intrinsic: c.JSValue, availa
     if (numeric_total < content) try distribute(engine, sizes, entries, content - numeric_total, true, context) else if (numeric_total > content) try distribute(engine, sizes, entries, numeric_total - content, false, context);
     return sizes;
 }
+/// Internal layout engine access to the same genuine Source allocation body.
+pub fn allocateLayoutSizes(engine: *js.Engine, entries: c.JSValue, intrinsic: c.JSValue, available: c.JSValue, gap: c.JSValue, iterator: c.JSValue, primitive: c.JSValue) !c.JSValue {
+    const context = try js.object(engine);
+    defer engine.freeValue(context);
+    try defineContext(engine, context, "iteratorSymbol", iterator);
+    try defineContext(engine, context, "primitiveSymbol", primitive);
+    return allocate(engine, entries, intrinsic, available, gap, context);
+}
+pub fn visibleLayoutEntries(engine: *js.Engine, entries: c.JSValue, viewport: c.JSValue) !c.JSValue {
+    const context = try js.object(engine);
+    defer engine.freeValue(context);
+    try defineContext(engine, context, "viewport", viewport);
+    const predicate = try callback(engine, .visible, context);
+    defer engine.freeValue(predicate);
+    return js.invoke(engine, entries, "filter", &.{predicate});
+}
 fn invokeVoid(engine: *js.Engine, object: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !void {
     const result = try js.invoke(engine, object, name, args);
     engine.freeValue(result);

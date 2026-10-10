@@ -1,0 +1,14 @@
+const searchCases=[];
+for(const [name,lines,queries]of[
+ ['ASCII whitespace and lines',['  one  two','three','four  '],['one','ONE','one two','two three',' two\tthree\n','four','missing','   ']],
+ ['ANSI removed and literal regex',['\x1b[31mA.*B\x1b[0m','[x] (y) + $ \\'],['a.*b','[x]','(y)','+','$','\\']],
+ ['unicode graphemes and cell mapping',['a世界 e\u0301 👩‍👩‍👧‍👦','𐐀𐐨 kelvin K σςΣ','ไทย\tລາວ'],['世界','界 e\u0301','e\u0301','👩','𐐨','k','σ','ไทย ລາວ']],
+ ['whitespace grapheme normalization',['\talpha\u00a0beta','\u2003gamma\r\n'],['alpha beta gamma','beta\u2003gamma','\r\nalpha\t']]
+])for(const query of queries){const matches=findAltScreenSearchMatches(lines,query);searchCases.push({name:name+':'+query,matches,keys:matches.map(getAltScreenSearchMatchKey)})}
+{
+ const index=new AltScreenSearchIndex(),lines=['hello world','hello'],trace=[];let previous;
+ for(const [input,query]of[[lines,'hello'],[lines,' hello '],[lines.slice(),'hello'],[lines,'world'],[['hello earth','hello'],'hello'],[['hello earth','hello'],'HELLO']]){const result=index.search(input,query);trace.push({changed:result.changed,sameArray:previous===result.matches,matches:result.matches,corpus:index.corpus,sourceLines:index.sourceLines,normalized:index.normalizedQuery});previous=result.matches}
+ searchCases.push({name:'genuine index cache corpus spans identity and normalization',trace,fields:Object.keys(index),prototype:Object.getOwnPropertyNames(AltScreenSearchIndex.prototype)});
+}
+for(const match of[{segments:[]},{segments:[{row:2,startCol:3,endCol:8}]},{segments:[{row:1,startCol:2,endCol:4},{row:3,startCol:0,endCol:7}]}])searchCases.push({name:'match key',match,key:getAltScreenSearchMatchKey(match)});
+globalThis.tuiAltSearchCases=JSON.parse(JSON.stringify(searchCases));

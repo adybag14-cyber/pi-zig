@@ -1,0 +1,7168 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "exports": [
+    {
+      "name": "Box",
+      "functionName": "Box",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Box",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "removeChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clear",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setBgFn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setBgFn",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setPaddingX",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidateCache",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidateCache",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "matchCache",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "matchCache",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "applyBg",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyBg",
+          "length": 2,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "CancellableLoader",
+      "functionName": "CancellableLoader",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "CancellableLoader",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "signal",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get signal",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "aborted",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get aborted",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "dispose",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "dispose",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "CombinedAutocompleteProvider",
+      "functionName": "CombinedAutocompleteProvider",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "CombinedAutocompleteProvider",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "getSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSuggestions",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "applyCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyCompletion",
+          "length": 5,
+          "constructible": false
+        },
+        {
+          "key": "extractAtPrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "extractAtPrefix",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "extractPathPrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "extractPathPrefix",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "expandHomePath",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "expandHomePath",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "resolveScopedFuzzyQuery",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveScopedFuzzyQuery",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scopedPathForDisplay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scopedPathForDisplay",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getFileSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getFileSuggestions",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scoreEntry",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scoreEntry",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "getBaseDirSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getBaseDirSuggestions",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "getFuzzyFileSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getFuzzyFileSuggestions",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "shouldTriggerFileCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "shouldTriggerFileCompletion",
+          "length": 3,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Container",
+      "functionName": "Container",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Container",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "removeChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clear",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Editor",
+      "functionName": "Editor",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Editor",
+          "length": 2,
+          "constructible": true
+        },
+        {
+          "key": "validPasteIds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "validPasteIds",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "segment",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "segment",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getPaddingX",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setPaddingX",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getAutocompleteMaxVisible",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getAutocompleteMaxVisible",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setAutocompleteMaxVisible",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setAutocompleteMaxVisible",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setAutocompleteProvider",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setAutocompleteProvider",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "addToHistory",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addToHistory",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "isEditorEmpty",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isEditorEmpty",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isOnFirstVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isOnFirstVisualLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isOnLastVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isOnLastVisualLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "navigateHistory",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "navigateHistory",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "exitHistoryBrowsing",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "exitHistoryBrowsing",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setTextInternal",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setTextInternal",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "renderTopBorder",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderTopBorder",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "renderBottomBorder",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderBottomBorder",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "layoutText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "layoutText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getText",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "expandPasteMarkers",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "expandPasteMarkers",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getExpandedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getExpandedText",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getLines",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "insertTextAtCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "insertTextAtCursor",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "normalizeText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "normalizeText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "insertTextAtCursorInternal",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "insertTextAtCursorInternal",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "insertCharacter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "insertCharacter",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "handlePaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handlePaste",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "addNewLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addNewLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "shouldSubmitOnBackslashEnter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "shouldSubmitOnBackslashEnter",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "submitValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "submitValue",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleBackspace",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleBackspace",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setCursorCol",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCursorCol",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "moveToVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveToVisualLine",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "computeVerticalMoveColumn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "computeVerticalMoveColumn",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "moveToLineStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveToLineStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "moveToLineEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveToLineEnd",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteToStartOfLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteToStartOfLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteToEndOfLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteToEndOfLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteWordBackwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteWordForward",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteWordForward",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleForwardDelete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleForwardDelete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "buildVisualLineMap",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "buildVisualLineMap",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "findVisualLineAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "findVisualLineAt",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "findCurrentVisualLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "findCurrentVisualLine",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "moveCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveCursor",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "pageScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "pageScroll",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "moveWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveWordBackwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "yank",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "yank",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "yankPop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "yankPop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "insertYankedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "insertYankedText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "deleteYankedText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteYankedText",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "pushUndoSnapshot",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "pushUndoSnapshot",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "undo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "undo",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "jumpToChar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "jumpToChar",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "moveWordForwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveWordForwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isSlashMenuAllowed",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isSlashMenuAllowed",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isAtStartOfMessage",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isAtStartOfMessage",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isInSlashCommandContext",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isInSlashCommandContext",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getBestAutocompleteMatchIndex",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getBestAutocompleteMatchIndex",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "createAutocompleteList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "createAutocompleteList",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "tryTriggerAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "tryTriggerAutocomplete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleTabCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleTabCompletion",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleSlashCommandCompletion",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleSlashCommandCompletion",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "forceFileAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "forceFileAutocomplete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "requestAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "requestAutocomplete",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "startAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "startAutocompleteRequest",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "setAutocompleteTriggerCharacters",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setAutocompleteTriggerCharacters",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getAutocompleteDebounceMs",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getAutocompleteDebounceMs",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "runAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "runAutocompleteRequest",
+          "length": 6,
+          "constructible": false
+        },
+        {
+          "key": "isAutocompleteRequestCurrent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isAutocompleteRequestCurrent",
+          "length": 5,
+          "constructible": false
+        },
+        {
+          "key": "applyAutocompleteSuggestions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyAutocompleteSuggestions",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "cancelAutocompleteRequest",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "cancelAutocompleteRequest",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearAutocompleteUi",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearAutocompleteUi",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "cancelAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "cancelAutocomplete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isShowingAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isShowingAutocomplete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "updateAutocomplete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateAutocomplete",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "HStack",
+      "functionName": "HStack",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "HStack",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "functionName": "Image",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Image",
+          "length": 3,
+          "constructible": true
+        },
+        {
+          "key": "getImageId",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getImageId",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "functionName": "Input",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Input",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "getValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getValue",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setValue",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "insertCharacter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "insertCharacter",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleBackspace",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleBackspace",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleForwardDelete",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleForwardDelete",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteToLineStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteToLineStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteToLineEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteToLineEnd",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteWordBackwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "deleteWordForward",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteWordForward",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "yank",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "yank",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "yankPop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "yankPop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "pushUndo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "pushUndo",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "undo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "undo",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "moveWordBackwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveWordBackwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "moveWordForwards",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveWordForwards",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handlePaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handlePaste",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "KeybindingsManager",
+      "functionName": "KeybindingsManager",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "KeybindingsManager",
+          "length": 1,
+          "constructible": true
+        },
+        {
+          "key": "rebuild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "rebuild",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "matches",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "matches",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getKeys",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getDefinition",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getDefinition",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getConflicts",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getConflicts",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setUserBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setUserBindings",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getUserBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getUserBindings",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getResolvedBindings",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getResolvedBindings",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Loader",
+      "functionName": "Loader",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Loader",
+          "length": 3,
+          "constructible": true
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "start",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "start",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "stop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setMessage",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setMessage",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setIndicator",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "restartAnimation",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "restartAnimation",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getRenderedIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getRenderedIndicator",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "updateDisplay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateDisplay",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Markdown",
+      "functionName": "Markdown",
+      "length": 6,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Markdown",
+          "length": 6,
+          "constructible": true
+        },
+        {
+          "key": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "applyDefaultStyle",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyDefaultStyle",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getDefaultStylePrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getDefaultStylePrefix",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getStylePrefix",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getStylePrefix",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getDefaultInlineStyleContext",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getDefaultInlineStyleContext",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "renderToken",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderToken",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "renderInlineTokens",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderInlineTokens",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getOrderedListMarker",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getOrderedListMarker",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getUnorderedListMarker",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getUnorderedListMarker",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "renderList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderList",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "getLongestWordWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getLongestWordWidth",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "wrapCellText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "wrapCellText",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "renderTable",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderTable",
+          "length": 4,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Marked",
+      "functionName": "Z",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Z",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "walkTokens",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "walkTokens",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "use",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "use",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setOptions",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setOptions",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "lexer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "lexer",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "parser",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parser",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "parseMarkdown",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseMarkdown",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "onError",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "onError",
+          "length": 2,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "MouseRegion",
+      "functionName": "MouseRegion",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "MouseRegion",
+          "length": 2,
+          "constructible": true
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "ProcessTerminal",
+      "functionName": "ProcessTerminal",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "ProcessTerminal",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "kittyProtocolActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get kittyProtocolActive",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "modifyOtherKeysActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get modifyOtherKeysActive",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "start",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "start",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "setupStdinBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setupStdinBuffer",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "queryAndEnableKittyProtocol",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "queryAndEnableKittyProtocol",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleKeyboardProtocolNegotiationSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleKeyboardProtocolNegotiationSequence",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "readKeyboardProtocolNegotiationSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "readKeyboardProtocolNegotiationSequence",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setKeyboardProtocolNegotiationBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setKeyboardProtocolNegotiationBuffer",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clearKeyboardProtocolNegotiationBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearKeyboardProtocolNegotiationBuffer",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "flushKeyboardProtocolNegotiationBufferAsInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "flushKeyboardProtocolNegotiationBufferAsInput",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scheduleKeyboardProtocolNegotiationBufferFlush",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scheduleKeyboardProtocolNegotiationBufferFlush",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearKeyboardProtocolNegotiationBufferFlushTimer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearKeyboardProtocolNegotiationBufferFlushTimer",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "forwardInputSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "forwardInputSequence",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "enableModifyOtherKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "enableModifyOtherKeys",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "disableModifyOtherKeys",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "disableModifyOtherKeys",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "enableWindowsVTInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "enableWindowsVTInput",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "drainInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "drainInput",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "stop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "write",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "write",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "columns",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get columns",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "rows",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get rows",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "moveBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "moveBy",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "hideCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hideCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "showCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "showCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearLine",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearFromCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearFromCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearScreen",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearScreen",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setTitle",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setTitle",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setProgramStatus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setProgramStatus",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "writeProgramStatus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "writeProgramStatus",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setProgress",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setProgress",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clearProgressInterval",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearProgressInterval",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "ScrollView",
+      "functionName": "ScrollView",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "ScrollView",
+          "length": 1,
+          "constructible": true
+        },
+        {
+          "key": "scrollTop",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get scrollTop",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "isFollowingEnd",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get isFollowingEnd",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "viewportHeight",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get viewportHeight",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "scrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get scrollbar",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "isScrollbarVisible",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get isScrollbarVisible",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "isScrollbarActive",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get isScrollbarActive",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "setScrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setScrollbar",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getContentWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getContentWidth",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "markScrollbarActivity",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "markScrollbarActivity",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "hideTransientScrollbar",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hideTransientScrollbar",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setScrollbarActive",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setScrollbarActive",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scrollTo",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollTo",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scrollBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollBy",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scrollToStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollToStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scrollToEnd",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollToEnd",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "updateLayout",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateLayout",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "addChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "removeChild",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "removeChild",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clear",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "Symbol(@earendil-works/pi-tui/layout-node)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "[@earendil-works/pi-tui/layout-node]",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "SelectList",
+      "functionName": "SelectList",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "SelectList",
+          "length": 3,
+          "constructible": true
+        },
+        {
+          "key": "setFilter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setFilter",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setSelectedIndex",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setSelectedIndex",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getVisibleRange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getVisibleRange",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "renderItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderItem",
+          "length": 5,
+          "constructible": false
+        },
+        {
+          "key": "getPrimaryColumnWidth",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getPrimaryColumnWidth",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getPrimaryColumnBounds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getPrimaryColumnBounds",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "truncatePrimary",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "truncatePrimary",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "getDisplayValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getDisplayValue",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "notifySelectionChange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "notifySelectionChange",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getSelectedItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSelectedItem",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "SettingsList",
+      "functionName": "SettingsList",
+      "length": 5,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "SettingsList",
+          "length": 5,
+          "constructible": true
+        },
+        {
+          "key": "updateValue",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateValue",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "selectItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "selectItem",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "renderMainList",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderMainList",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleMouse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getDisplayItems",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getDisplayItems",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getVisibleRange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getVisibleRange",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "activateItem",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "activateItem",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "closeSubmenu",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "closeSubmenu",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "applyFilter",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyFilter",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "addHintLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addHintLine",
+          "length": 2,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Spacer",
+      "functionName": "Spacer",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Spacer",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "setLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setLines",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "StdinBuffer",
+      "functionName": "StdinBuffer",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "StdinBuffer",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "process",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "process",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "emitDataSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "emitDataSequence",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "flush",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "flush",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clear",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clear",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getBuffer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getBuffer",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "destroy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "destroy",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "Text",
+      "functionName": "Text",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "Text",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "setText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setText",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setCustomBgFn",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCustomBgFn",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setPaddingX",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setPaddingX",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "TruncatedText",
+      "functionName": "TruncatedText",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TruncatedText",
+          "length": 1,
+          "constructible": true
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "TuiAltScreen",
+      "functionName": "TuiAltScreen",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TuiAltScreen",
+          "length": 3,
+          "constructible": true
+        },
+        {
+          "key": "viewportTop",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get viewportTop",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "isFollowingOutput",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get isFollowingOutput",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "setWheelScrollLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setWheelScrollLines",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getCopyOnSelect",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getCopyOnSelect",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setCopyOnSelect",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCopyOnSelect",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "hasActiveSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hasActiveSelection",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "copyActiveSelectionToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "copyActiveSelectionToClipboard",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "resetTextSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resetTextSelection",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getScreenLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getScreenLines",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setLayoutRoot",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setLayoutRoot",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getMountedRoots",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getMountedRoots",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getPrimaryScrollView",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getPrimaryScrollView",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "beforeTerminalStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "beforeTerminalStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "beforeTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "beforeTerminalStop",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "afterTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "afterTerminalStop",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "deleteKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteKittyImages",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "prepareKittyScreen",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "prepareKittyScreen",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "resetRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resetRenderState",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scrollBy",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollBy",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "scrollToTop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollToTop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scrollToBottom",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollToBottom",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scrollToPrompt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollToPrompt",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "toggleSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "toggleSearch",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "closeSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "closeSearch",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "updateSearchQuery",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateSearchQuery",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "navigateSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "navigateSearch",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getSearchNavigationDirectionAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSearchNavigationDirectionAt",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "handleSearchMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleSearchMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "refreshSearch",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "refreshSearch",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "flash",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "flash",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "shouldDeferViewportInputToOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "shouldDeferViewportInputToOverlay",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearComponentMouseGesture",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearComponentMouseGesture",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleViewportInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleViewportInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "decodeMouseButton",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "decodeMouseButton",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "createMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "createMouseEvent",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "dispatchMouseToLayout",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "dispatchMouseToLayout",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "applyMouseDispatchResult",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyMouseDispatchResult",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "dispatchMouseToTarget",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "dispatchMouseToTarget",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getComponentClickCount",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getComponentClickCount",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "clearTextSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearTextSelection",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "parseWheelEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseWheelEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "routeWheel",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "routeWheel",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "parseSgrMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseSgrMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleRightClickPaste",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleRightClickPaste",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "handleScrollToEndIndicatorMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleScrollToEndIndicatorMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getScrollbarTargetAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getScrollbarTargetAt",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "setScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setScrollbarHover",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "updateScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateScrollbarHover",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "stopScrollbarHover",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stopScrollbarHover",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scrollScrollbarToPointer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scrollScrollbarToPointer",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "handleScrollbarMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleScrollbarMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "stopScrollbarDrag",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stopScrollbarDrag",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getScrollSelectionPoint",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getScrollSelectionPoint",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "getSelectionPoint",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSelectionPoint",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "getSelectionSourceLine",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSelectionSourceLine",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getWordSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getWordSelection",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getLineSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getLineSelection",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "updateSelectionFocus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateSelectionFocus",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getClickCount",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getClickCount",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "updateSelectionAutoScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "updateSelectionAutoScroll",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "autoScrollSelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "autoScrollSelection",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "stopSelectionAutoScroll",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stopSelectionAutoScroll",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleSelectionMouseEvent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleSelectionMouseEvent",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getSelectionBounds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSelectionBounds",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getSelectionColumns",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getSelectionColumns",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "getActiveSelectionText",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getActiveSelectionText",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "copySelectionToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "copySelectionToClipboard",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "copyTextToClipboard",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "copyTextToClipboard",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "applySearchTextHighlight",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applySearchTextHighlight",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "applySearchHighlights",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applySearchHighlights",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "applySelectionHighlight",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applySelectionHighlight",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "applySelection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applySelection",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "isMouseSequence",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isMouseSequence",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "compositeScrollToEndIndicator",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "compositeScrollToEndIndicator",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "compositeFlashes",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "compositeFlashes",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "doRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "doRender",
+          "length": 0,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "TuiMainScreen",
+      "functionName": "TuiMainScreen",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TuiMainScreen",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "captureRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "captureRenderState",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "restoreRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "restoreRenderState",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "resetRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resetRenderState",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "beforeTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "beforeTerminalStop",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "collectKittyImageIds",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "collectKittyImageIds",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "deleteKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteKittyImages",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getKittyImageReservedRows",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getKittyImageReservedRows",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "expandChangedRangeForKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "expandChangedRangeForKittyImages",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "deleteChangedKittyImages",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteChangedKittyImages",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "doRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "doRender",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "positionHardwareCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "positionHardwareCursor",
+          "length": 2,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "VStack",
+      "functionName": "VStack",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "VStack",
+          "length": 0,
+          "constructible": true
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "render",
+          "length": 1,
+          "constructible": false
+        }
+      ]
+    },
+    {
+      "name": "allocateImageId",
+      "functionName": "allocateImageId",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "allocateImageId",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "backgroundAnsi",
+      "functionName": "backgroundAnsi",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "backgroundAnsi",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "calculateImageRows",
+      "functionName": "calculateImageRows",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "calculateImageRows",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "colorToHex",
+      "functionName": "colorToHex",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "colorToHex",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "colorToOkhsl",
+      "functionName": "colorToOkhsl",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "colorToOkhsl",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "colorToOklch",
+      "functionName": "colorToOklch",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "colorToOklch",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "colorToRgb",
+      "functionName": "colorToRgb",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "colorToRgb",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "compositeTuiLine",
+      "functionName": "compositeTuiLine",
+      "length": 5,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "compositeTuiLine",
+          "length": 5,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "decodeKittyPrintable",
+      "functionName": "decodeKittyPrintable",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "decodeKittyPrintable",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "deleteAllKittyImages",
+      "functionName": "deleteAllKittyImages",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteAllKittyImages",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "deleteKittyImage",
+      "functionName": "deleteKittyImage",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "deleteKittyImage",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "detectCapabilities",
+      "functionName": "detectCapabilities",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "detectCapabilities",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "encodeITerm2",
+      "functionName": "encodeITerm2",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "encodeITerm2",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "encodeKitty",
+      "functionName": "encodeKitty",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "encodeKitty",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "foregroundAnsi",
+      "functionName": "foregroundAnsi",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "foregroundAnsi",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "formatProgramStatus",
+      "functionName": "formatProgramStatus",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "formatProgramStatus",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "fuzzyFilter",
+      "functionName": "fuzzyFilter",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "fuzzyFilter",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "fuzzyMatch",
+      "functionName": "fuzzyMatch",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "fuzzyMatch",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getCapabilities",
+      "functionName": "getCapabilities",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getCapabilities",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getCellDimensions",
+      "functionName": "getCellDimensions",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getCellDimensions",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getGifDimensions",
+      "functionName": "getGifDimensions",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getGifDimensions",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getImageDimensions",
+      "functionName": "getImageDimensions",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getImageDimensions",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getJpegDimensions",
+      "functionName": "getJpegDimensions",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getJpegDimensions",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getKeybindings",
+      "functionName": "getKeybindings",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getKeybindings",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getNativeClipboard",
+      "functionName": "getNativeClipboard",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getNativeClipboard",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getOsc8LinkAtColumn",
+      "functionName": "getOsc8LinkAtColumn",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getOsc8LinkAtColumn",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getPngDimensions",
+      "functionName": "getPngDimensions",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getPngDimensions",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getTerminalColorMode",
+      "functionName": "getTerminalColorMode",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getTerminalColorMode",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "getWebpDimensions",
+      "functionName": "getWebpDimensions",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getWebpDimensions",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "hyperlink",
+      "functionName": "hyperlink",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hyperlink",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "imageFallback",
+      "functionName": "imageFallback",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "imageFallback",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "indexedColor",
+      "functionName": "indexedColor",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "indexedColor",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isAppleTerminalSession",
+      "functionName": "isAppleTerminalSession",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isAppleTerminalSession",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isFocusable",
+      "functionName": "isFocusable",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isFocusable",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isKeyRelease",
+      "functionName": "isKeyRelease",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isKeyRelease",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isKeyRepeat",
+      "functionName": "isKeyRepeat",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isKeyRepeat",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isKittyProtocolActive",
+      "functionName": "isKittyProtocolActive",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isKittyProtocolActive",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "isViewportTUI",
+      "functionName": "isViewportTUI",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isViewportTUI",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "matchesKey",
+      "functionName": "matchesKey",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "matchesKey",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "mixColors",
+      "functionName": "mixColors",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "mixColors",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "okhslColor",
+      "functionName": "okhslColor",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "okhslColor",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "oklabToOkhslLightness",
+      "functionName": "oklabToOkhslLightness",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        }
+      ],
+      "prototype": null
+    },
+    {
+      "name": "oklchColor",
+      "functionName": "oklchColor",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "oklchColor",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "parseColor",
+      "functionName": "parseColor",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseColor",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "parseKey",
+      "functionName": "parseKey",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseKey",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "parseTerminalColorSchemeReport",
+      "functionName": "parseTerminalColorSchemeReport",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "parseTerminalColorSchemeReport",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "renderFakeCursor",
+      "functionName": "renderFakeCursor",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderFakeCursor",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "renderImage",
+      "functionName": "renderImage",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderImage",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "renderLatex",
+      "functionName": "renderLatex",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderLatex",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "resetCapabilitiesCache",
+      "functionName": "resetCapabilitiesCache",
+      "length": 0,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resetCapabilitiesCache",
+          "length": 0,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "rgbColor",
+      "functionName": "rgbColor",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "rgbColor",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setCapabilities",
+      "functionName": "setCapabilities",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCapabilities",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setCapabilityOverrides",
+      "functionName": "setCapabilityOverrides",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCapabilityOverrides",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setCellDimensions",
+      "functionName": "setCellDimensions",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setCellDimensions",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setImageTranscoder",
+      "functionName": "setImageTranscoder",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setImageTranscoder",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setKeybindings",
+      "functionName": "setKeybindings",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setKeybindings",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "setKittyProtocolActive",
+      "functionName": "setKittyProtocolActive",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setKittyProtocolActive",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "sliceByColumn",
+      "functionName": "sliceByColumn",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "sliceByColumn",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "stripTerminalSequences",
+      "functionName": "stripTerminalSequences",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stripTerminalSequences",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "styleText",
+      "functionName": "styleText",
+      "length": 3,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "styleText",
+          "length": 3,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "styleTextWithAnsi",
+      "functionName": "styleTextWithAnsi",
+      "length": 4,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "styleTextWithAnsi",
+          "length": 4,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "truncateToWidth",
+      "functionName": "truncateToWidth",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "truncateToWidth",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "visibleWidth",
+      "functionName": "visibleWidth",
+      "length": 1,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "visibleWidth",
+          "length": 1,
+          "constructible": true
+        }
+      ]
+    },
+    {
+      "name": "wrapTextWithAnsi",
+      "functionName": "wrapTextWithAnsi",
+      "length": 2,
+      "own": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "wrapTextWithAnsi",
+          "length": 2,
+          "constructible": true
+        }
+      ]
+    }
+  ]
+}

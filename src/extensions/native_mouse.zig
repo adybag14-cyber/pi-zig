@@ -289,6 +289,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
     const prototype = try object(engine);
     defer engine.freeValue(prototype);
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Method)) |method| {
         const function_value = try engine.checked(c.pi_js_function_magic(engine.context, methodCall, method.name, if (method.value == @intFromEnum(Method.invalidate)) 0 else 1, @intCast(method.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, method.name, function_value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
@@ -305,9 +306,9 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype) };
     _ = c.JS_SetOpaque(constructor, state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "MouseRegion")), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 2), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "MouseRegion")), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
     try put(engine, exports, "MouseRegion", c.JS_DupValue(engine.context, constructor));
 }
 

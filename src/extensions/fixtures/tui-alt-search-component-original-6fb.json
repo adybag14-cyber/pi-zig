@@ -1,0 +1,497 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "genuine constructor and complete callable descriptors",
+      "fields": [
+        "input",
+        "onQueryChange",
+        "navigationButtonStyle",
+        "resultCount",
+        "resultIndex",
+        "previousButtonStart",
+        "previousButtonEnd",
+        "nextButtonStart",
+        "nextButtonEnd",
+        "hoveredNavigationDirection",
+        "_focused"
+      ],
+      "inputFields": [
+        "value",
+        "cursor",
+        "prompt",
+        "placeholder",
+        "placeholderStyle",
+        "renderedStartColumn",
+        "onSubmit",
+        "onEscape",
+        "focused",
+        "pasteBuffer",
+        "isInPaste",
+        "killRing",
+        "lastAction",
+        "undoStack"
+      ],
+      "inputClass": "Input",
+      "placeholderStyle": {
+        "name": "placeholderStyle",
+        "length": 1
+      },
+      "navigationStyle": {
+        "name": "navigationButtonStyle",
+        "length": 1
+      },
+      "constructor": {
+        "name": "AltScreenSearchComponent",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ]
+      },
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "AltScreenSearchComponent",
+            "length": 1
+          }
+        },
+        {
+          "key": "focused",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get focused",
+            "length": 0
+          },
+          "set": {
+            "name": "set focused",
+            "length": 1
+          }
+        },
+        {
+          "key": "setResult",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "setResult",
+            "length": 2
+          }
+        },
+        {
+          "key": "getNavigationDirectionAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "getNavigationDirectionAt",
+            "length": 2
+          }
+        },
+        {
+          "key": "setHoveredNavigationDirection",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "setHoveredNavigationDirection",
+            "length": 1
+          }
+        },
+        {
+          "key": "handleInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "handleInput",
+            "length": 1
+          }
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "invalidate",
+            "length": 0
+          }
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "render",
+            "length": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty query width -3",
+      "lines": [
+        "┌",
+        "│",
+        "└"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 0",
+      "lines": [
+        "┌",
+        "│",
+        "└"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 1",
+      "lines": [
+        "┌",
+        "│",
+        "└"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 2",
+      "lines": [
+        "┌┐",
+        "││",
+        "└┘"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 3",
+      "lines": [
+        "┌─┐",
+        "│ │",
+        "└─┘"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 5",
+      "lines": [
+        "┌───┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mi\u001b[0m\u001b[22m│",
+        "└───┘"
+      ],
+      "bounds": [
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "name": "empty query width 8",
+      "lines": [
+        "┌──────┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mind \u001b[0m\u001b[22m│",
+        "└ ↑ ↓ ─┘"
+      ],
+      "bounds": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "name": "empty query width 12",
+      "lines": [
+        "┌──────────┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mind in t\u001b[0m\u001b[22m│",
+        "└──── ↑ ↓ ─┘"
+      ],
+      "bounds": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "name": "empty query width 20",
+      "lines": [
+        "┌──────────────────┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mind in transcrip\u001b[0m\u001b[22m│",
+        "└──────────── ↑ ↓ ─┘"
+      ],
+      "bounds": [
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "name": "empty query width 40",
+      "lines": [
+        "┌──────────────────────────────────────┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mind in transcript\u001b[22m                   │",
+        "└──────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ],
+      "bounds": [
+        14,
+        27,
+        30,
+        37
+      ]
+    },
+    {
+      "name": "empty query width 70",
+      "lines": [
+        "┌────────────────────────────────────────────────────────────────────┐",
+        "│ \u001b_pi:fc\u0007\u001b[2mF\u001b[22m\u001b_pi:/fc\u0007\u001b[2mind in transcript\u001b[22m                                                 │",
+        "└────────────────────────────────────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ],
+      "bounds": [
+        44,
+        57,
+        60,
+        67
+      ]
+    },
+    {
+      "name": "actual focused Unicode query count 0",
+      "lines": [
+        "┌──────────────────────────────────────┐",
+        "│ \u001b_pi:c\u0007\u001b_pi:fc\u0007世\u001b_pi:/fc\u0007界😀                   \u001b[2m No matches \u001b[22m│",
+        "└──────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ],
+      "focused": true,
+      "inputFocused": true
+    },
+    {
+      "name": "actual focused Unicode query count 1",
+      "lines": [
+        "┌──────────────────────────────────────┐",
+        "│ \u001b_pi:c\u0007\u001b_pi:fc\u0007世\u001b_pi:/fc\u0007界😀                          \u001b[2m 1/1 \u001b[22m│",
+        "└──────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ],
+      "focused": true,
+      "inputFocused": true
+    },
+    {
+      "name": "actual focused Unicode query count 12",
+      "lines": [
+        "┌──────────────────────────────────────┐",
+        "│ \u001b_pi:c\u0007\u001b_pi:fc\u0007世\u001b_pi:/fc\u0007界😀                         \u001b[2m 1/12 \u001b[22m│",
+        "└──────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ],
+      "focused": true,
+      "inputFocused": true
+    },
+    {
+      "name": "ordinary editing callbacks hover hit-test focus and invalidate",
+      "trace": [
+        {
+          "query": "a",
+          "receiver": true
+        },
+        {
+          "query": "ab",
+          "receiver": true
+        },
+        {
+          "query": "aXb",
+          "receiver": true
+        },
+        {
+          "query": "ab",
+          "receiver": true
+        },
+        {
+          "style": "↑ Shift+Enter",
+          "hovered": true,
+          "receiver": true
+        },
+        {
+          "style": "↓ Enter",
+          "hovered": false,
+          "receiver": true
+        }
+      ],
+      "inputTrace": [
+        "a",
+        "ab",
+        "ab",
+        "aXb",
+        "ab"
+      ],
+      "changes": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "lines": [
+        "┌────────────────────────────────────────────────┐",
+        "│ a\u001b_pi:fc\u0007b\u001b_pi:/fc\u0007                                        \u001b[2m 2/4 \u001b[22m│",
+        "└────────────────────── [↑ Shift+Enter] · ↓ Enter ─┘"
+      ],
+      "navigation": [
+        {
+          "row": 1,
+          "column": 23,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 24,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 36,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 37,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 40,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 46,
+          "direction": null
+        },
+        {
+          "row": 1,
+          "column": 47,
+          "direction": null
+        },
+        {
+          "row": 2,
+          "column": 23,
+          "direction": null
+        },
+        {
+          "row": 2,
+          "column": 24,
+          "direction": -1
+        },
+        {
+          "row": 2,
+          "column": 36,
+          "direction": -1
+        },
+        {
+          "row": 2,
+          "column": 37,
+          "direction": null
+        },
+        {
+          "row": 2,
+          "column": 40,
+          "direction": 1
+        },
+        {
+          "row": 2,
+          "column": 46,
+          "direction": 1
+        },
+        {
+          "row": 2,
+          "column": 47,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 23,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 24,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 36,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 37,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 40,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 46,
+          "direction": null
+        },
+        {
+          "row": 3,
+          "column": 47,
+          "direction": null
+        }
+      ],
+      "invalidations": 1,
+      "focused": "focus-token",
+      "inputFocused": "focus-token"
+    },
+    {
+      "name": "actual platform key formatting",
+      "lines": [
+        "┌────────────────────────────────────────────────────────────────────┐",
+        "│ \u001b_pi:c\u0007\u001b_pi:fc\u0007世\u001b_pi:/fc\u0007界😀                                                       \u001b[2m 1/12 \u001b[22m│",
+        "└────────────────────────────────────────── ↑ Shift+Enter · ↓ Enter ─┘"
+      ]
+    },
+    {
+      "name": "callback exception preserves changed input and identity",
+      "same": true,
+      "query": "x"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+const descriptor=Object.getOwnPropertyDescriptor(globalThis,'performance');
+const fn=value=>value?{name:value.name,length:value.length,keys:Reflect.ownKeys(value),prototype:Object.getPrototypeOf(value)===Function.prototype,constructible:(()=>{try{Reflect.construct(String,[],value);return true}catch{return false}})()}:null;
+const shape=d=>d?{keys:Object.keys(d),enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,get:fn(d.get),set:fn(d.set),value:typeof d.value}:null;
+const cases=[];const originalNow=Object.getOwnPropertyDescriptor(imported,'now');
+try{
+ cases.push({name:'initial genuine accessor and imported identity',descriptor:shape(descriptor),same:globalThis.performance===imported,getReceiver:descriptor.get.call({})===imported});
+ const override=function now(){return 123.5};Object.defineProperty(imported,'now',{configurable:true,writable:true,value:override});cases.push({name:'object property mutation remains shared',same:globalThis.performance===imported,nowSame:globalThis.performance.now===override,result:globalThis.performance.now()});
+ const replacement={marker:true};globalThis.performance=replacement;cases.push({name:'global setter replacement keeps imported object',descriptor:shape(Object.getOwnPropertyDescriptor(globalThis,'performance')),replacement:globalThis.performance===replacement,importedUnchanged:imported.now===override,savedGetterReplacement:descriptor.get.call({})===replacement,savedGetterImported:descriptor.get.call({})===imported});
+ descriptor.set.call({},17);cases.push({name:'saved setter receiver authority',descriptor:shape(Object.getOwnPropertyDescriptor(globalThis,'performance')),globalValue:globalThis.performance,savedGetter:descriptor.get.call({})});
+ delete globalThis.performance;cases.push({name:'delete keeps imported native clock',descriptor:shape(Object.getOwnPropertyDescriptor(globalThis,'performance')),importedNow:imported.now()});
+}finally{Object.defineProperty(globalThis,'performance',descriptor);if(originalNow)Object.defineProperty(imported,'now',originalNow);else delete imported.now;}
+
+globalThis.nodeGlobalPerformanceCases=JSON.parse(JSON.stringify(cases));

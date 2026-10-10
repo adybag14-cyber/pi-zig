@@ -1,0 +1,52 @@
+const cases=[];
+function screen(){const writes=[];const terminal={columns:40,rows:12,write(data){writes.push(data)},start(){},stop(){},hideCursor(){},showCursor(){}};return {tui:new TuiBase(terminal,false),writes};}
+const osc=(target,color)=>'\x1b]'+target+';'+color+'\x07';
+const copy=value=>JSON.parse(JSON.stringify(value));
+{
+ const {tui,writes}=screen();
+ cases.push({name:'unsolicited replies',values:[tui.consumeTerminalColorResponse(osc('10','#112233')),tui.consumeTerminalColorResponse('\x1b[?1;2c')],writes});
+}
+{
+ const {tui,writes}=screen(),late=[];
+ const result=tui.queryTerminalColors({timeoutMs:100,onLateReply:value=>late.push(copy(value))});
+ const consumed=[tui.consumeTerminalColorResponse('ordinary'),tui.consumeTerminalColorResponse(osc('10','#112233')),tui.consumeTerminalColorResponse(osc('10','#ffffff')),tui.consumeTerminalColorResponse(osc('11','rgb:f/0/8')),tui.consumeTerminalColorResponse(osc('4;0','#bad')),tui.consumeTerminalColorResponse('\x1b[?1;2c')];
+ cases.push({name:'partial duplicate invalid palette and DA1',consumed,result:copy(await result),pending:tui.pendingTerminalColorQueries.length,late,writes});
+}
+{
+ const {tui,writes}=screen(),late=[];
+ const result=tui.queryTerminalColors({timeoutMs:100,onLateReply:value=>late.push(copy(value))});
+ const consumed=[tui.consumeTerminalColorResponse(osc('10','#112233')),tui.consumeTerminalColorResponse(osc('11','#445566'))];
+ for(let index=0;index<16;index++)consumed.push(tui.consumeTerminalColorResponse(osc('4;'+index,'#'+index.toString(16).repeat(6))));
+ const colors=copy(await result);
+ consumed.push(tui.consumeTerminalColorResponse(osc('10','#abcdef')));
+ consumed.push(tui.consumeTerminalColorResponse('\x1b[?c'));
+ cases.push({name:'all eighteen targets complete then DA1',consumed,result:colors,pending:tui.pendingTerminalColorQueries.length,late,writes});
+}
+{
+ const {tui,writes}=screen(),late=[];
+ const result=tui.queryTerminalColors({timeoutMs:1,onLateReply:value=>late.push(copy(value))});
+ tui.consumeTerminalColorResponse(osc('10','#112233'));
+ const first=copy(await result);
+ tui.consumeTerminalColorResponse(osc('11','#445566'));
+ tui.consumeTerminalColorResponse('\x1b[?c');
+ tui.consumeTerminalColorResponse(osc('10','#abcdef'));
+ cases.push({name:'timeout collects late replies once at DA1',result:first,late,pending:tui.pendingTerminalColorQueries.length,writes});
+}
+{
+ const {tui,writes}=screen(),trace=[];
+ tui.onTerminalColorSchemeChange(value=>trace.push('a:'+value));
+ const remove=tui.onTerminalColorSchemeChange(value=>trace.push('b:'+value));
+ const consumed=[tui.consumeTerminalColorSchemeReport('ordinary'),tui.consumeTerminalColorSchemeReport('\x1b[?997;1n')];
+ remove();
+ consumed.push(tui.consumeTerminalColorSchemeReport('\x1b[?997;1n\x1b[?997;2n'));
+ cases.push({name:'color scheme subscriptions',consumed,trace,writes});
+}
+{
+ const before=getCellDimensions(),{tui,writes}=screen(),trace=[];
+ tui.invalidate=()=>trace.push('invalidate');tui.requestRender=()=>trace.push('render');
+ const consumed=[tui.consumeCellSizeResponse('ordinary'),tui.consumeCellSizeResponse('\x1b[6;0;12t'),tui.consumeCellSizeResponse('\x1b[6;19;11t')];
+ cases.push({name:'cell dimensions response',consumed,trace,dimensions:getCellDimensions(),writes});
+ setCellDimensions(before);
+}
+
+globalThis.tuiBaseReports=cases;

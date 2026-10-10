@@ -137,6 +137,7 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     inline for (.{ false, true }) |custom| {
         const prototype = try engine.checked(if (custom) c.JS_NewObjectProto(engine.context, editor_prototype) else c.JS_NewObject(engine.context));
         defer engine.freeValue(prototype);
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
         if (custom) {
             try source_custom.install(engine, prototype);
         } else inline for (std.meta.fields(source_methods.Method)) |field| {
@@ -153,9 +154,9 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
         state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .node_class = node_class, .custom = custom, .input_constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, tui_exports, "Input")) };
         _ = c.JS_SetOpaque(constructor, state);
         _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-        if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
         if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, if (custom) 4 else 2), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, if (custom) "CustomEditor" else "Editor")), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+        if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
         try put(engine, if (custom) coding else tui_exports, if (custom) "CustomEditor" else "Editor", c.JS_DupValue(engine.context, constructor));
         if (!custom) {
             editor_constructor = c.JS_DupValue(engine.context, constructor);

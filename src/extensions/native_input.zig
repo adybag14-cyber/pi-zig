@@ -568,8 +568,8 @@ fn makeAuxConstructor(engine: *Engine, class: c.JSClassID, kind: Kind) !c.JSValu
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .kind = kind };
     _ = c.JS_SetOpaque(constructor, state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, if (kind == .undo) "UndoStack" else "KillRing")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 0), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, if (kind == .undo) "UndoStack" else "KillRing")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "prototype", c.JS_DupValue(engine.context, prototype), 0) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     return constructor;
@@ -603,8 +603,8 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     state.undo = try makeAuxConstructor(engine, class, .undo);
     state.kill = try makeAuxConstructor(engine, class, .kill);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "Input")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 0), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "Input")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "prototype", c.JS_DupValue(engine.context, prototype), 0) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try js.define(engine, exports, "Input", c.JS_DupValue(engine.context, constructor));

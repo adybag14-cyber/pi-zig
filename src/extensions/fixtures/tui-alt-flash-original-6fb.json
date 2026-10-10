@@ -1,0 +1,381 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "actual scheduling render expiry duplicate and dispose",
+      "narrow": [
+        "\u001b[7m hell\u001b[0m\u001b[27m",
+        "\u001b[7m 世界\u001b[0m\u001b[27m"
+      ],
+      "wide": [
+        "\u001b[7m hello \u001b[27m",
+        "\u001b[7m 世界😀 \u001b[27m"
+      ],
+      "before": {
+        "nextId": 2,
+        "entries": [
+          {
+            "id": 0,
+            "message": "hello",
+            "timer": 0
+          },
+          {
+            "id": 1,
+            "message": "世界😀",
+            "timer": 1
+          }
+        ]
+      },
+      "expired": {
+        "nextId": 2,
+        "entries": [
+          {
+            "id": 1,
+            "message": "世界😀",
+            "timer": 1
+          }
+        ]
+      },
+      "final": {
+        "nextId": 2,
+        "entries": []
+      },
+      "trace": [
+        [
+          "schedule",
+          1000,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          0,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "clear",
+          1
+        ]
+      ]
+    },
+    {
+      "name": "duration defaults and Math coercion",
+      "delays": [
+        1000,
+        0,
+        "NaN",
+        "Infinity",
+        7,
+        0
+      ],
+      "state": {
+        "nextId": 6,
+        "entries": [
+          {
+            "id": 0,
+            "message": "undefined",
+            "timer": 0
+          },
+          {
+            "id": 1,
+            "message": "0",
+            "timer": 1
+          },
+          {
+            "id": 2,
+            "message": "NaN",
+            "timer": 2
+          },
+          {
+            "id": 3,
+            "message": "Infinity",
+            "timer": 3
+          },
+          {
+            "id": 4,
+            "message": "7",
+            "timer": 4
+          },
+          {
+            "id": 5,
+            "message": "null",
+            "timer": 5
+          }
+        ]
+      },
+      "trace": [
+        [
+          "schedule",
+          1000,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          0,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          "NaN",
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          "Infinity",
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          7,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "schedule",
+          0,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "arbitrary BigInt postfix identity",
+      "before": {
+        "nextId": {
+          "bigint": "1267650600228229401496703205377"
+        },
+        "entries": [
+          {
+            "id": {
+              "bigint": "1267650600228229401496703205376"
+            },
+            "message": "big",
+            "timer": 0
+          }
+        ]
+      },
+      "after": {
+        "nextId": {
+          "bigint": "1267650600228229401496703205377"
+        },
+        "entries": []
+      },
+      "trace": [
+        [
+          "schedule",
+          1000,
+          "",
+          0
+        ],
+        [
+          "unref",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ],
+        [
+          "requestRender",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "postfix Number hint and original numeric id",
+      "hints": [
+        "number"
+      ],
+      "state": {
+        "nextId": 42,
+        "entries": [
+          {
+            "id": 41,
+            "message": "numeric",
+            "timer": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "synchronous scheduler callback precedes insertion",
+      "entryCount": 1,
+      "nextId": 1,
+      "trace": [
+        [
+          "synchronous callback",
+          1000
+        ],
+        [
+          "unref"
+        ],
+        [
+          "requestRender",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "unref error leaves increment but no entry",
+      "error": "RangeError",
+      "state": {
+        "nextId": 1,
+        "entries": []
+      },
+      "trace": []
+    },
+    {
+      "name": "callee before duration conversion",
+      "events": [
+        "schedule:get",
+        "duration:number",
+        "schedule:call",
+        "unref"
+      ],
+      "nextId": 1
+    },
+    {
+      "name": "dispose closes iterator on clear error",
+      "error": "SyntaxError",
+      "closed": true,
+      "length": 1
+    },
+    {
+      "name": "genuine fields methods and zero width",
+      "fields": [
+        "entries",
+        "nextId",
+        "requestRender"
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "AltScreenFlashContainer",
+          "length": 1
+        },
+        {
+          "key": "flash",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "flash",
+          "length": 1
+        },
+        {
+          "key": "dispose",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "dispose",
+          "length": 0
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "invalidate",
+          "length": 0
+        },
+        {
+          "key": "render",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "render",
+          "length": 1
+        }
+      ],
+      "constructor": {
+        "name": "AltScreenFlashContainer",
+        "length": 1,
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ]
+      },
+      "render": [
+        "\u001b[7m\u001b[27m",
+        "\u001b[7m\u001b[27m"
+      ]
+    }
+  ]
+}

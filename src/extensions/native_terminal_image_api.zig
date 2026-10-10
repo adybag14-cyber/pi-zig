@@ -9,7 +9,7 @@ const utf16 = @import("native_utf16.zig");
 const Method = enum(c_int) { allocateImageId, encodeKitty, deleteKittyImage, deleteAllKittyImages, deleteAllKittyPlacements, encodeITerm2, registerKittyImageMetadata, getKittyImageMetadata, getKittyImagePlacementRows, getKittyImagePlacement, cropKittyImageLine, calculateImageCellSize, calculateImageRows, getPngDimensions, getJpegDimensions, getGifDimensions, getWebpDimensions, getImageDimensions, renderImage, imageFallback };
 fn fail(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native terminal image: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn append(engine: *Engine, array: c.JSValue, value: c.JSValue) !void {

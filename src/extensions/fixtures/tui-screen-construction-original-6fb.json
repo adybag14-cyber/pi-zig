@@ -1,0 +1,2820 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "basePrototype": [
+    "constructor",
+    "hasOverlayEntries",
+    "resetRenderState",
+    "beforeTerminalStart",
+    "afterTerminalStart",
+    "beforeTerminalStop",
+    "afterTerminalStop",
+    "fullRedraws",
+    "getShowHardwareCursor",
+    "setShowHardwareCursor",
+    "getClearOnShrink",
+    "setClearOnShrink",
+    "getFocusedComponent",
+    "setFocus",
+    "setFocusInternal",
+    "clearOverlayFocusRestore",
+    "clearOverlayFocusRestoreFor",
+    "resolveBlockedOverlayFocusResume",
+    "getVisibleOverlayFocusRestore",
+    "isOverlayFocusAncestor",
+    "retargetOverlayPreFocus",
+    "getMountedRoots",
+    "isComponentMounted",
+    "containsComponent",
+    "showOverlay",
+    "hideOverlay",
+    "hideTerminalCursor",
+    "hasOverlay",
+    "isOverlayFocused",
+    "resolveMouseFocusTarget",
+    "dispatchMouseToOverlay",
+    "isOverlayVisible",
+    "getTopmostVisibleOverlay",
+    "invalidate",
+    "start",
+    "addInputListener",
+    "removeInputListener",
+    "onTerminalColorSchemeChange",
+    "setTerminalColorSchemeNotifications",
+    "queryCellSize",
+    "stop",
+    "renderNow",
+    "requestRender",
+    "requestImmediateRender",
+    "cancelRenderTimer",
+    "scheduleRender",
+    "handleTerminalInput",
+    "consumeTerminalColorResponse",
+    "terminalColorQueryResult",
+    "completeTerminalColorQuery",
+    "consumeTerminalColorSchemeReport",
+    "consumeCellSizeResponse",
+    "resolveOverlayLayout",
+    "resolveAnchorRow",
+    "resolveAnchorCol",
+    "compositeOverlays",
+    "applyLineResets",
+    "compositeLineAt",
+    "extractCursorPosition",
+    "resolveFakeCursors",
+    "queryTerminalColors"
+  ],
+  "cases": [
+    {
+      "name": "main undefined",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "regular"
+        },
+        {
+          "key": "previousLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousKittyImageIds",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "previousWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "cursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "hardwareCursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "maxLinesRendered",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousViewportTop",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "regular",
+      "container": true,
+      "base": true,
+      "viewport": false,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiMainScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": false,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "renderState": {
+        "previousLines": [],
+        "previousWidth": 0,
+        "previousHeight": 0,
+        "cursorRow": 0,
+        "hardwareCursorRow": 0,
+        "maxLinesRendered": 0,
+        "previousViewportTop": 0
+      }
+    },
+    {
+      "name": "main false",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "regular"
+        },
+        {
+          "key": "previousLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousKittyImageIds",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "previousWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "cursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "hardwareCursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "maxLinesRendered",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousViewportTop",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "regular",
+      "container": true,
+      "base": true,
+      "viewport": false,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiMainScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": false,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "renderState": {
+        "previousLines": [],
+        "previousWidth": 0,
+        "previousHeight": 0,
+        "cursorRow": 0,
+        "hardwareCursorRow": 0,
+        "maxLinesRendered": 0,
+        "previousViewportTop": 0
+      }
+    },
+    {
+      "name": "main true",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": true
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "regular"
+        },
+        {
+          "key": "previousLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousKittyImageIds",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "previousWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "cursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "hardwareCursorRow",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "maxLinesRendered",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousViewportTop",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "regular",
+      "container": true,
+      "base": true,
+      "viewport": false,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiMainScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": true,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "renderState": {
+        "previousLines": [],
+        "previousWidth": 0,
+        "previousHeight": 0,
+        "cursorRow": 0,
+        "hardwareCursorRow": 0,
+        "maxLinesRendered": 0,
+        "previousViewportTop": 0
+      }
+    },
+    {
+      "name": "alt undefined",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 1
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "fullscreen"
+        },
+        {
+          "key": "previousScreen",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "lastDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousScreenWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousScreenHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "layoutRoot",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "currentLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "implicitDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "render",
+              "handleMouse",
+              "invalidate"
+            ]
+          }
+        },
+        {
+          "key": "implicitScrollView",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "ScrollView",
+            "keys": [
+              "children",
+              "mouseLayout",
+              "child",
+              "followEnd",
+              "primary",
+              "overscroll",
+              "scrollbarTrackStyle",
+              "scrollbarThumbStyle",
+              "currentScrollbar",
+              "scrollbarHideDelayMs",
+              "currentScrollTop",
+              "contentHeight",
+              "currentViewportHeight",
+              "followingEnd",
+              "followSuppressedAtEnd",
+              "requestRenderCallback",
+              "transientScrollbarVisible",
+              "scrollbarActive",
+              "scrollbarHideTimer"
+            ]
+          }
+        },
+        {
+          "key": "flashes",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "AltScreenFlashContainer",
+            "keys": [
+              "entries",
+              "nextId",
+              "requestRender"
+            ]
+          }
+        },
+        {
+          "key": "altScreenActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "imageProtocol",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "savedCapabilities",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "uploadedKittyImages",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Map",
+            "size": 0
+          }
+        },
+        {
+          "key": "selectionAnchor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionFocus",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionGranularity",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "character"
+        },
+        {
+          "key": "selectionInitialRange",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragPointer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionAutoScrollDirection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "selectionAutoScrollTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionPressActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "scrollbarDrag",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollbarHover",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollToEndIndicatorRect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "activeSearch",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "pressedUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragged",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "mouseCapture",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressTarget",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressPoint",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressMoved",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "lastComponentClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "wheelScroll",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "WheelScrollAccelerator",
+            "keys": [
+              "lines",
+              "accelerate",
+              "lastTime",
+              "lastDirection",
+              "averageGap",
+              "carry"
+            ]
+          }
+        },
+        {
+          "key": "mouseEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "searchMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchCurrentMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchNavigationButtonStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "scrollToEndIndicator",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "openUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "onRightClickPaste",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "copyOnSelect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "copySelection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "Symbol(@earendil-works/pi-tui/viewport)",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": true
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "fullscreen",
+      "container": true,
+      "base": true,
+      "viewport": true,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiAltScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": false,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "copyOnSelect": false,
+      "screen": [],
+      "viewportTop": 0,
+      "following": true
+    },
+    {
+      "name": "alt false",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 1
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "fullscreen"
+        },
+        {
+          "key": "previousScreen",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "lastDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousScreenWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousScreenHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "layoutRoot",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "currentLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "implicitDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "render",
+              "handleMouse",
+              "invalidate"
+            ]
+          }
+        },
+        {
+          "key": "implicitScrollView",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "ScrollView",
+            "keys": [
+              "children",
+              "mouseLayout",
+              "child",
+              "followEnd",
+              "primary",
+              "overscroll",
+              "scrollbarTrackStyle",
+              "scrollbarThumbStyle",
+              "currentScrollbar",
+              "scrollbarHideDelayMs",
+              "currentScrollTop",
+              "contentHeight",
+              "currentViewportHeight",
+              "followingEnd",
+              "followSuppressedAtEnd",
+              "requestRenderCallback",
+              "transientScrollbarVisible",
+              "scrollbarActive",
+              "scrollbarHideTimer"
+            ]
+          }
+        },
+        {
+          "key": "flashes",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "AltScreenFlashContainer",
+            "keys": [
+              "entries",
+              "nextId",
+              "requestRender"
+            ]
+          }
+        },
+        {
+          "key": "altScreenActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "imageProtocol",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "savedCapabilities",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "uploadedKittyImages",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Map",
+            "size": 0
+          }
+        },
+        {
+          "key": "selectionAnchor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionFocus",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionGranularity",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "character"
+        },
+        {
+          "key": "selectionInitialRange",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragPointer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionAutoScrollDirection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "selectionAutoScrollTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionPressActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "scrollbarDrag",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollbarHover",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollToEndIndicatorRect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "activeSearch",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "pressedUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragged",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "mouseCapture",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressTarget",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressPoint",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressMoved",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "lastComponentClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "wheelScroll",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "WheelScrollAccelerator",
+            "keys": [
+              "lines",
+              "accelerate",
+              "lastTime",
+              "lastDirection",
+              "averageGap",
+              "carry"
+            ]
+          }
+        },
+        {
+          "key": "mouseEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "searchMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchCurrentMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchNavigationButtonStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "scrollToEndIndicator",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "openUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "onRightClickPaste",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "copyOnSelect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "copySelection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "Symbol(@earendil-works/pi-tui/viewport)",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": true
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "fullscreen",
+      "container": true,
+      "base": true,
+      "viewport": true,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiAltScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": false,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "copyOnSelect": false,
+      "screen": [],
+      "viewportTop": 0,
+      "following": true
+    },
+    {
+      "name": "alt true",
+      "shape": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 1
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": true
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "source-debug"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "status"
+            ]
+          }
+        },
+        {
+          "key": "mode",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "fullscreen"
+        },
+        {
+          "key": "previousScreen",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "lastDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "previousScreenWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "previousScreenHeight",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "layoutRoot",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "currentLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "implicitDocument",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Object",
+            "keys": [
+              "render",
+              "handleMouse",
+              "invalidate"
+            ]
+          }
+        },
+        {
+          "key": "implicitScrollView",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "ScrollView",
+            "keys": [
+              "children",
+              "mouseLayout",
+              "child",
+              "followEnd",
+              "primary",
+              "overscroll",
+              "scrollbarTrackStyle",
+              "scrollbarThumbStyle",
+              "currentScrollbar",
+              "scrollbarHideDelayMs",
+              "currentScrollTop",
+              "contentHeight",
+              "currentViewportHeight",
+              "followingEnd",
+              "followSuppressedAtEnd",
+              "requestRenderCallback",
+              "transientScrollbarVisible",
+              "scrollbarActive",
+              "scrollbarHideTimer"
+            ]
+          }
+        },
+        {
+          "key": "flashes",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "AltScreenFlashContainer",
+            "keys": [
+              "entries",
+              "nextId",
+              "requestRender"
+            ]
+          }
+        },
+        {
+          "key": "altScreenActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "imageProtocol",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "savedCapabilities",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "uploadedKittyImages",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Map",
+            "size": 0
+          }
+        },
+        {
+          "key": "selectionAnchor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionFocus",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionGranularity",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "character"
+        },
+        {
+          "key": "selectionInitialRange",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragPointer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionAutoScrollDirection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "selectionAutoScrollTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionPressActive",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "scrollbarDrag",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollbarHover",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "scrollToEndIndicatorRect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "activeSearch",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "pressedUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "selectionDragged",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "mouseCapture",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressTarget",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressPoint",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "mousePressMoved",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "lastComponentClick",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "wheelScroll",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "WheelScrollAccelerator",
+            "keys": [
+              "lines",
+              "accelerate",
+              "lastTime",
+              "lastDirection",
+              "averageGap",
+              "carry"
+            ]
+          }
+        },
+        {
+          "key": "mouseEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "searchMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchCurrentMatchStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "searchNavigationButtonStyle",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "value": {
+            "name": "",
+            "length": 1
+          }
+        },
+        {
+          "key": "scrollToEndIndicator",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "openUrl",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "onRightClickPaste",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "copyOnSelect",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "copySelection",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "Symbol(@earendil-works/pi-tui/viewport)",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": true
+        }
+      ],
+      "terminalIdentity": true,
+      "mode": "fullscreen",
+      "container": true,
+      "base": true,
+      "viewport": true,
+      "parentConstructor": "TuiBase",
+      "instanceParents": [
+        "TuiAltScreen",
+        "TuiBase",
+        "Container"
+      ],
+      "hardwareCursor": true,
+      "clearOnShrink": false,
+      "focused": null,
+      "fullRedraws": 0,
+      "overlayEntries": false,
+      "copyOnSelect": false,
+      "screen": [],
+      "viewportTop": 0,
+      "following": true
+    }
+  ]
+}

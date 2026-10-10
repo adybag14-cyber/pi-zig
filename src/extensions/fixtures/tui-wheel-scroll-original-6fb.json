@@ -1,0 +1,2569 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "default",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 0,
+            "lastDirection": 1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 100,
+            "lastDirection": 1,
+            "averageGap": 100,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 150,
+            "lastDirection": 1,
+            "averageGap": 75,
+            "carry": 0.33333333333333326
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 170,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 174,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 179,
+            "lastDirection": 1,
+            "averageGap": 26.25,
+            "carry": 0.24812030075187952
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 200,
+            "lastDirection": 1,
+            "averageGap": 23.625,
+            "carry": 0.4809245335561121
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 220,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 5,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 240,
+            "lastDirection": -1,
+            "averageGap": 20,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 440,
+            "lastDirection": -1,
+            "averageGap": 110,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 641,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 640,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "disabled",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "one",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 1,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "fraction",
+      "trace": [
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": 2.9,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": -3,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "zero",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 0,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "nan",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "NaN"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "infinite",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": {
+              "number": "Infinity"
+            },
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "string-number",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "2",
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "null",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": null,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "boxed-number",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": 4,
+            "accelerate": true,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "local-darwin",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": false,
+            "lastTime": {
+              "number": "-Infinity"
+            },
+            "lastDirection": 0,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "remote-connection",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 0,
+            "lastDirection": 1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 100,
+            "lastDirection": 1,
+            "averageGap": 100,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 150,
+            "lastDirection": 1,
+            "averageGap": 75,
+            "carry": 0.33333333333333326
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 170,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 174,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 179,
+            "lastDirection": 1,
+            "averageGap": 26.25,
+            "carry": 0.24812030075187952
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 200,
+            "lastDirection": 1,
+            "averageGap": 23.625,
+            "carry": 0.4809245335561121
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 220,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 5,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 240,
+            "lastDirection": -1,
+            "averageGap": 20,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 440,
+            "lastDirection": -1,
+            "averageGap": 110,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 641,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 640,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "remote-client",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 0,
+            "lastDirection": 1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 100,
+            "lastDirection": 1,
+            "averageGap": 100,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 150,
+            "lastDirection": 1,
+            "averageGap": 75,
+            "carry": 0.33333333333333326
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 170,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 174,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 179,
+            "lastDirection": 1,
+            "averageGap": 26.25,
+            "carry": 0.24812030075187952
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 200,
+            "lastDirection": 1,
+            "averageGap": 23.625,
+            "carry": 0.4809245335561121
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 220,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 5,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 240,
+            "lastDirection": -1,
+            "averageGap": 20,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 440,
+            "lastDirection": -1,
+            "averageGap": 110,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 641,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 640,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "remote-tty",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 0,
+            "lastDirection": 1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 100,
+            "lastDirection": 1,
+            "averageGap": 100,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 150,
+            "lastDirection": 1,
+            "averageGap": 75,
+            "carry": 0.33333333333333326
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 170,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 174,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 179,
+            "lastDirection": 1,
+            "averageGap": 26.25,
+            "carry": 0.24812030075187952
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 200,
+            "lastDirection": 1,
+            "averageGap": 23.625,
+            "carry": 0.4809245335561121
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 220,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 5,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 240,
+            "lastDirection": -1,
+            "averageGap": 20,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 440,
+            "lastDirection": -1,
+            "averageGap": 110,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 641,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 640,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "linux",
+      "trace": [
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 0,
+            "lastDirection": 1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 100,
+            "lastDirection": 1,
+            "averageGap": 100,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 150,
+            "lastDirection": 1,
+            "averageGap": 75,
+            "carry": 0.33333333333333326
+          }
+        },
+        {
+          "value": 2,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 170,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 174,
+            "lastDirection": 1,
+            "averageGap": 47.5,
+            "carry": 0.4385964912280702
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 179,
+            "lastDirection": 1,
+            "averageGap": 26.25,
+            "carry": 0.24812030075187952
+          }
+        },
+        {
+          "value": 4,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 200,
+            "lastDirection": 1,
+            "averageGap": 23.625,
+            "carry": 0.4809245335561121
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 220,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 5,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 240,
+            "lastDirection": -1,
+            "averageGap": 20,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 440,
+            "lastDirection": -1,
+            "averageGap": 110,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 641,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        },
+        {
+          "value": 1,
+          "state": {
+            "lines": "auto",
+            "accelerate": true,
+            "lastTime": 640,
+            "lastDirection": -1,
+            "carry": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "setLines resets gesture and carry",
+      "numeric": 3,
+      "reset": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": {
+          "number": "-Infinity"
+        },
+        "lastDirection": 0,
+        "carry": 0
+      },
+      "first": 1,
+      "second": 5,
+      "final": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": 100,
+        "lastDirection": -1,
+        "averageGap": 20,
+        "carry": 0
+      }
+    },
+    {
+      "name": "setLines actual reset dispatch",
+      "called": 1,
+      "lines": 7
+    },
+    {
+      "name": "bigint-small",
+      "value": 1,
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": {
+          "bigint": "12"
+        },
+        "lastDirection": 1,
+        "carry": 0
+      }
+    },
+    {
+      "name": "bigint-larger",
+      "error": "TypeError",
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": {
+          "bigint": "30"
+        },
+        "lastDirection": 1,
+        "averageGap": {
+          "bigint": "20"
+        },
+        "carry": 0
+      }
+    },
+    {
+      "name": "bigint-huge",
+      "value": 1,
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": {
+          "bigint": "1606938044258990275541962092341162602522202993782792835301376"
+        },
+        "lastDirection": 1,
+        "carry": 0
+      }
+    },
+    {
+      "name": "bigint-negative",
+      "value": 1,
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": {
+          "bigint": "10"
+        },
+        "lastDirection": 1,
+        "carry": 0
+      }
+    },
+    {
+      "name": "mixed-bigint",
+      "error": "TypeError",
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": 10,
+        "lastDirection": 1,
+        "carry": 0
+      }
+    },
+    {
+      "name": "number-hint operand order",
+      "value": 2,
+      "trace": [
+        "now:number",
+        "previous:number"
+      ],
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": "original-now-object",
+        "lastDirection": 1,
+        "averageGap": 50,
+        "carry": 0
+      },
+      "identity": true
+    },
+    {
+      "name": "left numeric throw suppresses right coercion",
+      "error": "TypeError",
+      "trace": [],
+      "lastDirection": 0
+    },
+    {
+      "name": "mutable average addition",
+      "value": 1,
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": 50,
+        "lastDirection": 1,
+        "averageGap": 2025,
+        "carry": 0
+      }
+    },
+    {
+      "name": "actual field and default getter order",
+      "trace": [
+        "Number.NEGATIVE_INFINITY",
+        "env",
+        "platform"
+      ]
+    },
+    {
+      "name": "dynamic nested Math callee order",
+      "value": 2,
+      "trace": [
+        "get:min",
+        "get:max",
+        "call:max",
+        "call:min",
+        "get:floor",
+        "call:floor"
+      ],
+      "state": {
+        "lines": "auto",
+        "accelerate": true,
+        "lastTime": 50,
+        "lastDirection": 1,
+        "averageGap": 50,
+        "carry": 0
+      }
+    },
+    {
+      "name": "genuine fields and callable metadata",
+      "fields": [
+        "lines",
+        "accelerate",
+        "lastTime",
+        "lastDirection",
+        "averageGap",
+        "carry"
+      ],
+      "constructor": {
+        "name": "WheelScrollAccelerator",
+        "length": 0,
+        "keys": [
+          "length",
+          "name",
+          "prototype"
+        ]
+      },
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "WheelScrollAccelerator",
+          "length": 0
+        },
+        {
+          "key": "setLines",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "setLines",
+          "length": 1
+        },
+        {
+          "key": "next",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "next",
+          "length": 2
+        },
+        {
+          "key": "reset",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "reset",
+          "length": 0
+        }
+      ]
+    }
+  ]
+}

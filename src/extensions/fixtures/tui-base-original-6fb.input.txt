@@ -1,0 +1,38 @@
+const baseCases=[];
+const plain=value=>JSON.parse(JSON.stringify(value,(_key,item)=>typeof item==='bigint'?String(item)+'n':typeof item==='number'&&!Number.isFinite(item)?String(item):item));
+function makeBase(){const trace=[],terminal={columns:24,rows:8,write(value){trace.push(['write',value])},start(input,resize){trace.push(['start',typeof input,typeof resize])},stop(){trace.push(['stop'])},hideCursor(){trace.push(['hide'])},showCursor(){trace.push(['show'])}};const base=new TuiBase(terminal,false,'base-source');return {base,terminal,trace};}
+function component(name,lines=['body']){return{name,focused:false,render(width){return lines.map(line=>line+':'+width)},invalidate(){},handleInput(){}};}
+function metadata(object){return Reflect.ownKeys(object).map(key=>{const d=Object.getOwnPropertyDescriptor(object,key),entry={key:typeof key==='symbol'?'Symbol('+key.description+')':key,enumerable:d.enumerable,configurable:d.configurable};if('value'in d){entry.writable=d.writable;entry.type=typeof d.value;if(typeof d.value==='function'){entry.name=d.value.name;entry.length=d.value.length;entry.constructible=(()=>{try{Reflect.construct(function(){},[],d.value);return true}catch{return false}})()}}else for(const access of['get','set'])entry[access]=d[access]?{name:d[access].name,length:d[access].length}:null;return entry})}
+{
+ const {base,terminal}=makeBase();
+ baseCases.push({name:'genuine base construction and metadata',function:metadata(TuiBase),prototype:metadata(TuiBase.prototype),own:Reflect.ownKeys(base).map(key=>{const d=Object.getOwnPropertyDescriptor(base,key);return{key,enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,type:typeof d.value,value:d.value===null?null:d.value instanceof Set?{kind:'Set',size:d.value.size}:Array.isArray(d.value)?d.value:typeof d.value==='object'?{keys:Object.keys(d.value)}:d.value}}),parent:Object.getPrototypeOf(TuiBase).name,base:base instanceof TuiBase,container:base instanceof tui.Container,terminalIdentity:base.terminal===terminal,hardware:base.getShowHardwareCursor(),clear:base.getClearOnShrink(),focused:base.getFocusedComponent(),redraws:base.fullRedraws,overlays:base.hasOverlayEntries});
+}
+{
+ const {base,trace}=makeBase(),a=component('a'),b=component('b'),overlay=component('overlay');base.requestRender=()=>trace.push(['render']);base.addChild(a);base.addChild(b);base.setFocus(a);
+ const handle=base.showOverlay(overlay,{width:8}),states=[];
+ const state=label=>states.push({label,focus:base.getFocusedComponent()?.name??null,restore:base.overlayFocusRestore.status,resume:base.overlayFocusRestore.resume?.status,stack:base.overlayStack.map(entry=>({name:entry.component.name,hidden:entry.hidden,pre:entry.preFocus?.name??null,order:entry.focusOrder}))});
+ state('shown');base.setFocus(b);state('blocked');handle.unfocus({target:a});state('explicit resume');base.setFocus(null);state('resume consumed');handle.focus();state('refocused');handle.setHidden(true);state('hidden');handle.setHidden(false);state('shown again');
+ base.overlayStack[0].bounds={row:1,col:2,width:8,height:3};const bounds=handle.getBounds();bounds.row=99;const isolated=handle.getBounds().row===1;
+ handle.hide();state('removed');handle.focus();state('focus removed');
+ baseCases.push({name:'overlay handle blocked focus and lifetime',states,isolated,handle:metadata(handle),trace});
+}
+{
+ const {base,trace}=makeBase();base.requestRender=()=>trace.push(['render']);base.focusOrderCounter=9007199254740999n;const a=base.showOverlay(component('a'));const first=base.overlayStack[0].focusOrder;a.focus();const second=base.overlayStack[0].focusOrder;
+ const hints=[];base.focusOrderCounter={[Symbol.toPrimitive](hint){hints.push(hint);return 41n}};a.focus();const third=base.overlayStack[0].focusOrder;
+ baseCases.push({name:'arbitrary precision increment and number hint',first,second,third,hints});
+}
+{
+ const {base}=makeBase();const options=[undefined,{}, {width:'50%',maxHeight:'25%',row:'100%',col:'100%'},{margin:2,anchor:'bottom-right',width:7,maxHeight:3},{margin:{top:-2,right:4,bottom:1,left:3},width:999,minWidth:30,row:'bad',col:'bad'},{width:0,maxHeight:0,row:-9,col:99,offsetX:-2,offsetY:2},{width:'bad',row:'0%',col:'50%',margin:1},{width:4,row:2,col:3,offsetX:'2',offsetY:'1'}];
+ baseCases.push({name:'overlay layout',values:options.map(option=>base.resolveOverlayLayout(option,4,24,8)),anchors:['top-left','top-center','top-right','left-center','center','right-center','bottom-left','bottom-center','bottom-right','unknown'].map(anchor=>[anchor,base.resolveAnchorRow(anchor,3,8,1),base.resolveAnchorCol(anchor,5,24,2)])});
+}
+{
+ const {base,trace}=makeBase();base.requestRender=()=>trace.push(['render']);const a=component('a',['界ABCD','second']),b=component('b',['😀x']);const ha=base.showOverlay(a,{width:4,row:1,col:2,maxHeight:1}),hb=base.showOverlay(b,{width:3,row:1,col:3});
+ const input=['base','line'];const first=base.compositeOverlays(input,12,4);const firstBounds=[ha.getBounds(),hb.getBounds()];ha.focus();const second=base.compositeOverlays(input,12,4);hb.setHidden(true);const third=base.compositeOverlays(input,12,4);
+ baseCases.push({name:'overlay composition and bounds',input,first,firstBounds,second,third,layouts:base.renderedOverlayLayouts.map(layout=>({name:layout.entry.component.name,row:layout.row,col:layout.col,width:layout.width,height:layout.height})),hiddenBounds:hb.getBounds()??null});
+}
+{
+ const {base}=makeBase();const lines=['\x1b]8;;urlกำ\t\x07x\ty','กำ ກຳ\t\ud800','ordinary',tui.CURSOR_MARKER+tui.renderFakeCursor('界')+'x'];
+ const cursor=base.extractCursorPosition(lines,8);const fakeOff=base.resolveFakeCursors(lines);base.showHardwareCursor=true;const fakeOn=base.resolveFakeCursors([tui.CURSOR_MARKER+tui.renderFakeCursor('界')+'x']);
+ baseCases.push({name:'cursor and Source normalization',cursor,lines,fakeOff,fakeOn,resets:base.applyLineResets(lines.slice())});
+}
+globalThis.tuiBaseCases=plain(baseCases);

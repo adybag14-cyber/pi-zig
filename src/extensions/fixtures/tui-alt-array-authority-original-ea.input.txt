@@ -1,0 +1,30 @@
+const authorityCases=[];
+const make=()=>{const screen=new TuiAltScreen({columns:20,rows:4,write(){}},false,undefined,{mouse:false});screen.requestRender=()=>{};return screen};
+{
+ const screen=make(),trace=[],savedPush=Array.prototype.push;screen.previousScreen={*[Symbol.iterator](){savedPush.call(trace,'iterate');yield 'first';yield 'second'}};let pushCalls=0;Array.prototype.push=function(...args){pushCalls++;return Reflect.apply(savedPush,this,args)};let lines;try{lines=screen.getScreenLines();screen.setLayoutRoot({render(){return[]}});const roots=screen.getMountedRoots();authorityCases.push({name:'actual array spreads and literals bypass push',lines,rootCount:roots.length,rootSame:roots[0]===screen.layoutRoot,pushCalls,trace})}finally{Array.prototype.push=savedPush;}
+}
+{
+ const screen=make(),trace=[],lines=['first','second'];let retained;Object.defineProperty(lines,'map',{get(){trace.push('get-map');return function(callback){trace.push(['call-map',this===lines,callback.name,callback.length]);retained=callback;return Array.prototype.map.call(this,callback)}}});const result=screen.prepareKittyScreen(lines);const late=retained.call({wrong:true},'late');authorityCases.push({name:'actual Kitty screen mutable map getter retained lexical callback',trace,result,late});
+}
+{
+ const screen=make(),reason={mapFailure:true},lines=[];Object.defineProperty(lines,'map',{get(){throw reason}});let same=false;try{screen.prepareKittyScreen(lines)}catch(error){same=error===reason}authorityCases.push({name:'actual mutable map getter exception identity',same,cacheSize:screen.uploadedKittyImages.size});
+}
+{
+ const screen=make(),trace=[],lines=['abcdef'];screen.selectionAnchor={row:0,col:1};screen.selectionFocus={row:0,col:3};let retained;Object.defineProperty(lines,'map',{get(){trace.push('get-selection-map');return function(callback){trace.push(['map',this===lines,callback.name,callback.length]);retained=callback;return[callback('abcdef',0),callback('outside',9)]}}});const result=screen.applySelection(lines);screen.selectionAnchor={row:0,col:4};screen.selectionFocus={row:0,col:5};const late=retained('abcdef',0);authorityCases.push({name:'actual selection map retains lexical range and virtual methods',trace,result,late});
+}
+{
+ const screen=make(),trace=[],lines=['one','longer'];Object.defineProperty(lines,'reduce',{get(){trace.push('get-width-reduce');return function(callback,initial){trace.push(['width-reduce',this===lines,callback.name,callback.length,initial]);return Array.prototype.reduce.call(this,callback,initial)}}});const first={render(width){trace.push(['first-render',width]);return lines},invalidate(){}};const second={render(width){trace.push(['second-render',width]);return['right']},invalidate(){}};const root=new tui.HStack([first,second],{gap:1});const map=root.entries.map;root.entries.map=function(callback,...args){trace.push(['entries-map',callback.name,callback.length]);return Reflect.apply(map,this,[callback,...args])};screen.setLayoutRoot(root);screen.altScreenActive=true;screen.doRender();authorityCases.push({name:'actual layout uses ordinary reduce and entry map callbacks',trace,screen:screen.previousScreen,geometry:{width:screen.currentLayout.width,height:screen.currentLayout.height}});
+}
+{
+ const screen=make(),trace=[],cached={transmissionBytes:1,estimatedDecodedBytes:2,transmissionGeneration:3};const entry={ [Symbol.iterator](){trace.push('pair-iterator');let i=0;return{next(){trace.push(['pair-next',i]);return{value:i++===0?7:cached,done:false}},return(){trace.push('pair-return');return{done:true}}}}};screen.uploadedKittyImages={*[Symbol.iterator](){trace.push('map-iterator');yield entry}};const result=screen.prepareKittyScreen(['plain']);authorityCases.push({name:'actual Map entry iterable destructuring before cache budget break',trace,result});
+}
+{
+ const screen=make(),trace=[],reason={layoutVisit:true};const component={handleMouse(){trace.push('mouse')},render(){return[]}},children={ [Symbol.iterator](){trace.push('children-iterator');return{next(){trace.push('children-next');throw reason},return(){trace.push('children-return');return{done:true}}}}};const root={component,rect:{x:0,y:0,width:20,height:4},clip:{x:0,y:0,width:20,height:4},children,layer:0};screen.currentLayout={root};let same=false;try{screen.dispatchMouseToLayout({screenX:1,screenY:1,type:'press'})}catch(error){same=error===reason}authorityCases.push({name:'actual layout children iteration exception identity',trace,same});
+}
+{
+ const screen=make(),trace=[],saved=Array.prototype.findIndex;screen.previousScreen=['path/to/file'];Array.prototype.findIndex=function(callback,...args){trace.push(['find-index',callback.name,callback.length,this.length]);return Reflect.apply(saved,this,[callback,...args])};let result;try{result=screen.getWordSelection({row:0,col:5})}finally{Array.prototype.findIndex=saved}authorityCases.push({name:'actual word selection array findIndex callback',trace,result});
+}
+{
+ const screen=make(),trace=[],descriptor=Object.getOwnPropertyDescriptor(globalThis,'performance');const clock={now(){trace.push(['now',this===clock]);return 123.5}};screen.wheelScroll.next=(direction,time)=>{trace.push(['next',direction,time]);return 2};screen.routeWheel=(event,delta)=>trace.push(['route',delta]);try{Object.defineProperty(globalThis,'performance',{configurable:true,writable:true,value:clock});const result=screen.handleViewportInput('\x1b[<64;1;1M');Object.defineProperty(globalThis,'performance',{configurable:true,writable:true,value:undefined});let undefinedError;try{screen.handleViewportInput('\x1b[<64;1;1M')}catch(error){undefinedError=error.name}delete globalThis.performance;let missingError;try{screen.handleViewportInput('\x1b[<64;1;1M')}catch(error){missingError={name:error.name,message:error.message}}authorityCases.push({name:'actual mutable ambient performance distinct from Base imported clock',trace,result,undefinedError,missingError})}finally{if(descriptor)Object.defineProperty(globalThis,'performance',descriptor);else delete globalThis.performance;}
+}
+globalThis.tuiAltArrayAuthorityCases=JSON.parse(JSON.stringify(authorityCases));

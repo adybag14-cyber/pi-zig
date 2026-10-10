@@ -1,0 +1,1250 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "genuine base construction and metadata",
+      "function": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        },
+        {
+          "key": "MIN_RENDER_INTERVAL_MS",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TuiBase",
+          "length": 3,
+          "constructible": true
+        },
+        {
+          "key": "hasOverlayEntries",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get hasOverlayEntries",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "resetRenderState",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resetRenderState",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "beforeTerminalStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "beforeTerminalStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "afterTerminalStart",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "afterTerminalStart",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "beforeTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "beforeTerminalStop",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "afterTerminalStop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "afterTerminalStop",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "fullRedraws",
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get fullRedraws",
+            "length": 0
+          },
+          "set": null
+        },
+        {
+          "key": "getShowHardwareCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getShowHardwareCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setShowHardwareCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setShowHardwareCursor",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getClearOnShrink",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getClearOnShrink",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setClearOnShrink",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setClearOnShrink",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getFocusedComponent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getFocusedComponent",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setFocus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setFocus",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setFocusInternal",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setFocusInternal",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "clearOverlayFocusRestore",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearOverlayFocusRestore",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "clearOverlayFocusRestoreFor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "clearOverlayFocusRestoreFor",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "resolveBlockedOverlayFocusResume",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveBlockedOverlayFocusResume",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getVisibleOverlayFocusRestore",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getVisibleOverlayFocusRestore",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isOverlayFocusAncestor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isOverlayFocusAncestor",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "retargetOverlayPreFocus",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "retargetOverlayPreFocus",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getMountedRoots",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getMountedRoots",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isComponentMounted",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isComponentMounted",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "containsComponent",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "containsComponent",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "showOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "showOverlay",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "hideOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hideOverlay",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "hideTerminalCursor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hideTerminalCursor",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "hasOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hasOverlay",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "isOverlayFocused",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isOverlayFocused",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "resolveMouseFocusTarget",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveMouseFocusTarget",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "dispatchMouseToOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "dispatchMouseToOverlay",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "isOverlayVisible",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isOverlayVisible",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "getTopmostVisibleOverlay",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getTopmostVisibleOverlay",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "invalidate",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "invalidate",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "start",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "start",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "addInputListener",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "addInputListener",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "removeInputListener",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "removeInputListener",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "onTerminalColorSchemeChange",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "onTerminalColorSchemeChange",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "setTerminalColorSchemeNotifications",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setTerminalColorSchemeNotifications",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "queryCellSize",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "queryCellSize",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "stop",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "stop",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "renderNow",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "renderNow",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "requestRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "requestRender",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "requestImmediateRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "requestImmediateRender",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "cancelRenderTimer",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "cancelRenderTimer",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "scheduleRender",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "scheduleRender",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "handleTerminalInput",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "handleTerminalInput",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "consumeTerminalColorResponse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "consumeTerminalColorResponse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "terminalColorQueryResult",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "terminalColorQueryResult",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "completeTerminalColorQuery",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "completeTerminalColorQuery",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "consumeTerminalColorSchemeReport",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "consumeTerminalColorSchemeReport",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "consumeCellSizeResponse",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "consumeCellSizeResponse",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "resolveOverlayLayout",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveOverlayLayout",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "resolveAnchorRow",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveAnchorRow",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "resolveAnchorCol",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveAnchorCol",
+          "length": 4,
+          "constructible": false
+        },
+        {
+          "key": "compositeOverlays",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "compositeOverlays",
+          "length": 3,
+          "constructible": false
+        },
+        {
+          "key": "applyLineResets",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "applyLineResets",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "compositeLineAt",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "compositeLineAt",
+          "length": 5,
+          "constructible": false
+        },
+        {
+          "key": "extractCursorPosition",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "extractCursorPosition",
+          "length": 2,
+          "constructible": false
+        },
+        {
+          "key": "resolveFakeCursors",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "resolveFakeCursors",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "queryTerminalColors",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "queryTerminalColors",
+          "length": 1,
+          "constructible": false
+        }
+      ],
+      "own": [
+        {
+          "key": "children",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "mouseLayout",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "terminal",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "keys": [
+              "columns",
+              "rows",
+              "write",
+              "start",
+              "stop",
+              "hideCursor",
+              "showCursor"
+            ]
+          }
+        },
+        {
+          "key": "focusedComponent",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": null
+        },
+        {
+          "key": "inputListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "onDebug",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "renderRequested",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "immediateRenderScheduled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "renderTimer",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "lastRenderAt",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "showHardwareCursor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "clearOnShrink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "fullRedrawCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "stopped",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "pendingTerminalColorQueries",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "terminalColorSchemeListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "kind": "Set",
+            "size": 0
+          }
+        },
+        {
+          "key": "terminalColorSchemeNotificationsEnabled",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "boolean",
+          "value": false
+        },
+        {
+          "key": "logDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "string",
+          "value": "base-source"
+        },
+        {
+          "key": "focusOrderCounter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "number",
+          "value": 0
+        },
+        {
+          "key": "overlayStack",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "renderedOverlayLayouts",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": []
+        },
+        {
+          "key": "overlayFocusRestore",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object",
+          "value": {
+            "keys": [
+              "status"
+            ]
+          }
+        }
+      ],
+      "parent": "Container",
+      "base": true,
+      "container": true,
+      "terminalIdentity": true,
+      "hardware": false,
+      "clear": false,
+      "focused": null,
+      "redraws": 0,
+      "overlays": false
+    },
+    {
+      "name": "overlay handle blocked focus and lifetime",
+      "states": [
+        {
+          "label": "shown",
+          "focus": "overlay",
+          "restore": "eligible",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 1
+            }
+          ]
+        },
+        {
+          "label": "blocked",
+          "focus": "b",
+          "restore": "blocked",
+          "resume": "restore-overlay",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 1
+            }
+          ]
+        },
+        {
+          "label": "explicit resume",
+          "focus": "b",
+          "restore": "blocked",
+          "resume": "focus-target",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 1
+            }
+          ]
+        },
+        {
+          "label": "resume consumed",
+          "focus": "a",
+          "restore": "inactive",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 1
+            }
+          ]
+        },
+        {
+          "label": "refocused",
+          "focus": "overlay",
+          "restore": "eligible",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 2
+            }
+          ]
+        },
+        {
+          "label": "hidden",
+          "focus": "a",
+          "restore": "inactive",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": true,
+              "pre": "a",
+              "order": 2
+            }
+          ]
+        },
+        {
+          "label": "shown again",
+          "focus": "overlay",
+          "restore": "eligible",
+          "stack": [
+            {
+              "name": "overlay",
+              "hidden": false,
+              "pre": "a",
+              "order": 3
+            }
+          ]
+        },
+        {
+          "label": "removed",
+          "focus": "a",
+          "restore": "inactive",
+          "stack": []
+        },
+        {
+          "label": "focus removed",
+          "focus": "a",
+          "restore": "inactive",
+          "stack": []
+        }
+      ],
+      "isolated": true,
+      "handle": [
+        {
+          "key": "hide",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "hide",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "setHidden",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "setHidden",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "isHidden",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isHidden",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "focus",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "focus",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "unfocus",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "unfocus",
+          "length": 1,
+          "constructible": false
+        },
+        {
+          "key": "isFocused",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "isFocused",
+          "length": 0,
+          "constructible": false
+        },
+        {
+          "key": "getBounds",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "getBounds",
+          "length": 0,
+          "constructible": false
+        }
+      ],
+      "trace": [
+        [
+          "hide"
+        ],
+        [
+          "render"
+        ],
+        [
+          "render"
+        ],
+        [
+          "render"
+        ],
+        [
+          "render"
+        ],
+        [
+          "render"
+        ],
+        [
+          "hide"
+        ],
+        [
+          "render"
+        ]
+      ]
+    },
+    {
+      "name": "arbitrary precision increment and number hint",
+      "first": "9007199254741000n",
+      "second": "9007199254741001n",
+      "third": "42n",
+      "hints": [
+        "number"
+      ]
+    },
+    {
+      "name": "overlay layout",
+      "values": [
+        {
+          "width": 24,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "width": 24,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "width": 12,
+          "row": 6,
+          "col": 12,
+          "maxHeight": 2
+        },
+        {
+          "width": 7,
+          "row": 3,
+          "col": 15,
+          "maxHeight": 3
+        },
+        {
+          "width": 17,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "width": 1,
+          "row": 0,
+          "col": 23,
+          "maxHeight": 1
+        },
+        {
+          "width": 22,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "width": 4,
+          "row": 4,
+          "col": 20
+        }
+      ],
+      "anchors": [
+        [
+          "top-left",
+          1,
+          2
+        ],
+        [
+          "top-center",
+          1,
+          11
+        ],
+        [
+          "top-right",
+          1,
+          21
+        ],
+        [
+          "left-center",
+          3,
+          2
+        ],
+        [
+          "center",
+          3,
+          11
+        ],
+        [
+          "right-center",
+          3,
+          21
+        ],
+        [
+          "bottom-left",
+          6,
+          2
+        ],
+        [
+          "bottom-center",
+          6,
+          11
+        ],
+        [
+          "bottom-right",
+          6,
+          21
+        ],
+        [
+          "unknown",
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "name": "overlay composition and bounds",
+      "input": [
+        "base",
+        "line"
+      ],
+      "first": [
+        "base",
+        "li \u001b[0m\u001b]8;;\u0007😀x\u001b[0m\u001b]8;;\u0007      ",
+        "",
+        ""
+      ],
+      "firstBounds": [
+        {
+          "row": 1,
+          "col": 2,
+          "width": 4,
+          "height": 1
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "width": 3,
+          "height": 1
+        }
+      ],
+      "second": [
+        "base",
+        "li\u001b[0m\u001b]8;;\u0007界AB\u001b[0m\u001b]8;;\u0007      ",
+        "",
+        ""
+      ],
+      "third": [
+        "base",
+        "li\u001b[0m\u001b]8;;\u0007界AB\u001b[0m\u001b]8;;\u0007      ",
+        "",
+        ""
+      ],
+      "layouts": [
+        {
+          "name": "a",
+          "row": 1,
+          "col": 2,
+          "width": 4,
+          "height": 1
+        }
+      ],
+      "hiddenBounds": null
+    },
+    {
+      "name": "cursor and Source normalization",
+      "cursor": {
+        "row": 3,
+        "col": 0
+      },
+      "lines": [
+        "\u001b]8;;urlกำ\t\u0007x\ty",
+        "กำ ກຳ\t\ud800",
+        "ordinary",
+        "\u001b_pi:fc\u0007界\u001b_pi:/fc\u0007x"
+      ],
+      "fakeOff": [
+        "\u001b]8;;urlกำ\t\u0007x\ty",
+        "กำ ກຳ\t\ud800",
+        "ordinary",
+        "\u001b[7m界\u001b[27mx"
+      ],
+      "fakeOn": [
+        "\u001b_pi:c\u0007界x"
+      ],
+      "resets": [
+        "\u001b]8;;urlกํา\t\u0007x   y\u001b[0m\u001b]8;;\u0007",
+        "กํา ກໍາ   \ud800\u001b[0m\u001b]8;;\u0007",
+        "ordinary\u001b[0m\u001b]8;;\u0007",
+        "\u001b_pi:fc\u0007界\u001b_pi:/fc\u0007x\u001b[0m\u001b]8;;\u0007"
+      ]
+    }
+  ]
+}

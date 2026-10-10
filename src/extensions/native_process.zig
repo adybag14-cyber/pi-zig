@@ -19,6 +19,8 @@ fn currentDirectory(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSV
 }
 pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
     engine.native_io = io;
+    try @import("native_process_clock.zig").install(engine, io);
+    try @import("native_process_clock.zig").installDefaultGlobal(engine);
     const process = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(process);
     const env = try engine.checked(c.JS_NewObject(engine.context));

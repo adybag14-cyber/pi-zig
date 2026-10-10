@@ -1,0 +1,875 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "classes": [
+    {
+      "exportName": "Box",
+      "name": "Box",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "addChild",
+        "removeChild",
+        "clear",
+        "setBgFn",
+        "setPaddingX",
+        "invalidateCache",
+        "matchCache",
+        "invalidate",
+        "handleMouse",
+        "render",
+        "applyBg"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "CancellableLoader",
+      "name": "CancellableLoader",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "signal",
+        "aborted",
+        "handleInput",
+        "dispose"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "CombinedAutocompleteProvider",
+      "name": "CombinedAutocompleteProvider",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "getSuggestions",
+        "applyCompletion",
+        "extractAtPrefix",
+        "extractPathPrefix",
+        "expandHomePath",
+        "resolveScopedFuzzyQuery",
+        "scopedPathForDisplay",
+        "getFileSuggestions",
+        "scoreEntry",
+        "getBaseDirSuggestions",
+        "getFuzzyFileSuggestions",
+        "shouldTriggerFileCompletion"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Container",
+      "name": "Container",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "addChild",
+        "removeChild",
+        "clear",
+        "invalidate",
+        "handleMouse",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Editor",
+      "name": "Editor",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "validPasteIds",
+        "segment",
+        "getPaddingX",
+        "setPaddingX",
+        "getAutocompleteMaxVisible",
+        "setAutocompleteMaxVisible",
+        "setAutocompleteProvider",
+        "addToHistory",
+        "isEditorEmpty",
+        "isOnFirstVisualLine",
+        "isOnLastVisualLine",
+        "navigateHistory",
+        "exitHistoryBrowsing",
+        "setTextInternal",
+        "invalidate",
+        "renderTopBorder",
+        "renderBottomBorder",
+        "render",
+        "handleMouse",
+        "handleInput",
+        "layoutText",
+        "getText",
+        "expandPasteMarkers",
+        "getExpandedText",
+        "getLines",
+        "getCursor",
+        "setText",
+        "insertTextAtCursor",
+        "normalizeText",
+        "insertTextAtCursorInternal",
+        "insertCharacter",
+        "handlePaste",
+        "addNewLine",
+        "shouldSubmitOnBackslashEnter",
+        "submitValue",
+        "handleBackspace",
+        "setCursorCol",
+        "moveToVisualLine",
+        "computeVerticalMoveColumn",
+        "moveToLineStart",
+        "moveToLineEnd",
+        "deleteToStartOfLine",
+        "deleteToEndOfLine",
+        "deleteWordBackwards",
+        "deleteWordForward",
+        "handleForwardDelete",
+        "buildVisualLineMap",
+        "findVisualLineAt",
+        "findCurrentVisualLine",
+        "moveCursor",
+        "pageScroll",
+        "moveWordBackwards",
+        "yank",
+        "yankPop",
+        "insertYankedText",
+        "deleteYankedText",
+        "pushUndoSnapshot",
+        "undo",
+        "jumpToChar",
+        "moveWordForwards",
+        "isSlashMenuAllowed",
+        "isAtStartOfMessage",
+        "isInSlashCommandContext",
+        "getBestAutocompleteMatchIndex",
+        "createAutocompleteList",
+        "tryTriggerAutocomplete",
+        "handleTabCompletion",
+        "handleSlashCommandCompletion",
+        "forceFileAutocomplete",
+        "requestAutocomplete",
+        "startAutocompleteRequest",
+        "setAutocompleteTriggerCharacters",
+        "getAutocompleteDebounceMs",
+        "runAutocompleteRequest",
+        "isAutocompleteRequestCurrent",
+        "applyAutocompleteSuggestions",
+        "cancelAutocompleteRequest",
+        "clearAutocompleteUi",
+        "cancelAutocomplete",
+        "isShowingAutocomplete",
+        "updateAutocomplete"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "HStack",
+      "name": "HStack",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Image",
+      "name": "Image",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "getImageId",
+        "invalidate",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Input",
+      "name": "Input",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "getValue",
+        "setValue",
+        "handleInput",
+        "handleMouse",
+        "insertCharacter",
+        "handleBackspace",
+        "handleForwardDelete",
+        "deleteToLineStart",
+        "deleteToLineEnd",
+        "deleteWordBackwards",
+        "deleteWordForward",
+        "yank",
+        "yankPop",
+        "pushUndo",
+        "undo",
+        "moveWordBackwards",
+        "moveWordForwards",
+        "handlePaste",
+        "invalidate",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "KeybindingsManager",
+      "name": "KeybindingsManager",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "rebuild",
+        "matches",
+        "getKeys",
+        "getDefinition",
+        "getConflicts",
+        "setUserBindings",
+        "getUserBindings",
+        "getResolvedBindings"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Loader",
+      "name": "Loader",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "render",
+        "start",
+        "stop",
+        "setMessage",
+        "invalidate",
+        "setIndicator",
+        "restartAnimation",
+        "getRenderedIndicator",
+        "updateDisplay"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Markdown",
+      "name": "Markdown",
+      "length": 6,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "setText",
+        "invalidate",
+        "render",
+        "applyDefaultStyle",
+        "getDefaultStylePrefix",
+        "getStylePrefix",
+        "getDefaultInlineStyleContext",
+        "renderToken",
+        "renderInlineTokens",
+        "getOrderedListMarker",
+        "getUnorderedListMarker",
+        "renderList",
+        "getLongestWordWidth",
+        "wrapCellText",
+        "renderTable"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Marked",
+      "name": "Z",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "walkTokens",
+        "use",
+        "setOptions",
+        "lexer",
+        "parser",
+        "parseMarkdown",
+        "onError"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "MouseRegion",
+      "name": "MouseRegion",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "render",
+        "handleMouse",
+        "invalidate"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "ProcessTerminal",
+      "name": "ProcessTerminal",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "kittyProtocolActive",
+        "modifyOtherKeysActive",
+        "start",
+        "setupStdinBuffer",
+        "queryAndEnableKittyProtocol",
+        "handleKeyboardProtocolNegotiationSequence",
+        "readKeyboardProtocolNegotiationSequence",
+        "setKeyboardProtocolNegotiationBuffer",
+        "clearKeyboardProtocolNegotiationBuffer",
+        "flushKeyboardProtocolNegotiationBufferAsInput",
+        "scheduleKeyboardProtocolNegotiationBufferFlush",
+        "clearKeyboardProtocolNegotiationBufferFlushTimer",
+        "forwardInputSequence",
+        "enableModifyOtherKeys",
+        "disableModifyOtherKeys",
+        "enableWindowsVTInput",
+        "drainInput",
+        "stop",
+        "write",
+        "columns",
+        "rows",
+        "moveBy",
+        "hideCursor",
+        "showCursor",
+        "clearLine",
+        "clearFromCursor",
+        "clearScreen",
+        "setTitle",
+        "setProgramStatus",
+        "writeProgramStatus",
+        "setProgress",
+        "clearProgressInterval"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "ScrollView",
+      "name": "ScrollView",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "scrollTop",
+        "isFollowingEnd",
+        "viewportHeight",
+        "scrollbar",
+        "isScrollbarVisible",
+        "isScrollbarActive",
+        "setScrollbar",
+        "getContentWidth",
+        "markScrollbarActivity",
+        "hideTransientScrollbar",
+        "setScrollbarActive",
+        "scrollTo",
+        "scrollBy",
+        "scrollToStart",
+        "scrollToEnd",
+        "updateLayout",
+        "addChild",
+        "removeChild",
+        "clear",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "SelectList",
+      "name": "SelectList",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "setFilter",
+        "setSelectedIndex",
+        "invalidate",
+        "render",
+        "handleMouse",
+        "handleInput",
+        "getVisibleRange",
+        "renderItem",
+        "getPrimaryColumnWidth",
+        "getPrimaryColumnBounds",
+        "truncatePrimary",
+        "getDisplayValue",
+        "notifySelectionChange",
+        "getSelectedItem"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "SettingsList",
+      "name": "SettingsList",
+      "length": 5,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "updateValue",
+        "selectItem",
+        "invalidate",
+        "render",
+        "renderMainList",
+        "handleMouse",
+        "handleInput",
+        "getDisplayItems",
+        "getVisibleRange",
+        "activateItem",
+        "closeSubmenu",
+        "applyFilter",
+        "addHintLine"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Spacer",
+      "name": "Spacer",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "setLines",
+        "invalidate",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "StdinBuffer",
+      "name": "StdinBuffer",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "process",
+        "emitDataSequence",
+        "flush",
+        "clear",
+        "getBuffer",
+        "destroy"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "Text",
+      "name": "Text",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "setText",
+        "setCustomBgFn",
+        "setPaddingX",
+        "invalidate",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "TruncatedText",
+      "name": "TruncatedText",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "invalidate",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "TuiAltScreen",
+      "name": "TuiAltScreen",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "viewportTop",
+        "isFollowingOutput",
+        "setWheelScrollLines",
+        "getCopyOnSelect",
+        "setCopyOnSelect",
+        "hasActiveSelection",
+        "copyActiveSelectionToClipboard",
+        "resetTextSelection",
+        "getScreenLines",
+        "setLayoutRoot",
+        "render",
+        "getMountedRoots",
+        "getPrimaryScrollView",
+        "beforeTerminalStart",
+        "beforeTerminalStop",
+        "afterTerminalStop",
+        "deleteKittyImages",
+        "prepareKittyScreen",
+        "resetRenderState",
+        "scrollBy",
+        "scrollToTop",
+        "scrollToBottom",
+        "scrollToPrompt",
+        "toggleSearch",
+        "closeSearch",
+        "updateSearchQuery",
+        "navigateSearch",
+        "getSearchNavigationDirectionAt",
+        "handleSearchMouseEvent",
+        "refreshSearch",
+        "flash",
+        "shouldDeferViewportInputToOverlay",
+        "clearComponentMouseGesture",
+        "handleViewportInput",
+        "decodeMouseButton",
+        "createMouseEvent",
+        "dispatchMouseToLayout",
+        "applyMouseDispatchResult",
+        "dispatchMouseToTarget",
+        "getComponentClickCount",
+        "clearTextSelection",
+        "handleMouseEvent",
+        "parseWheelEvent",
+        "routeWheel",
+        "parseSgrMouseEvent",
+        "handleRightClickPaste",
+        "handleScrollToEndIndicatorMouseEvent",
+        "getScrollbarTargetAt",
+        "setScrollbarHover",
+        "updateScrollbarHover",
+        "stopScrollbarHover",
+        "scrollScrollbarToPointer",
+        "handleScrollbarMouseEvent",
+        "stopScrollbarDrag",
+        "getScrollSelectionPoint",
+        "getSelectionPoint",
+        "getSelectionSourceLine",
+        "getWordSelection",
+        "getLineSelection",
+        "updateSelectionFocus",
+        "getClickCount",
+        "updateSelectionAutoScroll",
+        "autoScrollSelection",
+        "stopSelectionAutoScroll",
+        "handleSelectionMouseEvent",
+        "getSelectionBounds",
+        "getSelectionColumns",
+        "getActiveSelectionText",
+        "copySelectionToClipboard",
+        "copyTextToClipboard",
+        "applySearchTextHighlight",
+        "applySearchHighlights",
+        "applySelectionHighlight",
+        "applySelection",
+        "isMouseSequence",
+        "compositeScrollToEndIndicator",
+        "compositeFlashes",
+        "doRender"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "TuiMainScreen",
+      "name": "TuiMainScreen",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "captureRenderState",
+        "restoreRenderState",
+        "resetRenderState",
+        "beforeTerminalStop",
+        "collectKittyImageIds",
+        "deleteKittyImages",
+        "getKittyImageReservedRows",
+        "expandChangedRangeForKittyImages",
+        "deleteChangedKittyImages",
+        "doRender",
+        "positionHardwareCursor"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    },
+    {
+      "exportName": "VStack",
+      "name": "VStack",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototype": [
+        "constructor",
+        "render"
+      ],
+      "prototypeWritable": false,
+      "constructorDescriptor": {
+        "own": true,
+        "same": true,
+        "writable": true,
+        "configurable": true,
+        "enumerable": false
+      }
+    }
+  ]
+}

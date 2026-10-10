@@ -1,0 +1,134 @@
+{
+  "node": "24.14.0",
+  "nodeSourceModule": "internal/util",
+  "sourceSha256": "c5794a0b545b9f64aa6fc393f9fdf714f415471b428e4bdeab7e51b3f94db29b",
+  "cases": [
+    {
+      "name": "initial genuine accessor and imported identity",
+      "descriptor": {
+        "keys": [
+          "get",
+          "set",
+          "enumerable",
+          "configurable"
+        ],
+        "enumerable": true,
+        "configurable": true,
+        "get": {
+          "name": "get performance",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "set": {
+          "name": "set performance",
+          "length": 1,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "value": "undefined"
+      },
+      "same": true,
+      "getReceiver": true
+    },
+    {
+      "name": "object property mutation remains shared",
+      "same": true,
+      "nowSame": true,
+      "result": 123.5
+    },
+    {
+      "name": "global setter replacement keeps imported object",
+      "descriptor": {
+        "keys": [
+          "get",
+          "set",
+          "enumerable",
+          "configurable"
+        ],
+        "enumerable": true,
+        "configurable": true,
+        "get": {
+          "name": "get performance",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "set": {
+          "name": "set performance",
+          "length": 1,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "value": "undefined"
+      },
+      "replacement": true,
+      "importedUnchanged": true,
+      "savedGetterReplacement": true,
+      "savedGetterImported": false
+    },
+    {
+      "name": "saved setter receiver authority",
+      "descriptor": {
+        "keys": [
+          "get",
+          "set",
+          "enumerable",
+          "configurable"
+        ],
+        "enumerable": true,
+        "configurable": true,
+        "get": {
+          "name": "get performance",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "set": {
+          "name": "set performance",
+          "length": 1,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ],
+          "prototype": true,
+          "constructible": true
+        },
+        "value": "undefined"
+      },
+      "globalValue": 17,
+      "savedGetter": 17
+    },
+    {
+      "name": "delete keeps imported native clock",
+      "descriptor": null,
+      "importedNow": 123.5
+    }
+  ]
+}

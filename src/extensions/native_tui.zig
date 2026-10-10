@@ -40,7 +40,7 @@ const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, add
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native TUI component: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn define(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
@@ -520,6 +520,8 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_spacer_component.zig").install(engine, exports);
     try @import("native_markdown_component.zig").install(engine, exports);
     try @import("native_editor.zig").install(engine, exports);
+    try @import("native_tui_main_screen.zig").install(engine, exports);
+    try @import("native_tui_function_metadata.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
     try engine.registerValueModule("pi-tui", exports);

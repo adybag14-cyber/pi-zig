@@ -1,0 +1,412 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": {
+    "constructor": [
+      {
+        "key": "length",
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "type": "number",
+        "value": 0
+      },
+      {
+        "key": "name",
+        "enumerable": false,
+        "configurable": true,
+        "writable": false,
+        "type": "string",
+        "value": "TuiMainScreen"
+      },
+      {
+        "key": "prototype",
+        "enumerable": false,
+        "configurable": false,
+        "writable": false,
+        "type": "object",
+        "value": {
+          "kind": "TuiMainScreen"
+        }
+      }
+    ],
+    "prototype": [
+      {
+        "key": "constructor",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "TuiMainScreen",
+          "length": 0
+        }
+      },
+      {
+        "key": "captureRenderState",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "captureRenderState",
+          "length": 0
+        }
+      },
+      {
+        "key": "restoreRenderState",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "restoreRenderState",
+          "length": 1
+        }
+      },
+      {
+        "key": "resetRenderState",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "resetRenderState",
+          "length": 0
+        }
+      },
+      {
+        "key": "beforeTerminalStop",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "beforeTerminalStop",
+          "length": 1
+        }
+      },
+      {
+        "key": "collectKittyImageIds",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "collectKittyImageIds",
+          "length": 1
+        }
+      },
+      {
+        "key": "deleteKittyImages",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "deleteKittyImages",
+          "length": 1
+        }
+      },
+      {
+        "key": "getKittyImageReservedRows",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "getKittyImageReservedRows",
+          "length": 2
+        }
+      },
+      {
+        "key": "expandChangedRangeForKittyImages",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "expandChangedRangeForKittyImages",
+          "length": 3
+        }
+      },
+      {
+        "key": "deleteChangedKittyImages",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "deleteChangedKittyImages",
+          "length": 2
+        }
+      },
+      {
+        "key": "doRender",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "doRender",
+          "length": 0
+        }
+      },
+      {
+        "key": "positionHardwareCursor",
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "value": {
+          "name": "positionHardwareCursor",
+          "length": 2
+        }
+      }
+    ],
+    "methods": [
+      {
+        "key": "captureRenderState",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 0
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "captureRenderState"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "restoreRenderState",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 1
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "restoreRenderState"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "resetRenderState",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 0
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "resetRenderState"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "beforeTerminalStop",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 1
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "beforeTerminalStop"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "collectKittyImageIds",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 1
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "collectKittyImageIds"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "deleteKittyImages",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 1
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "deleteKittyImages"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "getKittyImageReservedRows",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 2
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "getKittyImageReservedRows"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "expandChangedRangeForKittyImages",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 3
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "expandChangedRangeForKittyImages"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "deleteChangedKittyImages",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 2
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "deleteChangedKittyImages"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "doRender",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 0
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "doRender"
+          }
+        ],
+        "constructible": false
+      },
+      {
+        "key": "positionHardwareCursor",
+        "own": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "number",
+            "value": 2
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false,
+            "type": "string",
+            "value": "positionHardwareCursor"
+          }
+        ],
+        "constructible": false
+      }
+    ]
+  }
+}

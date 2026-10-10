@@ -1,0 +1,225 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "unsolicited replies",
+      "values": [
+        false,
+        false
+      ],
+      "writes": []
+    },
+    {
+      "name": "partial duplicate invalid palette and DA1",
+      "consumed": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "result": {
+        "foreground": {
+          "r": 17,
+          "g": 34,
+          "b": 51
+        },
+        "background": {
+          "r": 255,
+          "g": 0,
+          "b": 136
+        }
+      },
+      "pending": 0,
+      "late": [],
+      "writes": [
+        "\u001b]10;?\u0007\u001b]11;?\u0007\u001b]4;0;?\u0007\u001b]4;1;?\u0007\u001b]4;2;?\u0007\u001b]4;3;?\u0007\u001b]4;4;?\u0007\u001b]4;5;?\u0007\u001b]4;6;?\u0007\u001b]4;7;?\u0007\u001b]4;8;?\u0007\u001b]4;9;?\u0007\u001b]4;10;?\u0007\u001b]4;11;?\u0007\u001b]4;12;?\u0007\u001b]4;13;?\u0007\u001b]4;14;?\u0007\u001b]4;15;?\u0007\u001b[c"
+      ]
+    },
+    {
+      "name": "all eighteen targets complete then DA1",
+      "consumed": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "result": {
+        "foreground": {
+          "r": 17,
+          "g": 34,
+          "b": 51
+        },
+        "background": {
+          "r": 68,
+          "g": 85,
+          "b": 102
+        },
+        "palette": [
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0
+          },
+          {
+            "r": 17,
+            "g": 17,
+            "b": 17
+          },
+          {
+            "r": 34,
+            "g": 34,
+            "b": 34
+          },
+          {
+            "r": 51,
+            "g": 51,
+            "b": 51
+          },
+          {
+            "r": 68,
+            "g": 68,
+            "b": 68
+          },
+          {
+            "r": 85,
+            "g": 85,
+            "b": 85
+          },
+          {
+            "r": 102,
+            "g": 102,
+            "b": 102
+          },
+          {
+            "r": 119,
+            "g": 119,
+            "b": 119
+          },
+          {
+            "r": 136,
+            "g": 136,
+            "b": 136
+          },
+          {
+            "r": 153,
+            "g": 153,
+            "b": 153
+          },
+          {
+            "r": 170,
+            "g": 170,
+            "b": 170
+          },
+          {
+            "r": 187,
+            "g": 187,
+            "b": 187
+          },
+          {
+            "r": 204,
+            "g": 204,
+            "b": 204
+          },
+          {
+            "r": 221,
+            "g": 221,
+            "b": 221
+          },
+          {
+            "r": 238,
+            "g": 238,
+            "b": 238
+          },
+          {
+            "r": 255,
+            "g": 255,
+            "b": 255
+          }
+        ]
+      },
+      "pending": 0,
+      "late": [],
+      "writes": [
+        "\u001b]10;?\u0007\u001b]11;?\u0007\u001b]4;0;?\u0007\u001b]4;1;?\u0007\u001b]4;2;?\u0007\u001b]4;3;?\u0007\u001b]4;4;?\u0007\u001b]4;5;?\u0007\u001b]4;6;?\u0007\u001b]4;7;?\u0007\u001b]4;8;?\u0007\u001b]4;9;?\u0007\u001b]4;10;?\u0007\u001b]4;11;?\u0007\u001b]4;12;?\u0007\u001b]4;13;?\u0007\u001b]4;14;?\u0007\u001b]4;15;?\u0007\u001b[c"
+      ]
+    },
+    {
+      "name": "timeout collects late replies once at DA1",
+      "result": {
+        "foreground": {
+          "r": 17,
+          "g": 34,
+          "b": 51
+        }
+      },
+      "late": [
+        {
+          "foreground": {
+            "r": 17,
+            "g": 34,
+            "b": 51
+          },
+          "background": {
+            "r": 68,
+            "g": 85,
+            "b": 102
+          }
+        }
+      ],
+      "pending": 0,
+      "writes": [
+        "\u001b]10;?\u0007\u001b]11;?\u0007\u001b]4;0;?\u0007\u001b]4;1;?\u0007\u001b]4;2;?\u0007\u001b]4;3;?\u0007\u001b]4;4;?\u0007\u001b]4;5;?\u0007\u001b]4;6;?\u0007\u001b]4;7;?\u0007\u001b]4;8;?\u0007\u001b]4;9;?\u0007\u001b]4;10;?\u0007\u001b]4;11;?\u0007\u001b]4;12;?\u0007\u001b]4;13;?\u0007\u001b]4;14;?\u0007\u001b]4;15;?\u0007\u001b[c"
+      ]
+    },
+    {
+      "name": "color scheme subscriptions",
+      "consumed": [
+        false,
+        true,
+        true
+      ],
+      "trace": [
+        "a:dark",
+        "b:dark",
+        "a:light"
+      ],
+      "writes": []
+    },
+    {
+      "name": "cell dimensions response",
+      "consumed": [
+        false,
+        true,
+        true
+      ],
+      "trace": [
+        "invalidate",
+        "render"
+      ],
+      "dimensions": {
+        "widthPx": 11,
+        "heightPx": 19
+      },
+      "writes": []
+    }
+  ]
+}

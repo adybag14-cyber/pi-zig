@@ -1,0 +1,10 @@
+const clipboardCases=[];
+for(const result of[true,false,'clipboard unavailable',0,undefined]){const trace=[],terminal={columns:20,rows:4,write(text){trace.push(['write',text])}};const screen=new TuiAltScreen(terminal,false,undefined,{copySelection(text){trace.push(['copy',text,this===screen]);return Promise.resolve(result)}});screen.flash=(...args)=>trace.push(['flash',...args]);const pending=screen.copyTextToClipboard('hello 世界😀');trace.push(['pending',pending instanceof Promise]);const value=await pending;clipboardCases.push({name:'actual injected clipboard '+String(result),value,trace});}
+{
+ const writes=[],screen=new TuiAltScreen({columns:20,rows:4,write(value){writes.push(value)}});screen.flash=(...args)=>writes.push(args);const value=await screen.copyTextToClipboard('hello 世界😀');clipboardCases.push({name:'actual OSC52 clipboard native Buffer encoding',value,writes});
+}
+for(const asynchronous of[false,true]){const reason={clipboardFailure:true};const screen=new TuiAltScreen({columns:20,rows:4,write(){}},false,undefined,{copySelection(){if(asynchronous)return Promise.reject(reason);throw reason}});let same=false;try{await screen.copyTextToClipboard('text')}catch(error){same=error===reason}clipboardCases.push({name:'actual clipboard rejection identity '+asynchronous,same});}
+{
+ const trace=[],screen=new TuiAltScreen({columns:20,rows:4,write(){}});screen.getActiveSelectionText=()=>undefined;const a=await screen.copyActiveSelectionToClipboard(),b=await screen.copySelectionToClipboard();screen.getActiveSelectionText=()=>'selected';screen.copyTextToClipboard=text=>{trace.push(text);return Promise.resolve(true)};const c=await screen.copyActiveSelectionToClipboard(),d=await screen.copySelectionToClipboard();clipboardCases.push({name:'actual public private async selection adoption',values:[a,b,c,d],trace});
+}
+globalThis.tuiAltClipboardCases=JSON.parse(JSON.stringify(clipboardCases));

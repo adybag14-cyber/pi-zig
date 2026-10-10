@@ -1,0 +1,891 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "icu": "78.2",
+  "unicode": "17.0",
+  "cases": [
+    {
+      "name": "ASCII whitespace and lines:one",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 2,
+              "endCol": 5
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:2:0:5"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines:ONE",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 2,
+              "endCol": 5
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:2:0:5"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines:one two",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 2,
+              "endCol": 5
+            },
+            {
+              "row": 0,
+              "startCol": 7,
+              "endCol": 10
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:2:0:10"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines:two three",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 7,
+              "endCol": 10
+            },
+            {
+              "row": 1,
+              "startCol": 0,
+              "endCol": 5
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:7:1:5"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines: two\tthree\n",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 7,
+              "endCol": 10
+            },
+            {
+              "row": 1,
+              "startCol": 0,
+              "endCol": 5
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:7:1:5"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines:four",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 2,
+              "startCol": 0,
+              "endCol": 4
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "2:0:2:4"
+      ]
+    },
+    {
+      "name": "ASCII whitespace and lines:missing",
+      "matches": [],
+      "keys": []
+    },
+    {
+      "name": "ASCII whitespace and lines:   ",
+      "matches": [],
+      "keys": []
+    },
+    {
+      "name": "ANSI removed and literal regex:a.*b",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 0,
+              "endCol": 4
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:0:0:4"
+      ]
+    },
+    {
+      "name": "ANSI removed and literal regex:[x]",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 0,
+              "endCol": 3
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:0:1:3"
+      ]
+    },
+    {
+      "name": "ANSI removed and literal regex:(y)",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 4,
+              "endCol": 7
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:4:1:7"
+      ]
+    },
+    {
+      "name": "ANSI removed and literal regex:+",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 8,
+              "endCol": 9
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:8:1:9"
+      ]
+    },
+    {
+      "name": "ANSI removed and literal regex:$",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 10,
+              "endCol": 11
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:10:1:11"
+      ]
+    },
+    {
+      "name": "ANSI removed and literal regex:\\",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 12,
+              "endCol": 13
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:12:1:13"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:世界",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 1,
+              "endCol": 5
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:1:0:5"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:界 é",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 3,
+              "endCol": 5
+            },
+            {
+              "row": 0,
+              "startCol": 6,
+              "endCol": 7
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:3:0:7"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:é",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 6,
+              "endCol": 7
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:6:0:7"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:👩",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 8,
+              "endCol": 10
+            }
+          ]
+        },
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 8,
+              "endCol": 10
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:8:0:10",
+        "0:8:0:10"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:𐐨",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 0,
+              "endCol": 1
+            }
+          ]
+        },
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 1,
+              "endCol": 2
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:0:1:1",
+        "1:1:1:2"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:k",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 3,
+              "endCol": 4
+            }
+          ]
+        },
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 10,
+              "endCol": 11
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:3:1:4",
+        "1:10:1:11"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:σ",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 12,
+              "endCol": 13
+            }
+          ]
+        },
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 13,
+              "endCol": 14
+            }
+          ]
+        },
+        {
+          "segments": [
+            {
+              "row": 1,
+              "startCol": 14,
+              "endCol": 15
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "1:12:1:13",
+        "1:13:1:14",
+        "1:14:1:15"
+      ]
+    },
+    {
+      "name": "unicode graphemes and cell mapping:ไทย ລາວ",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 2,
+              "startCol": 0,
+              "endCol": 3
+            },
+            {
+              "row": 2,
+              "startCol": 6,
+              "endCol": 9
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "2:0:2:9"
+      ]
+    },
+    {
+      "name": "whitespace grapheme normalization:alpha beta gamma",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 3,
+              "endCol": 8
+            },
+            {
+              "row": 0,
+              "startCol": 9,
+              "endCol": 13
+            },
+            {
+              "row": 1,
+              "startCol": 1,
+              "endCol": 6
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:3:1:6"
+      ]
+    },
+    {
+      "name": "whitespace grapheme normalization:beta gamma",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 9,
+              "endCol": 13
+            },
+            {
+              "row": 1,
+              "startCol": 1,
+              "endCol": 6
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:9:1:6"
+      ]
+    },
+    {
+      "name": "whitespace grapheme normalization:\r\nalpha\t",
+      "matches": [
+        {
+          "segments": [
+            {
+              "row": 0,
+              "startCol": 3,
+              "endCol": 8
+            }
+          ]
+        }
+      ],
+      "keys": [
+        "0:3:0:8"
+      ]
+    },
+    {
+      "name": "genuine index cache corpus spans identity and normalization",
+      "trace": [
+        {
+          "changed": true,
+          "sameArray": false,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "row": 1,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello world hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello world",
+            "hello"
+          ],
+          "normalized": "hello"
+        },
+        {
+          "changed": false,
+          "sameArray": true,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "row": 1,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello world hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello world",
+            "hello"
+          ],
+          "normalized": "hello"
+        },
+        {
+          "changed": false,
+          "sameArray": true,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "row": 1,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello world hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello world",
+            "hello"
+          ],
+          "normalized": "hello"
+        },
+        {
+          "changed": true,
+          "sameArray": false,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 6,
+                  "endCol": 11
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello world hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello world",
+            "hello"
+          ],
+          "normalized": "world"
+        },
+        {
+          "changed": true,
+          "sameArray": false,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "row": 1,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello earth hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello earth",
+            "hello"
+          ],
+          "normalized": "hello"
+        },
+        {
+          "changed": true,
+          "sameArray": false,
+          "matches": [
+            {
+              "segments": [
+                {
+                  "row": 0,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            },
+            {
+              "segments": [
+                {
+                  "row": 1,
+                  "startCol": 0,
+                  "endCol": 5
+                }
+              ]
+            }
+          ],
+          "corpus": {
+            "text": "hello earth hello",
+            "spans": [
+              {
+                "textStart": 0,
+                "textEnd": 5,
+                "row": 0,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              },
+              {
+                "textStart": 6,
+                "textEnd": 11,
+                "row": 0,
+                "startCol": 6,
+                "endCol": 11,
+                "linearColumns": true
+              },
+              {
+                "textStart": 12,
+                "textEnd": 17,
+                "row": 1,
+                "startCol": 0,
+                "endCol": 5,
+                "linearColumns": true
+              }
+            ]
+          },
+          "sourceLines": [
+            "hello earth",
+            "hello"
+          ],
+          "normalized": "HELLO"
+        }
+      ],
+      "fields": [
+        "sourceLines",
+        "corpus",
+        "normalizedQuery",
+        "matches"
+      ],
+      "prototype": [
+        "constructor",
+        "search"
+      ]
+    },
+    {
+      "name": "match key",
+      "match": {
+        "segments": []
+      },
+      "key": ""
+    },
+    {
+      "name": "match key",
+      "match": {
+        "segments": [
+          {
+            "row": 2,
+            "startCol": 3,
+            "endCol": 8
+          }
+        ]
+      },
+      "key": "2:3:2:8"
+    },
+    {
+      "name": "match key",
+      "match": {
+        "segments": [
+          {
+            "row": 1,
+            "startCol": 2,
+            "endCol": 4
+          },
+          {
+            "row": 3,
+            "startCol": 0,
+            "endCol": 7
+          }
+        ]
+      },
+      "key": "1:2:3:7"
+    }
+  ]
+}

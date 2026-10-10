@@ -1,0 +1,825 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "functions": [
+    {
+      "exportName": "allocateImageId",
+      "functionName": "allocateImageId",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "backgroundAnsi",
+      "functionName": "backgroundAnsi",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "calculateImageRows",
+      "functionName": "calculateImageRows",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "colorToHex",
+      "functionName": "colorToHex",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "colorToOkhsl",
+      "functionName": "colorToOkhsl",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "colorToOklch",
+      "functionName": "colorToOklch",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "colorToRgb",
+      "functionName": "colorToRgb",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "compositeTuiLine",
+      "functionName": "compositeTuiLine",
+      "length": 5,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "decodeKittyPrintable",
+      "functionName": "decodeKittyPrintable",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "deleteAllKittyImages",
+      "functionName": "deleteAllKittyImages",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "deleteKittyImage",
+      "functionName": "deleteKittyImage",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "detectCapabilities",
+      "functionName": "detectCapabilities",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "encodeITerm2",
+      "functionName": "encodeITerm2",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "encodeKitty",
+      "functionName": "encodeKitty",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "foregroundAnsi",
+      "functionName": "foregroundAnsi",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "formatProgramStatus",
+      "functionName": "formatProgramStatus",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "fuzzyFilter",
+      "functionName": "fuzzyFilter",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "fuzzyMatch",
+      "functionName": "fuzzyMatch",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getCapabilities",
+      "functionName": "getCapabilities",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getCellDimensions",
+      "functionName": "getCellDimensions",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getGifDimensions",
+      "functionName": "getGifDimensions",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getImageDimensions",
+      "functionName": "getImageDimensions",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getJpegDimensions",
+      "functionName": "getJpegDimensions",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getKeybindings",
+      "functionName": "getKeybindings",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getNativeClipboard",
+      "functionName": "getNativeClipboard",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getOsc8LinkAtColumn",
+      "functionName": "getOsc8LinkAtColumn",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getPngDimensions",
+      "functionName": "getPngDimensions",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getTerminalColorMode",
+      "functionName": "getTerminalColorMode",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "getWebpDimensions",
+      "functionName": "getWebpDimensions",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "hyperlink",
+      "functionName": "hyperlink",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "imageFallback",
+      "functionName": "imageFallback",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "indexedColor",
+      "functionName": "indexedColor",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isAppleTerminalSession",
+      "functionName": "isAppleTerminalSession",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isFocusable",
+      "functionName": "isFocusable",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isKeyRelease",
+      "functionName": "isKeyRelease",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isKeyRepeat",
+      "functionName": "isKeyRepeat",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isKittyProtocolActive",
+      "functionName": "isKittyProtocolActive",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "isViewportTUI",
+      "functionName": "isViewportTUI",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "matchesKey",
+      "functionName": "matchesKey",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "mixColors",
+      "functionName": "mixColors",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "okhslColor",
+      "functionName": "okhslColor",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "oklchColor",
+      "functionName": "oklchColor",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "parseColor",
+      "functionName": "parseColor",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "parseKey",
+      "functionName": "parseKey",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "parseTerminalColorSchemeReport",
+      "functionName": "parseTerminalColorSchemeReport",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "renderFakeCursor",
+      "functionName": "renderFakeCursor",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "renderImage",
+      "functionName": "renderImage",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "renderLatex",
+      "functionName": "renderLatex",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "resetCapabilitiesCache",
+      "functionName": "resetCapabilitiesCache",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "rgbColor",
+      "functionName": "rgbColor",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setCapabilities",
+      "functionName": "setCapabilities",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setCapabilityOverrides",
+      "functionName": "setCapabilityOverrides",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setCellDimensions",
+      "functionName": "setCellDimensions",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setImageTranscoder",
+      "functionName": "setImageTranscoder",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setKeybindings",
+      "functionName": "setKeybindings",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "setKittyProtocolActive",
+      "functionName": "setKittyProtocolActive",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "sliceByColumn",
+      "functionName": "sliceByColumn",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "stripTerminalSequences",
+      "functionName": "stripTerminalSequences",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "styleText",
+      "functionName": "styleText",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "styleTextWithAnsi",
+      "functionName": "styleTextWithAnsi",
+      "length": 4,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "truncateToWidth",
+      "functionName": "truncateToWidth",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "visibleWidth",
+      "functionName": "visibleWidth",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    },
+    {
+      "exportName": "wrapTextWithAnsi",
+      "functionName": "wrapTextWithAnsi",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "prototypeDescriptor": true,
+      "prototypeConstructorOwn": true,
+      "prototypeConstructorSame": true
+    }
+  ]
+}

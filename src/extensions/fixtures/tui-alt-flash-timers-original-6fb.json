@@ -1,0 +1,46 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "actual unref timers expire in Source schedule order",
+      "events": [
+        {
+          "receiver": true,
+          "lines": [
+            "\u001b[7m first \u001b[27m"
+          ]
+        },
+        {
+          "receiver": true,
+          "lines": [
+            "\u001b[7m first \u001b[27m",
+            "\u001b[7m second \u001b[27m"
+          ]
+        },
+        {
+          "receiver": true,
+          "lines": [
+            "\u001b[7m second \u001b[27m"
+          ]
+        },
+        {
+          "receiver": true,
+          "lines": []
+        }
+      ],
+      "nextId": 2,
+      "entries": 0
+    },
+    {
+      "name": "actual dispose cancels callback and releases entry",
+      "events": [
+        [
+          "\u001b[7m cancel \u001b[27m"
+        ]
+      ],
+      "nextId": 1,
+      "entries": 0
+    }
+  ]
+}

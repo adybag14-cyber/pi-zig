@@ -1,0 +1,82 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "primitive body return uses genuine ordinary constructor prototype",
+      "value": {
+        "type": "object",
+        "prototype": true,
+        "instance": true,
+        "keys": []
+      }
+    },
+    {
+      "name": "object body return overrides constructed receiver",
+      "value": {
+        "value": {
+          "kind": "rgb",
+          "r": 1,
+          "g": 2,
+          "b": 3
+        },
+        "frozen": true,
+        "prototype": false
+      }
+    },
+    {
+      "name": "array body return preserves original identity",
+      "value": {
+        "same": true,
+        "array": true,
+        "value": [
+          {
+            "value": "x",
+            "label": "X"
+          }
+        ]
+      }
+    },
+    {
+      "name": "derived new target and ordinary body execute",
+      "value": {
+        "tag": "derived",
+        "derived": true,
+        "base": true,
+        "prototype": true
+      }
+    },
+    {
+      "name": "explicit new target supplies receiver prototype",
+      "value": {
+        "prototype": true,
+        "other": true,
+        "base": false
+      }
+    },
+    {
+      "name": "bound function remains genuinely constructible",
+      "value": {
+        "length": 0,
+        "name": "bound visibleWidth",
+        "prototype": "undefined",
+        "instance": true
+      }
+    },
+    {
+      "name": "mutable ordinary prototype changes genuine receiver creation",
+      "value": {
+        "first": true,
+        "marker": 1,
+        "second": true
+      }
+    },
+    {
+      "name": "side effect body still executes during construction",
+      "value": {
+        "same": true,
+        "prototype": true
+      }
+    }
+  ]
+}

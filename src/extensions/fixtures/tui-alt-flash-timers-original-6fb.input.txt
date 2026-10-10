@@ -1,0 +1,14 @@
+const actualFlashTimerCases=[];
+{
+ let finish,started=false;
+ const completion=new Promise(resolve=>{finish=resolve}),events=[];
+ const container=new AltScreenFlashContainer(function(){events.push({receiver:this===container,lines:container.render(30)});if(started&&container.entries.length===0)finish()});
+ container.flash('first',1);container.flash('second',2);started=true;await completion;
+ actualFlashTimerCases.push({name:'actual unref timers expire in Source schedule order',events,nextId:container.nextId,entries:container.entries.length});container.dispose();
+}
+{
+ const events=[],container=new AltScreenFlashContainer(()=>events.push(container.render(30)));
+ container.flash('cancel',1);container.dispose();await new Promise(resolve=>setTimeout(resolve,5));
+ actualFlashTimerCases.push({name:'actual dispose cancels callback and releases entry',events,nextId:container.nextId,entries:container.entries.length});
+}
+globalThis.tuiAltFlashTimerCases=JSON.parse(JSON.stringify(actualFlashTimerCases));

@@ -474,6 +474,7 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     try js.define(engine, state, "iteratorSymbol", try js.get(engine, symbol_type, "iterator"));
     const prototype = try js.object(engine);
     defer engine.freeValue(prototype);
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Method)) |field| {
         const name: [:0]const u8 = field.name;
         const length: c_int = if (field.value == @intFromEnum(Method.matches)) 2 else if (field.value == @intFromEnum(Method.getKeys) or field.value == @intFromEnum(Method.getDefinition) or field.value == @intFromEnum(Method.setUserBindings)) 1 else 0;
@@ -491,8 +492,8 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     class_state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .state = c.JS_DupValue(engine.context, state) };
     _ = c.JS_SetOpaque(constructor, class_state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "KeybindingsManager")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 1), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, "KeybindingsManager")), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "prototype", c.JS_DupValue(engine.context, prototype), 0) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try js.define(engine, state, "constructor", c.JS_DupValue(engine.context, constructor));

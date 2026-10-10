@@ -1,0 +1,30 @@
+const mainRenderCases=[];
+const previousTermux=process.env.TERMUX_VERSION;
+function renderScenario(name,steps,{width=16,height=4,clear=false,termux=false}={}){
+ const writes=[],trace=[],terminal={columns:width,rows:height,write(data){writes.push(data)},start(){trace.push('start')},stop(){trace.push('stop')},hideCursor(){trace.push('hide')},showCursor(){trace.push('show')}};
+ const screen=new TuiMainScreen(terminal,false);screen.setClearOnShrink(clear);let lines=[];
+ screen.addChild({render(){return lines},invalidate(){}});
+ if(termux)process.env.TERMUX_VERSION='source-termux';else delete process.env.TERMUX_VERSION;
+ const states=[];
+ for(const step of steps){if(step.width!==undefined)terminal.columns=step.width;if(step.height!==undefined)terminal.rows=step.height;if(step.lines!==undefined)lines=step.lines;screen.renderNow();states.push({state:screen.captureRenderState(),full:screen.fullRedraws,trace:trace.slice(),writes:summarizeWrites(writes)});}
+ mainRenderCases.push({name,states});
+}
+renderScenario('first render and unchanged',[{lines:['one','two']},{}]);
+renderScenario('single middle-line change',[{lines:['one','two','three']},{lines:['one','TWO','three']}]);
+renderScenario('append within viewport',[{lines:['one']},{lines:['one','two','three']}]);
+renderScenario('append through scrollback',[{lines:['0','1','2','3','4','5']},{lines:['0','1','2','3','4','5','6','7']}]);
+renderScenario('delete only visible tail',[{lines:['one','two','three']},{lines:['one']}]);
+renderScenario('delete moves above viewport',[{lines:['0','1','2','3','4','5','6','7']},{lines:['0']}]);
+renderScenario('clear on shrink',[{lines:['one','two','three']},{lines:['one']}],{clear:true});
+renderScenario('terminal width redraw',[{lines:['one','two']},{width:12}]);
+renderScenario('terminal height redraw',[{lines:['one','two','three','four','five']},{height:3}]);
+renderScenario('Termux height change',[{lines:['one','two','three','four','five']},{height:3},{height:5}],{termux:true});
+renderScenario('cursor movement and hardware policy',[{lines:['a'+tui.CURSOR_MARKER+'bc']},{lines:['ab'+tui.CURSOR_MARKER+'c']}]);
+renderScenario('Kitty reserved rows changed then deleted',[{lines:['\x1b_Ga=T,i=7,r=2;AAAA\x1b\\','','tail']},{lines:['\x1b_Ga=T,i=8,r=2;AAAA\x1b\\','','tail']},{lines:['plain']}]);
+if(previousTermux===undefined)delete process.env.TERMUX_VERSION;else process.env.TERMUX_VERSION=previousTermux;
+{
+ const writes=[],terminal={columns:2097152,rows:4,write(data){writes.push(data)},start(){},stop(){},hideCursor(){},showCursor(){}},screen=new TuiMainScreen(terminal,false);
+ const line='x'.repeat(1048567)+'😀tail';screen.addChild({render(){return[line]},invalidate(){}});screen.renderNow();
+ mainRenderCases.push({name:'bounded writer UTF16 surrogate boundary',writes:summarizeWrites(writes),state:{...screen.captureRenderState(),previousLines:screen.captureRenderState().previousLines.map(line=>({length:line.length,start:line.slice(0,12),end:line.slice(-20)}))},full:screen.fullRedraws});
+}
+globalThis.tuiMainRenderCases=JSON.parse(JSON.stringify(mainRenderCases));

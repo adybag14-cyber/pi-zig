@@ -514,8 +514,8 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype) };
     _ = c.JS_SetOpaque(constructor, state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
-    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try text(engine, "SelectList"), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 3), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try text(engine, "SelectList"), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, constructor, "prototype", c.JS_DupValue(engine.context, prototype), 0) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try js.define(engine, exports, "SelectList", c.JS_DupValue(engine.context, constructor));

@@ -364,6 +364,7 @@ fn call(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, 
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     inline for (std.meta.fields(Method)) |field| {
         const name: [:0]const u8 = field.name;
-        try put(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, call, name.ptr, 3, @intCast(field.value))), c.JS_PROP_C_W_E);
+        const length: c_int = if (field.value == @intFromEnum(Method.oklabToOkhslLightness)) 1 else 3;
+        try put(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, call, name.ptr, length, @intCast(field.value))), c.JS_PROP_C_W_E);
     }
 }

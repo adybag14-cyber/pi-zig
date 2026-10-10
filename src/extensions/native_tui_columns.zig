@@ -279,7 +279,7 @@ pub fn composite(engine: *js.Engine, base: []const u16, overlay: []const u16, st
 const Method = enum(c_int) { stripTerminalSequences, getOsc8LinkAtColumn, sliceByColumn, compositeTuiLine };
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native TUI columns: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn operation(engine: *js.Engine, method: Method, args: []const c.JSValue, exports: c.JSValue) !c.JSValue {

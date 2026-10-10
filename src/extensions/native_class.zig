@@ -23,7 +23,7 @@ fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr);
     return state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
         return c.JS_ThrowTypeError(context, "Native %s: %s", state.name.ptr, @as([*:0]const u8, @errorName(err)));
     };
 }
