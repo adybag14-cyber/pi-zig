@@ -175,6 +175,13 @@ const Execution = struct {
             _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
             unreachable;
         }
+        if (instance == 0 and c.JS_IsString(reason)) {
+            const rendered = try self.engine.toString(reason);
+            defer self.gpa.free(rendered);
+            try description.object.put(a, "message", .{ .string = try a.dupe(u8, rendered) });
+            self.terminal_error = description;
+            return;
+        }
         if (instance == 0) {
             const encoded = c.JS_JSONStringify(self.engine.context, reason, c.pi_js_undefined(), c.pi_js_undefined());
             const rendered = if (c.JS_IsException(encoded)) blk: {
