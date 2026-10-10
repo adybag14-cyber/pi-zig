@@ -439,7 +439,7 @@ test "native codemode agent adapter allocation failures release nested workers f
             try std.testing.expect(!result.is_error);
         }
     };
-    try @import("../test_support/allocation_shards.zig").check(Check.run);
+    try @import("../test_support/allocation_shards.zig").checkNamed("codemode-adapter", Check.run);
 }
 
 test "native codemode agent adapter output budget saves full text in owned temporary file" {

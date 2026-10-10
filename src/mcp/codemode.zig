@@ -1408,7 +1408,7 @@ test "native codemode allocation failures free host ownership output stores call
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try @import("../test_support/allocation_shards.zig").check(Check.run);
+    try @import("../test_support/allocation_shards.zig").checkNamed("codemode-host", Check.run);
 }
 
 test "native codemode allocation failures join tool workers and release JSON results and promise roots" {
@@ -1425,7 +1425,7 @@ test "native codemode allocation failures join tool workers and release JSON res
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try @import("../test_support/allocation_shards.zig").check(Check.run);
+    try @import("../test_support/allocation_shards.zig").checkNamed("codemode-workers", Check.run);
 }
 
 test "native codemode unknown tool guard matches original suggested identifier diagnostics" {
@@ -1500,7 +1500,7 @@ test "native codemode discovery allocation failures release metadata promises er
             defer result.deinit();
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try @import("../test_support/allocation_shards.zig").checkNamed("codemode-discovery", Check.run);
 }
 
 fn expectJsonEquivalent(expected: Value, actual: Value) anyerror!void {

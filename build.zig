@@ -716,9 +716,9 @@ pub fn build(b: *std.Build) void {
     const codemode_allocation_tests = b.addTest(.{
         .root_module = codemode_tests.root_module,
         .use_llvm = use_llvm,
-        .filters = &.{"native codemode allocation failures"},
+        .filters = &.{ "native codemode allocation failures", "native codemode discovery allocation failures", "native codemode agent adapter allocation failures" },
     });
-    b.step("test-codemode-allocation", "Exhaustively check codemode allocation ownership without repeating CLI and model suites").dependOn(&b.addRunArtifact(codemode_allocation_tests).step);
+    b.step("test-codemode-allocation", "Check all four codemode host worker discovery and adapter allocation sweeps without repeating CLI and model suites").dependOn(&b.addRunArtifact(codemode_allocation_tests).step);
     const codemode_inline_tests = b.addTest(.{
         .root_module = codemode_tests.root_module,
         .use_llvm = use_llvm,

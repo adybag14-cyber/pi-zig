@@ -160,7 +160,8 @@ jobs:
           version: 0.16.0
           use-cache: false
       - name: Exhaustive codemode allocation shard
-        # This target runs the two exhaustive ownership tests. The complete
+        # This target runs all four exhaustive host/worker/discovery/adapter
+        # ownership tests, covering every range for each. The complete
         # codemode, CLI and model suites still run in the OS matrix above.
         # Allow cold compilation separately from the per-test hang deadline.
         timeout-minutes: 20

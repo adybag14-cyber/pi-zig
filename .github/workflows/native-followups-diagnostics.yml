@@ -35,9 +35,30 @@ jobs:
           zig version >> verification/followup-diagnostics/source.txt
       - name: Check formatting
         run: zig fmt --check build.zig src tools
+      - name: Verify allocation coverage checker rejects incomplete evidence
+        run: zig test tools/verify_codemode_coverage.zig
       - name: Exercise codemode allocation, engine lifecycle, WeakRefs and issuer exchange
         timeout-minutes: 25
-        run: zig build test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 120s --summary all
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ runner.os }}" == "macOS" ]]; then
+            export PI_CODEMODE_ALLOCATION_SHARD=0 PI_CODEMODE_ALLOCATION_SHARDS=8
+            export PI_SDK_ALLOCATION_SHARD=0 PI_SDK_ALLOCATION_SHARDS=8
+          fi
+          zig build test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/followup-diagnostics/shard-0.log
+      - name: Complete and verify every macOS codemode allocation range
+        if: runner.os == 'macOS'
+        timeout-minutes: 25
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PI_CODEMODE_ALLOCATION_SHARDS=8 PI_SDK_ALLOCATION_SHARDS=8
+          for shard in 1 2 3 4 5 6 7; do
+            export PI_CODEMODE_ALLOCATION_SHARD="$shard" PI_SDK_ALLOCATION_SHARD="$shard"
+            zig build test-codemode-allocation test-codemode-model-allocation-shard -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee "verification/followup-diagnostics/shard-$shard.log"
+          done
+          zig run tools/verify_codemode_coverage.zig -- 8 verification/followup-diagnostics/shard-{0..7}.log > verification/followup-diagnostics/allocation-coverage.txt 2>&1
       - name: Preserve diagnostic source receipts
         if: always()
         uses: actions/upload-artifact@v4
