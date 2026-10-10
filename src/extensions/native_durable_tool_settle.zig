@@ -10,7 +10,7 @@ const Engine = engine_mod.Engine;
 pub const Tokens = struct { live: c.JSValue, nested_calls: c.JSValue, nested_results: c.JSValue, tool_result: c.JSValue, usage: c.JSValue, iterator_symbol: c.JSValue };
 pub const Ending = enum { completed, failed, aborted };
 pub const Result = union(enum) { final: c.JSValue, slot_error: struct { code: c.JSValue, message: c.JSValue } };
-const Stage = enum(c_int) { index, children_aborted, live, usage, parent_index, nested_stored, entry_stored, committed };
+const Stage = enum(c_int) { index, made_nested, children_aborted, live, usage, parent_index, nested_stored, entry_stored, committed };
 const Scope = struct {
     engine: *Engine,
     values: std.ArrayList(c.JSValue) = .empty,
@@ -61,30 +61,38 @@ pub fn run(engine: *Engine, intrinsics: *awaiting.Intrinsics, tokens: Tokens, ru
     try putData(engine, state, "ending", try engine.checked(c.JS_NewString(engine.context, @tagName(ending))));
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const id = try scope.get(runtime, "taskId");
-    const snapshot = try scope.invoke(runtime, "snapshot", &.{ tokens.nested_calls, id, context });
+    const snapshot = try scope.invoke(runtime, "ownedTasks", &.{context});
     return wait(engine, state, snapshot, .index);
 }
 
 fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
-    if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    if (rejected) return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const runtime = try scope.get(state, "runtime");
     const context = try scope.get(state, "context");
     switch (@as(Stage, @enumFromInt(raw_stage))) {
         .index => {
-            const calls = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) c.pi_js_undefined() else try scope.get(value, "calls");
+            const ids = try scope.own(try vm.array(engine));
+            for (0..try vm.length(engine, value)) |index| {
+                const record = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, value, @intCast(index))));
+                if (!try @import("native_durable_tool_call.zig").equalsString(engine, try scope.get(record, "kind"), "pi.tool")) continue;
+                const input = try scope.get(record, "input");
+                if (!try @import("native_durable_tool_call.zig").equalsString(engine, try scope.get(input, "kind"), "nested")) continue;
+                _ = try scope.invoke(ids, "push", &.{try scope.get(record, "id")});
+            }
+            try statePut(engine, state, "nestedIds", ids);
+            const label = try scope.own(try engine.checked(c.JS_NewString(engine.context, "pi.tool.madeNestedCalls")));
+            const memo = try scope.invoke(runtime, "memo", &.{ label, context });
+            return wait(engine, state, memo, .made_nested);
+        },
+        .made_nested => {
+            try statePut(engine, state, "madeNested", c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, value, c.pi_js_bool(engine.context, 1)))));
             const object = try scope.own(c.JS_GetGlobalObject(engine.context));
-            const object_constructor = try scope.get(object, "Object");
-            const empty = if (c.JS_IsUndefined(calls) or c.JS_IsNull(calls)) try scope.own(try vm.object(engine)) else calls;
-            const ids = try scope.invoke(object_constructor, "values", &.{empty});
-            const comparator = try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, numericOrder, "", 2)));
-            const sorted = try scope.invoke(ids, "sort", &.{comparator});
-            try statePut(engine, state, "nestedIds", sorted);
+            const ids = try scope.get(state, "nestedIds");
             var captures = [_]c.JSValue{ runtime, context };
             const abort = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, abortChild, "", 1, 0, captures.len, &captures)));
-            const pending = try scope.invoke(sorted, "map", &.{abort});
+            const pending = try scope.invoke(ids, "map", &.{abort});
             const promise = try scope.get(object, "Promise");
             const all = try scope.invoke(promise, "all", &.{pending});
             return wait(engine, state, all, .children_aborted);
@@ -170,9 +178,7 @@ fn transactionStep(engine: *Engine, state: c.JSValue, value: c.JSValue, stage: S
             return afterUsage(engine, state, nested);
         },
         .parent_index => {
-            const calls = try scope.get(value, "calls");
-            const key = try scope.get(input, "key");
-            const indexed = try scope.own(try @import("native_js_values.zig").getKey(engine, calls, key));
+            const indexed = try scope.get(value, "taskId");
             if (!c.JS_IsStrictEqual(engine.context, indexed, task_id)) {
                 const id = try scope.get(call, "id");
                 const text = try engine.toString(id);
@@ -181,16 +187,9 @@ fn transactionStep(engine: *Engine, state: c.JSValue, value: c.JSValue, stage: S
                 defer engine.gpa.free(message);
                 return throwError(engine, message);
             }
-            const stored = try scope.own(try vm.object(engine));
             const projected = try scope.get(state, "nestedResult");
-            try statePut(engine, stored, "result", projected);
-            const parent = try scope.get(input, "parent");
-            const key_text = try engine.toString(task_id);
-            defer engine.gpa.free(key_text);
-            const family_key = try scope.own(try engine.checked(c.JS_NewStringLen(engine.context, key_text.ptr, key_text.len)));
-            const token = try scope.get(state, "nestedResultToken");
-            const document = try scope.invoke(tx, "doc", &.{ token, parent, family_key, stored });
-            return wait(engine, state, document, .nested_stored);
+            try statePut(engine, value, "result", projected);
+            return transactionStep(engine, state, value, .nested_stored);
         },
         .nested_stored => {
             const slot = try scope.get(state, "slot");
@@ -234,7 +233,8 @@ fn afterUsage(engine: *Engine, state: c.JSValue, nested: bool) !c.JSValue {
         const input = try scope.get(state, "input");
         const parent = try scope.get(input, "parent");
         const token = try scope.get(state, "nestedCallsToken");
-        const index = try scope.invoke(tx, "doc", &.{ token, parent });
+        const key = try scope.get(input, "key");
+        const index = try scope.invoke(tx, "doc", &.{ token, parent, key, c.pi_js_null() });
         return wait(engine, state, index, .parent_index);
     }
     const runtime = try scope.get(state, "runtime");
@@ -247,8 +247,7 @@ fn afterUsage(engine: *Engine, state: c.JSValue, nested: bool) !c.JSValue {
 fn finishOutcome(engine: *Engine, state: c.JSValue, receipt: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const nested_ids = try scope.get(state, "nestedIds");
-    if (try vm.length(engine, nested_ids) != 0) {
+    if (c.JS_IsStrictEqual(engine.context, try scope.get(state, "madeNested"), c.pi_js_bool(engine.context, 1))) {
         const live = try scope.get(state, "live");
         const runtime = try scope.get(state, "runtime");
         const task_id = try scope.get(runtime, "taskId");

@@ -48,8 +48,8 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     var cache = try output.Cache.init(engine);
     defer cache.deinit();
     inline for (.{ .{ "promiseConstructor", intrinsics.constructor }, .{ "promiseResolve", intrinsics.resolve }, .{ "promiseThen", intrinsics.then_function }, .{ "weak", cache.weak }, .{ "iterator", cache.iterator_symbol } }) |field| try put(engine, state, field[0], field[1]);
-    inline for (.{ .{ "AssistantEntry", "assistantToken" }, .{ "LiveDoc", "liveToken" }, .{ "NestedResultDoc", "nestedResultToken" }, .{ "ToolResultEntry", "toolResultToken" }, .{ "UsageDoc", "usageToken" } }) |field| try put(engine, state, field[1], try scope.get(exports, field[0]));
-    const index = try scope.own(try indexToken(engine));
+    inline for (.{ .{ "AssistantEntry", "assistantToken" }, .{ "LiveDoc", "liveToken" }, .{ "NestedCallDoc", "nestedResultToken" }, .{ "ToolResultEntry", "toolResultToken" }, .{ "UsageDoc", "usageToken" } }) |field| try put(engine, state, field[1], try scope.get(exports, field[0]));
+    const index = try scope.get(exports, "NestedCallDoc");
     try put(engine, state, "nestedCallsToken", index);
     var pattern_args = [_]c.JSValue{ try scope.own(try engine.checked(c.JS_NewString(engine.context, "[\\x00-\\x08\\x0b-\\x1f\\ufff9-\\ufffb]"))), try scope.own(try engine.checked(c.JS_NewString(engine.context, "g"))) };
     const pattern = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, engine.intrinsic_regexp_constructor, pattern_args.len, &pattern_args)));
@@ -76,9 +76,10 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
 pub fn indexToken(engine: *Engine) !c.JSValue {
     const definition = try vm.object(engine);
     defer engine.freeValue(definition);
-    try @import("native_tool_info.zig").putData(engine, definition, "kind", try engine.checked(c.JS_NewString(engine.context, "pi.tool.nested")));
+    try @import("native_tool_info.zig").putData(engine, definition, "kind", try engine.checked(c.JS_NewString(engine.context, "pi.tool.nested-call")));
     try put(engine, definition, "version", c.JS_NewInt32(engine.context, 1));
     try @import("native_tool_info.zig").putData(engine, definition, "scope", try engine.checked(c.JS_NewString(engine.context, "task")));
+    try put(engine, definition, "family", c.pi_js_bool(engine.context, 1));
     try @import("native_tool_info.zig").putData(engine, definition, "initial", try engine.checked(c.JS_NewCFunction(engine.context, indexInitial, "initial", 0)));
     const token = try vm.object(engine);
     errdefer engine.freeValue(token);
@@ -104,7 +105,6 @@ fn indexInitial(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue
 fn indexInitialOwned(engine: *Engine) !c.JSValue {
     const result = try vm.object(engine);
     errdefer engine.freeValue(result);
-    try @import("native_tool_info.zig").putData(engine, result, "calls", try vm.object(engine));
     return result;
 }
 fn migrate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {

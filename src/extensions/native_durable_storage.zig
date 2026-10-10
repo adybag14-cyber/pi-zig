@@ -363,7 +363,7 @@ const Hub = struct {
         index = 0;
         while (index < self.commits.items.len) {
             const item = self.commits.items[index];
-            const native = try durable.state(engine, item.captures[if (item.kind == .runtime_commit) 3 else 0]);
+            const native = try durable.state(engine, item.captures[if (item.kind == .runtime_commit or item.kind == .runtime_memo) 3 else 0]);
             if (native.session.?.ownerThread.load(.acquire) != 0) {
                 index += 1;
                 continue;
@@ -374,6 +374,7 @@ const Hub = struct {
                 .read => durable.retryQueuedRead(engine, &request.captures),
                 .commit => durable.retryQueuedCommit(engine, &request.captures),
                 .runtime_commit => @import("native_durable_tasks.zig").retryRuntimeCommit(engine, &request.captures),
+                .runtime_memo => @import("native_durable_tasks.zig").retryRuntimeMemo(engine, &request.captures),
                 .task_abort => @import("native_durable_task_abort.zig").retry(engine, &request.captures),
             };
 
@@ -453,7 +454,7 @@ pub fn deinit(engine: *Engine) void {
     engine.native_durable_storage_close = null;
 }
 const PendingCommit = struct {
-    kind: enum { commit, read, runtime_commit, task_abort },
+    kind: enum { commit, read, runtime_commit, runtime_memo, task_abort },
     captures: [5]c.JSValue,
     resolve: c.JSValue,
     reject: c.JSValue,
@@ -474,6 +475,9 @@ pub fn deferRuntimeCommit(engine: *Engine, captures: []const c.JSValue) !c.JSVal
 }
 pub fn deferTaskAbort(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
     return admitPending(engine, captures, .task_abort);
+}
+pub fn deferRuntimeMemo(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
+    return admitPending(engine, captures, .runtime_memo);
 }
 pub const Drain = struct {
     owner: *durable.State,

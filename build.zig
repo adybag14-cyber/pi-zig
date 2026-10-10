@@ -557,6 +557,14 @@ pub fn build(b: *std.Build) void {
     const owned_tasks_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{"ownedTasks actual ea"} });
     const run_owned_tasks_tests = b.addRunArtifact(owned_tasks_tests);
     b.step("test-native-durable-owned-tasks", "Replay actual ea Source direct-owned live task copies and cancellation").dependOn(&run_owned_tasks_tests.step);
+    const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
+    linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, ea_nested_tests.root_module);
+    linkTypeScriptParser(b, ea_nested_tests.root_module, typescript_parser);
+    linkSqlite(ea_nested_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-ea-nested", "Replay actual ea Source keyed nested documents and full Harness events").dependOn(&b.addRunArtifact(ea_nested_tests).step);
+    const ea_owned_memo_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{ "ownedTasks actual ea", "public task memos use durable winners" } });
+    b.step("test-native-durable-ea-owned-memo", "Exercise direct-owned copies and original durable memo winners").dependOn(&b.addRunArtifact(ea_owned_memo_tests).step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);

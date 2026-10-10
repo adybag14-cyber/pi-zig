@@ -123,8 +123,7 @@ fn endTool(scope: *Scope, ends: c.JSValue, entries: c.JSValue, slot: c.JSValue, 
 }
 fn endNested(scope: *Scope, events: c.JSValue, results: c.JSValue, slot: c.JSValue) !void {
     const next = try callEvent(scope, events, "tool_execution_end", slot);
-    const string = try scope.own(try js.global(scope.engine, "String"));
-    const key = try scope.own(try js.call(scope.engine, string, c.pi_js_undefined(), &.{try get(scope, slot, "taskId")}));
+    const key = try get(scope, slot, "taskId");
     const result = try scope.invoke(results, "get", &.{key});
     if (!c.JS_IsUndefined(result)) try put(scope, next, "result", result);
 }
@@ -164,8 +163,11 @@ pub fn translate(engine: *Engine, conversation: c.JSValue, before: c.JSValue, af
         const value = try get(&scope, change, "value");
         if (try is(&scope, kind, "document")) {
             const record = try get(&scope, change, "record");
-            const key = try get(&scope, record, "key");
-            if (try is(&scope, try get(&scope, record, "kind"), "pi.tool.nested-result") and !c.JS_IsUndefined(key) and !c.JS_IsNull(value) and same(&scope, try get(&scope, change, "conversationId"), conversation)) _ = try scope.invoke(results, "set", &.{ key, try get(&scope, value, "result") });
+            if (try is(&scope, try get(&scope, record, "kind"), "pi.tool.nested-call") and !c.JS_IsNull(value) and same(&scope, try get(&scope, change, "conversationId"), conversation)) {
+                const task_id = try get(&scope, value, "taskId");
+                const result = try get(&scope, value, "result");
+                if (!c.JS_IsUndefined(task_id) and !c.JS_IsUndefined(result)) _ = try scope.invoke(results, "set", &.{ task_id, result });
+            }
         }
         if (!same(&scope, try get(&scope, value, "conversationId"), conversation)) continue;
         if (try is(&scope, kind, "entry")) try js.push(engine, entries, value);

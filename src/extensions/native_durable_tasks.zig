@@ -1361,8 +1361,19 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     // Source's conversation read and binding.check only test invocation end;
     // the operation's supplied context carries cancellation independently.
-    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry or operation == .ownedTasks) try invocationLive(self) else try active(self);
+    const memo_read = operation == .memo and args.len == 2;
+    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry or operation == .ownedTasks or memo_read) try invocationLive(self) else try active(self);
     const owner = self.entry.manager;
+    if (memo_read) {
+        // Source's memo read observes its live map immediately, ignores the
+        // supplied Context, and performs no Storage read or mutation.
+        try Manager.deliver(owner);
+        const name = try engine.toString(args[0]);
+        defer engine.gpa.free(name);
+        const value = if (owner.live_task_records.get(self.entry.runtime.taskId())) |record| if (json.get(record.value, "memos")) |memos| if (json.get(memos, name)) |winner| try durable.jsValue(engine, winner) else c.pi_js_undefined() else c.pi_js_undefined() else c.pi_js_undefined();
+        defer engine.freeValue(value);
+        return sdk.promise(engine, value);
+    }
     if (operation == .ownedTasks) {
         const context = if (args.len > 0) args[0] else c.pi_js_undefined();
         var captures = [_]c.JSValue{ receiver, context };
@@ -1866,12 +1877,19 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
         const Memo = struct {
             name: []const u8,
             value: json.Value,
+            winner: ?json.Owned = null,
             fn apply(raw: ?*anyopaque, tx: *session_mod.Transaction, current: json.Value) !?json.Value {
                 const change: *@This() = @ptrCast(@alignCast(raw.?));
                 const a = tx.owned.arena.allocator();
                 var next = try json.clone(a, current);
                 var map = json.get(next, "memos") orelse json.Value{ .object = .empty };
-                if (json.get(map, change.name) != null) return null;
+                if (json.get(map, change.name)) |winner| {
+                    var copied = try json.Owned.empty(tx.gpa);
+                    errdefer copied.deinit();
+                    copied.value = try json.clone(copied.arena.allocator(), winner);
+                    change.winner = copied;
+                    return null;
+                }
                 try map.object.put(a, try a.dupe(u8, change.name), try json.clone(a, change.value));
                 try next.object.put(a, "memos", map);
                 try tx.setTask(next);
@@ -1879,8 +1897,13 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
             }
         };
         var change: Memo = .{ .name = name, .value = value.value };
-        try self.entry.runtime.commit(Memo.apply, &change);
+        defer if (change.winner) |*winner| winner.deinit();
+        if (!try self.entry.runtime.tryCommit(Memo.apply, &change)) {
+            var captures = [_]c.JSValue{ receiver, args, c.pi_js_undefined(), self.session, c.pi_js_undefined() };
+            return @import("native_durable_storage.zig").deferRuntimeMemo(engine, &captures);
+        }
         try Manager.deliver(owner);
+        if (change.winner) |winner| return durable.jsValue(engine, winner.value);
         return durable.jsValue(engine, value.value);
     }
     return error.UnknownRuntimeOperation;
@@ -1958,6 +1981,9 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
 }
 pub fn retryRuntimeCommit(engine: *Engine, captures: []const c.JSValue) c.JSValue {
     return runtimeCommitQueued(engine.context, c.pi_js_undefined(), 0, null, 0, @constCast(captures.ptr));
+}
+pub fn retryRuntimeMemo(engine: *Engine, captures: []const c.JSValue) c.JSValue {
+    return runtimeReadQueued(engine.context, c.pi_js_undefined(), 0, null, @intFromEnum(RuntimeMethod.memo), @constCast(captures.ptr));
 }
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
     if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
