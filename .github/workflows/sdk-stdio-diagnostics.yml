@@ -1,158 +1,108 @@
 name: SDK stdio diagnostics
+
 on:
   push:
-    branches:
-      - work/sdk-stdio-diagnostics-20261010
+    branches: [work/sdk-stdio-diagnostics-20261010]
+
 permissions:
   contents: read
+
 concurrency:
   group: sdk-stdio-diagnostics-${{ github.ref }}
   cancel-in-progress: false
+
 jobs:
-  tiny-language-pattern:
+  platform-debug:
     if: github.ref == 'refs/heads/work/sdk-stdio-diagnostics-20261010'
-    runs-on: windows-latest
-    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     steps:
-      - name: Checkout exact tiny diagnostic head
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Checkout exact diagnostic head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+
       - name: Install exact Zig release
-        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2
         with:
           version: 0.16.0
           use-cache: false
-      - name: Prepare exact external reproducer and tool receipt
+
+      - name: Record source, tool, and complete tracked inputs
         shell: pwsh
-        run: >
+        env:
+          SDK_EXPECTED_HEAD: ${{ github.sha }}
+          SDK_RUN_ID: ${{ github.run_id }}
+          SDK_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
           $ErrorActionPreference = 'Stop'
-
-          $taskDir = 'verification/sdk-stdio-pattern'
-
-          $taskRepro = "$taskDir/repro"
-
-          New-Item -ItemType Directory -Path $taskRepro -Force | Out-Null
-
-          $taskSources = [ordered]@{
-            'build.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CnB1YiBmbiBidWlsZChiOiAqc3RkLkJ1aWxkKSB2b2lkIHsKICAgIGNvbnN0IHRhcmdldCA9IGIuc3RhbmRhcmRUYXJnZXRPcHRpb25zKC57fSk7CiAgICBpbmxpbmUgZm9yICgueyAib3JpZ2luYWwiLCAidmFyaWFudHMiIH0pIHxuYW1lfCB7CiAgICAgICAgY29uc3QgdGVzdHMgPSBiLmFkZFRlc3QoLnsgLnJvb3RfbW9kdWxlID0gYi5jcmVhdGVNb2R1bGUoLnsgLnJvb3Rfc291cmNlX2ZpbGUgPSBiLnBhdGgobmFtZSArKyAiLnppZyIpLCAudGFyZ2V0ID0gdGFyZ2V0LCAub3B0aW1pemUgPSAuRGVidWcgfSkgfSk7CiAgICAgICAgY29uc3QgcnVuID0gYi5hZGRSdW5BcnRpZmFjdCh0ZXN0cyk7CiAgICAgICAgYi5zdGVwKG5hbWUsIG5hbWUgKysgIiBlcnJvciByZXR1cm4gY2FwdHVyZSBwYXR0ZXJuIikuZGVwZW5kT24oJnJ1bi5zdGVwKTsKICAgIH0KICAgIGlubGluZSBmb3IgKC57IC57ICJjYXN0IiwgImV4cGxpY2l0IGVycm9yIHVuaW9uIGNhc3QiIH0sIC57ICJibG9jayIsICJibG9jayBmb3JtIGVycmRlZmVyIiB9IH0pIHxlbnRyeXwgewogICAgICAgIGNvbnN0IHRlc3RzID0gYi5hZGRUZXN0KC57IC5yb290X21vZHVsZSA9IGIuY3JlYXRlTW9kdWxlKC57IC5yb290X3NvdXJjZV9maWxlID0gYi5wYXRoKCJ2YXJpYW50cy56aWciKSwgLnRhcmdldCA9IHRhcmdldCwgLm9wdGltaXplID0gLkRlYnVnIH0pLCAuZmlsdGVycyA9ICYue2VudHJ5WzFdfSB9KTsKICAgICAgICBjb25zdCBydW4gPSBiLmFkZFJ1bkFydGlmYWN0KHRlc3RzKTsKICAgICAgICBiLnN0ZXAoZW50cnlbMF0sIGVudHJ5WzBdICsrICIgaXNvbGF0ZWQgY2FwdHVyZSBwYXR0ZXJuIikuZGVwZW5kT24oJnJ1bi5zdGVwKTsKICAgIH0KfQo='
-            'helpers.zig' = 'cHViIHZhciBvYnNlcnZlZDogP2FueWVycm9yID0gbnVsbDsKcHViIGZuIGxvYWRTb3VyY2UoZmFpbGVkOiBib29sKSAhdm9pZCB7CiAgICBpZiAoZmFpbGVkKSByZXR1cm4gZXJyb3IuU291cmNlTG9hZEZhaWx1cmU7Cn0KcHViIGZuIHdyaXRlT3duZXJUZXJtaW5hdGlvbihmYWlsdXJlOiA/YW55ZXJyb3IpICF2b2lkIHsKICAgIG9ic2VydmVkID0gZmFpbHVyZTsKfQo='
-            'original.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CmNvbnN0IGggPSBAaW1wb3J0KCJoZWxwZXJzLnppZyIpOwpmbiBydW5Pd25lcihmYWlsZWQ6IGJvb2wpIGFueWVycm9yIXZvaWQgewogICAgdmFyIG93bmVyX2ZhaWx1cmU6ID9hbnllcnJvciA9IG51bGw7CiAgICB2YXIgZ3JhY2VmdWxfc2h1dGRvd24gPSBmYWxzZTsKICAgIGRlZmVyIGlmICghZ3JhY2VmdWxfc2h1dGRvd24pIGgud3JpdGVPd25lclRlcm1pbmF0aW9uKG93bmVyX2ZhaWx1cmUpIGNhdGNoIHt9OwogICAgZXJyZGVmZXIgfGVycnwgb3duZXJfZmFpbHVyZSA9IGVycjsKICAgIGNvbnN0IGxvYWRlZF9mYWN0b3J5ID0gaC5sb2FkU291cmNlKGZhaWxlZCk7CiAgICBsb2FkZWRfZmFjdG9yeSBjYXRjaCB8ZXJyfCB7CiAgICAgICAgcmV0dXJuIGVycjsKICAgIH07CiAgICBncmFjZWZ1bF9zaHV0ZG93biA9IHRydWU7Cn0KdGVzdCAib3JpZ2luYWwgZXhwcmVzc2lvbiBjYXB0dXJlIGFuZCBiYXJlIGVycm9yIHJldHVybiIgewogICAgaC5vYnNlcnZlZCA9IG51bGw7CiAgICB0cnkgc3RkLnRlc3RpbmcuZXhwZWN0RXJyb3IoZXJyb3IuU291cmNlTG9hZEZhaWx1cmUsIHJ1bk93bmVyKHRydWUpKTsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcXVhbChlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgaC5vYnNlcnZlZC4/KTsKfQo='
-            'variants.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CmNvbnN0IGggPSBAaW1wb3J0KCJoZWxwZXJzLnppZyIpOwpmbiBjYXN0T3duZXIoZmFpbGVkOiBib29sKSBhbnllcnJvciF2b2lkIHsKICAgIHZhciBvd25lcl9mYWlsdXJlOiA/YW55ZXJyb3IgPSBudWxsOwogICAgdmFyIGdyYWNlZnVsX3NodXRkb3duID0gZmFsc2U7CiAgICBkZWZlciBpZiAoIWdyYWNlZnVsX3NodXRkb3duKSBoLndyaXRlT3duZXJUZXJtaW5hdGlvbihvd25lcl9mYWlsdXJlKSBjYXRjaCB7fTsKICAgIGVycmRlZmVyIHxlcnJ8IG93bmVyX2ZhaWx1cmUgPSBlcnI7CiAgICBjb25zdCBsb2FkZWRfZmFjdG9yeSA9IGgubG9hZFNvdXJjZShmYWlsZWQpOwogICAgbG9hZGVkX2ZhY3RvcnkgY2F0Y2ggfGVycnwgewogICAgICAgIHJldHVybiBAYXMoYW55ZXJyb3Ihdm9pZCwgZXJyKTsKICAgIH07CiAgICBncmFjZWZ1bF9zaHV0ZG93biA9IHRydWU7Cn0KZm4gYmxvY2tPd25lcihmYWlsZWQ6IGJvb2wpIGFueWVycm9yIXZvaWQgewogICAgdmFyIG93bmVyX2ZhaWx1cmU6ID9hbnllcnJvciA9IG51bGw7CiAgICB2YXIgZ3JhY2VmdWxfc2h1dGRvd24gPSBmYWxzZTsKICAgIGRlZmVyIGlmICghZ3JhY2VmdWxfc2h1dGRvd24pIGgud3JpdGVPd25lclRlcm1pbmF0aW9uKG93bmVyX2ZhaWx1cmUpIGNhdGNoIHt9OwogICAgZXJyZGVmZXIgfGVycnwgewogICAgICAgIG93bmVyX2ZhaWx1cmUgPSBlcnI7CiAgICB9CiAgICBjb25zdCBsb2FkZWRfZmFjdG9yeSA9IGgubG9hZFNvdXJjZShmYWlsZWQpOwogICAgbG9hZGVkX2ZhY3RvcnkgY2F0Y2ggfGVycnwgewogICAgICAgIHJldHVybiBlcnI7CiAgICB9OwogICAgZ3JhY2VmdWxfc2h1dGRvd24gPSB0cnVlOwp9CnRlc3QgImV4cGxpY2l0IGVycm9yIHVuaW9uIGNhc3QgcmV0YWlucyBvcmlnaW5hbCBjYXB0dXJlIiB7CiAgICBoLm9ic2VydmVkID0gbnVsbDsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcnJvcihlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgY2FzdE93bmVyKHRydWUpKTsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcXVhbChlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgaC5vYnNlcnZlZC4/KTsKfQp0ZXN0ICJibG9jayBmb3JtIGVycmRlZmVyIHJldGFpbnMgb3JpZ2luYWwgY2FwdHVyZSIgewogICAgaC5vYnNlcnZlZCA9IG51bGw7CiAgICB0cnkgc3RkLnRlc3RpbmcuZXhwZWN0RXJyb3IoZXJyb3IuU291cmNlTG9hZEZhaWx1cmUsIGJsb2NrT3duZXIodHJ1ZSkpOwogICAgdHJ5IHN0ZC50ZXN0aW5nLmV4cGVjdEVxdWFsKGVycm9yLlNvdXJjZUxvYWRGYWlsdXJlLCBoLm9ic2VydmVkLj8pOwp9Cg=='
-          }
-
-          foreach ($entry in $taskSources.GetEnumerator()) {
-          [IO.File]::WriteAllBytes((Join-Path $taskRepro $entry.Key),
-          [Convert]::FromBase64String($entry.Value)) }
-
+          $taskReceiptDir = 'verification/sdk-stdio-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          $taskHead = (git rev-parse HEAD).Trim()
+          if ($taskHead -cne $env:SDK_EXPECTED_HEAD) { throw 'Checkout does not match the pushed diagnostic head' }
+          git diff --exit-code b2f5ae63bf222abe4f94585794a279fc60672726 HEAD -- build.zig src vendor tools
+          if ($LASTEXITCODE -ne 0) { throw 'Workflow follow-on changed frozen 472 implementation inputs' }
           $taskVersion = (& zig version).Trim()
-
-          if ($taskVersion -cne '0.16.0') { throw 'Unexpected Zig compiler
-          release' }
-
-          git diff --exit-code 5aec3b2dcd03455ac5596bbc957ef6e93e75488d HEAD --
-          build.zig src vendor tools
-
-          if ($LASTEXITCODE -ne 0) { throw 'Tiny workflow follow-on changed the
-          preserved implementation' }
-
-          $taskFiles = @(Get-ChildItem -LiteralPath $taskRepro -Filter '*.zig'
-          -File | ForEach-Object { [ordered]@{file=$_.Name;sha256=(Get-FileHash
-          -Algorithm SHA256 -LiteralPath $_.FullName).Hash} })
-
+          if ($taskVersion -cne '0.16.0') { throw "Unexpected Zig release: $taskVersion" }
           $taskZig = (Get-Command zig).Source
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_).Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/inputs-before.json"
+          [ordered]@{
+            head = $taskHead; tree = (git rev-parse 'HEAD^{tree}').Trim()
+            implementation_head = 'b2f5ae63bf222abe4f94585794a279fc60672726'
+            eof_prerequisite = '3b4436e627f9ca16f437dad0068560bbef5e38d3'
+            zig_version = $taskVersion; zig_path = $taskZig; zig_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskZig).Hash
+            run_id = $env:SDK_RUN_ID; run_attempt = $env:SDK_RUN_ATTEMPT
+            os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+            input_count = $taskInputs.Count; input_manifest_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath "$taskReceiptDir/inputs-before.json").Hash
+            recorded_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            scope = 'OS-specific Debug diagnostic only; exact Source pipes and framed worker startup. Full Pi, Main physical frontend, and all-four SDK qualification remain incomplete.'
+          } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/source-tool.json"
 
-          [ordered]@{ head=(git rev-parse HEAD).Trim(); tree=(git rev-parse
-          'HEAD^{tree}').Trim();
-          preserved_467='a5432924d2b7855f0f56d51baf51046747c15d56';
-          proposed_468='5aec3b2dcd03455ac5596bbc957ef6e93e75488d';
-          zig_version=$taskVersion; zig_sha256=(Get-FileHash -Algorithm SHA256
-          -LiteralPath $taskZig).Hash; sources=$taskFiles; scope='Tiny external
-          language pattern only. No SDK compilation, runtime replay, EOF cause
-          or parity qualification.' } | ConvertTo-Json -Depth 7 | Set-Content
-          -LiteralPath "$taskDir/source-tool.json"
-      - name: Original pattern - preserve expected compile failure
-        continue-on-error: true
+      - name: Replay actual SDK pipes, framed startup, and protocol
         shell: pwsh
-        timeout-minutes: 2
-        run: >
+        timeout-minutes: 22
+        run: |
           $ErrorActionPreference = 'Stop'
-
           $PSNativeCommandUseErrorActionPreference = $false
+          $taskStarted = [DateTimeOffset]::UtcNow.ToString('o')
+          & zig build test-native-stdio-process test-native-process-stdio-process test-native-process-stream-protocol test-native-json-envelope -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/sdk-stdio-diagnostics/build.log'
+          $taskExitCode = $LASTEXITCODE
+          [ordered]@{ exit_code = $taskExitCode; started_utc = $taskStarted; completed_utc = [DateTimeOffset]::UtcNow.ToString('o'); optimize = 'Debug'; jobs = 1; per_test_timeout = '120s' } | ConvertTo-Json | Set-Content -LiteralPath 'verification/sdk-stdio-diagnostics/build-result.json'
+          if ($taskExitCode -ne 0) { exit $taskExitCode }
 
-          $taskDir = (Resolve-Path 'verification/sdk-stdio-pattern').Path
-
-          Push-Location "$taskDir/repro"
-
-          try {
-            & zig build original -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/original.log"
-            $taskExit = $LASTEXITCODE
-            [ordered]@{target='original';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/original-result.json"
-            if ($taskExit -ne 0) { exit $taskExit }
-          } finally { Pop-Location }
-      - name: Explicit-cast capture positive
-        shell: pwsh
-        timeout-minutes: 2
-        run: >
-          $ErrorActionPreference = 'Stop'
-
-          $PSNativeCommandUseErrorActionPreference = $false
-
-          $taskDir = (Resolve-Path 'verification/sdk-stdio-pattern').Path
-
-          Push-Location "$taskDir/repro"
-
-          try {
-            & zig build cast -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/cast.log"
-            $taskExit = $LASTEXITCODE
-            [ordered]@{target='cast';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/cast-result.json"
-            if ($taskExit -ne 0) { exit $taskExit }
-          } finally { Pop-Location }
-      - name: Block capture bare return - preserve expected compile failure
-        if: always()
-        continue-on-error: true
-        shell: pwsh
-        timeout-minutes: 2
-        run: >
-          $ErrorActionPreference = 'Stop'
-
-          $PSNativeCommandUseErrorActionPreference = $false
-
-          $taskDir = (Resolve-Path 'verification/sdk-stdio-pattern').Path
-
-          Push-Location "$taskDir/repro"
-
-          try {
-            & zig build block -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/block.log"
-            $taskExit = $LASTEXITCODE
-            [ordered]@{target='block';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/block-result.json"
-            if ($taskExit -ne 0) { exit $taskExit }
-          } finally { Pop-Location }
-      - name: Distinguish reproduction from refutation
+      - name: Preserve posthashes and exact executable identity
         if: always()
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $taskDir = 'verification/sdk-stdio-pattern'
-          $original = Get-Content -Raw -LiteralPath "$taskDir/original-result.json" | ConvertFrom-Json
-          $cast = Get-Content -Raw -LiteralPath "$taskDir/cast-result.json" | ConvertFrom-Json
-          $block = Get-Content -Raw -LiteralPath "$taskDir/block-result.json" | ConvertFrom-Json
-          $originalLog = Get-Content -Raw -LiteralPath "$taskDir/original.log"
-          $castLog = Get-Content -Raw -LiteralPath "$taskDir/cast.log"
-          $blockLog = Get-Content -Raw -LiteralPath "$taskDir/block.log"
-          $reproduced = $original.exit_code -ne 0 -and $originalLog.Contains('expected error union type')
-          $castPass = $cast.exit_code -eq 0 -and $castLog.Contains('1/1 tests passed')
-          $blockReproduced = $block.exit_code -ne 0 -and $blockLog.Contains('expected error union type')
-          [ordered]@{original_exit=$original.exit_code;expected_original_compile_failure_reproduced=$reproduced;cast_exit=$cast.exit_code;explicit_cast_capture_test_passed=$castPass;block_exit=$block.exit_code;block_bare_return_compile_failure_reproduced=$blockReproduced;scope='Compiler pattern only; original and block negatives retained explicitly; no SDK runtime conclusion'} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/pattern-result.json"
-          if ($original.exit_code -eq 0) { throw 'REFUTED: minimal original compiled. Inspect the actual SDK catch/return context before attributing a fix.' }
-          if (-not $reproduced) { throw 'Original failed for a different reason; expected diagnostic not reproduced' }
-          if (-not $castPass) { throw 'Explicit union-cast capture is not proven' }
-          if (-not $blockReproduced) { throw 'Previously observed block-form negative is not reproduced' }
-      - name: Upload tiny pattern source, logs and results
+          $taskReceiptDir = 'verification/sdk-stdio-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          if (Test-Path -LiteralPath "$taskReceiptDir/inputs-before.json") {
+            $taskInputs = @(Get-Content -Raw -LiteralPath "$taskReceiptDir/inputs-before.json" | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -Algorithm SHA256 -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ head = (git rev-parse HEAD).Trim(); input_count = $taskInputs.Count; drift = $taskDrift; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/posthash.json"
+            if ($taskDrift.Count -ne 0) { throw 'Compiled tracked source changed during diagnostic execution' }
+          }
+          $taskImages = @(Get-ChildItem -LiteralPath 'zig-out/bin' -Filter '*.exe' -File -ErrorAction SilentlyContinue | ForEach-Object { [ordered]@{ path = $_.FullName; bytes = $_.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash } })
+          ConvertTo-Json -InputObject $taskImages -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/images.json"
+          git status --short | Set-Content -LiteralPath "$taskReceiptDir/git-status.txt"
+
+      - name: Upload diagnostic receipts, logs, and SDK artifact
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: sdk-stdio-tiny-pattern-${{ github.sha }}-${{ github.run_attempt }}
+          name: sdk-stdio-${{ matrix.os }}-debug-${{ github.sha }}-${{ github.run_attempt }}
           retention-days: 14
-          path: verification/sdk-stdio-pattern/**
           if-no-files-found: warn
+          path: |
+            verification/sdk-stdio-diagnostics/**
+            zig-out/bin/pi-sdk-embedder.exe
+            .github/workflows/sdk-stdio-diagnostics.yml
+            docs/sdk-stdio-diagnostics-20261010.md
