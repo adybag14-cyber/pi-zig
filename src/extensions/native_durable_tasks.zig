@@ -1780,14 +1780,14 @@ fn readWaiterTask(session: *session_mod.Session, gpa: std.mem.Allocator, id: u64
         if (session.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire) != null) return .busy;
         if (!session.mutex.tryLock()) {
             session.ownerThread.store(0, .release);
-            session.io.futexWake(std.Thread.Id, &session.ownerThread.raw, std.math.maxInt(u32));
+            session.wakeLine();
             return .busy;
         }
         session.mutex.unlock(session.io);
     }
     defer if (!on_owner) {
         session.ownerThread.store(0, .release);
-        session.io.futexWake(std.Thread.Id, &session.ownerThread.raw, std.math.maxInt(u32));
+        session.wakeLine();
     };
     return .{ .record = try session.storage.readTableRecord(gpa, .task, id) };
 }
