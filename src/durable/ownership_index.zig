@@ -505,6 +505,14 @@ fn boundaryExercise(gpa: std.mem.Allocator) !void {
     try std.testing.expectEqual(@as(?u64, null), try index.cancellingOwner(Node.task(13)));
     try std.testing.expect(!try index.idle(gpa, null));
     try std.testing.expectEqual(@as(?bool, false), try index.inScope(Node.task(13), null, false));
+    const scope = try index.inConversation(gpa, 1, false);
+    defer gpa.free(scope);
+    try std.testing.expectEqualSlices(u64, &.{ 7, 10, 11 }, scope);
+    const all_scope = try index.inConversation(gpa, 1, true);
+    defer gpa.free(all_scope);
+    try std.testing.expectEqualSlices(u64, &.{ 7, 10, 11, 13, 14 }, all_scope);
+    try std.testing.expect(!try index.reaches(Node.task(14), Node.conversation(1), false));
+    try std.testing.expect(try index.reaches(Node.task(14), Node.conversation(1), true));
     {
         var overlay = try index.duplicate(gpa);
         defer overlay.deinit();

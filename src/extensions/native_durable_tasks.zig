@@ -1734,6 +1734,32 @@ test "native durable VM actual ea retention uses real Harness index sizes and la
         return error.SourceRetentionMismatch;
     }
 }
+test "native durable VM actual ea runtime overlay holds an outcome for work created in its existing owned conversation" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-runtime-overlay-program.txt"), "actual-ea-runtime-overlay") catch |err| {
+        diagnoseSourceFailure(engine, "runtime-overlay", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "runtimeOverlayTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-runtime-overlay.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea runtime overlay trace: {s}\n", .{encoded});
+        return error.SourceRuntimeOverlayMismatch;
+    }
+}
 test "native durable VM ownership publication index readiness preserves committed live waiter barriers" {
     const gpa = std.testing.allocator;
     const engine = try Engine.init(gpa, .{});
