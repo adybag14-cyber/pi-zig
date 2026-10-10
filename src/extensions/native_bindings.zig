@@ -185,6 +185,7 @@ pub const Bindings = struct {
         errdefer if (services == null) ui_manager.deinit();
         const renderers = if (services) |shared| shared.renderers else try native_renderers.Manager.init(engine);
         errdefer if (services == null) renderers.deinit();
+        if (services == null) ui_manager.main_renderers = renderers;
         const self = try gpa.create(Bindings);
         errdefer gpa.destroy(self);
         var owner_class: c.JSClassID = 0;
@@ -683,6 +684,19 @@ pub const Bindings = struct {
         }
         const value = if (self.context_snapshot) |snapshot| try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key)) else c.pi_js_undefined();
         defer self.engine.freeValue(value);
+        if (method == .getSettings) {
+            const result = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) try self.engine.checked(c.JS_NewObject(self.engine.context)) else try self.cloneValue(value);
+            errdefer self.engine.freeValue(result);
+            if (self.ui_manager.main_theme_setting) |setting| {
+                if (c.JS_IsUndefined(setting)) {
+                    const atom = c.JS_NewAtom(self.engine.context, "theme");
+                    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+                    defer c.JS_FreeAtom(self.engine.context, atom);
+                    if (c.JS_DeleteProperty(self.engine.context, result, atom, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
+                } else if (c.JS_SetPropertyStr(self.engine.context, result, "theme", c.JS_DupValue(self.engine.context, setting)) < 0) return error.JavaScriptException;
+            }
+            return result;
+        }
         if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return switch (method) {
             .getActiveTools => self.engine.checked(c.JS_NewArray(self.engine.context)),
             .getSettings => self.engine.checked(c.JS_NewObject(self.engine.context)),
@@ -1011,6 +1025,7 @@ pub const Bindings = struct {
         if (!self.sdk_resource_owner) {
             if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
             self.ui_manager.editor_owner_id = self.owner_id;
+            if (self.sdk_context == null) try self.ui_manager.hydrateMainSettings(self.context_snapshot);
             try self.ui_manager.begin(self.ui_manager.generation + 1, self.context_snapshot, self.invocation_signal);
         }
         self.invocation_active = true;

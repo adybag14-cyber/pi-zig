@@ -66,6 +66,7 @@ const definitions = [_]Definition{
 pub fn defaultKeysForAction(id: []const u8) []const []const u8 {
     for (definitions) |definition| if (std.mem.eql(u8, id, definition.id)) return definition.defaults;
     if (std.mem.eql(u8, id, "app.interrupt")) return &.{"escape"};
+    if (std.mem.eql(u8, id, "app.tools.expand")) return &.{"ctrl+o"};
     if (std.mem.eql(u8, id, "tui.editor.historyPrevious")) return &.{"up"};
     if (std.mem.eql(u8, id, "tui.editor.historyNext")) return &.{"down"};
     if (std.mem.eql(u8, id, "tui.select.up")) return &.{"up"};
@@ -136,6 +137,41 @@ pub const Manager = struct {
             }
         }
         return false;
+    }
+    pub fn matchesNamedKey(self: *const Manager, input_key: []const u8, id: []const u8) bool {
+        var input_buffer: [96]u8 = undefined;
+        const input = normalizeKey(input_key, &input_buffer) orelse return false;
+        if (self.namedValue(id)) |value| return valueMatches(value, input);
+        for (defaultKeysForAction(id)) |key| {
+            var buffer: [96]u8 = undefined;
+            const normalized = normalizeKey(key, &buffer) orelse continue;
+            if (std.mem.eql(u8, input, normalized)) return true;
+        }
+        return false;
+    }
+    fn namedValue(self: *const Manager, id: []const u8) ?std.json.Value {
+        const parsed = self.parsed orelse return null;
+        if (parsed.value != .object) return null;
+        if (parsed.value.object.get(id)) |value| return value;
+        if (std.mem.eql(u8, id, "app.tools.expand")) return parsed.value.object.get("expandTools");
+        return null;
+    }
+    pub fn keyTextAlloc(self: *const Manager, gpa: std.mem.Allocator, id: []const u8) ![]u8 {
+        var values: std.ArrayList([]const u8) = .empty;
+        defer values.deinit(gpa);
+        if (self.namedValue(id)) |value| {
+            if (value == .string) try values.append(gpa, value.string) else if (value == .array) {
+                for (value.array.items) |item| if (item == .string) {
+                    var duplicate = false;
+                    for (values.items) |kept| if (std.mem.eql(u8, kept, item.string)) {
+                        duplicate = true;
+                        break;
+                    };
+                    if (!duplicate) try values.append(gpa, item.string);
+                };
+            }
+        } else try values.appendSlice(gpa, defaultKeysForAction(id));
+        return std.mem.join(gpa, "/", values.items);
     }
 
     /// Match a named TUI action against a complete raw terminal sequence.

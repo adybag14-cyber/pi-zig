@@ -2354,6 +2354,7 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
     return result;
 }
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    try @import("native_theme_assets.zig").install(engine, exports);
     try @import("native_async_scope.zig").install(engine);
     if (engine.native_sdk_class != 0) return;
     _ = c.JS_NewClassID(engine.runtime, &engine.native_sdk_class);

@@ -2370,6 +2370,7 @@ const RuntimeResourceReloadContext = struct {
     theme_registry: *pi_zig.themes.Registry,
     action_runtime: *ExtensionActionRuntime,
     terminal_theme: *extensions.terminal_theme_producer.Producer,
+    main_theme_producer: ?*extensions.main_theme_producer.Producer = null,
     steering: *std.ArrayList([]const u8),
     followups: *std.ArrayList([]const u8),
     shared_abort: *bool,
@@ -2816,6 +2817,7 @@ const RuntimeResourceReloadContext = struct {
         if (provider_refresh) |result| self.action_runtime.reportProviderRefreshErrors(result.errors);
         provider_runtime_registries_committed = true;
         self.theme_registry.* = new_themes;
+        try self.ui.setThemeResources(self.theme_registry);
         self.prompt_templates.* = new_prompts;
         self.schemas.* = new_schemas;
         self.command_names.* = new_command_names;
@@ -2923,6 +2925,7 @@ const RuntimeResourceReloadContext = struct {
             if (self.theme_registry.find(theme_name)) |theme| tui.render.setTheme(theme);
         }
         try selectTerminalTheme(self.terminal_theme, self.theme_registry);
+        if (self.main_theme_producer) |producer| try producer.syncSetting(fresh_settings.theme);
 
         if (self.typed_owner) |owner| {
             try refreshMainNativeModels(gpa, self.provider_registry, owner, self.bridge, self.shared_abort);
@@ -3017,6 +3020,12 @@ const ExtensionShortcutContext = struct {
             return if (self.pending != null) .handled_interrupt else .not_handled;
         }
 
+        if (self.bindings.matchesNamedKey(key_id, "app.tools.expand")) {
+            const action = if (self.ui_controller.toolsExpanded()) "{\"expanded\":false}" else "{\"expanded\":true}";
+            try self.ui_controller.applyAction("setToolsExpanded", action);
+            try self.ui_controller.flush();
+            return .handled_continue;
+        }
         if (!self.bindings.matches(key_id, .clipboard_paste)) return .not_handled;
         return ExtensionShortcutContext.pasteClipboard(self, allocator);
     }
@@ -3956,6 +3965,7 @@ fn runMain(init: std.process.Init) !void {
         tui.terminal.columnsFromEnvironment(environ, 100),
     );
     defer extension_ui.deinit();
+    try extension_ui.setThemeResources(&theme_registry);
     extension_ui.bindClipboardEnvironment(environ);
     var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
     defer terminal_keybindings.deinit();
@@ -3966,6 +3976,9 @@ fn runMain(init: std.process.Init) !void {
     var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
     defer terminal_theme.deinit();
     try selectTerminalTheme(&terminal_theme, &theme_registry);
+    var main_theme_producer = try extensions.main_theme_producer.Producer.init(gpa, io, &extension_ui, &terminal_theme, agent_dir, cwd, trust_project, settings.theme);
+    defer main_theme_producer.deinit();
+    main_theme_producer.attach();
     var extension_stdin_buf: [4096]u8 = undefined;
     var extension_stdin_reader: Io.File.Reader = .init(.stdin(), io, &extension_stdin_buf);
     if (extension_has_ui) extension_ui.bindReader(&extension_stdin_reader);
@@ -4822,6 +4835,7 @@ fn runMain(init: std.process.Init) !void {
         .theme_registry = &theme_registry,
         .action_runtime = &extension_action_runtime,
         .terminal_theme = &terminal_theme,
+        .main_theme_producer = &main_theme_producer,
         .steering = &extension_command_steering,
         .followups = &extension_command_followups,
         .shared_abort = &shared_abort,
@@ -5003,6 +5017,7 @@ fn runMain(init: std.process.Init) !void {
     defer if (fullscreen_active and !use_fullscreen_scene) tui.terminal.leaveAlternateScreen(io) catch {};
 
     var interactive_render = InteractiveRenderOptions{
+        .ui_controller = &extension_ui,
         .width = tui.terminal.columnsFromEnvironment(environ, 100),
         .capabilities = tui.terminal_image.applyOverrides(
             tui.terminal_image.detectCapabilities(
@@ -5238,6 +5253,8 @@ fn runMain(init: std.process.Init) !void {
     };
     while (true) {
         extension_shortcut_context.model_catalog = live.model_catalog;
+        try applyPendingMainThemeSetting(gpa, &extension_ui, &settings, &settings_text);
+        try main_theme_producer.reportErrors();
         const pending_editor_text = extension_ui.takePendingEditorText();
         defer if (pending_editor_text) |value| gpa.free(value);
         const frontend_editor_snapshot = if (frontend) |scene| try scene.snapshotEditor(gpa) else null;
@@ -5307,6 +5324,8 @@ fn runMain(init: std.process.Init) !void {
             };
         };
         const trimmed = std.mem.trim(u8, line, " \t\r\n");
+        try applyPendingMainThemeSetting(gpa, &extension_ui, &settings, &settings_text);
+        try main_theme_producer.reportErrors();
 
         var expanded_template: ?[]u8 = null;
         defer if (expanded_template) |value| gpa.free(value);
@@ -5584,6 +5603,25 @@ fn runMain(init: std.process.Init) !void {
     }
 }
 
+fn applyPendingMainThemeSetting(gpa: std.mem.Allocator, controller: *extensions.ui.Controller, settings: *coding.settings.Settings, settings_text: *[]u8) !void {
+    const pending = try controller.takeThemeSetting(gpa);
+    if (pending == .none) return;
+    const next: ?[]u8 = switch (pending) {
+        .set => |value| value,
+        .clear => null,
+        .none => unreachable,
+    };
+    var committed = false;
+    defer if (!committed) if (next) |value| gpa.free(value);
+    const previous = settings.theme;
+    settings.theme = next;
+    errdefer settings.theme = previous;
+    const formatted = try coding.settings.formatSettings(gpa, settings.*);
+    if (previous) |value| gpa.free(value);
+    gpa.free(settings_text.*);
+    settings_text.* = formatted;
+    committed = true;
+}
 const InteractiveRenderOptions = struct {
     width: usize,
     capabilities: tui.terminal_image.TerminalCapabilities,
@@ -5596,6 +5634,7 @@ const InteractiveRenderOptions = struct {
     show_hardware_cursor: bool = false,
     fullscreen_copy_on_select: bool = true,
     fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
+    ui_controller: ?*extensions.ui.Controller = null,
 };
 
 fn readFullscreenLine(
@@ -5704,6 +5743,11 @@ const ExtensionPrintEmitter = struct {
     output_pad: usize = 1,
     host: *extensions.Host,
     fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
+    ui_controller: ?*extensions.ui.Controller = null,
+
+    fn toolsExpanded(self: *ExtensionPrintEmitter) bool {
+        return if (self.ui_controller) |controller| controller.toolsExpanded() else false;
+    }
 
     fn onEvent(raw: ?*anyopaque, event: agent.AgentEvent) void {
         const self: *ExtensionPrintEmitter = @ptrCast(@alignCast(raw.?));
@@ -5724,7 +5768,7 @@ const ExtensionPrintEmitter = struct {
             .tool_execution_start => {
                 if (!self.verbose) return;
                 const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-                if (self.host.renderToolCallPadded(event.name, event.id, arguments, false, self.width, self.output_pad) catch null) |rendered| {
+                if (self.host.renderToolCallPadded(event.name, event.id, arguments, self.toolsExpanded(), self.width, self.output_pad) catch null) |rendered| {
                     defer self.host.gpa.free(rendered);
                     writeExtensionRendered(self.io, rendered) catch {};
                 } else {
@@ -5765,7 +5809,7 @@ const ExtensionPrintEmitter = struct {
                     event.is_error,
                     event.details_json,
                     render_images,
-                    false,
+                    self.toolsExpanded(),
                     event.kind == .tool_execution_update,
                     self.show_images and self.capabilities.images != null,
                     self.width,
@@ -5845,7 +5889,7 @@ const ExtensionPrintEmitter = struct {
         if (live_renderer and event.kind == .tool_execution_update) return;
         if (event.kind == .tool_execution_start) {
             const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-            if (try self.host.renderToolCallPadded(event.name, event.id, arguments, false, width, self.output_pad)) |rendered| {
+            if (try self.host.renderToolCallPadded(event.name, event.id, arguments, self.toolsExpanded(), width, self.output_pad)) |rendered| {
                 defer self.host.gpa.free(rendered);
                 if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
@@ -5863,7 +5907,7 @@ const ExtensionPrintEmitter = struct {
                 images[index] = .{ .data_b64 = image.data_b64, .mime_type = image.mime_type };
                 index += 1;
             }
-            if (try self.host.renderToolResultRichImagesTimed(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width, event.duration_ms, self.output_pad)) |rendered| {
+            if (try self.host.renderToolResultRichImagesTimed(event.name, event.id, event.text, event.is_error, event.details_json, images, self.toolsExpanded(), event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width, event.duration_ms, self.output_pad)) |rendered| {
                 defer self.host.gpa.free(rendered);
                 if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
@@ -6005,6 +6049,7 @@ fn runOneWithImages(
         .output_pad = render_options.output_pad,
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
+        .ui_controller = render_options.ui_controller,
     };
     if (render_options.fullscreen) |scene| {
         try scene.setProgramSessionName(sess.name);
@@ -6049,6 +6094,7 @@ fn runOne(
         .output_pad = render_options.output_pad,
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
+        .ui_controller = render_options.ui_controller,
     };
     if (render_options.fullscreen) |scene| {
         try scene.setProgramSessionName(sess.name);

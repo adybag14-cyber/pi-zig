@@ -1,0 +1,115 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "all": [
+    {
+      "name": "system",
+      "path": null
+    },
+    {
+      "name": "alpha",
+      "path": "alpha.json"
+    },
+    {
+      "name": "dark",
+      "path": "dark.json"
+    },
+    {
+      "name": "light",
+      "path": "light.json"
+    },
+    {
+      "name": "registered",
+      "path": "registered.json"
+    }
+  ],
+  "allPathsExist": true,
+  "alphaListUsesCustom": true,
+  "registeredSame": true,
+  "alphaSame": true,
+  "missing": true,
+  "proxySame": true,
+  "results": [
+    {
+      "success": true
+    },
+    {
+      "success": true
+    },
+    {
+      "success": false,
+      "error": "Theme not found: missing"
+    },
+    {
+      "success": true
+    }
+  ],
+  "rows": [
+    {
+      "tag": "initial",
+      "name": "dark",
+      "accent": {
+        "kind": "rgb",
+        "r": 167,
+        "g": 152,
+        "b": 215
+      },
+      "setting": "dark"
+    },
+    {
+      "tag": "registered",
+      "name": "registered",
+      "accent": {
+        "kind": "rgb",
+        "r": 171,
+        "g": 205,
+        "b": 239
+      },
+      "setting": "registered"
+    },
+    {
+      "tag": "instance",
+      "name": "instance-name",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "setting": "registered"
+    },
+    {
+      "tag": "instance-mutated",
+      "name": "mutated-name",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "setting": "registered"
+    },
+    {
+      "tag": "missing",
+      "name": "system",
+      "accent": {
+        "kind": "rgb",
+        "r": 229,
+        "g": 229,
+        "b": 231
+      },
+      "setting": "registered"
+    },
+    {
+      "tag": "dark",
+      "name": "dark",
+      "accent": {
+        "kind": "rgb",
+        "r": 167,
+        "g": 152,
+        "b": 215
+      },
+      "setting": "dark"
+    }
+  ],
+  "changed": 4
+}

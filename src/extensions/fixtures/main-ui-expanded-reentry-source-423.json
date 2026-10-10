@@ -1,0 +1,81 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "nested": {
+    "childrenExpanded": true,
+    "expanded": false,
+    "trace": [
+      [
+        "get",
+        1
+      ],
+      [
+        "get",
+        2
+      ],
+      [
+        "call",
+        true,
+        true
+      ],
+      [
+        "get",
+        3
+      ],
+      [
+        "get",
+        4
+      ],
+      [
+        "call",
+        false,
+        true
+      ],
+      [
+        "status",
+        "Tool output: collapsed"
+      ],
+      [
+        "status",
+        "Tool output: expanded"
+      ]
+    ]
+  },
+  "replaced": {
+    "childrenExpanded": true,
+    "expanded": true,
+    "trace": [
+      [
+        "get",
+        1
+      ],
+      [
+        "get",
+        2
+      ],
+      [
+        "old-call",
+        true,
+        true
+      ],
+      [
+        "status",
+        "Tool output: expanded"
+      ]
+    ]
+  },
+  "changing": {
+    "childrenExpanded": false,
+    "expanded": true,
+    "trace": [
+      [
+        "get",
+        1
+      ],
+      [
+        "get",
+        2
+      ]
+    ],
+    "name": "TypeError"
+  }
+}

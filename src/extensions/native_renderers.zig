@@ -276,12 +276,15 @@ pub const Manager = struct {
     fn emitFrame(self: *Manager, id: []const u8, row_value: *Row, slot: protocol.Slot, frame: *const components.Frame) !void {
         if (!self.subscribed or self.record_fn == null) return;
         if (!row_value.registered) {
+            const payload = if (!c.JS_IsUndefined(row_value.call_payload)) row_value.call_payload else row_value.result_payload;
+            const expanded = try self.flag(payload, "expanded", false);
+            defer self.engine.freeValue(expanded);
             const name = try self.engine.gpa.dupe(u8, row_value.tool);
             var transferred = false;
             defer if (!transferred) self.engine.gpa.free(name);
             const identity = try self.fence(id, row_value);
             transferred = true;
-            try self.emit(.{ .gpa = self.engine.gpa, .fence = identity, .kind = .{ .register = .{ .tool_name = name, .width = row_value.width } } });
+            try self.emit(.{ .gpa = self.engine.gpa, .fence = identity, .kind = .{ .register = .{ .tool_name = name, .width = row_value.width, .expanded = c.JS_ToBool(self.engine.context, expanded) != 0 } } });
             row_value.registered = true;
         }
         if (row_value.sequence >= 9_007_199_254_740_991 or row_value.revision >= 9_007_199_254_740_991) return error.NativeRendererGenerationLimit;
@@ -312,6 +315,14 @@ pub const Manager = struct {
         while (values.next()) |value| if (value.*.dirty) return true;
         return false;
     }
+    pub fn invalidateTheme(self: *Manager) void {
+        var values = self.rows.valueIterator();
+        while (values.next()) |value| {
+            value.*.dirty = true;
+            value.*.revision +%= 1;
+        }
+        self.scheduleRedraw();
+    }
 
     fn scheduleRedraw(self: *Manager) void {
         if (self.redraw_due_ms == null) if (self.engine.native_io) |io| {
@@ -341,6 +352,9 @@ pub const Manager = struct {
         switch (value.kind) {
             .retire => return self.retire(value.fence.tool_call_id, value.fence.row_generation),
             .invalidate => {},
+            .expanded => |expanded| {
+                for ([_]c.JSValue{ selected.call_payload, selected.result_payload }) |payload| if (c.JS_IsObject(payload)) try self.put(payload, "expanded", c.pi_js_bool(self.engine.context, @intFromBool(expanded)));
+            },
             .resize => |width_value| {
                 if (width_value > 16_384) return error.NativeComponentViewportLimit;
                 selected.width = width_value;

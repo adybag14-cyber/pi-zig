@@ -7,6 +7,7 @@ pub const js_runtime = @import("js_runtime.zig");
 pub const native_worker = @import("native_worker.zig");
 pub const ui = @import("ui.zig");
 pub const terminal_theme_producer = @import("terminal_theme_producer.zig");
+pub const main_theme_producer = @import("main_theme_producer.zig");
 pub const Host = host.Host;
 pub const main_catalog_source = @import("main_catalog_source.zig");
 pub const ExtensionManifest = host.ExtensionManifest;

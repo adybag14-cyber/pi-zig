@@ -33,34 +33,29 @@ pub const Palette = struct {
     muted_sgr: []const u8 = "90",
 };
 
-/// Set once during startup. The referenced theme must outlive terminal rendering.
-var palette: Palette = .{};
-var theme_resource: ?[]const u8 = null;
+/// A single publication keeps the palette and resource consistent when an
+/// owner-thread frontend request selects a new immutable theme. The owner
+/// retains published themes until its render consumers have stopped.
+var active_theme: std.atomic.Value(?*const Theme) = .init(null);
 
 pub fn setSilent(v: bool) void {
     silent = v;
 }
 
 pub fn setTheme(theme: *const Theme) void {
-    theme_resource = theme.resource_json;
-    palette = .{
-        .accent_sgr = theme.accent_sgr,
-        .error_sgr = theme.error_sgr,
-        .success_sgr = theme.success_sgr,
-        .muted_sgr = theme.muted_sgr,
-    };
+    active_theme.store(theme, .release);
 }
 
 pub fn resetTheme() void {
-    theme_resource = null;
-    palette = .{};
+    active_theme.store(null, .release);
 }
 
 pub fn activePalette() Palette {
-    return palette;
+    const theme = active_theme.load(.acquire) orelse return .{};
+    return .{ .accent_sgr = theme.accent_sgr, .error_sgr = theme.error_sgr, .success_sgr = theme.success_sgr, .muted_sgr = theme.muted_sgr };
 }
 pub fn activeThemeResource() ?[]const u8 {
-    return theme_resource;
+    return if (active_theme.load(.acquire)) |theme| theme.resource_json else null;
 }
 
 pub fn style(buf: []u8, sgr: []const u8, text: []const u8) ![]const u8 {
@@ -87,6 +82,7 @@ pub fn printLine(io: Io, text: []const u8) !void {
 }
 
 pub fn renderHeader(io: Io, version: []const u8, context_count: usize, skills_count: usize) !void {
+    const palette = activePalette();
     var title_buf: [128]u8 = undefined;
     const title = try boldStyle(&title_buf, palette.accent_sgr, "pi (pi-zig)");
     var buf: [512]u8 = undefined;
@@ -100,6 +96,7 @@ pub fn renderHeader(io: Io, version: []const u8, context_count: usize, skills_co
 }
 
 pub fn renderToolCall(io: Io, name: []const u8, args: []const u8) !void {
+    const palette = activePalette();
     var title_buf: [256]u8 = undefined;
     const title = try boldStyle(&title_buf, palette.accent_sgr, name);
     try writeAll(io, title);
@@ -111,6 +108,7 @@ pub fn renderToolCall(io: Io, name: []const u8, args: []const u8) !void {
 }
 
 pub fn renderToolResult(io: Io, name: []const u8, content: []const u8, is_error: bool) !void {
+    const palette = activePalette();
     _ = name;
     var buf: [128]u8 = undefined;
     const status = if (is_error)
@@ -129,6 +127,7 @@ pub fn renderAssistant(io: Io, text: []const u8) !void {
 }
 
 fn activeMarkdownTheme() markdown.Theme {
+    const palette = activePalette();
     return .{
         .heading_sgr = palette.accent_sgr,
         .link_sgr = palette.accent_sgr,

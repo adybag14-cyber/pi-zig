@@ -694,8 +694,9 @@ const NativeUiServices = struct {
             };
             return true;
         }
-        if (!std.mem.eql(u8, kind, "native_ui_service_request")) return true;
-        const incoming = protocol.readRequest(object) catch return true;
+        const synchronous = std.mem.eql(u8, kind, "native_ui_service_sync_request");
+        if (!std.mem.eql(u8, kind, "native_ui_service_request") and !synchronous) return true;
+        const incoming = if (synchronous) protocol.readSyncRequest(object) catch return true else protocol.readRequest(object) catch return true;
         if (header.request_id <= lease.last_request_id or header.request_id > std.math.maxInt(u32) or self.requests.items.len >= protocol.maximum_pending) return true;
         const component_fence: ?component_protocol.Fence = if (std.mem.eql(u8, incoming.method, "custom_native")) blk: {
             const fence = component_protocol.readFence(&incoming.args) catch return true;
@@ -710,7 +711,7 @@ const NativeUiServices = struct {
         if (args.len > protocol.maximum_request_bytes) return error.NativeUiServiceRequestLimit;
         const request = try allocator.create(NativeDialog);
         errdefer allocator.destroy(request);
-        const activity = if (object.get("invocationId")) |value| wireInvocationId(value) catch 0 else 0;
+        const activity = if (synchronous) 0 else if (object.get("invocationId")) |value| wireInvocationId(value) catch 0 else 0;
         request.* = .{ .runtime = runtime, .session = session, .bridge = lease.bridge, .invocation_id = lease.invocation_id, .id = @intCast(header.request_id), .method = method, .args = args, .service_header = header, .activity_invocation_id = activity };
         if (component_fence) |fence| {
             const component = try allocator.create(NativeComponentSession);

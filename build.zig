@@ -1,6 +1,10 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
+    const install_dark_theme = b.addInstallFileWithDir(b.path("src/themes/fixtures/dark-original-6fb.json"), .bin, "theme/dark.json");
+    const install_light_theme = b.addInstallFileWithDir(b.path("src/themes/fixtures/light-original-6fb.json"), .bin, "theme/light.json");
+    b.getInstallStep().dependOn(&install_dark_theme.step);
+    b.getInstallStep().dependOn(&install_light_theme.step);
     const install_schemas = b.addInstallDirectory(.{ .source_dir = b.path("schemas"), .install_dir = .prefix, .install_subdir = "share/pi/schemas" });
     b.getInstallStep().dependOn(&install_schemas.step);
     const target = b.standardTargetOptions(.{});
@@ -131,6 +135,19 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     const sdk_install = b.addInstallArtifact(sdk_embedder, .{});
+    sdk_install.step.dependOn(&install_dark_theme.step);
+    sdk_install.step.dependOn(&install_light_theme.step);
+    const main_ui_adapter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_main_ui_adapter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native Main UI adapter", "native Main UI sync" }, .use_llvm = use_llvm });
+    linkQuickJs(b, main_ui_adapter_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, main_ui_adapter_tests.root_module);
+    main_ui_adapter_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const main_ui_adapter_run = b.addRunArtifact(main_ui_adapter_tests);
+    b.step("test-native-main-ui-adapter", "Replay Source Main UI themes and expanded tool output against actual producers").dependOn(&main_ui_adapter_run.step);
+    const main_ui_sync_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_main_ui_sync_process_test.zig"), .target = target, .optimize = optimize, .imports = &.{.{ .name = "pi_zig", .module = mod }} }), .filters = &.{"native Main UI sync process"}, .use_llvm = use_llvm });
+    const main_ui_sync_run = b.addRunArtifact(main_ui_sync_tests);
+    main_ui_sync_run.step.dependOn(&sdk_install.step);
+    main_ui_sync_run.setEnvironmentVariable("PI_UI_SERVICE_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi-sdk-embedder{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    b.step("test-native-main-ui-sync-process", "Prove blocking Main UI service ordering on a real no-Node worker").dependOn(&main_ui_sync_run.step);
     const ui_service_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ui_service_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native UI service"}, .use_llvm = use_llvm });
     linkQuickJs(b, ui_service_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, ui_service_tests.root_module);
@@ -290,6 +307,8 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    test_step.dependOn(&main_ui_adapter_run.step);
+    test_step.dependOn(&main_ui_sync_run.step);
     test_step.dependOn(&ui_service_run.step);
     test_step.dependOn(&ui_service_process_run.step);
     test_step.dependOn(&ui_service_allocation_run.step);

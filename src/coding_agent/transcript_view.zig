@@ -21,6 +21,7 @@ const Block = struct {
     tool_call_id: ?[]u8 = null,
     call_text: std.ArrayList(u8) = .empty,
     has_result: bool = false,
+    tools_expansion_revision: u64 = 0,
     fn deinit(self: *Block, gpa: std.mem.Allocator) void {
         gpa.free(self.key);
         gpa.free(self.role);
@@ -38,6 +39,57 @@ pub const Transcript = struct {
     current_message: ?usize = null,
     theme: markdown.Theme = .{},
     renderers: renderer_rows.Rows,
+    tools_expanded: bool = false,
+    tools_expansion_revision: u64 = 0,
+    tools_expand_hint: []const u8 = "ctrl+o",
+    palette: ?@import("../tui/theme_palette.zig").Palette = null,
+    theme_signature: ?[]u8 = null,
+
+    pub fn setThemeState(self: *Transcript, raw: ?[]const u8) !void {
+        const value = raw orelse return;
+        if (self.theme_signature) |old| if (std.mem.eql(u8, old, value)) return;
+        var prepared = try @import("../tui/theme_palette.zig").Palette.fromState(self.gpa, value);
+        errdefer prepared.deinit();
+        const signature = try self.gpa.dupe(u8, value);
+        if (self.palette) |*old| old.deinit();
+        if (self.theme_signature) |old| self.gpa.free(old);
+        self.palette = prepared;
+        self.theme_signature = signature;
+        const palette = &self.palette.?;
+        self.theme = .{
+            .heading_sgr = parameters(palette.get("mdHeading")),
+            .link_sgr = parameters(palette.get("mdLink")),
+            .link_url_sgr = parameters(palette.get("mdLinkUrl")),
+            .code_sgr = parameters(palette.get("mdCode")),
+            .code_block_sgr = parameters(palette.get("mdCodeBlock")),
+            .code_border_sgr = parameters(palette.get("mdCodeBlockBorder")),
+            .quote_sgr = parameters(palette.get("mdQuote")),
+            .quote_border_sgr = parameters(palette.get("mdQuoteBorder")),
+            .hr_sgr = parameters(palette.get("mdHr")),
+            .list_bullet_sgr = parameters(palette.get("mdListBullet")),
+        };
+        for (self.blocks.items) |*block| block.revision += 1;
+    }
+    fn parameters(ansi: []const u8) []const u8 {
+        const begin = std.mem.lastIndexOf(u8, ansi, "\x1b[") orelse return "";
+        return if (std.mem.endsWith(u8, ansi, "m")) ansi[begin + 2 .. ansi.len - 1] else "";
+    }
+
+    pub fn setToolsExpanded(self: *Transcript, expanded: bool) void {
+        if (self.tools_expanded == expanded) return;
+        self.applyToolsExpansion(expanded, self.tools_expansion_revision +| 1);
+    }
+    pub fn applyToolsExpansion(self: *Transcript, expanded: bool, revision: u64) void {
+        if (self.tools_expanded == expanded and self.tools_expansion_revision == revision) return;
+        self.tools_expanded = expanded;
+        self.tools_expansion_revision = revision;
+        for (self.renderers.rows.items) |*row| if (!row.retired) {
+            row.expanded = expanded;
+        };
+        for (self.blocks.items) |*block| if (block.tool_call_id != null) {
+            block.revision += 1;
+        };
+    }
 
     pub fn init(gpa: std.mem.Allocator) Transcript {
         return .{ .gpa = gpa, .renderers = .init(gpa) };
@@ -46,9 +98,11 @@ pub const Transcript = struct {
         for (self.blocks.items) |*block| block.deinit(self.gpa);
         self.blocks.deinit(self.gpa);
         self.renderers.deinit();
+        if (self.palette) |*value| value.deinit();
+        if (self.theme_signature) |value| self.gpa.free(value);
     }
     fn add(self: *Transcript, key: []const u8, role: []const u8, text: []const u8, live: bool) !usize {
-        var block: Block = .{ .key = try self.gpa.dupe(u8, key), .role = undefined, .live = live };
+        var block: Block = .{ .key = try self.gpa.dupe(u8, key), .role = undefined, .live = live, .tools_expansion_revision = self.tools_expansion_revision };
         errdefer self.gpa.free(block.key);
         block.role = try self.gpa.dupe(u8, role);
         errdefer self.gpa.free(block.role);
@@ -87,6 +141,9 @@ pub const Transcript = struct {
         errdefer replacement.deinit();
         replacement.next_live_id = self.next_live_id;
         replacement.theme = self.theme;
+        replacement.tools_expanded = self.tools_expanded;
+        replacement.tools_expansion_revision = self.tools_expansion_revision;
+        replacement.tools_expand_hint = self.tools_expand_hint;
         for (entries) |entry| {
             if (entry.entry_type == .message) {
                 var previous_tool: ?*const Block = null;
@@ -111,7 +168,10 @@ pub const Transcript = struct {
                 if (entry.tool_call_id) |id| {
                     replacement.blocks.items[index].tool_call_id = try self.gpa.dupe(u8, id);
                     replacement.blocks.items[index].has_result = true;
-                    if (previous_tool) |block| try replacement.blocks.items[index].call_text.appendSlice(self.gpa, block.call_text.items);
+                    if (previous_tool) |block| {
+                        try replacement.blocks.items[index].call_text.appendSlice(self.gpa, block.call_text.items);
+                        replacement.blocks.items[index].tools_expansion_revision = block.tools_expansion_revision;
+                    }
                 }
             } else if (entry.entry_type == .compaction or entry.entry_type == .branch_summary or (entry.entry_type == .custom_message and entry.display)) {
                 _ = try replacement.add(entry.id, @tagName(entry.entry_type), entry.content, false);
@@ -140,6 +200,10 @@ pub const Transcript = struct {
         // transition to its durable entry ID. Move only after fallible cloning.
         replacement.renderers = self.renderers;
         self.renderers = .init(self.gpa);
+        replacement.palette = self.palette;
+        self.palette = null;
+        replacement.theme_signature = self.theme_signature;
+        self.theme_signature = null;
         self.deinit();
         self.* = replacement;
         for (self.renderers.rows.items) |*row| if (row.attached and !self.hasToolRow(row.fence.tool_call_id)) self.renderers.detach(row);
@@ -219,6 +283,12 @@ pub const Transcript = struct {
         };
         return false;
     }
+    pub fn toolExpansionRevision(self: *const Transcript, id: []const u8) u64 {
+        for (self.blocks.items) |block| if (block.tool_call_id) |value| {
+            if (std.mem.eql(u8, id, value)) return block.tools_expansion_revision;
+        };
+        return self.tools_expansion_revision;
+    }
     fn renderOpaque(raw: *anyopaque, gpa: std.mem.Allocator, width: usize) !layout.RenderedLines {
         const self: *Transcript = @ptrCast(@alignCast(raw));
         var output: std.ArrayList([]u8) = .empty;
@@ -234,20 +304,22 @@ pub const Transcript = struct {
                     for (lines.items) |line| self.gpa.free(line);
                     lines.deinit(self.gpa);
                 }
-                const heading = try std.fmt.allocPrint(self.gpa, "\x1b[1m{s}\x1b[0m", .{block.role});
-                lines.append(self.gpa, heading) catch |err| {
-                    self.gpa.free(heading);
-                    return err;
-                };
+                if (block.tool_call_id == null) {
+                    const heading = try std.fmt.allocPrint(self.gpa, "\x1b[1m{s}\x1b[0m", .{block.role});
+                    lines.append(self.gpa, heading) catch |err| {
+                        self.gpa.free(heading);
+                        return err;
+                    };
+                }
                 const renderer = if (block.tool_call_id) |id| self.renderers.find(id) else null;
                 if (renderer != null and !renderer.?.retired and (std.mem.eql(u8, renderer.?.tool_name, block.role) or std.mem.eql(u8, block.role, "tool"))) {
                     if (renderer.?.lines(.call, width)) |owned| {
                         for (owned) |line| try appendLine(self.gpa, &lines, line);
-                    } else if (block.call_text.items.len > 0) try self.appendCanonical(&lines, block.call_text.items, width);
+                    } else try self.appendToolCall(&lines, block, width, renderer.?.expanded);
                     if (block.has_result) {
                         if (renderer.?.lines(.result, width)) |owned| {
                             for (owned) |line| try appendLine(self.gpa, &lines, line);
-                        } else try self.appendCanonical(&lines, block.text.items, width);
+                        } else try self.appendToolOutput(&lines, block.text.items, width, renderer.?.expanded);
                     }
                     if (renderer.?.diagnostic) |diagnostic| {
                         const message = try std.fmt.allocPrint(self.gpa, "Renderer failed: {s}", .{diagnostic.text});
@@ -257,6 +329,10 @@ pub const Transcript = struct {
                 } else if (block.preformatted) {
                     var iterator = std.mem.splitScalar(u8, std.mem.trimEnd(u8, block.text.items, "\n"), '\n');
                     while (iterator.next()) |line| try appendLine(self.gpa, &lines, line);
+                } else if (block.tool_call_id != null and block.has_result) {
+                    try self.appendGenericTool(&lines, block, width);
+                } else if (block.tool_call_id != null) {
+                    try self.appendGenericTool(&lines, block, width);
                 } else {
                     try self.appendCanonical(&lines, block.text.items, width);
                 }
@@ -276,6 +352,85 @@ pub const Transcript = struct {
             }
         }
         return .{ .items = try output.toOwnedSlice(gpa) };
+    }
+    fn appendGenericTool(self: *Transcript, lines: *std.ArrayList([]u8), block: *const Block, width: usize) !void {
+        const heading = try std.fmt.allocPrint(self.gpa, "\x1b[1m{s}\x1b[22m", .{block.role});
+        defer self.gpa.free(heading);
+        const styled = if (self.palette) |*palette| try palette.style("toolTitle", heading) else try self.gpa.dupe(u8, heading);
+        defer self.gpa.free(styled);
+        try self.appendPlainTool(lines, styled, width, "");
+        if (block.call_text.items.len > 0) {
+            var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, block.call_text.items, .{}) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                try self.appendPlainTool(lines, block.call_text.items, width, "");
+                if (block.has_result) try self.appendGenericOutput(lines, block.text.items, width);
+                return;
+            };
+            defer parsed.deinit();
+            const content = try std.json.Stringify.valueAlloc(self.gpa, parsed.value, .{ .whitespace = .indent_2 });
+            defer self.gpa.free(content);
+            try appendLine(self.gpa, lines, "");
+            try self.appendPlainTool(lines, content, width, "");
+        }
+        if (block.has_result and block.text.items.len > 0) try self.appendGenericOutput(lines, block.text.items, width);
+    }
+    fn appendGenericOutput(self: *Transcript, lines: *std.ArrayList([]u8), text: []const u8, width: usize) !void {
+        const output = try @import("../tui/tool_fallback.zig").textOutput(self.gpa, text);
+        defer self.gpa.free(output);
+        if (output.len > 0) try self.appendPlainTool(lines, output, width, "");
+    }
+    fn appendToolCall(self: *Transcript, lines: *std.ArrayList([]u8), block: *const Block, width: usize, expanded: bool) !void {
+        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, if (block.call_text.items.len > 0) block.call_text.items else "null", .{}) catch |err| {
+            if (err == error.OutOfMemory) return err;
+            return self.appendPlainTool(lines, block.call_text.items, width, "muted");
+        };
+        defer parsed.deinit();
+        const formatted = try @import("../tui/tool_fallback.zig").format(self.gpa, block.role, parsed.value, expanded, if (self.palette) |*value| value else null);
+        defer self.gpa.free(formatted);
+        // The formatter already applies its own title/argument colors.
+        try self.appendPlainTool(lines, formatted, width, "");
+    }
+    fn appendToolOutput(self: *Transcript, lines: *std.ArrayList([]u8), text: []const u8, width: usize, expanded: bool) !void {
+        const output = try @import("../tui/tool_fallback.zig").textOutput(self.gpa, text);
+        defer self.gpa.free(output);
+        if (output.len == 0) return;
+        if (expanded) return self.appendPlainTool(lines, output, width, "toolOutput");
+        var cursor = std.mem.splitScalar(u8, output, '\n');
+        var end: usize = 0;
+        var count: usize = 0;
+        var total: usize = 0;
+        while (cursor.next()) |line| {
+            total += 1;
+            if (count < 10) {
+                end += line.len + @intFromBool(count > 0);
+                count += 1;
+            }
+        }
+        try self.appendPlainTool(lines, output[0..end], width, "toolOutput");
+        if (total > count) {
+            const suffix = try std.fmt.allocPrint(self.gpa, "... ({d} more lines, {s} to expand)", .{ total - count, self.tools_expand_hint });
+            defer self.gpa.free(suffix);
+            try self.appendPlainTool(lines, suffix, width, "muted");
+        }
+    }
+    fn appendPlainTool(self: *Transcript, lines: *std.ArrayList([]u8), text: []const u8, width: usize, token: []const u8) !void {
+        var normalized: std.ArrayList(u8) = .empty;
+        defer normalized.deinit(self.gpa);
+        for (text) |byte| if (byte == '\t') try normalized.appendSlice(self.gpa, "   ") else try normalized.append(self.gpa, byte);
+        const styled = if (self.palette) |*palette| try palette.style(token, normalized.items) else try self.gpa.dupe(u8, normalized.items);
+        defer self.gpa.free(styled);
+        const units = try std.unicode.wtf8ToWtf16LeAlloc(self.gpa, styled);
+        defer self.gpa.free(units);
+        const wrapped = try @import("../extensions/native_utf16_wrap.zig").wrapNative(self.gpa, units, @floatFromInt(width));
+        defer {
+            for (wrapped) |value| self.gpa.free(value);
+            self.gpa.free(wrapped);
+        }
+        for (wrapped) |value| {
+            const utf8 = try std.unicode.wtf16LeToWtf8Alloc(self.gpa, value);
+            defer self.gpa.free(utf8);
+            try appendLine(self.gpa, lines, utf8);
+        }
     }
     fn appendCanonical(self: *Transcript, lines: *std.ArrayList([]u8), text: []const u8, width: usize) !void {
         // Markdown has only allocating memory writers here. Their WriteFailed
@@ -320,9 +475,9 @@ fn rendererTranscriptCase(gpa: std.mem.Allocator) !void {
     {
         var view = try transcript.component().render(gpa, 80);
         defer view.deinit(gpa);
-        try std.testing.expectEqualStrings("owned-call Ω🦊", view.items[1]);
-        try std.testing.expectEqualStrings("owned-result", view.items[2]);
-        try std.testing.expectEqual(@as(usize, 3), view.items.len);
+        try std.testing.expectEqualStrings("owned-call Ω🦊", view.items[0]);
+        try std.testing.expectEqualStrings("owned-result", view.items[1]);
+        try std.testing.expectEqual(@as(usize, 2), view.items.len);
     }
     var anchor = (try transcript.anchor(1)).?;
     defer gpa.free(anchor.key);
@@ -331,15 +486,15 @@ fn rendererTranscriptCase(gpa: std.mem.Allocator) !void {
     {
         var view = try transcript.component().render(gpa, 80);
         defer view.deinit(gpa);
-        try std.testing.expectEqualStrings("owned-call Ω🦊", view.items[1]);
-        try std.testing.expectEqualStrings("owned-result", view.items[2]);
+        try std.testing.expectEqualStrings("owned-call Ω🦊", view.items[0]);
+        try std.testing.expectEqualStrings("owned-result", view.items[1]);
         try std.testing.expectEqual(@as(usize, 1), transcript.anchorRow(anchor));
     }
     {
         var resized = try transcript.component().render(gpa, 70);
         defer resized.deinit(gpa);
-        try std.testing.expectEqualStrings("canonical-call", resized.items[1]);
-        try std.testing.expectEqualStrings("canonical-result", resized.items[2]);
+        try std.testing.expectEqualStrings("canonical-call", resized.items[0]);
+        try std.testing.expectEqualStrings("canonical-result", resized.items[1]);
     }
     var retire = try rendererTestRecord(gpa, "{" ++ renderer_test_prefix ++ ",\"type\":\"renderer_retire\"}");
     defer retire.deinit();
@@ -350,8 +505,9 @@ fn rendererTranscriptCase(gpa: std.mem.Allocator) !void {
     {
         var view = try transcript.component().render(gpa, 80);
         defer view.deinit(gpa);
-        try std.testing.expectEqualStrings("canonical-result", view.items[1]);
-        try std.testing.expectEqual(@as(usize, 2), view.items.len);
+        try std.testing.expectEqualStrings("canonical-call", view.items[1]);
+        try std.testing.expectEqualStrings("canonical-result", view.items[2]);
+        try std.testing.expectEqual(@as(usize, 3), view.items.len);
     }
     var next_lease = try rendererTestRecord(gpa, "{" ++ renderer_test_prefix ++ ",\"type\":\"renderer_register\",\"toolName\":\"paint\"}");
     defer next_lease.deinit();

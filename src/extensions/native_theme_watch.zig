@@ -123,7 +123,7 @@ fn errorCall(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _
     // Source leaves a previously scheduled reload active after watch errors.
     return c.pi_js_undefined();
 }
-fn normalizeWindowsShell(engine: *Engine, path: []const u8) ![]u8 {
+pub fn normalizeWindowsShell(engine: *Engine, path: []const u8) ![]u8 {
     if (builtin.os.tag != .windows or path.len == 0 or path[0] != '/' or std.mem.startsWith(u8, path, "//") or std.mem.indexOfScalar(u8, path, '\\') != null) return engine.gpa.dupe(u8, path);
     var tail = path[1..];
     if (tail.len >= 4 and std.ascii.eqlIgnoreCase(tail[0..4], "mnt/")) tail = tail[4..] else if (tail.len >= 9 and std.ascii.eqlIgnoreCase(tail[0..9], "cygdrive/")) tail = tail[9..];

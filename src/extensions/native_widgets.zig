@@ -276,6 +276,34 @@ pub const Manager = struct {
         }
         return changed;
     }
+    pub fn setHeaderExpanded(self: *Manager, expanded: bool) !void {
+        // Source's expansion toggle addresses the active header, not arbitrary
+        // widgets or the footer. Keep callbacks on the VM owner thread.
+        for (self.entries.items) |entry| {
+            if (entry.slot != .header or !entry.mounted or !self.owners.contains(entry.owner)) continue;
+            const owner = entry.owner;
+            const generation = entry.generation;
+            const held = c.JS_DupValue(self.engine.context, entry.component);
+            defer self.engine.freeValue(held);
+            const probe = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, held, "setExpanded"));
+            defer self.engine.freeValue(probe);
+            if (!c.JS_IsFunction(self.engine.context, probe)) return;
+            if (!self.owners.contains(owner)) return error.StaleNativeExtensionOwner;
+            // Source first probes isExpandable(), then performs the method
+            // lookup again on the captured active header. Either lookup may
+            // replace the current header while this original stays rooted.
+            const callback = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, held, "setExpanded"));
+            defer self.engine.freeValue(callback);
+            var args = [_]c.JSValue{c.pi_js_bool(self.engine.context, @intFromBool(expanded))};
+            const result = try self.engine.checked(c.JS_Call(self.engine.context, callback, held, args.len, &args));
+            self.engine.freeValue(result);
+            for (self.entries.items) |*active| if (active.owner == owner and active.generation == generation) {
+                active.dirty = true;
+                break;
+            };
+            return;
+        }
+    }
     pub fn resize(self: *Manager, width: usize, height: usize) !void {
         self.dimensions_controlled = true;
         self.width = @min(width, 16384);

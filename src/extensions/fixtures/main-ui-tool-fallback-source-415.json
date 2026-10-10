@@ -1,0 +1,99 @@
+{
+  "darkColors": {
+    "accent": "\u001b[38;2;167;152;215m",
+    "toolTitle": "\u001b[38;2;222;224;225m",
+    "toolOutput": "\u001b[38;2;157;165;169m"
+  },
+  "lightColors": {
+    "accent": "\u001b[38;2;116;89;180m",
+    "toolTitle": "\u001b[38;2;59;63;65m",
+    "toolOutput": "\u001b[38;2;103;113;118m"
+  },
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "args": {
+    "path": "first\nsecond\tvalue\r!",
+    "count": 3,
+    "nested": {
+      "value": "Ω🦊"
+    }
+  },
+  "text": "# literal heading\n**literal bold**\nline0\nline1\nline2\nline3\n\u0000line4￹\n\u001b[31mline5\u001b[39m\n31mline639m\nline7\nline8\r\nline9\tend\nline10",
+  "genericCollapsed": [
+    "sample",
+    "{",
+    "  \"path\": \"first\\nsecond\\tvalue\\r!\",",
+    "  \"count\": 3,",
+    "  \"nested\": {",
+    "    \"value\": \"Ω🦊\"",
+    "  }",
+    "}",
+    "# literal heading",
+    "**literal bold**",
+    "line0",
+    "line1",
+    "line2",
+    "line3",
+    "line4",
+    "line5",
+    "line6",
+    "line7",
+    "line8",
+    "line9   end",
+    "line10"
+  ],
+  "genericExpanded": [
+    "sample",
+    "{",
+    "  \"path\": \"first\\nsecond\\tvalue\\r!\",",
+    "  \"count\": 3,",
+    "  \"nested\": {",
+    "    \"value\": \"Ω🦊\"",
+    "  }",
+    "}",
+    "# literal heading",
+    "**literal bold**",
+    "line0",
+    "line1",
+    "line2",
+    "line3",
+    "line4",
+    "line5",
+    "line6",
+    "line7",
+    "line8",
+    "line9   end",
+    "line10"
+  ],
+  "resultCollapsed": [
+    "custom-call",
+    "# literal heading",
+    "**literal bold**",
+    "line0",
+    "line1",
+    "line2",
+    "line3",
+    "line4",
+    "line5",
+    "line6",
+    "line7",
+    "... (3 more lines, ctrl+o to expand)"
+  ],
+  "resultExpanded": [
+    "custom-call",
+    "# literal heading",
+    "**literal bold**",
+    "line0",
+    "line1",
+    "line2",
+    "line3",
+    "line4",
+    "line5",
+    "line6",
+    "line7",
+    "line8",
+    "line9   end",
+    "line10"
+  ],
+  "callCollapsed": "sample path=\"first\\nsecond\\tvalue\\r!\" count=3 nested={\"value\":\"Ω🦊\"}",
+  "callExpanded": "sample\n  path: first\n    second   value!\n  count: 3\n  nested: {\n      \"value\": \"Ω🦊\"\n    }"
+}

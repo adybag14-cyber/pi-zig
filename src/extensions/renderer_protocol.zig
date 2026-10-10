@@ -23,7 +23,7 @@ pub const Record = struct {
     gpa: std.mem.Allocator,
     fence: Fence,
     kind: union(enum) {
-        register: struct { tool_name: []u8, width: usize },
+        register: struct { tool_name: []u8, width: usize, expanded: bool = false },
         frame: struct { sequence: u64, revision: u64, slot: Slot, width: usize, frame: Frame },
         retire,
         failure: []u8,
@@ -55,7 +55,7 @@ pub const Record = struct {
         copied.fence.tool_call_id = try gpa.dupe(u8, self.fence.tool_call_id);
         errdefer gpa.free(copied.fence.tool_call_id);
         switch (self.kind) {
-            .register => |value| copied.kind = .{ .register = .{ .tool_name = try gpa.dupe(u8, value.tool_name), .width = value.width } },
+            .register => |value| copied.kind = .{ .register = .{ .tool_name = try gpa.dupe(u8, value.tool_name), .width = value.width, .expanded = value.expanded } },
             .frame => |value| copied.kind = .{ .frame = .{ .sequence = value.sequence, .revision = value.revision, .slot = value.slot, .width = value.width, .frame = try value.frame.clone(gpa) } },
             .failure => |value| copied.kind = .{ .failure = try gpa.dupe(u8, value) },
             .retire => {},
@@ -93,8 +93,10 @@ pub fn read(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !Record {
         const name = object.get("toolName") orelse return error.InvalidRendererRecord;
         if (name != .string or name.string.len == 0 or name.string.len > 4096) return error.InvalidRendererRecord;
         const width = try dimension(object.get("width") orelse return error.InvalidRendererDimension);
+        const expanded = object.get("expanded") orelse std.json.Value{ .bool = false };
+        if (expanded != .bool) return error.InvalidRendererRecord;
         const owned_name = try gpa.dupe(u8, name.string);
-        result.kind = .{ .register = .{ .tool_name = owned_name, .width = width } };
+        result.kind = .{ .register = .{ .tool_name = owned_name, .width = width, .expanded = expanded.bool } };
     } else if (std.mem.eql(u8, kind.string, "renderer_frame")) {
         const width = try dimension(object.get("width") orelse return error.InvalidRendererDimension);
         const sequence = try identity(object.get("sequence") orelse return error.InvalidRendererIdentity);
@@ -140,6 +142,7 @@ pub fn write(writer: *std.Io.Writer, record: *const Record) !void {
         .register => |value| {
             try writer.writeAll(",\"toolName\":");
             try std.json.Stringify.value(value.tool_name, .{}, writer);
+            try writer.print(",\"expanded\":{}", .{value.expanded});
             try writer.print(",\"width\":{d}", .{value.width});
         },
         .frame => |value| {
@@ -216,7 +219,7 @@ pub const Queue = struct {
 pub const Control = struct {
     gpa: std.mem.Allocator,
     fence: Fence,
-    kind: union(enum) { resize: usize, invalidate, retire },
+    kind: union(enum) { resize: usize, expanded: bool, invalidate, retire },
 
     pub fn deinit(self: *Control) void {
         self.gpa.free(self.fence.tool_call_id);
@@ -235,7 +238,11 @@ pub fn readControl(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !C
     if (actual_version != .integer or actual_version.integer != version) return error.InvalidRendererVersion;
     const value = object.get("control") orelse return error.InvalidRendererControl;
     if (value != .string) return error.InvalidRendererControl;
-    const kind: @FieldType(Control, "kind") = if (std.mem.eql(u8, value.string, "resize")) .{ .resize = try dimension(object.get("width") orelse return error.InvalidRendererDimension) } else if (std.mem.eql(u8, value.string, "invalidate")) .invalidate else if (std.mem.eql(u8, value.string, "retire")) .retire else return error.InvalidRendererControl;
+    const kind: @FieldType(Control, "kind") = if (std.mem.eql(u8, value.string, "resize")) .{ .resize = try dimension(object.get("width") orelse return error.InvalidRendererDimension) } else if (std.mem.eql(u8, value.string, "expanded")) blk: {
+        const expanded = object.get("expanded") orelse return error.InvalidRendererControl;
+        if (expanded != .bool) return error.InvalidRendererControl;
+        break :blk .{ .expanded = expanded.bool };
+    } else if (std.mem.eql(u8, value.string, "invalidate")) .invalidate else if (std.mem.eql(u8, value.string, "retire")) .retire else return error.InvalidRendererControl;
     const row = object.get("toolCallId") orelse return error.InvalidRendererIdentity;
     if (row != .string or row.string.len == 0 or row.string.len > 4096) return error.InvalidRendererIdentity;
     return .{ .gpa = gpa, .kind = kind, .fence = .{
@@ -251,6 +258,7 @@ pub fn writeControl(writer: *std.Io.Writer, control: *const Control) !void {
     try std.json.Stringify.value(control.fence.tool_call_id, .{}, writer);
     try writer.print(",\"control\":\"{s}\"", .{@tagName(control.kind)});
     if (control.kind == .resize) try writer.print(",\"width\":{d}", .{control.kind.resize});
+    if (control.kind == .expanded) try writer.print(",\"expanded\":{}", .{control.kind.expanded});
     try writer.writeByte('}');
 }
 

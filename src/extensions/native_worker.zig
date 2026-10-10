@@ -733,6 +733,62 @@ const Transport = struct {
         const self: *Transport = @ptrCast(@alignCast(context.?));
         try self.serviceRecord("native_ui_service_close", lease, null, null, null);
     }
+    fn takeSyncResponse(self: *Transport, header: @import("native_ui_service_protocol.zig").Header) !?WireRecord {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        self.available.reset();
+        for (self.records.items, 0..) |record, index| {
+            if (record.kind != .native_ui_service_response) continue;
+            var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+            defer arena.deinit();
+            const parsed = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{}) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                continue;
+            };
+            if (!@import("native_ui_sync.zig").matches(header, parsed)) continue;
+            const selected = self.records.orderedRemove(index);
+            self.queued_bytes -= selected.bytes.len;
+            return selected;
+        }
+        if (self.finished) return self.reader_error orelse error.StaleNativeUiService;
+        return null;
+    }
+    fn uiSyncRequest(context: ?*anyopaque, id: u32, method: []const u8, args: []const u8) !c.JSValue {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        const protocol = @import("native_ui_service_protocol.zig");
+        const lease = self.group.ui.service orelse return error.StaleNativeUiService;
+        const header: protocol.Header = .{ .lease = lease, .request_id = id };
+        // Only bytes and exact correlated replies are consumed here. Guest
+        // jobs, timer callbacks, input/render controls, catalog application and
+        // abort listeners stay queued until the synchronous JS call returns.
+        try self.serviceRecord("native_ui_service_sync_request", lease, id, method, args);
+        var complete = false;
+        defer if (!complete) self.serviceRecord("native_ui_service_cancel", lease, id, null, null) catch {};
+        const deadline = std.Io.Clock.awake.now(self.io).toMilliseconds() +| 60_000;
+        while (true) {
+            if (try self.takeSyncResponse(header)) |record| {
+                defer std.heap.page_allocator.free(record.bytes);
+                var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+                defer arena.deinit();
+                const parsed = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+                const response = @import("native_ui_sync.zig").response(self.engine, header, parsed) catch |err| {
+                    if (err == error.JavaScriptException) complete = true;
+                    return err;
+                };
+                if (response) |value| {
+                    complete = true;
+                    return value;
+                }
+                continue;
+            }
+            const remaining = deadline - std.Io.Clock.awake.now(self.io).toMilliseconds();
+            if (remaining <= 0) return error.NativeHostPromiseTimeout;
+            self.available.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } }) catch |err| switch (err) {
+                error.Timeout => return error.NativeHostPromiseTimeout,
+                else => return err,
+            };
+        }
+    }
     fn uiRequest(context: ?*anyopaque, id: u32, method: []const u8, args: []const u8) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
         if (self.group.ui.service) |lease| return self.serviceRecord("native_ui_service_request", lease, id, method, args);
@@ -1124,6 +1180,63 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
         return bindings.invokeRenderer(renderer_kind, try requiredText(object, "name"), payload);
     }
     return error.UnsupportedNativeWorkerRequest;
+}
+
+test "native Main UI sync transport exact correlation defers callbacks catalog abort epochs and sibling replies without VM allocations" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("sync-byte-owner.mjs");
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    var transport: Transport = .{ .engine = engine, .bindings = binding, .io = io, .writer = &output.writer, .group = group };
+    defer transport.deinit();
+    const protocol = @import("native_ui_service_protocol.zig");
+    const actual: protocol.Header = .{ .lease = .{ .owner_generation = 1, .service_id = 2, .service_generation = 3, .extension_id = 4 }, .request_id = 5 };
+    for (0..5) |field| {
+        var foreign = actual;
+        switch (field) {
+            0 => foreign.lease.owner_generation += 1,
+            1 => foreign.lease.service_id += 1,
+            2 => foreign.lease.service_generation += 1,
+            3 => foreign.lease.extension_id += 1,
+            4 => foreign.request_id += 1,
+            else => unreachable,
+        }
+        var encoded_response: std.Io.Writer.Allocating = .init(gpa);
+        defer encoded_response.deinit();
+        try encoded_response.writer.writeAll("{\"kind\":\"native_ui_service_response\",");
+        try foreign.writeFields(&encoded_response.writer);
+        try encoded_response.writer.writeAll(",\"ok\":true,\"result\":\"foreign\"}");
+        try transport.enqueue(try std.heap.page_allocator.dupe(u8, encoded_response.written()));
+    }
+    inline for (.{ "native_tool_catalog", "abort_current", "shutdown", "native_ui_service_epoch", "component_control", "terminal_input", "renderer_control" }) |kind| {
+        try transport.enqueue(try std.heap.page_allocator.dupe(u8, "{\"kind\":\"" ++ kind ++ "\"}"));
+    }
+    var correct: std.Io.Writer.Allocating = .init(gpa);
+    defer correct.deinit();
+    try correct.writer.writeAll("{\"kind\":\"native_ui_service_response\",");
+    try actual.writeFields(&correct.writer);
+    try correct.writer.writeAll(",\"ok\":true,\"result\":\"original\"}");
+    try transport.enqueue(try std.heap.page_allocator.dupe(u8, correct.written()));
+    const before = transport.queued_bytes;
+    var failing: std.testing.FailingAllocator = .init(gpa, .{ .fail_index = 0 });
+    engine.gpa = failing.allocator();
+    defer engine.gpa = gpa;
+    const reply = (try transport.takeSyncResponse(actual)).?;
+    defer std.heap.page_allocator.free(reply.bytes);
+    try std.testing.expectEqualStrings(correct.written(), reply.bytes);
+    try std.testing.expectEqual(@as(usize, 12), transport.records.items.len);
+    try std.testing.expectEqual(before - reply.bytes.len, transport.queued_bytes);
+    try std.testing.expect((try transport.takeSyncResponse(actual)) == null);
+    try std.testing.expectEqual(@as(usize, 0), failing.alloc_index);
+    transport.finishReader(null);
+    try std.testing.expectError(error.StaleNativeUiService, transport.takeSyncResponse(actual));
+    transport.reader_error = error.SyncReaderFailure;
+    try std.testing.expectError(error.SyncReaderFailure, transport.takeSyncResponse(actual));
 }
 
 test "native model owner transport dispatches only explicit live leases and scopes abort to the invocation" {
@@ -1520,7 +1633,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     engine.host_control_pump = Transport.pump;
     engine.host_owner_notify_context = &transport;
     engine.host_owner_notify = Transport.notifyOwner;
-    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome, .service_open = if (grouped) Transport.serviceOpen else null, .service_close = if (grouped) Transport.serviceClose else null };
+    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome, .service_open = if (grouped) Transport.serviceOpen else null, .service_close = if (grouped) Transport.serviceClose else null, .sync_request = if (grouped) Transport.uiSyncRequest else null };
     defer bindings.ui_manager.bridge = null;
     defer {
         // Retire and join durable workers while their notifier and transport

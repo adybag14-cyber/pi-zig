@@ -39,12 +39,22 @@ fn positive(object: std.json.ObjectMap, key: []const u8) !u64 {
     if (value == 0) return error.InvalidNativeUiServiceIdentity;
     return value;
 }
-pub fn readRequest(object: std.json.ObjectMap) !struct { header: Header, method: []const u8, args: std.json.ObjectMap } {
+pub const Request = struct { header: Header, method: []const u8, args: std.json.ObjectMap };
+pub fn readRequest(object: std.json.ObjectMap) !Request {
     const header = try Header.read(object);
     const method = object.get("method") orelse return error.InvalidNativeUiServiceRequest;
     const args = object.get("args") orelse return error.InvalidNativeUiServiceRequest;
     if (method != .string or args != .object) return error.InvalidNativeUiServiceRequest;
     const allowed = std.mem.eql(u8, method.string, "select") or std.mem.eql(u8, method.string, "confirm") or std.mem.eql(u8, method.string, "input") or std.mem.eql(u8, method.string, "editor") or std.mem.eql(u8, method.string, "custom_native");
+    if (!allowed) return error.InvalidNativeUiServiceMethod;
+    return .{ .header = header, .method = method.string, .args = args.object };
+}
+pub fn readSyncRequest(object: std.json.ObjectMap) !Request {
+    const header = try Header.read(object);
+    const method = object.get("method") orelse return error.InvalidNativeUiServiceRequest;
+    const args = object.get("args") orelse return error.InvalidNativeUiServiceRequest;
+    if (method != .string or args != .object) return error.InvalidNativeUiServiceRequest;
+    const allowed = std.mem.eql(u8, method.string, "getMainThemeCatalog") or std.mem.eql(u8, method.string, "getToolsExpanded") or std.mem.eql(u8, method.string, "setToolsExpandedState") or std.mem.eql(u8, method.string, "toolsExpansionComplete") or std.mem.eql(u8, method.string, "setTheme") or std.mem.eql(u8, method.string, "persistMainThemeSetting");
     if (!allowed) return error.InvalidNativeUiServiceMethod;
     return .{ .header = header, .method = method.string, .args = args.object };
 }

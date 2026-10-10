@@ -20,9 +20,10 @@ pub const Bridge = struct {
     component_mouse_outcome: ?*const fn (?*anyopaque, protocol.MouseOutcome) anyerror!void = null,
     service_open: ?*const fn (?*anyopaque, @import("native_ui_service_protocol.zig").Lease) anyerror!void = null,
     service_close: ?*const fn (?*anyopaque, @import("native_ui_service_protocol.zig").Lease) anyerror!void = null,
+    sync_request: ?*const fn (?*anyopaque, u32, []const u8, []const u8) anyerror!c.JSValue = null,
 };
 
-pub const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider, setHeader, setFooter, setWorkingIndicator, onTerminalInput };
+pub const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider, setHeader, setFooter, setWorkingIndicator, onTerminalInput, getToolsExpanded, setToolsExpanded, getAllThemes, getTheme, setTheme };
 const Pending = struct {
     id: u32,
     generation: u32,
@@ -144,12 +145,16 @@ pub const Manager = struct {
     customs: std.ArrayList(Custom) = .empty,
     polling_custom: bool = false,
     service: ?@import("native_ui_service_protocol.zig").Lease = null,
+    tools_expanded: bool = false,
+    theme_selection_clock: u64 = 0,
+    main_theme_setting: ?c.JSValue = null,
     service_clock: u64 = 0,
     service_epoch: u64 = 1,
     service_epoch_control_id: u64 = 0,
     services: std.ArrayList(*@import("native_ui_service.zig").Service) = .empty,
     service_frontend_owner_ready: bool = false,
     current_service_ui: ?c.JSValue = null,
+    main_renderers: ?*@import("native_renderers.zig").Manager = null,
 
     /// Zero is reserved for the actual frontend service, independently of
     /// positive Main and private SDK extension registration owner IDs.
@@ -223,6 +228,7 @@ pub const Manager = struct {
     }
 
     pub fn deinit(self: *Manager) void {
+        if (self.main_theme_setting) |value| self.engine.freeValue(value);
         if (self.current_service_ui) |value| self.engine.freeValue(value);
         self.current_service_ui = null;
         while (self.services.items.len > 0) self.services.items[self.services.items.len - 1].retire(self.engine);
@@ -254,6 +260,9 @@ pub const Manager = struct {
         self.has_ui = false;
         if (snapshot) |context| {
             try self.footer_data.update(context);
+            const theme_catalog = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "mainThemeCatalog"));
+            defer self.engine.freeValue(theme_catalog);
+            try @import("native_ui_themes.zig").hydrateCatalog(self.engine, theme_catalog);
             const theme_state = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "themeState"));
             defer self.engine.freeValue(theme_state);
             if (!c.JS_IsNull(theme_state) and !c.JS_IsUndefined(theme_state)) {
@@ -263,6 +272,9 @@ pub const Manager = struct {
                 defer self.engine.freeValue(resource);
                 if (c.JS_IsObject(resource)) try @import("native_theme.zig").hydrate(self.engine, resource);
             }
+            const expanded = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "toolsExpanded"));
+            defer self.engine.freeValue(expanded);
+            if (!c.JS_IsUndefined(expanded)) self.tools_expanded = c.JS_ToBool(self.engine.context, expanded) != 0;
             const available = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "hasUI"));
             defer self.engine.freeValue(available);
             self.has_ui = c.JS_ToBool(self.engine.context, available) != 0;
@@ -323,7 +335,7 @@ pub const Manager = struct {
             const name: [:0]const u8 = field.name;
             const length: c_int = switch (@as(Method, @enumFromInt(field.value))) {
                 .select, .confirm, .setStatus, .setWidget => 2,
-                .getEditorText, .getEditorComponent => 0,
+                .getEditorText, .getEditorComponent, .getToolsExpanded, .getAllThemes => 0,
                 else => 1,
             };
             const function = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, invoke, name.ptr, length, @intCast(field.value), data.len, &data));
@@ -349,7 +361,7 @@ pub const Manager = struct {
         @import("native_async_scope.zig").requireOwnedUiLive(engine) catch |err| return fail(engine, err);
         const method: Method = @enumFromInt(magic);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        if (method == .onTerminalInput or method == .notify or method == .setStatus or method == .setTitle or method == .setWorkingIndicator or method == .setWorkingMessage or method == .setWorkingVisible or method == .setHiddenThinkingLabel or method == .setHeader or method == .setFooter or method == .setWidget or method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {
+        if (method == .getAllThemes or method == .getTheme or method == .setTheme or method == .getToolsExpanded or method == .setToolsExpanded or method == .onTerminalInput or method == .notify or method == .setStatus or method == .setTitle or method == .setWorkingIndicator or method == .setWorkingMessage or method == .setWorkingVisible or method == .setHiddenThinkingLabel or method == .setHeader or method == .setFooter or method == .setWidget or method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {
             const self: *Manager = @ptrCast(@alignCast(engine.native_ui_manager orelse return fail(engine, error.StaleNativeUi)));
             if (!c.JS_IsStrictEqual(engine.context, self.token, data[0])) return fail(engine, error.StaleNativeUi);
             var owner: i64 = 0;
@@ -357,7 +369,26 @@ pub const Manager = struct {
             if (!self.editors.owners.contains(@intCast(owner))) return fail(engine, error.StaleNativeExtensionOwner);
             // Snapshot capability is independent of the shared invocation's
             // mutable hasUI state. Headless contexts never acquire editor UI.
-            if (c.JS_ToBool(context, data[3]) == 0) return if (method == .getEditorText) c.JS_NewString(context, "") else if (method == .onTerminalInput) c.JS_NewCFunction(context, noopUnsubscribe, "unsubscribe", 0) else c.pi_js_undefined();
+            if (c.JS_ToBool(context, data[3]) == 0 and (method == .getAllThemes or method == .getTheme or method == .setTheme)) {
+                const noop = @import("native_sdk_ui_context.zig").noop(engine) catch |err| return fail(engine, err);
+                defer engine.freeValue(noop);
+                const function = engine.checked(c.JS_GetPropertyStr(context, noop, @tagName(method))) catch |err| return fail(engine, err);
+                defer engine.freeValue(function);
+                return c.JS_Call(context, function, noop, argc, argv);
+            }
+            if (c.JS_ToBool(context, data[3]) == 0) return if (method == .getToolsExpanded) c.pi_js_bool(context, 0) else if (method == .getEditorText) c.JS_NewString(context, "") else if (method == .onTerminalInput) c.JS_NewCFunction(context, noopUnsubscribe, "unsubscribe", 0) else c.pi_js_undefined();
+            if (method == .getToolsExpanded) {
+                const value = self.requestSync("getToolsExpanded", "{}") catch |err| return fail(engine, err);
+                self.tools_expanded = c.JS_ToBool(context, value) != 0;
+                return value;
+            }
+            if (method == .getAllThemes or method == .getTheme) {
+                const catalog = self.requestSync("getMainThemeCatalog", "{}") catch |err| return fail(engine, err);
+                defer engine.freeValue(catalog);
+                @import("native_ui_themes.zig").hydrateCatalog(engine, catalog) catch |err| return fail(engine, err);
+                return (if (method == .getAllThemes) @import("native_ui_themes.zig").all(engine) else @import("native_ui_themes.zig").get(engine, if (args.len > 0) args[0] else c.pi_js_undefined())) catch |err| fail(engine, err);
+            }
+            if (method == .setToolsExpanded or method == .setTheme) return self.action(method, args) catch |err| fail(engine, err);
             if (method == .notify or method == .setStatus or method == .setTitle or method == .setWorkingIndicator or method == .setWorkingMessage or method == .setWorkingVisible or method == .setHiddenThinkingLabel) return self.action(method, args) catch |err| fail(engine, err);
             if (method == .onTerminalInput) return self.terminal_input.add(@intCast(owner), if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
             if (method == .setHeader or method == .setFooter) {
@@ -1369,6 +1400,49 @@ pub const Manager = struct {
         for (self.pending.items) |pending| if (pending.id == id and pending.generation == self.generation) return true;
         return false;
     }
+    pub fn requestSync(self: *Manager, method: []const u8, args: []const u8) !c.JSValue {
+        if (!self.active or !self.has_ui or self.service == null) return error.StaleNativeUiService;
+        const bridge = self.bridge orelse return error.NativeUiServiceUnavailable;
+        const request = bridge.sync_request orelse return error.NativeUiSyncUnavailable;
+        if (self.next_id == std.math.maxInt(u32)) return error.NativeUiGenerationExhausted;
+        const id = self.next_id;
+        self.next_id += 1;
+        return request(bridge.context, id, method, args);
+    }
+    fn queueThemeWrite(self: *Manager, serial: c.JSValue) !void {
+        if (c.JS_IsUndefined(serial) or c.JS_IsNull(serial)) return;
+        const identity = self.service orelse return error.StaleNativeUiService;
+        for (self.services.items) |service| if (service.identity.eql(identity)) {
+            var args = [_]c.JSValue{ service.value, serial };
+            if (c.JS_EnqueueJob(self.engine.context, persistThemeJob, args.len, &args) < 0) return error.OutOfMemory;
+            return;
+        };
+        return error.StaleNativeUiService;
+    }
+    fn persistThemeJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        return persistTheme(engine, args[0], args[1]) catch |err| fail(engine, err);
+    }
+    fn persistTheme(engine: *engine_mod.Engine, token: c.JSValue, serial: c.JSValue) !c.JSValue {
+        var guard = (try @import("native_ui_service.zig").Service.enterCallback(engine, token)) orelse return c.pi_js_undefined();
+        defer guard.restore();
+        const manager = guard.service.manager.?;
+        const object = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(object);
+        try manager.defineField(object, "persistWriteId", c.JS_DupValue(engine.context, serial));
+        const encoded = try engine.stringify(object);
+        defer engine.gpa.free(encoded);
+        return manager.requestSync("persistMainThemeSetting", encoded);
+    }
+    pub fn hydrateMainSettings(self: *Manager, snapshot: ?c.JSValue) !void {
+        const context = snapshot orelse return;
+        const settings = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "settings"));
+        defer self.engine.freeValue(settings);
+        if (!c.JS_IsObject(settings)) return;
+        const theme_setting = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, settings, "theme"));
+        if (self.main_theme_setting) |old| self.engine.freeValue(old);
+        self.main_theme_setting = theme_setting;
+    }
 
     pub fn cancel(self: *Manager, id: u32) !void {
         var pending = self.takePending(id) orelse return;
@@ -1595,6 +1669,56 @@ pub const Manager = struct {
         const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
         defer self.engine.freeValue(object);
         switch (method) {
+            .setTheme => {
+                if (self.theme_selection_clock == std.math.maxInt(u64)) return error.NativeUiGenerationExhausted;
+                const catalog = try self.requestSync("getMainThemeCatalog", "{}");
+                defer self.engine.freeValue(catalog);
+                try @import("native_ui_themes.zig").hydrateCatalog(self.engine, catalog);
+                self.theme_selection_clock += 1;
+                const selection = try @import("native_ui_themes.zig").select(self.engine, if (args.len > 0) args[0] else c.pi_js_undefined(), self.theme_selection_clock);
+                defer selection.deinit(self.engine);
+                const encoded = try self.engine.stringify(selection.payload);
+                defer self.engine.gpa.free(encoded);
+                const applied = try self.requestSync("setTheme", encoded);
+                defer self.engine.freeValue(applied);
+                const present = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, applied, "hasThemeSetting"));
+                defer self.engine.freeValue(present);
+                const setting = if (c.JS_ToBool(self.engine.context, present) != 0) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, applied, "themeSetting")) else c.pi_js_undefined();
+                if (self.main_renderers) |renderers| renderers.invalidateTheme();
+                self.widgets.invalidate_pending = true;
+                for (self.widgets.entries.items) |*entry| entry.dirty = true;
+                self.editors.dirty = true;
+                if (self.main_theme_setting) |old| self.engine.freeValue(old);
+                self.main_theme_setting = setting;
+                const write = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, applied, "queuedWriteId"));
+                defer self.engine.freeValue(write);
+                try self.queueThemeWrite(write);
+                return c.JS_DupValue(self.engine.context, selection.result);
+            },
+            .setToolsExpanded => {
+                const expanded = args.len > 0 and c.JS_ToBool(self.engine.context, args[0]) != 0;
+                // The actual frontend can change through keyboard input after
+                // this retained service captured its invocation snapshot.
+                const frontend_expanded = try self.requestSync("getToolsExpanded", "{}");
+                self.tools_expanded = c.JS_ToBool(self.engine.context, frontend_expanded) != 0;
+                self.engine.freeValue(frontend_expanded);
+                if (self.tools_expanded == expanded) return c.pi_js_undefined();
+                try self.defineField(object, "expanded", c.pi_js_bool(self.engine.context, @intFromBool(expanded)));
+                try self.defineField(object, "notify", c.pi_js_bool(self.engine.context, 0));
+                const encoded = try self.engine.stringify(object);
+                defer self.engine.gpa.free(encoded);
+                const changed = try self.requestSync("setToolsExpandedState", encoded);
+                self.engine.freeValue(changed);
+                self.tools_expanded = expanded;
+                try self.widgets.setHeaderExpanded(expanded);
+                _ = try self.widgets.pumpDirty();
+                try self.defineField(object, "notify", c.pi_js_bool(self.engine.context, 1));
+                const completed = try self.engine.stringify(object);
+                defer self.engine.gpa.free(completed);
+                const notified = try self.requestSync("toolsExpansionComplete", completed);
+                self.engine.freeValue(notified);
+                return c.pi_js_undefined();
+            },
             .notify => {
                 try self.defineField(object, "message", try self.stringArgument(args, 0, null));
                 try self.defineField(object, "type", try self.stringArgument(args, 1, "info"));

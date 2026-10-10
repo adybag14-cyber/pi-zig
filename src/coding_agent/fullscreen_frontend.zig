@@ -153,6 +153,18 @@ fn rendererOwnershipCase(gpa: std.mem.Allocator) !void {
     try owner.draw(.{ .columns = 70, .rows = 24 }, false);
     try std.testing.expectEqual(@as(usize, 1), queue.controls.items.len);
     try std.testing.expectEqual(@as(usize, 70), queue.controls.items[0].kind.resize);
+    {
+        var expansion: ui.SurfaceSnapshot = .{ .gpa = gpa, .tools_expanded = true, .tools_expansion_revision = 1, .tools_expand_hint = try gpa.dupe(u8, "ctrl+o") };
+        var transferred = false;
+        defer if (!transferred) expansion.deinit();
+        try Frontend.surfaceSink(owner, expansion);
+        transferred = true;
+    }
+    try owner.applyUpdates();
+    try owner.draw(.{ .columns = 70, .rows = 24 }, false);
+    try std.testing.expectEqual(@as(usize, 2), queue.controls.items.len);
+    try std.testing.expect(queue.controls.items[1].kind.expanded);
+    try std.testing.expectEqualStrings("owned-tool", queue.controls.items[1].fence.tool_call_id);
     try Frontend.rendererClosed(owner, 1);
     try std.testing.expect(owner.renderer_owners.items[0].controls == null);
     queue.deinit();
@@ -863,6 +875,26 @@ pub const Frontend = struct {
     fn resizeRenderers(self: *Frontend, width: usize) !void {
         for (self.transcript.renderers.rows.items) |*row| {
             if (row.retired and !row.needs_retire) continue;
+            if (row.requested_expansion_revision == null) row.requested_expansion_revision = self.transcript.toolExpansionRevision(row.fence.tool_call_id);
+            if (!row.needs_retire and self.transcript.hasToolRow(row.fence.tool_call_id) and row.requested_expansion_revision.? != self.surfaces.tools_expansion_revision) {
+                self.mutex.lockUncancelable(self.io);
+                defer self.mutex.unlock(self.io);
+                const controls = for (self.renderer_owners.items) |owner| {
+                    if (owner.generation == row.fence.owner_generation and !owner.closed) break owner.controls;
+                } else null;
+                if (controls) |queue| {
+                    var control: renderer_protocol.Control = .{ .gpa = self.gpa, .fence = row.fence, .kind = .{ .expanded = self.surfaces.tools_expanded } };
+                    control.fence.tool_call_id = try self.gpa.dupe(u8, row.fence.tool_call_id);
+                    queue.send(control) catch |err| {
+                        control.deinit();
+                        if (err == error.RendererMailboxStopped) continue;
+                        return err;
+                    };
+                    row.requested_expanded = self.surfaces.tools_expanded;
+                    row.expanded = self.surfaces.tools_expanded;
+                    row.requested_expansion_revision = self.surfaces.tools_expansion_revision;
+                }
+            }
             if (!row.needs_retire and (row.requested_width == width or !self.transcript.hasToolRow(row.fence.tool_call_id))) continue;
             var needs_width = row.width != width;
             for (row.slots) |slot| if (slot) |value| {
@@ -1209,9 +1241,12 @@ pub const Frontend = struct {
             },
             .branch => |entries| try self.transcript.syncBranch(entries, if (self.anchor) |*value| value else null),
             .surface => |snapshot| {
+                try self.transcript.setThemeState(snapshot.theme_state_json);
+                self.transcript.applyToolsExpansion(snapshot.tools_expanded, snapshot.tools_expansion_revision);
                 self.title_dirty = if (snapshot.title) |title| if (self.surfaces.title) |previous| !std.mem.eql(u8, title, previous) else true else false;
                 self.surfaces.deinit();
                 self.surfaces = snapshot;
+                self.transcript.tools_expand_hint = self.surfaces.tools_expand_hint;
                 update.* = .{ .busy = self.busy };
                 for (snapshot.notifications) |value| try self.transcript.notice(value);
             },
@@ -1602,6 +1637,10 @@ pub const Frontend = struct {
                     };
                     if (self.bindings.matches(name, .clipboard_paste)) {
                         try self.queueCommand(.clipboard, name);
+                        return;
+                    }
+                    if (self.bindings.matchesNamedKey(name, "app.tools.expand")) {
+                        try self.queueCommand(.shortcut, name);
                         return;
                     }
                 }

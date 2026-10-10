@@ -164,8 +164,24 @@ fn cjk(engine: *Engine, bytecode: [*]const u8, cluster: []const u16) !bool {
         else => error.NativeUnicodeWrapFailure,
     };
 }
-fn tokenize(engine: *Engine, bytecode: [*]const u8, source: []const u16) ![][]u16 {
-    const gpa = engine.gpa;
+const Classification = union(enum) {
+    regex: struct { engine: *Engine, bytecode: [*]const u8 },
+    ranges: []const std.json.Value,
+    fn isCjk(self: Classification, cluster: []const u16) !bool {
+        if (self == .regex) return cjk(self.regex.engine, self.regex.bytecode, cluster);
+        if (cluster.len == 0) return false;
+        const point: u32 = if (cluster.len >= 2 and cluster[0] >= 0xd800 and cluster[0] <= 0xdbff and cluster[1] >= 0xdc00 and cluster[1] <= 0xdfff) 0x10000 + ((@as(u32, cluster[0]) - 0xd800) << 10) + (cluster[1] - 0xdc00) else cluster[0];
+        var low: usize = 0;
+        var high = self.ranges.len;
+        while (low < high) {
+            const middle = low + (high - low) / 2;
+            const range = self.ranges[middle].array.items;
+            if (point < range[0].integer) high = middle else if (point > range[1].integer) low = middle + 1 else return true;
+        }
+        return false;
+    }
+};
+fn tokenize(gpa: std.mem.Allocator, classification: Classification, source: []const u16) ![][]u16 {
     var tokens: Lines = .empty;
     errdefer {
         for (tokens.items) |token| gpa.free(token);
@@ -190,7 +206,7 @@ fn tokenize(engine: *Engine, bytecode: [*]const u8, source: []const u16) ![][]u1
         while (iterator.next()) |part| {
             const cluster = source[index + part.start .. index + part.end];
             const space = std.mem.eql(u16, cluster, &.{' '});
-            const standalone = !space and try cjk(engine, bytecode, cluster);
+            const standalone = !space and try classification.isCjk(cluster);
             if (current.items.len > 0 and (standalone or (kind != null and kind.? != space))) {
                 try emit(gpa, &tokens, current.items);
                 current.clearRetainingCapacity();
@@ -217,11 +233,10 @@ fn tokenize(engine: *Engine, bytecode: [*]const u8, source: []const u16) ![][]u1
     if (current.items.len > 0) try emit(gpa, &tokens, current.items);
     return tokens.toOwnedSlice(gpa);
 }
-fn single(engine: *Engine, bytecode: [*]const u8, source: []const u16, width: f64, lines: *Lines) !void {
-    const gpa = engine.gpa;
+fn single(gpa: std.mem.Allocator, classification: Classification, source: []const u16, width: f64, lines: *Lines) !void {
     if (@as(f64, @floatFromInt(try terminal.visibleWidth(gpa, source))) <= width) return emit(gpa, lines, source);
     const original_count = lines.items.len;
-    const tokens = try tokenize(engine, bytecode, source);
+    const tokens = try tokenize(gpa, classification, source);
     defer {
         for (tokens) |token| gpa.free(token);
         gpa.free(tokens);
@@ -329,6 +344,7 @@ test "Source6fb public SelectList wrapping CJK tokenizer matches every original 
             std.debug.print("Source CJK Script_Extensions U+{X}\n", .{cp});
             return err;
         };
+        try std.testing.expectEqual(expected, try (Classification{ .ranges = ranges }).isCjk(units[0..count]));
     }
 }
 pub fn wrap(engine: *Engine, source: []const u16, width: f64) ![][]u16 {
@@ -337,7 +353,16 @@ pub fn wrap(engine: *Engine, source: []const u16, width: f64) ![][]u16 {
     var diagnostic: [256]u8 = undefined;
     const bytecode = c.lre_compile(&bytecode_len, &diagnostic, diagnostic.len, pattern, pattern.len, c.LRE_FLAG_UNICODE, engine.context) orelse return error.NativeUnicodeWrapFailure;
     defer c.js_free(engine.context, bytecode);
-    const gpa = engine.gpa;
+    return wrapClassified(engine.gpa, .{ .regex = .{ .engine = engine, .bytecode = bytecode } }, source, width);
+}
+/// The parent frontend uses the same pinned Unicode classification capture
+/// already checked against every Source codepoint, with no VM or JS context.
+pub fn wrapNative(gpa: std.mem.Allocator, source: []const u16, width: f64) ![][]u16 {
+    var fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/wrap-cjk-original-6fb.json"), .{});
+    defer fixture.deinit();
+    return wrapClassified(gpa, .{ .ranges = fixture.value.object.get("ranges").?.array.items }, source, width);
+}
+fn wrapClassified(gpa: std.mem.Allocator, classification: Classification, source: []const u16, width: f64) ![][]u16 {
     var lines: Lines = .empty;
     errdefer {
         for (lines.items) |line| gpa.free(line);
@@ -353,7 +378,7 @@ pub fn wrap(engine: *Engine, source: []const u16, width: f64) ![][]u16 {
         defer prefixed.deinit(gpa);
         if (lines.items.len > 0) try style.active(&prefixed);
         try prefixed.appendSlice(gpa, paragraph);
-        try single(engine, bytecode, prefixed.items, width, &lines);
+        try single(gpa, classification, prefixed.items, width, &lines);
         try style.update(paragraph);
         if (end == source.len) break;
         start = end + 1;
@@ -394,6 +419,13 @@ test "Source6fb public SelectList shared wrapping preserves original UTF16 clust
                 return err;
             };
         }
+        const native = try wrapNative(gpa, text, width);
+        defer {
+            for (native) |line| gpa.free(line);
+            gpa.free(native);
+        }
+        try std.testing.expectEqual(actual.len, native.len);
+        for (actual, native) |left, right| try std.testing.expectEqualSlices(u16, left, right);
     }
 }
 test "Source6fb public SelectList public wrapping and truncation helpers replay every original layout and function arity" {

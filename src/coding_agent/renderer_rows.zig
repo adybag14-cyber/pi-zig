@@ -15,6 +15,9 @@ pub const Row = struct {
     tool_name: []u8,
     width: usize,
     requested_width: usize = 0,
+    requested_expanded: ?bool = null,
+    expanded: bool = false,
+    requested_expansion_revision: ?u64 = null,
     retired: bool = false,
     attached: bool = false,
     needs_retire: bool = false,
@@ -77,15 +80,16 @@ pub const Rows = struct {
             if (old) |row| {
                 if (protocol.Fence.matches(row.fence, record.fence)) {
                     if (row.retired) return false;
-                    if (row.width == registration.width) return false;
+                    if (row.width == registration.width and row.expanded == registration.expanded) return false;
                     row.width = registration.width;
+                    row.expanded = registration.expanded;
                     row.requested_width = 0;
                     return true;
                 }
                 if (record.fence.owner_generation < row.fence.owner_generation or
                     (record.fence.owner_generation == row.fence.owner_generation and record.fence.row_generation <= row.fence.row_generation)) return false;
             } else if (self.rows.items.len >= protocol.maximum_rows) return error.RendererRowCountLimit;
-            var next: Row = .{ .gpa = record.gpa, .fence = record.fence, .tool_name = registration.tool_name, .width = registration.width };
+            var next: Row = .{ .gpa = record.gpa, .fence = record.fence, .tool_name = registration.tool_name, .width = registration.width, .expanded = registration.expanded };
             const removed = if (old) |row| row.bytes() else 0;
             try self.capacity(removed, next.bytes());
             if (old) |row| {

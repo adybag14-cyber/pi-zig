@@ -1118,8 +1118,8 @@ pub fn loadByValue(engine: *engine_mod.Engine, key: c.JSValue, color_mode: ?Colo
     engine.freeValue(existing);
     const name = try engine.toString(key);
     defer engine.gpa.free(name);
-    if (std.mem.eql(u8, name, "dark")) return fromJson(engine, @embedFile("../themes/fixtures/dark-original-6fb.json"), null, color_mode);
-    if (std.mem.eql(u8, name, "light")) return fromJson(engine, @embedFile("../themes/fixtures/light-original-6fb.json"), null, color_mode);
+    if (std.mem.eql(u8, name, "dark")) return if (engine.native_io != null) @import("native_theme_assets.zig").loadBuiltin(engine, "dark", color_mode) else fromJson(engine, @embedFile("../themes/fixtures/dark-original-6fb.json"), null, color_mode);
+    if (std.mem.eql(u8, name, "light")) return if (engine.native_io != null) @import("native_theme_assets.zig").loadBuiltin(engine, "light", color_mode) else fromJson(engine, @embedFile("../themes/fixtures/light-original-6fb.json"), null, color_mode);
     if (engine.native_io) |io| {
         const directory = try @import("native_theme_watch.zig").directory(engine);
         defer engine.gpa.free(directory);

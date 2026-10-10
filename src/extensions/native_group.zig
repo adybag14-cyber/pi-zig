@@ -49,6 +49,7 @@ pub const Group = struct {
         errdefer ui.deinit();
         const renderers = try native_renderers.Manager.init(engine);
         errdefer renderers.deinit();
+        ui.main_renderers = renderers;
         const self = try engine.gpa.create(Group);
         self.* = .{ .engine = engine, .ui = ui, .renderers = renderers, .activation = activation_mod.Tracker.init(engine.gpa, 1), .native_tool_catalog_cache = .init(engine) };
         renderers.replay_fn = replay;

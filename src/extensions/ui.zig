@@ -32,6 +32,7 @@ pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anye
 pub const DialogStatusFn = *const fn (?*anyopaque, PromptEvent, []const u8, []const u8) anyerror!void;
 pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
 pub const EditorSinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
+pub const ThemeRequestFn = *const fn (?*anyopaque, std.mem.Allocator, *const std.json.ObjectMap) anyerror![]u8;
 
 /// Owned projection for a retained frontend. No Controller slices cross threads.
 pub const SurfaceSnapshot = struct {
@@ -43,11 +44,17 @@ pub const SurfaceSnapshot = struct {
     status: []u8 = &.{},
     working: ?[]u8 = null,
     working_visible: bool = true,
+    tools_expanded: bool = false,
+    tools_expansion_revision: u64 = 0,
+    tools_expand_hint: []u8 = &.{},
+    theme_state_json: ?[]u8 = null,
     working_frames: [][]u8 = &.{},
     working_interval_ms: u64 = 100,
     title: ?[]u8 = null,
     notifications: [][]u8 = &.{},
     pub fn deinit(self: *SurfaceSnapshot) void {
+        self.gpa.free(self.tools_expand_hint);
+        if (self.theme_state_json) |value| self.gpa.free(value);
         if (self.header) |lines| freeLines(self.gpa, lines);
         if (self.footer) |lines| freeLines(self.gpa, lines);
         freeLines(self.gpa, self.above);
@@ -247,10 +254,20 @@ pub const Controller = struct {
     title: ?[]u8 = null,
     working_message: ?[]u8 = null,
     working_visible: bool = true,
+    tools_expanded: bool = false,
+    tools_presentation_expanded: bool = false,
+    tools_expansion_revision: u64 = 0,
     working_indicator: WorkingIndicator = .{},
     hidden_thinking_label: ?[]u8 = null,
     theme_name: ?[]u8 = null,
     theme_state_json: ?[]u8 = null,
+    theme_catalog_json: ?[]u8 = null,
+    theme_catalog_revision: u64 = 0,
+    theme_request_fn: ?ThemeRequestFn = null,
+    theme_request_context: ?*anyopaque = null,
+    theme_setting_override_set: bool = false,
+    theme_setting_override: ?[]u8 = null,
+    theme_setting_pending: bool = false,
     editor_snapshot: []u8,
     pending_editor_text: ?[]u8 = null,
     pending_editor_delivered: bool = false,
@@ -290,6 +307,8 @@ pub const Controller = struct {
         if (self.hidden_thinking_label) |value| self.gpa.free(value);
         if (self.theme_name) |value| self.gpa.free(value);
         if (self.theme_state_json) |value| self.gpa.free(value);
+        if (self.theme_catalog_json) |value| self.gpa.free(value);
+        if (self.theme_setting_override) |value| self.gpa.free(value);
         self.gpa.free(self.editor_snapshot);
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.* = undefined;
@@ -425,8 +444,10 @@ pub const Controller = struct {
     pub fn snapshotRetained(self: *Controller, gpa: std.mem.Allocator) !SurfaceSnapshot {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
-        var snapshot: SurfaceSnapshot = .{ .gpa = gpa };
+        var snapshot: SurfaceSnapshot = .{ .gpa = gpa, .tools_expanded = self.tools_presentation_expanded, .tools_expansion_revision = self.tools_expansion_revision };
         errdefer snapshot.deinit();
+        snapshot.tools_expand_hint = if (self.dialog_keybindings) |bindings| try bindings.keyTextAlloc(gpa, "app.tools.expand") else try gpa.dupe(u8, "ctrl+o");
+        snapshot.theme_state_json = if (self.theme_state_json) |value| try gpa.dupe(u8, value) else null;
         const Clone = struct {
             fn lines(allocator: std.mem.Allocator, values: []const []const u8) ![][]u8 {
                 const copied = try allocator.alloc([]u8, values.len);
@@ -510,6 +531,10 @@ pub const Controller = struct {
         self.hidden_thinking_label = null;
         if (self.theme_name) |value| self.gpa.free(value);
         self.theme_name = null;
+        if (self.theme_setting_override) |value| self.gpa.free(value);
+        self.theme_setting_override = null;
+        self.theme_setting_override_set = false;
+        self.theme_setting_pending = false;
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.pending_editor_text = null;
         self.pending_editor_delivered = false;
@@ -621,12 +646,56 @@ pub const Controller = struct {
 
     /// Bind an owned cached DTO atomically. Null unbinds it; a present state
     /// with empty reports explicitly selects source defaults. No terminal read.
+    pub fn setThemeResources(self: *Controller, registry: *const @import("../themes/registry.zig").Registry) !void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.theme_catalog_revision == std.math.maxInt(u64)) return error.NativeThemeCatalogRevisionLimit;
+        const revision = self.theme_catalog_revision + 1;
+        var output: std.Io.Writer.Allocating = .init(self.gpa);
+        defer output.deinit();
+        try output.writer.print("{{\"revision\":\"{d}\",\"records\":[", .{revision});
+        var comma = false;
+        for (registry.themes.items, 0..) |resource, index| {
+            const raw = resource.resource_json orelse continue;
+            if (comma) try output.writer.writeByte(',');
+            comma = true;
+            try output.writer.writeAll("{\"name\":");
+            try std.json.Stringify.value(resource.name, .{}, &output.writer);
+            try output.writer.writeAll(",\"path\":");
+            try std.json.Stringify.value(registry.sources.items[index], .{}, &output.writer);
+            try output.writer.print(",\"resource\":{s}}}", .{raw});
+        }
+        try output.writer.writeAll("]}");
+        const encoded = try self.gpa.dupe(u8, output.written());
+        if (self.theme_catalog_json) |old| self.gpa.free(old);
+        self.theme_catalog_json = encoded;
+        self.theme_catalog_revision = revision;
+    }
     pub fn setThemeState(self: *Controller, state: ?@import("theme_state.zig").State) !void {
         const encoded = if (state) |value| try @import("theme_state.zig").encode(self.gpa, value) else null;
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         if (self.theme_state_json) |old| self.gpa.free(old);
         self.theme_state_json = encoded;
+        self.surface_dirty = true;
+    }
+    pub fn setThemeSetting(self: *Controller, value: ?[]const u8) !void {
+        const next = if (value) |text| try self.gpa.dupe(u8, text) else null;
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.theme_setting_override) |old| self.gpa.free(old);
+        self.theme_setting_override = next;
+        self.theme_setting_override_set = true;
+        self.theme_setting_pending = true;
+    }
+    pub const PendingThemeSetting = union(enum) { none, clear, set: []u8 };
+    pub fn takeThemeSetting(self: *Controller, allocator: std.mem.Allocator) !PendingThemeSetting {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (!self.theme_setting_pending) return .none;
+        const next: PendingThemeSetting = if (self.theme_setting_override) |value| .{ .set = try allocator.dupe(u8, value) } else .clear;
+        self.theme_setting_pending = false;
+        return next;
     }
 
     /// Transfer the next editor prefill to the caller. Ownership follows the
@@ -672,7 +741,7 @@ pub const Controller = struct {
 
         var out: std.Io.Writer.Allocating = .init(allocator);
         errdefer out.deinit();
-        try out.writer.writeAll("{\"mode\":");
+        try out.writer.print("{{\"toolsExpanded\":{},\"mode\":", .{self.tools_expanded});
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
         if (self.terminal_capabilities) |caps| {
             const images: ?[]const u8 = if (caps.images) |protocol| @tagName(protocol) else null;
@@ -684,10 +753,14 @@ pub const Controller = struct {
             try std.json.Stringify.value(.{ .widthPx = cells.width_px, .heightPx = cells.height_px }, .{}, &out.writer);
         }
         if (options.runtime_bound) |bound| try out.writer.print(",\"nativeRuntimeBound\":{}", .{bound});
+        if (self.theme_catalog_json) |catalog| try out.writer.print(",\"mainThemeCatalog\":{s}", .{catalog});
         if (options.settings_json) |settings| {
             var parsed_settings = try std.json.parseFromSlice(std.json.Value, allocator, settings, .{});
             defer parsed_settings.deinit();
             if (parsed_settings.value != .object) return error.InvalidExtensionContext;
+            if (self.theme_setting_override_set) {
+                if (self.theme_setting_override) |value| try parsed_settings.value.object.put(allocator, "theme", .{ .string = value }) else _ = parsed_settings.value.object.swapRemove("theme");
+            }
             try out.writer.writeAll(",\"settings\":");
             try std.json.Stringify.value(parsed_settings.value, .{}, &out.writer);
         }
@@ -786,6 +859,12 @@ pub const Controller = struct {
         return out.toOwnedSlice();
     }
 
+    pub fn toolsExpanded(self: *Controller) bool {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        return self.tools_expanded;
+    }
+
     pub fn applyAction(self: *Controller, method: []const u8, args_json: []const u8) !void {
         var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, args_json, .{});
         defer parsed.deinit();
@@ -795,6 +874,18 @@ pub const Controller = struct {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
 
+        if (std.mem.eql(u8, method, "setToolsExpanded")) {
+            const expanded = try requiredBool(object, "expanded");
+            const notify = optionalBool(object, "notify") orelse true;
+            if (notify) try self.notifications.append(self.gpa, .{ .message = try self.gpa.dupe(u8, if (expanded) "Tool output: expanded" else "Tool output: collapsed"), .kind = .info });
+            self.tools_expanded = expanded;
+            if (notify) {
+                self.tools_presentation_expanded = expanded;
+                self.tools_expansion_revision +|= 1;
+            }
+            self.surface_dirty = true;
+            return;
+        }
         if (std.mem.eql(u8, method, "notify")) {
             const message = try requiredString(object, "message");
             const kind_text = optionalString(object, "type") orelse "info";
@@ -951,6 +1042,43 @@ pub const Controller = struct {
         var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, args_json, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidExtensionUiRequest;
+
+        if (std.mem.eql(u8, method, "getMainThemeCatalog")) {
+            self.state_mutex.lockUncancelable(self.io);
+            defer self.state_mutex.unlock(self.io);
+            return allocator.dupe(u8, self.theme_catalog_json orelse "{\"revision\":\"0\",\"records\":[]}");
+        }
+        if (std.mem.eql(u8, method, "getToolsExpanded")) return allocator.dupe(u8, if (self.toolsExpanded()) "true" else "false");
+        if (std.mem.eql(u8, method, "toolsExpansionComplete")) {
+            const expanded = try requiredBool(&parsed.value.object, "expanded");
+            const encoded = try std.json.Stringify.valueAlloc(self.gpa, .{ .message = if (expanded) "Tool output: expanded" else "Tool output: collapsed", .type = "info" }, .{});
+            defer self.gpa.free(encoded);
+            try self.applyAction("notify", encoded);
+            self.state_mutex.lockUncancelable(self.io);
+            self.tools_presentation_expanded = expanded;
+            self.tools_expansion_revision +|= 1;
+            self.surface_dirty = true;
+            self.state_mutex.unlock(self.io);
+            try self.flush();
+            return allocator.dupe(u8, "null");
+        }
+        if (std.mem.eql(u8, method, "setToolsExpandedState")) {
+            try parsed.value.object.put(self.gpa, "notify", .{ .bool = false });
+            const encoded = try std.json.Stringify.valueAlloc(self.gpa, parsed.value, .{});
+            defer self.gpa.free(encoded);
+            try self.applyAction("setToolsExpanded", encoded);
+            try self.flush();
+            return allocator.dupe(u8, "null");
+        }
+        if (std.mem.eql(u8, method, "setTheme") or std.mem.eql(u8, method, "persistMainThemeSetting")) {
+            self.state_mutex.lockUncancelable(self.io);
+            const callback = self.theme_request_fn;
+            const context = self.theme_request_context;
+            self.state_mutex.unlock(self.io);
+            // The producer publishes through setThemeState(), so never hold
+            // the Controller state lock while entering it.
+            return (callback orelse return error.NativeThemeControllerUnavailable)(context, allocator, &parsed.value.object);
+        }
 
         self.dialog_mutex.lockUncancelable(self.io);
         defer self.dialog_mutex.unlock(self.io);
