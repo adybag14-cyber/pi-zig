@@ -719,6 +719,12 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native codemode allocation failures"},
     });
     b.step("test-codemode-allocation", "Exhaustively check codemode allocation ownership without repeating CLI and model suites").dependOn(&b.addRunArtifact(codemode_allocation_tests).step);
+    const codemode_inline_tests = b.addTest(.{
+        .root_module = codemode_tests.root_module,
+        .use_llvm = use_llvm,
+        .filters = &.{"native codemode Source c5 inline"},
+    });
+    b.step("test-codemode-inline", "Check current upstream inline interruption and terminal result ordering").dependOn(&b.addRunArtifact(codemode_inline_tests).step);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     const discovery_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_discovery_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
@@ -844,6 +850,12 @@ pub fn build(b: *std.Build) void {
     run_mcp_runtime_tests.setEnvironmentVariable("PI_MCP_RUNTIME_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-runtime-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     const mcp_runtime_step = b.step("test-mcp-runtime", "Exercise native multiplex MCP request ownership pending-connect shutdown and transports");
     mcp_runtime_step.dependOn(&run_mcp_runtime_tests.step);
+    const mcp_issuer_exchange_tests = b.addTest(.{
+        .root_module = mcp_runtime_tests.root_module,
+        .use_llvm = use_llvm,
+        .filters = &.{"mcp.runtime Source c5f5b328"},
+    });
+    b.step("test-mcp-issuer-exchange", "Check the actual OAuth token boundary when issuer metadata is missing").dependOn(&b.addRunArtifact(mcp_issuer_exchange_tests).step);
     test_step.dependOn(&run_mcp_runtime_tests.step);
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_sqlite_tests.step);
