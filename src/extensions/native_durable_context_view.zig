@@ -10,6 +10,9 @@ const json = backend.json;
 const Value = json.Value;
 const Engine = engine_mod.Engine;
 const c = engine_mod.c;
+test {
+    _ = @import("native_durable_storage_context_test.zig");
+}
 pub const Cache = struct { view: c.JSValue, head: ?u64, tail: u64, idle_since: ?i64 = null };
 fn array(a: std.mem.Allocator) Value {
     return .{ .array = .init(a) };
@@ -20,6 +23,15 @@ fn text(value: Value, name: []const u8, expected: []const u8) bool {
 }
 pub fn queued(engine: *Engine, session: c.JSValue, conversation: c.JSValue, context: c.JSValue, at: c.JSValue) !c.JSValue {
     var data = [_]c.JSValue{ session, conversation, context, at };
+    if ((try durable.state(engine, session)).session_lease.?.adapter != null) {
+        const capture = try engine.checked(c.JS_NewCFunctionData(engine.context, captureGuestBounds, 0, 0, data.len, &data));
+        defer engine.freeValue(capture);
+        const after = try engine.checked(c.JS_NewCFunctionData(engine.context, guestRange, 1, 0, data.len, &data));
+        defer engine.freeValue(after);
+        const bounds = try durable.enqueueRead(engine, session, capture, context);
+        defer engine.freeValue(bounds);
+        return sdk.invoke(engine, bounds, "then", &.{after});
+    }
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, onLine, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
     return durable.enqueue(engine, session, callback);
@@ -29,10 +41,14 @@ fn onLine(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c
     return read(engine, data[0], data[1], data[2], data[3], null) catch |err| durable.reject(engine, err);
 }
 pub fn read(engine: *Engine, session: c.JSValue, conversation: c.JSValue, context: c.JSValue, at: c.JSValue, cache: ?*?Cache) !c.JSValue {
-    const deep = cache != null;
-    try durable.checkCancellation(engine, context);
     const native = try durable.state(engine, session);
     if (native.closing) return error.SessionClosed;
+    if (native.session_lease.?.adapter != null) {
+        var bounds = try captureBounds(engine, native, try durable.number(engine, conversation), context, if (c.JS_IsUndefined(at)) null else try durable.number(engine, at));
+        defer bounds.deinit();
+        return renderGuestRange(engine, native, try durable.number(engine, conversation), context, bounds.value, cache);
+    }
+    try durable.checkCancellation(engine, context);
     var store: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try native.session_lease.?.value.storage.snapshot(engine.gpa) };
     defer store.deinit();
     const id = try durable.number(engine, conversation);
@@ -72,15 +88,18 @@ pub fn read(engine: *Engine, session: c.JSValue, conversation: c.JSValue, contex
             if (ids[index] >= minimum) try entries.array.append(try json.clone(a, store.state.rows.get(ids[index]).?.record));
         }
     }
-    owned.value = try derive(a, head, entries);
+    return render(engine, a, head, entries, if (ids.len == 0) 0 else ids[0], cache);
+}
+fn render(engine: *Engine, a: std.mem.Allocator, head: ?Value, entries: Value, tail: u64, cache: ?*?Cache) !c.JSValue {
+    const deep = cache != null;
+    const value = try derive(a, head, entries);
     var memo: std.AutoHashMapUnmanaged(usize, c.JSValue) = .empty;
     defer memo.deinit(engine.gpa);
     const head_id = if (head) |marker| try json.asInteger(try json.required(marker, "id")) else null;
-    const tail = if (ids.len == 0) 0 else ids[0];
     if (cache) |slot| if (slot.*) |previous| {
-        if (previous.head == head_id) try seedPrevious(engine, owned.value, previous, tail, &memo);
+        if (previous.head == head_id) try seedPrevious(engine, value, previous, tail, &memo);
     };
-    const result = try sharedValue(engine, owned.value, &memo);
+    const result = try sharedValue(engine, value, &memo);
     errdefer engine.freeValue(result);
     if (head == null) try sdk.put(engine, result, "head", c.pi_js_undefined());
     // Source records, messages and contribution arrays are immutable; each view
@@ -125,6 +144,82 @@ pub fn read(engine: *Engine, session: c.JSValue, conversation: c.JSValue, contex
         } else if (tail != 0) slot.* = .{ .view = c.JS_DupValue(engine.context, result), .head = head_id, .tail = tail };
     }
     return result;
+}
+fn captureGuestBounds(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return captureGuestBoundsOwned(engine, data) catch |err| durable.reject(engine, err);
+}
+fn captureGuestBoundsOwned(engine: *Engine, data: [*c]c.JSValue) !c.JSValue {
+    const native = try durable.state(engine, data[0]);
+    var bounds = try captureBounds(engine, native, try durable.number(engine, data[1]), data[2], if (c.JS_IsUndefined(data[3])) null else try durable.number(engine, data[3]));
+    defer bounds.deinit();
+    return durable.jsValue(engine, bounds.value);
+}
+fn captureBounds(engine: *Engine, native: *durable.State, id: u64, context: c.JSValue, at: ?u64) !json.Owned {
+    const scope = @import("native_durable_storage.zig").withContext(native, context);
+    defer scope.restore();
+    var owned = try json.Owned.empty(engine.gpa);
+    errdefer owned.deinit();
+    const a = owned.arena.allocator();
+    owned.value = .{ .object = .empty };
+    var tail = at;
+    if (at) |entry_id| {
+        var visible = try native.session.?.storage.readEntry(engine.gpa, entry_id, id);
+        defer if (visible) |*value| value.deinit();
+        if (visible == null) {
+            const message = try std.fmt.allocPrint(engine.gpa, "Entry {d} is not visible from conversation {d}", .{ entry_id, id });
+            defer engine.gpa.free(message);
+            _ = try sdk.sourceError(engine, message);
+            return error.JavaScriptException;
+        }
+    } else {
+        var filters: Value = .{ .object = .empty };
+        try filters.object.put(a, "conversationId", .{ .integer = @intCast(id) });
+        var page = try native.session.?.storage.sourceScan(engine.gpa, .entry, filters, 1, null);
+        defer page.deinit();
+        const items = try json.required(page.value, "items");
+        if (items.array.items.len != 0) tail = try backend.memory.idOf(items.array.items[0]);
+    }
+    var head: ?json.Owned = if (tail) |entry_id| try native.session.?.storage.latestHeadMarker(engine.gpa, id, entry_id) else null;
+    defer if (head) |*value| value.deinit();
+    try owned.value.object.put(a, "head", if (head) |value| try json.clone(a, value.value) else .null);
+    try owned.value.object.put(a, "tail", if (tail) |entry_id| .{ .integer = @intCast(entry_id) } else .null);
+    return owned;
+}
+fn guestRange(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return guestRangeOwned(engine, data, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| durable.reject(engine, err);
+}
+fn guestRangeOwned(engine: *Engine, data: [*c]c.JSValue, bounds: c.JSValue) !c.JSValue {
+    var captured = try durable.owned(engine, bounds);
+    defer captured.deinit();
+    return renderGuestRange(engine, try durable.state(engine, data[0]), try durable.number(engine, data[1]), data[2], captured.value, null);
+}
+fn renderGuestRange(engine: *Engine, native: *durable.State, id: u64, context: c.JSValue, bounds: Value, cache: ?*?Cache) !c.JSValue {
+    const scope = @import("native_durable_storage.zig").withContext(native, context);
+    defer scope.restore();
+    var owned = try json.Owned.empty(engine.gpa);
+    defer owned.deinit();
+    const a = owned.arena.allocator();
+    const marker = try json.required(bounds, "head");
+    const head = if (marker == .null) null else try json.clone(a, marker);
+    const newest = try json.required(bounds, "tail");
+    var entries = array(a);
+    if (newest != .null) {
+        var filters: Value = .{ .object = .empty };
+        try filters.object.put(a, "conversationId", .{ .integer = @intCast(id) });
+        if (head) |value| try filters.object.put(a, "minEntryId", try json.required(value, "head"));
+        try filters.object.put(a, "maxEntryId", newest);
+        var cursor: ?Value = null;
+        while (true) {
+            var page = try native.session.?.storage.sourceScan(engine.gpa, .entry, filters, 256, cursor);
+            defer page.deinit();
+            for ((try json.required(page.value, "items")).array.items) |entry| try entries.array.append(try json.clone(a, entry));
+            cursor = if (json.get(page.value, "next")) |next| try json.clone(a, next) else break;
+        }
+        std.mem.reverse(Value, entries.array.items);
+    }
+    return render(engine, a, head, entries, if (newest == .null) 0 else try json.asInteger(newest), cache);
 }
 fn nativeKey(value: Value) ?usize {
     return switch (value) {

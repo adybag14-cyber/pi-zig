@@ -1,0 +1,227 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "scenario": "empty",
+      "view": {
+        "entries": [],
+        "contributions": [],
+        "messages": []
+      },
+      "calls": [
+        {
+          "name": "scanEntries",
+          "args": [
+            {
+              "conversationId": 1
+            },
+            1,
+            null
+          ],
+          "originalContext": true
+        }
+      ]
+    },
+    {
+      "scenario": "full",
+      "view": {
+        "head": {
+          "id": 2,
+          "conversationId": 1,
+          "kind": "fixture.head",
+          "head": 2,
+          "model": [
+            {
+              "role": "user",
+              "content": "first",
+              "timestamp": 1
+            }
+          ]
+        },
+        "entries": [
+          {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "fixture.head",
+            "head": 2,
+            "model": [
+              {
+                "role": "user",
+                "content": "first",
+                "timestamp": 1
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "conversationId": 1,
+            "kind": "fixture.tail",
+            "model": [
+              {
+                "role": "user",
+                "content": "second",
+                "timestamp": 2
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          [
+            {
+              "role": "user",
+              "content": "first",
+              "timestamp": 1
+            }
+          ],
+          [
+            {
+              "role": "user",
+              "content": "second",
+              "timestamp": 2
+            }
+          ]
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 1
+          },
+          {
+            "role": "user",
+            "content": "second",
+            "timestamp": 2
+          }
+        ]
+      },
+      "calls": [
+        {
+          "name": "scanEntries",
+          "args": [
+            {
+              "conversationId": 1
+            },
+            1,
+            null
+          ],
+          "originalContext": true
+        },
+        {
+          "name": "findLatestHeadMarker",
+          "args": [
+            1,
+            3
+          ],
+          "originalContext": true
+        },
+        {
+          "name": "scanEntries",
+          "args": [
+            {
+              "conversationId": 1,
+              "minEntryId": 2,
+              "maxEntryId": 3
+            },
+            256,
+            null
+          ],
+          "originalContext": true
+        }
+      ]
+    },
+    {
+      "scenario": "at",
+      "view": {
+        "head": {
+          "id": 2,
+          "conversationId": 1,
+          "kind": "fixture.head",
+          "head": 2,
+          "model": [
+            {
+              "role": "user",
+              "content": "first",
+              "timestamp": 1
+            }
+          ]
+        },
+        "entries": [
+          {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "fixture.head",
+            "head": 2,
+            "model": [
+              {
+                "role": "user",
+                "content": "first",
+                "timestamp": 1
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          [
+            {
+              "role": "user",
+              "content": "first",
+              "timestamp": 1
+            }
+          ]
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "first",
+            "timestamp": 1
+          }
+        ]
+      },
+      "calls": [
+        {
+          "name": "entry",
+          "args": [
+            1,
+            2
+          ],
+          "originalContext": true
+        },
+        {
+          "name": "findLatestHeadMarker",
+          "args": [
+            1,
+            2
+          ],
+          "originalContext": true
+        },
+        {
+          "name": "scanEntries",
+          "args": [
+            {
+              "conversationId": 1,
+              "minEntryId": 2,
+              "maxEntryId": 2
+            },
+            256,
+            null
+          ],
+          "originalContext": true
+        }
+      ]
+    },
+    {
+      "scenario": "missing",
+      "error": "Entry 999 is not visible from conversation 1",
+      "calls": [
+        {
+          "name": "entry",
+          "args": [
+            1,
+            999
+          ],
+          "originalContext": true
+        }
+      ]
+    }
+  ]
+}

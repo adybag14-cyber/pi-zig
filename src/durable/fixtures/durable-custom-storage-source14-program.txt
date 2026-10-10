@@ -1,0 +1,13 @@
+import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';
+import{BACKGROUND_CONTEXT,createContextKey,withContextValue}from'@earendil-works/chord/context';
+const cases=[];
+for(const scenario of ['empty','full','at','missing']){
+ const key=createContextKey('storage context bounds'),context=withContextValue(key,{original:true},BACKGROUND_CONTEXT),calls=[],backing=new MemoryStorage();
+ const writes=[{type:'conversation',value:{id:1}}];if(scenario!=='empty')writes.push({type:'entry',value:{id:2,conversationId:1,kind:'fixture.head',head:2,model:[{role:'user',content:'first',timestamp:1}]}},{type:'entry',value:{id:3,conversationId:1,kind:'fixture.tail',model:[{role:'user',content:'second',timestamp:2}]}});
+ await backing.commit(writes,context);
+ const raw={};for(const name of ['mintId','commit','conversation','task','submission','entry','findDocument','document','scanDocuments','scanConversations','scanTasks','scanEntries','scanSubmissions','submissionByRequest','findLatestHeadMarker','close'])raw[name]=async function(...args){if(this!==raw)throw Error('wrong receiver');calls.push({name,args:args.slice(0,name==='mintId'?0:-1),originalContext:args.at(-1)===context});await Promise.resolve();return backing[name](...args)};
+ const harness=await Harness.open(raw,{models:{},registry:createRegistry()},context),root=await harness.root(context);calls.length=0;
+ let view,error;try{view=await root.context(context,scenario==='at'?{at:2}:scenario==='missing'?{at:999}:undefined)}catch(cause){error=cause.message}
+ const recorded=[...calls];await harness.close(context);cases.push({scenario,view,error,calls:recorded});
+}
+globalThis.storageContextTrace={source:'eba849739511223c51a62bbd7e3f1c00f99fb1d0',cases};

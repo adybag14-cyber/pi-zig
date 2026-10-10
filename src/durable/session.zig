@@ -36,7 +36,7 @@ pub const GuardedStorage = struct {
     }
     fn requestError(err: anyerror) bool {
         return switch (err) {
-            error.StorageRequestError, error.UnknownConversation, error.InvalidStorageCursor, error.ScanCursorOrderMismatch, error.DocumentDoesNotRetainHistory => true,
+            error.StorageRequestError, error.OwnerStorageRequestError, error.OwnerStorageCanceledRead, error.UnknownConversation, error.InvalidStorageCursor, error.ScanCursorOrderMismatch, error.DocumentDoesNotRetainHistory => true,
             else => false,
         };
     }
@@ -106,6 +106,18 @@ pub const GuardedStorage = struct {
     }
     pub fn scan(self: *GuardedStorage, gpa: std.mem.Allocator, parameters: backend.query.Query) !json.Owned {
         return self.call("scan", .{ gpa, parameters }, types.Context{});
+    }
+    pub fn findDocument(self: *GuardedStorage, gpa: std.mem.Allocator, address: Value, point: backend.memory.Point) !?json.Owned {
+        return self.call("findDocument", .{ gpa, address, point }, types.Context{});
+    }
+    pub fn sourceScan(self: *GuardedStorage, gpa: std.mem.Allocator, table: backend.memory.Table, filters: Value, limit: u64, cursor: ?Value) !json.Owned {
+        return self.call("sourceScan", .{ gpa, table, filters, limit, cursor }, types.Context{});
+    }
+    pub fn latestHeadMarker(self: *GuardedStorage, gpa: std.mem.Allocator, conversation: u64, before: ?u64) !?json.Owned {
+        return self.call("latestHeadMarker", .{ gpa, conversation, before }, types.Context{});
+    }
+    pub fn submissionByRequest(self: *GuardedStorage, gpa: std.mem.Allocator, conversation: u64, request: []const u8) !?json.Owned {
+        return self.call("submissionByRequest", .{ gpa, conversation, request }, types.Context{});
     }
     /// The facade calls this only after its mutation line has settled. Physical
     /// backend close remains with the capability owner, once this drain ends.
@@ -299,6 +311,16 @@ pub const Session = struct {
         defer self.gpa.free(listeners);
         const seq = try self.storage.commitAt(tx.writes, prepared.seq);
         result.seq = seq;
+        tx.committed_seq = seq;
+        // A guest Storage owns its sequence. All publication metadata was
+        // allocated before admission; replace only the prediction's numeric
+        // fields before delivering the authoritative committed event.
+        if (seq != prepared.seq) for (publication.value.array.items) |*change| {
+            const record = change.object.getPtr("record") orelse continue;
+            for ([_][]const u8{ "createdAt", "retiredAt" }) |name| if (record.object.getPtr(name)) |value| {
+                if (value.* == .integer and value.integer == prepared.seq) value.* = .{ .integer = @intCast(seq) };
+            };
+        };
         if (tx.after_storage) |adopt| adopt(tx.after_storage_context) catch |err| {
             _ = self.fail(err);
             return err;
@@ -354,6 +376,7 @@ pub const Transaction = struct {
     createdTasks: std.ArrayList(u64) = .empty,
     submissionChanges: std.ArrayList(struct { id: u64, change: Value }) = .empty,
     preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
+    committed_seq: ?u64 = null,
     after_storage: ?*const fn (?*anyopaque) anyerror!void = null,
     after_storage_context: ?*anyopaque = null,
     before_storage: ?*const fn (?*anyopaque) anyerror!void = null,
@@ -395,19 +418,13 @@ pub const Transaction = struct {
     }
     pub fn submissionByRequest(self: *Transaction, conversation: u64, request: []const u8) !?Value {
         try self.reading();
-        const state = try self.session.storage.snapshot(self.gpa);
-        defer state.destroy(self.gpa);
-        const key = try backend.memory.requestKey(self.gpa, .{ .integer = @intCast(conversation) }, .{ .string = request });
-        defer self.gpa.free(key);
-        const id = state.submissionRequests.get(key) orelse return null;
-        const row = state.rows.get(id) orelse return null;
-        return try json.clone(self.allocator(), row.record);
+        var record = (try self.session.storage.submissionByRequest(self.gpa, conversation, request)) orelse return null;
+        defer record.deinit();
+        return try json.clone(self.allocator(), record.value);
     }
     pub fn latestHeadMarker(self: *Transaction, conversation: u64) !?Value {
         try self.reading();
-        var snapshot: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.session.storage.snapshot(self.gpa) };
-        defer snapshot.deinit();
-        var marker = try @import("backend/source_scan.zig").latestHead(self.gpa, &snapshot, conversation, null);
+        var marker = try self.session.storage.latestHeadMarker(self.gpa, conversation, null);
         defer if (marker) |*value| value.deinit();
         return if (marker) |value| try json.clone(self.allocator(), value.value) else null;
     }
@@ -474,9 +491,7 @@ pub const Transaction = struct {
     }
     pub fn sourceScan(self: *Transaction, table: backend.memory.Table, filters: Value, limit: u64, cursor: ?Value) !Value {
         try self.reading();
-        var snapshot: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.session.storage.snapshot(self.gpa) };
-        defer snapshot.deinit();
-        var page = try @import("backend/source_scan.zig").scan(self.gpa, &snapshot, table, filters, limit, cursor);
+        var page = try self.session.storage.sourceScan(self.gpa, table, filters, limit, cursor);
         defer page.deinit();
         return json.clone(self.allocator(), page.value);
     }

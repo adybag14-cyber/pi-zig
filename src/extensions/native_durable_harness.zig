@@ -258,6 +258,17 @@ fn created(engine: *Engine, owner: c.JSValue, transaction: c.JSValue, record: js
         var scope: json.Value = .{ .object = .empty };
         try scope.object.put(a, "kind", .{ .string = "conversation" });
         try scope.object.put(a, "conversationId", .{ .integer = @intCast(conversation) });
+        if ((try durable.state(engine, tx.parent)).session_lease.?.adapter != null) {
+            var address: json.Value = .{ .object = .empty };
+            try address.object.put(a, "kind", .{ .string = kind });
+            try address.object.put(a, "scope", scope);
+            var existing = try tx.transaction.?.session.storage.findDocument(engine.gpa, address, .current);
+            defer if (existing) |*stored_record| stored_record.deinit();
+            if (existing != null) {
+                plan.deinit();
+                continue;
+            }
+        }
         var create: json.Value = .{ .object = .empty };
         try create.object.put(a, "id", .{ .integer = @intCast(try tx.transaction.?.session.storage.mintId()) });
         try create.object.put(a, "kind", .{ .string = kind });

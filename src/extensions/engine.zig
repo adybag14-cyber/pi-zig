@@ -119,6 +119,9 @@ pub const Engine = struct {
     native_durable_control_context: ?*anyopaque = null,
     native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_control_deinit: ?*const fn (*Engine) void = null,
+    native_durable_storage_context: ?*anyopaque = null,
+    native_durable_storage_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_durable_storage_close: ?*const fn (*Engine) void = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
@@ -232,6 +235,7 @@ pub const Engine = struct {
         self.freeValue(self.commonjs_cache);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
+        @import("native_durable_storage.zig").deinit(self);
         c.pi_js_release_memory_owner(self.native_memory_owner);
         if (self.last_error) |message| self.gpa.free(message);
         var modules = self.modules.iterator();
@@ -652,12 +656,14 @@ pub const Engine = struct {
     pub fn pumpControls(self: *Engine) !bool {
         self.refreshUiDeadline();
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
+        const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
-        return host_worked or durable_worked or sdk_retired or tools_worked;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked;
     }
     pub fn closeDurableOwner(self: *Engine) void {
+        if (self.native_durable_storage_close) |cleanup| cleanup(self);
         if (self.native_durable_control_deinit) |cleanup| cleanup(self);
         self.native_durable_control_context = null;
         self.native_durable_control_pump = null;
@@ -736,7 +742,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     try self.native_io.?.sleep(.fromMilliseconds(5), .awake);
                     continue;
                 }

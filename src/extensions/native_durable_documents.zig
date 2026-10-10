@@ -9,7 +9,7 @@ const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Pair = struct { target: c.JSValue, proxy: c.JSValue };
 const Document = struct { address: json.Owned, record: json.Owned, baseline: json.Owned, definition: c.JSValue, target: c.JSValue, pairs: std.ArrayList(Pair) = .empty, created: bool, plan: ?usize, version: u64, stored_version: u64, deltas_since_base: u64 = 0, retired: bool = false, write_index: ?usize = null };
-const Cached = struct { address: json.Owned, record: json.Owned, value: c.JSValue, version: u64 };
+const Cached = struct { address: json.Owned, record: json.Owned, value: c.JSValue, version: u64, stored_version: ?u64 = null, deltas_since_base: u64 = 0 };
 pub const Cache = struct {
     engine: *Engine,
     items: std.ArrayList(Cached) = .empty,
@@ -115,7 +115,8 @@ pub const Drafts = struct {
             var record_copy = try json.Owned.empty(self.engine.gpa);
             errdefer record_copy.deinit();
             record_copy.value = try json.clone(record_copy.arena.allocator(), doc.record.value);
-            self.prepared_cache.appendAssumeCapacity(.{ .address = address_copy, .record = record_copy, .value = c.JS_DupValue(self.engine.context, doc.target), .version = doc.version });
+            if (doc.created) try record_copy.value.object.put(record_copy.arena.allocator(), "createdAt", .{ .integer = 0 });
+            self.prepared_cache.appendAssumeCapacity(.{ .address = address_copy, .record = record_copy, .value = c.JS_DupValue(self.engine.context, doc.target), .version = doc.version, .stored_version = doc.stored_version, .deltas_since_base = doc.deltas_since_base });
         }
         for (self.items.items) |*doc| {
             if (doc.retired) {
@@ -206,6 +207,19 @@ pub const Drafts = struct {
     fn afterStorage(raw: ?*anyopaque) !void {
         const self: *Drafts = @ptrCast(@alignCast(raw.?));
         if (std.Thread.getCurrentId() != self.owner.transaction.?.ownerThread) return error.VMCallbackOnWorker;
+        const seq = self.owner.transaction.?.committed_seq.?;
+        for (self.prepared_cache.items) |*prepared| if (prepared.record.value.object.getPtr("createdAt")) |created| {
+            if (created.* == .integer and created.integer == 0) created.* = .{ .integer = @intCast(seq) };
+        };
+        for (self.prepared_cache.items) |*prepared| for (self.owner.transaction.?.writes.array.items) |write| {
+            const tag = try json.asString(try json.required(write, "type"));
+            if (!std.mem.eql(u8, tag, "document.change") and !std.mem.eql(u8, tag, "document.create")) continue;
+            const id = if (json.get(write, "record")) |record| try backend.memory.idOf(record) else try json.asInteger(try json.required(write, "id"));
+            if (id != try backend.memory.idOf(prepared.record.value)) continue;
+            const content = try json.required(write, "content");
+            prepared.stored_version = try json.asInteger(try json.required(content, "version"));
+            prepared.deltas_since_base = if (std.mem.eql(u8, try json.asString(try json.required(content, "kind")), "base")) 0 else prepared.deltas_since_base + 1;
+        };
         try self.adopt(self.owner.parent);
     }
     pub fn adopt(self: *Drafts, session: c.JSValue) !void {
@@ -399,10 +413,22 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
         planned = index;
         break;
     }
-    var current_state: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try native.session.storage.snapshot(engine.gpa) };
-    defer current_state.deinit();
-    if (planned == null) {
-        var found = if (replacing) null else try backend.query.findDocument(engine.gpa, &current_state, resolved.value.value, .current);
+    var loaded_cached = false;
+    if (!replacing and planned == null and (try durable.state(engine, owner.parent)).session_lease.?.adapter != null) {
+        if ((try cache(engine, owner.parent)).get(resolved.value.value, version)) |loaded| {
+            record.value = try json.clone(a, loaded.record.value);
+            stored_version = loaded.stored_version orelse version;
+            deltas_since_base = loaded.deltas_since_base;
+            const retained = c.JS_DupValue(engine.context, loaded.value);
+            defer engine.freeValue(retained);
+            var existing = try durable.owned(engine, retained);
+            defer existing.deinit();
+            baseline.value = try json.clone(baseline.arena.allocator(), existing.value);
+            loaded_cached = true;
+        }
+    }
+    if (planned == null and !loaded_cached) {
+        var found = if (replacing) null else try native.session.storage.findDocument(engine.gpa, resolved.value.value, .current);
         defer if (found) |*value| value.deinit();
         if (found) |value| {
             record.value = try json.clone(a, value.value);
@@ -501,9 +527,7 @@ pub fn retire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c.
             }
         }
     }
-    var model: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try owner.transaction.?.session.storage.snapshot(engine.gpa) };
-    defer model.deinit();
-    var record = (try backend.query.findDocument(engine.gpa, &model, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
+    var record = (try owner.transaction.?.session.storage.findDocument(engine.gpa, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
     defer record.deinit();
     const promise = try acquire(engine, receiver, args);
     defer engine.freeValue(promise);
@@ -693,15 +717,15 @@ fn historicalDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue
     defer resolved.value.deinit();
     const at_index = resolved.next + 1;
     if (args.len <= at_index + 1) return error.DocumentHistoricalPointRequired;
+    const storage_context = @import("native_durable_storage.zig").withContext(native, args[at_index + 1]);
+    defer storage_context.restore();
     const conversation = try json.asInteger(try json.required(try json.required(resolved.value.value, "scope"), "conversationId"));
     var entry = (try native.session.?.storage.readEntry(engine.gpa, try durable.number(engine, args[at_index]), conversation)) orelse return error.DocumentHistoricalEntryMissing;
     defer entry.deinit();
     const source_conversation = try json.required(try json.required(entry.value, "entry"), "conversationId");
     try resolved.value.value.object.getPtr("scope").?.object.put(resolved.value.arena.allocator(), "conversationId", source_conversation);
     const point: backend.memory.Point = .{ .seq = try json.asInteger(try json.required(entry.value, "commitSeq")) };
-    var model: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try native.session.?.storage.snapshot(engine.gpa) };
-    defer model.deinit();
-    var record = (try backend.query.findDocument(engine.gpa, &model, resolved.value.value, point)) orelse return sdk.promise(engine, c.pi_js_undefined());
+    var record = (try native.session.?.storage.findDocument(engine.gpa, resolved.value.value, point)) orelse return sdk.promise(engine, c.pi_js_undefined());
     defer record.deinit();
     var contents = (try native.session.?.storage.readDocument(engine.gpa, try json.asInteger(try json.required(record.value, "id")), point)).?;
     defer contents.deinit();
@@ -718,6 +742,8 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
     defer engine.freeValue(definition_value);
     var resolved = try address(engine, definition_value, args[1..]);
     defer resolved.value.deinit();
+    const storage_context = @import("native_durable_storage.zig").withContext(native, if (resolved.next + 1 < args.len) args[resolved.next + 1] else c.pi_js_undefined());
+    defer storage_context.restore();
     const values = try cache(engine, session);
     const version_value = try sdk.get(engine, definition_value, "version");
     defer engine.freeValue(version_value);
@@ -726,9 +752,7 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
         try checkSemantics(engine, definition_value, value.record.value);
         return sdk.promise(engine, value.value);
     }
-    var model: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try native.session.?.storage.snapshot(engine.gpa) };
-    defer model.deinit();
-    var found = (try backend.query.findDocument(engine.gpa, &model, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
+    var found = (try native.session.?.storage.findDocument(engine.gpa, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
     defer found.deinit();
     var contents = (try native.session.?.storage.readDocument(engine.gpa, try json.asInteger(try json.required(found.value, "id")), .current)).?;
     defer contents.deinit();
@@ -737,6 +761,9 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
     const value = try durable.jsValue(engine, materialized.value);
     defer engine.freeValue(value);
     try values.put(resolved.value.value, found.value, value, version);
+    const adopted = values.get(resolved.value.value, version).?;
+    adopted.stored_version = try json.asInteger(try json.required(contents.value, "version"));
+    adopted.deltas_since_base = try json.asInteger(try json.required(contents.value, "deltasSinceBase"));
     return sdk.promise(engine, value);
 }
 pub const Observation = struct { value: c.JSValue, record: json.Owned, version: u64, context: c.JSValue };

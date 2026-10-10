@@ -1,0 +1,332 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "seeded": false,
+      "rootId": 1,
+      "calls": [
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "pending"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "running"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "waiting"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "completing"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanSubmissions",
+          "args": [
+            {
+              "status": "queued"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "conversation",
+          "args": [
+            1
+          ]
+        },
+        {
+          "name": "findDocument",
+          "args": [
+            {
+              "kind": "pi.live",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              }
+            },
+            "current"
+          ]
+        },
+        {
+          "name": "mintId",
+          "args": []
+        },
+        {
+          "name": "findDocument",
+          "args": [
+            {
+              "kind": "pi.inbox",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              }
+            },
+            "current"
+          ]
+        },
+        {
+          "name": "mintId",
+          "args": []
+        },
+        {
+          "name": "findDocument",
+          "args": [
+            {
+              "kind": "pi.usage",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              }
+            },
+            "current"
+          ]
+        },
+        {
+          "name": "mintId",
+          "args": []
+        },
+        {
+          "name": "findDocument",
+          "args": [
+            {
+              "kind": "pi.provider",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              }
+            },
+            "current"
+          ]
+        },
+        {
+          "name": "mintId",
+          "args": []
+        },
+        {
+          "name": "findDocument",
+          "args": [
+            {
+              "kind": "pi.agent",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              }
+            },
+            "current"
+          ]
+        },
+        {
+          "name": "mintId",
+          "args": []
+        },
+        {
+          "name": "commit",
+          "args": [
+            [
+              {
+                "type": "conversation",
+                "value": {
+                  "id": 1
+                }
+              },
+              {
+                "type": "document.create",
+                "record": {
+                  "id": 2,
+                  "kind": "pi.live",
+                  "scope": {
+                    "kind": "conversation",
+                    "conversationId": 1
+                  },
+                  "history": "latest",
+                  "fork": "initial"
+                },
+                "content": {
+                  "version": 1,
+                  "kind": "base",
+                  "value": {}
+                }
+              },
+              {
+                "type": "document.create",
+                "record": {
+                  "id": 3,
+                  "kind": "pi.inbox",
+                  "scope": {
+                    "kind": "conversation",
+                    "conversationId": 1
+                  },
+                  "history": "latest",
+                  "fork": "initial"
+                },
+                "content": {
+                  "version": 1,
+                  "kind": "base",
+                  "value": {
+                    "items": []
+                  }
+                }
+              },
+              {
+                "type": "document.create",
+                "record": {
+                  "id": 4,
+                  "kind": "pi.usage",
+                  "scope": {
+                    "kind": "conversation",
+                    "conversationId": 1
+                  },
+                  "history": "latest",
+                  "fork": "initial"
+                },
+                "content": {
+                  "version": 1,
+                  "kind": "base",
+                  "value": {
+                    "models": {},
+                    "tools": {}
+                  }
+                }
+              },
+              {
+                "type": "document.create",
+                "record": {
+                  "id": 5,
+                  "kind": "pi.provider",
+                  "scope": {
+                    "kind": "conversation",
+                    "conversationId": 1
+                  },
+                  "history": "latest",
+                  "fork": "initial"
+                },
+                "content": {
+                  "version": 1,
+                  "kind": "base",
+                  "value": {
+                    "sessionId": "01a125ae-592a-707a-923e-d13f1c820b10"
+                  }
+                }
+              },
+              {
+                "type": "document.create",
+                "record": {
+                  "id": 6,
+                  "kind": "pi.agent",
+                  "scope": {
+                    "kind": "conversation",
+                    "conversationId": 1
+                  },
+                  "history": "rewindable",
+                  "fork": "asOf"
+                },
+                "content": {
+                  "version": 1,
+                  "kind": "base",
+                  "value": {}
+                }
+              }
+            ]
+          ]
+        },
+        {
+          "name": "close",
+          "args": []
+        }
+      ]
+    },
+    {
+      "seeded": true,
+      "rootId": 1,
+      "calls": [
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "pending"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "running"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "waiting"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanTasks",
+          "args": [
+            {
+              "status": "completing"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "scanSubmissions",
+          "args": [
+            {
+              "status": "queued"
+            },
+            256,
+            null
+          ]
+        },
+        {
+          "name": "conversation",
+          "args": [
+            1
+          ]
+        },
+        {
+          "name": "close",
+          "args": []
+        }
+      ]
+    }
+  ]
+}

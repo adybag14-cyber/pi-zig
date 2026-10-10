@@ -1,0 +1,121 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "representation": "subclass",
+      "operation": "conversation",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "conversation",
+        "close"
+      ]
+    },
+    {
+      "representation": "subclass",
+      "operation": "mintId",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "mintId",
+        "close"
+      ]
+    },
+    {
+      "representation": "subclass",
+      "operation": "commit",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "commit",
+        "close"
+      ]
+    },
+    {
+      "representation": "duck",
+      "operation": "conversation",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "conversation",
+        "close"
+      ]
+    },
+    {
+      "representation": "duck",
+      "operation": "mintId",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "mintId",
+        "close"
+      ]
+    },
+    {
+      "representation": "duck",
+      "operation": "commit",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "commit",
+        "close"
+      ]
+    },
+    {
+      "representation": "getter",
+      "beforeCalls": [],
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "get-conversation",
+        "close"
+      ]
+    },
+    {
+      "representation": "request-read",
+      "beforeCalls": [],
+      "firstOriginal": true,
+      "laterFailed": false,
+      "laterCause": false,
+      "endReason": "closed",
+      "endCause": false,
+      "calls": [
+        "conversation",
+        "close"
+      ]
+    },
+    {
+      "representation": "close",
+      "beforeCalls": [],
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "close"
+      ]
+    }
+  ]
+}

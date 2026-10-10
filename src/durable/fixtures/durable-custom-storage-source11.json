@@ -1,0 +1,96 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "before": [],
+  "initial": 0,
+  "first": {
+    "count": 41
+  },
+  "again": {
+    "count": 41
+  },
+  "after": {
+    "count": 42
+  },
+  "sameFirst": true,
+  "sameAfter": false,
+  "calls": [
+    {
+      "name": "findDocument",
+      "args": [
+        {
+          "kind": "storage.preseed",
+          "scope": {
+            "kind": "session"
+          }
+        },
+        "current"
+      ]
+    },
+    {
+      "name": "document",
+      "args": [
+        2,
+        "current"
+      ]
+    },
+    {
+      "name": "commit",
+      "args": [
+        [
+          {
+            "type": "document.change",
+            "id": 2,
+            "content": {
+              "version": 1,
+              "kind": "delta",
+              "ops": [
+                [
+                  "s",
+                  [
+                    "count"
+                  ],
+                  42
+                ]
+              ]
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "name": "close",
+      "args": []
+    }
+  ],
+  "publications": [
+    {
+      "seq": 36,
+      "changes": [
+        {
+          "type": "document",
+          "record": {
+            "id": 2,
+            "kind": "storage.preseed",
+            "scope": {
+              "kind": "session"
+            },
+            "createdAt": 35
+          },
+          "version": 1,
+          "value": {
+            "count": 42
+          },
+          "ops": [
+            [
+              "s",
+              [
+                "count"
+              ],
+              42
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

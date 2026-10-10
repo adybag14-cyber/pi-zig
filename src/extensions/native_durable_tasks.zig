@@ -877,6 +877,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     try registerRuntimeClass(engine);
     const owner = try hub(engine);
     const native = try durable.state(engine, session);
+    if (native.session_lease.?.adapter) |adapter| adapter.setBackgroundContext(context);
     const self = try engine.gpa.create(Manager);
     errdefer engine.gpa.destroy(self);
     const registry = try sdk.get(engine, options, "registry");
@@ -917,7 +918,9 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
         native.session.?.source_clock = null;
         native.session.?.source_clock_context = null;
     }
+    if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(false);
     try self.scheduler.open();
+    if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(true);
     const initial = try self.lease.value.storage.snapshot(engine.gpa);
     defer initial.destroy(engine.gpa);
     const graph = try backend.memory.State.create(engine.gpa);
@@ -2118,6 +2121,63 @@ test "native durable VM runtime conversation callback preserves actual Source re
         return err;
     };
     engine.freeValue(compare);
+}
+test "native durable VM terminal publication precedes a held phase end while admitted conversation promises remain original like Source" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 3000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "heldConversationSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "heldConversationRegistry", c.JS_DupValue(engine.context, registry));
+    const source = @embedFile("../durable/fixtures/durable-runtime-conversation-source16.json");
+    try sdk.put(engine, global, "heldConversationSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-held-phase-source")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.heldConversationOriginal=Object.freeze({original:true});globalThis.heldConversationCalls=[];globalThis.heldPhaseGate=new Promise(resolve=>globalThis.heldPhaseRelease=resolve);
+        \\globalThis.heldConversationBuild=function(id,binding,ctx){globalThis.heldConversationBinding=binding;heldConversationCalls.push({id,receiver:this===heldConversationScheduler,originalContext:ctx===heldConversationContext});return id===999?new Promise(resolve=>globalThis.heldConversationRelease=resolve):heldConversationOriginal};
+        \\const Task=defineTask({name:'fixture.held-terminal-phase',version:1,initial:()=>({phase:'run'}),phases:{run:async(_,runtime,ctx)=>{globalThis.heldConversationSaved=runtime.conversation;globalThis.heldConversationContext=ctx;globalThis.heldConversationLate=heldConversationSaved(999,ctx);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);await heldPhaseGate}}});
+        \\heldConversationRegistry.install({name:'held-terminal-fixture',tasks:[Task]});await heldConversationSession.commit(tx=>tx.createRootConversation(),{});globalThis.heldConversationTask=await heldConversationSession.commit(tx=>tx.createTask(Task,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+    , "actual-held-phase-setup.mjs");
+    engine.freeValue(setup);
+    try sdk.put(engine, options, "conversation", try sdk.get(engine, global, "heldConversationBuild"));
+    const context_exports = engine.native_module_values.get("@earendil-works/chord/context").?;
+    const context = try sdk.get(engine, context_exports, "BACKGROUND_CONTEXT");
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    try sdk.put(engine, global, "heldConversationScheduler", try schedulerOwner(manager));
+    const during = engine.evalModule(
+        \\const task=await heldConversationScheduler.waitForTask(heldConversationTask,{});if(!globalThis.heldConversationSaved)throw Error(JSON.stringify({task,taskId:heldConversationTask}));const value=await heldConversationSaved(444,heldConversationContext),duringCheck=heldConversationBinding.check.call({})===undefined;
+        \\heldPhaseRelease();heldConversationRelease(heldConversationOriginal);const late=await heldConversationLate;globalThis.heldConversationObserved={source:'eba849739511223c51a62bbd7e3f1c00f99fb1d0',terminalBeforePhaseEnded:task.state.status==='terminal',duringOriginal:value===heldConversationOriginal,duringCheck,lateOriginal:late===heldConversationOriginal};
+    , "actual-held-phase-during.mjs") catch |err| {
+        std.debug.print("Held phase during {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no diagnostic" });
+        return err;
+    };
+    engine.freeValue(during);
+    const deadline = std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() + 3000;
+    while (manager.thread != null) {
+        _ = try engine.pumpControls();
+        if (std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() >= deadline) return error.HeldPhaseDidNotRetire;
+        if (manager.thread != null) try engine.native_io.?.sleep(.fromMilliseconds(1), .awake);
+    }
+    const after = try engine.evalModule(
+        \\let ended,checkEnded;try{await heldConversationSaved(777,{})}catch(error){ended=error.message.replaceAll(String(heldConversationTask),'$TASK')}try{heldConversationBinding.check.call({})}catch(error){checkEnded=error.message.replaceAll(String(heldConversationTask),'$TASK')}
+        \\const actual={...heldConversationObserved,ended,checkEnded,calls:heldConversationCalls};if(JSON.stringify(actual)!==JSON.stringify(heldConversationSource))throw Error(JSON.stringify({actual,expected:heldConversationSource}));export const proof=true;
+    , "actual-held-phase-after.mjs");
+    engine.freeValue(after);
 }
 test "native durable VM genuine scheduler abortConversation matches Source ordinary background and owned conversation traversal" {
     const engine = try Engine.init(std.testing.allocator, .{});

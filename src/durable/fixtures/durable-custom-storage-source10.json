@@ -1,0 +1,137 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "representation": "subclass",
+      "before": [],
+      "root": {
+        "id": 1
+      },
+      "found": {
+        "id": 1
+      },
+      "child": {
+        "id": 2
+      },
+      "nestedValue": "nested",
+      "endReason": "closed",
+      "calls": [
+        {
+          "name": "commit",
+          "argc": 2,
+          "context": false
+        },
+        {
+          "name": "conversation",
+          "argc": 2,
+          "context": true
+        },
+        {
+          "name": "mintId",
+          "argc": 0,
+          "context": true
+        },
+        {
+          "name": "commit",
+          "argc": 2,
+          "context": false
+        },
+        {
+          "name": "close",
+          "argc": 1,
+          "context": true
+        }
+      ],
+      "publications": [
+        {
+          "seq": 1,
+          "changes": [
+            {
+              "type": "conversation",
+              "value": {
+                "id": 1
+              }
+            }
+          ]
+        },
+        {
+          "seq": 2,
+          "changes": [
+            {
+              "type": "conversation",
+              "value": {
+                "id": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "representation": "duck",
+      "before": [],
+      "root": {
+        "id": 1
+      },
+      "found": {
+        "id": 1
+      },
+      "child": {
+        "id": 2
+      },
+      "nestedValue": "nested",
+      "endReason": "closed",
+      "calls": [
+        {
+          "name": "commit",
+          "argc": 2,
+          "context": false
+        },
+        {
+          "name": "conversation",
+          "argc": 2,
+          "context": true
+        },
+        {
+          "name": "mintId",
+          "argc": 0,
+          "context": true
+        },
+        {
+          "name": "commit",
+          "argc": 2,
+          "context": false
+        },
+        {
+          "name": "close",
+          "argc": 1,
+          "context": true
+        }
+      ],
+      "publications": [
+        {
+          "seq": 35,
+          "changes": [
+            {
+              "type": "conversation",
+              "value": {
+                "id": 1
+              }
+            }
+          ]
+        },
+        {
+          "seq": 36,
+          "changes": [
+            {
+              "type": "conversation",
+              "value": {
+                "id": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

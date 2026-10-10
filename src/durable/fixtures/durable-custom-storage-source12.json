@@ -1,0 +1,57 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "operation": "conversation",
+      "firstOriginal": true,
+      "coerced": 0,
+      "laterFailed": false,
+      "laterCause": false,
+      "endReason": "closed",
+      "endCause": false,
+      "calls": [
+        "conversation",
+        "close"
+      ]
+    },
+    {
+      "operation": "mintId",
+      "firstOriginal": true,
+      "coerced": 0,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "mintId",
+        "close"
+      ]
+    },
+    {
+      "operation": "commit",
+      "firstOriginal": true,
+      "coerced": 0,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "commit",
+        "close"
+      ]
+    },
+    {
+      "operation": "failure-then-close-failure",
+      "firstOriginal": true,
+      "laterFailed": true,
+      "laterCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "closeOriginal": true,
+      "calls": [
+        "conversation",
+        "close"
+      ]
+    }
+  ]
+}

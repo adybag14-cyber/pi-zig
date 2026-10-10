@@ -1,0 +1,87 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "scenario": "pre-aborted",
+      "value": {
+        "entries": [
+          {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "user",
+                "content": "kept",
+                "timestamp": 1
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          [
+            {
+              "role": "user",
+              "content": "kept",
+              "timestamp": 1
+            }
+          ]
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "kept",
+            "timestamp": 1
+          }
+        ]
+      },
+      "calls": [
+        "scanEntries",
+        "findLatestHeadMarker",
+        "scanEntries",
+        "close"
+      ]
+    },
+    {
+      "scenario": "admitted-then-close",
+      "value": {
+        "entries": [
+          {
+            "id": 2,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "user",
+                "content": "kept",
+                "timestamp": 1
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          [
+            {
+              "role": "user",
+              "content": "kept",
+              "timestamp": 1
+            }
+          ]
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "kept",
+            "timestamp": 1
+          }
+        ]
+      },
+      "calls": [
+        "scanEntries",
+        "findLatestHeadMarker",
+        "scanEntries",
+        "close"
+      ]
+    }
+  ]
+}

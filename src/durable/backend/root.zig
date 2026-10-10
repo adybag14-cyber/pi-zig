@@ -22,6 +22,10 @@ pub const Custom = struct {
         readEntry: *const fn (?*anyopaque, std.mem.Allocator, u64, ?u64) anyerror!?json.Owned,
         readDocument: *const fn (?*anyopaque, std.mem.Allocator, u64, memory.Point) anyerror!?json.Owned,
         scan: *const fn (?*anyopaque, std.mem.Allocator, query.Query) anyerror!json.Owned,
+        findDocument: ?*const fn (?*anyopaque, std.mem.Allocator, json.Value, memory.Point) anyerror!?json.Owned = null,
+        sourceScan: ?*const fn (?*anyopaque, std.mem.Allocator, memory.Table, json.Value, u64, ?json.Value) anyerror!json.Owned = null,
+        latestHeadMarker: ?*const fn (?*anyopaque, std.mem.Allocator, u64, ?u64) anyerror!?json.Owned = null,
+        submissionByRequest: ?*const fn (?*anyopaque, std.mem.Allocator, u64, []const u8) anyerror!?json.Owned = null,
     };
 };
 pub const Backend = union(enum) {
@@ -109,5 +113,36 @@ pub const Backend = union(enum) {
             .jsonl => |store| store.scan(gpa, parameters),
             .custom => |store| store.vtable.scan(store.context, gpa, parameters),
         };
+    }
+    pub fn findDocument(self: Backend, gpa: std.mem.Allocator, address: json.Value, point: memory.Point) !?json.Owned {
+        if (self == .custom) if (self.custom.vtable.findDocument) |read| return read(self.custom.context, gpa, address, point);
+        var view: memory.Memory = .{ .gpa = gpa, .state = try self.snapshot(gpa) };
+        defer view.deinit();
+        return query.findDocument(gpa, &view, address, point);
+    }
+    pub fn sourceScan(self: Backend, gpa: std.mem.Allocator, table: memory.Table, filters: json.Value, limit: u64, cursor: ?json.Value) !json.Owned {
+        if (self == .custom) if (self.custom.vtable.sourceScan) |read| return read(self.custom.context, gpa, table, filters, limit, cursor);
+        var view: memory.Memory = .{ .gpa = gpa, .state = try self.snapshot(gpa) };
+        defer view.deinit();
+        return @import("source_scan.zig").scan(gpa, &view, table, filters, limit, cursor);
+    }
+    pub fn latestHeadMarker(self: Backend, gpa: std.mem.Allocator, conversation: u64, before: ?u64) !?json.Owned {
+        if (self == .custom) if (self.custom.vtable.latestHeadMarker) |read| return read(self.custom.context, gpa, conversation, before);
+        var view: memory.Memory = .{ .gpa = gpa, .state = try self.snapshot(gpa) };
+        defer view.deinit();
+        return @import("source_scan.zig").latestHead(gpa, &view, conversation, before);
+    }
+    pub fn submissionByRequest(self: Backend, gpa: std.mem.Allocator, conversation: u64, request: []const u8) !?json.Owned {
+        if (self == .custom) if (self.custom.vtable.submissionByRequest) |read| return read(self.custom.context, gpa, conversation, request);
+        const view = try self.snapshot(gpa);
+        defer view.destroy(gpa);
+        const key = try memory.requestKey(gpa, .{ .integer = @intCast(conversation) }, .{ .string = request });
+        defer gpa.free(key);
+        const id = view.submissionRequests.get(key) orelse return null;
+        const row = view.rows.get(id) orelse return null;
+        var result = try json.Owned.empty(gpa);
+        errdefer result.deinit();
+        result.value = try json.clone(result.arena.allocator(), row.record);
+        return result;
     }
 };

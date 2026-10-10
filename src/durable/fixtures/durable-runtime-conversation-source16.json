@@ -1,0 +1,21 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "terminalBeforePhaseEnded": true,
+  "duringOriginal": true,
+  "duringCheck": true,
+  "lateOriginal": true,
+  "ended": "Task $TASK invocation has ended",
+  "checkEnded": "Task $TASK invocation has ended",
+  "calls": [
+    {
+      "id": 999,
+      "receiver": true,
+      "originalContext": true
+    },
+    {
+      "id": 444,
+      "receiver": true,
+      "originalContext": true
+    }
+  ]
+}

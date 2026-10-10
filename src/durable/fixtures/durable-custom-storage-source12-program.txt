@@ -1,0 +1,23 @@
+import{createSession,MemoryStorage,SessionFailed,StorageRequestError}from'@earendil-works/pi-durable';
+import{BACKGROUND_CONTEXT,withAbortSignal}from'@earendil-works/chord/context';
+const cases=[];
+for(const operation of ['conversation','mintId','commit']){
+ const calls=[],controller=new AbortController(),abortCause={cancel:true};let coerced=0;
+ const cause=operation==='conversation'?Object.assign(Object.create(null),{toString(){coerced++;throw Error('must not coerce raw cause')}}):new StorageRequestError(operation);
+ const backing=new MemoryStorage(),storage={};
+ for(const name of ['conversation','mintId','commit','close'])storage[name]=async function(...args){if(this!==storage)throw Error('wrong receiver');calls.push(name);if(name===operation){if(name==='conversation')controller.abort(abortCause);throw cause}return backing[name](...args)};
+ const context=withAbortSignal(controller.signal,BACKGROUND_CONTEXT),session=createSession(storage);let first,later;
+ try{await session.commit(tx=>operation==='conversation'?tx.conversation(1):operation==='mintId'?tx.createConversation({ownership:{kind:'ownerless'}}):tx.createRootConversation(),context)}catch(error){first=error}
+ try{await session.commit(()=>true,BACKGROUND_CONTEXT)}catch(error){later=error}
+ if(operation==='conversation')await session.close(BACKGROUND_CONTEXT);
+ const end=await session.closed;
+ cases.push({operation,firstOriginal:first===cause,coerced,laterFailed:later instanceof SessionFailed,laterCause:later?.cause===cause,endReason:end.reason,endCause:end.error===cause,calls});
+}
+{
+ const firstCause={read:true},closeCause={close:true},calls=[],storage={conversation(){calls.push('conversation');throw firstCause},close(){calls.push('close');throw closeCause}},session=createSession(storage);let first,later,repeated;
+ try{await session.commit(tx=>tx.conversation(1),BACKGROUND_CONTEXT)}catch(error){first=error}
+ try{await session.commit(()=>true,BACKGROUND_CONTEXT)}catch(error){later=error}
+ const end=await session.closed;try{await session.close(BACKGROUND_CONTEXT)}catch(error){repeated=error}
+ cases.push({operation:'failure-then-close-failure',firstOriginal:first===firstCause,laterFailed:later instanceof SessionFailed,laterCause:later?.cause===firstCause,endReason:end.reason,endCause:end.error===firstCause,closeOriginal:repeated===closeCause,calls});
+}
+globalThis.actualStorageCauseTrace={source:'eba849739511223c51a62bbd7e3f1c00f99fb1d0',cases};
