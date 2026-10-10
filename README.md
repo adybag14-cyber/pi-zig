@@ -21,6 +21,14 @@ Windows and native Linux Debug and ReleaseSafe: Windows passes 403 tests with
 test executables import no SQLite DLL. These are affected-area checks; the
 complete hosted suite and the unfinished native migration have separate gates.
 
+A follow-up fixes the macOS futex build failure without narrowing thread IDs.
+The serialized line now uses a separate 32-bit wake epoch. Its wraparound and
+reentrant ownership regression passes with the backend, scheduler and native VM:
+225 tests on Windows and 226 on Linux in both build modes, with 5 and 2 platform
+skips respectively. The backend also cross-compiles for macOS ARM64. See the
+[follow-up receipt](verification/checkpoint-237/macos-futex-fix/local-scoped-qualified.json);
+native hosted macOS execution must qualify the repaired head.
+
 See [the active update record](UPSTREAM-UPDATE-20261003.md) and
 [checkpoint 237 evidence](verification/checkpoint-237/local-scoped-qualified.json)
 for scope, remaining work and source-bound validation. Historical full and
