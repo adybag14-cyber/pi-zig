@@ -54,7 +54,8 @@ pub const Adapter = struct {
     pub fn mark(self: *Adapter, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
         c.JS_MarkValue(runtime, self.raw, marker);
         c.JS_MarkValue(runtime, self.background_context, marker);
-        if (self.owner_context) |context| c.JS_MarkValue(runtime, context, marker);
+        // owner_context borrows the active VM argument/callback capture.
+        // It owns no reference and must not report another GC edge.
     }
     pub fn capability(self: *Adapter) backend.Backend {
         return .{ .custom = .{ .context = self, .vtable = &vtable, .callbacks_on_owner = true } };
@@ -162,11 +163,13 @@ pub const Adapter = struct {
         const engine = self.engine;
         engine.native_exception_diagnostics_suppressed += 1;
         defer engine.native_exception_diagnostics_suppressed -= 1;
-        const pending = try sdk.invoke(engine, self.raw, @tagName(op), args);
+        const generation = engine.native_allocation_generation;
+        const pending = sdk.invoke(engine, self.raw, @tagName(op), args) catch |err| return engine.nativeAllocationError(err, generation);
         defer engine.freeValue(pending);
-        return engine.awaitValue(pending);
+        return engine.awaitValue(pending) catch |err| return engine.nativeAllocationError(err, generation);
     }
     fn storageError(self: *Adapter, op: Op, context: c.JSValue, err: anyerror) anyerror {
+        if (err == error.OutOfMemory) return err;
         const engine = self.engine;
         engine.native_exception_diagnostics_suppressed += 1;
         defer engine.native_exception_diagnostics_suppressed -= 1;
@@ -757,4 +760,8 @@ test "native durable VM actual Storage Harness empty and seeded bootstrap reques
         return err;
     };
     engine.freeValue(output);
+}
+
+test {
+    _ = @import("native_durable_storage_lifetime_test.zig");
 }

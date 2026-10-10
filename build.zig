@@ -488,6 +488,23 @@ pub fn build(b: *std.Build) void {
     const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
     const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
     native_durable_step.dependOn(&run_native_durable_tests.step);
+    const storage_lifetime_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{
+        "Storage adapter lifetime",
+        "agent selections store names from cyclic",
+        "document watch overflow replaces",
+        "documentState bounded pending deliveries",
+        "constructors clean up every GPA failure",
+        "receiver owner retires every host allocation",
+        "DTO cache and multiple waiter settlement",
+        "late waiter read queries replies and cancellation",
+        "task definitions scheduler subscriptions and Session leases",
+        "document addresses proxies native publication and cache admission",
+        "scheduler control queue promises and requests unwind",
+    } });
+    const run_storage_lifetime_tests = b.addRunArtifact(storage_lifetime_tests);
+    const storage_lifetime_step = b.step("test-native-durable-storage-lifetime", "Exercise Storage GC roots and native allocation error propagation");
+    storage_lifetime_step.dependOn(&run_storage_lifetime_tests.step);
+
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);
