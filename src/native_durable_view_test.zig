@@ -268,6 +268,67 @@ test "native durable view task graph allocations unwind every injected failure" 
     }
 }
 
+fn exerciseEventProgress(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    return exerciseEventProgressWithEngine(engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseEventProgressWithEngine(engine: *engine_mod.Engine) !void {
+    const progress = @import("extensions/native_durable_event_progress.zig");
+    var scope: @import("extensions/native_durable_view_mount.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bytes = @embedFile("extensions/fixtures/durable-events-progress-original.json");
+    const source = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-event-progress")));
+    const rows = try scope.get(source, "rows");
+    for (0..try vm.length(engine, rows)) |index| {
+        const row = try scope.item(rows, index);
+        const kind = try engine.toString(try scope.get(row, "kind"));
+        defer engine.gpa.free(kind);
+        const operations = try scope.get(row, "ops");
+        const result = if (std.mem.eql(u8, kind, "message")) try scope.own(try progress.messageChanges(engine, operations, try scope.get(row, "message"))) else blk: {
+            const slot = try scope.get(row, "slot");
+            const previous = try scope.get(row, "previous");
+            inline for (.{ .{ "sharedDetails", "details" }, .{ "sharedDiagnostics", "diagnostics" } }) |field| {
+                if (c.JS_ToBool(engine.context, try scope.get(row, field[0])) != 0) try @import("extensions/native_tool_info.zig").putData(engine, slot, field[1], c.JS_DupValue(engine.context, try scope.get(previous, field[1])));
+            }
+            const call = try scope.own(try progress.callOf(engine, slot));
+            const actual_call = try engine.stringify(call);
+            defer engine.gpa.free(actual_call);
+            const wanted_call = try engine.stringify(try scope.get(row, "call"));
+            defer engine.gpa.free(wanted_call);
+            try std.testing.expectEqualStrings(wanted_call, actual_call);
+            break :blk try scope.own(try progress.toolUpdate(engine, operations, try scope.get(row, "at"), slot, previous));
+        };
+        const actual_text = try engine.stringify(if (c.JS_IsUndefined(result)) c.pi_js_null() else result);
+        defer engine.gpa.free(actual_text);
+        const expected_text = try engine.stringify(try scope.get(row, "result"));
+        defer engine.gpa.free(expected_text);
+        var actual = try json.Owned.parse(engine.gpa, actual_text);
+        defer actual.deinit();
+        var expected = try json.Owned.parse(engine.gpa, expected_text);
+        defer expected.deinit();
+        if (!json.equal(expected.value, actual.value)) std.debug.print("Event progress row {d}: {s}\n", .{ index, actual_text });
+        try std.testing.expect(json.equal(expected.value, actual.value));
+    }
+}
+test "native durable view assistant and tool progress events match actual Source" {
+    try exerciseEventProgress(std.testing.allocator);
+}
+test "native durable view progress event allocation failures unwind without leaks" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseEventProgress(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseEventProgress(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+    }
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();

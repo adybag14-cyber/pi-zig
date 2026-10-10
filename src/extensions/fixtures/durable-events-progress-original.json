@@ -1,0 +1,1145 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "kind": "message",
+      "name": "unrelated",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.agent",
+            "model"
+          ],
+          "x"
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": []
+    },
+    {
+      "kind": "message",
+      "name": "usage",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "usage",
+            "input"
+          ],
+          1
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": []
+    },
+    {
+      "kind": "message",
+      "name": "whole-message",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message"
+          ],
+          {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "message",
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "whole-generation",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation"
+          ],
+          {}
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "message",
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "whole-content",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content"
+          ],
+          [
+            {
+              "type": "text",
+              "text": "final"
+            },
+            {
+              "type": "thinking",
+              "thinking": "thought"
+            },
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {
+                "a": "value"
+              }
+            }
+          ]
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "message",
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "content-delete",
+      "ops": [
+        [
+          "p",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content"
+          ],
+          0,
+          1,
+          []
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "message",
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "block-starts",
+      "ops": [
+        [
+          "p",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content"
+          ],
+          3,
+          0,
+          [
+            {
+              "type": "text",
+              "text": "final"
+            },
+            {
+              "type": "thinking",
+              "thinking": "thought"
+            },
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {
+                "a": "value"
+              }
+            }
+          ]
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "text_start",
+          "contentIndex": 3,
+          "block": {
+            "type": "text",
+            "text": "final"
+          }
+        },
+        {
+          "type": "thinking_start",
+          "contentIndex": 4,
+          "block": {
+            "type": "thinking",
+            "thinking": "thought"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 5,
+          "block": {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "text",
+      "ops": [
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            0,
+            "text"
+          ],
+          "one"
+        ],
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            0,
+            "text"
+          ],
+          "two"
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "one"
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "two"
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "thinking",
+      "ops": [
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            1,
+            "thinking"
+          ],
+          "hmm"
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "thinking_delta",
+          "contentIndex": 1,
+          "delta": "hmm"
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "arguments",
+      "ops": [
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            2,
+            "arguments",
+            "a"
+          ],
+          "new"
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 2,
+          "path": [
+            "a"
+          ],
+          "delta": "new"
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "whole-block",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            0,
+            "text"
+          ],
+          "final"
+        ],
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            0,
+            "text"
+          ],
+          "ignored"
+        ],
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "content",
+            0
+          ],
+          {
+            "type": "text",
+            "text": "final"
+          }
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "block",
+          "contentIndex": 0,
+          "block": {
+            "type": "text",
+            "text": "final"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "message",
+      "name": "unknown-field",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "generation",
+            "message",
+            "role"
+          ],
+          "assistant"
+        ]
+      ],
+      "message": {
+        "content": [
+          {
+            "type": "text",
+            "text": "final"
+          },
+          {
+            "type": "thinking",
+            "thinking": "thought"
+          },
+          {
+            "type": "toolCall",
+            "id": "call",
+            "name": "tool",
+            "arguments": {
+              "a": "value"
+            }
+          }
+        ],
+        "usage": {
+          "input": 1
+        }
+      },
+      "result": [
+        {
+          "type": "message",
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              },
+              {
+                "type": "thinking",
+                "thinking": "thought"
+              },
+              {
+                "type": "toolCall",
+                "id": "call",
+                "name": "tool",
+                "arguments": {
+                  "a": "value"
+                }
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "kind": "tool",
+      "name": "unchanged",
+      "ops": [],
+      "at": [
+        "tools",
+        0
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": true,
+      "sharedDiagnostics": true,
+      "result": null,
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5
+      }
+    },
+    {
+      "kind": "tool",
+      "name": "append-trim",
+      "ops": [
+        [
+          "t",
+          [
+            "docs",
+            "pi.live",
+            "tools",
+            0,
+            "output"
+          ],
+          3
+        ],
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "tools",
+            0,
+            "output"
+          ],
+          "a"
+        ],
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "tools",
+            0,
+            "output"
+          ],
+          "b"
+        ]
+      ],
+      "at": [
+        "tools",
+        0
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "oreab",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": true,
+      "sharedDiagnostics": true,
+      "result": {
+        "output": {
+          "trimStart": 3,
+          "append": "ab"
+        }
+      },
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5
+      }
+    },
+    {
+      "kind": "tool",
+      "name": "output-reset",
+      "ops": [],
+      "at": [
+        "tools",
+        0
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": true,
+      "sharedDiagnostics": true,
+      "result": {
+        "output": {
+          "set": ""
+        }
+      },
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5
+      }
+    },
+    {
+      "kind": "tool",
+      "name": "details-reset",
+      "ops": [],
+      "at": [
+        "tools",
+        0
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before"
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": false,
+      "sharedDiagnostics": false,
+      "result": {
+        "details": null,
+        "diagnostics": []
+      },
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5
+      }
+    },
+    {
+      "kind": "tool",
+      "name": "output-set",
+      "ops": [
+        [
+          "s",
+          [
+            "docs",
+            "pi.live",
+            "tools",
+            0,
+            "output"
+          ],
+          "new"
+        ]
+      ],
+      "at": [
+        "tools",
+        0
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "new",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": true,
+      "sharedDiagnostics": true,
+      "result": {
+        "output": {
+          "set": "new"
+        }
+      },
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5
+      }
+    },
+    {
+      "kind": "tool",
+      "name": "nested",
+      "ops": [
+        [
+          "a",
+          [
+            "docs",
+            "pi.live",
+            "nestedTools",
+            2,
+            "output"
+          ],
+          "x"
+        ]
+      ],
+      "at": [
+        "nestedTools",
+        2
+      ],
+      "slot": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "beforex",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ],
+        "parentCallId": "parent",
+        "parentTaskId": 4
+      },
+      "previous": {
+        "callId": "call",
+        "name": "tool",
+        "taskId": 5,
+        "output": "before",
+        "details": {
+          "old": true
+        },
+        "diagnostics": [
+          {
+            "x": 1
+          }
+        ]
+      },
+      "sharedDetails": true,
+      "sharedDiagnostics": true,
+      "result": {
+        "output": {
+          "append": "x"
+        }
+      },
+      "call": {
+        "toolCallId": "call",
+        "toolName": "tool",
+        "taskId": 5,
+        "parentToolCallId": "parent",
+        "parentTaskId": 4
+      }
+    }
+  ]
+}
