@@ -75,6 +75,10 @@ pub const Manager = struct {
     finished: std.atomic.Value(bool) = .init(true),
     closed: bool = false,
     enabled: bool = false,
+    // Owner-thread publications may arrive after an empty driver has selected
+    // its return value. Keep their refill request separate from last_count,
+    // which the driver writes and the owner reads only after joining it.
+    drive_requested: bool = false,
     last_count: usize = 0,
     driver_failure: ?anyerror = null,
     clock_value: std.atomic.Value(i64) = .init(0),
@@ -173,6 +177,9 @@ pub const Manager = struct {
         if (self.closed or !self.enabled or self.thread != null) return;
         try self.updateClock();
         try self.prepareMigrations();
+        const requested = self.drive_requested;
+        self.drive_requested = false;
+        errdefer self.drive_requested = requested;
         self.finished.store(false, .release);
         self.last_count = 0;
         self.driver_failure = null;
@@ -284,6 +291,10 @@ pub const Manager = struct {
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
+        for (changes.array.items) |change| {
+            const kind = try json.asString(try json.required(change, "type"));
+            if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
+        }
         if (self.published_graph) |previous| {
             var relevant = false;
             for (changes.array.items) |change| {
@@ -715,7 +726,7 @@ const Hub = struct {
             manager.mutex.unlock(manager.lease.value.io);
             try manager.drainReads();
             try settleWaiters(manager);
-            if (!manager.closed and manager.thread == null and manager.enabled and manager.last_count > 0) try manager.start();
+            if (!manager.closed and manager.thread == null and manager.enabled and (manager.drive_requested or manager.last_count > 0)) try manager.start();
         }
         return worked;
     }

@@ -2740,7 +2740,7 @@ test "native durable v2 generation queued submission withdrawal and closing wait
     try @import("extensions/native_durable.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     const result = engine.evalModule(@embedFile("extensions/fixtures/durable-submission-lifecycle-runtime.txt"), "native-submission-lifecycle") catch |err| {
-        std.debug.print("Submission lifecycle: {s}\n", .{engine.last_error orelse "missing"});
+        std.debug.print("Submission lifecycle {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
         return err;
     };
     engine.freeValue(result);
@@ -2988,4 +2988,33 @@ test "native durable v2 generation source query snapshots release every failed o
             return error.MemoryLeakDetected;
         }
     }
+}
+
+test "native durable v2 generation new publication refills an enabled scheduler after its empty driver stopped" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 2000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const prepared = try engine.evalModule(@embedFile("extensions/fixtures/durable-generation-empty-refill-setup.txt"), "native-empty-refill-setup");
+    engine.freeValue(prepared);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const harness = try vm.get(engine, global, "emptyRefillHarness");
+    defer engine.freeValue(harness);
+    const host = try @import("extensions/native_durable_harness.zig").state(engine, harness);
+    const manager = try @import("extensions/native_durable_tasks.zig").getManager(engine, host.session);
+    try manager.@"resume"();
+    const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 2000;
+    while (manager.thread != null) {
+        _ = try engine.native_durable_control_pump.?(engine);
+        if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.EmptyDriverDidNotStop;
+        if (manager.thread != null) try std.testing.io.sleep(.fromMilliseconds(1), .awake);
+    }
+    try std.testing.expectEqual(@as(usize, 0), manager.last_count);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-generation-empty-refill-run.txt"), "native-empty-refill-after-commit") catch |err| {
+        std.debug.print("Enabled empty refill {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
 }

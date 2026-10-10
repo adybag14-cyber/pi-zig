@@ -44,7 +44,7 @@ pub fn harnessError(engine: *Engine, code: c.JSValue, message: c.JSValue) !c.JSV
     try js.push(engine, diagnostics, diagnostic);
     const result = try vm.object(engine);
     errdefer engine.freeValue(result);
-    try @import("native_tool_info.zig").putData(engine,result,"output",try vm.array(engine));
+    try @import("native_tool_info.zig").putData(engine, result, "output", try vm.array(engine));
     try put(engine, result, "isError", c.pi_js_bool(engine.context, 1));
     try put(engine, result, "diagnostics", diagnostics);
     return result;
