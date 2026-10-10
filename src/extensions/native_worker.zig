@@ -1747,7 +1747,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
                 try stderr.interface.print("Native extension load failed: {s}\n", .{message});
                 try stderr.interface.flush();
             }
-            return err;
+            return @as(anyerror!void, err);
         };
     }
     try group.initializeActivation();
