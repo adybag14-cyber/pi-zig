@@ -378,21 +378,30 @@ test "native durable VM public tasks create owned children wait and read ordered
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try durable.install(engine);
-    errdefer std.debug.print("Child task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    errdefer {
+        std.debug.print("Child task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+        if (engine.eval("JSON.stringify(globalThis.childTaskDebug)", "native-durable-children-failure-stage", engine_module.c.JS_EVAL_TYPE_GLOBAL)) |diagnostic| {
+            defer engine.freeValue(diagnostic);
+            if (engine.toString(diagnostic)) |text| {
+                defer engine.gpa.free(text);
+                std.debug.print("Child task exact stage: {s}\n", .{text});
+            } else |_| {}
+        } else |_| {}
+    }
     const output = try engine.evalModule(
         \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
-        \\const order=[];
+        \\const order=[];globalThis.childTaskDebug={stage:'setup',order};
         \\const abort=async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context);
-        \\const Child=defineTask({name:'fixture.child',version:1,initial:input=>({phase:'go',n:input.n}),phases:{go:async(task,runtime,context)=>{order.push('child');await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:task.input.n}}),context)}},abort});
+        \\const Child=defineTask({name:'fixture.child',version:1,initial:input=>({phase:'go',n:input.n}),phases:{go:async(task,runtime,context)=>{order.push('child');childTaskDebug.child='commit';try{await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:task.input.n}}),context);childTaskDebug.child='committed'}catch(error){childTaskDebug.childError=String(error?.stack??error);throw error}}},abort});
         \\const Parent=defineTask({name:'fixture.parent',version:1,initial:()=>({phase:'start'}),phases:{
-        \\ start:async(task,runtime,context)=>{order.push('parent');await runtime.commit(async tx=>{const child=await tx.createTask(Child,{n:8},{ownership:{kind:'task',taskId:runtime.taskId}});return{status:'waiting',checkpoint:{phase:'join',child},on:[child],policy:'allSettled'}},context)},
+        \\ start:async(task,runtime,context)=>{order.push('parent');childTaskDebug.parent='commit';try{await runtime.commit(async tx=>{childTaskDebug.parent='create-child';const child=await tx.createTask(Child,{n:8},{ownership:{kind:'task',taskId:runtime.taskId}});childTaskDebug.parent='child-created';return{status:'waiting',checkpoint:{phase:'join',child},on:[child],policy:'allSettled'}},context);childTaskDebug.parent='waiting-committed'}catch(error){childTaskDebug.parentError=String(error?.stack??error);throw error}},
         \\ join:async(task,runtime,context)=>{order.push('join');const [outcome]=await runtime.outcomes([task.state.checkpoint.child],context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:outcome.result+1}}),context)}
         \\},abort});
         \\const all=[Parent,Child],registry={subscribe(){return()=>{}},snapshot(){return{task(name){return all.find(t=>t.definition.name===name)??{definition:{name}}},tasks(){return all},installed(){return[]},sections(){return[]},tools(){return[]}}}};
         \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{},now:()=>41},{}),root=await harness.root({});
-        \\const id=await root.commit(tx=>tx.createTask(Parent,{}, {ownership:{kind:'conversation'}}),{}),receipt=await harness.waitForTask(id,{});
-        \\await harness.waitForIdle({});const page=await store.scanTasks({conversationId:1},10,undefined,{});
-        \\await harness.close({});globalThis.result=JSON.stringify({id,order,result:receipt.state.outcome.result,tasks:page.items.map(t=>({id:t.id,owner:t.owner,status:t.state.status,outcome:t.state.outcome}))});
+        \\childTaskDebug.stage='create-parent';const id=await root.commit(tx=>tx.createTask(Parent,{}, {ownership:{kind:'conversation'}}),{});childTaskDebug.stage='wait-parent';const receipt=await harness.waitForTask(id,{});
+        \\childTaskDebug.stage='wait-idle';await harness.waitForIdle({});childTaskDebug.stage='scan';const page=await store.scanTasks({conversationId:1},10,undefined,{});
+        \\childTaskDebug.stage='close';await harness.close({});globalThis.result=JSON.stringify({id,order,result:receipt.state.outcome.result,tasks:page.items.map(t=>({id:t.id,owner:t.owner,status:t.state.status,outcome:t.state.outcome}))});
     , "native-durable-public-task-children");
     defer engine.freeValue(output);
     const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);

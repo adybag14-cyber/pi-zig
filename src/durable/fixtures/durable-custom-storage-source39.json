@@ -1,0 +1,71 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "name": "getTask",
+      "original": true
+    },
+    {
+      "name": "outcomes",
+      "original": true
+    },
+    {
+      "name": "entry",
+      "original": true
+    },
+    {
+      "name": "missing",
+      "error": {
+        "name": "Error",
+        "message": "Task 999 is not terminal"
+      }
+    },
+    {
+      "name": "settled",
+      "status": "completed"
+    }
+  ],
+  "calls": [
+    {
+      "method": "task",
+      "args": [
+        800
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "originalValue": true,
+      "aborted": true
+    },
+    {
+      "method": "task",
+      "args": [
+        800
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "originalValue": true,
+      "aborted": true
+    },
+    {
+      "method": "entry",
+      "args": [
+        1,
+        900
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "originalValue": true,
+      "aborted": true
+    },
+    {
+      "method": "task",
+      "args": [
+        999
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "originalValue": true,
+      "aborted": true
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "phase": "guest-held-after-close",
+      "abortSettled": false,
+      "closeSettled": false,
+      "guestReturned": false,
+      "cleanupStarted": false,
+      "closedIdentity": true
+    },
+    {
+      "phase": "released",
+      "marked": "marked",
+      "abortSettled": true,
+      "closeSettled": true,
+      "guestReturned": true,
+      "cleanupStarted": false,
+      "reason": "closed",
+      "closedIdentity": true
+    }
+  ]
+}

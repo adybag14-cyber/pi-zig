@@ -15,12 +15,18 @@ const Migration = struct { key: []u8, value: ?json.Owned };
 const NativeDefinition = struct { manager: *Manager, id: usize, migrations: std.ArrayList(Migration) = .empty };
 const Definition = struct { native: *NativeDefinition, token: c.JSValue };
 const Event = struct { seq: u64, changes: json.Owned };
+const DispatchPhase = enum(u8) { pending, active, done };
 const Entry = struct {
     manager: *Manager,
     runtime: scheduling.Runtime,
     generation: u64,
     definition: usize,
     active: std.atomic.Value(bool) = .init(true),
+    dispatch_phase: std.atomic.Value(DispatchPhase) = .init(.pending),
+    reply_mutex: std.Io.Mutex = .init,
+    reply_done: std.Io.Event = .unset,
+    reply_settled: bool = false,
+    reply_failure: ?anyerror = null,
     refs: std.atomic.Value(usize) = .init(2), // Worker + ledger.
     fn retain(self: *Entry) *Entry {
         _ = self.refs.fetchAdd(1, .monotonic);
@@ -34,6 +40,30 @@ const Entry = struct {
             manager.release();
         }
     }
+    fn finishReply(self: *Entry, failure: ?anyerror) void {
+        const io = self.manager.lease.value.io;
+        self.reply_mutex.lockUncancelable(io);
+        defer self.reply_mutex.unlock(io);
+        if (self.reply_settled) return;
+        self.reply_failure = failure;
+        self.reply_settled = true;
+        self.reply_done.set(io);
+    }
+    fn awaitReply(self: *Entry) !void {
+        const io = self.manager.lease.value.io;
+        self.reply_done.waitUncancelable(io);
+        self.reply_mutex.lockUncancelable(io);
+        defer self.reply_mutex.unlock(io);
+        if (self.reply_failure) |failure| return failure;
+    }
+};
+const PendingPhase = struct {
+    next: ?*PendingPhase = null,
+    entry: *Entry,
+    promise: c.JSValue,
+    runtime_value: c.JSValue,
+    context: c.JSValue,
+    allocation_generation: u64,
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
 const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
@@ -87,13 +117,16 @@ pub const Manager = struct {
     vm_owner: ?c.JSValue = null,
     published_graph: ?*backend.memory.State = null,
     abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
+    task_aborts: @import("native_durable_task_abort.zig").Queue = .{},
     active_dispatches: usize = 0,
+    first_phase: ?*PendingPhase = null,
+    last_phase: ?*PendingPhase = null,
     join_waiters: std.ArrayList(c.JSValue) = .empty,
     fn nativeClock(raw: ?*anyopaque) i64 {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         return if (self.custom_clock) self.clock_value.load(.acquire) else std.Io.Clock.real.now(self.lease.value.io).toMilliseconds();
     }
-    fn updateClock(self: *Manager) !void {
+    pub fn updateClock(self: *Manager) !void {
         if (!self.custom_clock) return;
         const value = try self.engine.checked(c.JS_Call(self.engine.context, self.clock_callback, c.pi_js_undefined(), 0, null));
         defer self.engine.freeValue(value);
@@ -134,7 +167,8 @@ pub const Manager = struct {
     }
     fn release(self: *Manager) void {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
-        std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0);
+        std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0 and self.first_phase == null and self.active_dispatches == 0);
+        self.task_aborts.deinit(self.engine);
         self.scheduler.deinit();
         self.abort_controls.deinit(self.engine);
         for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
@@ -280,7 +314,7 @@ pub const Manager = struct {
         self.mutex.unlock(self.lease.value.io);
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
     }
-    fn deliver(raw: ?*anyopaque) !void {
+    pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
@@ -527,7 +561,11 @@ pub const Manager = struct {
             return err;
         };
         self.mutex.unlock(self.lease.value.io);
+        runtime.beginOwnerDispatch();
         defer {
+            // A rejected queued request never reached the VM. An admitted
+            // callback owns completion until its actual guest promise ends.
+            if (entry.dispatch_phase.cmpxchgStrong(.pending, .done, .acq_rel, .acquire) == null) runtime.endOwnerDispatch();
             entry.active.store(false, .release);
             entry.release();
             if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
@@ -537,8 +575,12 @@ pub const Manager = struct {
         payload.value = .{ .object = .empty };
         try payload.value.object.put(payload.arena.allocator(), "record", try json.clone(payload.arena.allocator(), record));
         try payload.value.object.put(payload.arena.allocator(), "abort", .{ .bool = is_abort });
-        var result = try self.broker.call(std.heap.page_allocator, .{ .owner_generation = self.generation, .task_id = runtime.taskId(), .invocation_generation = generation }, payload.value, runtime.context().abort_flag);
+        // Phase cancellation signals the guest, but does not finish an
+        // admitted handler. Broker close still releases workers on shutdown;
+        // the dispatch lease above then preserves the real guest join.
+        var result = try self.broker.call(std.heap.page_allocator, .{ .owner_generation = self.generation, .task_id = runtime.taskId(), .invocation_generation = generation }, payload.value, null);
         result.deinit();
+        try entry.awaitReply();
     }
     fn run(raw: ?*anyopaque, runtime: *scheduling.Runtime, record: json.Value, _: @import("../durable/types.zig").Context) !void {
         return invoke(@ptrCast(@alignCast(raw.?)), runtime, record, false);
@@ -550,7 +592,10 @@ pub const Manager = struct {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         std.debug.assert(std.Thread.getCurrentId() == self.broker.owner);
         self.active_dispatches += 1;
-        defer self.active_dispatches -= 1;
+        var admitted = false;
+        defer if (!admitted) {
+            self.active_dispatches -= 1;
+        };
         self.mutex.lockUncancelable(self.lease.value.io);
         var found: ?*Entry = null;
         for (self.ledger.items) |entry| if (entry.generation == identity.invocation_generation and entry.runtime.taskId() == identity.task_id and entry.active.load(.acquire)) {
@@ -559,7 +604,13 @@ pub const Manager = struct {
         };
         self.mutex.unlock(self.lease.value.io);
         const entry = found orelse return error.StaleTaskInvocation;
-        defer entry.release();
+        defer if (!admitted) entry.release();
+        if (entry.dispatch_phase.cmpxchgStrong(.pending, .active, .acq_rel, .acquire) != null) return error.StaleTaskInvocation;
+        defer if (!admitted) {
+            entry.dispatch_phase.store(.done, .release);
+            entry.runtime.endOwnerDispatch();
+            entry.finishReply(null);
+        };
         if (identity.owner_generation != self.generation or self.closed) return error.StaleTaskOwner;
         // One broker drain can serve consecutive phases before the outer pump
         // runs again. Refresh at this boundary before admitting an old token.
@@ -594,16 +645,82 @@ pub const Manager = struct {
         const context = runtime_state.context;
         const record = try durable.jsValue(self.engine, task_record);
         defer self.engine.freeValue(record);
+        const phase = try self.engine.gpa.create(PendingPhase);
+        errdefer self.engine.gpa.destroy(phase);
+        var acknowledgment = try json.Owned.empty(self.engine.gpa);
+        errdefer acknowledgment.deinit();
+        const allocation_generation = self.engine.native_allocation_generation;
         var args = [_]c.JSValue{ record, runtime, context };
-        const promise = try self.engine.checked(c.JS_Call(self.engine.context, function, c.pi_js_undefined(), args.len, &args));
-        defer self.engine.freeValue(promise);
-        const settled = try self.engine.awaitValue(promise);
-        self.engine.freeValue(settled);
-        return json.Owned.empty(self.engine.gpa);
+        const returned = try self.engine.checked(c.JS_Call(self.engine.context, function, c.pi_js_undefined(), args.len, &args));
+        defer self.engine.freeValue(returned);
+        // Native promises are observed directly, without reading a mutable
+        // global Promise, an own .then property, or Symbol.species. Only an
+        // actual thenable needs intrinsic capability resolution/assimilation.
+        const promise = if (c.JS_IsPromise(returned)) c.JS_DupValue(self.engine.context, returned) else try sdk.promise(self.engine, returned);
+        c.JS_PromiseMarkAsHandled(self.engine.context, promise);
+        phase.* = .{ .entry = entry, .promise = promise, .runtime_value = c.JS_DupValue(self.engine.context, runtime), .context = c.JS_DupValue(self.engine.context, context), .allocation_generation = allocation_generation };
+        if (self.last_phase) |last| last.next = phase else self.first_phase = phase;
+        self.last_phase = phase;
+        admitted = true;
+        return acknowledgment;
+    }
+    fn finishPhase(self: *Manager, phase: *PendingPhase, failure: ?anyerror) void {
+        phase.entry.dispatch_phase.store(.done, .release);
+        phase.entry.runtime.endOwnerDispatch();
+        self.active_dispatches -= 1;
+        phase.entry.finishReply(failure);
+        self.engine.freeValue(phase.promise);
+        self.engine.freeValue(phase.runtime_value);
+        self.engine.freeValue(phase.context);
+        phase.entry.release();
+        self.engine.gpa.destroy(phase);
+    }
+    fn pollPhases(self: *Manager) !bool {
+        var worked = false;
+        var previous: ?*PendingPhase = null;
+        var current = self.first_phase;
+        while (current) |phase| {
+            const status = c.JS_PromiseState(self.engine.context, phase.promise);
+            if (status == c.JS_PROMISE_PENDING) {
+                previous = phase;
+                current = phase.next;
+                continue;
+            }
+            const next = phase.next;
+            if (previous) |slot| slot.next = next else self.first_phase = next;
+            if (self.last_phase == phase) self.last_phase = previous;
+            phase.next = null;
+            var failure: ?anyerror = null;
+            if (status == c.JS_PROMISE_REJECTED) {
+                const reason = c.JS_PromiseResult(self.engine.context, phase.promise);
+                defer self.engine.freeValue(reason);
+                _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, reason))) catch {};
+                failure = self.engine.nativeAllocationError(error.JavaScriptException, phase.allocation_generation);
+            }
+            self.finishPhase(phase, failure);
+            worked = true;
+            current = self.first_phase;
+            previous = null;
+        }
+        return worked;
+    }
+    fn discardPhases(self: *Manager) void {
+        // Engine teardown only. Public close continues polling real promises.
+        while (self.first_phase) |phase| {
+            self.first_phase = phase.next;
+            if (self.first_phase == null) self.last_phase = null;
+            phase.next = null;
+            self.finishPhase(phase, error.OwnerBrokerClosed);
+        }
     }
     pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        if (durable.state(self.engine, self.session)) |native| {
+            // Source's failed promise ends an already-observing abort join at
+            // failure admission, before cleanup can finish the held run.
+            if (native.failure_reason != null) _ = self.task_aborts.pump(self) catch false;
+        } else |_| {}
         self.rejectClosingWaiters() catch {};
         const control_reason = schedulerClosedError(self) catch null;
         if (control_reason) |reason| {
@@ -625,6 +742,9 @@ pub const Manager = struct {
         self.watches.clearRetainingCapacity();
         self.scheduler.close();
         self.broker.close();
+        self.mutex.lockUncancelable(self.lease.value.io);
+        for (self.ledger.items) |entry| entry.finishReply(error.OwnerBrokerClosed);
+        self.mutex.unlock(self.lease.value.io);
     }
     /// Final native teardown runs after owner callbacks have unwound. Public
     /// Session close uses retire plus an owner-pumped join promise instead.
@@ -748,8 +868,10 @@ const Hub = struct {
         var worked = false;
         for (self.managers.items) |manager| {
             if (!manager.closed) try manager.refreshRegistry();
+            if (try manager.pollPhases()) worked = true;
             try Manager.deliver(manager);
             if (try manager.abort_controls.pump(manager)) worked = true;
+            if (try manager.task_aborts.pump(manager)) worked = true;
             try Manager.deliver(manager);
             try manager.pollSignals();
             try manager.pollSleepers();
@@ -799,6 +921,7 @@ const Hub = struct {
             for (manager.ledger.items) |entry| entry.release();
             manager.ledger.clearRetainingCapacity();
             manager.mutex.unlock(manager.lease.value.io);
+            manager.discardPhases();
             const session = durable.state(engine, manager.session) catch unreachable;
             session.foreign_publication = null;
             session.foreign_publication_context = null;
@@ -841,6 +964,50 @@ const Hub = struct {
         engine.gpa.destroy(self);
     }
 };
+test "native durable VM observed guest dispatch remains joined after native workers exit on close" {
+    const Fixture = struct {
+        fn workerExited(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const engine = Engine.fromContext(context.?);
+            const raw = engine.native_durable_control_context orelse return c.pi_js_bool(context, 0);
+            const owner: *Hub = @ptrCast(@alignCast(raw));
+            for (owner.managers.items) |manager| if (manager.closed and manager.finished.load(.acquire) and manager.active_dispatches > 0) return c.pi_js_bool(context, 1);
+            return c.pi_js_bool(context, 0);
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    try engine.bindFunction("nativeGuestWorkerExited", Fixture.workerExited, 0);
+    const output = engine.evalModule(@embedFile("../durable/fixtures/durable-custom-storage-source42-program.txt"), "actual-guest-dispatch-close-join") catch |err| {
+        std.debug.print("Actual Source42 guest dispatch {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        if (engine.native_durable_control_context) |raw| {
+            const owner: *Hub = @ptrCast(@alignCast(raw));
+            for (owner.managers.items) |manager| {
+                std.debug.print("Source42 manager closed={} workerFinished={} joined={} guestDispatches={d}\n", .{ manager.closed, manager.finished.load(.acquire), manager.thread == null, manager.active_dispatches });
+                var pending = manager.first_phase;
+                while (pending) |phase| : (pending = phase.next) std.debug.print("Source42 task={d} phasePromiseState={d} workerEntryActive={}\n", .{ phase.entry.runtime.taskId(), c.JS_PromiseState(engine.context, phase.promise), phase.entry.active.load(.acquire) });
+            }
+        }
+        return err;
+    };
+    engine.freeValue(output);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "taskAbortTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-custom-storage-source42.json"));
+    defer expected.deinit();
+    if (!json.equal(expected.value, actual.value)) {
+        const text = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(text);
+        std.debug.print("Actual observed guest dispatch join: {s}\n", .{text});
+        return error.SourceGuestDispatchJoinMismatch;
+    }
+}
 fn hub(engine: *Engine) !*Hub {
     if (engine.native_durable_control_context) |pointer| return @ptrCast(@alignCast(pointer));
     const self = try engine.gpa.create(Hub);
@@ -1160,8 +1327,31 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     // Source's conversation read and binding.check only test invocation end;
     // the operation's supplied context carries cancellation independently.
-    if (operation == .conversation) try invocationLive(self) else try active(self);
+    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry) try invocationLive(self) else try active(self);
     const owner = self.entry.manager;
+    if (operation == .abortOwned) {
+        const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
+        defer engine.freeValue(bound);
+        const id = try durable.number(engine, if (args.len > 0) args[0] else c.pi_js_undefined());
+        const pending = try @import("native_durable_task_abort.zig").abortOwnedRead(owner, self.entry.runtime.taskId(), id, bound);
+        defer engine.freeValue(pending);
+        var after_data = [_]c.JSValue{ receiver, c.JS_NewInt64(engine.context, @intCast(id)), bound };
+        const after = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedMarked, 1, 0, after_data.len, &after_data));
+        defer engine.freeValue(after);
+        const operation_pending = try sdk.invoke(engine, pending, "then", &.{after});
+        defer engine.freeValue(operation_pending);
+        var wait_data = [_]c.JSValue{receiver};
+        const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedSettled, 1, 0, wait_data.len, &wait_data));
+        defer engine.freeValue(fulfilled);
+        const rejected = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedSettled, 1, 1, wait_data.len, &wait_data));
+        defer engine.freeValue(rejected);
+        // The observed run can itself depend on work waiting for a free slot.
+        // Treat the whole owned-abort observation as suspended, not only its
+        // final terminal wait, and balance it on either settlement path.
+        self.entry.runtime.suspendWait();
+        errdefer self.entry.runtime.resumeWait();
+        return sdk.invoke(engine, operation_pending, "then", &.{ fulfilled, rejected });
+    }
     if (operation == .conversation) {
         const native = try durable.state(engine, self.session);
         if (native.creation_owner != null) return @import("native_durable_bound_conversation.zig").acquire(engine, receiver, self.session, owner.options, if (args.len > 0) args[0] else c.pi_js_undefined(), self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
@@ -1291,17 +1481,11 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     var data = [_]c.JSValue{ receiver, arguments };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeReadQueued, 0, @intFromEnum(operation), data.len, &data));
     defer engine.freeValue(callback);
-    const queued = try durable.enqueue(engine, self.session, callback);
-    if (operation != .abortOwned) return queued;
-    defer engine.freeValue(queued);
-    const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
-    defer engine.freeValue(bound);
-    var after_data = [_]c.JSValue{ receiver, if (args.len > 0) args[0] else c.pi_js_undefined(), bound };
-    const marked = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedMarked, 1, 0, after_data.len, &after_data));
-    defer engine.freeValue(marked);
-    // A child must still commit while its caller waits. Only the mark belongs
-    // on the Session line; adopting its terminal wait into tail deadlocks it.
-    return sdk.invoke(engine, queued, "then", &.{marked});
+    if (operation == .getTask or operation == .outcomes or operation == .entry) {
+        const context_index: usize = if (operation == .entry and args.len > 0 and !c.JS_IsNumber(args[0])) 2 else 1;
+        return durable.enqueueRead(engine, self.session, callback, if (args.len > context_index) args[context_index] else c.pi_js_undefined());
+    }
+    return durable.enqueue(engine, self.session, callback);
 }
 fn runtimeAbortOwnedMarked(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -1640,6 +1824,7 @@ const Change = struct {
         const engine = manager_pointer.engine;
         try active(self.runtime);
         try durable.checkCancellation(engine, self.context);
+        try manager_pointer.updateClock();
         const tx = try durable.transactionObject(engine, native, self.runtime.session);
         defer engine.freeValue(tx);
         const record = try durable.jsValue(engine, current);
@@ -1666,11 +1851,22 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     var call: Change = .{ .runtime = self, .callback = data[1], .context = data[2] };
     defer if (call.transaction_value) |value| engine.freeValue(value);
     defer if (call.returned) |*value| value.deinit();
-    self.entry.manager.updateClock() catch |err| return durable.reject(engine, err);
-    self.entry.runtime.commit(Change.run, &call) catch |err| return durable.reject(engine, err);
+    const native = durable.state(engine, self.session) catch |err| return durable.reject(engine, err);
+    const storage_context = @import("native_durable_storage.zig").withContext(native, data[2]);
+    defer storage_context.restore();
+    const admitted = self.entry.runtime.tryCommit(Change.run, &call) catch |err| {
+        return durable.reject(engine, err);
+    };
+    if (!admitted) {
+        var captures = [_]c.JSValue{ data[0], data[1], data[2], self.session, c.pi_js_undefined() };
+        return @import("native_durable_storage.zig").deferRuntimeCommit(engine, &captures) catch |err| durable.reject(engine, err);
+    }
     if (call.documents) |documents| documents.adopt(self.session) catch |err| return durable.reject(engine, err);
     Manager.deliver(self.entry.manager) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
+}
+pub fn retryRuntimeCommit(engine: *Engine, captures: []const c.JSValue) c.JSValue {
+    return runtimeCommitQueued(engine.context, c.pi_js_undefined(), 0, null, 0, @constCast(captures.ptr));
 }
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
     if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
@@ -2429,6 +2625,9 @@ test "native durable VM phase dispatch refreshes replacement registry without re
         entry.release();
         return err;
     };
+    // This synthetic admission bypasses Manager.invoke, which normally owns
+    // the dispatch lease before publishing its broker request.
+    entry.runtime.beginOwnerDispatch();
     // Simulate the next request arriving in the same Broker.drain call after
     // the prior phase replaced the registry. No Hub.pump refresh occurs here.
     const changed = try engine.eval("registryBoundaryTokens.current=registryBoundaryTokens.replacement", "registry-boundary-replacement", c.JS_EVAL_TYPE_GLOBAL);

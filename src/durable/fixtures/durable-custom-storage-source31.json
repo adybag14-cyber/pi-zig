@@ -1,0 +1,28 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "phase": "run-held",
+      "abortSettled": false,
+      "otherFinished": false
+    },
+    {
+      "phase": "failed-while-run-held",
+      "readOriginal": true,
+      "failure": {
+        "name": "SessionFailed",
+        "causeOriginal": true
+      },
+      "abortSettled": true,
+      "otherFinished": false,
+      "coercions": 0
+    },
+    {
+      "phase": "closed",
+      "reason": "failed",
+      "causeOriginal": true,
+      "cleanupWasStarted": false,
+      "coercions": 0
+    }
+  ]
+}

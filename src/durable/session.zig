@@ -376,6 +376,8 @@ pub const Transaction = struct {
     createdTasks: std.ArrayList(u64) = .empty,
     submissionChanges: std.ArrayList(struct { id: u64, change: Value }) = .empty,
     preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
+    task_clock: ?*const fn (?*anyopaque) anyerror!i64 = null,
+    task_clock_context: ?*anyopaque = null,
     committed_seq: ?u64 = null,
     after_storage: ?*const fn (?*anyopaque) anyerror!void = null,
     after_storage_context: ?*anyopaque = null,
@@ -674,7 +676,7 @@ pub const Transaction = struct {
         try tasks.validate(record);
         const id = try tasks.number(record, "id");
         const a = self.allocator();
-        if (self.session.source_clock) |clock| {
+        if (self.session.source_clock != null or self.task_clock != null) {
             const state = try tasks.status(record);
             const prior = try self.currentRecord(id, .task);
             inline for (.{ "startedAt", "endedAt" }) |name| {
@@ -683,7 +685,8 @@ pub const Transaction = struct {
                 const needed = if (comptime std.mem.eql(u8, name, "startedAt")) state == .running else state == .terminal;
                 if (stamp != null or needed) {
                     record = try json.clone(a, record);
-                    try record.object.put(a, name, stamp orelse Value{ .integer = clock(self.session.source_clock_context) });
+                    const timestamp = stamp orelse Value{ .integer = if (self.task_clock) |clock| try clock(self.task_clock_context) else self.session.source_clock.?(self.session.source_clock_context) };
+                    try record.object.put(a, name, timestamp);
                 }
             }
         }

@@ -479,27 +479,12 @@ fn createSession(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     return sessionObject(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| reject(engine, err);
 }
 pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
-    // Native built-ins keep their qualified direct capabilities. An arbitrary
-    // guest receiver, including a subclass, is a deferred Storage capability.
-    const owner: ?*State = @ptrCast(@alignCast(c.JS_GetOpaque(storage, engine.native_durable_class)));
-    var direct = if (owner) |native_owner| switch (native_owner.kind) {
-        .memory, .jsonl, .sqlite, .sqlite_source => true,
-        else => false,
-    } else false;
-    if (owner) |native_owner| if (native_owner.kind == .memory) {
-        const exports = engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableExportsUnavailable;
-        const constructor_value = try sdk.get(engine, exports, "MemoryStorage");
-        defer engine.freeValue(constructor_value);
-        const base = try sdk.get(engine, constructor_value, "prototype");
-        defer engine.freeValue(base);
-        const actual = try engine.checked(c.JS_GetPrototype(engine.context, storage));
-        defer engine.freeValue(actual);
-        // memoryObject() supplies own native methods for internal callers.
-        direct = native_owner.native_own_methods or c.JS_IsStrictEqual(engine.context, actual, base);
-    };
-    const adapter = if (direct) null else try @import("native_durable_storage.zig").Adapter.create(engine, storage);
-    errdefer if (adapter) |value| value.destroy();
-    const store = if (adapter) |value| value.capability() else try owner.?.storage();
+    // Even a base native Storage instance can gain an own method/getter or a
+    // changed prototype method after this call. Defer all actual lookups to
+    // invocation; never unwrap the public receiver into a bypass capability.
+    const adapter = try @import("native_durable_storage.zig").Adapter.create(engine, storage);
+    errdefer adapter.destroy();
+    const store = adapter.capability();
     const io = engine.native_io orelse return error.DurableIOUnavailable;
     const result_object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_class));
     errdefer engine.freeValue(result_object);
@@ -523,10 +508,8 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
     if (c.JS_DefinePropertyValueStr(engine.context, result_object, "closed", c.JS_DupValue(engine.context, closed_promise), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     _ = c.JS_SetOpaque(result_object, self);
-    if (adapter) |value| {
-        value.session = self;
-        value.session_value = result_object;
-    }
+    adapter.session = self;
+    adapter.session_value = result_object;
     return result_object;
 }
 pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, parent: c.JSValue) !c.JSValue {
@@ -698,7 +681,7 @@ pub fn captureStorageFailure(self: *State, receiver: c.JSValue, reason: c.JSValu
     const observed = sdk.invoke(engine, closing, "then", &.{ ignored, ignored }) catch return;
     engine.freeValue(observed);
 }
-fn assertVMHealthy(self: *State) !void {
+pub fn assertVMHealthy(self: *State) !void {
     if (self.failure_reason) |reason| {
         const value = try @import("native_durable_errors.zig").sessionFailed(self.engine, reason);
         _ = try self.engine.checked(c.JS_Throw(self.engine.context, value));
@@ -1034,6 +1017,25 @@ fn constructorAllocationExercise(gpa: std.mem.Allocator) !void {
     defer engine.freeValue(storage);
     const session = try sessionObject(engine, storage);
     defer engine.freeValue(session);
+}
+
+test "native durable VM late builtin Storage getter overrides preserve receiver Context and raw failure" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try install(engine);
+    const output = engine.evalModule(
+        \\import{createSession,MemoryStorage,SessionFailed}from'@earendil-works/pi-durable';
+        \\import{BACKGROUND_CONTEXT as context}from'@earendil-works/chord/context';
+        \\const storage=new MemoryStorage(),session=createSession(storage),base=storage.conversation;await session.commit(tx=>tx.createRootConversation(),context);let getters=0,calls=0,coercions=0;
+        \\Object.defineProperty(storage,'conversation',{configurable:true,get(){getters++;return function(id,ctx){if(this!==storage||ctx!==context)throw Error('late Storage receiver or Context changed');calls++;return base.call(this,id,ctx)}}});
+        \\if((await session.commit(tx=>tx.conversation(1),context)).id!==1||getters!==1||calls!==1)throw Error('late builtin getter bypassed');
+        \\const cause=Object.freeze({toString(){coercions++;throw Error('do not coerce Storage cause')}});Object.defineProperty(storage,'conversation',{value:async()=>{throw cause},configurable:true});let first=false,later=false;try{await session.commit(tx=>tx.conversation(1),context)}catch(error){first=error===cause}try{await session.commit(()=>true,context)}catch(error){later=error instanceof SessionFailed&&error.cause===cause}const end=await session.closed;if(!first||!later||end.reason!=='failed'||end.error!==cause||coercions)throw Error('late builtin failure identity or Session retirement changed');await session.close(context);
+    , "late-builtin-storage-routing") catch |err| {
+        std.debug.print("Late builtin Storage routing {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        return err;
+    };
+    engine.freeValue(output);
 }
 
 test "native durable VM eba independent concurrent and unawaited nested commits retain Source queue order" {

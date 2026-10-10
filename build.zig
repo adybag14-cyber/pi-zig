@@ -542,6 +542,24 @@ pub fn build(b: *std.Build) void {
     const storage_lifetime_step = b.step("test-native-durable-storage-lifetime", "Exercise Storage GC roots and native allocation error propagation");
     storage_lifetime_step.dependOn(&run_storage_lifetime_tests.step);
 
+    const guest_join_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{
+        "observed guest dispatch remains joined",
+        "Harness closed getter returns",
+        "late builtin Storage getter overrides",
+        "public task abort joins observed run while cleanup",
+        "task abort observed-run cancellation uses Source",
+        "task abort observed run ends with SessionFailed",
+        "owned abort marks actual child then waits",
+        "public task abort signals the old invocation",
+        "public tasks create owned children wait",
+        "terminal publication precedes a held phase end",
+        "phase dispatch refreshes replacement registry",
+        "constructors clean up every GPA failure",
+        "task definitions scheduler subscriptions and Session leases",
+    } });
+    const run_guest_join_tests = b.addRunArtifact(guest_join_tests);
+    const guest_join_step = b.step("test-native-durable-guest-join", "Exercise actual guest handler joins and the public Harness closed promise");
+    guest_join_step.dependOn(&run_guest_join_tests.step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);
