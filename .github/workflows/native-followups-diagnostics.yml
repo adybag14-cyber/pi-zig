@@ -35,9 +35,9 @@ jobs:
           zig version >> verification/followup-diagnostics/source.txt
       - name: Check formatting
         run: zig fmt --check build.zig src tools
-      - name: Exercise current upstream interruption and issuer exchange
+      - name: Exercise codemode allocation, engine lifecycle, WeakRefs and issuer exchange
         timeout-minutes: 25
-        run: zig build test-codemode-inline test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 120s --summary all
+        run: zig build test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 120s --summary all
       - name: Preserve diagnostic source receipts
         if: always()
         uses: actions/upload-artifact@v4
