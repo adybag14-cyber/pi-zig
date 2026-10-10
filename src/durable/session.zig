@@ -422,6 +422,14 @@ pub const Transaction = struct {
         defer page.deinit();
         return json.clone(self.allocator(), page.value);
     }
+    pub fn sourceScan(self: *Transaction, table: backend.memory.Table, filters: Value, limit: u64, cursor: ?Value) !Value {
+        try self.reading();
+        var snapshot: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.session.storage.snapshot(self.gpa) };
+        defer snapshot.deinit();
+        var page = try @import("backend/source_scan.zig").scan(self.gpa, &snapshot, table, filters, limit, cursor);
+        defer page.deinit();
+        return json.clone(self.allocator(), page.value);
+    }
     fn stage(self: *Transaction, write: Value) !void {
         try self.ensureActive();
         try self.writes.array.append(try json.clone(self.allocator(), write));

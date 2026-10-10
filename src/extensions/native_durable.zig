@@ -220,6 +220,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const exception = try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, &arguments));
             return engine.checked(c.JS_Throw(engine.context, exception));
         }
+        if (err == error.TransactionClosed) return sdk.sourceError(engine, "Transaction has settled");
         return err;
     };
     if (operation == .close) {
@@ -451,6 +452,7 @@ fn methods(engine: *Engine, target: c.JSValue, operations: []const Method) !void
         defer engine.gpa.free(name);
         const arity: c_int = switch (operation) {
             .submissionByRequest, .placeSubmission, .settleSubmission => 2,
+            .scanEntries, .scanTasks, .scanConversations => 3,
             else => 1,
         };
         try sdk.put(engine, target, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation))));
@@ -493,7 +495,7 @@ pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, p
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .scanEntries, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .scanEntries, .scanTasks, .scanConversations, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -761,12 +763,18 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
         return create(engine, parent.creation_owner orelse c.pi_js_undefined(), receiver, args);
     }
     const output: json.Value = switch (operation) {
-        .scanEntries => blk: {
+        .scanEntries, .scanTasks, .scanConversations => blk: {
             var query = try owned(engine, argument(args, 0));
             defer query.deinit();
             const limit = if (c.JS_IsUndefined(argument(args, 1))) 100 else try number(engine, argument(args, 1));
-            const conversation = if (json.get(query.value, "conversationId")) |value| try json.asInteger(value) else null;
-            break :blk try native.scan(.{ .table = .entry, .filters = query.value, .limit = limit, .conversationId = conversation });
+            var cursor = if (c.JS_IsUndefined(argument(args, 2))) null else try owned(engine, argument(args, 2));
+            defer if (cursor) |*value| value.deinit();
+            break :blk try native.sourceScan(switch (operation) {
+                .scanEntries => .entry,
+                .scanTasks => .task,
+                .scanConversations => .conversation,
+                else => unreachable,
+            }, query.value, limit, if (cursor) |value| value.value else null);
         },
         .submission => (try native.readRecord(.submission, try number(engine, argument(args, 0)))) orelse return sdk.promise(engine, c.pi_js_undefined()),
         .submissionByRequest => blk: {

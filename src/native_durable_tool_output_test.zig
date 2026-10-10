@@ -2936,3 +2936,56 @@ test "native durable v2 generation public blocking background and manual compact
     defer source.deinit();
     try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
 }
+
+test "native durable v2 generation transaction scans retain source order bounds cursors and lifecycle" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-transaction-source-query-runtime.txt"), "native-transaction-source-query") catch |err| {
+        std.debug.print("Transaction source query: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const rows = try vm.get(engine, global, "transactionSourceQueryRows");
+    defer engine.freeValue(rows);
+    const text = try engine.stringify(rows);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-transaction-source-query-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value.object.get("rows").?, actual.value)) std.debug.print("Source query mismatch: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
+}
+
+fn exerciseSourceQueryOwnership(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    try @import("extensions/native_durable.zig").install(engine);
+    // The captured upstream program creates pending tasks but never resumes the
+    // scheduler, so allocation failure counters remain on this owner thread.
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-transaction-source-query-runtime.txt"), "allocation-source-query") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation source query snapshots release every failed owner allocation" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseSourceQueryOwnership(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseSourceQueryOwnership(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        if (failing.allocated_bytes != failing.freed_bytes) {
+            std.debug.print("Source query ownership leak at {d}/{d}: {d}/{d} bytes\n", .{ index, baseline.alloc_index, failing.allocated_bytes, failing.freed_bytes });
+            return error.MemoryLeakDetected;
+        }
+    }
+}
