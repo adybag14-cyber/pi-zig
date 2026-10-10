@@ -2097,10 +2097,24 @@ test "native durable VM runtime conversation callback preserves actual Source re
     var record = try durable.owned(engine, settled);
     defer record.deinit();
     try std.testing.expectEqualStrings("completed", try json.asString(try json.required(try json.required(try json.required(record.value, "state"), "outcome"), "status")));
+    // The actual Source1 oracle waits five event turns before stale-method
+    // checks. Publication settles the task waiter before its phase lease ends.
+    // Observe real native retirement here without delaying that public waiter.
+    const retirement_deadline = std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() + 3000;
+    while (manager.thread != null) {
+        _ = try engine.pumpControls();
+        if (std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() >= retirement_deadline) return error.ConversationPhaseDidNotRetire;
+        if (manager.thread != null) try engine.native_io.?.sleep(.fromMilliseconds(1), .awake);
+    }
     const compare = engine.evalModule(
-        \\conversationRelease(conversationOriginal);const lateValue=await conversationLate;let ended,checkEnded;try{await conversationSaved(777,{})}catch(error){ended=error.message.replaceAll(String(conversationTaskId),'$TASK')}try{conversationBinding.check.call({})}catch(error){checkEnded=error.message.replaceAll(String(conversationTaskId),'$TASK')}conversationRows.push({name:'direct-settled',lateOriginal:lateValue===conversationOriginal,ended,checkEnded,calls:conversationCalls});if(JSON.stringify(conversationRows)!==JSON.stringify(conversationSource.cases))throw Error(JSON.stringify({actual:conversationRows,expected:conversationSource.cases}));export const proof=true;
+        \\globalThis.conversationStage='late-promise';conversationRelease(conversationOriginal);const lateValue=await conversationLate;let ended,checkEnded;globalThis.conversationStage='stale-call';try{await conversationSaved(777,{})}catch(error){ended=error.message.replaceAll(String(conversationTaskId),'$TASK')}globalThis.conversationStage='binding-check';try{conversationBinding.check.call({})}catch(error){checkEnded=error.message.replaceAll(String(conversationTaskId),'$TASK')}conversationRows.push({name:'direct-settled',lateOriginal:lateValue===conversationOriginal,ended,checkEnded,calls:conversationCalls});if(JSON.stringify(conversationRows)!==JSON.stringify(conversationSource.cases))throw Error(JSON.stringify({actual:conversationRows,expected:conversationSource.cases}));export const proof=true;
     , "runtime-conversation-compare.mjs") catch |err| {
-        std.debug.print("Source runtime conversation comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        std.debug.print("Source runtime conversation comparison {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no diagnostic" });
+        const diagnostic = engine.eval("JSON.stringify({stage:conversationStage,ordinal:conversationOrdinal,signalAborted:conversationSignal.aborted,rows:conversationRows,calls:conversationCalls.map(call=>({id:call.id}))})", "conversation-exact-diagnostic", c.JS_EVAL_TYPE_GLOBAL) catch c.pi_js_undefined();
+        defer engine.freeValue(diagnostic);
+        const text = engine.toString(diagnostic) catch "no diagnostic value";
+        defer if (!std.mem.eql(u8, text, "no diagnostic value")) engine.gpa.free(text);
+        std.debug.print("Conversation diagnostic: {s}\n", .{text});
         return err;
     };
     engine.freeValue(compare);
