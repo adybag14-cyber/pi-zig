@@ -920,6 +920,13 @@ pub fn build(b: *std.Build) void {
     const weakref_run = b.addRunArtifact(weakref_tests);
     b.step("test-native-weakref", "Compare WeakRef kept objects with actual V8 job checkpoints").dependOn(&weakref_run.step);
     test_step.dependOn(&weakref_run.step);
+    const async_iterator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_iterator_intrinsic_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    linkQuickJs(b, async_iterator_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, async_iterator_tests.root_module);
+    async_iterator_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const async_iterator_run = b.addRunArtifact(async_iterator_tests);
+    b.step("test-native-async-iterator-intrinsic", "Verify native async iterator prototype identity and owned reference cleanup").dependOn(&async_iterator_run.step);
+    test_step.dependOn(&async_iterator_run.step);
     const async_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_scope_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     linkQuickJs(b, async_scope_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, async_scope_tests.root_module);

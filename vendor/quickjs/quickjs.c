@@ -3016,6 +3016,11 @@ JSValue JS_GetFunctionProto(JSContext *ctx)
     return js_dup(ctx->function_proto);
 }
 
+JSValue JS_GetAsyncIteratorPrototype(JSContext *ctx)
+{
+    return JS_DupValue(ctx, ctx->async_iterator_proto);
+}
+
 typedef enum JSFreeModuleEnum {
     JS_FREE_MODULE_ALL,
     JS_FREE_MODULE_NOT_RESOLVED,
