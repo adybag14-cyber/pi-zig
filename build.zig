@@ -565,6 +565,8 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-ea-nested", "Replay actual ea Source keyed nested documents and full Harness events").dependOn(&b.addRunArtifact(ea_nested_tests).step);
     const ea_owned_memo_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{ "ownedTasks actual ea", "public task memos use durable winners" } });
     b.step("test-native-durable-ea-owned-memo", "Exercise direct-owned copies and original durable memo winners").dependOn(&b.addRunArtifact(ea_owned_memo_tests).step);
+    const ea_owner_step_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{"scheduler ea owner cancellation"} });
+    b.step("test-native-durable-ea-owner-step", "Fence a foreground phase before its owner's cancellation cascade").dependOn(&b.addRunArtifact(ea_owner_step_tests).step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);

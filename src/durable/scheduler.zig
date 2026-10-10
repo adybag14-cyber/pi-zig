@@ -913,6 +913,22 @@ pub const Scheduler = struct {
                 invocation.end();
                 return .null;
             }
+            if (invocation.mode == .run and !try model.flag(record, "background")) {
+                const view = try scheduler.session.storage.snapshot(scheduler.gpa);
+                defer view.destroy(scheduler.gpa);
+                const canceled = (model.Graph{ .state = view }).belowCancelled(try model.parent(record)) catch |err| switch (err) {
+                    // Source's walk ends at an unknown owner edge. Loading
+                    // that chain remains the reconciliation pass's work.
+                    error.UnknownTask, error.UnknownConversation => false,
+                    else => return err,
+                };
+                // ea gives inherited cancellation precedence over a phase
+                // failure or another phase, even before its cascade marks us.
+                if (canceled) {
+                    invocation.end();
+                    return .null;
+                }
+            }
             const checkpoint = try model.field(try model.field(record, "state"), "checkpoint");
             var fault: ?Value = null;
             if (self.failure) |err| fault = .{ .string = if (invocation.diagnostic_cause != null and invocation.diagnostic_cause.? == err and invocation.diagnostic_len > 0) invocation.diagnostic[0..invocation.diagnostic_len] else @errorName(err) } else if (self.abort_returned) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Abort handler of task {d} returned without a terminal outcome", .{invocation.task_id}) } else if (self.previous) |previous| {
@@ -992,4 +1008,57 @@ test "durable.scheduler idle publication views conservatively retain unknown own
     try std.testing.expect(try idleState(view, null));
     try std.testing.expect(try idleState(view, 2));
     try std.testing.expect(!try idleState(view, 1));
+}
+
+test "durable.scheduler ea owner cancellation ends a run before its cascade without faulting or marking the child" {
+    const Fixture = struct {
+        fn phase(_: ?*anyopaque, _: *Runtime, _: Value, _: types.Context) anyerror!void {}
+    };
+    const gpa = std.testing.allocator;
+    for ([_]bool{ false, true }) |background| {
+        var memory = try backend.memory.Memory.init(gpa);
+        defer memory.deinit();
+        var seeded = try json.Owned.parse(gpa,
+            \\[{"type":"conversation","value":{"id":1}},{"type":"task","value":{"id":2,"conversationId":1,"kind":"owner","version":1,"input":null,"background":false,"abortRequested":true,"state":{"status":"running","checkpoint":{"phase":"one"}}}},{"type":"task","value":{"id":3,"conversationId":1,"owner":2,"kind":"child","version":1,"input":null,"background":false,"abortRequested":false,"state":{"status":"running","checkpoint":{"phase":"one"}}}}]
+        );
+        defer seeded.deinit();
+        if (background) {
+            // A background task hangs directly from its conversation, so make
+            // that conversation owned by the canceled task for this boundary.
+            const a = seeded.arena.allocator();
+            const child = seeded.value.array.items[2].object.getPtr("value").?;
+            _ = child.object.orderedRemove("owner");
+            try child.object.put(a, "background", .{ .bool = true });
+            var owner: Value = .{ .object = .empty };
+            try owner.object.put(a, "taskId", .{ .integer = 2 });
+            try owner.object.put(a, "conversationId", .{ .integer = 4 });
+            try seeded.value.array.items[0].object.getPtr("value").?.object.put(a, "owner", owner);
+            // The owner's ordinary root is a different conversation.
+            try seeded.value.array.items[1].object.getPtr("value").?.object.put(a, "conversationId", .{ .integer = 4 });
+            var root: Value = .{ .object = .empty };
+            try root.object.put(a, "id", .{ .integer = 4 });
+            var write: Value = .{ .object = .empty };
+            try write.object.put(a, "type", .{ .string = "conversation" });
+            try write.object.put(a, "value", root);
+            try seeded.value.array.append(write);
+        }
+        _ = try memory.commit(seeded.value);
+        var session = session_mod.Session.init(gpa, std.testing.io, .{ .memory = &memory });
+        defer session.deinit();
+        var scheduler = try Scheduler.init(gpa, std.testing.io, &session, .{});
+        defer scheduler.deinit();
+        const phases = [_]Phase{.{ .name = "one", .run = Fixture.phase }};
+        try scheduler.register(.{ .name = "child", .version = 1, .phases = &phases, .abort = Fixture.phase });
+        var invocation: Invocation = .{ .scheduler = &scheduler, .task_id = 3, .conversation_id = 1, .definition = scheduler.definitions.items[0], .mode = .run };
+        var step: Scheduler.Step = .{ .invocation = &invocation, .previous = null, .failure = null, .abort_returned = false };
+        var result = try session.commit(Scheduler.Step.apply, &step, .{}, .{});
+        defer result.deinit();
+        try std.testing.expectEqual(background, invocation.active.load(.acquire));
+        try std.testing.expectEqual(background, result.value.value != .null);
+        var child = (try memory.readRecord(gpa, 3)).?;
+        defer child.deinit();
+        try std.testing.expectEqual(.running, try model.status(child.value));
+        try std.testing.expect(!try model.flag(child.value, "abortRequested"));
+        try std.testing.expectEqual(@as(?u64, null), result.seq);
+    }
 }
