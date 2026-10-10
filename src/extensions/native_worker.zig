@@ -1942,7 +1942,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             loadSource(gpa, io, engine, &loader, added, path) catch |err| {
                 group.remove(added_id) catch |cleanup_error| {
                     try writeFailure(allocator, writer, @errorName(cleanup_error));
-                    return cleanup_error;
+                    return @as(anyerror!void, cleanup_error);
                 };
                 try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
                 continue;
