@@ -9,6 +9,20 @@ fn number(value: std.json.Value) f64 {
         else => unreachable,
     };
 }
+test "Durable EXIF matches actual ea Source unsigned offsets and malformed metadata" {
+    const gpa = std.testing.allocator;
+    const parsed = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/photon-durable-exif-ea-source.json"), .{});
+    defer parsed.deinit();
+    const rows = parsed.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 29), rows.len);
+    for (rows) |row| {
+        const encoded = row.object.get("bytes").?.string;
+        const bytes = try gpa.alloc(u8, try std.base64.standard.Decoder.calcSizeForSlice(encoded));
+        defer gpa.free(bytes);
+        try std.base64.standard.Decoder.decode(bytes, encoded);
+        try std.testing.expectEqual(row.object.get("orientation").?.integer, exif.read(bytes));
+    }
+}
 fn allocationCase(gpa: std.mem.Allocator, bytes: []const u8, mime: []const u8) !void {
     var result = try durable.prepare(null, gpa, bytes, mime, .{ .maxWidth = 4 });
     defer if (result) |*value| value.deinit(gpa);

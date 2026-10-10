@@ -1,0 +1,152 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "sourceFile": "packages/durable/src/images/exif.ts",
+  "sourceFileSha256": "8a078cd7829ce5bc4ed1fc78372384add9f868b3c3dc1a8f3ba5761bfa124808",
+  "rows": [
+    {
+      "name": "webp-le-1",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAABAAAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "webp-le-2",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAACAAAAAAAAAA==",
+      "orientation": 2
+    },
+    {
+      "name": "webp-le-3",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAADAAAAAAAAAA==",
+      "orientation": 3
+    },
+    {
+      "name": "webp-le-4",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAEAAAAAAAAAA==",
+      "orientation": 4
+    },
+    {
+      "name": "webp-le-5",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAFAAAAAAAAAA==",
+      "orientation": 5
+    },
+    {
+      "name": "webp-le-6",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAGAAAAAAAAAA==",
+      "orientation": 6
+    },
+    {
+      "name": "webp-le-7",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAHAAAAAAAAAA==",
+      "orientation": 7
+    },
+    {
+      "name": "webp-le-8",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAIAAAAAAAAAA==",
+      "orientation": 8
+    },
+    {
+      "name": "webp-be-1",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEAAQAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "webp-be-2",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEAAgAAAAAAAA==",
+      "orientation": 2
+    },
+    {
+      "name": "webp-be-3",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEAAwAAAAAAAA==",
+      "orientation": 3
+    },
+    {
+      "name": "webp-be-4",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEABAAAAAAAAA==",
+      "orientation": 4
+    },
+    {
+      "name": "webp-be-5",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEABQAAAAAAAA==",
+      "orientation": 5
+    },
+    {
+      "name": "webp-be-6",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEABgAAAAAAAA==",
+      "orientation": 6
+    },
+    {
+      "name": "webp-be-7",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEABwAAAAAAAA==",
+      "orientation": 7
+    },
+    {
+      "name": "webp-be-8",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqAAAACAABARIAAwAAAAEACAAAAAAAAA==",
+      "orientation": 8
+    },
+    {
+      "name": "webp-prefix",
+      "bytes": "UklGRgAAAABXRUJQRVhJRiAAAABFeGlmAABJSSoACAAAAAEAEgEDAAEAAAAGAAAAAAAAAA==",
+      "orientation": 6
+    },
+    {
+      "name": "webp-exif-declared-too-large-still-reads",
+      "bytes": "UklGRgAAAABXRUJQRVhJRv////9JSSoACAAAAAEAEgEDAAEAAAAHAAAAAAAAAA==",
+      "orientation": 7
+    },
+    {
+      "name": "webp-exif-declared-zero-still-reads",
+      "bytes": "UklGRgAAAABXRUJQRVhJRgAAAABJSSoACAAAAAEAEgEDAAEAAAAIAAAAAAAAAA==",
+      "orientation": 8
+    },
+    {
+      "name": "tiff-high-bit-offset-le",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAgAEAEgEDAAEAAAAGAAAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "tiff-high-bit-offset-be",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABNTQAqgAAACAABARIAAwAAAAEABgAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "tiff-magic-not-validated",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSQAACAAAAAEAEgEDAAEAAAADAAAAAAAAAA==",
+      "orientation": 3
+    },
+    {
+      "name": "tiff-type-and-count-not-validated",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgH/AAAAAAAEAAAAAAAAAA==",
+      "orientation": 4
+    },
+    {
+      "name": "tiff-invalid-orientation-zero",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAAAAAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "tiff-invalid-orientation-nine",
+      "bytes": "UklGRgAAAABXRUJQRVhJRhoAAABJSSoACAAAAAEAEgEDAAEAAAAJAAAAAAAAAA==",
+      "orientation": 1
+    },
+    {
+      "name": "truncated-25",
+      "bytes": "",
+      "orientation": 1
+    },
+    {
+      "name": "truncated-26",
+      "bytes": "UklGRg==",
+      "orientation": 1
+    },
+    {
+      "name": "truncated-27",
+      "bytes": "UklGRgAAAABXRUJQRVhJRgIAAABJSQ==",
+      "orientation": 1
+    },
+    {
+      "name": "truncated-28",
+      "bytes": "/9j/4QAC",
+      "orientation": 1
+    }
+  ]
+}

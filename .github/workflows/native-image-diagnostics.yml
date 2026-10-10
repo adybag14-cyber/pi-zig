@@ -2,7 +2,7 @@ name: Native image codec diagnostics
 
 on:
   push:
-    branches: [work/native-image-codec-20261010]
+    branches: [work/native-image-codec-20261010, work/native-durable-image-20261010]
 
 permissions:
   contents: read
