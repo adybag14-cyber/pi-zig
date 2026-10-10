@@ -1674,7 +1674,7 @@ pub fn runGroupWithEnvironment(gpa: std.mem.Allocator, io: std.Io, environment: 
     return runOwner(gpa, io, paths, &input, true, owner_generation, context, process_io, environment, arguments);
 }
 
-fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value, startup_process: ?std.json.Value, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value, startup_process: ?std.json.Value, environment: *const std.process.Environ.Map, arguments: []const []const u8) anyerror!void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
