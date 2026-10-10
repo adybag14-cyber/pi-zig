@@ -423,6 +423,17 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
         try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 0) else 3, parsed.value.object.get("finished").?.integer);
         break;
     }
+    if (ui.messages.items.len != 0 or
+        ui_a.messages.items.len != (if (mode == .owner_retire) @as(usize, 0) else 2) or
+        ui_b.messages.items.len != (if (mode == .owner_retire) @as(usize, 0) else 1))
+    {
+        for ([_]*UiCapture{ &ui, &ui_a, &ui_b }, [_][]const u8{ "base", "A", "B" }) |capture, destination| {
+            capture.mutex.lockUncancelable(io);
+            defer capture.mutex.unlock(io);
+            std.debug.print("typed ticket UI mode={s} destination={s} count={d}\n", .{ @tagName(mode), destination, capture.messages.items.len });
+            for (capture.messages.items) |message| std.debug.print("typed ticket UI message={s}\n", .{message});
+        }
+    }
     try std.testing.expectEqual(@as(usize, 0), ui.messages.items.len);
     try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 2, ui_a.messages.items.len);
     try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 1, ui_b.messages.items.len);

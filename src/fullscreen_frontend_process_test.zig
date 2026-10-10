@@ -1104,7 +1104,7 @@ test "actual native explicit passive focus restores unmounted base steal while u
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
     try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-blocked-ack", .data = "observer-ready" });
     try observed.wait(&child, "RESTORE_PHASE:root-null-restored", observed.screen.frames);
-    try std.testing.expect(try observed.screen.contains("RESTORE_ROOT:sxn:true"));
+    try observed.expectVisible(&child, "RESTORE_ROOT:sxn:true");
     try observed.send(&child, "d", "RESTORE_PHASE:deferred");
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
     try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-deferred-ack", .data = "observer-ready" });
@@ -1159,7 +1159,7 @@ test "actual native focused passive overlay routes rooted targets key releases e
     const no_target_frame = observed.screen.frames;
     try child.send("LOST");
     try observed.wait(&child, "FOCUS_PHASE:root-again", no_target_frame);
-    try std.testing.expect(try observed.screen.contains("FOCUS_ROOT:true:x"));
+    try observed.expectVisible(&child, "FOCUS_ROOT:true:x");
     try std.testing.expect(!try observed.screen.contains("LOST"));
     const leaves = observed.screen.leaves;
     try child.send("q");
@@ -1239,6 +1239,18 @@ const Observer = struct {
         try self.screen.feed(child.output.items[self.consumed..]);
         self.consumed = child.output.items.len;
     }
+    fn dumpRawTail(_: *Observer, child: *pty.Session) void {
+        const output = child.output.items;
+        std.debug.print("Native frontend raw output tail ({d} total bytes):\n{s}\n", .{ output.len, output[output.len -| 16384..] });
+    }
+    fn expectVisible(self: *Observer, child: *pty.Session, marker: []const u8) !void {
+        if (try self.screen.contains(marker)) return;
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Native frontend expected current cells {s}; frames={d}:\n{s}\n", .{ marker, self.screen.frames, cells });
+        self.dumpRawTail(child);
+        return error.TestUnexpectedResult;
+    }
     fn wait(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
         const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
         while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
@@ -1250,6 +1262,7 @@ const Observer = struct {
         const text = try self.screen.textAlloc(std.testing.allocator);
         defer std.testing.allocator.free(text);
         std.debug.print("Fullscreen cells missing {s}; frames={d}; cells:\n{s}\n", .{ marker, self.screen.frames, text });
+        self.dumpRawTail(child);
         return error.FullscreenCellAssertionFailed;
     }
     fn waitAllVisible(self: *Observer, child: *pty.Session, markers: []const []const u8, after_frame: usize) !void {
@@ -1337,6 +1350,7 @@ const Observer = struct {
         const cells = try self.screen.textAlloc(std.testing.allocator);
         defer std.testing.allocator.free(cells);
         std.debug.print("Regular cells missing {s}:\n{s}\n", .{ marker, cells });
+        self.dumpRawTail(child);
         return error.RegularCustomCellAssertionFailed;
     }
     fn waitPrimary(self: *Observer, child: *pty.Session, marker: []const u8, previous_leaves: usize) !void {
