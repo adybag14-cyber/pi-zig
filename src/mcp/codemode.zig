@@ -1031,7 +1031,9 @@ fn executeMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, sour
             break;
         }
     }
-    if (state.terminal_failure == error.OutOfMemory) return error.OutOfMemory;
+    if (state.terminal_failure) |failure| {
+        if (failure == error.OutOfMemory) return error.OutOfMemory;
+    }
     const success = state.exit_requested or ((script_failure == null or state.script_settled) and state.terminal_failure == null and !state.aborted and !state.timed_out and !state.output_overflow and c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_FULFILLED);
     for (state.pending.items) |pending| try state.completeCall(pending.record_index, "cancelled", pending.started);
     try state.result.value.object.put(a, "ok", .{ .bool = success });
