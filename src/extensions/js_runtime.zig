@@ -10,6 +10,11 @@ const editor_protocol = @import("editor_protocol.zig");
 const widget_protocol = @import("widget_protocol.zig");
 const context_invalidation = @import("context_invalidation_protocol.zig");
 const native_catalog_broker = @import("native_catalog_broker.zig");
+const process_protocol = @import("process_stream_protocol.zig");
+const process_parent = @import("process_stream_parent.zig");
+const raw_envelope = @import("native_json_envelope.zig");
+pub const ProcessBridge = @import("process_stream_bridge.zig").Bridge;
+pub const ProcessSink = @import("process_stream_bridge.zig").Sink;
 pub const WidgetBridge = struct {
     context: ?*anyopaque,
     record_fn: *const fn (?*anyopaque, widget_protocol.Record, *widget_protocol.ControlQueue) anyerror!void,
@@ -29,6 +34,7 @@ const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
 var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
 var native_owner_generation: std.atomic.Value(u64) = .init(1);
+var native_process_generation: std.atomic.Value(u64) = .init(1);
 
 const RendererBridgeAdapter = struct {
     context: ?*anyopaque = null,
@@ -137,6 +143,7 @@ const NativeReadSession = struct {
     failure: ?anyerror = null,
 
     fn reader(self: *@This()) Io.Cancelable!void {
+        defer self.runtime.process_io.active.store(false, .release);
         defer self.runtime.ui_services.close(self.runtime);
         defer self.runtime.rendererEnded();
         defer self.runtime.editorEnded();
@@ -152,7 +159,15 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = (self.dispatchUiServiceRecord(record) catch |err| {
+            const adopted = (self.runtime.dispatchProcessRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.dispatchUiServiceRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -240,11 +255,11 @@ const NativeReadSession = struct {
                 for (self.records.items, 0..) |record, index| {
                     var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
                     defer arena.deinit();
-                    const parsed = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record, .{}) catch break :selected index;
-                    if (parsed == .object) if (parsed.object.get("invocationId")) |identity| {
-                        const actual = wireInvocationId(identity) catch break :selected index;
+                    const envelope = raw_envelope.parse(arena.allocator(), record) catch break :selected index;
+                    if (envelope.invocation_id) |identity_bytes| {
+                        const actual = wireRawInvocationId(arena.allocator(), identity_bytes) catch break :selected index;
                         if (dialogs.invocation_id != 0 and actual != dialogs.invocation_id) continue;
-                    };
+                    }
                     break :selected index;
                 }
                 break :selected @as(?usize, null);
@@ -878,6 +893,7 @@ pub const Runtime = struct {
     extension_id: u64 = 1,
     group_references: std.atomic.Value(usize) = .init(1),
     native_read_session: ?*NativeReadSession = null,
+    process_io: process_parent.Parent = .{},
     native_reader_group: Io.Group = .init,
     ui_services: NativeUiServices = .{},
     service_open_invocation_id: u64 = 0,
@@ -964,6 +980,9 @@ pub const Runtime = struct {
         environ_map: ?*const std.process.Environ.Map = null,
         /// Group workers admit this object before evaluating extension input.
         startup_context_json: ?[]const u8 = null,
+        /// Process-wide IO is attached before extension factories execute.
+        /// Its lifetime is independent of every UI bridge and SDK session.
+        process_bridge: ?ProcessBridge = null,
     };
 
     pub fn start(
@@ -991,6 +1010,17 @@ pub const Runtime = struct {
             return error.NativeOwnerGenerationLimit;
         }
         runtime.owner_generation = generation;
+        if (options.process_bridge) |bridge| {
+            const process_generation = native_process_generation.fetchAdd(1, .monotonic);
+            if (process_generation == 0) {
+                runtime.deinit();
+                return error.NativeProcessGenerationLimit;
+            }
+            runtime.process_io.configure(bridge, .{ .owner_generation = generation, .process_generation = process_generation }) catch |err| {
+                runtime.deinit();
+                return err;
+            };
+        }
         var startup: Io.Writer.Allocating = .init(gpa);
         defer startup.deinit();
         const written: ?anyerror = blk: {
@@ -1000,6 +1030,7 @@ pub const Runtime = struct {
                 startup.writer.writeAll(",\"context\":") catch break :blk error.OutOfMemory;
                 startup.writer.writeAll(context) catch break :blk error.OutOfMemory;
             }
+            runtime.process_io.writeStartup(&startup.writer) catch |err| break :blk err;
             startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
             if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
             runtime.writeLine(startup.written()) catch |err| break :blk err;
@@ -1009,6 +1040,12 @@ pub const Runtime = struct {
             runtime.deinit();
             return err;
         }
+        if (runtime.process_io.lease) |lease| {
+            runtime.process_io.attach(.{ .context = runtime, .lease = lease, .input_fn = processInput, .resize_fn = processResize, .end_fn = processEnd }) catch |err| {
+                runtime.deinit();
+                return err;
+            };
+        }
         return startSpawned(runtime);
     }
 
@@ -1017,6 +1054,7 @@ pub const Runtime = struct {
     }
 
     fn spawnNativeRuntimeConfigured(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions, grouped: bool) !*Runtime {
+        if (!grouped and options.process_bridge != null) return error.NativeProcessBridgeRequiresGroup;
         const owned_source = try gpa.dupe(u8, source_path);
         errdefer gpa.free(owned_source);
         const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
@@ -1049,13 +1087,34 @@ pub const Runtime = struct {
         const gpa = runtime.gpa;
         errdefer runtime.deinit();
 
-        const ready_line = runtime.readRecordUnlocked() catch |err| {
-            // A factory can throw before the bridge publishes its ready
-            // manifest. Mark the worker closed before errdefer cleanup so the
-            // host never writes a shutdown record into an already-closing
-            // Windows pipe, while still reaping this exact child process.
-            runtime.closeUnlocked();
-            return err;
+        const ready_line = startup: {
+            const original_timeout = runtime.timeout_ms;
+            defer runtime.timeout_ms = original_timeout;
+            const deadline = if (original_timeout == 0) null else Io.Clock.awake.now(runtime.io).toMilliseconds() +| @as(i64, @intCast(@min(original_timeout, std.math.maxInt(i64))));
+            while (true) {
+                if (deadline) |end| {
+                    const remaining = end - Io.Clock.awake.now(runtime.io).toMilliseconds();
+                    if (remaining <= 0) return error.JavaScriptExtensionTimeout;
+                    runtime.timeout_ms = @intCast(remaining);
+                }
+                const line = runtime.readRecordUnlocked() catch |err| {
+                    // A factory can throw before the bridge publishes its ready
+                    // manifest. Mark the worker closed before errdefer cleanup so the
+                    // host never writes a shutdown record into an already-closing
+                    // Windows pipe, while still reaping this exact child process.
+                    runtime.closeUnlocked();
+                    return err;
+                };
+                const handled = runtime.dispatchProcessRecord(line) catch |err| {
+                    gpa.free(line);
+                    return err;
+                };
+                if (handled) {
+                    gpa.free(line);
+                    continue;
+                }
+                break :startup line;
+            }
         };
         defer gpa.free(ready_line);
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, ready_line, .{});
@@ -1238,6 +1297,7 @@ pub const Runtime = struct {
             return;
         }
         if (self.native_group and self.group_references.fetchSub(1, .acq_rel) != 1) return;
+        self.process_io.close();
         self.catalog_broker.close(self.io);
         self.catalog_broker.serial.lockUncancelable(self.io);
         self.catalog_broker.serial.unlock(self.io);
@@ -1777,6 +1837,12 @@ pub const Runtime = struct {
     // reacquires the invocation mutex, so reentrant UI/owner requests cannot
     // deadlock registration discovery.
     fn dispatchMetadataRecord(self: *Runtime, bytes: []const u8) !bool {
+        const envelope = raw_envelope.parse(std.heap.page_allocator, bytes) catch |err| switch (err) {
+            error.NotJsonObject => return false,
+            else => return err,
+        };
+        const raw_kind = envelope.kind orelse return false;
+        if (!raw_envelope.stringEquals(raw_kind, "native_metadata")) return false;
         var parsed = try std.json.parseFromSlice(std.json.Value, std.heap.page_allocator, bytes, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return false;
@@ -2703,6 +2769,24 @@ pub const Runtime = struct {
         while (true) {
             const line = if (self.backend == .native) try native_session.next(native_dialogs) else try self.readRecordUnlocked();
             defer (if (self.backend == .native) std.heap.page_allocator else self.gpa).free(line);
+            if (self.backend == .native) {
+                const envelope = raw_envelope.parse(self.gpa, line) catch |err| switch (err) {
+                    error.NotJsonObject => return error.InvalidJavaScriptExtensionResponse,
+                    else => return err,
+                };
+                // Validate the routing identity separately from opaque guest
+                // strings. A nested guest identity never selects an invocation.
+                if (envelope.invocation_id) |identity_bytes| {
+                    if (try wireRawInvocationId(self.gpa, identity_bytes) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+                }
+                if (envelope.kind == null and envelope.ok != null and std.mem.eql(u8, envelope.ok.?, "true")) {
+                    const result = envelope.result orelse return self.gpa.dupe(u8, "{}");
+                    if (result.len == 0 or result[0] != '{') return error.InvalidJavaScriptExtensionResponse;
+                    // ECMA JSON permits escaped isolated UTF16 code units. The
+                    // validated result is already JSON; preserve its exact bytes.
+                    return self.gpa.dupe(u8, result);
+                }
+            }
             var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, line, .{});
             defer parsed.deinit();
             if (parsed.value != .object) return error.InvalidJavaScriptExtensionResponse;
@@ -2926,6 +3010,25 @@ pub const Runtime = struct {
         try writer.interface.writeByte('\n');
         try writer.interface.flush();
     }
+    fn processSend(context: ?*anyopaque, line: []const u8) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.writeLine(line);
+    }
+    fn processInput(context: ?*anyopaque, lease: process_protocol.Lease, bytes: []const u8) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.input(lease, bytes, self, processSend);
+    }
+    fn processResize(context: ?*anyopaque, lease: process_protocol.Lease, columns: u32, rows: u32) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.resize(lease, columns, rows, self, processSend);
+    }
+    fn processEnd(context: ?*anyopaque, lease: process_protocol.Lease) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.end(lease, self, processSend);
+    }
+    fn dispatchProcessRecord(self: *Runtime, bytes: []const u8) !bool {
+        return self.process_io.dispatch(bytes, self, processSend);
+    }
 
     /// Ignore ordinary stdout from extension code and consume only bridge
     /// records prefixed with ASCII Record Separator (0x1e). The timeout races
@@ -3080,6 +3183,12 @@ fn stringifyValue(gpa: std.mem.Allocator, value: std.json.Value) ![]u8 {
     // that cause rather than turning a startup OOM into an unrelated I/O error.
     std.json.Stringify.value(value, .{}, &out.writer) catch return error.OutOfMemory;
     return out.toOwnedSlice();
+}
+
+fn wireRawInvocationId(gpa: std.mem.Allocator, bytes: []const u8) !u64 {
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, bytes, .{}) catch |err| return if (err == error.OutOfMemory) err else error.InvalidNativeInvocationIdentity;
+    defer parsed.deinit();
+    return wireInvocationId(parsed.value);
 }
 
 fn wireInvocationId(value: std.json.Value) !u64 {
@@ -4266,6 +4375,27 @@ test "provider stream retirement force-closes only the worker whose iterator ign
     const ping = try healthy.runtime.invokeCommand("healthy-ping", "", "{}");
     defer gpa.free(ping);
     try std.testing.expect(std.mem.indexOf(u8, ping, "healthy-worker-reused") != null);
+}
+
+test "native process stdio factory startup raw envelope independently validates exact invocation identities" {
+    const gpa = std.testing.allocator;
+    try std.testing.expectEqual(std.math.maxInt(u64), try wireRawInvocationId(gpa, "\"18446744073709551615\""));
+    try std.testing.expectEqual(@as(u64, 42), try wireRawInvocationId(gpa, "\"\\u0034\\u0032\""));
+    try std.testing.expectEqual(@as(u64, 42), try wireRawInvocationId(gpa, "42"));
+    for ([_][]const u8{ "0", "-1", "42.0", "true", "null", "{}", "\"0\"", "\"18446744073709551616\"", "\"\\ud800\"" }) |raw| try std.testing.expectError(error.InvalidNativeInvocationIdentity, wireRawInvocationId(gpa, raw));
+}
+
+test "native process stdio factory startup raw envelope rejects malformed records without nested metadata dispatch" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    defer {
+        for (runtime.metadata_records.items) |record| record.deinit();
+        runtime.metadata_records.deinit(std.heap.page_allocator);
+    }
+    try std.testing.expect(!try runtime.dispatchMetadataRecord("{\"ok\":true,\"result\":{\"type\":\"native_metadata\",\"invocationId\":\"999\",\"key\":\"\\ud800\"}}"));
+    try std.testing.expectEqual(@as(usize, 0), runtime.metadata_records.items.len);
+    try std.testing.expectError(error.SyntaxError, runtime.dispatchMetadataRecord("{\"ok\":true,\"result\":{\"x\":[1,]}}"));
+    try std.testing.expect(try runtime.dispatchMetadataRecord("{\"\\u0074ype\":\"native\\u005fmetadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"1\",\"extensions\":[]}"));
+    try std.testing.expectEqual(@as(usize, 1), runtime.metadata_records.items.len);
 }
 
 test "native runtime late metadata FIFO rejects stale owners and revisions without invocation mutex reentry" {

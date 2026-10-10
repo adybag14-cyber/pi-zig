@@ -1,0 +1,28 @@
+import {ProcessTerminal} from 'pi-tui';
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from 'pi-coding-agent';
+const cwd=process.cwd();
+let captured,ownedData;
+const scopeLog=[];
+const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[pi=>pi.on('session_start',(_,ctx)=>{
+ captured=ctx;
+ ownedData=data=>{const written=process.stdout.write('SDK_GLOBAL_AFTER_DISPOSE\n');let error;try{captured.isIdle();}catch(caught){error={name:caught.name,message:caught.message};}scopeLog.push({data:String(data),written,error});};
+ process.stdin.on('data',ownedData);
+})]});
+// Eager access gives the actual pipe its startup resource context, as the
+// native embedder's real stdio producer does before evaluating this module.
+const stream=process.stdin;
+await loader.reload();
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+await session.bindExtensions({mode:'rpc'});
+session.dispose();
+const terminal=new ProcessTerminal();
+const keys=[];let inputResolve,endResolve;
+const input=new Promise(resolve=>inputResolve=resolve),ended=new Promise(resolve=>endResolve=resolve);
+stream.once('end',()=>endResolve());
+terminal.start(data=>{keys.push(data);if(keys.join('').endsWith('a界🦊\r'))inputResolve();},()=>{});
+process.stdout.write('SDK_STDIO_READY\n');
+await Promise.all([input,ended]);
+terminal.stop();
+stream.removeListener('data',ownedData);
+console.log('SDK_STDIO_RESULT:'+JSON.stringify({scopeLog,keys,inputPaused:stream.isPaused()}));

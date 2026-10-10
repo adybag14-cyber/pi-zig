@@ -1,0 +1,10 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "fixtureSha256": "fac2b6b3a0ea57aed77dbe635591f147e5d630471361815f3bf146039a5a965d",
+  "sourceCaptureSha256": "700b75a58479e1dd8a70f987e6ad139e03b5238d79f1075035824d696e0f4d4e",
+  "closeInput": false,
+  "inputBase64": "G1s/MXVh55WM8J+mig0=",
+  "stdoutBase64": "G1s/MjAwNGgbWz43dRtbP3UbXTc1MDE7PxtcG1tjU0RLX1NURElPX1JFQURZChtbPzIwMDRsG1s8dVNES19TVERJT19SRVNVTFQ6eyJrZXlzIjpbImEiLCLnlYwiLCJcdWQ4M2UiLCJcdWRkOGEiLCJcciJdLCJwYXVzZWQiOnRydWUsImtpdHR5IjpmYWxzZX0K",
+  "stderrBase64": "",
+  "observationsJsonBase64": "eyJrZXlzIjpbImEiLCLnlYwiLCJcdWQ4M2UiLCJcdWRkOGEiLCJcciJdLCJwYXVzZWQiOnRydWUsImtpdHR5IjpmYWxzZX0="
+}

@@ -1,0 +1,22 @@
+import {ProcessTerminal} from 'pi-tui';
+export default pi=>{
+ const terminal=new ProcessTerminal();
+ const keys=[],phases=[];
+ let phase='factory',inputResolve,endResolve;
+ const input=new Promise(resolve=>inputResolve=resolve),ended=new Promise(resolve=>endResolve=resolve);
+ process.stdin.once('end',()=>endResolve());
+ terminal.start(data=>{phases.push(phase);keys.push(data);if(keys.join('').endsWith('a界🦊\r'))inputResolve();},()=>{});
+ phase='synchronous-write';
+ process.stdout.write('SDK_STDIO_READY\n');
+ phase='factory-returned';
+ pi.registerCommand('stdio-inspect',{description:'Inspect real startup terminal IO',handler:async()=>{
+  await Promise.all([input,ended]);
+  const during={kitty:terminal.kittyProtocolActive,wasRaw:terminal.wasRaw,columns:terminal.columns,rows:terminal.rows};
+  terminal.stop();
+  process.stdout.write(new Uint8Array([0,255,10]));
+  process.stderr.write('SDK_STDERR_ACTUAL\n');
+  const result={keys,phases,during,after:{paused:process.stdin.isPaused(),kitty:terminal.kittyProtocolActive}};
+  process.stdout.write('SDK_STDIO_RESULT:'+JSON.stringify(result)+'\n');
+  return result;
+ }});
+};
