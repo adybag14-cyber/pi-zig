@@ -1870,6 +1870,43 @@ test "native durable VM failed ownership observer keeps original Session failure
     try std.testing.expect(manager.publicationPending());
     try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
 }
+fn partialOwnerReplay(program: []const u8, golden: []const u8, name: []const u8) !void {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(program, name) catch |err| {
+        diagnoseSourceFailure(engine, name, err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "ownershipStorageTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, golden);
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea partial owner {s}: {s}\n", .{ name, encoded });
+        return error.SourcePartialOwnerMismatch;
+    }
+}
+test "native durable VM actual ea partial owner Source23 missing owner keeps unknown scope and original keyed context" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source23-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source23.json"), "Source23-missing-owner");
+}
+test "native durable VM actual ea partial owner Source24 missing conversation ends chain without inventing a row" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source24-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source24.json"), "Source24-missing-conversation");
+}
+test "native durable VM actual ea partial owner Source25 loads terminal links with unabortable scheduler context" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source25-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source25.json"), "Source25-owned-context");
+}
+test "native durable VM actual ea partial owner Source26 recovers opaque null checkpoint before loading owner scopes" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source26-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source26.json"), "Source26-opaque-checkpoint-recovery");
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }

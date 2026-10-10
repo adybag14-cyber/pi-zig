@@ -1,0 +1,17 @@
+import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';
+
+import{BACKGROUND_CONTEXT,createContextKey,withContextValue}from'@earendil-works/chord/context';
+
+const key=createContextKey('ownership-storage'),context=withContextValue(key,{original:true},BACKGROUND_CONTEXT),calls=[],backing=new MemoryStorage();
+const base={kind:'fixture.owner',version:1,input:null,background:false,abortRequested:false};
+await backing.commit([
+ {type:'conversation',value:{id:1}},
+ {type:'conversation',value:{id:3,owner:{conversationId:1,taskId:9}}},
+ {type:'task',value:{...base,id:7,conversationId:1,state:{status:'terminal',outcome:{status:'completed',result:null}}}},
+ {type:'task',value:{...base,id:8,conversationId:2,state:{status:'pending',checkpoint:null}}},
+ {type:'task',value:{...base,id:9,conversationId:1,owner:7,state:{status:'terminal',outcome:{status:'completed',result:null}}}},
+ {type:'submission',value:{id:11,conversationId:3,type:'input',mode:'prompt',status:'queued',requestId:'owner-chain'}}
+],context);
+const raw={};for(const name of ['mintId','commit','conversation','task','submission','entry','findDocument','document','scanDocuments','scanConversations','scanTasks','scanEntries','scanSubmissions','submissionByRequest','findLatestHeadMarker','close'])raw[name]=async function(...args){const ctx=args.at(-1);calls.push({name,args:args.slice(0,name==='mintId'?0:-1),receiver:this===raw,contextValue:name==='mintId'?true:ctx.value(key)===context.value(key),withoutSignal:name==='mintId'?true:ctx.abortSignal===undefined});await Promise.resolve();return backing[name](...args)};
+const harness=await Harness.open(raw,{models:{},registry:createRegistry()},context);await harness.commit(()=>{},context);await harness.close(context);
+const result={source:'ea448f454af474f3e2fe9733b331e17b0662f5d6',calls};globalThis.ownershipStorageTrace=result;
