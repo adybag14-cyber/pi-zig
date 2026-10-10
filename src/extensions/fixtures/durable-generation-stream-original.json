@@ -1,5 +1,5 @@
 {
-  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
   "rows": [
     {
       "scenario": "empty",
@@ -174,6 +174,58 @@
         [
           "commit",
           true
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "copy-throw",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "report",
+          "Value must contain strict JSON enumerable data properties"
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "commit-sync",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "report",
+          "[object Object]"
         ]
       ],
       "live": {}

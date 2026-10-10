@@ -2289,6 +2289,8 @@ test "native durable v2 generation final answer matches actual Source normal and
     var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
     defer captured.deinit(engine);
     const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const generation_token = try vm.get(engine, exports, "GenerationTask");
+    defer engine.freeValue(generation_token);
     var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 5;
     defer for (tokens) |value| engine.freeValue(value);
     inline for (.{ "LiveDoc", "InboxDoc", "UsageDoc", "AssistantEntry", "UserEntry" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
@@ -2298,16 +2300,16 @@ test "native durable v2 generation final answer matches actual Source normal and
     defer source.deinit();
     for (source.value.object.get("rows").?.array.items) |row| {
         const scenario = row.object.get("scenario").?.string;
-        if (!std.mem.eql(u8, scenario, "normal") and !std.mem.eql(u8, scenario, "reset")) continue;
+
         const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
         defer engine.freeValue(name);
-        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], c.pi_js_undefined() };
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], generation_token };
         const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
         defer engine.freeValue(fixture);
         var values = [_]c.JSValue{c.pi_js_undefined()} ** 3;
         defer for (values) |value| engine.freeValue(value);
         inline for (.{ "runtime", "context", "message" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
-        const pending = try @import("extensions/native_durable_generation_answer.zig").run(engine, &captured, values[0], values[1], values[2], c.pi_js_undefined());
+        const pending = try @import("extensions/native_durable_generation_answer.zig").run(engine, &captured, values[0], values[1], values[2], generation_token);
         defer engine.freeValue(pending);
         const result = try engine.awaitValue(pending);
         defer engine.freeValue(result);
@@ -2319,4 +2321,618 @@ test "native durable v2 generation final answer matches actual Source normal and
         defer actual.deinit();
         try std.testing.expect(json.equal(row, actual.value));
     }
+}
+
+test "native durable v2 generation tool result writer matches actual Source content" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const token = try vm.get(engine, exports, "ToolResultEntry");
+    defer engine.freeValue(token);
+    const usage_token = try vm.get(engine, exports, "UsageDoc");
+    defer engine.freeValue(usage_token);
+    const make = try engine.eval("(token,usageToken)=>{const trace=[],ledger={tools:{},models:{}};return{tx:{doc:async(t,id)=>{trace.push(['doc',t===usageToken,id]);return ledger},appendEntry:async(t,id,entry)=>{trace.push(['append',t===token,id,entry]);return{id:10}}},inspect:entry=>({trace,ledger,entry})}}", "actual-tool-result-writer-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-tool-result-writer-original.json"));
+    defer source.deinit();
+    const call = try engine.eval("({id:'c1',name:'tool'})", "writer-call", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(call);
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        var args = [_]c.JSValue{ token, usage_token };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 2, &args));
+        defer engine.freeValue(fixture);
+        const tx = try vm.get(engine, fixture, "tx");
+        defer engine.freeValue(tx);
+        const input = try engine.fromJsonValue(row.object.get("result").?);
+        defer engine.freeValue(input);
+        const pending = try @import("extensions/native_durable_tool_result.zig").append(engine, &captured, tx, c.JS_NewInt32(engine.context, 3), call, input, c.JS_NewInt32(engine.context, 5), if (std.mem.eql(u8, scenario, "text")) c.JS_NewInt32(engine.context, 7) else c.pi_js_undefined());
+        defer engine.freeValue(pending);
+        const entry = try engine.awaitValue(pending);
+        defer engine.freeValue(entry);
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{entry});
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        var expected = row;
+        _ = expected.object.swapRemove("scenario");
+        _ = expected.object.swapRemove("result");
+        try std.testing.expect(json.equal(expected, actual.value));
+    }
+}
+
+test "native durable v2 generation abort content matches actual Source partial and pending calls" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 4;
+    defer for (tokens) |value| engine.freeValue(value);
+    inline for (.{ "LiveDoc", "UsageDoc", "AssistantEntry", "ToolResultEntry" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-abort-content-runtime.txt"), "actual-generation-abort-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-abort-content-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 3;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "runtime", "context", "task" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        const pending = try @import("extensions/native_durable_generation_abort.zig").run(engine, &captured, values[0], values[1], values[2]);
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+
+test "native durable v2 generation tool round admission matches actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 5;
+    defer for (tokens) |value| engine.freeValue(value);
+    inline for (.{ "LiveDoc", "UsageDoc", "ToolTask", "AssistantEntry", "ToolResultEntry" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-tool-round-runtime.txt"), "actual-generation-tool-round-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-tool-round-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3], tokens[4] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 5;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "runtime", "context", "request", "message", "calls" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        const pending = try @import("extensions/native_durable_generation_tools.zig").start(engine, &captured, values[0], values[1], values[2], values[3], values[4]);
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        if (!json.equal(row, actual.value)) std.debug.print("ToolRound {s}: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+
+test "native durable v2 generation terminal tool controls match actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const generation_token = try vm.get(engine, exports, "GenerationTask");
+    defer engine.freeValue(generation_token);
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 5;
+    defer for (tokens) |value| engine.freeValue(value);
+    inline for (.{ "LiveDoc", "InboxDoc", "AgentDoc", "ResetEntry", "UserEntry" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-finish-tools-runtime.txt"), "actual-generation-finish-tools-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    const tools = try engine.eval("[10,11]", "finish-tools-ids", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(tools);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-finish-tools-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3], generation_token, tokens[4] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        const runtime = try vm.get(engine, fixture, "runtime");
+        defer engine.freeValue(runtime);
+        const context = try vm.get(engine, fixture, "context");
+        defer engine.freeValue(context);
+        const pending = try @import("extensions/native_durable_generation_finish_tools.zig").run(engine, &captured, runtime, context, c.JS_NewInt32(engine.context, 4), tools, generation_token);
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        if (!json.equal(row, actual.value)) std.debug.print("FinishTools {s}: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+
+test "native durable v2 generation public token matches actual Source definition" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    const proof = try engine.evalModule(
+        \\import{GenerationTask}from'@earendil-works/pi-durable';globalThis.generationShape={name:GenerationTask.definition.name,version:GenerationTask.definition.version,initial:GenerationTask.definition.initial(),keys:Object.keys(GenerationTask.definition),phases:Object.keys(GenerationTask.definition.phases)};for(const fn of Object.values(GenerationTask.definition.phases)){if(fn.length!==3)throw Error('phase arity')}if(GenerationTask.definition.abort.length!==3)throw Error('abort arity');
+    , "genuine-generation-definition");
+    engine.freeValue(proof);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const value = try vm.get(engine, global, "generationShape");
+    defer engine.freeValue(value);
+    const text = try engine.stringify(value);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-basic-original.json"));
+    defer source.deinit();
+    try std.testing.expect(json.equal(source.value.object.get("shape").?, actual.value));
+}
+
+test "native durable v2 generation real scheduler runs genuine GenerationTask model answer" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const durable = @import("extensions/native_durable.zig");
+    const tasks = @import("extensions/native_durable_tasks.zig");
+    try durable.install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const token = try vm.get(engine, exports, "GenerationTask");
+    defer engine.freeValue(token);
+    const builtins = try vm.array(engine);
+    defer engine.freeValue(builtins);
+    try @import("extensions/native_js_values.zig").push(engine, builtins, token);
+    const registry = try @import("extensions/native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "compactionKernelSession", c.JS_DupValue(engine.context, session));
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "compactionKernelRegistry", c.JS_DupValue(engine.context, registry));
+    const setup = try engine.evalModule(
+        \\import{GenerationTask,LiveDoc,AgentDoc,UserEntry,AssistantEntry}from'@earendil-works/pi-durable';
+        \\globalThis.compactionKernelReports=[];globalThis.compactionKernelOptions={registry:compactionKernelRegistry,onReport:error=>compactionKernelReports.push(String(error)),settings:{compaction:{enabled:false,keepRecentTokens:1,reserveTokens:100}},models:{getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>({async *[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'actual kernel answer'}],stopReason:'stop',usage:{input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}}})})}};
+        \\globalThis.compactionKernelConversation=(await compactionKernelSession.commit(tx=>tx.createRootConversation(),{})).id;
+        \\await compactionKernelSession.commit(async tx=>{const agent=await tx.doc(AgentDoc,compactionKernelConversation);agent.model={provider:"p",modelId:"m"};await tx.doc(LiveDoc,compactionKernelConversation)},{});
+        \\await compactionKernelSession.commit(async tx=>{await tx.appendEntry(UserEntry,compactionKernelConversation,{model:[{role:"user",content:"old ".repeat(100),timestamp:1}]});await tx.appendEntry(AssistantEntry,compactionKernelConversation,{model:[{role:"assistant",content:[{type:"text",text:"recent ".repeat(100)}],timestamp:2,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}}}]})},{});
+        \\globalThis.compactionKernelTask=await compactionKernelSession.commit(tx=>tx.createTask(GenerationTask,{},{conversationId:compactionKernelConversation,ownership:{kind:'conversation'}}),{});
+        \\await compactionKernelSession.commit(async tx=>{const live=await tx.doc(LiveDoc,compactionKernelConversation);live.run={taskId:compactionKernelTask,inputs:[]}},{});
+    , "real-compaction-kernel-setup");
+    engine.freeValue(setup);
+    const options = try vm.get(engine, global, "compactionKernelOptions");
+    defer engine.freeValue(options);
+    const context = try vm.object(engine);
+    defer engine.freeValue(context);
+    try tasks.attach(engine, session, options, context);
+    const manager = try tasks.getManager(engine, session);
+    const id = try vm.get(engine, global, "compactionKernelTask");
+    defer engine.freeValue(id);
+    const pending = try tasks.wait(manager, try durable.number(engine, id), null, context);
+    defer engine.freeValue(pending);
+    const record = try engine.awaitValue(pending);
+    defer engine.freeValue(record);
+    const text = try engine.stringify(record);
+    defer std.testing.allocator.free(text);
+    var parsed = try json.Owned.parse(std.testing.allocator, text);
+    defer parsed.deinit();
+    const outcome = parsed.value.object.get("state").?.object.get("outcome").?;
+    if (!std.mem.eql(u8, "completed", outcome.object.get("status").?.string)) {
+        std.debug.print("Compaction model kernel: {s}\n", .{text});
+        const reports = try vm.get(engine, global, "compactionKernelReports");
+        defer engine.freeValue(reports);
+        const report_text = try engine.stringify(reports);
+        defer std.testing.allocator.free(report_text);
+        std.debug.print("Compaction kernel reports: {s}\n", .{report_text});
+    }
+    try std.testing.expectEqualStrings("completed", outcome.object.get("status").?.string);
+    try std.testing.expect(outcome.object.get("result").?.object.get("entryId") != null);
+    const golden = @embedFile("extensions/fixtures/durable-generation-real-kernel-original.json");
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "generationKernelSource", try engine.checked(c.JS_ParseJSON(engine.context, golden.ptr, golden.len, "actual-generation-kernel-source")));
+    const proof = try engine.evalModule(
+        \\import{LiveDoc,UsageDoc}from'@earendil-works/pi-durable';const live=await compactionKernelSession.snapshot(LiveDoc,compactionKernelConversation,{}),usage=await compactionKernelSession.snapshot(UsageDoc,compactionKernelConversation,{});const actual={status:'completed',entryPresent:true,live,usage,reports:compactionKernelReports};const{source,...expected}=generationKernelSource;if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));await compactionKernelSession.close({});
+    , "actual-generation-kernel-lifecycle");
+    engine.freeValue(proof);
+}
+
+test "native durable v2 generation input admission matches actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 4;
+    defer for (tokens) |value| engine.freeValue(value);
+    inline for (.{ "LiveDoc", "InboxDoc", "UserEntry", "GenerationTask" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
+    const modes = try engine.eval("({steeringMode:'all',followUpMode:'all'})", "input-admission-modes", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(modes);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-submission-input-runtime.txt"), "actual-input-admission-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-submission-input-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        const tx = try vm.get(engine, fixture, "tx");
+        defer engine.freeValue(tx);
+        const draft = try vm.get(engine, fixture, "draft");
+        defer engine.freeValue(draft);
+        var id = c.pi_js_undefined();
+        defer engine.freeValue(id);
+        var failure = c.pi_js_undefined();
+        defer engine.freeValue(failure);
+        const pending = try @import("extensions/native_durable_submissions.zig").admit(engine, &captured, .{ .live = tokens[0], .inbox = tokens[1], .user = tokens[2], .generation = tokens[3] }, tx, c.JS_NewInt32(engine.context, 3), draft, c.JS_NewInt32(engine.context, 5), modes);
+        defer engine.freeValue(pending);
+        if (engine.awaitValue(pending)) |result| {
+            id = result;
+        } else |err| {
+            if (!std.mem.eql(u8, scenario, "busy-reject")) return err;
+            const exception = engine.captured_exception orelse return err;
+            failure = try vm.object(engine);
+            try @import("extensions/native_tool_info.zig").putData(engine, failure, "name", try vm.get(engine, exception, "name"));
+            try @import("extensions/native_tool_info.zig").putData(engine, failure, "message", try vm.get(engine, exception, "message"));
+        }
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{ id, failure });
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+
+test "native durable v2 generation public Harness submits input and waits for answer" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry,LiveDoc,UsageDoc}from'@earendil-works/pi-durable';const context={},reports=[];const model={id:'m',maxTokens:100,contextWindow:10000},usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>model,streamSimple:()=>({async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'answer'}],stopReason:'stop',usage})})};
+        \\const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false}},onReport:error=>reports.push(String(error))},context);try{const root=await harness.root(context,{agent:{model:{provider:'p',modelId:'m'}}});const submission=await root.submit({type:'input',content:'hello'},context);const record=await submission.wait(context);if(record.status!=='done'||record.answer===undefined)throw Error(JSON.stringify(record));if((await submission.status(context)).status!=='done')throw Error('status');const again=await harness.submission(submission.id,context);if(again.id!==submission.id)throw Error('lookup');if((await again.abort(context))!=='settled')throw Error('terminal abort');if(reports.length)throw Error(JSON.stringify(reports));}finally{await harness.close(context)}
+    , "public-native-generation-submission") catch |err| {
+        std.debug.print("Public Generation: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation submission handle matches actual Source class and delegation" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const storage = try @import("extensions/native_durable.zig").memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try @import("extensions/native_durable.zig").sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try vm.object(engine);
+    defer engine.freeValue(options);
+    const handle = try @import("extensions/native_durable_submission_handle.zig").handle(engine, session, options, c.JS_NewInt32(engine.context, 2));
+    defer engine.freeValue(handle);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "sourceHandle", c.JS_DupValue(engine.context, handle));
+    const bytes = @embedFile("extensions/fixtures/durable-submission-handle-original.json");
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "sourceHandleExpected", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-source-handle")));
+    const proof = engine.evalModule(
+        \\const handle=sourceHandle,context={},prototype=Object.getPrototypeOf(handle),ctor=prototype.constructor,trace=[],marker={original:true},host={status(...args){trace.push(['status',this===host,...args]);return marker},wait(...args){trace.push(['wait',this===host,...args]);return marker},abort(...args){trace.push(['abort',this===host,...args]);throw marker}},fake=new ctor(7,host);const statusIdentity=fake.status({ctx:1})===marker;fake.id=8;const waitIdentity=fake.wait({ctx:2})===marker;let throwIdentity;try{await fake.abort({ctx:3})}catch(error){throwIdentity=error===marker}let brand;try{prototype.status.call({},context)}catch(error){brand={name:error.name,message:error.message}}const actual={shape:{keys:Object.keys(handle),prototypeKeys:Reflect.ownKeys(prototype),name:ctor.name,arity:ctor.length,methods:Object.fromEntries(['status','wait','abort'].map(key=>[key,{arity:prototype[key].length,enumerable:Object.getOwnPropertyDescriptor(prototype,key).enumerable}]))},statusIdentity,waitIdentity,throwIdentity,trace,brand};const{source,...expected}=sourceHandleExpected;if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));
+    , "actual-source-submission-handle") catch |err| {
+        std.debug.print("Submission handle: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(proof);
+}
+
+test "native durable v2 generation submission waiters cancel independently and preserve raw cause" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';let ready,resolve;const started=new Promise(r=>ready=r),answer=new Promise(r=>resolve=r),usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>({async*[Symbol.asyncIterator](){ready();yield{type:'start',partial:{content:[]}}},result:()=>answer})};const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false}}},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),submission=await root.submit({type:'input',content:'hello'},{});await started;const controller=new AbortController(),reason={original:true};let caught;const first=submission.wait({abortSignal:controller.signal}).catch(error=>{caught=error}),second=submission.wait({});await Promise.resolve();await Promise.resolve();controller.abort(reason);await first;if(caught!==reason)throw Error('waiter cause identity');if((await submission.abort({}))!=='already_placed')throw Error('placed abort result');resolve({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'done'}],stopReason:'stop',usage});if((await second).status!=='done')throw Error('other waiter lost');if((await submission.wait({})).status!=='done')throw Error('settled wait');}finally{await harness.close({})}
+    , "native-submission-waiter-cancel") catch |err| {
+        std.debug.print("Submission waiters: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation public tool round executes and continues to final answer" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/text_decoder.zig").install(engine);
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry,defineExtension,defineTool,LiveDoc,UsageDoc}from'@earendil-works/pi-durable';let calls=0,executed=0;const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},registry=createRegistry();registry.install(defineExtension({name:'native-test',tools:[defineTool({name:'echo',description:'echo',parameters:{type:'object'},execute:async(args,api,context)=>{executed++;api.output('progress');return{output:[{type:'text',text:'tool done'}]}}})]}));const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>{calls++;const first=calls===1;return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:first?[{type:'toolCall',id:'c1',name:'echo',arguments:{}}]:[{type:'text',text:'final answer'}],stopReason:first?'toolUse':'stop',usage})}}};const reports=[],harness=await Harness.open(new MemoryStorage(),{registry,models,settings:{compaction:{enabled:false}},onReport:error=>reports.push(String(error))},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),submission=await root.submit({type:'input',content:'run tool'},{});const record=await submission.wait({});if(record.status!=='done'||calls!==2||executed!==1)throw Error(JSON.stringify({record,calls,executed,reports}));const live=await harness.snapshot(LiveDoc,root.id,{}),ledger=await harness.snapshot(UsageDoc,root.id,{});if(Object.keys(live).length||ledger.models['p/m'].totalTokens!==6||reports.length)throw Error(JSON.stringify({live,ledger,reports}));}finally{await harness.close({})}
+    , "native-generation-real-tool-round") catch |err| {
+        std.debug.print("Public tool round: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation repeated idle submissions retry and deferred polling" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry,UsageDoc}from'@earendil-works/pi-durable';const results=[];for(const scenario of['repeat','retry','deferred']){let calls=0,polls=0;const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},final=()=>({role:'assistant',provider:'p',model:'m',content:[{type:'text',text:'answer'}],stopReason:'stop',usage}),models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>{calls++;const message=scenario==='retry'&&calls===1?{...final(),content:[],stopReason:'error',errorMessage:'503 unavailable'}:scenario==='deferred'?{role:'assistant',content:[],stopReason:'deferred',deferred:{id:'h',pollAfterMs:0}}:final();return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>message}},fetchDeferred:async(model,handle,options)=>{polls++;if(handle.id!=='h'||!(options.signal instanceof AbortSignal))throw Error('deferred binding');return final()}};const reports=[],harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false},retry:{enabled:true,maxRetries:1,baseDelayMs:0}},onReport:error=>reports.push(String(error))},{});try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}});for(let index=0;index<(scenario==='repeat'?2:1);index++){const submission=await root.submit({type:'input',content:'hello'},{});if((await submission.wait({})).status!=='done')throw Error('not done');await root.waitForIdle({});await new Promise(resolve=>setTimeout(resolve,0));}const ledger=await harness.snapshot(UsageDoc,root.id,{});const expectedCalls=scenario==='deferred'?1:2;if(calls!==expectedCalls||polls!==(scenario==='deferred'?1:0)||ledger.models['p/m'].totalTokens!==(scenario==='deferred'?3:6)||reports.length)throw Error(JSON.stringify({scenario,calls,polls,ledger,reports}));results.push({scenario,calls,polls,tokens:ledger.models['p/m'].totalTokens});}finally{await harness.close({})}}globalThis.generationProgressScenarios=results;
+    , "native-generation-repeated-retry-deferred") catch |err| {
+        std.debug.print("Generation scenarios: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation public sequential parallel and unavailable tool rounds" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/text_decoder.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-generation-round-policies-runtime.txt"), "native-generation-round-policies") catch |err| {
+        std.debug.print("Generation round policies: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "native durable v2 generation queued submission withdrawal and closing waiters match Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-submission-lifecycle-runtime.txt"), "native-submission-lifecycle") catch |err| {
+        std.debug.print("Submission lifecycle: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+fn exerciseGenerationOwnership(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const generation = engine.native_allocation_generation;
+    return exerciseGenerationOwnershipWithEngine(engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseGenerationOwnershipWithEngine(engine: *engine_mod.Engine) !void {
+    engine.native_io = std.testing.io;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try @import("extensions/native_durable.zig").install(engine);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 5;
+    defer for (tokens) |value| engine.freeValue(value);
+    inline for (.{ "LiveDoc", "UsageDoc", "ToolTask", "AssistantEntry", "ToolResultEntry" }, 0..) |key, index| tokens[index] = try vm.get(engine, exports, key);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-tool-round-runtime.txt"), "allocation-generation-tool-round", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    for ([_][]const u8{ "parallel", "sequential", "unavailable" }) |scenario| {
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0], tokens[1], tokens[2], tokens[3], tokens[4] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 5;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "runtime", "context", "request", "message", "calls" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        const pending = try @import("extensions/native_durable_generation_tools.zig").start(engine, &captured, values[0], values[1], values[2], values[3], values[4]);
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+    }
+    const prepare_factory = try engine.eval(@embedFile("extensions/fixtures/durable-generation-prepare-runtime.txt"), "allocation-generation-prepare", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prepare_factory);
+    const system = try vm.get(engine, exports, "SystemEntry");
+    defer engine.freeValue(system);
+    for ([_][]const u8{ "plain", "section", "env-error" }) |scenario| {
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, system };
+        const fixture = try engine.checked(c.JS_Call(engine.context, prepare_factory, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 3;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "runtime", "context", "task" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        const pending = try @import("extensions/native_durable_generation_task.zig").prepare(engine, &captured, values[0], values[1], tokens[0], values[2]);
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+    }
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const stream_factory = try engine.eval(@embedFile("extensions/fixtures/durable-generation-stream-protocol-runtime.txt"), "allocation-generation-stream", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(stream_factory);
+    const model = try vm.object(engine);
+    defer engine.freeValue(model);
+    const messages = try vm.array(engine);
+    defer engine.freeValue(messages);
+    const stream_options = try vm.object(engine);
+    defer engine.freeValue(stream_options);
+    for ([_][]const u8{ "async", "sync", "sync-promise", "body-close", "body-return-reject" }) |scenario| {
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, tokens[0] };
+        const fixture = try engine.checked(c.JS_Call(engine.context, stream_factory, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        const runtime = try vm.get(engine, fixture, "runtime");
+        defer engine.freeValue(runtime);
+        const context = try vm.get(engine, fixture, "context");
+        defer engine.freeValue(context);
+        const generation = engine.native_allocation_generation;
+        const pending = try @import("extensions/native_durable_generation_stream.zig").run(engine, &captured, runtime, model, messages, stream_options, c.JS_NewInt32(engine.context, 1), context, tokens[0]);
+        defer engine.freeValue(pending);
+        if (engine.awaitValue(pending)) |result| engine.freeValue(result) else |err| {
+            if (engine.native_allocation_generation != generation or !std.mem.startsWith(u8, scenario, "body-")) return err;
+        }
+    }
+    const storage = try @import("extensions/native_durable.zig").memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try @import("extensions/native_durable.zig").sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try vm.object(engine);
+    defer engine.freeValue(options);
+    const handle = try @import("extensions/native_durable_submission_handle.zig").handle(engine, session, options, c.JS_NewInt32(engine.context, 1));
+    defer engine.freeValue(handle);
+    const prototype = try engine.checked(c.JS_GetPrototype(engine.context, handle));
+    defer engine.freeValue(prototype);
+    const constructor = try vm.get(engine, prototype, "constructor");
+    defer engine.freeValue(constructor);
+    const host = try engine.eval("({status:()=>({done:true}),wait:()=>Promise.resolve({done:true}),abort:()=>Promise.resolve('settled')})", "allocation-submission-host", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(host);
+    var args = [_]c.JSValue{ c.JS_NewInt32(engine.context, 7), host };
+    const delegated = try engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
+    defer engine.freeValue(delegated);
+    inline for (.{ "status", "wait", "abort" }) |key| {
+        const pending = try vm.invoke(engine, delegated, key, &.{options});
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+    }
+}
+
+test "native durable v2 generation tool continuations and submission private state release allocation failures" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseGenerationOwnership(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseGenerationOwnership(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        if (failing.allocated_bytes != failing.freed_bytes) {
+            std.debug.print("Generation ownership leak at {d}/{d}: {d}/{d} bytes\n", .{ index, baseline.alloc_index, failing.allocated_bytes, failing.freed_bytes });
+            return error.MemoryLeakDetected;
+        }
+    }
+}
+
+test "native durable v2 generation stream iteration protocol matches actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const token = try vm.object(engine);
+    defer engine.freeValue(token);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-generation-stream-protocol-runtime.txt"), "stream-protocol-factory", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-stream-protocol-original.json"));
+    defer source.deinit();
+    const model = try engine.eval("({id:'m'})", "protocol-model", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(model);
+    const messages = try vm.array(engine);
+    defer engine.freeValue(messages);
+    const options = try vm.object(engine);
+    defer engine.freeValue(options);
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ name, token };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        const runtime = try vm.get(engine, fixture, "runtime");
+        defer engine.freeValue(runtime);
+        const context = try vm.get(engine, fixture, "context");
+        defer engine.freeValue(context);
+        var result_value = c.pi_js_undefined();
+        defer engine.freeValue(result_value);
+        var failure = c.pi_js_undefined();
+        defer engine.freeValue(failure);
+        const pending = try @import("extensions/native_durable_generation_stream.zig").run(engine, &captured, runtime, model, messages, options, c.JS_NewInt32(engine.context, 1), context, token);
+        defer engine.freeValue(pending);
+        if (engine.awaitValue(pending)) |value| result_value = value else |err| {
+            if (err != error.JavaScriptException) return err;
+            failure = c.JS_DupValue(engine.context, engine.captured_exception orelse return err);
+        }
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{ result_value, failure });
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        if (!json.equal(row, actual.value)) std.debug.print("Stream protocol {s}: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+
+test "native durable v2 generation public blocking background and manual compaction with reset" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-generation-compaction-runtime.txt"), "native-generation-real-compaction") catch |err| {
+        std.debug.print("Generation compaction: {s}\n", .{engine.last_error orelse "missing"});
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const rows = try vm.get(engine, global, "generationCompactionRows");
+    defer engine.freeValue(rows);
+    const text = try engine.stringify(rows);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-generation-compaction-original.json"));
+    defer source.deinit();
+    try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
 }

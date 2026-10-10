@@ -587,7 +587,7 @@ fn finishSummary(engine: *Engine, state: c.JSValue, live: c.JSValue) !c.JSValue 
 pub fn createCompaction(engine: *Engine, intrinsics: *awaiting.Intrinsics, tx: c.JSValue, conversation: c.JSValue, input: c.JSValue, owner: c.JSValue, compaction_token: c.JSValue, live_token: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const state = try scope.own(try createState(engine, intrinsics, c.pi_js_undefined(), c.pi_js_undefined(), live_token, c.pi_js_undefined()));
+    const state = try scope.own(try createState(engine, intrinsics, c.pi_js_undefined(), c.pi_js_undefined(), live_token));
     inline for (.{ .{ "tx", tx }, .{ "conversation", conversation }, .{ "input", input }, .{ "owner", owner } }) |field| try put(engine, state, field[0], field[1]);
     const ownership = try scope.own(try vm.object(engine));
     try put(engine, ownership, "kind", try scope.text(if (c.JS_IsUndefined(owner)) "conversation" else "task"));

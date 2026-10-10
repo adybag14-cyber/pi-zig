@@ -336,7 +336,15 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
                         const block = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, content, @intCast(index))));
                         const kind = try scope.get(block, "type");
                         const tool_call = try scope.text("toolCall");
-                        if (c.JS_IsStrictEqual(engine.context, kind, tool_call)) return error.GenerationToolRoundNotWired;
+                        if (c.JS_IsStrictEqual(engine.context, kind, tool_call)) {
+                            const calls = try scope.own(try vm.array(engine));
+                            for (0..try vm.length(engine, content)) |position| {
+                                const candidate = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, content, @intCast(position))));
+                                if (c.JS_IsStrictEqual(engine.context, try scope.get(candidate, "type"), tool_call)) try js.push(engine, calls, candidate);
+                            }
+                            var intrinsics = try captured(&scope, state);
+                            return @import("native_durable_generation_tools.zig").start(engine, &intrinsics, try scope.get(state, "runtime"), try scope.get(state, "context"), try scope.get(state, "request"), message, calls);
+                        }
                     }
                 }
                 const exports = engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableModuleUnavailable;
@@ -597,7 +605,7 @@ fn preparedCheckpoint(engine: *Engine, state: c.JSValue) !c.JSValue {
     try put(engine, next, "checkpoint", request);
     return next;
 }
-pub fn request(engine: *Engine, intrinsics: *awaiting.Intrinsics, runtime: c.JSValue, context: c.JSValue, live_token: c.JSValue, task: c.JSValue) !c.JSValue {
+pub fn requestPhase(engine: *Engine, intrinsics: *awaiting.Intrinsics, runtime: c.JSValue, context: c.JSValue, live_token: c.JSValue, task: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const state = try scope.own(try createState(engine, intrinsics, runtime, context, live_token, task));

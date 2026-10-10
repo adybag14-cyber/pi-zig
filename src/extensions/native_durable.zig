@@ -362,6 +362,11 @@ pub fn install(engine: *Engine) !void {
     try @import("native_durable_compaction_builtin.zig").install(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
     try @import("native_durable_tool_builtin.zig").install(engine, exports);
+    try @import("native_durable_generation_builtin.zig").install(engine, exports);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    inline for (.{ "GenerationTask", "ToolTask", "CompactionTask" }) |name| try sdk.append(engine, builtins, try sdk.get(engine, exports, name));
+    try @import("native_durable_registry.zig").install(engine, exports, builtins);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
         const storage_exports = try sdk.object(engine);

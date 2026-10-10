@@ -1,0 +1,438 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "continue",
+      "trace": [
+        [
+          "outcomes",
+          [
+            10,
+            11
+          ]
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "hooks",
+          "afterTools"
+        ],
+        [
+          "hook",
+          4,
+          [
+            20,
+            21
+          ],
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          30
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 4
+              }
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 30,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "inbox": {
+        "items": []
+      },
+      "agent": {}
+    },
+    {
+      "scenario": "terminate",
+      "trace": [
+        [
+          "outcomes",
+          [
+            10,
+            11
+          ]
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "hooks",
+          "afterTools"
+        ],
+        [
+          "hook",
+          4,
+          [
+            20,
+            21
+          ],
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "done",
+            "answer": 4
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 4
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      },
+      "agent": {}
+    },
+    {
+      "scenario": "handoff",
+      "trace": [
+        [
+          "outcomes",
+          [
+            10,
+            11
+          ]
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "hooks",
+          "afterTools"
+        ],
+        [
+          "hook",
+          4,
+          [
+            20,
+            21
+          ],
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "append",
+          "reset",
+          3,
+          {
+            "head": "self",
+            "model": [
+              {
+                "role": "user",
+                "content": "last",
+                "timestamp": 5
+              }
+            ]
+          },
+          30
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "done",
+            "answer": 4
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 4
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      },
+      "agent": {}
+    },
+    {
+      "scenario": "reset",
+      "trace": [
+        [
+          "outcomes",
+          [
+            10,
+            11
+          ]
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "hooks",
+          "afterTools"
+        ],
+        [
+          "hook",
+          4,
+          [
+            20,
+            21
+          ],
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "append",
+          3,
+          {
+            "kind": "custom",
+            "head": "self",
+            "model": []
+          },
+          30
+        ],
+        [
+          "place",
+          2,
+          30
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "reset"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 4
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      },
+      "agent": {}
+    },
+    {
+      "scenario": "add-tools",
+      "trace": [
+        [
+          "outcomes",
+          [
+            10,
+            11
+          ]
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "hooks",
+          "afterTools"
+        ],
+        [
+          "hook",
+          4,
+          [
+            20,
+            21
+          ],
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "agent",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          30
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 4
+              }
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 30,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "inbox": {
+        "items": []
+      },
+      "agent": {}
+    }
+  ]
+}

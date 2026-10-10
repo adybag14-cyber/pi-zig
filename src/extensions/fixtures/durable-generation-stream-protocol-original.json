@@ -1,0 +1,120 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "async",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next",
+        "next",
+        "result"
+      ],
+      "terminal": true,
+      "original": false
+    },
+    {
+      "scenario": "sync",
+      "trace": [
+        "stream",
+        "sync-iterator",
+        "get-next",
+        "next",
+        "next",
+        "result"
+      ],
+      "terminal": true,
+      "original": false
+    },
+    {
+      "scenario": "sync-promise",
+      "trace": [
+        "stream",
+        "sync-iterator",
+        "get-next",
+        "next",
+        "next",
+        "result"
+      ],
+      "terminal": true,
+      "original": false
+    },
+    {
+      "scenario": "next-throw",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next"
+      ],
+      "terminal": false,
+      "original": true
+    },
+    {
+      "scenario": "next-reject",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next"
+      ],
+      "terminal": false,
+      "original": true
+    },
+    {
+      "scenario": "result-primitive",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next"
+      ],
+      "terminal": false,
+      "original": false,
+      "errorName": "TypeError"
+    },
+    {
+      "scenario": "body-close",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next",
+        "type",
+        "get-return",
+        "return"
+      ],
+      "terminal": false,
+      "original": true
+    },
+    {
+      "scenario": "body-return-throw",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next",
+        "type",
+        "get-return",
+        "return"
+      ],
+      "terminal": false,
+      "original": true
+    },
+    {
+      "scenario": "body-return-reject",
+      "trace": [
+        "stream",
+        "async-iterator",
+        "get-next",
+        "next",
+        "type",
+        "get-return",
+        "return"
+      ],
+      "terminal": false,
+      "original": true
+    }
+  ]
+}

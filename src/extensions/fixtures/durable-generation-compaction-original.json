@@ -1,0 +1,26 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "blocking",
+      "requests": 1,
+      "summaries": 1,
+      "tokens": 6,
+      "live": {}
+    },
+    {
+      "scenario": "background",
+      "requests": 1,
+      "summaries": 1,
+      "tokens": 6,
+      "live": {}
+    },
+    {
+      "scenario": "manual-reset",
+      "requests": 0,
+      "summaries": 1,
+      "tokens": 3,
+      "live": {}
+    }
+  ]
+}
