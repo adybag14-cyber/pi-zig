@@ -277,7 +277,7 @@ fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const generation = engine.native_allocation_generation;
     try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(
-        \\import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{});try{const root=await harness.root({}),first=await root.viewState({}),watch=await root.watch({}),second=await root.viewState({});const a=first.subscribe(()=>{}),b=second.subscribe(()=>{});watch.start(async()=>{});await watch.stop();a();b();first.dispose();second.dispose();}finally{await harness.close({})}
+        \\import{Harness,MemoryStorage,createRegistry,GenerationTask}from'@earendil-works/pi-durable';const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{});try{const root=await harness.root({});await root.commit(async tx=>{const task=await tx.createTask(GenerationTask,{},{ownership:{kind:'conversation'}});await tx.createConversation({ownership:{kind:'task',taskId:task}})},{});const first=await root.viewState({}),watch=await root.watch({}),second=await root.viewState({}),graph=await harness.taskGraph({}),graphWatch=await harness.watchTaskGraph({});const a=first.subscribe(()=>{}),b=second.subscribe(()=>{}),d=graph.subscribe(()=>{});watch.start(async()=>{});graphWatch.start(async()=>{});await watch.stop();await graphWatch.stop();a();b();d();first.dispose();second.dispose();graph.dispose();}finally{await harness.close({})}
     , "native-view-acquisition-allocation") catch |err| return engine.nativeAllocationError(err, generation);
     engine.freeValue(result);
 }
