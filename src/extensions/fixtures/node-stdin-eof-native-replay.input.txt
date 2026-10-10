@@ -1,0 +1,5 @@
+globalThis.stdinEndSeen=[];globalThis.stdinEndScope=function(){return eventOwnerProbe===1?'registration':eventOwnerProbe===2?'data':null;};
+if(stdinEndMode==='paused'||stdinEndMode==='prefetched')process.stdin.pause();
+if(stdinEndMode!=='raw')process.stdin.setEncoding('utf8');
+process.stdin.on('data',value=>{stdinEndSeen.push(['data',typeof value==='string'?value:Buffer.from(value).toString('hex'),stdinEndScope()]);if(stdinEndMode==='enter')stdinEndEnterData();if(stdinEndMode==='pause-data'||stdinEndMode==='complete-pause')process.stdin.pause();process.nextTick(()=>stdinEndSeen.push(['tick',stdinEndScope()]));Promise.resolve().then(()=>stdinEndSeen.push(['promise',stdinEndScope()]));});
+process.stdin.on('end',()=>stdinEndSeen.push(['end',stdinEndScope()]));

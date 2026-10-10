@@ -1,0 +1,364 @@
+{
+  "node": "24.14.0",
+  "authority": "ten actual Node24 startup pipe EOF cases plus one genuine Readable prequeued EOF case",
+  "cases": [
+    {
+      "mode": "flow",
+      "bytes": [],
+      "value": {
+        "seen": [
+          [
+            "end",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "flow",
+      "bytes": [
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "flow",
+      "bytes": [
+        97,
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "a",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "flow",
+      "bytes": [
+        237,
+        160,
+        128
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "���",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "end",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "paused",
+      "bytes": [
+        97,
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "before-resume",
+            0,
+            null
+          ],
+          [
+            "data",
+            "a",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "pause-data",
+      "bytes": [
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ]
+        ],
+        "paused": true
+      }
+    },
+    {
+      "mode": "raw",
+      "bytes": [
+        97,
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "61e795",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "end",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "enter",
+      "bytes": [
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            "data"
+          ],
+          [
+            "promise",
+            "data"
+          ]
+        ],
+        "paused": false
+      }
+    },
+    {
+      "mode": "complete-pause",
+      "bytes": [
+        97
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "a",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "end",
+            null
+          ]
+        ],
+        "paused": true
+      }
+    },
+    {
+      "mode": "complete-pause",
+      "bytes": [
+        231,
+        149,
+        140
+      ],
+      "value": {
+        "seen": [
+          [
+            "data",
+            "界",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "end",
+            null
+          ]
+        ],
+        "paused": true
+      }
+    },
+    {
+      "mode": "prefetched",
+      "transport": "separate actual Node Readable prequeued data and EOF",
+      "bytes": [
+        97,
+        231,
+        149
+      ],
+      "value": {
+        "seen": [
+          [
+            "before-resume",
+            0,
+            null
+          ],
+          [
+            "data",
+            "a",
+            null
+          ],
+          [
+            "data",
+            "�",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "end",
+            null
+          ],
+          [
+            "tick",
+            null
+          ],
+          [
+            "promise",
+            null
+          ],
+          [
+            "promise",
+            null
+          ]
+        ],
+        "paused": false
+      }
+    }
+  ]
+}

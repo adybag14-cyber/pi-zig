@@ -1,6 +1,213 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+fn stdinEndEnterData(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    // Test the effect of Source AsyncLocalStorage.enterWith inside final data.
+    // The native producer's outer guard restores its prior caller afterward.
+    const guard = @import("native_async_scope.zig").enter(engine, data[0]);
+    engine.freeValue(guard.previous);
+    return c.pi_js_undefined();
+}
+test "Source6fb public TUI slice actual Node pipe EOF decoder tail pause and async owner checkpoints" {
+    const fixture = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("fixtures/node-stdin-eof-startup-original-24.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items, 0..) |sample, index| {
+        const engine = try js.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        var environment: std.process.Environ.Map = .init(std.testing.allocator);
+        defer environment.deinit();
+        try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"stdin-end-source"});
+        const streams = @import("native_process_streams.zig");
+        var probe: TerminalBridgeProbe = .{};
+        defer probe.deinit();
+        const lease = try streams.bind(engine, probe.bridge());
+        defer _ = streams.unbind(engine, lease);
+        const scopes = @import("native_async_scope.zig");
+        var registration: EventOwnerProbe = .{ .engine = engine, .id = 1 };
+        var data_owner: EventOwnerProbe = .{ .engine = engine, .id = 2 };
+        const registration_token = try scopes.create(engine, &registration, EventOwnerProbe.activate, EventOwnerProbe.deactivate);
+        defer engine.freeValue(registration_token);
+        const data_token = try scopes.create(engine, &data_owner, EventOwnerProbe.activate, EventOwnerProbe.deactivate);
+        defer engine.freeValue(data_token);
+        const root = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(root);
+        try js.define(engine, root, "eventOwnerProbe", c.JS_NewInt32(engine.context, 0));
+        const mode = sample.object.get("mode").?.string;
+        try js.define(engine, root, "stdinEndMode", try engine.checked(c.JS_NewStringLen(engine.context, mode.ptr, mode.len)));
+        var callback_data = [_]c.JSValue{data_token};
+        try js.define(engine, root, "stdinEndEnterData", try engine.checked(c.JS_NewCFunctionData2(engine.context, stdinEndEnterData, "enterWith", 0, 0, 1, &callback_data)));
+        const expected = try std.json.Stringify.valueAlloc(std.testing.allocator, sample.object.get("value").?, .{});
+        defer std.testing.allocator.free(expected);
+        try js.define(engine, root, "stdinEndExpected", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "stdin-end-source-value.json")));
+        {
+            const guard = scopes.enter(engine, registration_token);
+            defer guard.restore();
+            const setup = try engine.evalModule(@embedFile("fixtures/node-stdin-eof-native-replay.input.txt"), "stdin-end-register.mjs");
+            engine.freeValue(setup);
+        }
+        _ = try engine.drainReadyJobs();
+        var input: [16]u8 = undefined;
+        const bytes = sample.object.get("bytes").?.array.items;
+        if (bytes.len > input.len) return error.StdinEndFixtureLimit;
+        for (bytes, 0..) |byte, offset| input[offset] = @intCast(byte.integer);
+        {
+            const guard = scopes.enter(engine, c.pi_js_undefined());
+            defer guard.restore();
+            try streams.deliverInput(engine, input[0..bytes.len]);
+        }
+        _ = try engine.drainReadyJobs();
+        if (!std.mem.eql(u8, mode, "paused")) {
+            const guard = scopes.enter(engine, c.pi_js_undefined());
+            defer guard.restore();
+            try streams.deliverEnd(engine);
+            try streams.deliverEnd(engine);
+        }
+        _ = try engine.drainReadyJobs();
+        if (std.mem.eql(u8, mode, "paused") or std.mem.eql(u8, mode, "prefetched")) {
+            const resumed = try engine.eval("stdinEndSeen.push(['before-resume',stdinEndSeen.length,stdinEndScope()]);process.stdin.resume();", "stdin-end-resume.js", c.JS_EVAL_TYPE_GLOBAL);
+            engine.freeValue(resumed);
+            _ = try engine.drainReadyJobs();
+        }
+        if (std.mem.eql(u8, mode, "paused")) {
+            // Actual pipe IO resumes its producer before a later EOF turn.
+            // The separate prefetched Readable case delivers EOF beforehand.
+            const guard = scopes.enter(engine, c.pi_js_undefined());
+            defer guard.restore();
+            try streams.deliverEnd(engine);
+            try streams.deliverEnd(engine);
+            _ = try engine.drainReadyJobs();
+        }
+        const checked = engine.eval(
+            \\const observed={seen:stdinEndSeen,paused:process.stdin.isPaused()};if(JSON.stringify(observed)!==JSON.stringify(stdinEndExpected))throw Error(JSON.stringify({mode:stdinEndMode,actual:observed,expected:stdinEndExpected}));if(stdinEndSeen.filter(entry=>entry[0]==='end').length!==1)throw Error('native EOF emitted twice');
+        , "stdin-end-compare.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+            if (engine.last_error) |message| std.debug.print("Native stdin EOF Source case {d}: {s}\n", .{ index, message });
+            return err;
+        };
+        engine.freeValue(checked);
+        try std.testing.expectError(error.NativeTerminalInputAfterEnd, streams.deliverInput(engine, "after EOF"));
+        {
+            const guard = scopes.enter(engine, registration_token);
+            defer guard.restore();
+            const manual = try engine.eval("process.stdin.emit('end');if(JSON.stringify(stdinEndSeen.at(-1))!==JSON.stringify(['end','registration']))throw Error('manual end adopted producer scope');", "stdin-end-manual.js", c.JS_EVAL_TYPE_GLOBAL);
+            engine.freeValue(manual);
+        }
+        const restored = scopes.capture(engine);
+        defer engine.freeValue(restored);
+        try std.testing.expect(c.JS_IsUndefined(restored));
+    }
+}
+const StdinRebindProbe = struct {
+    bridge: *TerminalBridgeProbe,
+    lease: ?@import("native_process_streams.zig").Lease = null,
+    fn call(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = js.Engine.fromContext(context.?);
+        const self: *@This() = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));
+        self.lease = @import("native_process_streams.zig").bind(engine, self.bridge.bridge()) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+            return c.JS_ThrowTypeError(context, "Native test rebind: %s", @as([*:0]const u8, @errorName(err)));
+        };
+        return c.pi_js_undefined();
+    }
+};
+test "Source6fb public TUI slice native stdin exact lease admission drops stale same-context input resize and EOF" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"stdin-end-generation"});
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{};
+    defer probe.deinit();
+    const first = try streams.bind(engine, probe.bridge());
+    var rebinding: StdinRebindProbe = .{ .bridge = &probe };
+    var helper_class: c.JSClassID = 0;
+    _ = c.JS_NewClassID(engine.runtime, &helper_class);
+    const helper_definition: c.JSClassDef = .{ .class_name = "Test owner-thread stdin rebind" };
+    if (c.JS_NewClass(engine.runtime, helper_class, &helper_definition) < 0) return error.OutOfMemory;
+    const holder = try engine.checked(c.JS_NewObjectClass(engine.context, helper_class));
+    defer engine.freeValue(holder);
+    _ = c.JS_SetOpaque(holder, &rebinding);
+    var helper_data = [_]c.JSValue{holder};
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "stdinLeaseRebind", try engine.checked(c.JS_NewCFunctionData2(engine.context, StdinRebindProbe.call, "rebind", 0, 0, 1, &helper_data)));
+    const setup = try engine.eval("var leaseEnds=0,leaseData=[],leaseResize=0,leaseShouldRebind=true;process.stdin.setEncoding('utf8');process.stdin.on('data',value=>{leaseData.push(value);if(leaseShouldRebind){leaseShouldRebind=false;stdinLeaseRebind();}});process.stdin.on('end',()=>leaseEnds++);process.stdout.on('resize',()=>leaseResize++);", "stdin-lease-setup.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(setup);
+    _ = try engine.drainReadyJobs();
+    try streams.deliverInput(engine, &.{ 0xe7, 0x95 });
+    // EOF first queues end, then its final decoder-tail data listener replaces
+    // the binding synchronously. The host checkpoint must drop that old end.
+    try streams.deliverEnd(engine);
+    const second = rebinding.lease orelse return error.NativeStdinRebindDidNotRun;
+    defer _ = streams.unbind(engine, second);
+    const boundary = try engine.eval("if(leaseEnds!==0||JSON.stringify(leaseData)!=='[\"�\"]')throw Error(JSON.stringify({leaseEnds,leaseData}));leaseData=[];", "stdin-lease-pending-boundary.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(boundary);
+    try std.testing.expect(!streams.ownsLease(engine, first));
+    try std.testing.expect(streams.ownsLease(engine, second));
+    try std.testing.expect(!streams.ownsLease(engine, .{ .context = second.context, .generation = second.generation + (@as(u64, 1) << 53) }));
+    // This is the SDK producer's native admission pattern for queued records.
+    if (streams.ownsLease(engine, first)) {
+        try streams.deliverInput(engine, "stale");
+        try streams.deliverResize(engine, 999, 999);
+        try streams.deliverEnd(engine);
+    }
+    _ = try engine.drainReadyJobs();
+    const resumed = try engine.eval("process.stdin.resume();", "stdin-lease-resume.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(resumed);
+    _ = try engine.drainReadyJobs();
+    try streams.deliverInput(engine, "current");
+    try streams.deliverResize(engine, 40, 12);
+    try streams.deliverEnd(engine);
+    _ = try engine.drainReadyJobs();
+    const checked = try engine.eval("if(leaseEnds!==1||JSON.stringify(leaseData)!=='[\"current\"]'||leaseResize!==1)throw Error(JSON.stringify({leaseEnds,leaseData,leaseResize}));", "stdin-lease-result.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(checked);
+    probe.live = false;
+    try std.testing.expectError(error.NativeProcessStreamLeaseStale, streams.deliverEnd(engine));
+}
+test "Source6fb public TUI slice actual Node UTF8 StringDecoder fragmented invalid groups and EOF replacement" {
+    try verifyStdinDecoder(@embedFile("fixtures/node-stdin-decoder-original-24.json"), "original fragments");
+    try verifyStdinDecoder(@embedFile("fixtures/node-stdin-decoder-invalid-leads-original-24.json"), "invalid leading bytes");
+}
+fn verifyStdinDecoder(fixture_bytes: []const u8, label: []const u8) !void {
+    const fixture = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, fixture_bytes, .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items, 0..) |sample, index| {
+        const engine = try js.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        var environment: std.process.Environ.Map = .init(std.testing.allocator);
+        defer environment.deinit();
+        try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"stdin-decoder-source"});
+        const streams = @import("native_process_streams.zig");
+        var probe: TerminalBridgeProbe = .{};
+        defer probe.deinit();
+        const lease = try streams.bind(engine, probe.bridge());
+        defer _ = streams.unbind(engine, lease);
+        const setup = try engine.eval("var decoderData=[],decoderEnds=0;process.stdin.setEncoding('utf8');process.stdin.on('data',value=>decoderData.push(value));process.stdin.on('end',()=>decoderEnds++);", "stdin-decoder-setup.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(setup);
+        _ = try engine.drainReadyJobs();
+        for (sample.object.get("frames").?.array.items) |frame| {
+            var bytes: [16]u8 = undefined;
+            if (frame.array.items.len > bytes.len) return error.StdinDecoderFixtureLimit;
+            for (frame.array.items, 0..) |value, offset| bytes[offset] = @intCast(value.integer);
+            try streams.deliverInput(engine, bytes[0..frame.array.items.len]);
+            _ = try engine.drainReadyJobs();
+        }
+        try streams.deliverEnd(engine);
+        _ = try engine.drainReadyJobs();
+        const expected = try std.json.Stringify.valueAlloc(std.testing.allocator, sample.object.get("data").?, .{});
+        defer std.testing.allocator.free(expected);
+        const root = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(root);
+        try js.define(engine, root, "decoderExpected", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "stdin-decoder-source-value.json")));
+        const checked = engine.eval("if(decoderEnds!==1||JSON.stringify(decoderData)!==JSON.stringify(decoderExpected))throw Error(JSON.stringify({decoderEnds,actual:decoderData,expected:decoderExpected}));", "stdin-decoder-compare.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+            if (engine.last_error) |message| std.debug.print("Native stdin decoder {s} Source case {d}: {s}\n", .{ label, index, message });
+            return err;
+        };
+        engine.freeValue(checked);
+    }
+}
 fn resourceContextFence(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     @import("native_async_scope.zig").requireBindingLive(engine, true) catch |err| {
