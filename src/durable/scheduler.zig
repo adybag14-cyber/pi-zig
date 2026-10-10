@@ -897,15 +897,12 @@ pub const Scheduler = struct {
                 self.marked_abandoned = true;
                 return .null;
             }
-            const view = try scheduler.session.storage.snapshot(scheduler.gpa);
-            defer view.destroy(scheduler.gpa);
-            const graph: model.Graph = .{ .state = view };
-            var ids: std.ArrayList(u64) = .empty;
-            defer ids.deinit(scheduler.gpa);
-            var rows = view.rows.iterator();
-            while (rows.next()) |item| if (item.value_ptr.table == .task and try model.live(item.value_ptr.record)) try ids.append(scheduler.gpa, item.key_ptr.*);
-            std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
-            for (ids.items) |id| {
+            try scheduler.loadScopes();
+            // Committed candidates keep Source's insertion order. Historical
+            // tasks and Storage snapshots do not participate in reservation.
+            const ids = try scheduler.gpa.dupe(u64, scheduler.ownership_index.runnable.keys());
+            defer scheduler.gpa.free(ids);
+            for (ids) |id| {
                 if (self.list.items.len == (if (self.limit == 0) scheduler.options.max_workers else self.limit) or scheduler.closing.load(.acquire)) break;
                 if (self.excluded) |excluded| if (excluded.contains(id)) continue;
                 // end() may run before the old worker leaves its final Step;
@@ -919,13 +916,26 @@ pub const Scheduler = struct {
                 };
                 scheduler.mutex.unlock(scheduler.io);
                 if (already_active) continue;
-                var record = try graph.task(id);
+                var record = (scheduler.live_records.get(id) orelse continue).value;
                 const s = try model.status(record);
                 if (s == .completing) continue;
                 const mode: Mode = if (try model.flag(record, "abortRequested")) .abort else .run;
-                if (mode == .run and !try model.flag(record, "background") and try graph.belowCancelled(try model.parent(record))) continue;
-                if (mode == .abort and try graph.hasOwnedLive(id)) continue;
-                if (mode == .run and try graph.waitingOn(record)) continue;
+                if (mode == .run and !try model.flag(record, "background") and try scheduler.ownership_index.cancellingOwner((try recordLink(record)).parent()) != null) continue;
+                if (mode == .abort and try scheduler.ownership_index.hasOrdinaryBelow(scheduler.gpa, ownership.Node.task(id))) {
+                    _ = scheduler.ownership_index.runnable.orderedRemove(id);
+                    continue;
+                }
+                if (mode == .run and s == .waiting) {
+                    var blocked = false;
+                    for ((try model.field(try model.field(record, "state"), "on")).array.items) |member| if (scheduler.ownership_index.live.contains(try json.asInteger(member))) {
+                        blocked = true;
+                        break;
+                    };
+                    if (blocked) {
+                        _ = scheduler.ownership_index.runnable.orderedRemove(id);
+                        continue;
+                    }
+                }
                 const node = self.lookup(try model.text(record, "kind"));
                 var blocked: ?Blocked = null;
                 if (node == null) blocked = .missing_task else {
@@ -1082,13 +1092,14 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     const Probe = struct {
         memory: *backend.memory.Memory,
         scheduler: *Scheduler,
-        operation: enum { root, seed, end_link, reload_empty, reload_reject, leaf, end_leaf, end_parent } = .root,
+        operation: enum { root, seed, end_link, reload_empty, reload_reject, leaf, end_leaf, end_parent, reserve_without_history } = .root,
         parent: u64 = 0,
         link: u64 = 0,
         conversation: u64 = 0,
         leaf: u64 = 0,
         read_conversation: bool = false,
         read_terminal: bool = false,
+        forbid_snapshot: bool = false,
         fn own(raw: ?*anyopaque) *@This() {
             return @ptrCast(@alignCast(raw.?));
         }
@@ -1102,7 +1113,9 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
             return own(raw).base().commitAt(writes, seq);
         }
         fn snapshot(raw: ?*anyopaque, gpa: std.mem.Allocator) !*backend.memory.State {
-            return own(raw).base().snapshot(gpa);
+            const self = own(raw);
+            if (self.forbid_snapshot) return error.ReservationReadHistoricalSnapshot;
+            return self.base().snapshot(gpa);
         }
         fn record(raw: ?*anyopaque, gpa: std.mem.Allocator, id: u64) !?json.Owned {
             return own(raw).base().readRecord(gpa, id);
@@ -1144,6 +1157,17 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
                 .end_link => try self.finish(tx, self.link),
                 .end_leaf => try self.finish(tx, self.leaf),
                 .end_parent => try self.finish(tx, self.parent),
+                .reserve_without_history => {
+                    self.forbid_snapshot = true;
+                    defer self.forbid_snapshot = false;
+                    var batch: Scheduler.Batch = .{ .scheduler = self.scheduler, .registry = &.{} };
+                    defer batch.list.deinit(tx.gpa);
+                    try batch.list.ensureTotalCapacity(tx.gpa, self.scheduler.options.max_workers);
+                    _ = try Scheduler.Batch.reserve(&batch, tx, .{});
+                    // Missing definitions stay blocked without creating any
+                    // invocation or reading historical storage records.
+                    try std.testing.expectEqual(@as(usize, 0), batch.list.items.len);
+                },
                 .reload_empty, .reload_reject, .leaf => {
                     try self.scheduler.loadChain(ownership.Node.conversation(self.conversation));
                     // The operation may still create work beneath these nodes.
@@ -1183,6 +1207,8 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     try probe.run(.root);
     try probe.expect(rows[0]);
     try probe.run(.seed);
+    try probe.expect(rows[1]);
+    try probe.run(.reserve_without_history);
     try probe.expect(rows[1]);
     try probe.run(.end_link);
     try probe.expect(rows[2]);
