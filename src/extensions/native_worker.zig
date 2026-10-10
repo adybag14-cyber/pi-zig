@@ -1922,7 +1922,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             try typed_tickets.retireOwner(owner_id);
             group.remove(owner_id) catch |err| {
                 try writeFailure(allocator, writer, @errorName(err));
-                return err;
+                return @as(anyerror!void, err);
             };
             try transport.publishMetadataSafe();
             try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
