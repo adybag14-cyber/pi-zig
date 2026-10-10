@@ -2766,6 +2766,7 @@ test "native UI service retained overlay callbacks restore their creating servic
         fn close(_: ?*anyopaque, _: @import("component_protocol.zig").Fence) !void {}
     };
     bindings.ui_manager.bridge = .{ .request = Bridge.request, .action = Bridge.action, .cancel = Bridge.cancel, .service_open = Bridge.service, .service_close = Bridge.service, .component_scene = Bridge.scene, .component_close = Bridge.close };
+    bindings.ui_manager.invocation_id = 1;
     try bindings.setContext("{\"hasUI\":true,\"nativeRuntimeBound\":true,\"width\":100,\"height\":40}");
     try bindings.loadFactory(
         "export default pi=>pi.registerCommand('open-retained-overlay',{handler(_,ctx){globalThis.pendingOverlay=ctx.ui.custom(tui=>{globalThis.overlayTui=tui;globalThis.overlayRoot={focused:false,render(){return ['retained-overlay']}};return overlayRoot},{overlay:true,overlayOptions:{width:20,nonCapturing:true},onHandle(h){globalThis.overlayHandle=h;h.focus()}});return{message:'opened'}}})",
