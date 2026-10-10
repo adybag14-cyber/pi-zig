@@ -865,8 +865,11 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_sqlite_live_tests.step);
 
     const engine_tests = b.addTest(.{
+        // Keep each standalone extension target focused on its own tests.
+        // Imported storage/SDK suites have separate fixture-aware targets.
+        .filters = &.{"extensions.engine."},
         .root_module = b.createModule(.{
-            .root_source_file = b.path("src/extensions/engine.zig"),
+            .root_source_file = b.path("src/extension_engine_test.zig"),
             .target = target,
             .optimize = optimize,
         }),
@@ -878,7 +881,8 @@ pub fn build(b: *std.Build) void {
     engine_test_step.dependOn(&run_engine_tests.step);
     test_step.dependOn(&run_engine_tests.step);
     const commonjs_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/commonjs.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.commonjs."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_commonjs_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, commonjs_tests.root_module, quickjs, sqlite_lib_dir);
@@ -887,7 +891,8 @@ pub fn build(b: *std.Build) void {
     commonjs_test_step.dependOn(&run_commonjs_tests.step);
     test_step.dependOn(&run_commonjs_tests.step);
     const buffer_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_buffer.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.node_buffer."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_node_buffer_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, buffer_tests.root_module, quickjs, sqlite_lib_dir);
@@ -896,7 +901,8 @@ pub fn build(b: *std.Build) void {
     buffer_test_step.dependOn(&run_buffer_tests.step);
     test_step.dependOn(&run_buffer_tests.step);
     const schema_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/typebox.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.typebox."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_typebox_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, schema_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1277,7 +1283,8 @@ pub fn build(b: *std.Build) void {
     toolinfo_test_step.dependOn(&run_toolinfo_tests.step);
     test_step.dependOn(&run_toolinfo_tests.step);
     const filesystem_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.node_fs."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_node_fs_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, filesystem_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1286,7 +1293,8 @@ pub fn build(b: *std.Build) void {
     filesystem_test_step.dependOn(&run_filesystem_tests.step);
     test_step.dependOn(&run_filesystem_tests.step);
     const path_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_path.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.node_path."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_node_path_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, path_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1295,7 +1303,8 @@ pub fn build(b: *std.Build) void {
     path_test_step.dependOn(&run_path_tests.step);
     test_step.dependOn(&run_path_tests.step);
     const url_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_url.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.node_url."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_node_url_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, url_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1304,7 +1313,8 @@ pub fn build(b: *std.Build) void {
     url_test_step.dependOn(&run_url_tests.step);
     test_step.dependOn(&run_url_tests.step);
     const console_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/console.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.console."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_console_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, console_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1313,7 +1323,8 @@ pub fn build(b: *std.Build) void {
     console_test_step.dependOn(&run_console_tests.step);
     test_step.dependOn(&run_console_tests.step);
     const resolver_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/module_resolver.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.module_resolver."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_module_resolver_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     const run_resolver_tests = b.addRunArtifact(resolver_tests);
@@ -1321,7 +1332,8 @@ pub fn build(b: *std.Build) void {
     resolver_test_step.dependOn(&run_resolver_tests.step);
     test_step.dependOn(&run_resolver_tests.step);
     const encoding_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/text_encoding.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.text_encoding."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_text_encoding_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, encoding_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1374,7 +1386,8 @@ pub fn build(b: *std.Build) void {
     renderer_control_race_step.dependOn(&run_renderer_control_race_tests.step);
     test_step.dependOn(&run_renderer_control_race_tests.step);
     const worker_process_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"extensions.native_worker_process_test."},
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extension_native_worker_process_test_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     const run_worker_process_tests = b.addRunArtifact(worker_process_tests);
@@ -1725,8 +1738,9 @@ pub fn build(b: *std.Build) void {
     image_processing_step.dependOn(&run_image_processing_tests.step);
     test_step.dependOn(&run_image_processing_tests.step);
     const typescript_tests = b.addTest(.{
+        .filters = &.{"extensions.typescript."},
         .root_module = b.createModule(.{
-            .root_source_file = b.path("src/extensions/typescript.zig"),
+            .root_source_file = b.path("src/extension_typescript_test.zig"),
             .target = target,
             .optimize = optimize,
         }),
