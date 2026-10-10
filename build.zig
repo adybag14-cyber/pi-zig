@@ -172,11 +172,9 @@ pub fn build(b: *std.Build) void {
     stdio_process_run.step.dependOn(&sdk_install.step);
     stdio_process_run.setEnvironmentVariable("PI_NATIVE_STDIO_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi-sdk-embedder{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     b.step("test-native-stdio-process", "Replay genuine Source terminal IO through actual SDK process pipes").dependOn(&stdio_process_run.step);
-    test_step.dependOn(&stdio_process_run.step);
     const process_protocol_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/process_stream_parent.zig"), .target = target, .optimize = optimize }), .filters = &.{"process stream"}, .use_llvm = use_llvm });
     const process_protocol_run = b.addRunArtifact(process_protocol_tests);
     b.step("test-native-process-stream-protocol", "Check binary process IO, exact leases, EOF ordering and paired detach").dependOn(&process_protocol_run.step);
-    test_step.dependOn(&process_protocol_run.step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, process_stdio_tests.root_module);
@@ -185,7 +183,6 @@ pub fn build(b: *std.Build) void {
     process_stdio_run.step.dependOn(&sdk_install.step);
     process_stdio_run.setEnvironmentVariable("PI_NATIVE_STDIO_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi-sdk-embedder{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     b.step("test-native-process-stdio-process", "Prove genuine terminal factory startup over authenticated framed parent IO").dependOn(&process_stdio_run.step);
-    test_step.dependOn(&process_stdio_run.step);
     const ui_service_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ui_service_allocation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Main UI service allocation"}, .use_llvm = use_llvm });
     linkQuickJs(b, ui_service_allocation_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, ui_service_allocation_tests.root_module);
@@ -331,6 +328,9 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    test_step.dependOn(&stdio_process_run.step);
+    test_step.dependOn(&process_protocol_run.step);
+    test_step.dependOn(&process_stdio_run.step);
     test_step.dependOn(&main_ui_adapter_run.step);
     test_step.dependOn(&main_ui_sync_run.step);
     test_step.dependOn(&ui_service_run.step);
