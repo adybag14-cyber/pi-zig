@@ -3328,10 +3328,10 @@ fn runMain(init: std.process.Init) !void {
 
     const raw_args = try init.minimal.args.toSlice(arena);
     if (raw_args.len == 3 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-worker")) {
-        return extensions.native_worker.run(gpa, io, raw_args[2]);
+        return extensions.native_worker.runWithEnvironment(gpa, io, raw_args[2], environ, raw_args);
     }
     if (raw_args.len == 2 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-group-worker")) {
-        return extensions.native_worker.runGroup(gpa, io);
+        return extensions.native_worker.runGroupWithEnvironment(gpa, io, environ, raw_args);
     }
     var cli = coding.args.parseArgs(arena, raw_args) catch |err| {
         const message = switch (err) {

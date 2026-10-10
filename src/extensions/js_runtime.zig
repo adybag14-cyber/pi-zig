@@ -10,6 +10,10 @@ const editor_protocol = @import("editor_protocol.zig");
 const widget_protocol = @import("widget_protocol.zig");
 const context_invalidation = @import("context_invalidation_protocol.zig");
 const native_catalog_broker = @import("native_catalog_broker.zig");
+const process_protocol = @import("process_stream_protocol.zig");
+const process_parent = @import("process_stream_parent.zig");
+pub const ProcessBridge = @import("process_stream_bridge.zig").Bridge;
+pub const ProcessSink = @import("process_stream_bridge.zig").Sink;
 pub const WidgetBridge = struct {
     context: ?*anyopaque,
     record_fn: *const fn (?*anyopaque, widget_protocol.Record, *widget_protocol.ControlQueue) anyerror!void,
@@ -29,6 +33,7 @@ const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
 var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
 var native_owner_generation: std.atomic.Value(u64) = .init(1);
+var native_process_generation: std.atomic.Value(u64) = .init(1);
 
 const RendererBridgeAdapter = struct {
     context: ?*anyopaque = null,
@@ -137,6 +142,7 @@ const NativeReadSession = struct {
     failure: ?anyerror = null,
 
     fn reader(self: *@This()) Io.Cancelable!void {
+        defer self.runtime.process_io.active.store(false, .release);
         defer self.runtime.ui_services.close(self.runtime);
         defer self.runtime.rendererEnded();
         defer self.runtime.editorEnded();
@@ -152,7 +158,15 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = (self.dispatchUiServiceRecord(record) catch |err| {
+            const adopted = (self.runtime.dispatchProcessRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.dispatchUiServiceRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -878,6 +892,7 @@ pub const Runtime = struct {
     extension_id: u64 = 1,
     group_references: std.atomic.Value(usize) = .init(1),
     native_read_session: ?*NativeReadSession = null,
+    process_io: process_parent.Parent = .{},
     native_reader_group: Io.Group = .init,
     ui_services: NativeUiServices = .{},
     service_open_invocation_id: u64 = 0,
@@ -964,6 +979,9 @@ pub const Runtime = struct {
         environ_map: ?*const std.process.Environ.Map = null,
         /// Group workers admit this object before evaluating extension input.
         startup_context_json: ?[]const u8 = null,
+        /// Process-wide IO is attached before extension factories execute.
+        /// Its lifetime is independent of every UI bridge and SDK session.
+        process_bridge: ?ProcessBridge = null,
     };
 
     pub fn start(
@@ -991,6 +1009,17 @@ pub const Runtime = struct {
             return error.NativeOwnerGenerationLimit;
         }
         runtime.owner_generation = generation;
+        if (options.process_bridge) |bridge| {
+            const process_generation = native_process_generation.fetchAdd(1, .monotonic);
+            if (process_generation == 0) {
+                runtime.deinit();
+                return error.NativeProcessGenerationLimit;
+            }
+            runtime.process_io.configure(bridge, .{ .owner_generation = generation, .process_generation = process_generation }) catch |err| {
+                runtime.deinit();
+                return err;
+            };
+        }
         var startup: Io.Writer.Allocating = .init(gpa);
         defer startup.deinit();
         const written: ?anyerror = blk: {
@@ -1000,6 +1029,7 @@ pub const Runtime = struct {
                 startup.writer.writeAll(",\"context\":") catch break :blk error.OutOfMemory;
                 startup.writer.writeAll(context) catch break :blk error.OutOfMemory;
             }
+            runtime.process_io.writeStartup(&startup.writer) catch |err| break :blk err;
             startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
             if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
             runtime.writeLine(startup.written()) catch |err| break :blk err;
@@ -1009,6 +1039,12 @@ pub const Runtime = struct {
             runtime.deinit();
             return err;
         }
+        if (runtime.process_io.lease) |lease| {
+            runtime.process_io.attach(.{ .context = runtime, .lease = lease, .input_fn = processInput, .resize_fn = processResize, .end_fn = processEnd }) catch |err| {
+                runtime.deinit();
+                return err;
+            };
+        }
         return startSpawned(runtime);
     }
 
@@ -1017,6 +1053,7 @@ pub const Runtime = struct {
     }
 
     fn spawnNativeRuntimeConfigured(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions, grouped: bool) !*Runtime {
+        if (!grouped and options.process_bridge != null) return error.NativeProcessBridgeRequiresGroup;
         const owned_source = try gpa.dupe(u8, source_path);
         errdefer gpa.free(owned_source);
         const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
@@ -1049,13 +1086,34 @@ pub const Runtime = struct {
         const gpa = runtime.gpa;
         errdefer runtime.deinit();
 
-        const ready_line = runtime.readRecordUnlocked() catch |err| {
-            // A factory can throw before the bridge publishes its ready
-            // manifest. Mark the worker closed before errdefer cleanup so the
-            // host never writes a shutdown record into an already-closing
-            // Windows pipe, while still reaping this exact child process.
-            runtime.closeUnlocked();
-            return err;
+        const ready_line = startup: {
+            const original_timeout = runtime.timeout_ms;
+            defer runtime.timeout_ms = original_timeout;
+            const deadline = if (original_timeout == 0) null else Io.Clock.awake.now(runtime.io).toMilliseconds() +| @as(i64, @intCast(@min(original_timeout, std.math.maxInt(i64))));
+            while (true) {
+                if (deadline) |end| {
+                    const remaining = end - Io.Clock.awake.now(runtime.io).toMilliseconds();
+                    if (remaining <= 0) return error.JavaScriptExtensionTimeout;
+                    runtime.timeout_ms = @intCast(remaining);
+                }
+                const line = runtime.readRecordUnlocked() catch |err| {
+                    // A factory can throw before the bridge publishes its ready
+                    // manifest. Mark the worker closed before errdefer cleanup so the
+                    // host never writes a shutdown record into an already-closing
+                    // Windows pipe, while still reaping this exact child process.
+                    runtime.closeUnlocked();
+                    return err;
+                };
+                const handled = runtime.dispatchProcessRecord(line) catch |err| {
+                    gpa.free(line);
+                    return err;
+                };
+                if (handled) {
+                    gpa.free(line);
+                    continue;
+                }
+                break :startup line;
+            }
         };
         defer gpa.free(ready_line);
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, ready_line, .{});
@@ -1238,6 +1296,7 @@ pub const Runtime = struct {
             return;
         }
         if (self.native_group and self.group_references.fetchSub(1, .acq_rel) != 1) return;
+        self.process_io.close();
         self.catalog_broker.close(self.io);
         self.catalog_broker.serial.lockUncancelable(self.io);
         self.catalog_broker.serial.unlock(self.io);
@@ -2925,6 +2984,25 @@ pub const Runtime = struct {
         try writer.interface.writeAll(line);
         try writer.interface.writeByte('\n');
         try writer.interface.flush();
+    }
+    fn processSend(context: ?*anyopaque, line: []const u8) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.writeLine(line);
+    }
+    fn processInput(context: ?*anyopaque, lease: process_protocol.Lease, bytes: []const u8) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.input(lease, bytes, self, processSend);
+    }
+    fn processResize(context: ?*anyopaque, lease: process_protocol.Lease, columns: u32, rows: u32) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.resize(lease, columns, rows, self, processSend);
+    }
+    fn processEnd(context: ?*anyopaque, lease: process_protocol.Lease) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.end(lease, self, processSend);
+    }
+    fn dispatchProcessRecord(self: *Runtime, bytes: []const u8) !bool {
+        return self.process_io.dispatch(bytes, self, processSend);
     }
 
     /// Ignore ordinary stdout from extension code and consume only bridge

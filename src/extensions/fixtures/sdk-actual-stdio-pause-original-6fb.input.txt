@@ -1,0 +1,9 @@
+import {ProcessTerminal} from 'pi-tui';
+const terminal=new ProcessTerminal();
+const keys=[];let inputResolve;
+const input=new Promise(resolve=>inputResolve=resolve);
+terminal.start(data=>{keys.push(data);if(keys.join('').endsWith('a界🦊\r'))inputResolve();},()=>{});
+process.stdout.write('SDK_STDIO_READY\n');
+await input;
+terminal.stop();
+process.stdout.write('SDK_STDIO_RESULT:'+JSON.stringify({keys,paused:process.stdin.isPaused(),kitty:terminal.kittyProtocolActive})+'\n');

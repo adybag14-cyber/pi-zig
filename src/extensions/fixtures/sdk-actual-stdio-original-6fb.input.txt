@@ -1,0 +1,18 @@
+import {ProcessTerminal} from 'pi-tui';
+const own=(object,key)=>Object.hasOwn(object,key);
+const terminal=new ProcessTerminal();
+const before={inputRaw:own(process.stdin,'isRaw'),inputTTY:own(process.stdin,'isTTY'),rawMethod:own(process.stdin,'setRawMode'),outputTTY:own(process.stdout,'isTTY'),errorTTY:own(process.stderr,'isTTY'),columns:own(process.stdout,'columns'),rows:own(process.stdout,'rows'),inputPaused:process.stdin.isPaused(),terminalColumns:terminal.columns,terminalRows:terminal.rows};
+const keys=[];
+let inputResolve,endResolve;
+const input=new Promise(resolve=>inputResolve=resolve);
+const ended=new Promise(resolve=>endResolve=resolve);
+process.stdin.once('end',()=>endResolve());
+terminal.start(data=>{keys.push(data);if(keys.join('').endsWith('a界🦊\r'))inputResolve();},()=>{});
+process.stdout.write('SDK_STDIO_READY\n');
+await Promise.all([input,ended]);
+const during={inputPaused:process.stdin.isPaused(),kitty:terminal.kittyProtocolActive,wasRaw:terminal.wasRaw};
+terminal.stop();
+const after={inputPaused:process.stdin.isPaused(),kitty:terminal.kittyProtocolActive};
+process.stdout.write(Buffer.from([0,255,10]));
+process.stderr.write('SDK_STDERR_ACTUAL\n');
+console.log('SDK_STDIO_RESULT:'+JSON.stringify({before,keys,during,after}));

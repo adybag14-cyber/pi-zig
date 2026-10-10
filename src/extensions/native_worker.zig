@@ -23,9 +23,12 @@ const editor_protocol = @import("editor_protocol.zig");
 const widget_protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
 const provider_tickets = @import("native_provider_tickets.zig");
+const process_protocol = @import("process_stream_protocol.zig");
+const process_transport = @import("native_process_transport.zig");
+const process_streams = @import("native_process_streams.zig");
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
+    const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, native_process_response, native_process_input, native_process_resize, native_process_end, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -60,8 +63,10 @@ const Transport = struct {
     metadata_revision: u64 = 0,
     metadata_snapshot: ?[]u8 = null,
     tickets: ?*provider_tickets.Manager = null,
+    process_worker: ?process_transport.Worker = null,
 
     fn deinit(self: *Transport) void {
+        if (self.process_worker) |*worker| worker.closed = true;
         if (self.tickets) |tickets| tickets.deinit();
         if (self.metadata_snapshot) |snapshot| self.engine.gpa.free(snapshot);
         self.clearActive();
@@ -96,6 +101,10 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
         if (std.mem.eql(u8, kind.string, "native_ui_service_response") or std.mem.eql(u8, kind.string, "native_ui_service_component_control")) return .native_ui_service_response;
         if (std.mem.eql(u8, kind.string, "native_ui_service_epoch")) return .native_ui_service_epoch;
+        if (std.mem.eql(u8, kind.string, "native_process_response")) return .native_process_response;
+        if (std.mem.eql(u8, kind.string, "native_process_input")) return .native_process_input;
+        if (std.mem.eql(u8, kind.string, "native_process_resize")) return .native_process_resize;
+        if (std.mem.eql(u8, kind.string, "native_process_end")) return .native_process_end;
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
@@ -275,7 +284,9 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .native_ui_service_response or record.kind == .native_ui_service_epoch or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
+            const process_io = record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end;
+            if (process_io and c.JS_IsJobPending(self.engine.runtime)) continue;
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .native_ui_service_response or record.kind == .native_ui_service_epoch or record.kind == .native_process_response or process_io or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -306,6 +317,13 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .native_process_response) continue;
+            if (record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end) {
+                try self.processData(request, record.kind);
+                // One physical IO turn, followed by its complete microtask
+                // checkpoint before another data/EOF record can be admitted.
+                return true;
+            }
             if (record.kind == .native_ui_service_epoch) {
                 try self.uiServiceEpoch(request);
                 dispatched = true;
@@ -450,6 +468,8 @@ const Transport = struct {
     }
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
+            .native_process_response => {},
+            .native_process_input, .native_process_resize, .native_process_end => try self.processData(request, kind),
             .native_ui_service_epoch => try self.uiServiceEpoch(request),
             .native_ui_service_response => if (request == .object) try self.group.uiServiceResponse(request.object),
             .context_invalidate => try self.contextInvalidate(request),
@@ -460,6 +480,64 @@ const Transport = struct {
             else => return false,
         }
         return true;
+    }
+    fn processData(self: *Transport, request: std.json.Value, kind: WireRecord.Kind) !void {
+        if (request != .object) return;
+        const worker = if (self.process_worker) |*value| value else return;
+        const lease = process_protocol.readLease(&request.object) catch return;
+        if (!lease.matches(worker.lease) or worker.closed) return;
+        if (!process_streams.ownsLease(self.engine, worker.stream_lease orelse return)) return;
+        const neutral = @import("native_async_scope.zig").enter(self.engine, c.pi_js_undefined());
+        defer neutral.restore();
+        if (kind == .native_process_end) {
+            try process_streams.deliverEnd(self.engine);
+        } else if (kind == .native_process_resize) {
+            const columns = request.object.get("columns") orelse return;
+            const rows = request.object.get("rows") orelse return;
+            if (columns != .integer or rows != .integer or columns.integer < 0 or rows.integer < 0 or columns.integer > std.math.maxInt(u32) or rows.integer > std.math.maxInt(u32)) return;
+            try process_streams.deliverResize(self.engine, @intCast(columns.integer), @intCast(rows.integer));
+        } else {
+            const encoded_bytes = request.object.get("bytesBase64") orelse return;
+            if (encoded_bytes != .string) return;
+            const count = std.base64.standard.Decoder.calcSizeForSlice(encoded_bytes.string) catch return;
+            if (count > process_protocol.maximum_chunk_bytes) return;
+            const bytes = try self.engine.gpa.alloc(u8, count);
+            defer self.engine.gpa.free(bytes);
+            std.base64.standard.Decoder.decode(bytes, encoded_bytes.string) catch return;
+            try process_streams.deliverInput(self.engine, bytes);
+        }
+    }
+    fn takeProcessResponse(context: ?*anyopaque, header: process_protocol.Header) !?[]u8 {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        self.available.reset();
+        for (self.records.items, 0..) |record, index| {
+            if (record.kind != .native_process_response) continue;
+            var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+            defer arena.deinit();
+            const parsed = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{}) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                continue;
+            };
+            if (parsed != .object) continue;
+            const candidate = process_protocol.readHeader(&parsed.object) catch continue;
+            if (!candidate.matches(header)) continue;
+            const selected = self.records.orderedRemove(index);
+            self.queued_bytes -= selected.bytes.len;
+            return selected.bytes;
+        }
+        if (self.finished) return self.reader_error orelse error.NativeProcessFrontendClosed;
+        return null;
+    }
+    fn waitProcessResponse(context: ?*anyopaque, deadline: i64) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        const remaining = deadline - std.Io.Clock.awake.now(self.io).toMilliseconds();
+        if (remaining <= 0) return error.NativeHostPromiseTimeout;
+        self.available.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } }) catch |err| switch (err) {
+            error.Timeout => return error.NativeHostPromiseTimeout,
+            else => return err,
+        };
     }
 
     fn uiServiceEpoch(self: *Transport, request: std.json.Value) !void {
@@ -1471,7 +1549,12 @@ fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, lo
 }
 
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
-    return runOwner(gpa, io, &.{extension_path}, null, false, 1, null);
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    return runWithEnvironment(gpa, io, extension_path, &environment, &.{extension_path});
+}
+pub fn runWithEnvironment(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
+    return runOwner(gpa, io, &.{extension_path}, null, false, 1, null, null, environment, arguments);
 }
 
 /// Native programmatic embedding entrypoint. It evaluates a user SDK module
@@ -1502,6 +1585,9 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     try text_decoder.install(engine);
     try @import("native_process.zig").install(engine, io, environment, arguments);
     engine.native_console_stdout = true;
+    var stdio: @import("native_stdio_frontend.zig").Frontend = undefined;
+    try stdio.init(engine, io);
+    defer stdio.deinit();
     const filename = try std.Io.Dir.cwd().realPathFileAlloc(io, script_path, gpa);
     defer gpa.free(filename);
     for (filename) |*byte| if (byte.* == '\\') {
@@ -1533,9 +1619,15 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     };
     defer engine.freeValue(settled);
     _ = try engine.drainReadyJobs();
+    try stdio.runUntilIdle();
 }
 
 pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    return runGroupWithEnvironment(gpa, io, &environment, &.{});
+}
+pub fn runGroupWithEnvironment(gpa: std.mem.Allocator, io: std.Io, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
     var input_buffer: [4096]u8 = undefined;
     var input = std.Io.File.stdin().readerStreaming(io, &input_buffer);
     var startup: std.ArrayList(u8) = .empty;
@@ -1563,10 +1655,12 @@ pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
     if (owner_generation > 9_007_199_254_740_991) return error.InvalidRendererIdentity;
     const context = parsed.value.object.get("context");
     if (context) |value| if (value != .object) return error.InvalidNativeGroupStartup;
-    return runOwner(gpa, io, paths, &input, true, owner_generation, context);
+    const process_io = parsed.value.object.get("processIO");
+    if (process_io) |value| if (value != .object) return error.InvalidNativeGroupStartup;
+    return runOwner(gpa, io, paths, &input, true, owner_generation, context, process_io, environment, arguments);
 }
 
-fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value) !void {
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value, startup_process: ?std.json.Value, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
@@ -1579,6 +1673,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     group.activation.owner_generation = owner_generation;
     const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
+    try @import("native_process.zig").install(engine, io, environment, arguments);
     try bindings.installSchemas();
     try node_path.install(engine, io);
     try node_url.install(engine);
@@ -1589,6 +1684,39 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try text_decoder.install(engine);
     const bootstrap = if (startup_context) |value| try encoded(gpa, value) else null;
     defer if (bootstrap) |bytes| gpa.free(bytes);
+    var output_buffer: [8192]u8 = undefined;
+    var output = std.Io.File.stdout().writerStreaming(io, &output_buffer);
+    const writer = &output.interface;
+    var typed_tickets: provider_tickets.Manager = .{ .engine = engine, .io = io };
+    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input, .tickets = &typed_tickets };
+    defer transport.deinit();
+    engine.host_control_context = &transport;
+    engine.host_control_pump = Transport.pump;
+    defer {
+        engine.host_control_context = null;
+        engine.host_control_pump = null;
+    }
+    var reader_group: std.Io.Group = .init;
+    try reader_group.concurrent(io, Transport.readerTask, .{&transport});
+    defer {
+        reader_group.cancel(io);
+        reader_group.await(io) catch {};
+    }
+    var stream_lease: ?process_streams.Lease = null;
+    defer {
+        if (transport.process_worker) |*worker| worker.closed = true;
+        if (stream_lease) |lease| _ = process_streams.unbind(engine, lease);
+    }
+    if (startup_process) |configuration| {
+        const lease = try process_protocol.readLease(&configuration.object);
+        if (lease.owner_generation != owner_generation) return error.InvalidNativeProcessStartupLease;
+        const metadata = try process_protocol.readMetadata(&configuration.object);
+        transport.process_worker = .{ .engine = engine, .io = io, .writer = writer, .lease = lease, .context = &transport, .take_fn = Transport.takeProcessResponse, .wait_fn = Transport.waitProcessResponse };
+        try process_streams.hydrateInput(engine, metadata.stdin_raw, metadata.stdin_tty);
+        try process_streams.hydrateOutput(engine, metadata.stdout_tty, metadata.stderr_tty, metadata.columns, metadata.rows);
+        stream_lease = try process_streams.bind(engine, transport.process_worker.?.bridge(metadata));
+        transport.process_worker.?.stream_lease = stream_lease;
+    }
     for (sources, 0..) |extension_path, index| {
         const source_binding = if (index == 0) bindings else try group.add(extension_path);
         if (bootstrap) |bytes| try source_binding.setContext(bytes);
@@ -1603,9 +1731,6 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             return err;
         };
     }
-    var output_buffer: [8192]u8 = undefined;
-    var output = std.Io.File.stdout().writerStreaming(io, &output_buffer);
-    const writer = &output.interface;
     try group.initializeActivation();
     const manifest = if (grouped) try group.manifest() else try bindings.manifestJson(sources[0]);
     defer gpa.free(manifest);
@@ -1613,9 +1738,6 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try writer.writeAll(manifest);
     try writer.writeAll("}\n");
     try writer.flush();
-    var typed_tickets: provider_tickets.Manager = .{ .engine = engine, .io = io };
-    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input, .tickets = &typed_tickets };
-    defer transport.deinit();
     group.renderers.record_fn = Transport.rendererRecord;
     group.renderers.record_context = &transport;
     group.ui.editors.record_context = &transport;
@@ -1643,13 +1765,6 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         engine.host_owner_notify_context = null;
         engine.host_control_context = null;
         engine.host_control_pump = null;
-    }
-    var reader_group: std.Io.Group = .init;
-    // The persistent stdin reader must not execute eagerly on the JS owner.
-    try reader_group.concurrent(io, Transport.readerTask, .{&transport});
-    defer {
-        reader_group.cancel(io);
-        reader_group.await(io) catch {};
     }
     while (true) {
         const record = (try transport.next()) orelse return;

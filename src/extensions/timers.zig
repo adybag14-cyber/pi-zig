@@ -366,6 +366,19 @@ pub fn nextDeadline(engine: *engine_mod.Engine) !?i64 {
     return deadline;
 }
 
+/// Unref'ed timers run while another handle keeps a directly embedded script
+/// alive, but do not keep that script's native event loop alive themselves.
+pub fn nextReferencedDeadline(engine: *engine_mod.Engine) !?i64 {
+    const state = try scheduler(engine);
+    var deadline: ?i64 = null;
+    for (state.timers.items) |timer| {
+        const handle = handleState(timer.handle);
+        if (!handle.refed or handle.cancelled) continue;
+        deadline = if (deadline) |previous| @min(previous, timer.deadline_ms) else timer.deadline_ms;
+    }
+    return deadline;
+}
+
 /// Execute one due callback without waiting for a future deadline. All timer
 /// and JavaScript ownership remains on the calling engine owner thread.
 pub fn pumpReady(engine: *engine_mod.Engine) !bool {
