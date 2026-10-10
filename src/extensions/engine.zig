@@ -69,6 +69,7 @@ pub const Engine = struct {
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
     native_durable_runtime_class: c.JSClassID = 0,
+    native_durable_scheduler_class: c.JSClassID = 0,
     native_durable_watch_class: c.JSClassID = 0,
     native_durable_state_class: c.JSClassID = 0,
     native_durable_subscriber_class: c.JSClassID = 0,

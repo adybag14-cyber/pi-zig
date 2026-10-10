@@ -8,7 +8,9 @@ const types = @import("types.zig");
 const json = backend.json;
 const Value = json.Value;
 const Transaction = session_mod.Transaction;
-test { _ = @import("restart_test.zig"); }
+test {
+    _ = @import("restart_test.zig");
+}
 pub const Handler = *const fn (?*anyopaque, *Runtime, Value, types.Context) anyerror!void;
 pub const Initial = *const fn (?*anyopaque, std.mem.Allocator, Value) anyerror!Value;
 pub const Migrated = struct { input: Value, checkpoint: Value };
@@ -451,20 +453,7 @@ pub const Scheduler = struct {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             const view = try self.scheduler.session.storage.snapshot(self.scheduler.gpa);
             defer view.destroy(self.scheduler.gpa);
-            const graph: model.Graph = .{ .state = view };
-            var rows = view.rows.iterator();
-            while (rows.next()) |item| {
-                const row = item.value_ptr.*;
-                if (row.table != .task or !try model.live(row.record) or try model.flag(row.record, "background")) continue;
-                if (self.conversation) |id| {
-                    if (try graph.reaches(try model.parent(row.record), .{ .conversation = id }, false)) return .{ .bool = false };
-                } else {
-                    // Root-wide idle excludes descendants hidden behind a background owner.
-                    var conversations = view.rows.iterator();
-                    while (conversations.next()) |root_row| if (root_row.value_ptr.table == .conversation and json.get(root_row.value_ptr.record, "owner") == null and try graph.reaches(try model.parent(row.record), .{ .conversation = root_row.key_ptr.* }, false)) return .{ .bool = false };
-                }
-            }
-            return .{ .bool = true };
+            return .{ .bool = try idleState(view, self.conversation) };
         }
     };
     pub fn abort(self: *Scheduler, id: u64) !void {
@@ -877,3 +866,22 @@ pub const Scheduler = struct {
         }
     };
 };
+
+/// Ownership traversal over an immutable committed-state view. A VM owner can
+/// apply the same rule to its publication mirror without taking the Session line.
+pub fn idleState(view: *const backend.memory.State, conversation: ?u64) !bool {
+    const graph: model.Graph = .{ .state = view };
+    var rows = view.rows.iterator();
+    while (rows.next()) |item| {
+        const row = item.value_ptr.*;
+        if (row.table != .task or !try model.live(row.record) or try model.flag(row.record, "background")) continue;
+        if (conversation) |id| {
+            if (try graph.reaches(try model.parent(row.record), .{ .conversation = id }, false)) return false;
+        } else {
+            // Root-wide idle excludes descendants hidden behind a background owner.
+            var conversations = view.rows.iterator();
+            while (conversations.next()) |root_row| if (root_row.value_ptr.table == .conversation and json.get(root_row.value_ptr.record, "owner") == null and try graph.reaches(try model.parent(row.record), .{ .conversation = root_row.key_ptr.* }, false)) return false;
+        }
+    }
+    return true;
+}

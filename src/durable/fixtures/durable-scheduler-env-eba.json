@@ -1,0 +1,329 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "scheduler",
+      "isPromise": true,
+      "originalValue": true,
+      "cancellationObserved": true,
+      "rawCause": true,
+      "alias": true
+    },
+    {
+      "name": "scheduler-settled",
+      "lateOriginal": true,
+      "ended": "Task $TASK invocation has ended",
+      "ownerWaitMatches": true,
+      "ownerIdleUndefined": true,
+      "ownerCanceledOriginal": true,
+      "ownerPublicationWins": true,
+      "calls": [
+        {
+          "first": "$CONVERSATION",
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": false,
+          "receiver": {
+            "same": true,
+            "name": "TaskScheduler",
+            "ownKeys": [],
+            "prototypeKeys": [
+              "constructor",
+              "open",
+              "resume",
+              "join",
+              "abort",
+              "waitForTask",
+              "waitForIdle",
+              "abortConversation",
+              "inspect"
+            ],
+            "prototypeEnumerable": [],
+            "baseObject": true,
+            "methods": [
+              {
+                "name": "open",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "resume",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "join",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abort",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForTask",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForIdle",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abortConversation",
+                "length": 3,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "inspect",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              }
+            ],
+            "resumeUndefined": true,
+            "forged": true
+          }
+        },
+        {
+          "first": "$CONVERSATION",
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": false,
+          "receiver": {
+            "same": true,
+            "name": "TaskScheduler",
+            "ownKeys": [],
+            "prototypeKeys": [
+              "constructor",
+              "open",
+              "resume",
+              "join",
+              "abort",
+              "waitForTask",
+              "waitForIdle",
+              "abortConversation",
+              "inspect"
+            ],
+            "prototypeEnumerable": [],
+            "baseObject": true,
+            "methods": [
+              {
+                "name": "open",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "resume",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "join",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abort",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForTask",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForIdle",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abortConversation",
+                "length": 3,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "inspect",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              }
+            ],
+            "resumeUndefined": true,
+            "forged": true
+          }
+        },
+        {
+          "first": "$CONVERSATION",
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": false,
+          "receiver": {
+            "same": true,
+            "name": "TaskScheduler",
+            "ownKeys": [],
+            "prototypeKeys": [
+              "constructor",
+              "open",
+              "resume",
+              "join",
+              "abort",
+              "waitForTask",
+              "waitForIdle",
+              "abortConversation",
+              "inspect"
+            ],
+            "prototypeEnumerable": [],
+            "baseObject": true,
+            "methods": [
+              {
+                "name": "open",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "resume",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "join",
+                "length": 0,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abort",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForTask",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "waitForIdle",
+                "length": 2,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "abortConversation",
+                "length": 3,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              },
+              {
+                "name": "inspect",
+                "length": 1,
+                "writable": true,
+                "enumerable": false,
+                "configurable": true
+              }
+            ],
+            "resumeUndefined": true,
+            "forged": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "harness",
+      "isPromise": true,
+      "originalValue": true,
+      "rawCause": true,
+      "alias": true
+    },
+    {
+      "name": "harness-settled",
+      "lateOriginal": true,
+      "ended": "Task $TASK invocation has ended",
+      "calls": [
+        {
+          "first": {
+            "keys": [
+              "conversationId",
+              "read"
+            ],
+            "conversationId": "$CONVERSATION",
+            "readSame": true
+          },
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": true
+        },
+        {
+          "first": {
+            "keys": [
+              "conversationId",
+              "read"
+            ],
+            "conversationId": "$CONVERSATION",
+            "readSame": true
+          },
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": true
+        },
+        {
+          "first": {
+            "keys": [
+              "conversationId",
+              "read"
+            ],
+            "conversationId": "$CONVERSATION",
+            "readSame": true
+          },
+          "conversationMatches": true,
+          "sameContext": true,
+          "undefinedReceiver": true
+        }
+      ]
+    }
+  ]
+}

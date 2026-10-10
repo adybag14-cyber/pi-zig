@@ -80,6 +80,8 @@ pub const Manager = struct {
     clock_value: std.atomic.Value(i64) = .init(0),
     custom_clock: bool = false,
     clock_callback: c.JSValue,
+    vm_owner: ?c.JSValue = null,
+    published_graph: ?*backend.memory.State = null,
     fn nativeClock(raw: ?*anyopaque) i64 {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         return if (self.custom_clock) self.clock_value.load(.acquire) else std.Io.Clock.real.now(self.lease.value.io).toMilliseconds();
@@ -127,6 +129,7 @@ pub const Manager = struct {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0);
         self.scheduler.deinit();
+        if (self.published_graph) |graph| graph.destroy(self.engine.gpa);
         self.broker.deinit();
         for (self.definitions.items) |definition| {
             for (definition.native.migrations.items) |*migration| {
@@ -281,6 +284,26 @@ pub const Manager = struct {
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
+        if (self.published_graph) |previous| {
+            var relevant = false;
+            for (changes.array.items) |change| {
+                const kind = try json.asString(try json.required(change, "type"));
+                if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) relevant = true;
+            }
+            if (relevant) {
+                const next = try previous.duplicate(self.engine.gpa);
+                errdefer next.destroy(self.engine.gpa);
+                for (changes.array.items) |change| {
+                    const kind = try json.asString(try json.required(change, "type"));
+                    const table: backend.memory.Table = if (std.mem.eql(u8, kind, "task")) .task else if (std.mem.eql(u8, kind, "conversation")) .conversation else continue;
+                    const record = try json.required(change, "value");
+                    const id = try json.asInteger(try json.required(record, "id"));
+                    try next.rows.put(id, .{ .table = table, .record = try graphRecord(next.arena.allocator(), table, record), .commitSeq = 0 });
+                }
+                self.published_graph = next;
+                previous.destroy(self.engine.gpa);
+            }
+        }
         // The owner sees an immutable, owned committed publication. Retain
         // terminal task records for reads while the scheduler is committing.
         // This also prevents a fixed-period owner poll from starving behind
@@ -313,6 +336,10 @@ pub const Manager = struct {
             if (entry.found_existing) entry.value_ptr.deinit();
             entry.value_ptr.* = snapshot;
         }
+        // Source resolves its waiters while observing the committed publication,
+        // before finishing a phase aborts its invocation signal. A later poll
+        // cannot decide which of those already-ordered events won.
+        try settlePublishedWaiters(self, false);
     }
     fn requestWaiterRead(self: *Manager, id: u64) !void {
         if (self.pending_reads.contains(id)) return;
@@ -539,6 +566,11 @@ pub const Manager = struct {
     pub fn close(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        self.rejectClosingWaiters() catch {};
+        if (self.vm_owner) |value| {
+            self.vm_owner = null;
+            self.engine.freeValue(value);
+        }
         var contexts = self.contexts.valueIterator();
         while (contexts.next()) |slot| if (slot.*) |cached| self.engine.freeValue(cached.view);
         self.contexts.clearRetainingCapacity();
@@ -555,7 +587,89 @@ pub const Manager = struct {
             self.thread = null;
         }
     }
+    fn rejectClosingWaiters(self: *Manager) !void {
+        if (self.waiters.items.len == 0) return;
+        const failure = try schedulerClosedError(self);
+        defer self.engine.freeValue(failure);
+        var arguments = [_]c.JSValue{failure};
+        for (self.waiters.items) |waiter| {
+            const result = try self.engine.checked(c.JS_Call(self.engine.context, waiter.reject, c.pi_js_undefined(), arguments.len, &arguments));
+            self.engine.freeValue(result);
+        }
+    }
 };
+const SchedulerOwner = struct { manager: *Manager, session: c.JSValue };
+const SchedulerMethod = enum(c_int) { open, @"resume", join, abort, waitForTask, waitForIdle, abortConversation, inspect };
+fn schedulerOwnerFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const engine: *Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
+    const owner: *SchedulerOwner = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_scheduler_class) orelse return));
+    c.JS_FreeValueRT(runtime, owner.session);
+    owner.manager.release();
+    engine.gpa.destroy(owner);
+}
+fn schedulerOwnerMark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const engine: *Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
+    const owner: *SchedulerOwner = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_scheduler_class) orelse return));
+    c.JS_MarkValue(runtime, owner.session, marker);
+}
+fn schedulerConstruct(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return durable.reject(Engine.fromContext(context.?), error.NativeTaskSchedulerDirectConstructionUnavailable);
+}
+fn registerSchedulerOwner(engine: *Engine) !void {
+    if (engine.native_durable_scheduler_class != 0) return;
+    var class_id: c.JSClassID = 0;
+    _ = c.JS_NewClassID(engine.runtime, &class_id);
+    const definition: c.JSClassDef = .{ .class_name = "TaskScheduler", .finalizer = schedulerOwnerFinalizer, .gc_mark = schedulerOwnerMark, .call = null, .exotic = null };
+    if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0) return error.OutOfMemory;
+    const prototype = try sdk.object(engine);
+    errdefer engine.freeValue(prototype);
+    const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, schedulerConstruct, "TaskScheduler", 1, c.JS_CFUNC_constructor, 0));
+    defer engine.freeValue(constructor);
+    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return @import("native_js_values.zig").capture(engine);
+    inline for (std.meta.fields(SchedulerMethod)) |field| {
+        const operation: SchedulerMethod = @enumFromInt(field.value);
+        const arity: c_int = switch (operation) {
+            .@"resume", .join => 0,
+            .open, .inspect => 1,
+            .abort, .waitForTask, .waitForIdle => 2,
+            .abortConversation => 3,
+        };
+        const method = try engine.checked(c.pi_js_function_magic(engine.context, schedulerMethod, field.name, arity, field.value));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, method, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    }
+    c.JS_SetClassProto(engine.context, class_id, prototype);
+    engine.native_durable_scheduler_class = class_id;
+}
+fn schedulerOwner(self: *Manager) !c.JSValue {
+    if (self.vm_owner) |value| return c.JS_DupValue(self.engine.context, value);
+    const engine = self.engine;
+    try registerSchedulerOwner(engine);
+    const value = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_scheduler_class));
+    errdefer engine.freeValue(value);
+    const owner = try engine.gpa.create(SchedulerOwner);
+    owner.* = .{ .manager = self.retain(), .session = c.JS_DupValue(engine.context, self.session) };
+    _ = c.JS_SetOpaque(value, owner);
+    self.vm_owner = value;
+    return c.JS_DupValue(engine.context, value);
+}
+fn schedulerMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return schedulerMethodOwned(engine, receiver, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| if (magic == @intFromEnum(SchedulerMethod.@"resume")) durable.reject(engine, err) else durable.rejectedPromise(engine, err);
+}
+fn schedulerMethodOwned(engine: *Engine, receiver: c.JSValue, operation: SchedulerMethod, args: []const c.JSValue) !c.JSValue {
+    const owner: *SchedulerOwner = @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_scheduler_class) orelse return error.JavaScriptException));
+    const manager = owner.manager;
+    if (!c.JS_IsStrictEqual(engine.context, owner.session, manager.session)) return error.InvalidTaskSchedulerSession;
+    switch (operation) {
+        .@"resume" => {
+            try manager.@"resume"();
+            return c.pi_js_undefined();
+        },
+        .waitForTask => return wait(manager, try durable.number(engine, if (args.len > 0) args[0] else c.pi_js_undefined()), null, if (args.len > 1) args[1] else c.pi_js_undefined()),
+        .waitForIdle => return wait(manager, null, if (args.len > 0 and !c.JS_IsUndefined(args[0])) try durable.number(engine, args[0]) else null, if (args.len > 1) args[1] else c.pi_js_undefined()),
+        .open, .join, .abort, .abortConversation, .inspect => return error.NativeTaskSchedulerMethodUnavailable,
+    }
+}
 const Hub = struct {
     engine: *Engine,
     managers: std.ArrayList(*Manager) = .empty,
@@ -695,6 +809,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
+        if (self.published_graph) |graph| graph.destroy(engine.gpa);
         self.scheduler.deinit();
         for (self.definitions.items) |definition| {
             engine.freeValue(definition.token);
@@ -723,7 +838,30 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
         native.session.?.source_clock_context = null;
     }
     try self.scheduler.open();
+    const initial = try self.lease.value.storage.snapshot(engine.gpa);
+    defer initial.destroy(engine.gpa);
+    const graph = try backend.memory.State.create(engine.gpa);
+    self.published_graph = graph;
+    var rows = initial.rows.iterator();
+    while (rows.next()) |row| {
+        const table = row.value_ptr.table;
+        if (table != .task and table != .conversation) continue;
+        try graph.rows.put(row.key_ptr.*, .{ .table = table, .record = try graphRecord(graph.arena.allocator(), table, row.value_ptr.record), .commitSeq = 0 });
+    }
     owner.managers.appendAssumeCapacity(self);
+}
+fn graphRecord(allocator: std.mem.Allocator, table: backend.memory.Table, record: json.Value) !json.Value {
+    var result: json.Value = .{ .object = .empty };
+    try result.object.put(allocator, "id", try json.clone(allocator, try json.required(record, "id")));
+    if (json.get(record, "owner")) |owner| try result.object.put(allocator, "owner", try json.clone(allocator, owner));
+    if (table == .task) {
+        try result.object.put(allocator, "conversationId", try json.clone(allocator, try json.required(record, "conversationId")));
+        try result.object.put(allocator, "background", try json.clone(allocator, try json.required(record, "background")));
+        var state: json.Value = .{ .object = .empty };
+        try state.object.put(allocator, "status", try json.clone(allocator, try json.required(try json.required(record, "state"), "status")));
+        try result.object.put(allocator, "state", state);
+    }
+    return result;
 }
 fn loadDefinitions(self: *Manager) !void {
     const engine = self.engine;
@@ -975,12 +1113,25 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
         const build = try sdk.get(engine, owner.options, "env");
         defer engine.freeValue(build);
         if (c.JS_IsUndefined(build)) return sdk.promise(engine, c.pi_js_undefined());
+        const id = c.JS_NewInt64(engine.context, @intCast(self.entry.runtime.invocation.conversation_id));
+        defer engine.freeValue(id);
+        const context = if (args.len == 0) c.pi_js_undefined() else args[0];
+        const native = try durable.state(engine, self.session);
+        if (native.creation_owner == null) {
+            // Source TaskSchedulerOptions.env receives the conversation id,
+            // with no Harness AgentDoc read or synthetic read capability.
+            var arguments = [_]c.JSValue{ id, context };
+            const callback_receiver = try schedulerOwner(owner);
+            defer engine.freeValue(callback_receiver);
+            const value = try engine.checked(c.JS_Call(engine.context, build, callback_receiver, arguments.len, &arguments));
+            defer engine.freeValue(value);
+            return sdk.promise(engine, value);
+        }
+        const harness = try @import("native_durable_harness.zig").state(engine, native.creation_owner.?);
+        if (!c.JS_IsStrictEqual(engine.context, harness.session, self.session)) return error.InvalidHarnessSession;
         const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
         const token = try sdk.get(engine, exports, "AgentDoc");
         defer engine.freeValue(token);
-        const id = c.JS_NewInt64(engine.context, @intCast(try runtimeConversation(engine, self)));
-        defer engine.freeValue(id);
-        const context = if (args.len == 0) c.pi_js_undefined() else args[0];
         const pending = try @import("native_durable_documents.zig").snapshot(engine, self.session, &.{ token, id, context });
         defer engine.freeValue(pending);
         var captures = [_]c.JSValue{ receiver, build, id, context };
@@ -1079,11 +1230,6 @@ fn runtimeWaitSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [
     if (rejected != 0) return c.JS_Throw(context, c.JS_DupValue(context, value));
     return c.JS_DupValue(context, value);
 }
-fn runtimeConversation(engine: *Engine, runtime: *Runtime) !u64 {
-    var record = (try runtime.entry.manager.lease.value.storage.readTableRecord(engine.gpa, .task, runtime.entry.runtime.taskId())) orelse return error.UnknownTask;
-    defer record.deinit();
-    return @intCast(try json.asInteger(try json.required(record.value, "conversationId")));
-}
 fn runtimeEnvResolved(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return runtimeEnvResolvedOwned(engine, if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| durable.reject(engine, err);
@@ -1101,7 +1247,10 @@ fn runtimeEnvResolvedOwned(engine: *Engine, state: c.JSValue, data: [*c]c.JSValu
         if (!c.JS_IsUndefined(cwd)) try sdk.put(engine, request, "cwd", c.JS_DupValue(engine.context, cwd));
     }
     const native = try durable.state(engine, runtime.session);
-    try sdk.put(engine, request, "read", c.JS_DupValue(engine.context, native.creation_owner.?));
+    const read = native.creation_owner orelse return error.NativeHarnessEnvironmentUnavailable;
+    const harness = try @import("native_durable_harness.zig").state(engine, read);
+    if (!c.JS_IsStrictEqual(engine.context, harness.session, runtime.session)) return error.InvalidHarnessSession;
+    try sdk.put(engine, request, "read", c.JS_DupValue(engine.context, read));
     var arguments = [_]c.JSValue{ request, data[3] };
     return engine.checked(c.JS_Call(engine.context, data[1], c.pi_js_undefined(), arguments.len, &arguments));
 }
@@ -1405,23 +1554,96 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     return c.pi_js_undefined();
 }
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
-    if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try messageError(self.engine, "Harness is closed")));
+    if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
     try durable.checkCancellation(self.engine, context);
     var functions: [2]c.JSValue = undefined;
     const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
+    errdefer self.engine.freeValue(promise);
+    defer for (functions) |function| self.engine.freeValue(function);
+    var cancellation = try waiterCancellation(self.engine, promise, functions[1], context);
+    defer if (cancellation) |*hook| hook.deinit();
     errdefer {
-        self.engine.freeValue(promise);
-        self.engine.freeValue(functions[0]);
-        self.engine.freeValue(functions[1]);
+        for (self.waiters.items, 0..) |waiter, index| if (c.JS_IsStrictEqual(self.engine.context, waiter.resolve, functions[0])) {
+            const retired = self.waiters.orderedRemove(index);
+            self.engine.freeValue(retired.resolve);
+            self.engine.freeValue(retired.reject);
+            self.engine.freeValue(retired.context);
+            break;
+        };
+        if (cancellation) |*hook| hook.detach() catch {};
     }
-    try self.waiters.append(self.engine.gpa, .{ .id = id, .conversation = conversation, .resolve = functions[0], .reject = functions[1], .context = c.JS_DupValue(self.engine.context, context) });
+    try self.waiters.ensureUnusedCapacity(self.engine.gpa, 1);
+    self.waiters.appendAssumeCapacity(.{ .id = id, .conversation = conversation, .resolve = c.JS_DupValue(self.engine.context, functions[0]), .reject = c.JS_DupValue(self.engine.context, functions[1]), .context = c.JS_DupValue(self.engine.context, context) });
     try self.@"resume"();
     return promise;
 }
+fn schedulerClosedError(self: *Manager) !c.JSValue {
+    const native = try durable.state(self.engine, self.session);
+    if (native.failure_reason) |cause| return @import("native_durable_errors.zig").sessionFailed(self.engine, cause);
+    return messageError(self.engine, "Harness is closed");
+}
+const WaitCancellation = struct {
+    engine: *Engine,
+    signal: c.JSValue,
+    listener: c.JSValue,
+    fn detach(self: *WaitCancellation) !void {
+        const abort = try sdk.text(self.engine, "abort");
+        defer self.engine.freeValue(abort);
+        const result = try sdk.invoke(self.engine, self.signal, "removeEventListener", &.{ abort, self.listener });
+        self.engine.freeValue(result);
+    }
+    fn deinit(self: *WaitCancellation) void {
+        self.engine.freeValue(self.signal);
+        self.engine.freeValue(self.listener);
+    }
+};
+fn waiterCancellation(engine: *Engine, promise: c.JSValue, reject: c.JSValue, context: c.JSValue) !?WaitCancellation {
+    if (c.JS_IsUndefined(context) or c.JS_IsNull(context)) return null;
+    const signal = try sdk.get(engine, context, "abortSignal");
+    errdefer engine.freeValue(signal);
+    if (c.JS_IsUndefined(signal) or c.JS_IsNull(signal)) {
+        engine.freeValue(signal);
+        return null;
+    }
+    var data = [_]c.JSValue{ signal, reject };
+    const listener = try engine.checked(c.JS_NewCFunctionData(engine.context, waiterAborted, 0, 0, data.len, &data));
+    errdefer engine.freeValue(listener);
+    var hook: WaitCancellation = .{ .engine = engine, .signal = signal, .listener = listener };
+    const abort = try sdk.text(engine, "abort");
+    defer engine.freeValue(abort);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "once", c.pi_js_bool(engine.context, 1));
+    const installed = try sdk.invoke(engine, signal, "addEventListener", &.{ abort, listener, options });
+    engine.freeValue(installed);
+    errdefer hook.detach() catch {};
+    var detach_data = [_]c.JSValue{ signal, listener };
+    const detach = try engine.checked(c.JS_NewCFunctionData(engine.context, waiterDetached, 0, 0, detach_data.len, &detach_data));
+    defer engine.freeValue(detach);
+    const observed = try sdk.invoke(engine, promise, "then", &.{ detach, detach });
+    engine.freeValue(observed);
+    return hook;
+}
+fn waiterAborted(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const reason = sdk.get(engine, data[0], "reason") catch |err| return durable.reject(engine, err);
+    defer engine.freeValue(reason);
+    var arguments = [_]c.JSValue{reason};
+    return engine.checked(c.JS_Call(engine.context, data[1], c.pi_js_undefined(), arguments.len, &arguments)) catch |err| durable.reject(engine, err);
+}
+fn waiterDetached(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const abort = sdk.text(engine, "abort") catch |err| return durable.reject(engine, err);
+    defer engine.freeValue(abort);
+    return sdk.invoke(engine, data[0], "removeEventListener", &.{ abort, data[1] }) catch |err| durable.reject(engine, err);
+}
 fn settleWaiters(self: *Manager) !void {
+    return settlePublishedWaiters(self, true);
+}
+fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
     // Scheduler.idle acquires the native Session line. A worker can be waiting
     // for the owner to finish a transaction, so inspect only after it exits.
-    if (self.thread == null and !self.closed and self.contexts.count() != 0) {
+    if (expire_contexts and self.thread == null and !self.closed and self.contexts.count() != 0) {
         try self.updateClock();
         const now = Manager.nativeClock(self);
         const settings = try @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options);
@@ -1457,7 +1679,7 @@ fn settleWaiters(self: *Manager) !void {
             value = try sdk.get(self.engine, signal, "reason");
             rejected = true;
         } else if (self.closed) {
-            value = try messageError(self.engine, "Harness is closed");
+            value = try schedulerClosedError(self);
             rejected = true;
         } else if (waiter.id) |id| {
             // A scheduler commit can swap and free the Memory backend state.
@@ -1486,7 +1708,7 @@ fn settleWaiters(self: *Manager) !void {
                 value = try messageError(self.engine, message);
                 rejected = true;
             }
-        } else if (self.thread != null or !try self.scheduler.idle(waiter.conversation)) continue;
+        } else if (!try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, waiter.conversation)) continue;
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const result = try self.engine.checked(c.JS_Call(self.engine.context, if (rejected) waiter.reject else waiter.resolve, c.pi_js_undefined(), 1, &args));
@@ -1585,6 +1807,124 @@ pub fn defineTask(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineTask", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineTask", 1)));
 }
 
+fn environmentExercise(gpa: std.mem.Allocator, with_harness: bool) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "envSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "envRegistry", c.JS_DupValue(engine.context, registry));
+    try sdk.put(engine, global, "envMode", try sdk.text(engine, if (with_harness) "harness" else "scheduler"));
+    const source = @embedFile("../durable/fixtures/durable-scheduler-env-eba.json");
+    try sdk.put(engine, global, "envSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-eba-environment")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.envRows=[];globalThis.envCalls=[];globalThis.envOrdinal=0;globalThis.envCancelObserved=false;globalThis.envValue=Object.freeze({owned:envMode});globalThis.envCause=Object.freeze({cause:envMode});
+        \\globalThis.envBuild=function(first,callContext){let receiver;if(envMode==='scheduler'){const proto=Object.getPrototypeOf(this);let forged=false;try{this.resume.call({})}catch(error){forged=error.name==='TypeError'}receiver={same:this===envScheduler,name:this.constructor.name,ownKeys:Reflect.ownKeys(this),prototypeKeys:Reflect.ownKeys(proto),prototypeEnumerable:Object.keys(proto),baseObject:Object.getPrototypeOf(proto)===Object.prototype,methods:Object.getOwnPropertyNames(proto).filter(name=>name!=='constructor').map(name=>({name,length:proto[name].length,writable:Object.getOwnPropertyDescriptor(proto,name).writable,enumerable:Object.getOwnPropertyDescriptor(proto,name).enumerable,configurable:Object.getOwnPropertyDescriptor(proto,name).configurable})),resumeUndefined:this.resume()===undefined,forged};}
+        \\ envCalls.push({first:envMode==='scheduler'?first:{keys:Object.keys(first),conversationId:first.conversationId,readSame:first.read===envHarness,cwd:first.cwd},conversationMatches:(envMode==='scheduler'?first:first.conversationId)===1,sameContext:callContext===envSavedContext,undefinedReceiver:this===undefined,...(receiver?{receiver}:{})});envOrdinal++;if(envOrdinal===1){if(envMode==='scheduler'){globalThis.envOwnerWait=this.waitForTask(envTaskId,callContext);globalThis.envOwnerIdle=this.waitForIdle(undefined,callContext);const cancel=new AbortController();globalThis.envOwnerCanceled=this.waitForIdle(undefined,{abortSignal:cancel.signal}).then(()=>false,error=>{envCancelObserved=error===envCause;return error===envCause});cancel.abort(envCause);globalThis.envPublicationController=new AbortController();globalThis.envPublicationWait=this.waitForTask(envTaskId,{abortSignal:envPublicationController.signal});}return envValue;}if(envOrdinal===2)throw envCause;return new Promise(resolve=>globalThis.envRelease=resolve)};
+        \\const Parent=defineTask({name:'fixture.env.'+envMode,version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{try{
+        \\ runtime.conversationId=999999;globalThis.envSaved=runtime.env;globalThis.envSavedContext=ctx;const first=runtime.env(ctx),isPromise=first instanceof Promise,value=await first;let rawCause=false;try{await envSaved.call({},ctx)}catch(error){rawCause=error===envCause}globalThis.envLate=envSaved(ctx);envLate.catch(()=>{});envRows.push({name:envMode,isPromise,originalValue:value===envValue,...(envMode==='scheduler'?{cancellationObserved:envCancelObserved}:{}),rawCause,alias:runtime.env===envSaved});await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);
+        \\}catch(error){globalThis.envOriginalError=String(error?.stack??error);throw error}}}});
+        \\envRegistry.install({name:'actual-env-fixture',tasks:[Parent]});await envSession.commit(tx=>tx.createRootConversation(),{});globalThis.envTaskId=await envSession.commit(tx=>tx.createTask(Parent,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+    , "actual-env-setup.mjs");
+    engine.freeValue(setup);
+    try sdk.put(engine, options, "env", try sdk.get(engine, global, "envBuild"));
+    if (with_harness) {
+        // Exercise the real native Harness adapter class independently from
+        // public Harness.open, which also requires all builtin task drivers.
+        const harness = try @import("native_durable_harness.zig").object(engine, session, options, null);
+        defer engine.freeValue(harness);
+        const native = try durable.state(engine, session);
+        native.creation_owner = c.JS_DupValue(engine.context, harness);
+        try sdk.put(engine, global, "envHarness", c.JS_DupValue(engine.context, harness));
+    }
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    if (!with_harness) try sdk.put(engine, global, "envScheduler", try schedulerOwner(manager));
+    const id = try sdk.get(engine, global, "envTaskId");
+    defer engine.freeValue(id);
+    const pending = try wait(manager, try durable.number(engine, id), null, context);
+    defer engine.freeValue(pending);
+    const settled = try engine.awaitValue(pending);
+    defer engine.freeValue(settled);
+    var record = try durable.owned(engine, settled);
+    defer record.deinit();
+    const outcome = try json.required(try json.required(record.value, "state"), "outcome");
+    if (!std.mem.eql(u8, try json.asString(try json.required(outcome, "status")), "completed")) {
+        const failure = try sdk.get(engine, global, "envOriginalError");
+        defer engine.freeValue(failure);
+        const text = try engine.toString(failure);
+        defer gpa.free(text);
+        std.debug.print("Source environment original failure: {s}\n", .{text});
+        return error.EnvironmentTaskDidNotComplete;
+    }
+    const compare = engine.evalModule(
+        \\if(envMode==='scheduler')envPublicationController.abort(envCause);envRelease(envValue);const lateValue=await envLate;let ended;try{await envSaved({})}catch(error){ended=error.message.replaceAll(String(envTaskId),'$TASK')};
+        \\envRows.push({name:envMode+'-settled',lateOriginal:lateValue===envValue,ended,...(envMode==='scheduler'?{ownerWaitMatches:(await envOwnerWait).id===envTaskId,ownerIdleUndefined:(await envOwnerIdle)===undefined,ownerCanceledOriginal:await envOwnerCanceled,ownerPublicationWins:(await envPublicationWait).id===envTaskId}:{}),calls:envCalls.map(call=>({...call,first:envMode==='scheduler'?'$CONVERSATION':{...call.first,conversationId:'$CONVERSATION'}}))});
+        \\const expected=envSource.cases.filter(row=>row.name===envMode||row.name===envMode+'-settled');if(JSON.stringify(envRows)!==JSON.stringify(expected))throw Error(JSON.stringify({actual:envRows,expected}));export const proof=true;
+    , "actual-env-compare.mjs") catch |err| {
+        std.debug.print("Source environment comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(compare);
+}
+test "native durable VM actual scheduler env and genuine Harness env adapter preserve Source original arguments receiver causes and admitted promises" {
+    try environmentExercise(std.testing.allocator, false);
+    try environmentExercise(std.testing.allocator, true);
+}
+fn schedulerOwnerExercise(gpa: std.mem.Allocator) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    const owner = try schedulerOwner(manager);
+    defer engine.freeValue(owner);
+    const again = try schedulerOwner(manager);
+    defer engine.freeValue(again);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, owner, again));
+    // Preserve the native allocation error union for the GPA sweep. The
+    // actual Source environment fixture exercises the public C callback.
+    const resumed = try schedulerMethodOwned(engine, owner, .@"resume", &.{});
+    defer engine.freeValue(resumed);
+    try std.testing.expect(c.JS_IsUndefined(resumed));
+    try std.testing.expect(manager.scheduler.enabled.load(.acquire));
+    manager.close();
+    const value = try sdk.invoke(engine, owner, "resume", &.{});
+    defer engine.freeValue(value);
+    try std.testing.expect(c.JS_IsUndefined(value));
+}
+test "native durable VM actual TaskScheduler receiver owner retires every host allocation without a Manager VM cycle" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, schedulerOwnerExercise, .{});
+}
+
 test "native durable VM phase dispatch refreshes replacement registry without relying on another outer owner pump" {
     const gpa = std.testing.allocator;
     const engine = try Engine.init(gpa, .{});
@@ -1652,7 +1992,7 @@ fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
     defer engine.freeValue(options);
     try attach(engine, session_value, options, c.pi_js_undefined());
     const manager = try getManager(engine, session_value);
-    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"conversationId\":2,\"background\":false,\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
     defer first.deinit();
     _ = try manager.lease.value.storage.commitAt(first.value, null);
     var promises: [2]c.JSValue = .{ c.pi_js_undefined(), c.pi_js_undefined() };
@@ -1666,10 +2006,7 @@ fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
             return err;
         };
     }
-    try manager.cachePublication(first.value);
-    try std.testing.expectEqual(@as(usize, 1), manager.terminal_tasks.count());
-    // The publication DTO owns its contents independently of the source event.
-    first.value.array.items[0].object.getPtr("value").?.object.getPtr("version").?.* = .{ .integer = 99 };
+
     const Barrier = struct {
         session: *session_mod.Session,
         locked: std.atomic.Value(bool) = .init(false),
@@ -1691,6 +2028,12 @@ fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
         thread = try std.Thread.spawn(.{}, Barrier.run, .{&barrier});
         while (!barrier.locked.load(.acquire)) std.atomic.spinLoopHint();
     }
+    // Admit the publication while the worker line is held: Source settles
+    // these promises here, before a later owner poll or invocation abort.
+    try manager.cachePublication(first.value);
+    try std.testing.expectEqual(@as(usize, 0), manager.terminal_tasks.count());
+    // The fulfilled VM result owns its contents independently of the event.
+    first.value.array.items[0].object.getPtr("value").?.object.getPtr("version").?.* = .{ .integer = 99 };
     try settleWaiters(manager);
     try std.testing.expectEqual(@as(usize, 0), manager.waiters.items.len);
     try std.testing.expectEqual(@as(usize, 0), manager.terminal_tasks.count());
@@ -1737,7 +2080,7 @@ fn lateWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
     defer engine.freeValue(options);
     try attach(engine, session_value, options, c.pi_js_undefined());
     const manager = try getManager(engine, session_value);
-    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"conversationId\":2,\"background\":false,\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
     defer first.deinit();
     _ = try manager.lease.value.storage.commitAt(first.value, null);
     try manager.cachePublication(first.value);
@@ -1808,7 +2151,7 @@ fn lateWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
         defer engine.freeValue(other_session);
         try attach(engine, other_session, options, c.pi_js_undefined());
         const other = try getManager(engine, other_session);
-        var other_writes = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":2,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":84}}}}]");
+        var other_writes = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"conversationId\":2,\"background\":false,\"version\":2,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":84}}}}]");
         defer other_writes.deinit();
         _ = try other.lease.value.storage.commitAt(other_writes.value, null);
         const foreign_wait = try appendTestWaiter(other, 1, c.pi_js_undefined());
