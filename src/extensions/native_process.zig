@@ -33,6 +33,19 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     try put(engine, process, "cwd", try engine.checked(c.JS_NewCFunction(engine.context, currentDirectory, "cwd", 0)));
     const platform = if (builtin.os.tag == .windows) "win32" else @tagName(builtin.os.tag);
     try put(engine, process, "platform", try engine.checked(c.JS_NewString(engine.context, platform)));
+    const architecture = switch (builtin.cpu.arch) {
+        .x86_64 => "x64",
+        .aarch64 => "arm64",
+        .x86 => "ia32",
+        else => @tagName(builtin.cpu.arch),
+    };
+    if (c.JS_DefinePropertyValueStr(engine.context, process, "arch", try engine.checked(c.JS_NewString(engine.context, architecture)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+    const pid: u32 = switch (builtin.os.tag) {
+        .windows => std.os.windows.GetCurrentProcessId(),
+        .linux => @intCast(std.os.linux.getpid()),
+        else => @intCast(std.c.getpid()),
+    };
+    if (c.JS_DefinePropertyValueStr(engine.context, process, "pid", c.JS_NewUint32(engine.context, pid), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     const args = try engine.checked(c.JS_NewArray(engine.context));
     defer engine.freeValue(args);
     for (arguments, 0..) |arg, index| if (c.JS_SetPropertyUint32(engine.context, args, @intCast(index), try engine.checked(c.JS_NewStringLen(engine.context, arg.ptr, arg.len))) < 0) return error.JavaScriptException;
@@ -41,6 +54,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     defer engine.freeValue(global);
     try put(engine, global, "process", c.JS_DupValue(engine.context, process));
     try @import("node_process_events.zig").install(engine, process);
+    try @import("native_process_streams.zig").install(engine, process);
     try engine.registerDefaultModule("node:process", process);
     try engine.registerDefaultModule("process", process);
 }

@@ -9,6 +9,9 @@ test "native worker genuine Stack ScrollView layout state and transient timer ru
 test "native worker genuine StdinBuffer EventEmitter fragments paste and real Escape timer run without Node" {
     try runWorker(@embedFile("extensions/fixtures/stdin-worker-original-6fb.input.txt"), @embedFile("extensions/fixtures/stdin-worker-original-6fb.json"));
 }
+test "native worker genuine ProcessTerminal shared stdin negotiation sibling cleanup and real drain timer" {
+    try runWorker(@embedFile("extensions/fixtures/process-terminal-worker-original-6fb.input.txt"), @embedFile("extensions/fixtures/process-terminal-worker-original-6fb.json"));
+}
 fn runWorker(input: []const u8, expected: []const u8) !void {
     return runWorkerWarnings(input, expected, "");
 }

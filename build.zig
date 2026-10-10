@@ -48,10 +48,14 @@ pub fn build(b: *std.Build) void {
     // Native public storage is installed for every extension VM. Carry SQLite
     // through this common dependency so CLI, SDK and bindings all receive it.
     linkSqlite(quickjs.root_module, sqlite_lib_dir, sqlite_library);
+    const quickjs_c_flags = [_][]const u8{ "-std=gnu11", "-D_GNU_SOURCE", "-DQUICKJS_NG_BUILD", "-funsigned-char", "-fno-strict-aliasing" };
     quickjs.root_module.addCSourceFiles(.{
         .root = b.path("vendor/quickjs"),
         .files = &.{ "dtoa.c", "libregexp.c", "libunicode.c", "quickjs.c" },
-        .flags = &.{ "-std=gnu11", "-D_GNU_SOURCE", "-DQUICKJS_NG_BUILD", "-funsigned-char", "-fno-strict-aliasing" },
+        // QuickJS's unoptimized interpreter reserves about 60 KiB per call on
+        // Windows. Keep Zig Debug and C assertions while reducing C frame size
+        // enough for ordinary nested terminal callbacks within the VM limit.
+        .flags = if (optimize == .Debug) &(quickjs_c_flags ++ [_][]const u8{"-Og"}) else &quickjs_c_flags,
     });
     quickjs.root_module.addCSourceFile(.{
         .file = b.path("src/extensions/engine_abi.c"),

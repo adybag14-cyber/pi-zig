@@ -51,6 +51,184 @@ test "Source6fb public TUI slice genuine SDK dispose retains resource pure code 
     engine.freeValue(result);
     try std.testing.expect(!scopes.isSdkScope(engine));
 }
+
+const TerminalBridgeProbe = struct {
+    engine: ?*js.Engine = null,
+    live: bool = true,
+    bytes: std.ArrayList(u8) = .empty,
+    controls: std.ArrayList(u8) = .empty,
+    fn guard(raw: ?*anyopaque) anyerror!void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (!self.live) return error.NativeProcessStreamLeaseStale;
+    }
+    fn control(raw: ?*anyopaque, value: @import("native_process_streams.zig").Control) anyerror!void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        try self.controls.append(std.testing.allocator, switch (value) {
+            .raw_mode => |enabled| if (enabled) 'T' else 'F',
+            .@"resume" => 'R',
+            .pause => 'P',
+            .encoding => 'U',
+        });
+    }
+    fn write(raw: ?*anyopaque, output: @import("native_process_streams.zig").Output, bytes: []const u8) anyerror!void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (output == .stderr) try self.bytes.append(std.testing.allocator, 'E');
+        try self.bytes.appendSlice(std.testing.allocator, bytes);
+    }
+    fn bridge(self: *@This()) @import("native_process_streams.zig").Bridge {
+        return .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write, .is_shift_pressed_fn = if (self.engine != null) shift else null, .enable_vt_input_fn = if (self.engine != null) enableVT else null };
+    }
+    fn helperFailure(self: *@This()) !void {
+        const engine = self.engine.?;
+        const reason = try js.global(engine, "terminalHelperError");
+        defer engine.freeValue(reason);
+        if (c.JS_ToBool(engine.context, reason) != 0) {
+            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+            unreachable;
+        }
+    }
+    fn shift(raw: ?*anyopaque) anyerror!bool {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const engine = self.engine.?;
+        const calls = try js.global(engine, "terminalHelperCalls");
+        defer engine.freeValue(calls);
+        const pair = try js.array(engine);
+        defer engine.freeValue(pair);
+        if (c.JS_DefinePropertyValueUint32(engine.context, pair, 0, try engine.checked(c.JS_NewString(engine.context, "modifier")), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+        if (c.JS_DefinePropertyValueUint32(engine.context, pair, 1, try engine.checked(c.JS_NewString(engine.context, "shift")), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+        try js.push(engine, calls, pair);
+        try self.helperFailure();
+        const pressed = try js.global(engine, "terminalHelperShift");
+        defer engine.freeValue(pressed);
+        return c.JS_IsStrictEqual(engine.context, pressed, c.pi_js_bool(engine.context, 1));
+    }
+    fn enableVT(raw: ?*anyopaque) anyerror!bool {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const engine = self.engine.?;
+        const calls = try js.global(engine, "terminalHelperCalls");
+        defer engine.freeValue(calls);
+        const value = try engine.checked(c.JS_NewString(engine.context, "vt"));
+        defer engine.freeValue(value);
+        try js.push(engine, calls, value);
+        try self.helperFailure();
+        return true;
+    }
+    fn deinit(self: *@This()) void {
+        self.bytes.deinit(std.testing.allocator);
+        self.controls.deinit(std.testing.allocator);
+    }
+};
+test "Source6fb public TUI slice genuine ProcessTerminal source class fields negotiation status timers drain and IO" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"process-terminal-source"});
+    try @import("node_fs.zig").install(engine, std.testing.io);
+    try @import("native_tui.zig").install(engine);
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{ .engine = engine };
+    defer probe.deinit();
+    const lease = try streams.bind(engine, probe.bridge());
+    defer _ = streams.unbind(engine, lease);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_length = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    try js.define(engine, root, "terminalLogDirectory", try engine.checked(c.JS_NewStringLen(engine.context, &path_buffer, path_length)));
+    const bytes = @embedFile("fixtures/process-terminal-original-6fb.json");
+    try js.define(engine, root, "processTerminalSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "process-terminal-original-6fb.json")));
+    const result = engine.evalModule("import{ProcessTerminal,setKittyProtocolActive,isKittyProtocolActive}from'pi-tui';import{EventEmitter}from'node:events';import*as fixtureFs from'node:fs';\n" ++ @embedFile("fixtures/process-terminal-original-6fb.input.txt") ++
+        \\for(let i=0;i<processTerminalSource.cases.length;i++){const actual=processTerminalResults[i],expected=processTerminalSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected,...(typeof processTerminalLastError!=='undefined'?{stack:processTerminalLastError.stack}:{})}));}
+    , "process-terminal-original.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native ProcessTerminal Source: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
+test "Source6fb public TUI slice native terminal streams exact leases buffered UTF8 and deferred resume" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"terminal-stream-probe"});
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{};
+    defer probe.deinit();
+    const old = try streams.bind(engine, probe.bridge());
+    try streams.deliverInput(engine, "old generation input");
+    const current = try streams.bind(engine, probe.bridge());
+    try std.testing.expect(!streams.unbind(engine, old));
+    try streams.hydrateDimensions(engine, 120, 40);
+    try streams.hydrateInput(engine, true, true);
+    var result = try engine.eval("var streamSeen=[],resizeSeen=[];process.stdin.setEncoding('utf8');process.stdin.on('data',value=>streamSeen.push(value));process.stdout.on('resize',()=>resizeSeen.push([process.stdout.columns,process.stdout.rows]));", "terminal-stream-setup.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try streams.deliverInput(engine, "queued");
+    result = try engine.eval("process.stdin.resume();process.stdin.on('data',value=>streamSeen.push('late:'+value));if(streamSeen.length)throw Error('resume must defer pending delivery');", "terminal-stream-resume.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    _ = try engine.drainReadyJobs();
+    try streams.deliverInput(engine, "\xe7");
+    try streams.deliverInput(engine, "\x95\x8c");
+    try streams.deliverResize(engine, 90, 30);
+    result = try engine.eval("if(JSON.stringify(streamSeen)!==JSON.stringify(['queued','late:queued','界','late:界'])||JSON.stringify(resizeSeen)!=='[[90,30]]')throw Error(JSON.stringify({streamSeen,resizeSeen}));", "terminal-stream-result.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try std.testing.expect(streams.unbind(engine, current));
+    try std.testing.expectError(error.NativeTerminalStreamsNotBound, streams.deliverInput(engine, "not delivered"));
+}
+test "Source6fb public TUI slice native terminal bridge and global stdout ignore unrelated retired SDK scope" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"terminal-stream-owner"});
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{};
+    defer probe.deinit();
+    const lease = try streams.bind(engine, probe.bridge());
+    defer _ = streams.unbind(engine, lease);
+    var result = try engine.eval("var ownedInput=[];process.stdin.setEncoding('utf8');process.stdin.on('data',value=>ownedInput.push(value));process.stdin.resume();", "terminal-stream-owner-setup.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    _ = try engine.drainReadyJobs();
+    const scopes = @import("native_async_scope.zig");
+    var retired_probe: EventOwnerProbe = .{ .engine = engine, .id = 77 };
+    const retired = try scopes.create(engine, &retired_probe, EventOwnerProbe.activate, EventOwnerProbe.deactivate);
+    defer engine.freeValue(retired);
+    scopes.retire(engine, retired);
+    {
+        const guard = scopes.enter(engine, retired);
+        defer guard.restore();
+        try streams.deliverInput(engine, "authenticated");
+        result = try engine.eval("if(process.stdout.write('process-global')!==true)throw Error('global process output incorrectly revoked by SDK scope');", "terminal-stream-global-output.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(result);
+    }
+    probe.live = false;
+    try std.testing.expectError(error.NativeProcessStreamLeaseStale, streams.deliverInput(engine, "rejected"));
+    result = try engine.eval("if(JSON.stringify(ownedInput)!=='[\"authenticated\"]')throw Error(JSON.stringify(ownedInput));", "terminal-stream-owner-result.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try std.testing.expectEqualStrings("process-global", probe.bytes.items);
+}
+test "Source6fb public TUI slice native terminal byte output queued callbacks and unbound rejection" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"terminal-stream-output"});
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{};
+    defer probe.deinit();
+    var result = try engine.eval("let unbound=false;try{process.stdout.write('wrong');}catch(error){unbound=error.message.includes('NativeTerminalStreamsNotBound');}if(!unbound)throw Error('unbound stdout bypass');", "terminal-stream-unbound.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    const lease = try streams.bind(engine, probe.bridge());
+    defer _ = streams.unbind(engine, lease);
+    result = try engine.eval("var writesDone=[];if(process.stdout.write(Buffer.from([0,255,27]),()=>writesDone.push('callback'))!==true)throw Error('write return');process.stderr.write('error');writesDone.push('sync');", "terminal-stream-output.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    _ = try engine.drainReadyJobs();
+    result = try engine.eval("if(JSON.stringify(writesDone)!=='[\"sync\",\"callback\"]')throw Error(JSON.stringify(writesDone));", "terminal-stream-callback.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try std.testing.expectEqualSlices(u8, "\x00\xff\x1bEerror", probe.bytes.items);
+}
 fn nodeFunctionAllocatorCallback(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, values: []const c.JSValue) anyerror!c.JSValue {
     return c.JS_DupValue(engine.context, values[0]);
 }

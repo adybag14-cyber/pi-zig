@@ -47,8 +47,8 @@ pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype
     _ = c.JS_SetOpaque(result, state);
     attached = true;
     _ = c.JS_SetConstructorBit(engine.context, result, true);
-    if (c.JS_DefinePropertyValueStr(engine.context, result, "name", try engine.checked(c.JS_NewString(engine.context, name.ptr)), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, result, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, result, "name", try engine.checked(c.JS_NewString(engine.context, name.ptr)), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, result, "prototype", c.JS_DupValue(engine.context, prototype), 0) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, result), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     return result;
