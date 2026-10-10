@@ -17,18 +17,18 @@ pub const Bridge = struct {
     enable_vt_input_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
 };
 pub const Lease = struct { context: ?*anyopaque, generation: u64 };
-const State = struct { engine: *js.Engine, bridge: ?Bridge = null, generation: u64 = 0, input: c.JSValue, output: c.JSValue, errors: c.JSValue, paused: bool = true, utf8: bool = false, resume_scheduled: bool = false, pending: std.ArrayList(u8) = .empty };
+const State = struct { engine: *js.Engine, bridge: ?Bridge = null, generation: u64 = 0, input: c.JSValue, output: c.JSValue, errors: c.JSValue, raw_method: c.JSValue, paused: bool = true, explicitly_paused: bool = false, utf8: bool = false, resume_scheduled: bool = false, pending: std.ArrayList(u8) = .empty };
 const private_module = "#pi-native-process-terminal-streams";
 const Method = enum(c_int) { setRawMode, setEncoding, @"resume", pause, isPaused, writeOutput, writeErrors };
 fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ "input", "output", "errors" }) |name| c.JS_FreeValueRT(runtime, @field(owned, name));
+    inline for (.{ "input", "output", "errors", "raw_method" }) |name| c.JS_FreeValueRT(runtime, @field(owned, name));
     owned.pending.deinit(owned.engine.gpa);
     owned.engine.gpa.destroy(owned);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ "input", "output", "errors" }) |name| c.JS_MarkValue(runtime, @field(owned, name), marker);
+    inline for (.{ "input", "output", "errors", "raw_method" }) |name| c.JS_MarkValue(runtime, @field(owned, name), marker);
 }
 fn state(engine: *js.Engine) !*State {
     const holder = engine.native_module_values.get(private_module) orelse return error.NativeTerminalStreamsUnavailable;
@@ -46,6 +46,7 @@ pub fn bind(engine: *js.Engine, bridge: Bridge) !Lease {
     if (owned.bridge != null) {
         owned.pending.clearRetainingCapacity();
         owned.paused = true;
+        owned.explicitly_paused = false;
         owned.resume_scheduled = false;
     }
     owned.bridge = bridge;
@@ -59,6 +60,7 @@ pub fn unbind(engine: *js.Engine, lease: Lease) bool {
     owned.bridge = null;
     owned.pending.clearRetainingCapacity();
     owned.paused = true;
+    owned.explicitly_paused = false;
     owned.resume_scheduled = false;
     return true;
 }
@@ -69,8 +71,28 @@ pub fn hydrateDimensions(engine: *js.Engine, columns: u32, rows: u32) !void {
 }
 pub fn hydrateInput(engine: *js.Engine, is_raw: bool, is_tty: bool) !void {
     const owned = try state(engine);
-    try v.set(engine, owned.input, "isRaw", c.pi_js_bool(engine.context, @intFromBool(is_raw)));
-    inline for (.{ "input", "output", "errors" }) |name| try v.set(engine, @field(owned, name), "isTTY", c.pi_js_bool(engine.context, @intFromBool(is_tty)));
+    if (is_tty) {
+        try js.define(engine, owned.input, "setRawMode", c.JS_DupValue(engine.context, owned.raw_method));
+        try v.set(engine, owned.input, "isRaw", c.pi_js_bool(engine.context, @intFromBool(is_raw)));
+        try v.set(engine, owned.input, "isTTY", c.pi_js_bool(engine.context, 1));
+    } else {
+        inline for (.{ "setRawMode", "isRaw", "isTTY" }) |name| try removeProperty(engine, owned.input, name);
+    }
+}
+fn removeProperty(engine: *js.Engine, object: c.JSValue, name: [*:0]const u8) !void {
+    const atom = c.JS_NewAtom(engine.context, name);
+    if (atom == c.JS_ATOM_NULL) return js.capture(engine);
+    defer c.JS_FreeAtom(engine.context, atom);
+    if (c.JS_DeleteProperty(engine.context, object, atom, c.JS_PROP_THROW) < 0) return js.capture(engine);
+}
+/// Pipe output has unavailable dimensions and no isTTY property. Zero console
+/// dimensions remain zero; ProcessTerminal applies its own Source fallback.
+pub fn hydrateOutput(engine: *js.Engine, stdout_tty: bool, stderr_tty: bool, columns: ?u32, rows: ?u32) !void {
+    const owned = try state(engine);
+    if (stdout_tty) try v.set(engine, owned.output, "isTTY", c.pi_js_bool(engine.context, 1)) else try removeProperty(engine, owned.output, "isTTY");
+    if (stderr_tty) try v.set(engine, owned.errors, "isTTY", c.pi_js_bool(engine.context, 1)) else try removeProperty(engine, owned.errors, "isTTY");
+    if (columns) |value| try v.set(engine, owned.output, "columns", c.JS_NewUint32(engine.context, value)) else try removeProperty(engine, owned.output, "columns");
+    if (rows) |value| try v.set(engine, owned.output, "rows", c.JS_NewUint32(engine.context, value)) else try removeProperty(engine, owned.output, "rows");
 }
 pub fn isShiftPressed(engine: *js.Engine) !bool {
     const bridge = try checkBridge(try state(engine));
@@ -93,7 +115,7 @@ pub fn deliverResize(engine: *js.Engine, columns: u32, rows: u32) !void {
 }
 fn emitInput(owned: *State) !void {
     const engine = owned.engine;
-    if (owned.paused or owned.pending.items.len == 0) return;
+    if (owned.paused or owned.resume_scheduled or owned.pending.items.len == 0) return;
     // Keep an incomplete UTF8 suffix until the next authenticated input frame,
     // as a real stdin.setEncoding('utf8') decoder does across read boundaries.
     var count = owned.pending.items.len;
@@ -150,7 +172,7 @@ fn resumed(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: 
 }
 fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     const engine = owned.engine;
-    if (method == .isPaused) return c.pi_js_bool(engine.context, @intFromBool(owned.paused));
+    if (method == .isPaused) return c.pi_js_bool(engine.context, @intFromBool(owned.explicitly_paused));
     const bridge = try checkBridge(owned);
     switch (method) {
         .setRawMode => {
@@ -168,6 +190,7 @@ fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c
         .@"resume" => {
             try bridge.control_fn(bridge.context, .@"resume");
             owned.paused = false;
+            owned.explicitly_paused = false;
             if (!owned.resume_scheduled) {
                 const holder = engine.native_module_values.get(private_module).?;
                 const generation = try engine.checked(c.JS_NewBigUint64(engine.context, owned.generation));
@@ -185,6 +208,7 @@ fn operation(owned: *State, receiver: c.JSValue, method: Method, args: []const c
         .pause => {
             try bridge.control_fn(bridge.context, .pause);
             owned.paused = true;
+            owned.explicitly_paused = true;
         },
         .writeOutput, .writeErrors => {
             const value = v.arg(args, 0);
@@ -225,6 +249,20 @@ fn makeMethod(engine: *js.Engine, holder: c.JSValue, name: [*:0]const u8, length
     var data = [_]c.JSValue{holder};
     return engine.checked(c.JS_NewCFunctionData2(engine.context, call, name, length, @intFromEnum(operation_value), 1, &data));
 }
+fn inputOn(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) anyerror!c.JSValue {
+    const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(values[0], c.JS_GetClassID(values[0])).?));
+    const returned = try js.call(engine, values[1], receiver, args);
+    errdefer engine.freeValue(returned);
+    const data = try v.text(engine, "data");
+    defer engine.freeValue(data);
+    if (c.JS_IsStrictEqual(engine.context, v.arg(args, 0), data) and !owned.explicitly_paused) {
+        // Node Readable.on('data') starts flow on the next tick and still calls
+        // the public resume method when the stream is already flowing.
+        const resumed_value = try js.invoke(engine, receiver, "resume", &.{});
+        engine.freeValue(resumed_value);
+    }
+    return returned;
+}
 pub fn install(engine: *js.Engine, process: c.JSValue) !void {
     if (engine.native_module_values.contains(private_module)) return;
     try @import("node_events.zig").install(engine);
@@ -245,9 +283,16 @@ pub fn install(engine: *js.Engine, process: c.JSValue) !void {
     const holder = try engine.checked(c.JS_NewObjectClass(engine.context, class));
     defer engine.freeValue(holder);
     const owned = try engine.gpa.create(State);
-    owned.* = .{ .engine = engine, .input = c.JS_DupValue(engine.context, input), .output = c.JS_DupValue(engine.context, output), .errors = c.JS_DupValue(engine.context, errors) };
+    owned.* = .{ .engine = engine, .input = c.JS_DupValue(engine.context, input), .output = c.JS_DupValue(engine.context, output), .errors = c.JS_DupValue(engine.context, errors), .raw_method = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(holder, owned);
     inline for (.{ .{ "setRawMode", 1, Method.setRawMode }, .{ "setEncoding", 1, Method.setEncoding }, .{ "resume", 0, Method.@"resume" }, .{ "pause", 0, Method.pause }, .{ "isPaused", 0, Method.isPaused } }) |entry| try js.define(engine, input, entry[0], try makeMethod(engine, holder, entry[0], entry[1], entry[2]));
+    owned.raw_method = try js.get(engine, input, "setRawMode");
+    const emitter_on = try js.get(engine, input, "on");
+    defer engine.freeValue(emitter_on);
+    const on = try @import("native_node_function.zig").create(engine, "on", 2, inputOn, &.{ holder, emitter_on });
+    defer engine.freeValue(on);
+    try js.define(engine, input, "on", c.JS_DupValue(engine.context, on));
+    try js.define(engine, input, "addListener", c.JS_DupValue(engine.context, on));
     try js.define(engine, input, "isRaw", c.pi_js_bool(engine.context, 0));
     try js.define(engine, output, "write", try makeMethod(engine, holder, "write", 3, .writeOutput));
     try js.define(engine, errors, "write", try makeMethod(engine, holder, "write", 3, .writeErrors));

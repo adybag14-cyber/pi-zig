@@ -118,6 +118,52 @@ const TerminalBridgeProbe = struct {
         self.controls.deinit(std.testing.allocator);
     }
 };
+test "Source6fb public TUI slice actual Source pipe terminal startup skips raw mode and preserves missing metadata" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"source-actual-pipe"});
+    try @import("native_tui.zig").install(engine);
+    const streams = @import("native_process_streams.zig");
+    var probe: TerminalBridgeProbe = .{};
+    defer probe.deinit();
+    const lease = try streams.bind(engine, probe.bridge());
+    defer _ = streams.unbind(engine, lease);
+    try streams.hydrateInput(engine, false, false);
+    try streams.hydrateOutput(engine, false, false, null, null);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const bytes = @embedFile("fixtures/process-terminal-actual-pipe-original-6fb.json");
+    try js.define(engine, root, "actualPipeSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "process-terminal-actual-pipe-original-6fb.json")));
+    const result = engine.evalModule(@embedFile("fixtures/process-terminal-actual-pipe-original-6fb.input.txt") ++
+        \\if(JSON.stringify(observed)!==JSON.stringify(actualPipeSource.value))throw Error(JSON.stringify({actual:observed,expected:actualPipeSource.value}));
+    , "process-terminal-actual-pipe.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native actual Source pipe terminal: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+    try std.testing.expectEqualStrings("URRP", probe.controls.items);
+}
+test "Source6fb public TUI slice terminal metadata restores raw identity and independent output availability" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"source-stream-metadata"});
+    try @import("native_tui.zig").install(engine);
+    const streams = @import("native_process_streams.zig");
+    var result = try engine.eval("var savedRawMethod=process.stdin.setRawMode;", "stream-raw-method.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try streams.hydrateInput(engine, false, false);
+    try streams.hydrateOutput(engine, false, true, null, null);
+    result = try engine.eval("if('setRawMode' in process.stdin||'isRaw' in process.stdin||'isTTY' in process.stdin||'isTTY' in process.stdout||process.stderr.isTTY!==true||'columns' in process.stdout||'rows' in process.stdout)throw Error('pipe stream metadata');", "stream-pipe-metadata.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+    try streams.hydrateInput(engine, true, true);
+    try streams.hydrateOutput(engine, true, false, 0, 0);
+    result = try engine.evalModule("import{ProcessTerminal}from'pi-tui';const t=new ProcessTerminal();if(process.stdin.setRawMode!==savedRawMethod||process.stdin.isRaw!==true||process.stdin.isTTY!==true||process.stdout.isTTY!==true||'isTTY' in process.stderr||process.stdout.columns!==0||process.stdout.rows!==0||t.columns!==80||t.rows!==24)throw Error('console stream metadata');", "stream-console-metadata.mjs");
+    engine.freeValue(result);
+}
 test "Source6fb public TUI slice genuine ProcessTerminal source class fields negotiation status timers drain and IO" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
@@ -163,7 +209,7 @@ test "Source6fb public TUI slice native terminal streams exact leases buffered U
     try std.testing.expect(!streams.unbind(engine, old));
     try streams.hydrateDimensions(engine, 120, 40);
     try streams.hydrateInput(engine, true, true);
-    var result = try engine.eval("var streamSeen=[],resizeSeen=[];process.stdin.setEncoding('utf8');process.stdin.on('data',value=>streamSeen.push(value));process.stdout.on('resize',()=>resizeSeen.push([process.stdout.columns,process.stdout.rows]));", "terminal-stream-setup.js", c.JS_EVAL_TYPE_GLOBAL);
+    var result = try engine.eval("var streamSeen=[],resizeSeen=[];process.stdin.pause();process.stdin.setEncoding('utf8');process.stdin.on('data',value=>streamSeen.push(value));process.stdout.on('resize',()=>resizeSeen.push([process.stdout.columns,process.stdout.rows]));", "terminal-stream-setup.js", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(result);
     try streams.deliverInput(engine, "queued");
     result = try engine.eval("process.stdin.resume();process.stdin.on('data',value=>streamSeen.push('late:'+value));if(streamSeen.length)throw Error('resume must defer pending delivery');", "terminal-stream-resume.js", c.JS_EVAL_TYPE_GLOBAL);
