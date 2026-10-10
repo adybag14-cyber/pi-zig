@@ -458,6 +458,38 @@ test "native durable view agent events follow actual generation tool and success
     try std.testing.expect(json.equal(source.value.object.get("result").?, actual.value));
 }
 
+test "native durable view observer initialization retries after genuine VM memory exhaustion" {
+    var failures: usize = 0;
+    for ([_]bool{ false, true }) |watch| {
+        for (0..65) |step| {
+            const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+            defer engine.deinit();
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
+            const value = try vm.object(engine);
+            defer engine.freeValue(value);
+            const context = try vm.object(engine);
+            defer engine.freeValue(context);
+            var usage: c.JSMemoryUsage = undefined;
+            c.JS_ComputeMemoryUsage(engine.runtime, &usage);
+            c.JS_SetMemoryLimit(engine.runtime, @as(usize, @intCast(usage.malloc_size)) + step * 64);
+            const first = if (watch) @import("extensions/native_durable_observation.zig").createProjection(engine, c.pi_js_undefined(), value, context, c.pi_js_undefined(), c.pi_js_undefined()) else @import("extensions/native_durable_state.zig").createProjection(engine, c.pi_js_undefined(), value, c.pi_js_undefined(), c.pi_js_undefined());
+            c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+            if (first) |object| {
+                engine.freeValue(object);
+            } else |_| failures += 1;
+            const retry = if (watch) try @import("extensions/native_durable_observation.zig").createProjection(engine, c.pi_js_undefined(), value, context, c.pi_js_undefined(), c.pi_js_undefined()) else try @import("extensions/native_durable_state.zig").createProjection(engine, c.pi_js_undefined(), value, c.pi_js_undefined(), c.pi_js_undefined());
+            defer engine.freeValue(retry);
+            const finished = vm.invoke(engine, retry, if (watch) "stop" else "dispose", &.{}) catch |err| {
+                std.debug.print("Observer retry watch={any} quota={d}: {s}\n", .{ watch, step * 64, engine.last_error orelse "missing" });
+                return err;
+            };
+            engine.freeValue(finished);
+        }
+    }
+    try std.testing.expect(failures > 0);
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();

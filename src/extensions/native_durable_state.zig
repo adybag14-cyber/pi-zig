@@ -132,6 +132,10 @@ fn classes(engine: *Engine) !void {
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_subscriber_class) and c.JS_NewClass(engine.runtime, engine.native_durable_subscriber_class, &subscriber_definition) < 0) return error.OutOfMemory;
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_state_class)) {
         if (c.JS_NewClass(engine.runtime, engine.native_durable_state_class, &state_definition) < 0) return error.OutOfMemory;
+    }
+    const existing = try engine.checked(c.JS_GetClassProto(engine.context, engine.native_durable_state_class));
+    defer engine.freeValue(existing);
+    if (c.JS_IsNull(existing) or c.JS_IsUndefined(existing)) {
         const prototype = try sdk.object(engine);
         errdefer engine.freeValue(prototype);
         const atom = c.JS_NewAtom(engine.context, "value");

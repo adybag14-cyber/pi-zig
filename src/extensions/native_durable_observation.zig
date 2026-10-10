@@ -149,8 +149,8 @@ fn create(engine: *Engine, parent: c.JSValue, observation: docs.Observation) !c.
     const definition: c.JSClassDef = .{ .class_name = "Native document watch", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_watch_class)) {
         if (c.JS_NewClass(engine.runtime, engine.native_durable_watch_class, &definition) < 0) return error.OutOfMemory;
-        try installPrototype(engine);
     }
+    try ensurePrototype(engine);
     const object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_watch_class));
     errdefer engine.freeValue(object);
     const self = try engine.gpa.create(Watch);
@@ -194,13 +194,18 @@ fn installPrototype(engine: *Engine) !void {
     }
     c.JS_SetClassProto(engine.context, engine.native_durable_watch_class, prototype);
 }
+fn ensurePrototype(engine: *Engine) !void {
+    const prototype = try engine.checked(c.JS_GetClassProto(engine.context, engine.native_durable_watch_class));
+    defer engine.freeValue(prototype);
+    if (c.JS_IsNull(prototype) or c.JS_IsUndefined(prototype)) try installPrototype(engine);
+}
 pub fn createProjection(engine: *Engine, parent: c.JSValue, value: c.JSValue, context: c.JSValue, release: c.JSValue, on_error: c.JSValue) !c.JSValue {
     if (engine.native_durable_watch_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_watch_class);
     const definition: c.JSClassDef = .{ .class_name = "Native committed watch", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_watch_class)) {
         if (c.JS_NewClass(engine.runtime, engine.native_durable_watch_class, &definition) < 0) return error.OutOfMemory;
-        try installPrototype(engine);
     }
+    try ensurePrototype(engine);
     const object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_watch_class));
     errdefer engine.freeValue(object);
     const self = try engine.gpa.create(Watch);
