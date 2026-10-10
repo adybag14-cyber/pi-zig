@@ -570,6 +570,9 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-ea-owner-step", "Fence a foreground phase before its owner's cancellation cascade").dependOn(&b.addRunArtifact(ea_owner_step_tests).step);
     const ownership_index_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_ownership_index_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"durable ownership index"} });
     b.step("test-durable-ownership-index", "Check actual ea ownership retention sizes and native allocation cleanup").dependOn(&b.addRunArtifact(ownership_index_tests).step);
+    const ownership_line_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"scheduler ea actual Storage owner line"} });
+    linkSqlite(ownership_line_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-durable-ownership-line", "Compare actual native Storage owner-line retention and rejected-read sweep with ea Source").dependOn(&b.addRunArtifact(ownership_line_tests).step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);

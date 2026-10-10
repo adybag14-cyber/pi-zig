@@ -1571,17 +1571,13 @@ fn ownedTasksOnLine(engine: *Engine, receiver: c.JSValue, context: c.JSValue) !c
     try Manager.deliver(owner);
     try invocationLive(self);
     try durable.checkCancellation(engine, context);
-    var ids: std.ArrayList(u64) = .empty;
-    defer ids.deinit(engine.gpa);
-    var records = owner.live_task_records.iterator();
-    while (records.next()) |record| {
-        const direct = json.get(record.value_ptr.value, "owner") orelse continue;
-        if (try json.asInteger(direct) == self.entry.runtime.taskId()) try ids.append(engine.gpa, record.key_ptr.*);
-    }
-    std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
+    // This callback owns the real Session line, so the scheduler's committed
+    // downward index is stable while the VM admits its publication copies.
+    const ids = try owner.scheduler.ownership_index.directOwned(engine.gpa, self.entry.runtime.taskId());
+    defer engine.gpa.free(ids);
     const result = try sdk.array(engine);
     errdefer engine.freeValue(result);
-    for (ids.items) |id| try sdk.append(engine, result, try durable.jsValue(engine, owner.live_task_records.get(id).?.value));
+    for (ids) |id| try sdk.append(engine, result, try durable.jsValue(engine, owner.live_task_records.get(id).?.value));
     return result;
 }
 fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
