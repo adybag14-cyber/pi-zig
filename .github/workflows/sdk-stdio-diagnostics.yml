@@ -1,0 +1,104 @@
+name: SDK stdio diagnostics
+
+on:
+  push:
+    branches: [work/sdk-stdio-diagnostics-20261010]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-stdio-diagnostics-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows-debug:
+    if: github.ref == 'refs/heads/work/sdk-stdio-diagnostics-20261010'
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact diagnostic head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Install exact Zig release
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2
+        with:
+          version: 0.16.0
+          use-cache: false
+
+      - name: Record source, tool, and complete tracked inputs
+        shell: pwsh
+        env:
+          SDK_EXPECTED_HEAD: ${{ github.sha }}
+          SDK_RUN_ID: ${{ github.run_id }}
+          SDK_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceiptDir = 'verification/sdk-stdio-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          $taskHead = (git rev-parse HEAD).Trim()
+          if ($taskHead -cne $env:SDK_EXPECTED_HEAD) { throw 'Checkout does not match the pushed diagnostic head' }
+          git diff --exit-code a5432924d2b7855f0f56d51baf51046747c15d56 HEAD -- build.zig src vendor tools
+          if ($LASTEXITCODE -ne 0) { throw 'Workflow follow-on changed frozen 467 implementation inputs' }
+          $taskVersion = (& zig version).Trim()
+          if ($taskVersion -cne '0.16.0') { throw "Unexpected Zig release: $taskVersion" }
+          $taskZig = (Get-Command zig).Source
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_).Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/inputs-before.json"
+          [ordered]@{
+            head = $taskHead; tree = (git rev-parse 'HEAD^{tree}').Trim()
+            implementation_head = 'a5432924d2b7855f0f56d51baf51046747c15d56'
+            eof_prerequisite = '3b4436e627f9ca16f437dad0068560bbef5e38d3'
+            zig_version = $taskVersion; zig_path = $taskZig; zig_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskZig).Hash
+            run_id = $env:SDK_RUN_ID; run_attempt = $env:SDK_RUN_ATTEMPT
+            os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+            input_count = $taskInputs.Count; input_manifest_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath "$taskReceiptDir/inputs-before.json").Hash
+            recorded_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            scope = 'Windows Debug diagnostic only; exact Source pipes and framed worker startup. Full Pi, Main physical frontend, and all-four SDK qualification remain incomplete.'
+          } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/source-tool.json"
+
+      - name: Replay actual SDK pipes, framed startup, and protocol
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskStarted = [DateTimeOffset]::UtcNow.ToString('o')
+          & zig build test-native-stdio-process test-native-process-stdio-process test-native-process-stream-protocol -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/sdk-stdio-diagnostics/build.log'
+          $taskExitCode = $LASTEXITCODE
+          [ordered]@{ exit_code = $taskExitCode; started_utc = $taskStarted; completed_utc = [DateTimeOffset]::UtcNow.ToString('o'); optimize = 'Debug'; jobs = 1; per_test_timeout = '120s' } | ConvertTo-Json | Set-Content -LiteralPath 'verification/sdk-stdio-diagnostics/build-result.json'
+          if ($taskExitCode -ne 0) { exit $taskExitCode }
+
+      - name: Preserve posthashes and exact executable identity
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceiptDir = 'verification/sdk-stdio-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          if (Test-Path -LiteralPath "$taskReceiptDir/inputs-before.json") {
+            $taskInputs = @(Get-Content -Raw -LiteralPath "$taskReceiptDir/inputs-before.json" | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -Algorithm SHA256 -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ head = (git rev-parse HEAD).Trim(); input_count = $taskInputs.Count; drift = $taskDrift; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/posthash.json"
+            if ($taskDrift.Count -ne 0) { throw 'Compiled tracked source changed during diagnostic execution' }
+          }
+          $taskImages = @(Get-ChildItem -LiteralPath 'zig-out/bin' -Filter '*.exe' -File -ErrorAction SilentlyContinue | ForEach-Object { [ordered]@{ path = $_.FullName; bytes = $_.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash } })
+          ConvertTo-Json -InputObject $taskImages -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/images.json"
+          git status --short | Set-Content -LiteralPath "$taskReceiptDir/git-status.txt"
+
+      - name: Upload diagnostic receipts, logs, and SDK artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sdk-stdio-windows-debug-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            verification/sdk-stdio-diagnostics/**
+            zig-out/bin/pi-sdk-embedder.exe
+            .github/workflows/sdk-stdio-diagnostics.yml
+            docs/sdk-stdio-diagnostics-20261010.md
