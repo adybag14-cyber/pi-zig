@@ -337,7 +337,7 @@ test "mcp.runtime Source c5f5b328 missing metadata rejects iss before token POST
     defer gpa.free(endpoint);
     var state = try cachedFixture(gpa, issuer, endpoint);
     defer state.deinit();
-    _ = json.get(state.value, "discovery").?.object.orderedRemove("authorizationServerMetadata");
+    _ = state.value.object.getPtr("discovery").?.object.orderedRemove("authorizationServerMetadata");
     try put(&state, "codeVerifier", .{ .string = "source-verifier" });
     try store.save("server", "https://service.example/mcp", state.value, null);
     const client: http.Client = .{ .gpa = gpa, .io = io };
