@@ -1,0 +1,39 @@
+{
+  "status": "qualified portable session futex wake and full thread ownership",
+  "head": "e782ec8d3790149cc46145ff5751915369f368f5",
+  "sourceManifest": "checkpoint237-futex32-fix-inputs.json",
+  "compiledInputs": 1520,
+  "results": [
+    {
+      "name": "session-futex32-first-windows-debug-20261010",
+      "completedUtc": "2026-10-10T12:13:42.0045120+00:00",
+      "summary": "Build Summary: 15/15 steps succeeded; 225/230 tests passed (5 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "291ADDA128E8891AE85831BE2D6F4B7DF4F9957345F6780AE35AB4B86609FDB9"
+    },
+    {
+      "name": "session-futex32-first-windows-release-safe-20261010",
+      "completedUtc": "2026-10-10T12:19:00.9249043+00:00",
+      "summary": "Build Summary: 15/15 steps succeeded; 225/230 tests passed (5 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "C95F426BAD4390083B119609296158398B340A71BF6598E9AF44D4324B598963"
+    },
+    {
+      "name": "session-futex32-first-native-linux-debug-20261010",
+      "completedUtc": "2026-10-10T12:15:01.7119878+00:00",
+      "summary": "Build Summary: 15/15 steps succeeded; 226/228 tests passed (2 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "BF097CF8C557063C10E85AC1137923A03C1FBC99D5BB3ED6E049DC19CD604606"
+    },
+    {
+      "name": "session-futex32-first-native-linux-release-safe-20261010",
+      "completedUtc": "2026-10-10T12:19:11.3830407+00:00",
+      "summary": "Build Summary: 15/15 steps succeeded; 226/228 tests passed (2 skipped)",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "36AA4E5AC4503E8FC7B17CCF0089A66E1F97EA2EA8838572DFDB6E0A31FD34B3"
+    }
+  ],
+  "scope": "portable session futex wake and full thread ownership",
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-10T12:19:34.8608021+00:00"
+}

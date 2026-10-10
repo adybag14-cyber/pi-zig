@@ -38,6 +38,20 @@ inventory regeneration preserve those compiled inputs. Earlier full-suite
 results below qualify their earlier source heads only. Hosted CI must qualify
 this checkpoint's own head before any merge or release.
 
+The first hosted macOS checks on `819ba57` exposed a compile error: Zig 0.16
+requires a 32-bit futex word, while Darwin thread IDs are 64 bits. Follow-up
+source `e782ec8d3790149cc46145ff5751915369f368f5` retains the full thread ID for
+ownership and reentrancy and waits on a separate 32-bit wake epoch, sampled
+before ownership admission to avoid losing a release. A regression exercises
+epoch wraparound and ownership checks. The backend, scheduler and native VM
+pass Windows Debug/ReleaseSafe with 225 passed / 5 skipped and Linux
+Debug/ReleaseSafe with 226 passed / 2 skipped, 15 build steps per mode. All
+1,520 compiled hashes were rechecked, and 32 cached PE images import no SQLite
+DLL. The backend cross-compiles for macOS ARM64; hosted native macOS execution
+is still required. These [follow-up records](verification/checkpoint-237/macos-futex-fix/local-scoped-qualified.json)
+supersede the earlier affected source hashes without extending the earlier
+nine-target qualification to new code automatically.
+
 Remaining work includes complete SDK/AgentSession behavior, scheduler controls
 and invocation-bound conversation capabilities, custom Storage and remaining
 durable workflows, conversation views/watches, the remaining public terminal
