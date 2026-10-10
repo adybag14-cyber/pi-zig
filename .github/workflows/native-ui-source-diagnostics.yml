@@ -1,0 +1,86 @@
+name: Native UI source diagnostics
+
+on:
+  push:
+    branches: [work/native-ui-source-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-ui-source-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ui:
+    name: Native UI (${{ matrix.os }}, ${{ matrix.mode }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Verify pinned dependency and record exact compiled source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskDirectory = 'verification/native-ui-source'
+          New-Item -ItemType Directory -Path $taskDirectory -Force | Out-Null
+          $taskVersion = (& zig version).Trim()
+          if ($taskVersion -cne '0.16.0') { throw 'Unexpected Zig release' }
+          $taskVendor = Get-Content -Raw -LiteralPath 'vendor/libfyaml/UPSTREAM.json' | ConvertFrom-Json
+          foreach ($taskFile in $taskVendor.files) {
+            $taskPath = Join-Path 'vendor/libfyaml' $taskFile.path
+            if ((Get-FileHash -Algorithm SHA256 -LiteralPath $taskPath).Hash -ine $taskFile.sha256) { throw "Pinned vendor drift: $taskPath" }
+          }
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskDirectory/inputs.json"
+          [ordered]@{
+            head = (git rev-parse HEAD).Trim(); tree = (git rev-parse 'HEAD^{tree}').Trim()
+            zig = $taskVersion; mode = '${{ matrix.mode }}'; vendor_commit = $taskVendor.commit
+            vendor_files = $taskVendor.files.Count; input_count = $taskInputs.Count
+            scope = 'Five focused native TUI source suites only; actual CLI frontend composition and full Pi parity remain unfinished.'
+          } | ConvertTo-Json | Set-Content -LiteralPath "$taskDirectory/source.json"
+      - name: Check native source formatting
+        run: zig fmt --check build.zig src tools
+      - name: Compare upstream screen behavior and allocation ownership
+        shell: pwsh
+        timeout-minutes: 20
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig build test-native-tui-base-source test-native-tui-main-source test-native-tui-alt-prerequisites-source test-native-tui-alt-source test-native-tui-public-source -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-ui-source/tests.log'
+          $taskExit = $LASTEXITCODE
+          [ordered]@{ exit_code = $taskExit; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-ui-source/result.json'
+          if ($taskExit -ne 0) { exit $taskExit }
+      - name: Verify retained input hashes
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath 'verification/native-ui-source/inputs.json') {
+            $taskInputs = @(Get-Content -Raw -LiteralPath 'verification/native-ui-source/inputs.json' | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -Algorithm SHA256 -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ input_count = $taskInputs.Count; mismatches = $taskDrift.Count; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-ui-source/posthash.json'
+            if ($taskDrift.Count -ne 0) { throw 'Tracked inputs changed during validation' }
+          }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked source changed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-ui-source-${{ runner.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: |
+            verification/native-ui-source/**
+            vendor/libfyaml/LICENSE
+            vendor/libfyaml/UPSTREAM.json
