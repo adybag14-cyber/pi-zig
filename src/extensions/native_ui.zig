@@ -499,7 +499,9 @@ pub const Manager = struct {
     }
 
     fn overlayFunction(self: *Manager, token_id: u64, name: [*:0]const u8, method: OverlayMethod) !c.JSValue {
-        var data = [_]c.JSValue{ self.token, c.JS_NewInt64(self.engine.context, self.generation), c.JS_NewInt64(self.engine.context, @intCast(token_id)) };
+        // A delayed overlay/focus callback belongs to the service that created
+        // the facade, even after that service has restored the base invocation.
+        var data = [_]c.JSValue{ self.token, c.JS_NewInt64(self.engine.context, self.generation), c.JS_NewInt64(self.engine.context, @intCast(token_id)), self.components.ui_service orelse c.pi_js_undefined() };
         defer self.engine.freeValue(data[1]);
         defer self.engine.freeValue(data[2]);
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, overlayCall, name, 1, @intFromEnum(method), data.len, &data));
@@ -533,6 +535,9 @@ pub const Manager = struct {
     fn overlayCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const method: OverlayMethod = @enumFromInt(magic);
+        var service_guard = if (!c.JS_IsUndefined(data[3])) @import("native_ui_service.zig").Service.enterCallback(engine, data[3]) catch |err| return fail(engine, err) else null;
+        defer if (service_guard) |*guard| guard.restore();
+        if (!c.JS_IsUndefined(data[3]) and service_guard == null) return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
         const self = current(engine, data) catch return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
         var token_id: i64 = 0;
         if (c.JS_ToInt64(context, &token_id, data[2]) < 0) return engine.throwCaptured();

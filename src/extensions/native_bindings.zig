@@ -2748,6 +2748,51 @@ test "native rejected action projection retains the original captured exception 
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception.?));
 }
 
+test "native retained Main UI overlay callbacks restore their creating service after command return" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    var live = true;
+    defer if (live) bindings.deinit();
+    const Bridge = struct {
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn service(_: ?*anyopaque, _: @import("native_ui_service_protocol.zig").Lease) !void {}
+        fn scene(_: ?*anyopaque, incoming: @import("component_protocol.zig").Scene) !void {
+            var owned = incoming;
+            owned.deinit();
+        }
+        fn close(_: ?*anyopaque, _: @import("component_protocol.zig").Fence) !void {}
+    };
+    bindings.ui_manager.bridge = .{ .request = Bridge.request, .action = Bridge.action, .cancel = Bridge.cancel, .service_open = Bridge.service, .service_close = Bridge.service, .component_scene = Bridge.scene, .component_close = Bridge.close };
+    try bindings.setContextJson("{\"hasUI\":true,\"nativeRuntimeBound\":true,\"width\":100,\"height\":40}");
+    try bindings.loadFactory(
+        "export default pi=>pi.registerCommand('open-retained-overlay',{handler(_,ctx){globalThis.pendingOverlay=ctx.ui.custom(tui=>{globalThis.overlayTui=tui;globalThis.overlayRoot={focused:false,render(){return ['retained-overlay']}};return overlayRoot},{overlay:true,overlayOptions:{width:20,nonCapturing:true},onHandle(h){globalThis.overlayHandle=h;h.focus()}});return{message:'opened'}}})",
+        "retained-overlay-service.mjs",
+    );
+    const opened = try bindings.invokeCommand("open-retained-overlay", "");
+    defer std.testing.allocator.free(opened);
+    const service = bindings.main_ui_service orelse return error.MissingRetainedMainUiService;
+    try service.poll();
+    const base_generation = bindings.ui_manager.generation;
+    try std.testing.expect(base_generation != service.saved.generation);
+    const observed = try engine.eval(
+        "overlayHandle.setHidden(true);if(!overlayHandle.isHidden())throw Error('delayed hide');overlayHandle.setHidden(false);overlayHandle.unfocus({target:null});if(overlayRoot.focused)throw Error('delayed unfocus');overlayTui.setFocus(overlayRoot);if(!overlayRoot.focused)throw Error('delayed focus');if(overlayTui.terminal.columns!==100||overlayTui.terminal.rows!==40)throw Error('retained dimensions');true",
+        "delayed-retained-overlay.js",
+        c.JS_EVAL_TYPE_GLOBAL,
+    );
+    defer engine.freeValue(observed);
+    try std.testing.expect(c.JS_ToBool(engine.context, observed) != 0);
+    try std.testing.expectEqual(base_generation, bindings.ui_manager.generation);
+    bindings.deinit();
+    live = false;
+    c.JS_RunGC(engine.runtime);
+    const retired = try engine.eval("overlayHandle.setHidden(false);overlayTui.setFocus(overlayRoot);overlayHandle.isHidden()&&!overlayHandle.isFocused()", "retired-overlay-service.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retired);
+    try std.testing.expect(c.JS_ToBool(engine.context, retired) != 0);
+}
+
 test "native shared VM API callbacks keep extension owner context and unsubscribe identity with no implicit active host" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
