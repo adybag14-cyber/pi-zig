@@ -31,3 +31,13 @@ font, IJG JPEG code, NeuQuant, rasterizer, Rust and WABT notices. The artifact i
 pinned; its complete original Rust dependency resolution has not been recovered.
 See `vendor/photon-native/README.md` and `PROVENANCE-AUDIT.md` for the exact
 provenance and remaining limitations. No complete SBOM claim is made.
+
+The first repository matrix at `d4925b0` passed Linux Debug/ReleaseSafe,
+macOS Debug/ReleaseSafe, and Windows Debug. Windows ReleaseSafe hit a Zig C
+header translation error in unrelated internal CRT declarations. A minimal
+allocator/result header now keeps trap and runtime types private to C.
+At `1ba4fa0`, the corrected Windows ReleaseSafe target passed all nine tests
+and 49 build steps, with all 1,775 source hashes unchanged. The public C ABI
+layout and image algorithms are unchanged. The corrected head still needs
+its complete hosted matrix. Thread-test failure cleanup also now joins each
+probe exactly once.
