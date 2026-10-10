@@ -1,0 +1,47 @@
+const focusedCursorCases=[];
+const cursor=tui.CURSOR_MARKER,start='\x1b_pi:fc\x07',end='\x1b_pi:/fc\x07';
+const fake=text=>tui.renderFakeCursor(text);
+const make=hardware=>{const base=new TuiBase({columns:40,rows:10,write(){},hideCursor(){},showCursor(){}},false);base.showHardwareCursor=hardware;return base};
+const lines=[
+ ['plain','plain'],
+ ['cursor only',cursor+'plain'],
+ ['empty focused',cursor+fake('')+'tail'],
+ ['focused ASCII',cursor+fake('a')+'tail'],
+ ['focused wide CJK',cursor+fake('界')+'x'],
+ ['focused astral emoji',cursor+fake('😀')+'x'],
+ ['focused combining grapheme',cursor+fake('e\u0301')+'x'],
+ ['focused emoji ZWJ',cursor+fake('👩‍👩‍👧‍👦')+'x'],
+ ['focused unpaired surrogate',cursor+fake('\ud800')+'x'],
+ ['focused styled text',cursor+fake('\x1b[31m界\x1b[0m')+'x'],
+ ['focused newline dotall',cursor+fake('界\n😀')+'x'],
+ ['truncated focused wide',cursor+start+'界'],
+ ['truncated focused astral',cursor+start+'😀'],
+ ['truncated empty focus',cursor+start],
+ ['end exactly at EOL',cursor+fake('界')],
+ ['unfocused wide',fake('界')+'x'],
+ ['unfocused astral',fake('😀')+'x'],
+ ['unfocused truncated',start+'界'],
+ ['unmatched end',end+'x'],
+ ['unfocused then focused',fake('left')+':'+cursor+fake('界')+'right'],
+ ['focused then unfocused',cursor+fake('界')+':'+fake('right')],
+ ['two focused segments',cursor+fake('界')+':'+cursor+fake('😀')+'tail'],
+ ['nonadjacent cursor and fake',cursor+'gap'+fake('界')],
+ ['literal replacement characters',cursor+fake('$1$2$$')+'x'],
+];
+for(const hardware of[false,true])for(const[name,line]of lines){const base=make(hardware);focusedCursorCases.push({name,hardware,input:line,output:base.resolveFakeCursors([line])[0]});}
+{
+ const base=make(true),trace=[],original=RegExp.prototype.exec;try{RegExp.prototype.exec=function(input){const match=Reflect.apply(original,this,[input]);if(match&&match[0].includes(cursor))trace.push({groups:Array.from(match),index:match.index,input:match.input});return match};const output=base.resolveFakeCursors([cursor+fake('界')+'x',cursor+start+'😀']);focusedCursorCases.push({name:'actual two capture groups preserve complete focused content',hardware:true,trace,output});}finally{RegExp.prototype.exec=original;}
+}
+{
+ const base=make(true),trace=[],line=new String(cursor+fake('界')+'x'),replace=String.prototype.replace;line.replace=function(expression,replacement){trace.push({receiver:this===line,argc:arguments.length,replacement,groups:expression.exec(this).slice(1)});return Reflect.apply(replace,this,[expression,replacement])};const input=[line];input.map=function(callback){trace.push({callbackName:callback.name,callbackLength:callback.length});return[callback.call({wrongReceiver:true},line,7,input)]};const output=base.resolveFakeCursors(input);focusedCursorCases.push({name:'ordinary replace receiver captures and map callback arguments',hardware:true,trace,output});
+}
+{
+ const base=make(true),plain=new String('plain'),result=base.resolveFakeCursors([plain]);focusedCursorCases.push({name:'no fake marker retains original string object identity',same:result[0]===plain,output:String(result[0])});
+}
+{
+ const base=make(true),reason={replaceFailure:true},line=new String(cursor+fake('界'));Object.defineProperty(line,'replace',{get(){throw reason}});let same=false;try{base.resolveFakeCursors([line])}catch(error){same=error===reason}focusedCursorCases.push({name:'original replace getter exception preserved',same});
+}
+{
+ const base=make(false),trace=[];Object.defineProperty(base,'showHardwareCursor',{get(){trace.push('hardware');return true}});const output=base.resolveFakeCursors(['plain',cursor+fake('界')+'x',fake('😀')]);focusedCursorCases.push({name:'hardware getter is read only for marker-bearing lines',trace,output});
+}
+globalThis.tuiFocusedFakeCursorCases=JSON.parse(JSON.stringify(focusedCursorCases));

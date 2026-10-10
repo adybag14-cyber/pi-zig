@@ -81,3 +81,21 @@ test "Source6fb internal TuiBase genuine Node terminal reports partial full dupl
     };
     engine.freeValue(result);
 }
+
+test "Source6fb internal TuiBase focused hardware cursor Sourceea captures preserve wide astral truncated and unfocused text" {
+    const engine = try setup();
+    defer engine.deinit();
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const expected = @embedFile("fixtures/tui-focused-fake-cursor-original-ea.json");
+    try js.define(engine, root, "internalFocusedCursorSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "tui-focused-fake-cursor-original-ea.json")));
+    const result = engine.evalModule(
+        "import * as tui from 'pi-tui';const TuiBase=globalThis.internalTuiBase;\n" ++ @embedFile("fixtures/tui-focused-fake-cursor-original-ea.input.txt") ++
+            "\nif(tuiFocusedFakeCursorCases.length!==53)throw Error('focused cursor Source case count');for(let index=0;index<tuiFocusedFakeCursorCases.length;index++){const actual=tuiFocusedFakeCursorCases[index],expected=internalFocusedCursorSource.cases[index];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index,actual,expected}));}",
+        "tui-focused-fake-cursor-source-replay.mjs",
+    ) catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native TuiBase focused cursor Source mismatch: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}

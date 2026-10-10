@@ -64,7 +64,7 @@ fn windows(engine: *js.Engine, values: []const c.JSValue) !c.JSValue {
 fn posix(engine: *js.Engine, values: []const c.JSValue) !c.JSValue {
     // Native process setup provides the original string environment store.
     // Retain it independently of later replacement of process.env/globalThis.
-    inline for (.{ "TMPDIR", "TMP", "TEMP" }) |name| {
+    for ([_][*:0]const u8{ "TMPDIR", "TMP", "TEMP" }) |name| {
         const value = try js.get(engine, values[1], name);
         defer engine.freeValue(value);
         if (!v.truthy(engine, value)) continue;
