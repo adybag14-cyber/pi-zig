@@ -1,0 +1,1303 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "entries",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          },
+          {
+            "id": 30,
+            "conversationId": 1,
+            "kind": "pi.user",
+            "model": []
+          },
+          {
+            "id": 31,
+            "conversationId": 1,
+            "kind": "pi.user",
+            "model": []
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 1
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              4,
+              0,
+              [
+                {
+                  "id": 31,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              4,
+              0,
+              [
+                {
+                  "id": 31,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              4,
+              0,
+              [
+                {
+                  "id": 31,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              4,
+              0,
+              [
+                {
+                  "id": 31,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": false,
+      "conversationShared": true
+    },
+    {
+      "scenario": "head",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 30,
+            "conversationId": 1,
+            "head": 10
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 1
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              1,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 10
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              1,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 10
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              1,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 10
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              1,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 10
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": false,
+      "conversationShared": true
+    },
+    {
+      "scenario": "reset",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 30,
+            "conversationId": 1,
+            "head": 30
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 1
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              3,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 30
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              3,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 30
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              3,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 30
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              3,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "head": 30
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": false,
+      "conversationShared": true
+    },
+    {
+      "scenario": "newdoc",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 1
+          },
+          "pi.usage": {
+            "models": {},
+            "tools": {}
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ],
+        [
+          "pi.usage",
+          {
+            "id": 7,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.usage"
+              ],
+              {
+                "models": {},
+                "tools": {}
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.usage"
+              ],
+              {
+                "models": {},
+                "tools": {}
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.usage"
+              ],
+              {
+                "models": {},
+                "tools": {}
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.usage"
+              ],
+              {
+                "models": {},
+                "tools": {}
+              }
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": true,
+      "conversationShared": true
+    },
+    {
+      "scenario": "delta",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 3
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": true,
+      "conversationShared": true
+    },
+    {
+      "scenario": "newversion",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "version": 2
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 2
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live"
+              ],
+              {
+                "version": 2
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live"
+              ],
+              {
+                "version": 2
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live"
+              ],
+              {
+                "version": 2
+              }
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live"
+              ],
+              {
+                "version": 2
+              }
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": true,
+      "conversationShared": true
+    },
+    {
+      "scenario": "retire",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {}
+      },
+      "docs": [],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "d",
+              [
+                "docs",
+                "pi.live"
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "d",
+              [
+                "docs",
+                "pi.live"
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "d",
+              [
+                "docs",
+                "pi.live"
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "d",
+              [
+                "docs",
+                "pi.live"
+              ]
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": true,
+      "conversationShared": true
+    },
+    {
+      "scenario": "ignore",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 1
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": true,
+      "conversationShared": true
+    },
+    {
+      "scenario": "mixed",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          },
+          {
+            "id": 30,
+            "conversationId": 1,
+            "kind": "pi.user",
+            "model": []
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 3
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ],
+            [
+              "p",
+              [
+                "entries"
+              ],
+              3,
+              0,
+              [
+                {
+                  "id": 30,
+                  "conversationId": 1,
+                  "kind": "pi.user",
+                  "model": []
+                }
+              ]
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "entriesShared": false,
+      "conversationShared": true
+    },
+    {
+      "scenario": "observer-error",
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "id": 5,
+            "conversationId": 1
+          },
+          {
+            "id": 10,
+            "conversationId": 1
+          },
+          {
+            "id": 20,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.live": {
+            "n": 3
+          }
+        }
+      },
+      "docs": [
+        [
+          "pi.live",
+          {
+            "id": 6,
+            "version": 1
+          }
+        ]
+      ],
+      "trace": [
+        [
+          "advance",
+          "first",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "advance",
+          "second",
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "first",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ],
+        [
+          "publication",
+          "second",
+          true,
+          true,
+          [
+            [
+              "s",
+              [
+                "docs",
+                "pi.live",
+                "n"
+              ],
+              3
+            ]
+          ],
+          true,
+          true
+        ]
+      ],
+      "errors": [
+        true,
+        true
+      ],
+      "entriesShared": true,
+      "conversationShared": true
+    }
+  ]
+}
