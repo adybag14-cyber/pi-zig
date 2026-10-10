@@ -16,7 +16,8 @@ its required checks.
   Markdown, project context, layout, and OAuth issuer targets: 62 tests and
   21 build steps. This includes the overlay service regression and 16 actual
   upstream issuer-validation cases. The separate HTTP authorization regression
-  in `oauth_authorize.zig` still needs the `test-mcp-runtime` target.
+  in `oauth_authorize.zig` still needs `test-mcp-runtime` or its focused
+  `test-mcp-issuer-exchange` target.
 - The ProcessTerminal pipe follow-on at `cdd0b38d7f41aa51789c62b7f13e17f5c4d45f8a`
   passed 42 tests in each of Windows Debug, Windows ReleaseSafe, Linux Debug,
   and Linux ReleaseSafe. Its 1,969 tracked source hashes matched after the runs.
@@ -43,3 +44,8 @@ remain incomplete. Individual target successes do not certify those areas.
 The previously published checkpoint's full hosted OS matrix failed. Its logs
 identified linkage, filesystem-fixture, and UI lifecycle issues; those failures
 must be resolved and the final source head checked again before merge or release.
+
+The work branch has a separate, read-only diagnostic OS matrix for
+`test-codemode-inline` and `test-mcp-issuer-exchange`. It preserves the exact
+source/tree/toolchain receipt. It does not replace artifact-inventory,
+provenance, allocation, full-suite, or release qualification.

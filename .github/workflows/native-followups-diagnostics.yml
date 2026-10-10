@@ -1,0 +1,47 @@
+name: Native follow-up diagnostics
+
+on:
+  push:
+    branches: [work/pi-native-followups-20261010]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-followups-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regressions:
+    name: Upstream regressions (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Record exact source and toolchain
+        shell: bash
+        run: |
+          mkdir -p verification/followup-diagnostics
+          git rev-parse HEAD > verification/followup-diagnostics/source.txt
+          git rev-parse 'HEAD^{tree}' >> verification/followup-diagnostics/source.txt
+          zig version >> verification/followup-diagnostics/source.txt
+      - name: Check formatting
+        run: zig fmt --check build.zig src tools
+      - name: Exercise current upstream interruption and issuer exchange
+        timeout-minutes: 25
+        run: zig build test-codemode-inline test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 120s --summary all
+      - name: Preserve diagnostic source receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: followup-${{ runner.os }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/followup-diagnostics/**
