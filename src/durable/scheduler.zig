@@ -165,13 +165,11 @@ const RuntimeCommit = struct {
             var state = next_state;
             if (std.mem.eql(u8, name, "waiting")) {
                 if (invocation.mode == .abort) return invocation.diagnose(error.AbortHandlerCannotWait, "Abort handler of task {d} cannot wait", .{invocation.task_id});
-                const view = try overlay(scheduler.gpa, tx);
-                defer view.destroy(scheduler.gpa);
-                try validateWait(.{ .state = view }, record, next_state, invocation);
+                try scheduler.validateCandidateWait(tx, record, next_state, invocation);
             } else if (std.mem.eql(u8, name, "terminal")) {
-                const view = try overlay(scheduler.gpa, tx);
-                defer view.destroy(scheduler.gpa);
-                if (try (model.Graph{ .state = view }).hasOwnedLive(invocation.task_id)) state = try model.outcomeState(tx.owned.arena.allocator(), "completing", try model.field(state, "outcome"));
+                var candidate = try scheduler.candidateIndex(tx);
+                defer candidate.deinit();
+                if (try candidate.hasOrdinaryBelow(scheduler.gpa, ownership.Node.task(invocation.task_id))) state = try model.outcomeState(tx.owned.arena.allocator(), "completing", try model.field(state, "outcome"));
             } else if (!std.mem.eql(u8, name, "running")) return error.InvalidRuntimeState;
             try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, state));
         }
@@ -479,6 +477,76 @@ pub const Scheduler = struct {
         const unloaded = try self.gpa.dupe(u64, self.ownership_index.unloaded.keys());
         defer self.gpa.free(unloaded);
         for (unloaded) |id| if (self.ownership_index.unloaded.contains(id)) try self.loadChain(ownership.Node.task(id));
+    }
+    fn candidateRecord(tx: *Transaction, table: backend.memory.Table, id: u64) !?Value {
+        var position = tx.writes.array.items.len;
+        while (position > 0) {
+            position -= 1;
+            const write = tx.writes.array.items[position];
+            if (!std.mem.eql(u8, try model.text(write, "type"), @tagName(table))) continue;
+            const record = try model.field(write, "value");
+            if (try model.number(record, "id") == id) return record;
+        }
+        return null;
+    }
+    fn loadCandidateParent(self: *Scheduler, tx: *Transaction, start: ownership.Node) !void {
+        var at = start;
+        var remaining = tx.writes.array.items.len + 1;
+        while (remaining > 0) : (remaining -= 1) {
+            if (try candidateRecord(tx, if (at.kind == .task) .task else .conversation, at.id)) |record| {
+                if (at.kind == .task) {
+                    at = (try recordLink(record)).parent();
+                } else {
+                    const owner = json.get(record, "owner") orelse return;
+                    at = ownership.Node.task(try model.number(owner, "taskId"));
+                }
+            } else {
+                try self.loadChain(at);
+                return;
+            }
+        }
+        return error.TaskOwnershipCycle;
+    }
+    /// A candidate view contains committed live work and all staged task and
+    /// conversation links. Uncommitted nodes are never installed in the real
+    /// index. Load only the committed owner chain above each staged parent.
+    fn candidateIndex(self: *Scheduler, tx: *Transaction) !ownership.Index {
+        try self.loadScopes();
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "task")) {
+            try self.loadCandidateParent(tx, (try recordLink(try model.field(write, "value"))).parent());
+        };
+        var candidate = try self.ownership_index.duplicate(self.gpa);
+        errdefer candidate.deinit();
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "conversation")) {
+            const record = try model.field(write, "value");
+            try candidate.setEdge(try model.number(record, "id"), if (json.get(record, "owner")) |owner| try model.number(owner, "taskId") else null);
+        };
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "task")) {
+            try indexRecord(self.gpa, &candidate, try model.field(write, "value"));
+        };
+        return candidate;
+    }
+    fn validateCandidateWait(self: *Scheduler, tx: *Transaction, record: Value, state: Value, invocation: *Invocation) !void {
+        try self.loadCandidateParent(tx, (try recordLink(record)).parent());
+        var candidate = try self.candidateIndex(tx);
+        defer candidate.deinit();
+        const members = try model.field(state, "on");
+        if (members != .array) return error.InvalidTaskWait;
+        const task_id = try model.number(record, "id");
+        for (members.array.items) |member| {
+            const id = try json.asInteger(member);
+            if (id == task_id or try candidate.reaches((try recordLink(record)).parent(), ownership.Node.task(id), true)) return invocation.diagnose(error.TaskCannotWaitOnOwner, "Task {d} cannot wait on itself or its owner {d}", .{ task_id, id });
+            var fetched: ?json.Owned = null;
+            defer if (fetched) |*value| value.deinit();
+            const child = (try candidateRecord(tx, .task, id)) orelse if (self.live_records.get(id)) |live_record| live_record.value else blk: {
+                fetched = try self.session.storage.readTableRecord(self.gpa, .task, id);
+                break :blk if (fetched) |value| value.value else return invocation.diagnose(error.UnknownTask, "Task {d} does not exist", .{id});
+            };
+            if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
+                const owner = json.get(child, "owner");
+                if (owner == null or try json.asInteger(owner.?) != task_id) return invocation.diagnose(error.FailFastRequiresChild, "Task {d} can wait failFast only on tasks it owns; {d} is not one", .{ task_id, id });
+            }
+        }
     }
     fn recover(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
