@@ -563,6 +563,8 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, ea_retention_tests.root_module);
     linkSqlite(ea_retention_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-ea-retention", "Replay actual ea retention and direct ownership while fencing partial owner publications").dependOn(&b.addRunArtifact(ea_retention_tests).step);
+    const ea_publication_failure_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"failed ownership observer"} });
+    b.step("test-native-durable-ea-publication-failure", "Preserve a native failed publication while closing without joining its unready queue").dependOn(&b.addRunArtifact(ea_publication_failure_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, ea_nested_tests.root_module);
