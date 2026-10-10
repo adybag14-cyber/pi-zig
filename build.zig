@@ -1800,6 +1800,10 @@ pub fn build(b: *std.Build) void {
         .filters = &.{ "extensions.provider_", "extensions.models_store", "auth.storage" },
     });
     const run_provider_contract_tests = b.addRunArtifact(provider_contract_tests);
+    // The provider module also discovers imported durable shell tests. Their
+    // subprocess executable must be installed in this runner's environment.
+    run_provider_contract_tests.step.dependOn(&install_durable_fixture.step);
+    run_provider_contract_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
     const provider_contract_step = b.step("test-provider-contracts", "Exercise provider ownership OAuth refresh model publication and stream contracts");
     provider_contract_step.dependOn(&run_provider_contract_tests.step);
     provider_contract_step.dependOn(&run_binding_tests.step);
