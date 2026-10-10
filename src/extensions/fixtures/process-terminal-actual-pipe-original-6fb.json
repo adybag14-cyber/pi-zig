@@ -1,0 +1,85 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "actualStreams": "actual Node pipe stdin stdout stderr",
+  "value": {
+    "before": {
+      "input": {
+        "rawOwn": false,
+        "rawType": "undefined",
+        "rawMethodType": "undefined",
+        "ttyOwn": false,
+        "paused": false
+      },
+      "output": {
+        "columnsOwn": false,
+        "rowsOwn": false,
+        "ttyOwn": false
+      },
+      "errors": {
+        "ttyOwn": false
+      }
+    },
+    "during": {
+      "raw": false,
+      "dimensions": [
+        80,
+        24
+      ],
+      "dataListeners": 1,
+      "resizeListeners": 1
+    },
+    "after": {
+      "input": {
+        "rawOwn": false,
+        "rawType": "undefined",
+        "rawMethodType": "undefined",
+        "ttyOwn": false,
+        "paused": true
+      },
+      "output": {
+        "columnsOwn": false,
+        "rowsOwn": false,
+        "ttyOwn": false
+      },
+      "errors": {
+        "ttyOwn": false
+      }
+    },
+    "remaining": [
+      0,
+      0
+    ],
+    "calls": [
+      [
+        "encoding",
+        "utf8"
+      ],
+      [
+        "resume"
+      ],
+      [
+        "write",
+        "\u001b[?2004h"
+      ],
+      [
+        "resume"
+      ],
+      [
+        "write",
+        "\u001b[>7u\u001b[?u\u001b]7501;?\u001b\\\u001b[c"
+      ],
+      [
+        "write",
+        "\u001b[?2004l"
+      ],
+      [
+        "write",
+        "\u001b[<u"
+      ],
+      [
+        "pause"
+      ]
+    ]
+  }
+}
