@@ -385,6 +385,31 @@ test "native durable view agent event batch allocation failures unwind" {
     }
 }
 
+test "native durable view public agent events snapshots cancellation close and overflow match Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-events-public-runtime.txt"), "native-public-agent-events") catch |err| {
+        std.debug.print("Public agent events {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const proof = try vm.get(engine, global, "publicEventProof");
+    defer engine.freeValue(proof);
+    const text = try engine.stringify(proof);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-events-public-original.json"));
+    defer source.deinit();
+    _ = source.value.object.swapRemove("source");
+    if (!json.equal(source.value, actual.value)) std.debug.print("Public events actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value, actual.value));
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
@@ -394,7 +419,7 @@ fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const generation = engine.native_allocation_generation;
     try @import("extensions/native_durable.zig").install(engine);
     const result = engine.evalModule(
-        \\import{Harness,MemoryStorage,createRegistry,GenerationTask}from'@earendil-works/pi-durable';const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{});try{const root=await harness.root({});await root.commit(async tx=>{const task=await tx.createTask(GenerationTask,{},{ownership:{kind:'conversation'}});await tx.createConversation({ownership:{kind:'task',taskId:task}})},{});const first=await root.viewState({}),watch=await root.watch({}),second=await root.viewState({}),graph=await harness.taskGraph({}),graphWatch=await harness.watchTaskGraph({});const a=first.subscribe(()=>{}),b=second.subscribe(()=>{}),d=graph.subscribe(()=>{});watch.start(async()=>{});graphWatch.start(async()=>{});await watch.stop();await graphWatch.stop();a();b();d();first.dispose();second.dispose();graph.dispose();}finally{await harness.close({})}
+        \\import{Harness,MemoryStorage,createRegistry,GenerationTask,watchEvents}from'@earendil-works/pi-durable';const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{});try{const root=await harness.root({});await root.commit(async tx=>{const task=await tx.createTask(GenerationTask,{},{ownership:{kind:'conversation'}});await tx.createConversation({ownership:{kind:'task',taskId:task}})},{});const first=await root.viewState({}),watch=await root.watch({}),second=await root.viewState({}),graph=await harness.taskGraph({}),graphWatch=await harness.watchTaskGraph({}),stream=await watchEvents(harness,root.id,{});stream.start(async()=>{});await stream.stop();const a=first.subscribe(()=>{}),b=second.subscribe(()=>{}),d=graph.subscribe(()=>{});watch.start(async()=>{});graphWatch.start(async()=>{});await watch.stop();await graphWatch.stop();a();b();d();first.dispose();second.dispose();graph.dispose();}finally{await harness.close({})}
     , "native-view-acquisition-allocation") catch |err| return engine.nativeAllocationError(err, generation);
     engine.freeValue(result);
 }

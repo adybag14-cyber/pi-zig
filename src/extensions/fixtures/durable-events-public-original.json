@@ -1,0 +1,317 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "write-reset",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "batch": [
+            {
+              "type": "message_start",
+              "message": {
+                "role": "user",
+                "content": "hello",
+                "timestamp": 1
+              }
+            },
+            {
+              "type": "message_end",
+              "entry": {
+                "kind": "test",
+                "model": [
+                  {
+                    "role": "user",
+                    "content": "hello",
+                    "timestamp": 1
+                  }
+                ],
+                "id": 7,
+                "conversationId": 1
+              }
+            },
+            {
+              "type": "submission",
+              "record": {
+                "conversationId": 1,
+                "type": "write",
+                "status": "done",
+                "entry": 7,
+                "id": 8
+              }
+            }
+          ],
+          "withoutSignal": true
+        },
+        {
+          "batch": [
+            {
+              "type": "message_start",
+              "message": {
+                "role": "user",
+                "content": "handoff",
+                "timestamp": 42
+              }
+            },
+            {
+              "type": "message_end",
+              "entry": {
+                "kind": "pi.reset",
+                "model": [
+                  {
+                    "role": "user",
+                    "content": "handoff",
+                    "timestamp": 42
+                  }
+                ],
+                "id": 9,
+                "conversationId": 1,
+                "head": 9
+              }
+            },
+            {
+              "type": "submission",
+              "record": {
+                "conversationId": 1,
+                "type": "write",
+                "status": "done",
+                "entry": 9,
+                "id": 10
+              }
+            }
+          ],
+          "withoutSignal": true
+        }
+      ],
+      "end": {
+        "reason": "stopped"
+      },
+      "reports": [],
+      "keys": [
+        "snapshot",
+        "start",
+        "stop",
+        "closed"
+      ],
+      "startLength": 1,
+      "stopLength": 0
+    },
+    {
+      "scenario": "cancel",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [],
+      "end": {
+        "reason": "cancelled"
+      },
+      "reports": [],
+      "keys": [
+        "snapshot",
+        "start",
+        "stop",
+        "closed"
+      ],
+      "startLength": 1,
+      "stopLength": 0
+    },
+    {
+      "scenario": "close",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [],
+      "end": {
+        "reason": "session_closed"
+      },
+      "reports": [],
+      "keys": [
+        "snapshot",
+        "start",
+        "stop",
+        "closed"
+      ],
+      "startLength": 1,
+      "stopLength": 0
+    },
+    {
+      "scenario": "listener-error",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "batch": [
+            {
+              "type": "message_start",
+              "message": {
+                "role": "user",
+                "content": "hello",
+                "timestamp": 1
+              }
+            },
+            {
+              "type": "message_end",
+              "entry": {
+                "kind": "test",
+                "model": [
+                  {
+                    "role": "user",
+                    "content": "hello",
+                    "timestamp": 1
+                  }
+                ],
+                "id": 7,
+                "conversationId": 1
+              }
+            },
+            {
+              "type": "submission",
+              "record": {
+                "conversationId": 1,
+                "type": "write",
+                "status": "done",
+                "entry": 7,
+                "id": 8
+              }
+            }
+          ],
+          "withoutSignal": true
+        }
+      ],
+      "end": {
+        "reason": "listener_error",
+        "error": {
+          "name": "Error",
+          "message": "[object Object]"
+        }
+      },
+      "reports": [
+        {
+          "raw": true
+        }
+      ],
+      "keys": [
+        "snapshot",
+        "start",
+        "stop",
+        "closed"
+      ],
+      "startLength": 1,
+      "stopLength": 0
+    },
+    {
+      "scenario": "overflow",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        [
+          {
+            "type": "snapshot",
+            "count": 101
+          }
+        ],
+        [
+          {
+            "type": "entry_appended"
+          },
+          {
+            "type": "submission"
+          }
+        ],
+        [
+          {
+            "type": "entry_appended"
+          },
+          {
+            "type": "submission"
+          }
+        ]
+      ],
+      "end": {
+        "reason": "stopped"
+      },
+      "reports": [],
+      "keys": [
+        "snapshot",
+        "start",
+        "stop",
+        "closed"
+      ],
+      "startLength": 1,
+      "stopLength": 0
+    },
+    {
+      "scenario": "already-cancelled",
+      "raw": true,
+      "reports": []
+    }
+  ],
+  "invalid": [
+    {
+      "name": "Error",
+      "message": "Not a Harness"
+    },
+    {
+      "name": "Error",
+      "message": "Not a Harness"
+    },
+    {
+      "name": "Error",
+      "message": "Not a Harness"
+    }
+  ]
+}

@@ -24,6 +24,7 @@ const Watch = struct {
     version: u64,
     projected: bool = false,
     projection_report: ?c.JSValue = null,
+    projection_replace: ?c.JSValue = null,
     pending: std.ArrayList(Frame) = .empty,
     started: bool = false,
     scheduled: bool = false,
@@ -98,6 +99,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     self.pending.deinit(engine.gpa);
     inline for (.{ "parent", "value", "closed", "resolve", "listener", "commit_detach", "close_detach", "signal", "cancellation", "end" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
     if (self.projection_report) |reporter| c.JS_FreeValueRT(runtime, reporter);
+    if (self.projection_replace) |replace| c.JS_FreeValueRT(runtime, replace);
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -105,6 +107,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const self: *Watch = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_watch_class) orelse return));
     inline for (.{ "parent", "value", "closed", "resolve", "listener", "commit_detach", "close_detach", "signal", "cancellation", "end" }) |name| c.JS_MarkValue(runtime, @field(self, name), marker);
     if (self.projection_report) |reporter| c.JS_MarkValue(runtime, reporter, marker);
+    if (self.projection_replace) |replace| c.JS_MarkValue(runtime, replace, marker);
     for (self.pending.items) |frame| {
         c.JS_MarkValue(runtime, frame.value, marker);
         c.JS_MarkValue(runtime, frame.ops, marker);
@@ -229,6 +232,11 @@ pub fn createProjection(engine: *Engine, parent: c.JSValue, value: c.JSValue, co
 pub fn closeProjection(engine: *Engine, object: c.JSValue, failure: ?c.JSValue) !void {
     try (try state(engine, object)).terminate(if (failure == null) "session_closed" else "session_failed", failure);
 }
+pub fn replaceProjectionOverflow(engine: *Engine, object: c.JSValue, callback: c.JSValue) !void {
+    const self = try state(engine, object);
+    if (self.projection_replace) |old| engine.freeValue(old);
+    self.projection_replace = c.JS_DupValue(engine.context, callback);
+}
 pub fn advanceProjection(engine: *Engine, object: c.JSValue, value: c.JSValue, operations: c.JSValue, context: c.JSValue) !void {
     const self = try state(engine, object);
     if (!self.projected) return error.NotProjectedWatch;
@@ -236,10 +244,12 @@ pub fn advanceProjection(engine: *Engine, object: c.JSValue, value: c.JSValue, o
     try self.pending.ensureUnusedCapacity(engine.gpa, 1);
     const clean = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
     errdefer engine.freeValue(clean);
-    const ops = if (self.pending.items.len >= 100) try replacement(engine, value) else c.JS_DupValue(engine.context, operations);
+    const frame_value = if (self.pending.items.len >= 100 and self.projection_replace != null) try engine.checked(c.JS_Call(engine.context, self.projection_replace.?, c.pi_js_undefined(), 0, null)) else c.JS_DupValue(engine.context, value);
+    defer engine.freeValue(frame_value);
+    const ops = if (self.pending.items.len >= 100) try replacement(engine, frame_value) else c.JS_DupValue(engine.context, operations);
     errdefer engine.freeValue(ops);
     if (self.pending.items.len >= 100) self.clear(engine.runtime);
-    self.pending.appendAssumeCapacity(.{ .value = c.JS_DupValue(engine.context, value), .ops = ops, .context = clean });
+    self.pending.appendAssumeCapacity(.{ .value = c.JS_DupValue(engine.context, frame_value), .ops = ops, .context = clean });
     if (c.JS_IsNull(value)) self.retired = true;
     if (self.started) try schedule(self, object);
 }

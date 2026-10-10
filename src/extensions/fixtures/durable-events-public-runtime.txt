@@ -1,0 +1,19 @@
+import{Harness,MemoryStorage,createRegistry,watchEvents}from'@earendil-works/pi-durable';
+const rows=[];
+for(const scenario of ['write-reset','cancel','close','listener-error','overflow','already-cancelled']){
+ const reports=[],marker={},harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),now:()=>42,onReport:error=>reports.push({raw:error===marker,name:error.name,message:error.message})},{});let closed=false;
+ try{
+  const root=await harness.root({}),controller=new AbortController();
+  if(scenario==='already-cancelled'){controller.abort(marker);let raw;try{await watchEvents(harness,root.id,{abortSignal:controller.signal})}catch(error){raw=error===marker}rows.push({scenario,raw,reports});continue}
+  const stream=await watchEvents(harness,root.id,{abortSignal:controller.signal}),snapshot=stream.snapshot,events=[];let done;const seen=new Promise(resolve=>done=resolve);
+  if(scenario!=='overflow')stream.start(async(batch,context)=>{events.push({batch,withoutSignal:context.abortSignal===undefined});if(scenario==='listener-error')throw marker;if(scenario!=='write-reset'||events.length===2)done()});
+  let end;
+  if(scenario==='cancel'){controller.abort(marker);end=await stream.closed}
+  else if(scenario==='close'){await harness.close({});closed=true;end=await stream.closed}
+  else if(scenario==='overflow'){for(let n=0;n<103;n++)await root.submit({type:'write',entry:{kind:'test',model:[]}},{});stream.start(async batch=>{events.push(batch.map(event=>({type:event.type,...(event.type==='snapshot'?{count:event.entries.length}:{})})));if(events.length===3)done()});await seen;end=await stream.stop()}
+  else {await root.submit({type:'write',entry:{kind:'test',model:[{role:'user',content:'hello',timestamp:1}]}},{});if(scenario==='write-reset'){await root.reset('handoff',{});await seen;end=await stream.stop()}else{const result=await stream.closed;end={reason:result.reason,error:{name:result.error.name,message:result.error.message}}}}
+  rows.push({scenario,snapshot,events,end,reports,keys:Reflect.ownKeys(stream).map(String),startLength:stream.start.length,stopLength:stream.stop.length});
+ }finally{if(!closed)await harness.close({})}
+}
+const invalid=[];for(const harness of[undefined,{},null])try{await watchEvents(harness,1,{});invalid.push('fulfilled')}catch(error){invalid.push({name:error.name,message:error.message})}
+globalThis.publicEventProof={rows,invalid};

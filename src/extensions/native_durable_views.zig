@@ -161,18 +161,24 @@ fn store(engine: *Engine, session: c.JSValue, options: c.JSValue) !c.JSValue {
     return result;
 }
 pub fn acquire(engine: *Engine, session: c.JSValue, options: c.JSValue, id: c.JSValue, context: c.JSValue, watch: bool) !c.JSValue {
+    return acquireMode(engine, session, options, id, context, @intFromBool(watch));
+}
+pub fn acquireEvents(engine: *Engine, session: c.JSValue, options: c.JSValue, id: c.JSValue, context: c.JSValue) !c.JSValue {
+    return acquireMode(engine, session, options, id, context, 2);
+}
+fn acquireMode(engine: *Engine, session: c.JSValue, options: c.JSValue, id: c.JSValue, context: c.JSValue, mode: c_int) !c.JSValue {
     const owner = try store(engine, session, options);
     defer engine.freeValue(owner);
     var data = [_]c.JSValue{ owner, id, context };
-    const queued = try engine.checked(c.JS_NewCFunctionData2(engine.context, attach, "", 0, @intFromBool(watch), data.len, &data));
+    const queued = try engine.checked(c.JS_NewCFunctionData2(engine.context, attach, "", 0, mode, data.len, &data));
     defer engine.freeValue(queued);
     return durable.enqueue(engine, session, queued);
 }
 fn attach(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, watch: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return attachOwned(engine, data[0], data[1], data[2], watch != 0) catch |err| durable.reject(engine, err);
+    return attachOwned(engine, data[0], data[1], data[2], watch) catch |err| durable.reject(engine, err);
 }
-fn attachOwned(engine: *Engine, owner: c.JSValue, id: c.JSValue, context: c.JSValue, watch: bool) !c.JSValue {
+fn attachOwned(engine: *Engine, owner: c.JSValue, id: c.JSValue, context: c.JSValue, mode: c_int) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     try durable.checkCancellation(engine, context);
@@ -183,15 +189,25 @@ fn attachOwned(engine: *Engine, owner: c.JSValue, id: c.JSValue, context: c.JSVa
     if (c.JS_IsUndefined(mount)) mount = try scope.own(if (c.JS_IsUndefined(id)) try @import("native_durable_task_graph.zig").build(engine, session) else try build(engine, session, id, context));
     const observer = try scope.own(try vm.object(engine));
     inline for (.{ .{ "store", owner }, .{ "mount", mount }, .{ "id", id } }) |field| try put(engine, observer, field[0], field[1]);
-    try put(engine, observer, "watch", c.pi_js_bool(engine.context, @intFromBool(watch)));
+    try put(engine, observer, "watch", c.pi_js_bool(engine.context, @intFromBool(mode != 0)));
     const release = try scope.own(try callback(engine, observer, .release, 0));
     const report = try scope.get(owner, "report");
     const value = try scope.get(mount, "value");
-    const object = if (watch) try @import("native_durable_observation.zig").createProjection(engine, session, value, context, release, report) else try @import("native_durable_state.zig").createProjection(engine, session, value, release, report);
+    var events: ?@import("native_durable_events.zig").Projection = null;
+    defer if (events) |projection| {
+        engine.freeValue(projection.watch);
+        engine.freeValue(projection.publication);
+    };
+    const object = if (mode == 2) blk: {
+        events = try @import("native_durable_events.zig").create(engine, session, id, value, context, release, report);
+        break :blk events.?.public;
+    } else if (mode == 1) try @import("native_durable_observation.zig").createProjection(engine, session, value, context, release, report) else try @import("native_durable_state.zig").createProjection(engine, session, value, release, report);
     errdefer engine.freeValue(object);
     errdefer _ = invokeFunction(&scope, release, &.{}) catch {};
-    try put(engine, observer, "object", object);
-    try @import("native_tool_info.zig").putData(engine, observer, "advance", try callback(engine, observer, .advance, 3));
+    try put(engine, observer, "object", if (events) |projection| projection.watch else object);
+    if (events) |projection| {
+        try put(engine, observer, "publication", projection.publication);
+    } else try @import("native_tool_info.zig").putData(engine, observer, "advance", try callback(engine, observer, .advance, 3));
     try durable.checkCancellation(engine, context);
     if (c.JS_ToBool(engine.context, try scope.get(owner, "closed")) != 0) return @import("native_sdk.zig").sourceError(engine, "Harness is closed");
     _ = try scope.invoke(mounts, "set", &.{ id, mount });
