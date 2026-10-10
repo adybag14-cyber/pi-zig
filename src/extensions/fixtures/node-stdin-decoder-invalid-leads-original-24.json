@@ -1,0 +1,148 @@
+{
+  "node": "24.14.0",
+  "authority": "actual Node StringDecoder invalid leading byte boundary, independent follow-on corpus",
+  "cases": [
+    {
+      "frames": [
+        [
+          192
+        ],
+        [
+          128
+        ]
+      ],
+      "writes": [
+        "",
+        "��"
+      ],
+      "end": "",
+      "data": [
+        "��"
+      ]
+    },
+    {
+      "frames": [
+        [
+          193
+        ]
+      ],
+      "writes": [
+        ""
+      ],
+      "end": "�",
+      "data": [
+        "�"
+      ]
+    },
+    {
+      "frames": [
+        [
+          245
+        ],
+        [
+          128,
+          128,
+          128
+        ]
+      ],
+      "writes": [
+        "",
+        "����"
+      ],
+      "end": "",
+      "data": [
+        "����"
+      ]
+    },
+    {
+      "frames": [
+        [
+          246
+        ],
+        [
+          128,
+          128,
+          128
+        ]
+      ],
+      "writes": [
+        "",
+        "����"
+      ],
+      "end": "",
+      "data": [
+        "����"
+      ]
+    },
+    {
+      "frames": [
+        [
+          247
+        ]
+      ],
+      "writes": [
+        ""
+      ],
+      "end": "�",
+      "data": [
+        "�"
+      ]
+    },
+    {
+      "frames": [
+        [
+          248
+        ]
+      ],
+      "writes": [
+        "�"
+      ],
+      "end": "",
+      "data": [
+        "�"
+      ]
+    },
+    {
+      "frames": [
+        [
+          254
+        ]
+      ],
+      "writes": [
+        "�"
+      ],
+      "end": "",
+      "data": [
+        "�"
+      ]
+    },
+    {
+      "frames": [
+        [
+          255
+        ]
+      ],
+      "writes": [
+        "�"
+      ],
+      "end": "",
+      "data": [
+        "�"
+      ]
+    },
+    {
+      "frames": [
+        [
+          128
+        ]
+      ],
+      "writes": [
+        "�"
+      ],
+      "end": "",
+      "data": [
+        "�"
+      ]
+    }
+  ]
+}

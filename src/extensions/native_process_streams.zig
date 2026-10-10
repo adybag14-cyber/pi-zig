@@ -17,7 +17,7 @@ pub const Bridge = struct {
     enable_vt_input_fn: ?*const fn (?*anyopaque) anyerror!bool = null,
 };
 pub const Lease = struct { context: ?*anyopaque, generation: u64 };
-const State = struct { engine: *js.Engine, bridge: ?Bridge = null, generation: u64 = 0, input: c.JSValue, output: c.JSValue, errors: c.JSValue, raw_method: c.JSValue, paused: bool = true, explicitly_paused: bool = false, utf8: bool = false, resume_scheduled: bool = false, pending: std.ArrayList(u8) = .empty };
+const State = struct { engine: *js.Engine, bridge: ?Bridge = null, generation: u64 = 0, input: c.JSValue, output: c.JSValue, errors: c.JSValue, raw_method: c.JSValue, paused: bool = true, explicitly_paused: bool = false, utf8: bool = false, resume_scheduled: bool = false, end_received: bool = false, end_scheduled: bool = false, end_emitted: bool = false, pending: std.ArrayList(u8) = .empty };
 const private_module = "#pi-native-process-terminal-streams";
 const Method = enum(c_int) { setRawMode, setEncoding, @"resume", pause, isPaused, writeOutput, writeErrors };
 fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -48,9 +48,20 @@ pub fn bind(engine: *js.Engine, bridge: Bridge) !Lease {
         owned.paused = true;
         owned.explicitly_paused = false;
         owned.resume_scheduled = false;
+        owned.end_received = false;
+        owned.end_scheduled = false;
+        owned.end_emitted = false;
     }
     owned.bridge = bridge;
     return .{ .context = bridge.context, .generation = owned.generation };
+}
+/// Native producers check their saved lease before delivering a queued frame.
+/// This is an identity check with no host callback or async scope adoption;
+/// delivery also checks the current bridge's live engine/frontend guard.
+pub fn ownsLease(engine: *js.Engine, lease: Lease) bool {
+    const owned = state(engine) catch return false;
+    const bridge = owned.bridge orelse return false;
+    return bridge.context == lease.context and owned.generation == lease.generation;
 }
 /// Retired frontend generations cannot detach a newer frontend's stream sink.
 pub fn unbind(engine: *js.Engine, lease: Lease) bool {
@@ -62,6 +73,9 @@ pub fn unbind(engine: *js.Engine, lease: Lease) bool {
     owned.paused = true;
     owned.explicitly_paused = false;
     owned.resume_scheduled = false;
+    owned.end_received = false;
+    owned.end_scheduled = false;
+    owned.end_emitted = false;
     return true;
 }
 pub fn hydrateDimensions(engine: *js.Engine, columns: u32, rows: u32) !void {
@@ -112,42 +126,120 @@ pub fn deliverResize(engine: *js.Engine, columns: u32, rows: u32) !void {
     defer engine.freeValue(event);
     const returned = try js.invoke(engine, owned.output, "emit", &.{event});
     engine.freeValue(returned);
+    try @import("node_events.zig").drainHostTicks(engine);
 }
 fn emitInput(owned: *State) !void {
     const engine = owned.engine;
-    if (owned.paused or owned.resume_scheduled or owned.pending.items.len == 0) return;
+    if (owned.paused or owned.resume_scheduled) return;
+    if (owned.pending.items.len == 0) {
+        if (owned.end_received) try scheduleEnd(owned);
+        return;
+    }
     // Keep an incomplete UTF8 suffix until the next authenticated input frame,
     // as a real stdin.setEncoding('utf8') decoder does across read boundaries.
     var count = owned.pending.items.len;
     if (owned.utf8) {
-        var cursor = count;
-        while (cursor > 0 and count - cursor < 3 and owned.pending.items[cursor - 1] & 0xc0 == 0x80) cursor -= 1;
-        if (cursor > 0) {
-            const start = cursor - 1;
-            const first = owned.pending.items[start];
-            const needed: usize = if (first >= 0xc2 and first <= 0xdf) 2 else if (first >= 0xe0 and first <= 0xef) 3 else if (first >= 0xf0 and first <= 0xf4) 4 else 1;
-            if (count - start < needed) count = start;
-        }
+        count = utf8CompletePrefix(owned.pending.items);
+        if (count == 0 and owned.end_received) count = owned.pending.items.len;
     }
     if (count == 0) return;
-    const value = if (owned.utf8) try engine.checked(c.JS_NewStringLen(engine.context, owned.pending.items.ptr, count)) else blk: {
+    const value = if (owned.utf8) blk: {
+        const decoded = try @import("binary_encoding.zig").decode(engine.gpa, owned.pending.items[0..count], .utf8);
+        defer engine.gpa.free(decoded);
+        break :blk try engine.checked(c.JS_NewStringLen(engine.context, decoded.ptr, decoded.len));
+    } else blk: {
         break :blk try @import("node_buffer.zig").fromBytes(engine, owned.pending.items[0..count]);
     };
     defer engine.freeValue(value);
     // Consume before emitting so listener reentry can safely append input.
     std.mem.copyForwards(u8, owned.pending.items[0 .. owned.pending.items.len - count], owned.pending.items[count..]);
     owned.pending.items.len -= count;
+    // Source Readable schedules end when the final buffer is consumed, before
+    // invoking its final data listener. That listener's ticks follow end, and a
+    // pause from that listener cannot suppress an already queued end event.
+    if (owned.end_received and owned.pending.items.len == 0) try scheduleEnd(owned);
     const event = try v.text(engine, "data");
     defer engine.freeValue(event);
     const returned = try js.invoke(engine, owned.input, "emit", &.{ event, value });
     engine.freeValue(returned);
+    // Keep decoder tail delivery separate from its preceding complete text.
+    // A listener may pause after the complete prefix and defer that tail/end.
+    if (owned.end_received and owned.pending.items.len > 0) try emitInput(owned);
 }
 pub fn deliverInput(engine: *js.Engine, bytes: []const u8) !void {
     const owned = try state(engine);
     _ = try checkBridge(owned);
+    if (owned.end_received) return error.NativeTerminalInputAfterEnd;
     if (bytes.len > 1024 * 1024 or owned.pending.items.len > 1024 * 1024 - bytes.len) return error.NativeTerminalInputQueueLimit;
     try owned.pending.appendSlice(engine.gpa, bytes);
     try emitInput(owned);
+    // This API is a native IO callback boundary, not a manual JS emit. Node
+    // completes its nextTick queue here before the owner's Promise jobs run.
+    try @import("node_events.zig").drainHostTicks(engine);
+}
+/// Flush a genuine native producer's final decoder suffix and emit end once.
+/// Paused unread data remains queued until resume; no SDK token is adopted.
+pub fn deliverEnd(engine: *js.Engine) !void {
+    const owned = try state(engine);
+    _ = try checkBridge(owned);
+    if (owned.end_received) return;
+    owned.end_received = true;
+    // A delivered EOF with no unread bytes completes even after a complete
+    // final data listener paused input. Do not change that public pause state.
+    if (owned.pending.items.len == 0) try scheduleEnd(owned) else try emitInput(owned);
+    try @import("node_events.zig").drainHostTicks(engine);
+}
+fn utf8CompletePrefix(bytes: []const u8) usize {
+    var index: usize = 0;
+    while (index < bytes.len) {
+        const first = bytes[index];
+        // StringDecoder groups by leading byte bits before validating Unicode:
+        // C0/C1 and F5..F7 can therefore be incomplete decoder groups too.
+        const expected: usize = if (first >= 0xc0 and first <= 0xdf) 2 else if (first >= 0xe0 and first <= 0xef) 3 else if (first >= 0xf0 and first <= 0xf7) 4 else 1;
+        var consumed: usize = 1;
+        while (consumed < expected) {
+            if (index + consumed == bytes.len) return index;
+            const next = bytes[index + consumed];
+            // StringDecoder defers an incomplete lead/continuation group even
+            // if its eventual scalar is invalid. Replacement decoding occurs
+            // when the group completes, a non-continuation arrives, or EOF.
+            if (next & 0xc0 != 0x80) break;
+            consumed += 1;
+        }
+        index += consumed;
+    }
+    return bytes.len;
+}
+fn scheduleEnd(owned: *State) !void {
+    if (owned.end_emitted or owned.end_scheduled) return;
+    const engine = owned.engine;
+    const holder = engine.native_module_values.get(private_module).?;
+    const generation = try engine.checked(c.JS_NewBigUint64(engine.context, owned.generation));
+    defer engine.freeValue(generation);
+    var data = [_]c.JSValue{ holder, generation };
+    const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, ended, "endReadableNT", 0, 0, 2, &data));
+    defer engine.freeValue(callback);
+    const process = try js.global(engine, "process");
+    defer engine.freeValue(process);
+    const returned = try js.invoke(engine, process, "nextTick", &.{callback});
+    engine.freeValue(returned);
+    owned.end_scheduled = true;
+}
+fn ended(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], c.JS_GetClassID(data[0])).?));
+    var queued_generation: u64 = 0;
+    if (c.JS_ToBigUint64(context, &queued_generation, data[1]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    if (owned.generation != queued_generation) return c.pi_js_undefined();
+    owned.end_scheduled = false;
+    _ = checkBridge(owned) catch return c.pi_js_undefined();
+    if (!owned.end_received or owned.end_emitted or owned.pending.items.len != 0) return c.pi_js_undefined();
+    const event = v.text(engine, "end") catch |err| return fail(engine, err);
+    defer engine.freeValue(event);
+    owned.end_emitted = true;
+    const returned = js.invoke(engine, owned.input, "emit", &.{event}) catch |err| return fail(engine, err);
+    engine.freeValue(returned);
+    return c.pi_js_undefined();
 }
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
