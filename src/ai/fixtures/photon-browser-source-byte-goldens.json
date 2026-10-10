@@ -1,0 +1,127 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "photon": "browser0.3.3",
+  "wasmSha256": "06e9f6b245d53b488244e04dfe30e6731c029526101c6400e6490057fcfbdd04",
+  "results": [
+    {
+      "file": "c033-1x1.png",
+      "sourceSha256": "56e435c72a77be209b31f8f14ae7f5a387d36d0dbc601181da684602d6dbbf8e",
+      "bytes": 73
+    },
+    {
+      "file": "c033-1x1-q80.jpg",
+      "sourceSha256": "0cd95d8c5eb0b46d9cd3031d09531b6d4632750606ae69f40f82d5f846869656",
+      "bytes": 630
+    },
+    {
+      "file": "c033-1x1-q85.jpg",
+      "sourceSha256": "7915469165495f900ec3f9f18e26e0a09c21370afdf3825910008efb1a472179",
+      "bytes": 631
+    },
+    {
+      "file": "c033-1x1-q70.jpg",
+      "sourceSha256": "70d97f24c6f5d6274a20a7302a2c8918a54b89657ebd50d3d4bed537f362cbd9",
+      "bytes": 630
+    },
+    {
+      "file": "c033-1x1-q55.jpg",
+      "sourceSha256": "7fba51a8e8a6f47da183522f93d3f5c5d5ea3c084d25d476ebd121fcb0a7dec3",
+      "bytes": 630
+    },
+    {
+      "file": "c033-1x1-q40.jpg",
+      "sourceSha256": "5a4a5a184c816ca29f871f3ee7b81a8ab7afbd54a274add7d3137b853eb6db0c",
+      "bytes": 629
+    },
+    {
+      "file": "c033-1x1-decoded.rgba",
+      "sourceSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "bytes": 4
+    },
+    {
+      "file": "c033-1x1-resized.rgba",
+      "sourceSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "bytes": 4
+    },
+    {
+      "file": "c033-8x5.png",
+      "sourceSha256": "25687f3b640ce718c035ca22cec2c570af992c53b34a1f48f936b70fcc33fa56",
+      "bytes": 233
+    },
+    {
+      "file": "c033-8x5-q80.jpg",
+      "sourceSha256": "a5ac09f5d8b80ba0d72fb0e632bce15374bd9563914e6257efd18add30a6f549",
+      "bytes": 710
+    },
+    {
+      "file": "c033-8x5-q85.jpg",
+      "sourceSha256": "d6355aea6f065a7365b291fa502ec8572d30cad3508e737d7adf3d51583186c0",
+      "bytes": 721
+    },
+    {
+      "file": "c033-8x5-q70.jpg",
+      "sourceSha256": "6a13d41a28d7a7796099cd7d9b89b07fdd39d6c0ecc56db556242491842c3679",
+      "bytes": 693
+    },
+    {
+      "file": "c033-8x5-q55.jpg",
+      "sourceSha256": "694e459d9e081ce0dc957a59eb76d1fa98101359696cf0665d3955bf8c8ad637",
+      "bytes": 680
+    },
+    {
+      "file": "c033-8x5-q40.jpg",
+      "sourceSha256": "138f1e7110c131e4e18ae34f971ebb07fe53ddedb0bcacba574756a3395daa56",
+      "bytes": 669
+    },
+    {
+      "file": "c033-8x5-decoded.rgba",
+      "sourceSha256": "2d698e2767f0355597df74f694aefd84a0c8f026a94d8a81332d7661483e0b4d",
+      "bytes": 160
+    },
+    {
+      "file": "c033-8x5-resized.rgba",
+      "sourceSha256": "ed6a8c43cc4549fe757d80b30714d7d04aae9124e55fbb0a021f32aab1987ab6",
+      "bytes": 72
+    },
+    {
+      "file": "c033-32x24.png",
+      "sourceSha256": "f1074b555cf26512b2963b5ba949714651568ca782a03070642402bfb4e2ae06",
+      "bytes": 3164
+    },
+    {
+      "file": "c033-32x24-q80.jpg",
+      "sourceSha256": "884013732813cc484ba98061388fdb588802fe3d44f4ab735aee3f387ea29db1",
+      "bytes": 1437
+    },
+    {
+      "file": "c033-32x24-q85.jpg",
+      "sourceSha256": "5233bea7cfd84ac21cfed2770567360120e1fcbeed3b40a68731f24f505519a0",
+      "bytes": 1554
+    },
+    {
+      "file": "c033-32x24-q70.jpg",
+      "sourceSha256": "ec1e825bd584ea51ef34eb67ba226349ea95683404c154911be8f5e51bf7338e",
+      "bytes": 1277
+    },
+    {
+      "file": "c033-32x24-q55.jpg",
+      "sourceSha256": "9f5ffc5f43f7d1290fa9758be1ec25328de1d234b686353e1f5f7057509d6270",
+      "bytes": 1149
+    },
+    {
+      "file": "c033-32x24-q40.jpg",
+      "sourceSha256": "e98715fe325e9abe2831082f806c28aa07f00a17250ecda4cad2b0ccfe5b9d43",
+      "bytes": 1060
+    },
+    {
+      "file": "c033-32x24-decoded.rgba",
+      "sourceSha256": "dbcf68f811a6e16ba369d2f111f996c6a8500890b7eb6263657dd36cd8460150",
+      "bytes": 3072
+    },
+    {
+      "file": "c033-32x24-resized.rgba",
+      "sourceSha256": "e2d8669e4eada307c110a819f3b22c1f583dc0908b88cb1b42162b0581cb375e",
+      "bytes": 1728
+    }
+  ]
+}

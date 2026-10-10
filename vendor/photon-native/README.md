@@ -1,10 +1,27 @@
-# Pinned native image codec draft
+# Pinned native image codecs
 
 This directory contains C translated from the exact published
 `@silvia-odwyer/photon-node` 0.3.4 WebAssembly artifact. The build compiles C
 directly with Zig 0.16.0; it does not load a WebAssembly interpreter, Rust,
 Node, or JavaScript host code. Host allocation, pixel orientation, and resize
 selection remain Zig code in `src/ai/photon_*.zig`.
+
+Durable uses the separate browser package `@silvia-odwyer/photon` 0.3.3.
+Its exact artifact SHA-256 is
+`06e9f6b245d53b488244e04dfe30e6731c029526101c6400e6490057fcfbdd04`.
+The `photon_browser_*` translation uses module `pi_photon_browser`, sharing
+the protected allocator and pinned WABT runtime with the Node 0.3.4 codec.
+`src/durable/photon_images.zig` preserves Durable's lazy encoding order,
+inclusive byte limits, optional capability, and unsigned EXIF offsets.
+Its complete result fixtures were captured from actual upstream c5f5b328.
+The production processor remains optional; its presence does not select it
+for callers that omitted an image processor.
+
+`PROVENANCE-BROWSER-033.json` independently records the browser artifact's
+registry identity, producer section, embedded crate-version strings, and exact
+Roboto font match. Its NPM git head, license bytes, 23 observed crate versions,
+Rust producer, and embedded font match the Node artifact's known-notice bundle.
+This comparison does not reconstruct the complete transitive dependency graph.
 
 The input artifact SHA-256 is
 `10468181565c56004c867f3a4af96f89a0ef5a63a72f2b5fb12c1f1992a3615c`.
