@@ -1,0 +1,13 @@
+import{Harness,MemoryStorage,createRegistry,watchEvents}from'@earendil-works/pi-durable';
+const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{}),rows=[];
+const capture=async(name,callback)=>{try{rows.push({name,value:await callback()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}};
+try{
+ const root=await harness.root({}),watch=await root.watch({}),state=await root.viewState({}),stream=await watchEvents(harness,root.id,{});
+ await capture('watch start returns undefined',()=>watch.start(async()=>{}));await capture('watch repeated start',()=>watch.start(async()=>{}));
+ const end=watch.stop();await capture('watch repeated stop preserves promise',()=>end===watch.stop()&&end===watch.closed);await end;await capture('watch stopped after started checks started first',()=>watch.start(async()=>{}));
+ const stopped=await root.watch({});await stopped.stop();await capture('watch stopped before started',()=>stopped.start(async()=>{}));
+ const value=state.value;state.dispose();await capture('state retains value after dispose',()=>state.value===value);await capture('state subscribe after dispose',()=>{const events=[],off=state.subscribe((value,context,delivery)=>events.push(delivery));off();return events});await capture('state repeated dispose',()=>state.dispose());
+ await capture('stream start returns undefined',()=>stream.start(async()=>{}));await capture('stream repeated start',()=>stream.start(async()=>{}));const streamEnd=stream.stop();await capture('stream repeated stop preserves promise',()=>streamEnd===stream.stop()&&streamEnd===stream.closed);await streamEnd;
+ rows.push({name:'public method names and arities',value:{watch:[watch.start.name,watch.start.length,watch.stop.name,watch.stop.length],state:[state.subscribe.name,state.subscribe.length,state.dispose.name,state.dispose.length]}});
+}finally{await harness.close({})}
+globalThis.observationEdgeProof={rows};

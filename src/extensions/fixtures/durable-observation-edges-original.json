@@ -1,0 +1,80 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "name": "watch start returns undefined"
+    },
+    {
+      "name": "watch repeated start",
+      "error": {
+        "name": "Error",
+        "message": "Watch is already started"
+      }
+    },
+    {
+      "name": "watch repeated stop preserves promise",
+      "value": true
+    },
+    {
+      "name": "watch stopped after started checks started first",
+      "error": {
+        "name": "Error",
+        "message": "Watch is already started"
+      }
+    },
+    {
+      "name": "watch stopped before started",
+      "error": {
+        "name": "Error",
+        "message": "Watch is stopped"
+      }
+    },
+    {
+      "name": "state retains value after dispose",
+      "value": true
+    },
+    {
+      "name": "state subscribe after dispose",
+      "value": [
+        {
+          "kind": "hydrate",
+          "sequence": 0
+        }
+      ]
+    },
+    {
+      "name": "state repeated dispose"
+    },
+    {
+      "name": "stream start returns undefined"
+    },
+    {
+      "name": "stream repeated start",
+      "error": {
+        "name": "Error",
+        "message": "Watch is already started"
+      }
+    },
+    {
+      "name": "stream repeated stop preserves promise",
+      "value": true
+    },
+    {
+      "name": "public method names and arities",
+      "value": {
+        "watch": [
+          "start",
+          1,
+          "stop",
+          0
+        ],
+        "state": [
+          "subscribe",
+          1,
+          "dispose",
+          0
+        ]
+      }
+    }
+  ]
+}

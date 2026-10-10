@@ -410,6 +410,54 @@ test "native durable view public agent events snapshots cancellation close and o
     try std.testing.expect(json.equal(source.value, actual.value));
 }
 
+test "native durable view repeated observation controls and public method arities match Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = try engine.evalModule(@embedFile("extensions/fixtures/durable-observation-edges-runtime.txt"), "native-observation-edges");
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const proof = try vm.get(engine, global, "observationEdgeProof");
+    defer engine.freeValue(proof);
+    const text = try engine.stringify(proof);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-observation-edges-original.json"));
+    defer source.deinit();
+    _ = source.value.object.swapRemove("source");
+    if (!json.equal(source.value, actual.value)) std.debug.print("Observation edges actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value, actual.value));
+}
+
+test "native durable view agent events follow actual generation tool and successor publications" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 20000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/text_decoder.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-events-tool-round-runtime.txt"), "native-events-real-tool-round") catch |err| {
+        std.debug.print("Event tool round {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const proof = try vm.get(engine, global, "eventToolRoundProof");
+    defer engine.freeValue(proof);
+    const text = try engine.stringify(proof);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-events-tool-round-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value.object.get("result").?, actual.value)) std.debug.print("Event tool round actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value.object.get("result").?, actual.value));
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();

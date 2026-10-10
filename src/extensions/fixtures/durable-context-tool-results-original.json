@@ -1,0 +1,211 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "name": "missing-timestamp",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ]
+        }
+      ],
+      "result": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "Tool result unavailable: history ends before this call completed."
+            }
+          ],
+          "isError": true,
+          "details": {
+            "reason": "missing_result"
+          }
+        }
+      ]
+    },
+    {
+      "name": "zero-timestamp",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "result": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ],
+          "timestamp": 0
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "Tool result unavailable: history ends before this call completed."
+            }
+          ],
+          "isError": true,
+          "details": {
+            "reason": "missing_result"
+          },
+          "timestamp": 0
+        }
+      ]
+    },
+    {
+      "name": "null-timestamp",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ],
+          "timestamp": null
+        }
+      ],
+      "result": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ],
+          "timestamp": null
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "Tool result unavailable: history ends before this call completed."
+            }
+          ],
+          "isError": true,
+          "details": {
+            "reason": "missing_result"
+          },
+          "timestamp": null
+        }
+      ]
+    },
+    {
+      "name": "duplicate-results",
+      "messages": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "first"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "last"
+            }
+          ],
+          "isError": false,
+          "timestamp": 2
+        }
+      ],
+      "result": [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "toolCall",
+              "id": "call",
+              "name": "tool",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "toolResult",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "content": [
+            {
+              "type": "text",
+              "text": "first"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1
+        }
+      ]
+    }
+  ]
+}

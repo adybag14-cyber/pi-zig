@@ -1,0 +1,112 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "result": {
+    "events": [
+      {
+        "type": "message_start",
+        "role": "user"
+      },
+      {
+        "type": "message_end",
+        "kind": "pi.user",
+        "role": "user"
+      },
+      {
+        "type": "submission",
+        "status": "placed"
+      },
+      {
+        "type": "run_start"
+      },
+      {
+        "type": "turn_start"
+      },
+      {
+        "type": "message_start",
+        "role": "system"
+      },
+      {
+        "type": "message_end",
+        "kind": "pi.system",
+        "role": "system"
+      },
+      {
+        "type": "message_start",
+        "role": "assistant"
+      },
+      {
+        "type": "message_end",
+        "kind": "pi.assistant",
+        "role": "assistant"
+      },
+      {
+        "type": "usage_changed",
+        "tokens": 3
+      },
+      {
+        "type": "tool_execution_start",
+        "call": "c1",
+        "name": "echo"
+      },
+      {
+        "type": "tool_execution_update",
+        "call": "c1",
+        "name": "echo",
+        "output": {
+          "set": "progress"
+        }
+      },
+      {
+        "type": "tool_execution_end",
+        "call": "c1",
+        "name": "echo",
+        "resultRole": "toolResult"
+      },
+      {
+        "type": "message_start",
+        "role": "toolResult"
+      },
+      {
+        "type": "message_end",
+        "kind": "pi.tool-result",
+        "role": "toolResult"
+      },
+      {
+        "type": "turn_end"
+      },
+      {
+        "type": "turn_start"
+      },
+      {
+        "type": "message_start",
+        "role": "assistant"
+      },
+      {
+        "type": "message_end",
+        "kind": "pi.assistant",
+        "role": "assistant"
+      },
+      {
+        "type": "turn_end"
+      },
+      {
+        "type": "run_end"
+      },
+      {
+        "type": "submission",
+        "status": "done"
+      },
+      {
+        "type": "usage_changed",
+        "tokens": 6
+      }
+    ],
+    "calls": 2,
+    "executed": 1,
+    "status": "done",
+    "end": {
+      "reason": "stopped"
+    },
+    "reports": []
+  }
+}

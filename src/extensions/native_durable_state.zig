@@ -139,7 +139,7 @@ fn classes(engine: *Engine) !void {
         const getter = try engine.checked(c.JS_NewCFunction(engine.context, valueGetter, "get value", 0));
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         inline for (.{ "subscribe", "dispose" }, 0..) |name, operation| {
-            const callback = try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intCast(operation)));
+            const callback = try engine.checked(c.pi_js_function_magic(engine.context, method, name, if (operation == 0) 1 else 0, @intCast(operation)));
             if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, callback, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
         }
         c.JS_SetClassProto(engine.context, engine.native_durable_state_class, prototype);

@@ -189,7 +189,7 @@ fn installPrototype(engine: *Engine) !void {
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, accessor, c.pi_js_undefined(), 0) < 0) return error.JavaScriptException;
     }
     inline for (.{ "start", "stop" }, 0..) |name, operation| {
-        const callback = try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intCast(operation)));
+        const callback = try engine.checked(c.pi_js_function_magic(engine.context, method, name, if (operation == 0) 1 else 0, @intCast(operation)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, callback, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     }
     c.JS_SetClassProto(engine.context, engine.native_durable_watch_class, prototype);
@@ -275,8 +275,8 @@ fn methodOwned(engine: *Engine, receiver: c.JSValue, listener: c.JSValue, operat
         try self.terminate("stopped", null);
         return c.JS_DupValue(engine.context, self.closed);
     }
-    if (self.started) return error.WatchAlreadyStarted;
-    if (!c.JS_IsUndefined(self.end)) return error.WatchStopped;
+    if (self.started) return sdk.sourceError(engine, "Watch is already started");
+    if (!c.JS_IsUndefined(self.end)) return sdk.sourceError(engine, "Watch is stopped");
     self.started = true;
     self.listener = c.JS_DupValue(engine.context, listener);
     if (self.pending.items.len > 0) try schedule(self, receiver);

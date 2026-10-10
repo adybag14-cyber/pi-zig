@@ -261,13 +261,24 @@ fn orderTools(a: std.mem.Allocator, messages: Value) !Value {
                 try missing.object.put(a, "content", try json.parseLeaky(a, "[{\"type\":\"text\",\"text\":\"Tool result unavailable: history ends before this call completed.\"}]"));
                 try missing.object.put(a, "isError", .{ .bool = true });
                 try missing.object.put(a, "details", try json.parseLeaky(a, "{\"reason\":\"missing_result\"}"));
-                try missing.object.put(a, "timestamp", try json.required(message, "timestamp"));
+                if (json.get(message, "timestamp")) |timestamp| try missing.object.put(a, "timestamp", timestamp);
                 try ordered.array.append(missing);
             }
         }
     }
     return ordered;
 }
+test "native durable view tool context matches Source absent timestamps and duplicate results" {
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("fixtures/durable-context-tool-results-original.json"));
+    defer source.deinit();
+    const a = source.arena.allocator();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const actual = try orderTools(a, row.object.get("messages").?);
+        if (!json.equal(row.object.get("result").?, actual)) std.debug.print("Tool result ordering differs for {s}\n", .{row.object.get("name").?.string});
+        try std.testing.expect(json.equal(row.object.get("result").?, actual));
+    }
+}
+
 fn freeze(engine: *Engine, value: c.JSValue) anyerror!void {
     if (!c.JS_IsObject(value)) return;
     const global = c.JS_GetGlobalObject(engine.context);
