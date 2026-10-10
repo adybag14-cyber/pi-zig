@@ -22,8 +22,14 @@ pub fn check(comptime label: []const u8, comptime body: anytype, args: anytype) 
     const total = baseline.alloc_index;
     const start: usize = @intCast(@as(u128, total) * shard / count);
     const end: usize = @intCast(@as(u128, total) * (@as(u128, shard) + 1) / count);
+    const trace: ?[]u8 = std.testing.environ.getAlloc(std.heap.page_allocator, "PI_SDK_ALLOCATION_TRACE") catch |cause| switch (cause) {
+        error.EnvironmentVariableMissing => null,
+        else => return cause,
+    };
+    defer if (trace) |value| std.heap.page_allocator.free(value);
     std.debug.print("SDK_ALLOCATION_RANGE {s} {d}/{d} range=[{d},{d}) total={d}\n", .{ label, shard, count, start, end, total });
     for (start..end) |index| {
+        if (trace != null) std.debug.print("SDK_ALLOCATION_INDEX_BEGIN {s} {d}\n", .{ label, index });
         var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
         if (@call(.auto, body, .{failing.allocator()} ++ args)) |_| {
             if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
@@ -32,6 +38,7 @@ pub fn check(comptime label: []const u8, comptime body: anytype, args: anytype) 
             if (cause != error.OutOfMemory) return cause;
             try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
         }
+        if (trace != null) std.debug.print("SDK_ALLOCATION_INDEX_COMPLETE {s} {d}\n", .{ label, index });
     }
     std.debug.print("SDK_ALLOCATION_COMPLETE {s} {d}/{d} range=[{d},{d}) total={d}\n", .{ label, shard, count, start, end, total });
 }

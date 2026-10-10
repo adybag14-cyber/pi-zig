@@ -62,7 +62,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v2
@@ -81,9 +81,10 @@ jobs:
         shell: bash
         env:
           PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
-          PI_CODEMODE_ALLOCATION_SHARDS: "8"
+          PI_CODEMODE_ALLOCATION_SHARDS: "16"
           PI_SDK_ALLOCATION_SHARD: ${{ matrix.shard }}
-          PI_SDK_ALLOCATION_SHARDS: "8"
+          PI_SDK_ALLOCATION_SHARDS: "16"
+          PI_SDK_ALLOCATION_TRACE: "1"
         run: |
           set -euo pipefail
           zig build test-codemode-allocation test-codemode-model-allocation-shard -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/allocation-ranges/shard-${{ matrix.shard }}.log
@@ -118,10 +119,10 @@ jobs:
           git rev-parse HEAD > verification/allocation-ranges/expected-source.txt
           git rev-parse 'HEAD^{tree}' >> verification/allocation-ranges/expected-source.txt
           zig version >> verification/allocation-ranges/expected-source.txt
-          for shard in 0 1 2 3 4 5 6 7; do
+          for shard in {0..15}; do
             cmp verification/allocation-ranges/expected-source.txt verification/allocation-ranges/source-$shard.txt
           done
-          zig run tools/verify_codemode_coverage.zig -- 8 verification/allocation-ranges/shard-{0..7}.log > verification/allocation-ranges/coverage.txt 2>&1
+          zig run tools/verify_codemode_coverage.zig -- 16 verification/allocation-ranges/shard-{0..15}.log > verification/allocation-ranges/coverage.txt 2>&1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
