@@ -103,7 +103,19 @@ test "native process stdio factory startup uses byte-only replies and genuine So
     var open = true;
     defer if (open) started.runtime.deinit();
     defer gpa.free(started.manifest_json);
-    const result = try started.runtime.invokeCommand("stdio-inspect", "", "{}");
+    const result = started.runtime.invokeCommand("stdio-inspect", "", "{}") catch |err| {
+        frontend.mutex.lockUncancelable(io);
+        defer frontend.mutex.unlock(io);
+        std.debug.print("Actual framed stdio failed {s}; last_error={s}; last_owner_error={s}; sent={}; stdout_bytes={d}; stderr_bytes={d}\n", .{ @errorName(err), started.runtime.last_error orelse "<none>", started.runtime.last_owner_error orelse "<none>", frontend.sent, frontend.output.items.len, frontend.errors.items.len });
+        const encoded_output = try gpa.alloc(u8, std.base64.standard.Encoder.calcSize(frontend.output.items.len));
+        defer gpa.free(encoded_output);
+        const encoded_errors = try gpa.alloc(u8, std.base64.standard.Encoder.calcSize(frontend.errors.items.len));
+        defer gpa.free(encoded_errors);
+        _ = std.base64.standard.Encoder.encode(encoded_output, frontend.output.items);
+        _ = std.base64.standard.Encoder.encode(encoded_errors, frontend.errors.items);
+        std.debug.print("Actual framed stdoutBase64={s}\nActual framed stderrBase64={s}\n", .{ encoded_output, encoded_errors });
+        return err;
+    };
     defer gpa.free(result);
     const expected = try decode(source.value.object.get("observationsJsonBase64").?);
     defer gpa.free(expected);

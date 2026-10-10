@@ -1051,6 +1051,20 @@ fn writeInvocationFailure(gpa: std.mem.Allocator, writer: *std.Io.Writer, messag
     try writeRecord(writer, failure.value);
 }
 
+fn writeOwnerTermination(transport: *Transport, phase: []const u8, failure: ?anyerror) !void {
+    transport.mutex.lockUncancelable(transport.io);
+    const input_finished = transport.finished;
+    const input_error = transport.reader_error;
+    transport.mutex.unlock(transport.io);
+    const cause = if (failure) |err| @errorName(err) else "NativeOwnerReturnedWithoutShutdown";
+    const diagnostic = try std.fmt.allocPrint(std.heap.page_allocator, "Native owner terminated at {s}: {s}; JS={s}; input_finished={}; input_error={s}", .{ phase, cause, transport.engine.last_error orelse "<none>", input_finished, if (input_error) |err| @errorName(err) else "<none>" });
+    defer std.heap.page_allocator.free(diagnostic);
+    try transport.writer.writeAll("\x1e{\"type\":\"native_owner_error\",\"error\":");
+    try std.json.Stringify.value(diagnostic, .{}, transport.writer);
+    try transport.writer.writeAll("}\n");
+    try transport.writer.flush();
+}
+
 fn requiredText(object: std.json.ObjectMap, name: []const u8) ![]const u8 {
     const value = object.get(name) orelse return error.MissingWorkerField;
     if (value != .string) return error.InvalidWorkerField;
@@ -1717,6 +1731,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         stream_lease = try process_streams.bind(engine, transport.process_worker.?.bridge(metadata));
         transport.process_worker.?.stream_lease = stream_lease;
     }
+    var owner_phase: []const u8 = "factories";
+    var owner_failure: ?anyerror = null;
+    var graceful_shutdown = false;
+    defer if (!graceful_shutdown) writeOwnerTermination(&transport, owner_phase, owner_failure) catch {};
+    errdefer |err| owner_failure = err;
     for (sources, 0..) |extension_path, index| {
         const source_binding = if (index == 0) bindings else try group.add(extension_path);
         if (bootstrap) |bytes| try source_binding.setContext(bytes);
@@ -1767,7 +1786,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         engine.host_control_pump = null;
     }
     while (true) {
-        const record = (try transport.next()) orelse return;
+        owner_phase = "owner-next";
+        const record = (try transport.next()) orelse {
+            owner_phase = "worker-input-ended";
+            return;
+        };
         defer std.heap.page_allocator.free(record.bytes);
         // A late control is consumed without producing a final response that
         // could be mistaken for the next ordinary invocation's result.
@@ -1786,6 +1809,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         // A persistent control can arrive after pumpIdle's control scan but
         // before next() dequeues its FIFO. It remains an owner-thread control,
         // never an ordinary invocation or an ordinary response-envelope entry.
+        owner_phase = "persistent-control";
         if (try transport.persistentControl(record.kind, request)) continue;
         if (record.kind == .provider_ticket_retire) {
             try transport.retireTicket(request);
@@ -1802,6 +1826,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         if (std.mem.eql(u8, kind, "shutdown")) {
             try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
             try writer.flush();
+            graceful_shutdown = true;
             return;
         }
         const extension_id: u64 = if (request.object.get("extensionId")) |value| component_protocol.identifier(value) catch {
@@ -1937,6 +1962,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             continue;
         }
         const previous_invocation_generation = selected_binding.invocation_generation;
+        owner_phase = "invocation";
         const result = invoke(gpa, selected_binding, &transport, request.object) catch |err| {
             // Own the primary diagnostic before serializing the admitted queue;
             // a secondary allocation/serialization failure cannot replace it.
@@ -1960,6 +1986,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
                 if (transport.shutdown_requested) {
                     try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
                     try writer.flush();
+                    graceful_shutdown = true;
                 }
                 return;
             }
@@ -1968,9 +1995,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             continue;
         };
         defer gpa.free(result);
+        owner_phase = "response-projection";
         const projected = try transport.withUpdates(result);
         defer gpa.free(projected);
         try transport.publishMetadataSafe();
+        owner_phase = "response-write";
         try writer.writeAll("\x1e{\"ok\":true,\"result\":");
         try writer.writeAll(projected);
         try writer.writeAll("}\n");
@@ -1979,6 +2008,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             if (transport.shutdown_requested) {
                 try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
                 try writer.flush();
+                graceful_shutdown = true;
             }
             return;
         }
