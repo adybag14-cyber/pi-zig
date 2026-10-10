@@ -65,3 +65,18 @@ The work branch has a separate, read-only diagnostic OS matrix for
 `test-codemode-inline` and `test-mcp-issuer-exchange`. It preserves the exact
 source/tree/toolchain receipt. It does not replace artifact-inventory,
 provenance, allocation, full-suite, or release qualification.
+
+## Subsequent scoped results
+
+At `4dfe561`, Windows Debug passed all 73 tests and 28 build steps in
+`test-codemode`, `test-extension-engine`, `test-native-weakref`, and
+`test-mcp-issuer-exchange`. All 1,637 compiled source hashes matched after the
+run. The codemode target includes exhaustive allocation-failure checks and
+replays 21 current-upstream roundtrip/error cases. It preserves plain thrown
+values, error names, error coercion failures, and parse errors; native stack
+frames remain genuine rather than being replaced by upstream WASI frames.
+
+The earlier focused diagnostic matrix at `98fdfde` passed 8 tests on Windows,
+Linux, and macOS (run 38066201519). That matrix does not qualify the later error
+follow-on or replace the full release gates. The broader follow-on's
+ReleaseSafe and Linux runs remain pending.
