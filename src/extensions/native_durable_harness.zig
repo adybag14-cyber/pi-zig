@@ -89,6 +89,19 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
         if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
         const getter = try engine.checked(c.pi_js_function_magic(engine.context, closed, "get closed", 0, 0));
         if (c.JS_DefinePropertyGetSet(engine.context, result, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        const symbol = try sdk.get(engine, global, "Symbol");
+        defer engine.freeValue(symbol);
+        const key = try sdk.text(engine, "pi-durable.schedulerIndexSizes");
+        defer engine.freeValue(key);
+        const registered = try sdk.invoke(engine, symbol, "for", &.{key});
+        defer engine.freeValue(registered);
+        const sizes_atom = c.JS_ValueToAtom(engine.context, registered);
+        if (sizes_atom == c.JS_ATOM_NULL) return error.JavaScriptException;
+        defer c.JS_FreeAtom(engine.context, sizes_atom);
+        const sizes_getter = try engine.checked(c.pi_js_function_magic(engine.context, indexSizes, "get schedulerIndexSizes", 0, 0));
+        if (c.JS_DefinePropertyGetSet(engine.context, result, sizes_atom, sizes_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
     self.* = .{ .engine = engine, .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .conversation = conversation };
     _ = c.JS_SetOpaque(result, self);
@@ -99,6 +112,11 @@ fn closed(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValu
     const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
     const native = durable.state(engine, self.session) catch |err| return durable.reject(engine, err);
     return c.JS_DupValue(context, native.closed_promise orelse return durable.reject(engine, error.SessionClosedPromiseUnavailable));
+}
+fn indexSizes(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
+    return @import("native_durable_tasks.zig").indexSizes(engine, self.session) catch |err| durable.reject(engine, err);
 }
 test "native durable VM Harness closed getter returns the actual Session promise on every read" {
     const engine = try Engine.init(std.testing.allocator, .{});

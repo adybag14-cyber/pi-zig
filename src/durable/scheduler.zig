@@ -37,6 +37,7 @@ pub const Options = struct {
     settle_outcome: ?*const fn (?*anyopaque, *Transaction, Value, Value) anyerror!void = null,
     withdraw_inputs: ?*const fn (?*anyopaque, *Transaction, u64) anyerror!void = null,
     poll_reads: ?*const fn (?*anyopaque, *session_mod.Session) anyerror!void = null,
+    index_changed: ?*const fn (?*anyopaque, ?u64, *const ownership.Index) anyerror!void = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -234,6 +235,7 @@ pub const Scheduler = struct {
     live_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .{},
     maintenance_subscription: ?u64 = null,
     fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
+    index_dirty: bool = false,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, session: *session_mod.Session, options: Options) !Scheduler {
         if (options.max_workers == 0 or options.max_workers > 64 or options.max_phase_steps == 0) return error.InvalidSchedulerBounds;
         return .{ .gpa = gpa, .io = io, .session = session, .options = options, .migration_failures = .init(gpa), .ownership_index = .init(gpa) };
@@ -363,6 +365,8 @@ pub const Scheduler = struct {
             try self.trackRecord(try model.field(change, "value"));
         }
         try self.ownership_index.sweep();
+        if (self.options.index_changed) |changed| try changed(self.options.callback_context, event.seq, &self.ownership_index);
+        self.index_dirty = false;
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (event.changes.array.items) |change| {
@@ -376,7 +380,10 @@ pub const Scheduler = struct {
     }
     fn sweepLine(raw: ?*anyopaque) !void {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
-        if (self.ownership_index.needsSweep()) try self.ownership_index.sweep();
+        if (!self.index_dirty and !self.ownership_index.needsSweep()) return;
+        try self.ownership_index.sweep();
+        if (self.options.index_changed) |changed| try changed(self.options.callback_context, null, &self.ownership_index);
+        self.index_dirty = false;
     }
     fn recordLink(record: Value) !ownership.Link {
         return .{ .conversation = try model.number(record, "conversationId"), .owner = if (json.get(record, "owner")) |owner| try json.asInteger(owner) else null, .background = try model.flag(record, "background") };
@@ -396,6 +403,7 @@ pub const Scheduler = struct {
             _ = self.fail_fast_checks.orderedRemove(id);
         } else if (status == .waiting and (prior_record == null or try model.status(prior_record.?.value) != .waiting) and std.mem.eql(u8, try model.text(try model.field(record, "state"), "policy"), "failFast")) try self.fail_fast_checks.put(self.gpa, id, {});
         try indexRecord(self.gpa, &self.ownership_index, record);
+        self.index_dirty = true;
         if (status == .terminal) {
             if (self.live_records.fetchRemove(id)) |removed| {
                 var previous = removed.value;
@@ -440,7 +448,10 @@ pub const Scheduler = struct {
                     var fetched = (try self.session.storage.readTableRecord(self.gpa, .task, at.id)) orelse return;
                     defer fetched.deinit();
                     fields = try recordLink(fetched.value);
-                    if (try model.status(fetched.value) == .terminal) try self.ownership_index.settleLoaded(at.id, fields.?);
+                    if (try model.status(fetched.value) == .terminal) {
+                        try self.ownership_index.settleLoaded(at.id, fields.?);
+                        self.index_dirty = true;
+                    }
                 }
                 try passed.append(self.gpa, at.id);
                 at = fields.?.parent();
@@ -451,6 +462,7 @@ pub const Scheduler = struct {
                     defer if (fetched) |*record| record.deinit();
                     const owner = if (fetched) |record| if (json.get(record.value, "owner")) |fields| try model.number(fields, "taskId") else null else null;
                     try self.ownership_index.setEdge(at.id, owner);
+                    self.index_dirty = true;
                     edge = self.ownership_index.edge(at.id);
                 }
                 switch (edge) {
@@ -461,6 +473,7 @@ pub const Scheduler = struct {
             }
         }
         try self.ownership_index.markChainLoaded(passed.items);
+        if (passed.items.len != 0) self.index_dirty = true;
     }
     fn loadScopes(self: *Scheduler) !void {
         const unloaded = try self.gpa.dupe(u64, self.ownership_index.unloaded.keys());

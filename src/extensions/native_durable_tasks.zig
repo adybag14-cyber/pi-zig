@@ -4,6 +4,7 @@ const engine_mod = @import("engine.zig");
 const durable = @import("native_durable.zig");
 const sdk = @import("native_sdk.zig");
 const scheduling = @import("../durable/scheduler.zig");
+const ownership = @import("../durable/ownership_index.zig");
 const session_mod = @import("../durable/session.zig");
 const backend = @import("../durable/backend/root.zig");
 const broker_mod = @import("native_durable_broker.zig");
@@ -14,7 +15,16 @@ const Engine = engine_mod.Engine;
 const Migration = struct { key: []u8, value: ?json.Owned };
 const NativeDefinition = struct { manager: *Manager, id: usize, migrations: std.ArrayList(Migration) = .empty };
 const Definition = struct { native: *NativeDefinition, token: c.JSValue };
-const Event = struct { seq: u64, changes: json.Owned };
+const Event = struct {
+    seq: u64,
+    changes: json.Owned,
+    ready: bool = true,
+    index: ?ownership.Index = null,
+    fn deinit(self: *Event) void {
+        self.changes.deinit();
+        if (self.index) |*index| index.deinit();
+    }
+};
 const DispatchPhase = enum(u8) { pending, active, done };
 const Entry = struct {
     manager: *Manager,
@@ -118,7 +128,8 @@ pub const Manager = struct {
     custom_clock: bool = false,
     clock_callback: c.JSValue,
     vm_owner: ?c.JSValue = null,
-    published_graph: ?*backend.memory.State = null,
+    published_index: ?ownership.Index = null,
+    pending_index: ?ownership.Index = null,
     abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
     task_aborts: @import("native_durable_task_abort.zig").Queue = .{},
     active_dispatches: usize = 0,
@@ -176,7 +187,8 @@ pub const Manager = struct {
         self.abort_controls.deinit(self.engine);
         for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
         self.join_waiters.deinit(self.engine.gpa);
-        if (self.published_graph) |graph| graph.destroy(self.engine.gpa);
+        if (self.published_index) |*index| index.deinit();
+        if (self.pending_index) |*index| index.deinit();
         self.broker.deinit();
         for (self.definitions.items) |definition| {
             for (definition.native.migrations.items) |*migration| {
@@ -187,7 +199,7 @@ pub const Manager = struct {
             self.engine.gpa.destroy(definition.native);
         }
         self.definitions.deinit(self.engine.gpa);
-        for (self.events.items) |*event| event.changes.deinit();
+        for (self.events.items) |*event| event.deinit();
         self.events.deinit(std.heap.page_allocator);
         self.ledger.deinit(std.heap.page_allocator);
         self.waiters.deinit(self.engine.gpa);
@@ -312,24 +324,72 @@ pub const Manager = struct {
         errdefer changes.deinit();
         changes.value = try json.clone(changes.arena.allocator(), event.changes);
         self.mutex.lockUncancelable(self.lease.value.io);
-        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes }) catch |err| {
+        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .ready = self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
             self.mutex.unlock(self.lease.value.io);
             return err;
         };
+        // The new publication's snapshot supersedes earlier load-only jobs.
+        // Keeping one would restore older ownership after this event drains.
+        if (self.pending_index) |*previous| previous.deinit();
+        self.pending_index = null;
         self.mutex.unlock(self.lease.value.io);
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+    }
+    fn forwardIndex(raw: ?*anyopaque, seq: ?u64, index: *const ownership.Index) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        var copied = try index.duplicate(std.heap.page_allocator);
+        errdefer copied.deinit();
+        self.mutex.lockUncancelable(self.lease.value.io);
+        if (seq) |committed| {
+            for (self.events.items) |*event| if (event.seq == committed) {
+                if (event.index) |*previous| previous.deinit();
+                event.index = copied;
+                event.ready = true;
+                self.mutex.unlock(self.lease.value.io);
+                if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+                return;
+            };
+            self.mutex.unlock(self.lease.value.io);
+            return error.PublicationOwnershipIndexMissing;
+        }
+        if (self.pending_index) |*previous| previous.deinit();
+        self.pending_index = copied;
+        self.mutex.unlock(self.lease.value.io);
+        if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+    }
+    fn adoptIndex(self: *Manager, index: *?ownership.Index) void {
+        if (index.*) |next| {
+            if (self.published_index) |*previous| previous.deinit();
+            self.published_index = next;
+            index.* = null;
+        }
+    }
+    fn publishedIdle(self: *Manager, conversation: ?u64) !bool {
+        const index = if (self.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
+        return index.idle(self.engine.gpa, conversation);
+    }
+    fn publicationPending(self: *Manager) bool {
+        self.mutex.lockUncancelable(self.lease.value.io);
+        defer self.mutex.unlock(self.lease.value.io);
+        return self.events.items.len != 0 and !self.events.items[0].ready;
     }
     pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
             if (self.events.items.len == 0) {
+                self.adoptIndex(&self.pending_index);
+                self.mutex.unlock(self.lease.value.io);
+                return;
+            }
+            if (!self.events.items[0].ready) {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
             var event = self.events.orderedRemove(0);
             self.mutex.unlock(self.lease.value.io);
-            defer event.changes.deinit();
+            defer event.deinit();
+            self.adoptIndex(&event.index);
             try self.cachePublication(event.changes.value);
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
@@ -341,26 +401,25 @@ pub const Manager = struct {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
         }
-        if (self.published_graph) |previous| {
-            var relevant = false;
-            for (changes.array.items) |change| {
-                const kind = try json.asString(try json.required(change, "type"));
-                if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) relevant = true;
-            }
-            if (relevant) {
-                const next = try previous.duplicate(self.engine.gpa);
-                errdefer next.destroy(self.engine.gpa);
-                for (changes.array.items) |change| {
-                    const kind = try json.asString(try json.required(change, "type"));
-                    const table: backend.memory.Table = if (std.mem.eql(u8, kind, "task")) .task else if (std.mem.eql(u8, kind, "conversation")) .conversation else continue;
-                    const record = try json.required(change, "value");
-                    const id = try json.asInteger(try json.required(record, "id"));
-                    try next.rows.put(id, .{ .table = table, .record = try graphRecord(next.arena.allocator(), table, record), .commitSeq = 0 });
-                }
-                self.published_graph = next;
-                previous.destroy(self.engine.gpa);
-            }
+        if (self.published_index == null) self.published_index = ownership.Index.init(self.engine.gpa);
+        const index = &self.published_index.?;
+        for (changes.array.items) |change| {
+            if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "conversation")) continue;
+            const record = try json.required(change, "value");
+            const id = try json.asInteger(try json.required(record, "id"));
+            if (!index.edges.contains(id)) try index.setEdge(id, if (json.get(record, "owner")) |owner| try json.asInteger(try json.required(owner, "taskId")) else null);
         }
+        for (changes.array.items) |change| {
+            if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) continue;
+            const record = try json.required(change, "value");
+            const model = @import("../durable/task_state.zig");
+            const status = try model.status(record);
+            var members: std.ArrayList(u64) = .empty;
+            defer members.deinit(self.engine.gpa);
+            if (status == .waiting) for ((try json.required(try json.required(record, "state"), "on")).array.items) |member| try members.append(self.engine.gpa, try json.asInteger(member));
+            try index.track(.{ .id = try model.number(record, "id"), .link = .{ .conversation = try model.number(record, "conversationId"), .owner = if (json.get(record, "owner")) |owner| try json.asInteger(owner) else null, .background = try model.flag(record, "background") }, .status = @enumFromInt(@intFromEnum(status)), .abort_requested = try model.flag(record, "abortRequested"), .failed_outcome = try model.failed(record), .wait_on = members.items });
+        }
+        try index.sweep();
         // The owner sees an immutable, owned committed publication. Retain
         // terminal task records for reads while the scheduler is committing.
         // This also prevents a fixed-period owner poll from starving behind
@@ -522,6 +581,10 @@ pub const Manager = struct {
             // but before this acquire observes invocation retirement. Admit it
             // before firing the phase signal, as Source's commit observer does.
             if (!self.closed) try Manager.deliver(self);
+            // The observer has enqueued this publication, but its ownership
+            // tracking may still be finishing on the native line. Retiring the
+            // signal now would cancel waits before that committed event wins.
+            if (!self.closed and self.publicationPending()) continue;
             // Delivery and abort listeners may reenter this pump and retire or
             // reallocate the signal array. Re-find its retained private owner.
             if (self.signalIndex(entry, value) == null) continue;
@@ -913,12 +976,18 @@ const Hub = struct {
             while (true) {
                 manager.mutex.lockUncancelable(manager.lease.value.io);
                 if (manager.events.items.len == 0) {
+                    manager.adoptIndex(&manager.pending_index);
+                    manager.mutex.unlock(manager.lease.value.io);
+                    break;
+                }
+                if (!manager.events.items[0].ready) {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
                 var event = manager.events.orderedRemove(0);
                 manager.mutex.unlock(manager.lease.value.io);
-                defer event.changes.deinit();
+                defer event.deinit();
+                manager.adoptIndex(&event.index);
                 try manager.cachePublication(event.changes.value);
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
@@ -1082,14 +1151,15 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
         self.clearLiveTaskRecords();
         self.live_task_records.deinit(engine.gpa);
-        if (self.published_graph) |graph| graph.destroy(engine.gpa);
-        for (self.events.items) |*event| event.changes.deinit();
+        if (self.published_index) |*index| index.deinit();
+        if (self.pending_index) |*index| index.deinit();
+        for (self.events.items) |*event| event.deinit();
         self.events.deinit(std.heap.page_allocator);
         self.scheduler.deinit();
         for (self.definitions.items) |definition| {
@@ -1123,29 +1193,17 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(true);
     const initial = try self.lease.value.storage.snapshot(engine.gpa);
     defer initial.destroy(engine.gpa);
-    const graph = try backend.memory.State.create(engine.gpa);
-    self.published_graph = graph;
+    if (self.published_index) |*index| index.deinit();
+    self.published_index = try self.scheduler.ownership_index.duplicate(engine.gpa);
+    if (self.pending_index) |*index| index.deinit();
+    self.pending_index = null;
     var rows = initial.rows.iterator();
     while (rows.next()) |row| {
         const table = row.value_ptr.table;
         if (table != .task and table != .conversation) continue;
         if (table == .task) try self.cacheLiveTaskRecord(row.value_ptr.record);
-        try graph.rows.put(row.key_ptr.*, .{ .table = table, .record = try graphRecord(graph.arena.allocator(), table, row.value_ptr.record), .commitSeq = 0 });
     }
     owner.managers.appendAssumeCapacity(self);
-}
-fn graphRecord(allocator: std.mem.Allocator, table: backend.memory.Table, record: json.Value) !json.Value {
-    var result: json.Value = .{ .object = .empty };
-    try result.object.put(allocator, "id", try json.clone(allocator, try json.required(record, "id")));
-    if (json.get(record, "owner")) |owner| try result.object.put(allocator, "owner", try json.clone(allocator, owner));
-    if (table == .task) {
-        try result.object.put(allocator, "conversationId", try json.clone(allocator, try json.required(record, "conversationId")));
-        try result.object.put(allocator, "background", try json.clone(allocator, try json.required(record, "background")));
-        var state: json.Value = .{ .object = .empty };
-        try state.object.put(allocator, "status", try json.clone(allocator, try json.required(try json.required(record, "state"), "status")));
-        try result.object.put(allocator, "state", state);
-    }
-    return result;
 }
 fn loadDefinitions(self: *Manager) !void {
     const engine = self.engine;
@@ -1620,6 +1678,87 @@ test "native durable VM ownedTasks actual ea direct live copies cancellation and
         return error.SourceOwnedTasksMismatch;
     }
 }
+test "native durable VM actual ea retention uses real Harness index sizes and late Storage owner reloads" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-retention-program.txt"), "actual-ea-retention") catch |err| {
+        std.debug.print("Actual ea retention {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "retentionTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-retention.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea retention trace: {s}\n", .{encoded});
+        return error.SourceRetentionMismatch;
+    }
+}
+test "native durable VM ownership publication index readiness preserves committed live waiter barriers" {
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "publication-index-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    var live = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":2,\"kind\":\"fixture.ready\",\"version\":1,\"conversationId\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"hold\"}}}}]");
+    defer live.deinit();
+    var original = ownership.Index.init(gpa);
+    defer original.deinit();
+    try Manager.forwardIndex(manager, null, &original);
+    const Check = struct {
+        manager: *Manager,
+        changes: json.Value,
+        fn apply(raw: ?*anyopaque, _: *session_mod.Transaction, _: @import("../durable/types.zig").Context) !json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            // Exercise the actual reserved Session line, without changing its
+            // owner word or manufacturing a ready flag in test code.
+            try Manager.forward(self.manager, &.{ .seq = 77, .changes = self.changes });
+            try std.testing.expect(self.manager.pending_index == null);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 1), self.manager.events.items.len);
+            try std.testing.expect(self.manager.publicationPending());
+            try std.testing.expect(!self.manager.live_task_records.contains(2));
+            var tracked = ownership.Index.init(self.manager.engine.gpa);
+            defer tracked.deinit();
+            try tracked.observe(&.{.{ .id = 1 }}, &.{.{ .id = 2, .link = .{ .conversation = 1 }, .status = .running }});
+            try Manager.forwardIndex(self.manager, 77, &tracked);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 0), self.manager.events.items.len);
+            try std.testing.expect(!self.manager.publicationPending());
+            try std.testing.expect(self.manager.live_task_records.contains(2));
+            try std.testing.expect(!try self.manager.publishedIdle(null));
+            return .null;
+        }
+    };
+    var check: Check = .{ .manager = manager, .changes = live.value };
+    var completed = try manager.lease.value.commit(Check.apply, &check, .{}, .{});
+    completed.deinit();
+    // The earlier load-only snapshot must not undo the newer publication.
+    try Manager.deliver(manager);
+    try std.testing.expectEqual(@as(usize, 1), manager.published_index.?.sizes().live);
+    const promise = try appendTestWaiter(manager, 2, c.pi_js_undefined());
+    defer engine.freeValue(promise);
+    try settleWaiters(manager);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
@@ -1985,7 +2124,7 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
     if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
     // Source's idle fast path never registers a waiter or observes its context.
     // Public Harness waits resume scheduling before reaching this check.
-    if (id == null and try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, conversation)) {
+    if (id == null and try self.publishedIdle(conversation)) {
         try self.@"resume"();
         return sdk.promise(self.engine, c.pi_js_undefined());
     }
@@ -2010,6 +2149,18 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
     self.waiters.appendAssumeCapacity(.{ .id = id, .conversation = conversation, .resolve = c.JS_DupValue(self.engine.context, functions[0]), .reject = c.JS_DupValue(self.engine.context, functions[1]), .context = c.JS_DupValue(self.engine.context, context) });
     try self.@"resume"();
     return promise;
+}
+/// Real committed ownership structures admitted on the VM owner. The mirror
+/// contains live work and only the ended links that still connect it; it never
+/// counts historical Storage rows or invents values for an absent scheduler.
+pub fn indexSizes(engine: *Engine, session: c.JSValue) !c.JSValue {
+    const manager = try getManager(engine, session);
+    const index = if (manager.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
+    const sizes = index.sizes();
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    inline for (std.meta.fields(ownership.Sizes)) |field| try sdk.put(engine, result, field.name, c.JS_NewInt64(engine.context, @intCast(@field(sizes, field.name))));
+    return result;
 }
 pub fn schedulerClosedError(self: *Manager) !c.JSValue {
     const native = try durable.state(self.engine, self.session);
@@ -2119,9 +2270,7 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
             // Source registers live-task waits against #live and resolves them
             // only at publication admission. A native storage swap can become
             // visible between waiter iterations, before its queued VM event.
-            if (self.published_graph) |graph| if (graph.rows.get(id)) |published| {
-                if (published.table == .task and try @import("../durable/task_state.zig").live(published.record)) continue;
-            };
+            if (self.live_task_records.contains(id)) continue;
             // A scheduler commit can swap and free the Memory backend state.
             // The owner must not block on the Session line: a worker holding it
             // can itself be awaiting an owner-VM transaction callback.
@@ -2148,7 +2297,7 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
                 value = try messageError(self.engine, message);
                 rejected = true;
             }
-        } else if (!try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, waiter.conversation)) continue;
+        } else if (!try self.publishedIdle(waiter.conversation)) continue;
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const result = try self.engine.checked(c.JS_Call(self.engine.context, if (rejected) waiter.reject else waiter.resolve, c.pi_js_undefined(), 1, &args));
