@@ -9,7 +9,7 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
-const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch };
+const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch, taskGraph, watchTaskGraph };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
 }
@@ -75,7 +75,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     errdefer engine.freeValue(result);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle, .agent, .configure, .context, .submit, .compact, .reset, .viewState, .watch } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState, .resolveAgent, .submission };
+    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle, .agent, .configure, .context, .submit, .compact, .reset, .viewState, .watch } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState, .resolveAgent, .submission, .taskGraph, .watchTaskGraph };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
@@ -96,6 +96,7 @@ fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.
 fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const self = try state(engine, receiver);
     const session = try durable.state(engine, self.session);
+    if (operation == .taskGraph or operation == .watchTaskGraph) return @import("native_durable_views.zig").acquire(engine, self.session, self.options, c.pi_js_undefined(), argument(args, 0), operation == .watchTaskGraph);
     if (operation == .viewState or operation == .watch) {
         const id = c.JS_NewInt64(engine.context, @intCast(self.conversation.?));
         defer engine.freeValue(id);

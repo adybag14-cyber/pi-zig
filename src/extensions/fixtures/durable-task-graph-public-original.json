@@ -1,0 +1,152 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "result": {
+    "initial": {
+      "tasks": {
+        "7": {
+          "id": 7,
+          "kind": "pi.generation",
+          "conversationId": 1,
+          "background": false,
+          "abortRequested": false,
+          "state": {
+            "status": "pending",
+            "phase": "prepare"
+          },
+          "conversations": [
+            8
+          ]
+        }
+      }
+    },
+    "shared": true,
+    "events": [
+      {
+        "value": {
+          "tasks": {
+            "7": {
+              "id": 7,
+              "kind": "pi.generation",
+              "conversationId": 1,
+              "background": false,
+              "abortRequested": false,
+              "state": {
+                "status": "pending",
+                "phase": "prepare"
+              },
+              "conversations": [
+                8,
+                21
+              ]
+            },
+            "14": {
+              "id": 14,
+              "kind": "pi.generation",
+              "conversationId": 1,
+              "owner": 7,
+              "background": false,
+              "abortRequested": false,
+              "state": {
+                "status": "pending",
+                "phase": "prepare"
+              },
+              "conversations": [
+                15
+              ]
+            }
+          }
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "tasks",
+              "14"
+            ],
+            {
+              "id": 14,
+              "kind": "pi.generation",
+              "conversationId": 1,
+              "owner": 7,
+              "background": false,
+              "abortRequested": false,
+              "state": {
+                "status": "pending",
+                "phase": "prepare"
+              },
+              "conversations": []
+            }
+          ],
+          [
+            "s",
+            [
+              "tasks",
+              "14",
+              "conversations"
+            ],
+            [
+              15
+            ]
+          ],
+          [
+            "s",
+            [
+              "tasks",
+              "7",
+              "conversations"
+            ],
+            [
+              8,
+              21
+            ]
+          ]
+        ],
+        "withoutSignal": true
+      }
+    ],
+    "latest": true,
+    "rebuilt": true,
+    "value": {
+      "tasks": {
+        "7": {
+          "id": 7,
+          "kind": "pi.generation",
+          "conversationId": 1,
+          "background": false,
+          "abortRequested": false,
+          "state": {
+            "status": "pending",
+            "phase": "prepare"
+          },
+          "conversations": [
+            8,
+            21
+          ]
+        },
+        "14": {
+          "id": 14,
+          "kind": "pi.generation",
+          "conversationId": 1,
+          "owner": 7,
+          "background": false,
+          "abortRequested": false,
+          "state": {
+            "status": "pending",
+            "phase": "prepare"
+          },
+          "conversations": [
+            15
+          ]
+        }
+      }
+    },
+    "cancellation": [
+      true,
+      true
+    ],
+    "end": {
+      "reason": "session_closed"
+    },
+    "reports": []
+  }
+}

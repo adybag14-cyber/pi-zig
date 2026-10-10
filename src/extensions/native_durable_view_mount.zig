@@ -5,33 +5,33 @@ const vm = @import("native_values.zig");
 const js = @import("native_js_values.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-const Scope = struct {
+pub const Scope = struct {
     engine: *Engine,
     values: std.ArrayList(c.JSValue) = .empty,
-    fn deinit(self: *Scope) void {
+    pub fn deinit(self: *Scope) void {
         for (self.values.items) |value| self.engine.freeValue(value);
         self.values.deinit(self.engine.gpa);
     }
-    fn own(self: *Scope, value: c.JSValue) !c.JSValue {
+    pub fn own(self: *Scope, value: c.JSValue) !c.JSValue {
         self.values.append(self.engine.gpa, value) catch |err| {
             self.engine.freeValue(value);
             return err;
         };
         return value;
     }
-    fn get(self: *Scope, object: c.JSValue, key: [:0]const u8) !c.JSValue {
+    pub fn get(self: *Scope, object: c.JSValue, key: [:0]const u8) !c.JSValue {
         return self.own(try vm.get(self.engine, object, key));
     }
-    fn item(self: *Scope, object: c.JSValue, index: usize) !c.JSValue {
+    pub fn item(self: *Scope, object: c.JSValue, index: usize) !c.JSValue {
         return self.own(try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, object, @intCast(index))));
     }
-    fn invoke(self: *Scope, object: c.JSValue, key: [:0]const u8, args: []const c.JSValue) !c.JSValue {
+    pub fn invoke(self: *Scope, object: c.JSValue, key: [:0]const u8, args: []const c.JSValue) !c.JSValue {
         return self.own(try vm.invoke(self.engine, object, key, args));
     }
-    fn text(self: *Scope, bytes: []const u8) !c.JSValue {
+    pub fn text(self: *Scope, bytes: []const u8) !c.JSValue {
         return self.own(try self.engine.checked(c.JS_NewStringLen(self.engine.context, bytes.ptr, bytes.len)));
     }
-    fn array(self: *Scope, values: []const c.JSValue) !c.JSValue {
+    pub fn array(self: *Scope, values: []const c.JSValue) !c.JSValue {
         const result = try self.own(try vm.array(self.engine));
         for (values) |value| try js.push(self.engine, result, value);
         return result;
@@ -58,7 +58,7 @@ fn prefix(scope: *Scope, operation: c.JSValue, path: c.JSValue) !c.JSValue {
     for (2..try vm.length(scope.engine, operation)) |index| try js.push(scope.engine, result, try scope.item(operation, index));
     return result;
 }
-fn notify(scope: *Scope, observers: c.JSValue, name: [:0]const u8, arguments: []const c.JSValue, report: c.JSValue) !void {
+pub fn notify(scope: *Scope, observers: c.JSValue, name: [:0]const u8, arguments: []const c.JSValue, report: c.JSValue) !void {
     const engine = scope.engine;
     const symbol = try scope.get(try scope.own(try js.global(engine, "Symbol")), "iterator");
     const snapshot = try scope.own(try js.collect(engine, observers, symbol));

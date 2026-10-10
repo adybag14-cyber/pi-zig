@@ -1,0 +1,1027 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "insert",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          },
+          "3": {
+            "id": 3,
+            "kind": "test",
+            "conversationId": 1,
+            "owner": 2,
+            "background": true,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": []
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "3"
+              ],
+              {
+                "id": 3,
+                "kind": "test",
+                "conversationId": 1,
+                "owner": 2,
+                "background": true,
+                "abortRequested": false,
+                "state": {
+                  "status": "pending",
+                  "phase": "one"
+                },
+                "conversations": []
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "3"
+              ],
+              {
+                "id": 3,
+                "kind": "test",
+                "conversationId": 1,
+                "owner": 2,
+                "background": true,
+                "abortRequested": false,
+                "state": {
+                  "status": "pending",
+                  "phase": "one"
+                },
+                "conversations": []
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "unchanged",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [],
+      "errors": [],
+      "same": true,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "running",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "running",
+              "phase": "two"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "waiting",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "waiting",
+              "phase": "join",
+              "on": [
+                3,
+                4
+              ],
+              "policy": "all"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "waiting",
+                  "phase": "join",
+                  "on": [
+                    3,
+                    4
+                  ],
+                  "policy": "all"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "waiting",
+                  "phase": "join",
+                  "on": [
+                    3,
+                    4
+                  ],
+                  "policy": "all"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "completing",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "completing",
+              "outcome": "aborted"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "completing",
+                  "outcome": "aborted"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "completing",
+                  "outcome": "aborted"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "terminal",
+      "value": {
+        "tasks": {}
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "owned",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              4,
+              8,
+              12
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2",
+                "conversations"
+              ],
+              [
+                4,
+                8,
+                12
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2",
+                "conversations"
+              ],
+              [
+                4,
+                8,
+                12
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "new-owner",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "running",
+              "phase": "two"
+            },
+            "conversations": [
+              4,
+              12
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": []
+              }
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2",
+                "conversations"
+              ],
+              [
+                4,
+                12
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": []
+              }
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2",
+                "conversations"
+              ],
+              [
+                4,
+                12
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "multiple",
+      "value": {
+        "tasks": {}
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "three"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ],
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ],
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "three"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ],
+            [
+              "d",
+              [
+                "tasks",
+                "2"
+              ]
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "ignore",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [],
+      "errors": [],
+      "same": true,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "observer-error",
+      "value": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "running",
+              "phase": "two"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      },
+      "trace": [
+        {
+          "name": "first",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        },
+        {
+          "name": "second",
+          "ops": [
+            [
+              "s",
+              [
+                "tasks",
+                "2"
+              ],
+              {
+                "id": 2,
+                "kind": "test",
+                "conversationId": 1,
+                "background": false,
+                "abortRequested": false,
+                "state": {
+                  "status": "running",
+                  "phase": "two"
+                },
+                "conversations": [
+                  8
+                ]
+              }
+            ]
+          ],
+          "current": true,
+          "withoutSignal": true
+        }
+      ],
+      "errors": [
+        true
+      ],
+      "same": false,
+      "original": {
+        "tasks": {
+          "2": {
+            "id": 2,
+            "kind": "test",
+            "conversationId": 1,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "pending",
+              "phase": "one"
+            },
+            "conversations": [
+              8
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

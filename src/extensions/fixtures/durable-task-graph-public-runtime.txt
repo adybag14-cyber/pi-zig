@@ -1,0 +1,12 @@
+import{Harness,MemoryStorage,createRegistry,GenerationTask}from'@earendil-works/pi-durable';
+const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{}),reports=[];
+try{
+ const root=await harness.root({});let first;
+ await root.commit(async tx=>{first=await tx.createTask(GenerationTask,{},{ownership:{kind:'conversation'}});await tx.createConversation({ownership:{kind:'task',taskId:first}})},{});
+ const state=await harness.taskGraph({}),watch=await harness.watchTaskGraph({}),initial=state.value,shared=initial===watch.value,events=[];
+ let ready;const observed=new Promise(resolve=>ready=resolve);watch.start(async(value,ops,context)=>{events.push({value,ops,withoutSignal:context.abortSignal===undefined});ready()});
+ await root.commit(async tx=>{const second=await tx.createTask(GenerationTask,{},{ownership:{kind:'task',taskId:first}});await tx.createConversation({ownership:{kind:'task',taskId:second}});await tx.createConversation({ownership:{kind:'task',taskId:first}})},{});await observed;
+ const final=state.value,latest=final===watch.value;await watch.stop();state.dispose();const remounted=await harness.taskGraph({});const rebuilt=remounted.value!==final,value=remounted.value;remounted.dispose();
+ const controller=new AbortController(),marker={cancelled:true};controller.abort(marker);const cancellation=[];for(const method of ['taskGraph','watchTaskGraph'])try{await harness[method]({abortSignal:controller.signal});cancellation.push(false)}catch(error){cancellation.push(error===marker)}
+ const closing=await harness.watchTaskGraph({});await harness.close({});globalThis.publicTaskGraphProof={initial,shared,events,latest,rebuilt,value,cancellation,end:await closing.closed,reports};
+}finally{await harness.close({})}

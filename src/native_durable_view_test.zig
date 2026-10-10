@@ -194,6 +194,80 @@ test "native durable views reset remount cancellation and exact frame overflow m
     try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
 }
 
+test "native durable view public task graph hydration ownership remount and closure match actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-task-graph-public-runtime.txt"), "native-public-task-graph") catch |err| {
+        std.debug.print("Public task graph {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const proof = try vm.get(engine, global, "publicTaskGraphProof");
+    defer engine.freeValue(proof);
+    const text = try engine.stringify(proof);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-task-graph-public-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value.object.get("result").?, actual.value)) std.debug.print("Public task graph actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value.object.get("result").?, actual.value));
+}
+
+fn exerciseGraph(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    return exerciseGraphWithEngine(engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseGraphWithEngine(engine: *engine_mod.Engine) !void {
+    try @import("extensions/abort_signal.zig").install(engine);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-task-graph-runtime.txt"), "actual-task-graph-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(engine.gpa, @embedFile("extensions/fixtures/durable-task-graph-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var arguments = [_]c.JSValue{name};
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 1, &arguments));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 4;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "mount", "event", "context", "report" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        try @import("extensions/native_durable_task_graph.zig").advance(engine, values[0], values[1], values[2], values[3]);
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer engine.gpa.free(text);
+        var actual = try json.Owned.parse(engine.gpa, text);
+        defer actual.deinit();
+        if (!json.equal(row, actual.value)) std.debug.print("Task graph {s}: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
+test "native durable view task graph transitions match actual Source with observer isolation" {
+    try exerciseGraph(std.testing.allocator);
+}
+test "native durable view task graph allocations unwind every injected failure" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseGraph(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseGraph(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+    }
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();

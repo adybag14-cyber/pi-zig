@@ -78,7 +78,10 @@ fn act(engine: *Engine, owner: c.JSValue, action: Action, args: []const c.JSValu
         const report = try scope.get(owner, "report");
         for (0..try vm.length(engine, rows)) |index| {
             const pair = try item(&scope, rows, index);
-            try @import("native_durable_view_mount.zig").advance(engine, try item(&scope, pair, 0), try item(&scope, pair, 1), arg(args, 0), arg(args, 1), report);
+            const id = try item(&scope, pair, 0);
+            if (c.JS_IsUndefined(id)) {
+                try @import("native_durable_task_graph.zig").advance(engine, try item(&scope, pair, 1), arg(args, 0), arg(args, 1), report);
+            } else try @import("native_durable_view_mount.zig").advance(engine, id, try item(&scope, pair, 1), arg(args, 0), arg(args, 1), report);
         }
         return c.pi_js_undefined();
     }
@@ -177,7 +180,7 @@ fn attachOwned(engine: *Engine, owner: c.JSValue, id: c.JSValue, context: c.JSVa
     if (c.JS_ToBool(engine.context, try scope.get(owner, "closed")) != 0) return @import("native_sdk.zig").sourceError(engine, "Harness is closed");
     const mounts = try scope.get(owner, "mounts");
     var mount = try scope.invoke(mounts, "get", &.{id});
-    if (c.JS_IsUndefined(mount)) mount = try scope.own(try build(engine, session, id, context));
+    if (c.JS_IsUndefined(mount)) mount = try scope.own(if (c.JS_IsUndefined(id)) try @import("native_durable_task_graph.zig").build(engine, session) else try build(engine, session, id, context));
     const observer = try scope.own(try vm.object(engine));
     inline for (.{ .{ "store", owner }, .{ "mount", mount }, .{ "id", id } }) |field| try put(engine, observer, field[0], field[1]);
     try put(engine, observer, "watch", c.pi_js_bool(engine.context, @intFromBool(watch)));
