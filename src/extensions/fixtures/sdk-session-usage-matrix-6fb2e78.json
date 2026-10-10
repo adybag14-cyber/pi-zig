@@ -1,0 +1,234 @@
+[
+  {
+    "name": "zero-and-error-estimates",
+    "stats": {
+      "userMessages": 2,
+      "assistantMessages": 2,
+      "toolCalls": 1,
+      "toolResults": 0,
+      "totalMessages": 4,
+      "tokens": {
+        "input": 100,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 100
+      },
+      "cost": 1,
+      "contextUsage": {
+        "tokens": 1210,
+        "contextWindow": 512,
+        "percent": 236.328125
+      }
+    },
+    "context": {
+      "tokens": 1210,
+      "contextWindow": 512,
+      "percent": 236.328125
+    }
+  },
+  {
+    "name": "components-fallback",
+    "stats": {
+      "userMessages": 2,
+      "assistantMessages": 3,
+      "toolCalls": 1,
+      "toolResults": 0,
+      "totalMessages": 5,
+      "tokens": {
+        "input": 109,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 112
+      },
+      "cost": 1.09,
+      "contextUsage": {
+        "tokens": 5,
+        "contextWindow": 512,
+        "percent": 0.9765625
+      }
+    },
+    "context": {
+      "tokens": 5,
+      "contextWindow": 512,
+      "percent": 0.9765625
+    }
+  },
+  {
+    "name": "later-edit-invalidates-usage",
+    "stats": {
+      "userMessages": 2,
+      "assistantMessages": 3,
+      "toolCalls": 1,
+      "toolResults": 0,
+      "totalMessages": 5,
+      "tokens": {
+        "input": 109,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 112
+      },
+      "cost": 1.09,
+      "contextUsage": {
+        "tokens": 1214,
+        "contextWindow": 512,
+        "percent": 237.109375
+      }
+    },
+    "context": {
+      "tokens": 1214,
+      "contextWindow": 512,
+      "percent": 237.109375
+    }
+  },
+  {
+    "name": "compaction-unknown",
+    "stats": {
+      "userMessages": 2,
+      "assistantMessages": 3,
+      "toolCalls": 1,
+      "toolResults": 0,
+      "totalMessages": 5,
+      "tokens": {
+        "input": 118,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 121
+      },
+      "cost": 1.1800000000000002,
+      "contextUsage": {
+        "tokens": null,
+        "contextWindow": 512,
+        "percent": null
+      }
+    },
+    "context": {
+      "tokens": null,
+      "contextWindow": 512,
+      "percent": null
+    }
+  },
+  {
+    "name": "compaction-still-unknown",
+    "stats": {
+      "userMessages": 3,
+      "assistantMessages": 3,
+      "toolCalls": 1,
+      "toolResults": 0,
+      "totalMessages": 6,
+      "tokens": {
+        "input": 118,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 121
+      },
+      "cost": 1.1800000000000002,
+      "contextUsage": {
+        "tokens": null,
+        "contextWindow": 512,
+        "percent": null
+      }
+    },
+    "context": {
+      "tokens": null,
+      "contextWindow": 512,
+      "percent": null
+    }
+  },
+  {
+    "name": "post-compaction-known",
+    "stats": {
+      "userMessages": 3,
+      "assistantMessages": 4,
+      "toolCalls": 1,
+      "toolResults": 1,
+      "totalMessages": 8,
+      "tokens": {
+        "input": 128,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 131
+      },
+      "cost": 1.2800000000000002,
+      "contextUsage": {
+        "tokens": 1210,
+        "contextWindow": 512,
+        "percent": 236.328125
+      }
+    },
+    "context": {
+      "tokens": 1210,
+      "contextWindow": 512,
+      "percent": 236.328125
+    }
+  },
+  {
+    "name": "billed-all-branches-context-current",
+    "stats": {
+      "userMessages": 4,
+      "assistantMessages": 4,
+      "toolCalls": 1,
+      "toolResults": 1,
+      "totalMessages": 9,
+      "tokens": {
+        "input": 128,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 131
+      },
+      "cost": 1.2800000000000002,
+      "contextUsage": {
+        "tokens": 4,
+        "contextWindow": 512,
+        "percent": 0.78125
+      }
+    },
+    "context": {
+      "tokens": 4,
+      "contextWindow": 512,
+      "percent": 0.78125
+    }
+  },
+  {
+    "name": "no-model",
+    "stats": {
+      "userMessages": 4,
+      "assistantMessages": 4,
+      "toolCalls": 1,
+      "toolResults": 1,
+      "totalMessages": 9,
+      "tokens": {
+        "input": 128,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 131
+      },
+      "cost": 1.2800000000000002
+    }
+  },
+  {
+    "name": "zero-context-window",
+    "stats": {
+      "userMessages": 4,
+      "assistantMessages": 4,
+      "toolCalls": 1,
+      "toolResults": 1,
+      "totalMessages": 9,
+      "tokens": {
+        "input": 128,
+        "output": 3,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "total": 131
+      },
+      "cost": 1.2800000000000002
+    }
+  }
+]

@@ -1627,6 +1627,7 @@ pub const Bindings = struct {
                 return c.pi_js_undefined();
             }
             if (kind == .isIdle) return c.pi_js_bool(context, @intFromBool(!state.running));
+            if (kind == .getContextUsage) return @import("native_sdk_session_usage.zig").sessionContextUsage(state) catch |err| return publicationFailure(engine, err);
             if (kind == .signal) return sdk.get(engine, state.data, "promptSignal") catch |err| return publicationFailure(engine, err);
             if (kind == .ui or kind == .mode or kind == .hasUI) {
                 const ui = @import("native_sdk_ui_context.zig");

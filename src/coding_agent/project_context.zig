@@ -19,7 +19,11 @@ pub const Files = struct {
 fn absolute(a: std.mem.Allocator, io: std.Io, path: []const u8) ![]u8 {
     if (std.fs.path.isAbsolute(path)) return std.fs.path.resolve(a, &.{path});
     var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
-    const length = try std.Io.Dir.cwd().realPath(io, &buffer);
+    // AT_FDCWD is a lookup sentinel on POSIX, not an open directory whose
+    // descriptor can be resolved. Open the actual cwd before asking its path.
+    const directory = try std.Io.Dir.cwd().openDir(io, ".", .{});
+    defer directory.close(io);
+    const length = try directory.realPath(io, &buffer);
     return std.fs.path.resolve(a, &.{ buffer[0..length], path });
 }
 fn canonical(a: std.mem.Allocator, io: std.Io, path: []const u8) ![]u8 {
@@ -138,4 +142,14 @@ pub fn load(gpa: std.mem.Allocator, io: std.Io, cwd: []const u8, agent_dir: ?[]c
         }
     }
     return .{ .items = try output.toOwnedSlice(gpa) };
+}
+
+test "project instructions resolve relative resource loader directories through an actual cwd handle" {
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    const relative = try std.fs.path.join(std.testing.allocator, &.{ ".zig-cache", "tmp", &temporary.sub_path });
+    defer std.testing.allocator.free(relative);
+    var files = try load(std.testing.allocator, std.testing.io, relative, relative, false);
+    defer files.deinit(std.testing.allocator);
+    try std.testing.expectEqual(@as(usize, 0), files.items.len);
 }

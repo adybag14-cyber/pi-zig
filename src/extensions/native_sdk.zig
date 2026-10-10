@@ -133,6 +133,8 @@ const Method = enum(c_int) {
     getLastAssistantText,
     setModel,
     getSessionStats,
+    getContextUsage,
+    refreshContext,
     clearQueue,
     steer,
     followUp,
@@ -146,7 +148,7 @@ const Method = enum(c_int) {
     getRegisteredProviderConfig,
     listCredentials,
 };
-const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics, state, isIdle, scopedModels, promptTemplates };
+const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics, state, isIdle, scopedModels, promptTemplates, routedModel };
 
 pub fn get(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_GetPropertyStr(engine.context, target, name));
@@ -337,20 +339,20 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
         .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .stream, .complete, .streamDeferred, .fetchDeferred, .cancelDeferred, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .getRegisteredProviderConfig, .listCredentials },
-        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setScopedModels, .waitForIdle, .getLastAssistantText, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
+        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setScopedModels, .waitForIdle, .getLastAssistantText, .setModel, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
         const arity: c_int = if (kind == .agent_session) switch (operation) {
-            .getActiveToolNames, .getAllTools, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .waitForIdle, .getLastAssistantText, .dispose, .abort, .getSessionStats, .clearQueue => 0,
+            .getActiveToolNames, .getAllTools, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .waitForIdle, .getLastAssistantText, .dispose, .abort, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue => 0,
             else => 1,
         } else 1;
         try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation))));
     }
     if (kind == .agent_session or kind == .session_runtime) inline for (std.meta.fields(Getter)) |field| {
-        if (kind != .session_runtime or (field.value != @intFromEnum(Getter.state) and field.value != @intFromEnum(Getter.isIdle) and field.value != @intFromEnum(Getter.scopedModels) and field.value != @intFromEnum(Getter.promptTemplates))) {
+        if (kind != .session_runtime or (field.value != @intFromEnum(Getter.state) and field.value != @intFromEnum(Getter.isIdle) and field.value != @intFromEnum(Getter.scopedModels) and field.value != @intFromEnum(Getter.promptTemplates) and field.value != @intFromEnum(Getter.routedModel))) {
             const atom = c.JS_NewAtom(engine.context, field.name);
             defer c.JS_FreeAtom(engine.context, atom);
             const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, field.name, 0, @intCast(field.value)));
@@ -381,6 +383,7 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
             defer engine.freeValue(agent);
             return get(engine, agent, "state");
         }
+        if (which == .routedModel) return @import("native_sdk_session_usage.zig").routedModel(self);
         if (which == .isIdle) return c.pi_js_bool(engine.context, @intFromBool(!self.running));
         if (which == .promptTemplates) {
             const loader = try get(engine, self.data, "resourceLoader");
@@ -1735,7 +1738,7 @@ fn typedOperationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) call
 fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     const retained_session_method = self.kind == .agent_session and switch (operation) {
-        .getAllTools, .getToolDefinition, .getActiveToolNames, .setActiveToolsByName, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setModel => true,
+        .getAllTools, .getToolDefinition, .getActiveToolNames, .setActiveToolsByName, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setModel, .getSessionStats, .getContextUsage, .refreshContext => true,
         else => false,
     };
     if (self.disposed and operation != .dispose and !retained_session_method) return error.NativeSDKDisposed;
@@ -1912,15 +1915,11 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             try attachSessionModelLease(self);
             return promise(engine, c.pi_js_bool(engine.context, 1));
         }
-        if (operation == .getSessionStats) {
-            const value = try object(engine);
-            errdefer engine.freeValue(value);
-            try put(engine, value, "sessionId", try getterValue(self, .sessionId));
-            try put(engine, value, "sessionFile", try getterValue(self, .sessionFile));
-            const messages = try agentField(self, "messages");
-            defer engine.freeValue(messages);
-            try put(engine, value, "totalMessages", c.JS_NewInt32(engine.context, @intCast(try length(engine, messages))));
-            return value;
+        if (operation == .getSessionStats) return @import("native_sdk_session_usage.zig").sessionStats(self);
+        if (operation == .getContextUsage) return @import("native_sdk_session_usage.zig").sessionContextUsage(self);
+        if (operation == .refreshContext) {
+            try @import("native_sdk_session_usage.zig").refreshContext(self);
+            return c.pi_js_undefined();
         }
         return error.NativeSDKMethodUnavailable;
     }

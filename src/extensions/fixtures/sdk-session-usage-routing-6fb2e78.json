@@ -1,0 +1,32 @@
+{
+  "folded": {
+    "tokens": 24,
+    "contextWindow": 512,
+    "percent": 4.6875
+  },
+  "known": {
+    "id": "physical",
+    "thinking": "low",
+    "identity": true,
+    "context": {
+      "tokens": 5,
+      "contextWindow": 512,
+      "percent": 0.9765625
+    }
+  },
+  "ignoredError": {
+    "id": "physical",
+    "context": {
+      "tokens": 7,
+      "contextWindow": 512,
+      "percent": 1.3671875
+    }
+  },
+  "missing": {
+    "context": {
+      "tokens": 5,
+      "contextWindow": 8192,
+      "percent": 0.06103515625
+    }
+  }
+}

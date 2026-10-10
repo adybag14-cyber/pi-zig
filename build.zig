@@ -928,6 +928,13 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-async-scope", "Prove four private promise and timer execution scopes").dependOn(&async_scope_run.step);
     test_step.dependOn(&async_scope_run.step);
     const sdk_public_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_session_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public"}, .use_llvm = use_llvm });
+    const sdk_usage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_usage_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session usage"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_usage_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_usage_tests.root_module);
+    sdk_usage_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_usage_run = b.addRunArtifact(sdk_usage_tests);
+    b.step("test-native-sdk-session-usage", "Replay Source billed session totals and projected context usage").dependOn(&sdk_usage_run.step);
+    test_step.dependOn(&sdk_usage_run.step);
     const sdk_public_allocation_range = b.option(u8, "sdk-public-allocation-range", "SDK public model and thenable exhaustive allocation range 0..7; omit to run all indices");
     if (sdk_public_allocation_range) |range| if (range >= 8) @panic("SDK public allocation range must be 0..7");
     const sdk_public_options = b.addOptions();
