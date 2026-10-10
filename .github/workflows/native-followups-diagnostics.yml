@@ -47,18 +47,6 @@ jobs:
             export PI_SDK_ALLOCATION_SHARD=0 PI_SDK_ALLOCATION_SHARDS=8
           fi
           zig build test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/followup-diagnostics/shard-0.log
-      - name: Complete and verify every macOS codemode allocation range
-        if: runner.os == 'macOS'
-        timeout-minutes: 25
-        shell: bash
-        run: |
-          set -euo pipefail
-          export PI_CODEMODE_ALLOCATION_SHARDS=8 PI_SDK_ALLOCATION_SHARDS=8
-          for shard in 1 2 3 4 5 6 7; do
-            export PI_CODEMODE_ALLOCATION_SHARD="$shard" PI_SDK_ALLOCATION_SHARD="$shard"
-            zig build test-codemode-allocation test-codemode-model-allocation-shard -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee "verification/followup-diagnostics/shard-$shard.log"
-          done
-          zig run tools/verify_codemode_coverage.zig -- 8 verification/followup-diagnostics/shard-{0..7}.log > verification/followup-diagnostics/allocation-coverage.txt 2>&1
       - name: Preserve diagnostic source receipts
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,3 +54,77 @@ jobs:
           name: followup-${{ runner.os }}-${{ github.sha }}
           retention-days: 14
           path: verification/followup-diagnostics/**
+
+  allocation:
+    name: Complete macOS allocation range (${{ matrix.shard }})
+    runs-on: macos-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Record exact source identity
+        shell: bash
+        run: |
+          mkdir -p verification/allocation-ranges
+          git rev-parse HEAD > verification/allocation-ranges/source-${{ matrix.shard }}.txt
+          git rev-parse 'HEAD^{tree}' >> verification/allocation-ranges/source-${{ matrix.shard }}.txt
+          zig version >> verification/allocation-ranges/source-${{ matrix.shard }}.txt
+      - name: Complete all five named sweeps for this range
+        timeout-minutes: 18
+        shell: bash
+        env:
+          PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
+          PI_CODEMODE_ALLOCATION_SHARDS: "8"
+          PI_SDK_ALLOCATION_SHARD: ${{ matrix.shard }}
+          PI_SDK_ALLOCATION_SHARDS: "8"
+        run: |
+          set -euo pipefail
+          zig build test-codemode-allocation test-codemode-model-allocation-shard -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/allocation-ranges/shard-${{ matrix.shard }}.log
+      - name: Preserve range evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allocation-${{ github.sha }}-${{ matrix.shard }}
+          retention-days: 14
+          path: verification/allocation-ranges/**
+
+  allocation-coverage:
+    name: Verify complete allocation coverage
+    needs: allocation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: allocation-${{ github.sha }}-*
+          path: verification/allocation-ranges
+          merge-multiple: true
+      - name: Require matching source identities and exhaustive bounds
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > verification/allocation-ranges/expected-source.txt
+          git rev-parse 'HEAD^{tree}' >> verification/allocation-ranges/expected-source.txt
+          zig version >> verification/allocation-ranges/expected-source.txt
+          for shard in 0 1 2 3 4 5 6 7; do
+            cmp verification/allocation-ranges/expected-source.txt verification/allocation-ranges/source-$shard.txt
+          done
+          zig run tools/verify_codemode_coverage.zig -- 8 verification/allocation-ranges/shard-{0..7}.log > verification/allocation-ranges/coverage.txt 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: complete-allocation-coverage-${{ github.sha }}
+          retention-days: 14
+          path: verification/allocation-ranges/**
