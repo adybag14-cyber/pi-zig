@@ -130,6 +130,8 @@ pub const Manager = struct {
     vm_owner: ?c.JSValue = null,
     published_index: ?owner_index.Index = null,
     pending_index: ?owner_index.Index = null,
+    prepared_publication_index: ?owner_index.Index = null,
+    prepared_publication_seq: ?u64 = null,
     abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
     task_aborts: @import("native_durable_task_abort.zig").Queue = .{},
     active_dispatches: usize = 0,
@@ -189,6 +191,7 @@ pub const Manager = struct {
         self.join_waiters.deinit(self.engine.gpa);
         if (self.published_index) |*index| index.deinit();
         if (self.pending_index) |*index| index.deinit();
+        if (self.prepared_publication_index) |*index| index.deinit();
         self.broker.deinit();
         for (self.definitions.items) |definition| {
             for (definition.native.migrations.items) |*migration| {
@@ -324,10 +327,21 @@ pub const Manager = struct {
         errdefer changes.deinit();
         changes.value = try json.clone(changes.arena.allocator(), event.changes);
         self.mutex.lockUncancelable(self.lease.value.io);
-        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .ready = self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
+        // Native Session runs internal observers before external subscribers.
+        // Usually the scheduler has already prepared this exact sequence's
+        // index. The reverse order is also supported, without draining an
+        // event before the corresponding internal tracking has completed.
+        if (self.prepared_publication_index != null and self.prepared_publication_seq != event.seq) {
+            self.mutex.unlock(self.lease.value.io);
+            return error.PublicationOwnershipIndexSequenceMismatch;
+        }
+        const prepared = self.prepared_publication_index;
+        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
             self.mutex.unlock(self.lease.value.io);
             return err;
         };
+        self.prepared_publication_index = null;
+        self.prepared_publication_seq = null;
         // The new publication's snapshot supersedes earlier load-only jobs.
         // Keeping one would restore older ownership after this event drains.
         if (self.pending_index) |*previous| previous.deinit();
@@ -349,8 +363,14 @@ pub const Manager = struct {
                 if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
                 return;
             };
+            if (self.prepared_publication_index != null) {
+                self.mutex.unlock(self.lease.value.io);
+                return error.PublicationOwnershipIndexOverlap;
+            }
+            self.prepared_publication_index = copied;
+            self.prepared_publication_seq = committed;
             self.mutex.unlock(self.lease.value.io);
-            return error.PublicationOwnershipIndexMissing;
+            return;
         }
         if (self.pending_index) |*previous| previous.deinit();
         self.pending_index = copied;
@@ -1159,6 +1179,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
         self.live_task_records.deinit(engine.gpa);
         if (self.published_index) |*index| index.deinit();
         if (self.pending_index) |*index| index.deinit();
+        if (self.prepared_publication_index) |*index| index.deinit();
         for (self.events.items) |*event| event.deinit();
         self.events.deinit(std.heap.page_allocator);
         self.scheduler.deinit();
@@ -1653,13 +1674,22 @@ fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]
     errdefer runtime.entry.runtime.resumeWait();
     return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
 }
+fn diagnoseSourceFailure(engine: *Engine, name: []const u8, cause: anyerror) void {
+    std.debug.print("Actual ea {s} {s}: {s}\n", .{ name, @errorName(cause), engine.last_error orelse "no VM diagnostic" });
+    const raw = engine.native_durable_control_context orelse return;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    for (owner.managers.items) |manager| {
+        const failure = manager.lease.value.failure();
+        std.debug.print("Native Session original={s} closed={} queued={d} pending={} preparedSeq={?d} dispatches={d}\n", .{ if (failure) |err| @errorName(err) else "none", manager.closed, manager.events.items.len, manager.publicationPending(), manager.prepared_publication_seq, manager.active_dispatches });
+    }
+}
 test "native durable VM ownedTasks actual ea direct live copies cancellation and extracted aliases" {
     const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try durable.install(engine);
     const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-ownedtasks-program.txt"), "actual-ea-ownedtasks") catch |err| {
-        std.debug.print("Actual ea ownedTasks {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        diagnoseSourceFailure(engine, "ownedTasks", err);
         return err;
     };
     engine.freeValue(result);
@@ -1685,7 +1715,7 @@ test "native durable VM actual ea retention uses real Harness index sizes and la
     try durable.install(engine);
     try @import("timers.zig").install(engine, std.testing.io);
     const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-retention-program.txt"), "actual-ea-retention") catch |err| {
-        std.debug.print("Actual ea retention {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        diagnoseSourceFailure(engine, "retention", err);
         return err;
     };
     engine.freeValue(result);
@@ -1745,6 +1775,17 @@ test "native durable VM ownership publication index readiness preserves committe
             try std.testing.expect(!self.manager.publicationPending());
             try std.testing.expect(self.manager.live_task_records.contains(2));
             try std.testing.expect(!try self.manager.publishedIdle(null));
+            // Production ordering: the internal observer finishes before the
+            // external subscriber forwards the same committed sequence.
+            try Manager.forwardIndex(self.manager, 78, &tracked);
+            try std.testing.expectEqual(@as(?u64, 78), self.manager.prepared_publication_seq);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 0), self.manager.events.items.len);
+            try Manager.forward(self.manager, &.{ .seq = 78, .changes = self.changes });
+            try std.testing.expect(self.manager.prepared_publication_index == null);
+            try Manager.deliver(self.manager);
+            try std.testing.expect(!self.manager.publicationPending());
+            try std.testing.expect(self.manager.live_task_records.contains(2));
             return .null;
         }
     };
