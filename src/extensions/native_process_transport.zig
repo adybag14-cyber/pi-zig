@@ -17,7 +17,7 @@ pub const Worker = struct {
     wait_fn: *const fn (?*anyopaque, i64) anyerror!void,
     next_request_id: u64 = 1,
     closed: bool = false,
-    owner: std.Thread.Id = std.Thread.getCurrentId(),
+    owner: std.Thread.Id,
     pub fn bridge(self: *Worker, metadata: protocol.Metadata) streams.Bridge {
         return .{ .context = self, .guard_fn = guard, .control_fn = control, .write_fn = write, .is_shift_pressed_fn = if (metadata.has_shift_helper) shift else null, .enable_vt_input_fn = if (metadata.has_vt_input_helper) vtInput else null };
     }

@@ -1711,7 +1711,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         const lease = try process_protocol.readLease(&configuration.object);
         if (lease.owner_generation != owner_generation) return error.InvalidNativeProcessStartupLease;
         const metadata = try process_protocol.readMetadata(&configuration.object);
-        transport.process_worker = .{ .engine = engine, .io = io, .writer = writer, .lease = lease, .context = &transport, .take_fn = Transport.takeProcessResponse, .wait_fn = Transport.waitProcessResponse };
+        transport.process_worker = .{ .engine = engine, .io = io, .writer = writer, .lease = lease, .context = &transport, .take_fn = Transport.takeProcessResponse, .wait_fn = Transport.waitProcessResponse, .owner = std.Thread.getCurrentId() };
         try process_streams.hydrateInput(engine, metadata.stdin_raw, metadata.stdin_tty);
         try process_streams.hydrateOutput(engine, metadata.stdout_tty, metadata.stderr_tty, metadata.columns, metadata.rows);
         stream_lease = try process_streams.bind(engine, transport.process_worker.?.bridge(metadata));
