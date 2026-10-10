@@ -50,7 +50,7 @@ jobs:
           if ($taskVersion -cne '0.16.0') { throw "Unexpected Zig release: $taskVersion" }
           $taskZig = (Get-Command zig).Source
           $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
-            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_).Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_ -Force).Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
           })
           $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/inputs-before.json"
           [ordered]@{
@@ -90,7 +90,8 @@ jobs:
             [ordered]@{ head = (git rev-parse HEAD).Trim(); input_count = $taskInputs.Count; drift = $taskDrift; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/posthash.json"
             if ($taskDrift.Count -ne 0) { throw 'Compiled tracked source changed during diagnostic execution' }
           }
-          $taskImages = @(Get-ChildItem -LiteralPath 'zig-out/bin' -Filter '*.exe' -File -ErrorAction SilentlyContinue | ForEach-Object { [ordered]@{ path = $_.FullName; bytes = $_.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash } })
+          $taskSdkPath = if ($IsWindows) { 'zig-out/bin/pi-sdk-embedder.exe' } else { 'zig-out/bin/pi-sdk-embedder' }
+          $taskImages = @(if (Test-Path -LiteralPath $taskSdkPath) { Get-Item -LiteralPath $taskSdkPath -Force | ForEach-Object { [ordered]@{ path = $_.FullName; bytes = $_.Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash } } })
           ConvertTo-Json -InputObject $taskImages -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/images.json"
           git status --short | Set-Content -LiteralPath "$taskReceiptDir/git-status.txt"
 
@@ -104,5 +105,6 @@ jobs:
           path: |
             verification/sdk-stdio-diagnostics/**
             zig-out/bin/pi-sdk-embedder.exe
+            zig-out/bin/pi-sdk-embedder
             .github/workflows/sdk-stdio-diagnostics.yml
             docs/sdk-stdio-diagnostics-20261010.md
