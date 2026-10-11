@@ -1,0 +1,572 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "snapshot-await",
+      "outcome": {
+        "undefined": true,
+        "first": false,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type",
+        [
+          "two",
+          true,
+          true,
+          true,
+          "changed"
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type",
+        [
+          "three",
+          true,
+          true
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type"
+      ],
+      "errors": []
+    },
+    {
+      "id": "before-latest",
+      "outcome": {
+        "undefined": false,
+        "first": true,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        "event.type",
+        "event.type",
+        [
+          "two",
+          true,
+          true,
+          true,
+          "changed"
+        ],
+        "event.type",
+        "event.type",
+        [
+          "three",
+          true,
+          true
+        ],
+        "event.type",
+        "event.type"
+      ],
+      "errors": []
+    },
+    {
+      "id": "before-cancel",
+      "outcome": {
+        "undefined": false,
+        "first": false,
+        "second": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        "event.type",
+        "event.type"
+      ],
+      "errors": []
+    },
+    {
+      "id": "symbol-error",
+      "outcome": {
+        "undefined": true,
+        "first": false,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        [
+          "two",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type",
+        [
+          "three",
+          true,
+          true
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type"
+      ],
+      "errors": [
+        {
+          "extensionPath": "0.ext",
+          "event": "custom",
+          "error": "Symbol(handler reason)",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listener-error",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          true,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "marker.toString",
+        "event.type"
+      ],
+      "errors": [
+        {
+          "extensionPath": "0.ext",
+          "event": "custom",
+          "error": "marker reason",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native-promise-then",
+      "outcome": {
+        "undefined": true,
+        "first": false,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        "promise.handler",
+        "promise.constructor",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type"
+      ],
+      "errors": []
+    },
+    {
+      "id": "native-promise-constructor",
+      "outcome": {
+        "undefined": true,
+        "first": false,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        "promise.handler",
+        "promise.constructor",
+        "promise.then",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "promise.constructor",
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type"
+      ],
+      "errors": []
+    },
+    {
+      "id": "snapshot-getter-error",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get.throw",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "post-invalidate-context",
+      "outcome": {
+        "undefined": true,
+        "first": false,
+        "second": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "slice.get",
+          0
+        ],
+        [
+          "slice.call",
+          0,
+          true,
+          0
+        ],
+        [
+          "slice.get",
+          1
+        ],
+        [
+          "slice.call",
+          1,
+          true,
+          0
+        ],
+        [
+          "one.before",
+          true,
+          true,
+          false,
+          "initial"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        [
+          "invalidate",
+          "old context"
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type",
+        [
+          "two",
+          true,
+          true,
+          false,
+          "changed"
+        ],
+        "event.type",
+        [
+          "three",
+          true,
+          false
+        ],
+        "event.type",
+        "event.type",
+        "event.type",
+        "event.type"
+      ],
+      "errors": [
+        {
+          "extensionPath": "0.ext",
+          "event": "custom",
+          "error": "old context",
+          "stack": "Error: old context\n    at ExtensionRunner.assertActive (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:490:19)\n    at get cwd (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:631:24)\n    at two (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-emit-source-527.mjs:14:143)\n    at ExtensionRunner.emit (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:819:49)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-emit-source-527.mjs:20:177",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    }
+  ]
+}
