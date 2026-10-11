@@ -9,7 +9,7 @@ const Engine = engine_mod.Engine;
 const Match = struct { matches: bool, score: f64 = 0 };
 fn fail(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native fuzzy match: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn lowerUnits(engine: *Engine, value: c.JSValue) ![]u16 {

@@ -1,0 +1,68 @@
+name: Native command allocation identity regression
+
+on:
+  push:
+    branches: [work/native-command-allocation-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-command-allocation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  platform:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze source and tool identity
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path verification/native-command-allocation -Force | Out-Null
+          $head = (git rev-parse HEAD).Trim()
+          if ($head -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $zig = (Get-Command zig).Source
+          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = 'Debug'; scope = 'Private command-only implementation: six named tests and 293 original Source records, dynamic holder lifetime, and exhaustive host allocation cleanup. Main provider activation, fd and full Combined class remain unqualified.' } | ConvertTo-Json | Set-Content verification/native-command-allocation/source.json
+          @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json | Set-Content verification/native-command-allocation/inputs.json
+      - name: Replay command Source records and allocation cleanup
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig fmt --check build.zig src tools
+          if ($LASTEXITCODE -ne 0) { throw 'Native source formatting failed' }
+          & zig build test-native-command-autocomplete-allocation -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/native-command-allocation/tests.log
+          $result = $LASTEXITCODE
+          [ordered]@{ exit_code = $result; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content verification/native-command-allocation/result.json
+          if ($result -ne 0) { exit $result }
+      - name: Verify inputs and preserve executable hashes
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $inputs = @(Get-Content -Raw verification/native-command-allocation/inputs.json | ConvertFrom-Json)
+          $drift = @($inputs | Where-Object { (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 })
+          [ordered]@{ inputs = $inputs.Count; mismatches = $drift.Count } | ConvertTo-Json | Set-Content verification/native-command-allocation/posthash.json
+          if (Test-Path zig-out/bin) {
+            @(Get-ChildItem zig-out/bin -File | ForEach-Object { [ordered]@{ name = $_.Name; bytes = $_.Length; sha256 = (Get-FileHash -LiteralPath $_.FullName).Hash } }) | ConvertTo-Json | Set-Content verification/native-command-allocation/executables.json
+          }
+          if ($drift.Count -ne 0) { throw 'Tracked source changed during execution' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked tree changed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-command-allocation-windows-latest-Debug-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-command-allocation/**
