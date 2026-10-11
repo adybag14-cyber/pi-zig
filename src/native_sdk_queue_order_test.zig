@@ -431,3 +431,32 @@ test "native SDK queue order PUBLIC runner constructor refs fields and implement
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC bindCore getter phases provider queues and live receivers match Source519" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-bindcore-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-bindcore-519.input.txt"), "sdk-public-bindcore.mjs") catch |err| {
+        std.debug.print("SDK Source519 PUBLIC bindCore setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerBindCoreRows", "sdk-public-bindcore-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-bindcore-source-519.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete PUBLIC bindCore Source519 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkRunnerBindCoreRows", "sdk-public-bindcore-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

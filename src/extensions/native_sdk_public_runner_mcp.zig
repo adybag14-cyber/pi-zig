@@ -1,0 +1,60 @@
+//! Public runner MCP reporting traverses the supplied real registry and Set.
+const em = @import("engine.zig");
+const sdk = @import("native_sdk.zig");
+const js = @import("native_js_values.zig");
+const c = em.c;
+extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
+pub fn report(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
+    const type_name = try sdk.text(engine, "mcp_servers_change");
+    defer engine.freeValue(type_name);
+    const handled = try js.invoke(engine, runner, "hasHandlers", &.{type_name});
+    defer engine.freeValue(handled);
+    if (c.JS_ToBool(engine.context, handled) == 1) return c.pi_js_undefined();
+    const runtime = try sdk.get(engine, runner, "runtime");
+    defer engine.freeValue(runtime);
+    const registry = try sdk.get(engine, runtime, "mcpServers");
+    defer engine.freeValue(registry);
+    const servers = try js.invoke(engine, registry, "list", &.{});
+    defer engine.freeValue(servers);
+    const symbol = try engine.checked(JS_GetIteratorSymbol(engine.context));
+    defer engine.freeValue(symbol);
+    var iterator = try js.Iterator.init(engine, servers, symbol);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |server| {
+        defer engine.freeValue(server);
+        const reported = try sdk.get(engine, runner, "reportedMcpServers");
+        defer engine.freeValue(reported);
+        const has = try sdk.get(engine, reported, "has");
+        defer engine.freeValue(has);
+        const name = try sdk.get(engine, server, "name");
+        defer engine.freeValue(name);
+        const present = try js.call(engine, has, reported, &.{name});
+        defer engine.freeValue(present);
+        if (c.JS_ToBool(engine.context, present) == 1) continue;
+        const current = try sdk.get(engine, runner, "reportedMcpServers");
+        defer engine.freeValue(current);
+        const add = try sdk.get(engine, current, "add");
+        defer engine.freeValue(add);
+        const next_name = try sdk.get(engine, server, "name");
+        defer engine.freeValue(next_name);
+        const added = try js.call(engine, add, current, &.{next_name});
+        engine.freeValue(added);
+        const emit = try sdk.get(engine, runner, "emitError");
+        defer engine.freeValue(emit);
+        const value = try sdk.object(engine);
+        defer engine.freeValue(value);
+        try sdk.put(engine, value, "extensionPath", try sdk.get(engine, server, "extensionPath"));
+        try sdk.put(engine, value, "event", try sdk.text(engine, "register_mcp_server"));
+        const prefix = try sdk.text(engine, "MCP server \"");
+        defer engine.freeValue(prefix);
+        const message_name = try sdk.get(engine, server, "name");
+        defer engine.freeValue(message_name);
+        const suffix = try sdk.text(engine, "\" is registered, but no loaded extension connects MCP servers; another extension may have replaced the built-in MCP support");
+        defer engine.freeValue(suffix);
+        try sdk.put(engine, value, "error", try @import("native_select_list.zig").concat(engine, &.{ prefix, message_name, suffix }));
+        const ignored = try js.call(engine, emit, runner, &.{value});
+        engine.freeValue(ignored);
+    }
+    return c.pi_js_undefined();
+}

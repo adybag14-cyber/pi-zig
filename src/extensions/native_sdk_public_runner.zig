@@ -83,7 +83,7 @@ fn defaultValue(engine: *em.Engine, operation: Default, runner: c.JSValue) !c.JS
         else => c.pi_js_undefined(),
     };
 }
-fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
+pub fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
     try sdk.put(engine, result, "customPrompt", c.pi_js_undefined());
@@ -102,11 +102,12 @@ fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     try sdk.put(engine, result, "skills", try sdk.array(engine));
     return result;
 }
-const Method = enum(c_int) { bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, hasHandlers, getMessageRenderer, getMarkdownTransformers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createCommandContext };
+const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createCommandContext };
 pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
     inline for (std.meta.fields(Method)) |field| {
         const kind: Method = @enumFromInt(field.value);
         const arity: c_int = switch (kind) {
+            .bindCore => 3,
             .setFlagValue => 2,
             .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer => 1,
             else => 0,
@@ -125,6 +126,8 @@ fn assign(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.J
 fn methodValue(engine: *em.Engine, runner: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     switch (operation) {
+        .bindCore => return @import("native_sdk_public_runner_core.zig").bind(engine, runner, args),
+        .reportUnhandledMcpServers => return @import("native_sdk_public_runner_mcp.zig").report(engine, runner),
         .assertActive => {
             const stale = try sdk.get(engine, runner, "staleMessage");
             defer engine.freeValue(stale);
