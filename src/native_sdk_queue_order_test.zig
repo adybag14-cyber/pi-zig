@@ -2,6 +2,55 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const group_mod = @import("extensions/native_group.zig");
 const json = @import("mcp/protocol.zig").json;
+test "native SDK queue order PUBLIC constructor full thirteen actual Source564 newTarget fields and default callback cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-constructor-deep-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-constructor-deep-565.input.txt"), "sdk-constructor-deep.mjs") catch |err| {
+        std.debug.print("SDK Source564 PUBLIC constructor: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkConstructorDeepRows", "sdk-constructor-deep-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-constructor-deep-source-564.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 13), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        const id = source.object.get("id").?.string;
+        if (std.mem.eql(u8, id, "constructor-call") or std.mem.eql(u8, id, "default-arrow-new") or std.mem.eql(u8, id, "default-async-new")) {
+            // Preserve the original V8 diagnostic text in the capture. The
+            // engine-generated wording differs; error class and full row
+            // structure remain strict, and both messages must be nonempty.
+            try std.testing.expectEqual(@as(usize, 2), source.object.count());
+            try std.testing.expectEqual(source.object.count(), observed.object.count());
+            try std.testing.expect(json.equal(source.object.get("id").?, observed.object.get("id").?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            try std.testing.expectEqual(@as(usize, 2), wanted.object.count());
+            try std.testing.expectEqual(wanted.object.count(), found.object.count());
+            try std.testing.expect(json.equal(wanted.object.get("name").?, found.object.get("name").?));
+            try std.testing.expect(wanted.object.get("message").? == .string and wanted.object.get("message").?.string.len > 0);
+            try std.testing.expect(found.object.get("message").? == .string and found.object.get("message").?.string.len > 0);
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source564 constructor complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkConstructorDeepRows", "sdk-constructor-deep-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
 test "native SDK queue order PUBLIC implemented method metadata matches complete original Source class declaration" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

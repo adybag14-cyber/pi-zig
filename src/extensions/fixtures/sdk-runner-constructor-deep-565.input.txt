@@ -1,0 +1,43 @@
+// Actual public constructor and default callback contract; no replacement implementation.
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+
+const asyncPrototype=Object.getPrototypeOf(async()=>{}),ordinaryPrototype=Function.prototype;
+const functionShape=fn=>({name:fn.name,length:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ordinary:Object.getPrototypeOf(fn)===ordinaryPrototype,ownKeys:Reflect.ownKeys(fn).map(String)});
+const rows=[];
+const refs={extensions:[],runtime:{flagValues:new Map()},cwd:'/constructor-origin',manager:{manager:true},registry:{registry:true}};
+const args=[refs.extensions,refs.runtime,refs.cwd,refs.manager,refs.registry];
+const describe=value=>value===undefined?{type:'undefined'}:value===null?{type:'null'}:typeof value==='function'?{type:'function',...functionShape(value)}:typeof value==='object'?{type:value instanceof Set?'Set':value instanceof Map?'Map':Array.isArray(value)?'array':'object'}:{type:typeof value,value};
+const own=runner=>Reflect.ownKeys(runner).map(name=>{const d=Object.getOwnPropertyDescriptor(runner,name);return{name:String(name),value:describe(d.value),writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}});
+const runner=new ExtensionRunner(...args);
+rows.push({id:'base-complete-shape',own:own(runner),prototypeKeys:Reflect.ownKeys(ExtensionRunner.prototype).map(String),constructorShape:functionShape(ExtensionRunner),prototypeDescriptor:(()=>{const d=Object.getOwnPropertyDescriptor(ExtensionRunner,'prototype');return{writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}})(),refs:{extensions:runner.extensions===refs.extensions,runtime:runner.runtime===refs.runtime,cwd:runner.cwd===refs.cwd,manager:runner.sessionManager===refs.manager,registry:runner.modelRegistry===refs.registry}});
+for(const id of ['object','null','number','undefined','getter','getter-throws']){
+ const events=[],marker={marker:true};let wanted,Target;
+ if(id==='object')wanted={custom:true};else if(id==='null')wanted=null;else if(id==='number')wanted=7;else wanted=undefined;
+ const Original=function Target(){};Original.prototype=wanted;
+ Target=id==='getter'||id==='getter-throws'?new Proxy(Original,{get(target,key,receiver){events.push(['target.get',String(key)]);if(key==='prototype'){if(id==='getter-throws')throw marker;return wanted}return Reflect.get(target,key,receiver)}}):Original;
+ let outcome;
+ try{const value=Reflect.construct(ExtensionRunner,args,Target);outcome={prototypeIsWanted:Object.getPrototypeOf(value)===wanted,prototypeIsObject:Object.getPrototypeOf(value)===Object.prototype,prototypeIsRunner:Object.getPrototypeOf(value)===ExtensionRunner.prototype,own:own(value),refs:{extensions:value.extensions===refs.extensions,runtime:value.runtime===refs.runtime,manager:value.sessionManager===refs.manager,registry:value.modelRegistry===refs.registry}}}catch(error){outcome={marker:error===marker,name:error?.name,message:error?.message}}
+ rows.push({id:'new-target-'+id,events,outcome});
+}
+{
+ const events=[];
+ class Child extends ExtensionRunner{}
+ Object.defineProperty(Child.prototype,'cwd',{configurable:true,set(value){events.push(['inherited.cwd.set',value])},get(){events.push('inherited.cwd.get');return'inherited'}});
+ const value=new Child(...args);rows.push({id:'subclass-field-definition',events,prototype:Object.getPrototypeOf(value)===Child.prototype,instanceRunner:value instanceof ExtensionRunner,instanceChild:value instanceof Child,own:own(value),cwd:value.cwd});
+}
+{
+ const get=runner.getSystemPromptOptionsFn,unrelated={cwd:'/unrelated'};
+ const before=get.call(unrelated);runner.cwd='/updated';const after=get.call(unrelated),again=get();
+ rows.push({id:'default-options-arrow-receiver',shape:functionShape(get),before,after,again,distinct:after!==again,selectedDistinct:after.selectedTools!==again.selectedTools});
+}
+{
+ const results=[];
+ for(const name of ['getModel','getScopedModels','getSystemPromptFn','waitForIdleFn','newSessionHandler','forkHandler','navigateTreeHandler','switchSessionHandler','reloadHandler','shutdownHandler']){
+  const fn=runner[name],value=fn.call({unrelated:true});results.push({name,shape:functionShape(fn),promise:value instanceof Promise,value:describe(await value)});
+ }
+ rows.push({id:'default-callback-shapes-results',results});
+}
+for(const operation of ['constructor-call','default-arrow-new','default-async-new']){
+ let outcome;try{if(operation==='constructor-call')Reflect.apply(ExtensionRunner,{},args);else if(operation==='default-arrow-new')Reflect.construct(runner.getModel,[]);else Reflect.construct(runner.waitForIdleFn,[]);outcome={unexpectedSuccess:true}}catch(error){outcome={name:error.name,message:error.message}}rows.push({id:operation,outcome});
+}
+globalThis.sdkConstructorDeepRows=rows;

@@ -1,6 +1,5 @@
 //! Public ExtensionRunner construction over actual supplied JavaScript refs.
-//! Only real method bodies are installed; the remaining async/UI/shortcut
-//! contracts stay absent and explicitly inventoried until ported.
+//! Real method bodies retain ordinary supplied refs and genuine JS prototypes.
 const std = @import("std");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
@@ -23,13 +22,11 @@ fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c
     return create(engine, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
 }
 pub fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    var prototype = if (c.JS_IsObject(target)) try sdk.get(engine, target, "prototype") else c.pi_js_undefined();
+    const prototype = if (c.JS_IsObject(target)) try sdk.get(engine, target, "prototype") else c.pi_js_undefined();
     defer engine.freeValue(prototype);
-    if (!c.JS_IsObject(prototype)) {
-        engine.freeValue(prototype);
-        prototype = try @import("native_sdk_command_runner.zig").getPrototype(engine);
-    }
-    const runner = try engine.checked(c.JS_NewObjectProto(engine.context, prototype));
+    // GetPrototypeFromConstructor falls back to the realm's intrinsic
+    // Object.prototype, independently of the mutable global Object binding.
+    const runner = try engine.checked(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(engine.context, prototype) else c.JS_NewObject(engine.context));
     errdefer engine.freeValue(runner);
     inline for (.{ "extensions", "runtime", "uiContext", "mode", "cwd", "sessionManager", "modelRegistry" }, 0..) |name, index| {
         const value = switch (index) {
@@ -53,7 +50,22 @@ pub fn create(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue) !c
         if (field.value == @intFromEnum(Default.getCallableToolsFn)) try sdk.put(engine, runner, "executeToolFn", c.pi_js_undefined());
         if (field.value == @intFromEnum(Default.newSessionHandler)) try sdk.put(engine, runner, "reportedMcpServers", try js.builtin(engine, "Set", &.{}));
         var roots = [_]c.JSValue{runner};
-        try sdk.put(engine, runner, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, defaultCall, field.name, 0, field.value, roots.len, &roots)));
+        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, defaultCall, field.name, 0, field.value, roots.len, &roots));
+        switch (@as(Default, @enumFromInt(field.value))) {
+            .waitForIdleFn, .newSessionHandler, .forkHandler, .navigateTreeHandler, .switchSessionHandler, .reloadHandler => {
+                const async_prototype = engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)) catch |err| {
+                    engine.freeValue(function);
+                    return err;
+                };
+                defer engine.freeValue(async_prototype);
+                if (c.JS_SetPrototype(engine.context, function, async_prototype) < 0) {
+                    engine.freeValue(function);
+                    return js.capture(engine);
+                }
+            },
+            else => {},
+        }
+        try sdk.put(engine, runner, field.name, function);
     }
     try sdk.put(engine, runner, "shortcutDiagnostics", try sdk.array(engine));
     try sdk.put(engine, runner, "commandDiagnostics", try sdk.array(engine));
