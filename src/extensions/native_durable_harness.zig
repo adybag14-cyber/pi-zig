@@ -40,11 +40,28 @@ fn argument(args: []const c.JSValue, index: usize) c.JSValue {
 }
 fn open(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    const result = openOwned(engine, argv[0..@intCast(argc)]) catch |err| return durable.rejectedPromise(engine, err);
+    const args = argv[0..@intCast(argc)];
+    const result = prepareOpen(engine, args) catch |err| return durable.rejectedPromise(engine, err);
     defer engine.freeValue(result);
-    return sdk.promise(engine, result) catch |err| durable.rejectedPromise(engine, err);
+    return queueOpen(engine, result, argument(args, 2)) catch |err| durable.rejectedPromise(engine, err);
 }
-fn openOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
+fn queueOpen(engine: *Engine, result: c.JSValue, context: c.JSValue) !c.JSValue {
+    // Source's async open returns its public Promise before Storage can await
+    // a held guest operation. Keep synchronous validation/preparation above,
+    // then attach in a real native Promise job with rooted native captures.
+    var data = [_]c.JSValue{ result, context };
+    const continuation = try engine.checked(c.JS_NewCFunctionData(engine.context, finishOpen, 0, 0, data.len, &data));
+    defer engine.freeValue(continuation);
+    const ready = try sdk.promise(engine, c.pi_js_undefined());
+    defer engine.freeValue(ready);
+    return sdk.invoke(engine, ready, "then", &.{continuation});
+}
+fn finishOpen(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    completeOpen(engine, data[0], data[1]) catch |err| return durable.rejectedPromise(engine, err);
+    return c.JS_DupValue(engine.context, data[0]);
+}
+fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     try durable.checkCancellation(engine, argument(args, 2));
     const options = argument(args, 1);
     const registry = try sdk.get(engine, options, "registry");
@@ -66,8 +83,19 @@ fn openOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     owner.creation_owner = c.JS_DupValue(engine.context, result);
     owner.creation_hook = created;
     owner.finish_hook = finish;
-    try @import("native_durable_tasks.zig").attach(engine, session, options, argument(args, 2));
+    return result;
+}
+fn completeOpen(engine: *Engine, harness: c.JSValue, context: c.JSValue) !void {
+    try durable.checkCancellation(engine, context);
+    const self = try state(engine, harness);
+    const owner = try durable.state(engine, self.session);
+    try @import("native_durable_tasks.zig").attach(engine, self.session, self.options, context);
     owner.task_creator = @import("native_durable_tasks.zig").createTask;
+}
+fn openOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
+    const result = try prepareOpen(engine, args);
+    errdefer engine.freeValue(result);
+    try completeOpen(engine, result, argument(args, 2));
     return result;
 }
 pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64) !c.JSValue {
