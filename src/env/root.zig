@@ -23,6 +23,7 @@ test {
     _ = files;
     _ = connection;
     _ = terminal_request;
+    _ = @import("terminal_test.zig");
     _ = info;
     _ = daemon_output;
     _ = lazy_connection;

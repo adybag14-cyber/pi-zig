@@ -44,6 +44,8 @@ pub fn main(init: std.process.Init) !void {
     var file_workers: @import("env/file_workers.zig").Pool = .{ .io = io, .input = &input, .output = &output, .server = &server };
     try file_workers.start();
     defer file_workers.deinit();
+    var terminals: @import("env/daemon_terminal.zig").Registry = .{ .io = io };
+    defer terminals.deinit();
     var tasks: std.Io.Group = .init;
     defer tasks.cancel(io);
     while (true) {
@@ -57,6 +59,7 @@ pub fn main(init: std.process.Init) !void {
         var delegated = false;
         defer if (!delegated) input.complete(pending);
         const request = pending.frame;
+        if (try terminals.respond(pending, &output)) continue;
         if (builtin.os.tag == .windows) if (@import("env/terminal_request.zig").windowsFailure(request.json.value)) |failure| {
             try output.send(.remote_error, request.id, failure, "");
             continue;
@@ -87,6 +90,14 @@ pub fn main(init: std.process.Init) !void {
                 errdefer std.heap.page_allocator.destroy(task);
                 task.* = .{ .input = &input, .output = &output, .pending = pending, .environ = &environ, .cwd = cwd, .tmpdir = tmpdir, .parent_owner = &parent_owner };
                 try tasks.concurrent(io, execution.Task.run, .{task});
+                delegated = true;
+                continue;
+            };
+            if (builtin.os.tag != .windows) if (request.json.value.object.get("op")) |op| if (op == .string and std.mem.eql(u8, op.string, "pty")) {
+                const terminal_task = try std.heap.page_allocator.create(@import("env/daemon_terminal.zig").Task);
+                errdefer std.heap.page_allocator.destroy(terminal_task);
+                terminal_task.* = .{ .input = &input, .output = &output, .pending = pending, .registry = &terminals, .environ = &environ };
+                try tasks.concurrent(io, @import("env/daemon_terminal.zig").Task.run, .{terminal_task});
                 delegated = true;
                 continue;
             };

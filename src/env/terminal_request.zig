@@ -20,9 +20,12 @@ fn unsigned(value: std.json.Value) ?u64 {
         else => null,
     };
 }
-fn size(json: std.json.Value, name: []const u8) ?u16 {
+pub fn size(json: std.json.Value, name: []const u8) ?u16 {
     const number = unsigned(field(json, name)) orelse return null;
     return if (number >= 1 and number <= 4096) @intCast(number) else null;
+}
+pub fn target(json: std.json.Value) ?u32 {
+    return @truncate(unsigned(field(json, "target")) orelse return null);
 }
 pub fn parse(json: std.json.Value) Parsed {
     const raw_argv = field(json, "argv");

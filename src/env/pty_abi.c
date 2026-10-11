@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
@@ -149,6 +150,25 @@ int pi_env_pty_reap(int pid) {
     return 0;
 }
 void pi_env_pty_close(int master) { close(master); }
+int pi_env_pty_error(int code, char *bytes, size_t capacity) {
+    return snprintf(bytes, capacity, "%s (os error %d)", strerror(code), code);
+}
+const char *pi_env_pty_error_code(int code) {
+#define PI_ERRNO_NAME(name) case name: return #name;
+    switch (code) {
+        PI_ERRNO_NAME(EPERM) PI_ERRNO_NAME(ENOENT) PI_ERRNO_NAME(EIO)
+        PI_ERRNO_NAME(EBADF) PI_ERRNO_NAME(EAGAIN) PI_ERRNO_NAME(ENOMEM)
+        PI_ERRNO_NAME(EACCES) PI_ERRNO_NAME(EBUSY) PI_ERRNO_NAME(EEXIST)
+        PI_ERRNO_NAME(EXDEV) PI_ERRNO_NAME(ENOTDIR) PI_ERRNO_NAME(EISDIR)
+        PI_ERRNO_NAME(EINVAL) PI_ERRNO_NAME(ENFILE) PI_ERRNO_NAME(EMFILE)
+        PI_ERRNO_NAME(ETXTBSY) PI_ERRNO_NAME(EFBIG) PI_ERRNO_NAME(ENOSPC)
+        PI_ERRNO_NAME(EROFS) PI_ERRNO_NAME(EMLINK) PI_ERRNO_NAME(ENAMETOOLONG)
+        PI_ERRNO_NAME(ENOTEMPTY) PI_ERRNO_NAME(ELOOP) PI_ERRNO_NAME(ENOSYS)
+        PI_ERRNO_NAME(ENOTSUP)
+        default: return "UNKNOWN";
+    }
+#undef PI_ERRNO_NAME
+}
 #else
 typedef int pi_env_pty_windows_has_no_posix_abi;
 #endif

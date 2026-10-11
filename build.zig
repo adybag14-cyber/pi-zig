@@ -565,6 +565,8 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkDurable(b, env_daemon.root_module);
+    env_daemon.root_module.addCSourceFile(.{ .file = b.path("src/env/pty_abi.c"), .flags = &.{"-std=gnu11"} });
+    if (target.result.os.tag == .linux) env_daemon.root_module.linkSystemLibrary("util", .{});
     const install_env_daemon = b.addInstallArtifact(env_daemon, .{});
     const terminal_primitive_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/env/pty_abi_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
