@@ -75,11 +75,15 @@ fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
 fn start(engine: *js.Engine, input: c.JSValue, mime: c.JSValue, options: c.JSValue) !c.JSValue {
     const view = try bytes(engine, input);
     defer engine.freeValue(view.backing);
+    // Source copies caller bytes before postMessage invokes option getters.
+    // A getter may mutate the caller's original buffer during structured clone.
+    const copied_input = try engine.gpa.dupe(u8, view.bytes);
+    defer engine.gpa.free(copied_input);
     var encoded_mime = try graph.serializeForWorker(engine, mime);
     defer encoded_mime.deinit(engine.gpa);
     var encoded_options = try graph.serializeForWorker(engine, options);
     defer encoded_options.deinit(engine.gpa);
-    const task = try worker.Worker.start(engine.gpa, view.bytes, encoded_mime, encoded_options);
+    const task = try worker.Worker.start(engine.gpa, copied_input, encoded_mime, encoded_options);
     return promises.create(engine, task) catch |err| {
         task.deinit();
         return err;
