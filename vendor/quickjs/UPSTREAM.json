@@ -4,8 +4,8 @@
   "commit": "6d46d07d04041b40f4f49eaa7fdebe44c314c699",
   "license": "MIT",
   "files": {
-    "quickjs.c": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
-    "quickjs.h": "4521ac82e041c36cd80408af0e94a2819e96c421326d5a588224d66560136546",
+    "quickjs.c": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
+    "quickjs.h": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
     "dtoa.c": "a8d2cf2d04db406e0c16acdd95ab0e709d309902865722f41dac07a1ba5676af",
     "dtoa.h": "1c4a4540c0038632c8a4c225472fbc21bd476fb35c4da4a857a11965b58231b9",
     "libregexp.c": "af13e996abb1767fe0cdfda123c45b811d53688d403a2ac47142e97bf79f1fae",
@@ -27,25 +27,26 @@
     "NATIVE_WEAKREF_KEPT_OBJECTS.md": "328e1d5cc7a07d54fe5790db8a2b11e7e4b6696e607e4f13a0a452ccfa41d049",
     "NATIVE_ASYNC_CONTEXT.md": "2d8cf6b8b1a6ec9338729f5bf6b249f2830bc5c82fff6797e5ab656229d7213e",
     "NATIVE_ASYNC_ITERATOR_INTRINSIC.md": "a98a6bd8b524f38491590c3f7c4a825859710f2236921b2b40789f61358dd74d",
-    "NATIVE_ASYNC_FUNCTION_INTRINSIC.md": "133332f337ff6e6419b8e3f8be7e9adc24c48b4b3e86138a30a4ab0f6faf065a"
+    "NATIVE_ASYNC_FUNCTION_INTRINSIC.md": "133332f337ff6e6419b8e3f8be7e9adc24c48b4b3e86138a30a4ab0f6faf065a",
+    "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md": "74650f985f52283a5e1d42de89cdf389a906170b4626c7315608ebf0067fbe9a"
   },
   "local_patches": [
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
       "reason": "Use correctly typed DynBuf allocator adapters for normalize and localeCompare",
       "provenance": "NATIVE_ABI_FIXES.md"
     },
     {
-      "patched_sha256": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "reason": "Keep WeakRef constructor and deref targets through a complete native job checkpoint",
       "provenance": "NATIVE_WEAKREF_KEPT_OBJECTS.md",
       "file": "quickjs.c"
     },
     {
-      "patched_sha256": "4521ac82e041c36cd80408af0e94a2819e96c421326d5a588224d66560136546",
+      "patched_sha256": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
       "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
       "reason": "Expose the owner-only JS_ClearKeptObjects host checkpoint API",
       "provenance": "NATIVE_WEAKREF_KEPT_OBJECTS.md",
@@ -53,28 +54,28 @@
     },
     {
       "provenance": "NATIVE_ASYNC_CONTEXT.md",
-      "patched_sha256": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "file": "quickjs.c",
       "reason": "Capture private native execution context at job and promise reaction registration"
     },
     {
       "provenance": "NATIVE_ASYNC_CONTEXT.md",
-      "patched_sha256": "4521ac82e041c36cd80408af0e94a2819e96c421326d5a588224d66560136546",
+      "patched_sha256": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
       "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
       "file": "quickjs.h",
       "reason": "Expose native owner-only execution context setter and job hooks"
     },
     {
       "reason": "Expose the owned context intrinsic async iterator prototype without a guest host shim",
-      "patched_sha256": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "file": "quickjs.c",
       "provenance": "NATIVE_ASYNC_ITERATOR_INTRINSIC.md"
     },
     {
       "reason": "Expose the owned context intrinsic async iterator prototype without a guest host shim",
-      "patched_sha256": "4521ac82e041c36cd80408af0e94a2819e96c421326d5a588224d66560136546",
+      "patched_sha256": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
       "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
       "file": "quickjs.h",
       "provenance": "NATIVE_ASYNC_ITERATOR_INTRINSIC.md"
@@ -82,16 +83,30 @@
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "fdfc3103b5f18a4fda96acd82f06636a7aaeb16aa96227e66c3637a40f52d042",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
       "reason": "Expose the owned context intrinsic AsyncFunction prototype without a guest host shim",
       "provenance": "NATIVE_ASYNC_FUNCTION_INTRINSIC.md"
     },
     {
       "file": "quickjs.h",
       "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
-      "patched_sha256": "4521ac82e041c36cd80408af0e94a2819e96c421326d5a588224d66560136546",
+      "patched_sha256": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
       "reason": "Expose the owned context intrinsic AsyncFunction prototype without a guest host shim",
       "provenance": "NATIVE_ASYNC_FUNCTION_INTRINSIC.md"
+    },
+    {
+      "file": "quickjs.c",
+      "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
+      "patched_sha256": "5631ed6dd377eab659d44591bbff3618541a133d5db05f653f50a7e4317eca7b",
+      "reason": "Expose owned immutable iterator and toPrimitive well-known symbol identities",
+      "provenance": "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md"
+    },
+    {
+      "file": "quickjs.h",
+      "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
+      "patched_sha256": "9fc3efe81bb2a78b4159f8b992ae71d8c00d5fcb3308ca0c24974c88a4f76fd4",
+      "reason": "Expose owned immutable iterator and toPrimitive well-known symbol identities",
+      "provenance": "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md"
     }
   ]
 }

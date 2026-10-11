@@ -60,7 +60,7 @@ fn afterAuth(engine: *em.Engine, session: c.JSValue, model: c.JSValue, options: 
     const owner = try sdk.state(engine, session);
     const previous = try sdk.agentField(owner, "model");
     defer engine.freeValue(previous);
-    const settings = try sdk.get(engine, owner.data, "settingsManager");
+    const settings = try sdk.publicField(owner, "settingsManager");
     defer engine.freeValue(settings);
     var thinking = try invokePair(engine, settings, "getModelThinkingLevel", model);
     defer engine.freeValue(thinking);
@@ -77,7 +77,7 @@ fn afterAuth(engine: *em.Engine, session: c.JSValue, model: c.JSValue, options: 
         }
     }
     try sdk.setAgentField(owner, "model", model);
-    const manager = try sdk.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     const recorded = try invokePair(engine, manager, "appendModelChange", model);
     engine.freeValue(recorded);

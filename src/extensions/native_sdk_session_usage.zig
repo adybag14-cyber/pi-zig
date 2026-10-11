@@ -486,13 +486,13 @@ pub fn sessionContextUsage(owner: *sdk.State) !c.JSValue {
     defer engine.freeValue(routed);
     const model = if (c.JS_ToBool(engine.context, routed) == 1) try sdk.get(engine, routed, "model") else try sdk.agentField(owner, "model");
     defer engine.freeValue(model);
-    const manager = try sdk.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     return contextUsage(engine, model, manager);
 }
 pub fn sessionStats(owner: *sdk.State) !c.JSValue {
     const engine = owner.engine;
-    const manager = try sdk.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     const totals = try billed(engine, manager);
     defer engine.freeValue(totals);
@@ -506,7 +506,7 @@ pub fn sessionStats(owner: *sdk.State) !c.JSValue {
 }
 pub fn refreshContext(owner: *sdk.State) !void {
     const engine = owner.engine;
-    const manager = try sdk.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     const projection = try sdk.invoke(engine, manager, "buildSessionProjection", &.{});
     defer engine.freeValue(projection);

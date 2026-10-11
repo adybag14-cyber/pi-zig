@@ -97,13 +97,13 @@ pub fn apply(engine: *engine_mod.Engine, session: c.JSValue, requested: c.JSValu
     const persist = if (c.JS_IsUndefined(options)) c.pi_js_undefined() else try sdk.get(engine, options, "persist");
     defer engine.freeValue(persist);
     if (c.JS_ToBool(engine.context, persist) == 1) {
-        const settings = try sdk.get(engine, state.data, "settingsManager");
+        const settings = try sdk.publicField(state, "settingsManager");
         defer engine.freeValue(settings);
         const saved = try sdk.invoke(engine, settings, "setDefaultThinkingLevel", &.{requested});
         engine.freeValue(saved);
     }
     if (changed) {
-        const manager = try sdk.get(engine, state.data, "sessionManager");
+        const manager = try sdk.publicField(state, "sessionManager");
         defer engine.freeValue(manager);
         const saved = try sdk.invoke(engine, manager, "appendThinkingLevelChange", &.{level});
         engine.freeValue(saved);

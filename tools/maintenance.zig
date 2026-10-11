@@ -31,7 +31,7 @@ pub fn forbiddenImplementation(path: []const u8) bool {
 fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bool {
     var failures: usize = 0;
     var files: usize = 0;
-    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser", "vendor/sqlite" }) |root| {
+    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser", "vendor/sqlite", "vendor/libfyaml" }) |root| {
         const manifest_path = try std.fs.path.join(gpa, &.{ root, "UPSTREAM.json" });
         defer gpa.free(manifest_path);
         const bytes = try std.Io.Dir.cwd().readFileAlloc(io, manifest_path, gpa, .limited(1024 * 1024));
@@ -39,7 +39,10 @@ fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bo
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidVendorManifest;
-        const hashes = parsed.value.object.get("files") orelse return error.InvalidVendorManifest;
+        const listed_hashes = parsed.value.object.get("files") orelse return error.InvalidVendorManifest;
+        var array_hashes = try vendorArrayHashes(gpa, listed_hashes);
+        defer array_hashes.deinit(gpa);
+        const hashes: std.json.Value = if (listed_hashes == .array) .{ .object = array_hashes } else listed_hashes;
         if (hashes != .object or hashes.object.count() == 0) return error.InvalidVendorManifest;
         const commit = parsed.value.object.get("commit") orelse return error.InvalidVendorManifest;
         if (commit != .string) return error.InvalidVendorManifest;
@@ -85,6 +88,38 @@ fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bo
     }
     try writer.print("verified_vendor_files={d}\nvendor_digest_failures={d}\n", .{ files, failures });
     return failures == 0;
+}
+
+/// libfyaml retains each official/derived file's origin in its pinned manifest.
+/// Normalize its records for the same unmanifested-entry and digest checks;
+/// duplicate paths must fail instead of silently replacing a prior record.
+fn vendorArrayHashes(gpa: std.mem.Allocator, files: std.json.Value) !std.json.ObjectMap {
+    var result: std.json.ObjectMap = .empty;
+    errdefer result.deinit(gpa);
+    if (files != .array) return result;
+    if (files.array.items.len == 0) return error.InvalidVendorManifest;
+    for (files.array.items) |entry| {
+        if (entry != .object) return error.InvalidVendorManifest;
+        const path = entry.object.get("path") orelse return error.InvalidVendorManifest;
+        const digest = entry.object.get("sha256") orelse return error.InvalidVendorManifest;
+        const origin = entry.object.get("origin") orelse return error.InvalidVendorManifest;
+        if (path != .string or digest != .string or origin != .string or origin.string.len == 0 or result.contains(path.string)) return error.InvalidVendorManifest;
+        try result.put(gpa, path.string, digest);
+    }
+    return result;
+}
+
+test "vendor origin manifest rejects duplicate path records and missing provenance" {
+    const gpa = std.testing.allocator;
+    for ([_][]const u8{
+        "[{\"path\":\"a.c\",\"sha256\":\"one\",\"origin\":\"official\"},{\"path\":\"a.c\",\"sha256\":\"two\",\"origin\":\"derived\"}]",
+        "[{\"path\":\"a.c\",\"sha256\":\"one\"}]",
+        "[]",
+    }) |input| {
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, input, .{});
+        defer parsed.deinit();
+        try std.testing.expectError(error.InvalidVendorManifest, vendorArrayHashes(gpa, parsed.value));
+    }
 }
 
 fn auditSource(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer, enforce_languages: bool) !bool {

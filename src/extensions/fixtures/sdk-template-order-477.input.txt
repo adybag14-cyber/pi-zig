@@ -1,0 +1,26 @@
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const cwd='/sdk-template-order-477';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true});
+await loader.reload();
+const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+await session.bindExtensions({mode:'rpc'});
+const rows=[],oldGet=loader.getPrompts,oldFind=Array.prototype.find,oldPush=Array.prototype.push;
+for(const [label,text] of [['symbol-poison','ordinary']]){
+ const trace=[],marker={label},note=value=>oldPush.call(trace,value);
+ const templates={get [Symbol.iterator](){note('templates.iterator');return function(){note(['templates.iterator.call',this===templates]);let index=0;return {next(){note(['templates.next',index]);if(label==='iterator-throw')throw marker;return index++===0?{value:{get name(){note('template.name');return'template'},get content(){note('template.content');return'[$1][$@]'}},done:false}:{done:true}}}}}};
+ loader.getPrompts=function(){note(['loader.getPrompts',this===loader]);return {get prompts(){note('loader.prompts');return templates}}};
+ if(label==='getter-throw')Object.defineProperty(session,'promptTemplates',{configurable:true,get(){note('session.promptTemplates');throw marker}});
+ Array.prototype.find=function(...args){note('Array.find');return oldFind.apply(this,args)};
+ Array.prototype.push=function(...args){note(['Array.push',args.length]);return oldPush.apply(this,args)};
+ const originalSymbol=globalThis.Symbol;globalThis.Symbol={iterator:'poison'};
+ let outcome;
+ try{outcome={value:await session.steer(text)}}catch(error){outcome={same:error===marker,name:error?.name??null,message:error?.message??null}}
+ globalThis.Symbol=originalSymbol;Array.prototype.find=oldFind;Array.prototype.push=oldPush;
+ delete session.promptTemplates;
+ const steering=session.getSteeringMessages().slice();
+ rows.push({label,trace,outcome,steering});
+ session.clearQueue();
+}
+loader.getPrompts=oldGet;session.dispose();
+globalThis.sdkTemplateOrderResult={rows};

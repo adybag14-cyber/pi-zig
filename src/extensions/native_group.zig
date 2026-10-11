@@ -1108,11 +1108,11 @@ test "native group ToolInfo SDK private lease rejects retirement and ignores for
     const b_owner = try sdk_mod.state(engine, b);
     const a_registry = try vm.get(engine, a_owner.data, "modelRegistry");
     defer engine.freeValue(a_registry);
-    const a_manager = try vm.get(engine, a_owner.data, "sessionManager");
+    const a_manager = try sdk_mod.publicField(a_owner, "sessionManager");
     defer engine.freeValue(a_manager);
     const b_registry = try vm.get(engine, b_owner.data, "modelRegistry");
     defer engine.freeValue(b_registry);
-    const b_manager = try vm.get(engine, b_owner.data, "sessionManager");
+    const b_manager = try sdk_mod.publicField(b_owner, "sessionManager");
     defer engine.freeValue(b_manager);
     const a_lease = try sdk_mod.sessionModelLease(a_owner);
     const b_lease = try sdk_mod.sessionModelLease(b_owner);
@@ -1179,7 +1179,7 @@ test "native group ToolInfo actual SDK private snapshots unwind every admitted q
     const extension = try group.selected(@intCast(extension_id));
     const registry = try vm.get(engine, owner.data, "modelRegistry");
     defer engine.freeValue(registry);
-    const manager = try vm.get(engine, owner.data, "sessionManager");
+    const manager = try sdk_mod.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     const lease = try sdk_mod.sessionModelLease(owner);
     const saved = try binding.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });

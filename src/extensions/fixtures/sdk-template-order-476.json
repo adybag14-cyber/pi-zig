@@ -1,0 +1,170 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "currentAuthorityAgentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "label": "ordinary",
+      "trace": [
+        [
+          "loader.getPrompts",
+          true
+        ],
+        "loader.prompts",
+        "templates.iterator",
+        [
+          "templates.iterator.call",
+          true
+        ],
+        [
+          "templates.next",
+          0
+        ],
+        [
+          "templates.next",
+          1
+        ],
+        [
+          "Array.push",
+          1
+        ],
+        [
+          "Array.push",
+          1
+        ]
+      ],
+      "outcome": {
+        "value": "queued"
+      },
+      "steering": [
+        "ordinary"
+      ]
+    },
+    {
+      "label": "missing",
+      "trace": [
+        "Array.find",
+        [
+          "loader.getPrompts",
+          true
+        ],
+        "loader.prompts",
+        "templates.iterator",
+        [
+          "templates.iterator.call",
+          true
+        ],
+        [
+          "templates.next",
+          0
+        ],
+        [
+          "templates.next",
+          1
+        ],
+        "Array.find",
+        "template.name",
+        [
+          "Array.push",
+          1
+        ],
+        [
+          "Array.push",
+          1
+        ]
+      ],
+      "outcome": {
+        "value": "queued"
+      },
+      "steering": [
+        "/missing a"
+      ]
+    },
+    {
+      "label": "matched",
+      "trace": [
+        "Array.find",
+        [
+          "loader.getPrompts",
+          true
+        ],
+        "loader.prompts",
+        "templates.iterator",
+        [
+          "templates.iterator.call",
+          true
+        ],
+        [
+          "templates.next",
+          0
+        ],
+        [
+          "templates.next",
+          1
+        ],
+        "Array.find",
+        "template.name",
+        [
+          "Array.push",
+          1
+        ],
+        [
+          "Array.push",
+          1
+        ],
+        "template.content",
+        [
+          "Array.push",
+          1
+        ],
+        [
+          "Array.push",
+          1
+        ]
+      ],
+      "outcome": {
+        "value": "queued"
+      },
+      "steering": [
+        "[a][a b c]"
+      ]
+    },
+    {
+      "label": "getter-throw",
+      "trace": [
+        "session.promptTemplates"
+      ],
+      "outcome": {
+        "same": true,
+        "name": null,
+        "message": null
+      },
+      "steering": []
+    },
+    {
+      "label": "iterator-throw",
+      "trace": [
+        [
+          "loader.getPrompts",
+          true
+        ],
+        "loader.prompts",
+        "templates.iterator",
+        [
+          "templates.iterator.call",
+          true
+        ],
+        [
+          "templates.next",
+          0
+        ]
+      ],
+      "outcome": {
+        "same": true,
+        "name": null,
+        "message": null
+      },
+      "steering": []
+    }
+  ]
+}

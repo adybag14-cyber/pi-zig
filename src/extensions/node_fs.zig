@@ -136,6 +136,15 @@ fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue
     };
 }
 
+/// The SDK's Source module imports readFileSync as a named binding; preserve
+/// that native operation without consulting a later mutable fs object field.
+pub fn readUtf8(engine: *engine_mod.Engine, path: c.JSValue) !c.JSValue {
+    const codec = try engine.checked(c.JS_NewString(engine.context, "utf-8"));
+    defer engine.freeValue(codec);
+    var parameters = [_]c.JSValue{ path, codec };
+    return engine.checked(invoke(engine.context, c.pi_js_undefined(), parameters.len, &parameters, @intFromEnum(Method.readFileSync)));
+}
+
 fn filesystemCode(err: anyerror) ?[:0]const u8 {
     return switch (err) {
         error.FileNotFound => "ENOENT",
@@ -176,6 +185,30 @@ fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, ar
             .accessSync => "access",
             .existsSync => "stat",
         };
+        if (err == error.FileNotFound and args.len != 0 and c.JS_IsString(args[0])) {
+            // Actual Source482 exposes this complete Node message through the
+            // skill_expansion error listener. Reuse only the validated retained
+            // string path; never repeat a user-authored path coercion.
+            const path = engine.toString(args[0]) catch {
+                engine.freeValue(failure);
+                return c.JS_ThrowOutOfMemory(engine.context);
+            };
+            defer engine.gpa.free(path);
+            const detail = std.fmt.allocPrint(engine.gpa, "ENOENT: no such file or directory, {s} '{s}'", .{ syscall, path }) catch {
+                engine.freeValue(failure);
+                return c.JS_ThrowOutOfMemory(engine.context);
+            };
+            defer engine.gpa.free(detail);
+            const detail_value = c.JS_NewStringLen(engine.context, detail.ptr, detail.len);
+            if (c.JS_IsException(detail_value)) {
+                engine.freeValue(failure);
+                return detail_value;
+            }
+            if (c.JS_DefinePropertyValueStr(engine.context, failure, "message", detail_value, c.JS_PROP_C_W_E) < 0) {
+                engine.freeValue(failure);
+                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+            }
+        }
         const fields = [_]struct { key: [*:0]const u8, text: [:0]const u8 }{
             .{ .key = "code", .text = code },
             .{ .key = "syscall", .text = syscall },

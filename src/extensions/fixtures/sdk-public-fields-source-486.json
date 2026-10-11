@@ -1,0 +1,41 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "node": "24.14.0",
+  "descriptors": {
+    "agent": {
+      "valueField": true,
+      "writable": true,
+      "enumerable": true,
+      "configurable": true
+    },
+    "sessionManager": {
+      "valueField": true,
+      "writable": true,
+      "enumerable": true,
+      "configurable": true
+    },
+    "settingsManager": {
+      "valueField": true,
+      "writable": true,
+      "enumerable": true,
+      "configurable": true
+    }
+  },
+  "trace": [
+    [
+      "settings.setSteeringMode",
+      true,
+      "oneAtATime"
+    ],
+    [
+      "manager.getSessionId",
+      true
+    ],
+    [
+      "agent.steer",
+      true,
+      "ordinary"
+    ]
+  ]
+}

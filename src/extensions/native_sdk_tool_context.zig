@@ -51,7 +51,7 @@ fn value(engine: *em.Engine, field: Field, _: []c.JSValue, data: [*c]c.JSValue) 
         .mode => return ui.mode(engine, data[0]),
         .hasUI => return c.pi_js_bool(engine.context, @intFromBool(try ui.hasUI(engine, data[0]))),
         .cwd => return sdk.get(engine, owner.data, "_sdkToolCwd"),
-        .sessionManager => return sdk.get(engine, owner.data, "sessionManager"),
+        .sessionManager => return sdk.publicField(owner, "sessionManager"),
         .modelRegistry => return sdk.get(engine, owner.data, "modelRegistry"),
         .model => return sdk.agentField(owner, "model"),
         .thinkingLevel => return sdk.agentField(owner, "thinkingLevel"),
@@ -59,7 +59,7 @@ fn value(engine: *em.Engine, field: Field, _: []c.JSValue, data: [*c]c.JSValue) 
         .signal => return sdk.get(engine, owner.data, "promptSignal"),
         .isIdle => return c.pi_js_bool(engine.context, @intFromBool(!owner.running)),
         .isProjectTrusted => {
-            const settings = try sdk.get(engine, owner.data, "settingsManager");
+            const settings = try sdk.publicField(owner, "settingsManager");
             defer engine.freeValue(settings);
             return sdk.invoke(engine, settings, "isProjectTrusted", &.{});
         },

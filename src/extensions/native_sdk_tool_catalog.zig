@@ -312,7 +312,7 @@ pub fn initializeActive(owner: *sdk.State, options: c.JSValue) !void {
     const entries = try strings(engine, allocator, configured);
     const no_tools = try vm.get(engine, options, "noTools");
     defer engine.freeValue(no_tools);
-    const settings = try vm.get(engine, owner.data, "settingsManager");
+    const settings = try sdk.publicField(owner, "settingsManager");
     defer engine.freeValue(settings);
     const default_value = try vm.invoke(engine, settings, "getDefaultTools", &.{});
     defer engine.freeValue(default_value);
@@ -436,7 +436,7 @@ pub fn feed(caller: *bindings_mod.Bindings, sink: *catalog.CatalogSink) !void {
     if (actual.runtime_id != scope.lease.runtime_id or actual.generation != scope.lease.generation) return error.InvalidNativeSDKModelLease;
     const actual_registry = try vm.get(engine, owner.data, "modelRegistry");
     defer engine.freeValue(actual_registry);
-    const actual_manager = try vm.get(engine, owner.data, "sessionManager");
+    const actual_manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(actual_manager);
     const registry_lease = try sdk.modelRegistryLease(engine, registry);
     if (!c.JS_IsStrictEqual(engine.context, registry, actual_registry) or !c.JS_IsStrictEqual(engine.context, manager, actual_manager) or registry_lease.runtime_id != actual.runtime_id) return error.InvalidNativeSDKContext;

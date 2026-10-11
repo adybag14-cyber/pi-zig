@@ -1,0 +1,20 @@
+
+import {AgentSession,ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const cwd='/sdk-listeners441';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const model={id:'audit435',name:'Audit435',provider:'audit435',api:'audit435',type:'chat',baseUrl:'https://fixture.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:128};
+runtime.registerNativeProvider({id:'audit435',auth:{apiKey:{resolve:async()=>({auth:{apiKey:'fixture-key'},source:'fixture'})}},getModels:()=>[model],getAllModels:()=>[model]});
+const settings=SettingsManager.inMemory();
+const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,systemPromptOverride:()=> 'SDK audit'});
+await loader.reload();
+const {session}=await createAgentSession({cwd,agentDir:cwd+'/agent',model,modelRuntime:runtime,settingsManager:settings,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),tools:[]});
+const trace=[];let addOnce=false;let offC;
+const offA=session.subscribe(()=>{trace.push('add-a');if(!addOnce){addOnce=true;offC=session.subscribe(()=>trace.push('add-c'))}});
+const offB=session.subscribe(()=>trace.push('add-b'));session.clearQueue();offA();offB();offC();
+let removeB;const removeA=session.subscribe(()=>{trace.push('remove-a');removeB()});removeB=session.subscribe(()=>trace.push('remove-b'));const removeC=session.subscribe(()=>trace.push('remove-c'));session.clearQueue();removeA();removeB();removeC();
+const same=()=>trace.push('same');const offSameA=session.subscribe(same),offSameB=session.subscribe(same);session.clearQueue();offSameA();session.clearQueue();offSameB();
+const original=new RangeError('original listener');let caughtIdentity=false;const throwOff=session.subscribe(()=>{trace.push('throw-a');throw original}),unreachedOff=session.subscribe(()=>trace.push('throw-b'));try{session.clearQueue()}catch(error){caughtIdentity=error===original}throwOff();unreachedOff();
+session.subscribe(()=>{trace.push('dispose-a');session.dispose()});session.subscribe(()=>trace.push('dispose-b'));session.clearQueue();const after=session.subscribe(()=>trace.push('after-dispose'));session.clearQueue();after();
+globalThis.sdkCoreListenerResult={trace,caughtIdentity};
+
+

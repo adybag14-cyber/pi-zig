@@ -208,7 +208,7 @@ pub fn emitValue(engine: *engine_mod.Engine, resources: c.JSValue, session_data:
     defer engine.freeValue(registry);
     const context = try sdk.object(engine);
     defer engine.freeValue(context);
-    const manager = try sdk.get(engine, session_data, "sessionManager");
+    const manager = try sdk.sessionDataField(engine, session_data, "sessionManager");
     defer engine.freeValue(manager);
     try sdk.put(engine, context, "cwd", try sdk.invoke(engine, manager, "getCwd", &.{}));
     try sdk.put(engine, context, "sessionId", try sdk.invoke(engine, manager, "getSessionId", &.{}));

@@ -253,7 +253,7 @@ pub fn defaultContext(caller: *bindings.Bindings) !?bindings.Bindings.SdkContext
     try assertSessionScope(owner, group);
     const registry = try vm.get(engine, owner.data, "modelRegistry");
     errdefer engine.freeValue(registry);
-    const manager = try vm.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     return .{ .session = session, .registry = registry, .manager = manager, .lease = actual };
 }
 /// Root the exact session, registry and manager before observing private data.
@@ -295,7 +295,7 @@ pub fn retainCaller(caller: *bindings.Bindings) !Caller {
     if (actual.runtime_id != scope.lease.runtime_id or actual.generation != scope.lease.generation) return error.InvalidNativeSDKModelLease;
     const registry = try vm.get(engine, retained.owner.data, "modelRegistry");
     defer engine.freeValue(registry);
-    const manager = try vm.get(engine, retained.owner.data, "sessionManager");
+    const manager = try sdk.publicField(retained.owner, "sessionManager");
     defer engine.freeValue(manager);
     const lease = try sdk.modelRegistryLease(engine, retained.registry);
     if (!c.JS_IsStrictEqual(engine.context, registry, retained.registry) or !c.JS_IsStrictEqual(engine.context, manager, retained.manager) or lease.runtime_id != actual.runtime_id) return error.InvalidNativeSDKContext;
@@ -493,7 +493,7 @@ test "ToolInfo constructor-bound SDK loader defaults use the actual session with
     const owner = try sdk.state(engine, a);
     const registry = try vm.get(engine, owner.data, "modelRegistry");
     defer engine.freeValue(registry);
-    const manager = try vm.get(engine, owner.data, "sessionManager");
+    const manager = try sdk.publicField(owner, "sessionManager");
     defer engine.freeValue(manager);
     const loader_value = try vm.get(engine, namespace, "loader");
     defer engine.freeValue(loader_value);

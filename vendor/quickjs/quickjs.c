@@ -3026,6 +3026,16 @@ JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx)
     return JS_DupValue(ctx, ctx->class_proto[JS_CLASS_ASYNC_FUNCTION]);
 }
 
+JSValue JS_GetIteratorSymbol(JSContext *ctx)
+{
+    return JS_AtomToValue(ctx, JS_ATOM_Symbol_iterator);
+}
+
+JSValue JS_GetToPrimitiveSymbol(JSContext *ctx)
+{
+    return JS_AtomToValue(ctx, JS_ATOM_Symbol_toPrimitive);
+}
+
 typedef enum JSFreeModuleEnum {
     JS_FREE_MODULE_ALL,
     JS_FREE_MODULE_NOT_RESOLVED,

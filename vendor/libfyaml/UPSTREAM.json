@@ -18,12 +18,12 @@
     },
     {
       "path": "pi_yaml.c",
-      "sha256": "54205caa0105420c214ac5d1dbdbb4fbbdbfb0b05f2a6b58cdf3af280ad5137f",
+      "sha256": "63a4bca3ce69c7542f69c540f356651050eeb7cb1cbd641c2ca42500cb5b9a16",
       "origin": "native ABI and static platform configuration"
     },
     {
       "path": "pi_yaml.h",
-      "sha256": "1624218b452e9a41b09feb08ca1dfac1a21c789004e28a2faee13687969f544a",
+      "sha256": "1709dc88cf58287891b9dadf3ce9ab4181825a858e18e8de677a68b03a9cf47a",
       "origin": "native ABI and static platform configuration"
     },
     {

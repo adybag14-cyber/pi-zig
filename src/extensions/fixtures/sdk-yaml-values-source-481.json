@@ -1,0 +1,950 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "referenceRuntime": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "frontmatterSha256": "99142d78b94e658e0be65cf05046be8069b3700168a683e0af64219ad903bcd6",
+  "yamlVersion": "2.9.0",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "core",
+      "yaml": "nulls: [null, Null, NULL, ~, \"\"]\nbools: [true, True, TRUE, false, False, FALSE, yes, on]\nnumbers: [001, -0, +2, 0o7, 0x2a, 3.5, .5, 2., 1e3, .nan, .inf, -.inf, 2026-10-10]",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "nulls",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "bools",
+                {
+                  "ref": 2
+                }
+              ],
+              [
+                "numbers",
+                {
+                  "ref": 3
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "value": ""
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "boolean",
+                "value": "true"
+              },
+              {
+                "type": "boolean",
+                "value": "true"
+              },
+              {
+                "type": "boolean",
+                "value": "true"
+              },
+              {
+                "type": "boolean",
+                "value": "false"
+              },
+              {
+                "type": "boolean",
+                "value": "false"
+              },
+              {
+                "type": "boolean",
+                "value": "false"
+              },
+              {
+                "type": "string",
+                "value": "yes"
+              },
+              {
+                "type": "string",
+                "value": "on"
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "number",
+                "value": "1"
+              },
+              {
+                "type": "number",
+                "value": "-0"
+              },
+              {
+                "type": "number",
+                "value": "2"
+              },
+              {
+                "type": "number",
+                "value": "7"
+              },
+              {
+                "type": "number",
+                "value": "42"
+              },
+              {
+                "type": "number",
+                "value": "3.5"
+              },
+              {
+                "type": "number",
+                "value": "0.5"
+              },
+              {
+                "type": "number",
+                "value": "2"
+              },
+              {
+                "type": "number",
+                "value": "1000"
+              },
+              {
+                "type": "number",
+                "value": "NaN"
+              },
+              {
+                "type": "number",
+                "value": "Infinity"
+              },
+              {
+                "type": "number",
+                "value": "-Infinity"
+              },
+              {
+                "type": "string",
+                "value": "2026-10-10"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "tags",
+      "yaml": "str: !!str 42\nint: !!int \"42\"\ninvalidInt: !!int nope\nbool: !!bool \"true\"\ninvalidBool: !!bool nope\nfloat: !!float 3.5\nunknown: !custom 42\nnonspecific: ! true",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "str",
+                {
+                  "type": "string",
+                  "value": "42"
+                }
+              ],
+              [
+                "int",
+                {
+                  "type": "number",
+                  "value": "42"
+                }
+              ],
+              [
+                "invalidInt",
+                {
+                  "type": "string",
+                  "value": "nope"
+                }
+              ],
+              [
+                "bool",
+                {
+                  "type": "boolean",
+                  "value": "true"
+                }
+              ],
+              [
+                "invalidBool",
+                {
+                  "type": "string",
+                  "value": "nope"
+                }
+              ],
+              [
+                "float",
+                {
+                  "type": "number",
+                  "value": "3.5"
+                }
+              ],
+              [
+                "unknown",
+                {
+                  "type": "string",
+                  "value": "42"
+                }
+              ],
+              [
+                "nonspecific",
+                {
+                  "type": "string",
+                  "value": "true"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "binary",
+      "yaml": "bytes: !!binary \"SG Vs?bG8=\n\"",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing closing \"quote at line 1, column 28:\n\nbytes: !!binary \"SG Vs?bG8=\n                           ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          27,
+          28
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 28
+          },
+          {
+            "line": 2,
+            "col": 1
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "unicode-halves",
+      "yaml": "high: \"\\ud83e\"\nlow: \"\\udd8a\"\nadjacent: \"\\ud83e\\u0041\"\npair: \"\\ud83e\\udd8a\"",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "high",
+                {
+                  "type": "string",
+                  "value": "\ud83e"
+                }
+              ],
+              [
+                "low",
+                {
+                  "type": "string",
+                  "value": "\udd8a"
+                }
+              ],
+              [
+                "adjacent",
+                {
+                  "type": "string",
+                  "value": "\ud83eA"
+                }
+              ],
+              [
+                "pair",
+                {
+                  "type": "string",
+                  "value": "🦊"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "unicode-range-error",
+      "yaml": "value: \"\\U00110000\"",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Invalid escape sequence \\U00110000 at line 1, column 9:\n\nvalue: \"\\U00110000\"\n        ^\n",
+        "code": "BAD_DQ_ESCAPE",
+        "pos": [
+          8,
+          9
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 9
+          },
+          {
+            "line": 1,
+            "col": 10
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "timestamp",
+      "yaml": "a: !!timestamp 1970-01-01\nb: !!timestamp 0001-1-1\nc: !!timestamp 2026-10-10T1:2:3.456789Z\nd: !!timestamp 2026-10-10T1:2:3+00:15\ne: !!timestamp 2026-99-99T99:99:99-29",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "b",
+                {
+                  "ref": 2
+                }
+              ],
+              [
+                "c",
+                {
+                  "ref": 3
+                }
+              ],
+              [
+                "d",
+                {
+                  "ref": 4
+                }
+              ],
+              [
+                "e",
+                {
+                  "ref": 5
+                }
+              ]
+            ]
+          },
+          {
+            "type": "timestamp",
+            "milliseconds": "0"
+          },
+          {
+            "type": "timestamp",
+            "milliseconds": "-2177452800000"
+          },
+          {
+            "type": "timestamp",
+            "milliseconds": "1791594123456"
+          },
+          {
+            "type": "timestamp",
+            "milliseconds": "1791540123000"
+          },
+          {
+            "type": "timestamp",
+            "milliseconds": "2033718039000"
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "invalid-timestamp",
+      "yaml": "date: !!timestamp not-a-date",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "!!timestamp expects a date, starting with yyyy-mm-dd at line 1, column 7:\n\ndate: !!timestamp not-a-date\n      ^^^^^^^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          6,
+          17
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 7
+          },
+          {
+            "line": 1,
+            "col": 18
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "set",
+      "yaml": "items: !!set {a: null, b: ~}",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "set",
+            "items": [
+              {
+                "type": "string",
+                "value": "a"
+              },
+              {
+                "type": "string",
+                "value": "b"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "invalid-set",
+      "yaml": "items: !!set {a: 1}",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Set items must all have null values at line 1, column 8:\n\nitems: !!set {a: 1}\n       ^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          7,
+          12
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 8
+          },
+          {
+            "line": 1,
+            "col": 13
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "pairs",
+      "yaml": "items: !!pairs [a, {b: 2}, {}]",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 2
+              },
+              {
+                "ref": 3
+              },
+              {
+                "ref": 4
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "type": "null"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "b",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "",
+                {
+                  "type": "null"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "invalid-pairs",
+      "yaml": "items: !!pairs [{a: 1, b: 2}]",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Each pair must have its own sequence indicator at line 1, column 8:\n\nitems: !!pairs [{a: 1, b: 2}]\n       ^^^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          7,
+          14
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 8
+          },
+          {
+            "line": 1,
+            "col": 15
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "omap",
+      "yaml": "items: !!omap [{a: 1}, {b: 2}]",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "map",
+            "entries": [
+              [
+                {
+                  "type": "string",
+                  "value": "a"
+                },
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                {
+                  "type": "string",
+                  "value": "b"
+                },
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "invalid-omap",
+      "yaml": "items: !!omap [{a: 1}, {a: 2}]",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Ordered maps must not include duplicate keys: a at line 1, column 8:\n\nitems: !!omap [{a: 1}, {a: 2}]\n       ^^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          7,
+          13
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 8
+          },
+          {
+            "line": 1,
+            "col": 14
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "explicit-merge",
+      "yaml": "defaults: &defaults {a: 1, b: 2}\nitem: {!!merge <<: *defaults, b: 3}",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "defaults",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "item",
+                {
+                  "ref": 2
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "b",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "b",
+                {
+                  "type": "number",
+                  "value": "3"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "invalid-merge",
+      "yaml": "item: {!!merge <<: [1]}",
+      "error": {
+        "name": "Error",
+        "message": "Merge sources must be maps or map aliases",
+        "code": null,
+        "pos": null,
+        "linePos": null
+      },
+      "warnings": []
+    },
+    {
+      "id": "aliases",
+      "yaml": "a: &a {self: *a}\nb: *a\nc: &a [one, two]\nd: *a",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "b",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "c",
+                {
+                  "ref": 2
+                }
+              ],
+              [
+                "d",
+                {
+                  "ref": 2
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "self",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "string",
+                "value": "one"
+              },
+              {
+                "type": "string",
+                "value": "two"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "duplicate-before-alias",
+      "yaml": "a: *missing\na: 2",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\na: *missing\na: 2\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          12,
+          13
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "unicode-error",
+      "yaml": "\"Ω\": 1\n\"Ω\": 2",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\n\"Ω\": 1\n\"Ω\": 2\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          7,
+          8
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "long-error",
+      "yaml": "a: 1\n                                                                                          a: 2",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Nested mappings are not allowed in compact mappings at line 1, column 4:\n\na: 1\n   ^\n",
+        "code": "BLOCK_AS_IMPLICIT_KEY",
+        "pos": [
+          3,
+          4
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 4
+          },
+          {
+            "line": 1,
+            "col": 5
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "complex-keys",
+      "yaml": "? [a, b]\n: value\n? {a: b}\n: second",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ a, b ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ],
+              [
+                "{ a: b }",
+                {
+                  "type": "string",
+                  "value": "second"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "prototype-keys",
+      "yaml": "__proto__: {a: 1}\nconstructor: 2\nprototype: 3",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "__proto__",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "constructor",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ],
+              [
+                "prototype",
+                {
+                  "type": "number",
+                  "value": "3"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    }
+  ]
+}

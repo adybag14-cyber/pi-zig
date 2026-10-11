@@ -13,6 +13,9 @@ int pi_yaml_error_get(pi_yaml_document *, pi_yaml_error *);
 int pi_yaml_kind(pi_yaml_node *); /* scalar0, sequence1, mapping2, alias3 */
 int pi_yaml_plain(pi_yaml_node *);
 int pi_yaml_double_quoted(pi_yaml_node *);
+int pi_yaml_single_quoted(pi_yaml_node *);
+int pi_yaml_flow(pi_yaml_node *);
+int pi_yaml_commented(pi_yaml_node *);
 pi_yaml_text pi_yaml_scalar(pi_yaml_node *);
 pi_yaml_text pi_yaml_tag(pi_yaml_node *);
 pi_yaml_text pi_yaml_anchor(pi_yaml_node *);

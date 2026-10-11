@@ -639,7 +639,7 @@ pub const Bindings = struct {
             if (method == .getSessionName) return sdk_mod.invoke(self.engine, caller.manager, "getSessionName", &.{});
             if (method == .getThinkingLevel) return @import("native_values.zig").get(self.engine, caller.session, "thinkingLevel");
             if (method == .getSettings) {
-                const settings = try @import("native_values.zig").get(self.engine, caller.owner.data, "settingsManager");
+                const settings = try sdk_mod.publicField(caller.owner, "settingsManager");
                 defer self.engine.freeValue(settings);
                 return sdk_mod.invoke(self.engine, settings, "getSettings", &.{});
             }
@@ -1269,7 +1269,7 @@ pub const Bindings = struct {
         if (registry_lease.runtime_id != admitted.runtime_id) return error.InvalidNativeSDKContext;
         const registry = try sdk.get(self.engine, state.data, "modelRegistry");
         defer self.engine.freeValue(registry);
-        const manager = try sdk.get(self.engine, state.data, "sessionManager");
+        const manager = try sdk.publicField(state, "sessionManager");
         defer self.engine.freeValue(manager);
         if (!c.JS_IsStrictEqual(self.engine.context, registry, scope.registry) or !c.JS_IsStrictEqual(self.engine.context, manager, scope.manager)) return error.InvalidNativeSDKContext;
         const previous: SavedSdkContext = .{ .context = self.sdk_context, .snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else null };

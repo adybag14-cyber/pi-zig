@@ -78,34 +78,78 @@ pub fn strip(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
 /// yaml2.9.0 errors.js: location plus one source line and previous line when
 /// the pointer lies in the indentation. Source lines count UTF16 code units.
 pub fn pretty(allocator: std.mem.Allocator, source: []const u8, diagnostic: yaml.Diagnostic) ![]u8 {
-    if (!std.mem.eql(u8, diagnostic.name, "YAMLParseError")) return allocator.dupe(u8, diagnostic.message);
+    const units = try prettyUnits(allocator, source, diagnostic);
+    defer allocator.free(units);
+    return std.unicode.wtf16LeToWtf8Alloc(allocator, units);
+}
+fn spacesOnly(units: []const u16) bool {
+    for (units) |unit| if (unit != ' ') return false;
+    return true;
+}
+pub fn prettyUnits(allocator: std.mem.Allocator, source: []const u8, diagnostic: yaml.Diagnostic) ![]u16 {
+    if (!std.mem.eql(u8, diagnostic.name, "YAMLParseError")) return std.unicode.wtf8ToWtf16LeAlloc(allocator, diagnostic.message);
     const offset = @min(source.len, diagnostic.offset);
+    const units = try std.unicode.wtf8ToWtf16LeAlloc(allocator, source);
+    defer allocator.free(units);
+    const before = try std.unicode.wtf8ToWtf16LeAlloc(allocator, source[0..offset]);
+    defer allocator.free(before);
+    const position = before.len;
     var line: usize = 1;
     var start: usize = 0;
     var previous: usize = 0;
-    for (source[0..offset], 0..) |byte, index| if (byte == '\n') {
+    for (units[0..position], 0..) |unit, index| if (unit == '\n') {
         line += 1;
         previous = start;
         start = index + 1;
     };
-    const line_end = if (std.mem.indexOfScalarPos(u8, source, start, '\n')) |end| end else source.len;
-    const prefix = try std.unicode.utf8ToUtf16LeAlloc(allocator, source[start..offset]);
-    defer allocator.free(prefix);
-    const column = prefix.len + 1;
-    var out: std.Io.Writer.Allocating = .init(allocator);
-    defer out.deinit();
-    try out.writer.print("{s} at line {d}, column {d}", .{ diagnostic.message, line, column });
-    const line_text = source[start..line_end];
-    if (std.mem.trim(u8, line_text, " ").len == 0) return out.toOwnedSlice();
-    try out.writer.writeAll(":\n\n");
-    if (line > 1 and std.mem.trim(u8, source[start..offset], " ").len == 0) try out.writer.writeAll(source[previous..start]);
-    try out.writer.writeAll(line_text);
-    try out.writer.writeByte('\n');
-    try out.writer.splatByteAll(' ', column - 1);
-    const end = @max(offset + 1, @min(line_end, diagnostic.end));
-    const highlighted = try std.unicode.utf8ToUtf16LeAlloc(allocator, source[offset..@min(source.len, end)]);
-    defer allocator.free(highlighted);
-    try out.writer.splatByteAll('^', @max(1, highlighted.len));
-    try out.writer.writeByte('\n');
-    return out.toOwnedSlice();
+    var line_end = std.mem.indexOfScalarPos(u16, units, start, '\n') orelse units.len;
+    while (line_end > start and (units[line_end - 1] == '\r' or units[line_end - 1] == '\n')) line_end -= 1;
+    const column = position - start + 1;
+    var ci = column - 1;
+    var line_text: std.ArrayList(u16) = .empty;
+    defer line_text.deinit(allocator);
+    const original = units[start..line_end];
+    if (ci >= 60 and original.len > 80) {
+        const trim_start = @min(ci - 39, original.len - 79);
+        try line_text.append(allocator, 0x2026);
+        try line_text.appendSlice(allocator, original[trim_start..]);
+        ci = ci - trim_start + 1;
+    } else try line_text.appendSlice(allocator, original);
+    if (line_text.items.len > 80) {
+        line_text.shrinkRetainingCapacity(79);
+        try line_text.append(allocator, 0x2026);
+    }
+    var context: std.ArrayList(u16) = .empty;
+    defer context.deinit(allocator);
+    if (line > 1 and spacesOnly(line_text.items[0..@min(ci, line_text.items.len)])) {
+        const prior = units[previous..start];
+        if (prior.len > 80) {
+            try context.appendSlice(allocator, prior[0..79]);
+            try context.appendSlice(allocator, &.{ 0x2026, '\n' });
+        } else try context.appendSlice(allocator, prior);
+    }
+    try context.appendSlice(allocator, line_text.items);
+    const header = try std.fmt.allocPrint(allocator, "{s} at line {d}, column {d}", .{ diagnostic.message, line, column });
+    defer allocator.free(header);
+    var out: std.ArrayList(u16) = .empty;
+    errdefer out.deinit(allocator);
+    const heading = try std.unicode.wtf8ToWtf16LeAlloc(allocator, header);
+    defer allocator.free(heading);
+    try out.appendSlice(allocator, heading);
+    if (!spacesOnly(context.items)) {
+        try out.appendSlice(allocator, &.{ ':', '\n', '\n' });
+        try out.appendSlice(allocator, context.items);
+        try out.append(allocator, '\n');
+        try out.appendNTimes(allocator, ' ', ci);
+        var count: usize = 1;
+        if (diagnostic.end > offset + 1) {
+            const endpoint = try std.unicode.wtf8ToWtf16LeAlloc(allocator, source[0..@min(source.len, diagnostic.end)]);
+            defer allocator.free(endpoint);
+            if (std.mem.indexOfScalar(u16, units[position..@min(units.len, endpoint.len)], '\n') == null and endpoint.len > position)
+                count = @max(1, @min(endpoint.len - position, 80 -| ci));
+        }
+        try out.appendNTimes(allocator, '^', count);
+        try out.append(allocator, '\n');
+    }
+    return out.toOwnedSlice(allocator);
 }

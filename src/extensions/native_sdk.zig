@@ -7,7 +7,6 @@ pub const State = struct {
     engine: *engine_mod.Engine,
     kind: Kind,
     data: c.JSValue,
-    listeners: std.ArrayList(c.JSValue) = .empty,
     disposed: bool = false,
     running: bool = false,
     aborted: bool = false,
@@ -138,6 +137,10 @@ const Method = enum(c_int) {
     clearQueue,
     steer,
     followUp,
+    getSteeringMessages,
+    getFollowUpMessages,
+    setSteeringMode,
+    setFollowUpMode,
     getProvider,
     getError,
     getProviderAuthStatus,
@@ -148,10 +151,49 @@ const Method = enum(c_int) {
     getRegisteredProviderConfig,
     listCredentials,
 };
-const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics, state, isIdle, scopedModels, promptTemplates, routedModel };
+const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics, state, isIdle, scopedModels, promptTemplates, routedModel, pendingMessageCount, steeringMode, followUpMode };
+const agent_methods = [_]Method{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setScopedModels, .waitForIdle, .getLastAssistantText, .setModel, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue, .steer, .followUp, .getSteeringMessages, .getFollowUpMessages, .setSteeringMode, .setFollowUpMode, .newSession };
+const agent_getters = [_]Getter{ .sessionId, .sessionFile, .modelRuntime, .resourceLoader, .model, .thinkingLevel, .messages, .systemPrompt, .isStreaming, .sessionName, .state, .isIdle, .scopedModels, .promptTemplates, .routedModel, .pendingMessageCount, .steeringMode, .followUpMode };
+fn agentArity(operation: Method) c_int {
+    return switch (operation) {
+        .getActiveToolNames, .getAllTools, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .waitForIdle, .getLastAssistantText, .dispose, .abort, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue, .getSteeringMessages, .getFollowUpMessages => 0,
+        .prompt => 2,
+        .steer, .followUp => 3,
+        else => 1,
+    };
+}
+fn installAgentPrototype(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
+    for (agent_methods) |operation| {
+        const name = try engine.gpa.dupeZ(u8, @tagName(operation));
+        defer engine.gpa.free(name);
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, method, name, agentArity(operation), @intFromEnum(operation)));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    }
+    for (agent_getters) |which| {
+        const name = try engine.gpa.dupeZ(u8, @tagName(which));
+        defer engine.gpa.free(name);
+        const function_name = try std.fmt.allocPrintSentinel(engine.gpa, "get {s}", .{name}, 0);
+        defer engine.gpa.free(function_name);
+        const atom = c.JS_NewAtom(engine.context, name);
+        defer c.JS_FreeAtom(engine.context, atom);
+        const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, function_name, 0, @intFromEnum(which)));
+        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, read, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    }
+}
 
 pub fn get(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_GetPropertyStr(engine.context, target, name));
+}
+/// The three constructor fields are ordinary writable properties in Source.
+/// The existing owned session root supplies their actual receiver; no borrowed
+/// receiver pointer or unowned GC edge is introduced.
+pub fn sessionDataField(engine: *engine_mod.Engine, data: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    const receiver = try get(engine, data, "_sdkSessionValue");
+    defer engine.freeValue(receiver);
+    return get(engine, if (c.JS_IsObject(receiver)) receiver else data, name);
+}
+pub fn publicField(owner: *State, name: [*:0]const u8) !c.JSValue {
+    return if (owner.kind == .agent_session) sessionDataField(owner.engine, owner.data, name) else get(owner.engine, owner.data, name);
 }
 pub fn put(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -219,8 +261,6 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     }
     if (self.tool_catalog) |catalog| catalog.deinit(runtime);
     c.JS_FreeValueRT(runtime, self.data);
-    for (self.listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
-    self.listeners.deinit(engine.gpa);
     if (engine.native_sdk_extension_group) |group_pointer| {
         const group: *@import("native_group.zig").Group = @ptrCast(@alignCast(group_pointer));
         group.sdk_availability.retire(self.runtime_id);
@@ -234,7 +274,6 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     c.JS_MarkValue(runtime, self.data, marker);
     if (self.tool_catalog) |catalog| catalog.mark(runtime, marker);
     if (self.model_lease_anchor) |anchor| c.JS_MarkValue(runtime, anchor, marker);
-    for (self.listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
 }
 /// Read only while the actual SDK State is owned/live on this Engine. Capture
 /// the returned POD in a private binding callback; never keep an unrooted State
@@ -328,6 +367,16 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
     const self = try engine.gpa.create(State);
     self.* = .{ .engine = engine, .kind = kind, .data = c.JS_DupValue(engine.context, data) };
     _ = c.JS_SetOpaque(value, self);
+    if (kind == .agent_session) {
+        inline for (.{ "agent", "sessionManager", "settingsManager" }) |name| {
+            try put(engine, value, name, try get(engine, data, name));
+            // Once published the hidden copy must not keep replaced managers
+            // alive. All session-owned reads use publicField below.
+            try put(engine, data, name, c.pi_js_undefined());
+        }
+        try put(engine, data, "_sdkSessionValue", c.JS_DupValue(engine.context, value));
+        try put(engine, data, "_sdkEventListeners", try array(engine));
+    }
     if (kind == .model_runtime) {
         if (engine.native_sdk_next_runtime_id > 9007199254740991) return error.NativeSDKRuntimeLimit;
         self.runtime_id = engine.native_sdk_next_runtime_id;
@@ -339,20 +388,16 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
         .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .stream, .complete, .streamDeferred, .fetchDeferred, .cancelDeferred, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .getRegisteredProviderConfig, .listCredentials },
-        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setScopedModels, .waitForIdle, .getLastAssistantText, .setModel, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue, .steer, .followUp, .newSession },
+        .agent_session => &.{},
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
-        const arity: c_int = if (kind == .agent_session) switch (operation) {
-            .getActiveToolNames, .getAllTools, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .waitForIdle, .getLastAssistantText, .dispose, .abort, .getSessionStats, .getContextUsage, .refreshContext, .clearQueue => 0,
-            else => 1,
-        } else 1;
-        try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation))));
+        try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intFromEnum(operation))));
     }
-    if (kind == .agent_session or kind == .session_runtime) inline for (std.meta.fields(Getter)) |field| {
-        if (kind != .session_runtime or (field.value != @intFromEnum(Getter.state) and field.value != @intFromEnum(Getter.isIdle) and field.value != @intFromEnum(Getter.scopedModels) and field.value != @intFromEnum(Getter.promptTemplates) and field.value != @intFromEnum(Getter.routedModel))) {
+    if (kind == .session_runtime) inline for (std.meta.fields(Getter)) |field| {
+        if (field.value != @intFromEnum(Getter.state) and field.value != @intFromEnum(Getter.isIdle) and field.value != @intFromEnum(Getter.scopedModels) and field.value != @intFromEnum(Getter.promptTemplates) and field.value != @intFromEnum(Getter.routedModel) and field.value != @intFromEnum(Getter.pendingMessageCount) and field.value != @intFromEnum(Getter.steeringMode) and field.value != @intFromEnum(Getter.followUpMode)) {
             const atom = c.JS_NewAtom(engine.context, field.name);
             defer c.JS_FreeAtom(engine.context, atom);
             const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, field.name, 0, @intCast(field.value)));
@@ -379,12 +424,14 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     if (self.kind == .agent_session) {
         if (which == .model or which == .thinkingLevel or which == .messages) return agentField(self, @tagName(which));
         if (which == .state) {
-            const agent = try get(engine, self.data, "agent");
+            const agent = try publicField(self, "agent");
             defer engine.freeValue(agent);
             return get(engine, agent, "state");
         }
         if (which == .routedModel) return @import("native_sdk_session_usage.zig").routedModel(self);
         if (which == .isIdle) return c.pi_js_bool(engine.context, @intFromBool(!self.running));
+        if (which == .pendingMessageCount) return @import("native_sdk_queue.zig").pendingCount(self);
+        if (which == .steeringMode or which == .followUpMode) return @import("native_sdk_queue.zig").mode(self, if (which == .steeringMode) .steer else .follow_up);
         if (which == .promptTemplates) {
             const loader = try get(engine, self.data, "resourceLoader");
             defer engine.freeValue(loader);
@@ -395,7 +442,7 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     }
     if (which == .isStreaming) return c.pi_js_bool(engine.context, @intFromBool(self.running and !self.disposed));
     if (which == .sessionId or which == .sessionFile or which == .sessionName) {
-        const manager = try get(engine, self.data, "sessionManager");
+        const manager = try publicField(self, "sessionManager");
         defer engine.freeValue(manager);
         if (which == .sessionName) {
             const rows = try invoke(engine, manager, "getBranch", &.{});
@@ -418,7 +465,7 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     return get(engine, self.data, @tagName(which));
 }
 pub fn agentField(self: *State, name: [*:0]const u8) !c.JSValue {
-    const agent = try get(self.engine, self.data, "agent");
+    const agent = try publicField(self, "agent");
     defer self.engine.freeValue(agent);
     if (!c.JS_IsObject(agent)) return get(self.engine, self.data, name);
     const view = try get(self.engine, agent, "state");
@@ -426,7 +473,7 @@ pub fn agentField(self: *State, name: [*:0]const u8) !c.JSValue {
     return get(self.engine, view, name);
 }
 pub fn setAgentField(self: *State, name: [*:0]const u8, value: c.JSValue) !void {
-    const agent = try get(self.engine, self.data, "agent");
+    const agent = try publicField(self, "agent");
     defer self.engine.freeValue(agent);
     const state_value = try get(self.engine, agent, "state");
     defer self.engine.freeValue(state_value);
@@ -434,15 +481,12 @@ pub fn setAgentField(self: *State, name: [*:0]const u8, value: c.JSValue) !void 
     try put(self.engine, self.data, name, c.JS_DupValue(self.engine.context, value));
 }
 pub fn emit(self: *State, notification: c.JSValue) !void {
-    var listeners: std.ArrayList(c.JSValue) = .empty;
-    defer {
-        for (listeners.items) |listener| self.engine.freeValue(listener);
-        listeners.deinit(self.engine.gpa);
-    }
-    try listeners.ensureTotalCapacity(self.engine.gpa, self.listeners.items.len);
-    for (self.listeners.items) |listener| listeners.appendAssumeCapacity(c.JS_DupValue(self.engine.context, listener));
-    for (listeners.items) |listener| {
-        if (self.disposed) break;
+    const listeners = try get(self.engine, self.data, "_sdkEventListeners");
+    defer self.engine.freeValue(listeners);
+    var index: u32 = 0;
+    while (index < try length(self.engine, listeners)) : (index += 1) {
+        const listener = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, listeners, index));
+        defer self.engine.freeValue(listener);
         var args = [_]c.JSValue{notification};
         const value = try self.engine.checked(c.JS_Call(self.engine.context, listener, c.pi_js_undefined(), 1, &args));
         self.engine.freeValue(value);
@@ -457,11 +501,18 @@ fn event(self: *State, name: []const u8) !c.JSValue {
 fn unsubscribeCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, data[0]) catch return c.pi_js_undefined();
-    for (self.listeners.items, 0..) |listener, i| if (c.JS_IsStrictEqual(engine.context, listener, data[1])) {
-        engine.freeValue(self.listeners.orderedRemove(i));
-        break;
-    };
+    unsubscribe(self, data[1]) catch |err| return fail(engine, err);
     return c.pi_js_undefined();
+}
+fn unsubscribe(self: *State, listener: c.JSValue) !void {
+    const engine = self.engine;
+    const listeners = try get(engine, self.data, "_sdkEventListeners");
+    defer engine.freeValue(listeners);
+    const index = try invoke(engine, listeners, "indexOf", &.{listener});
+    defer engine.freeValue(index);
+    if (c.JS_IsStrictEqual(engine.context, index, c.JS_NewInt32(engine.context, -1))) return;
+    const removed = try invoke(engine, listeners, "splice", &.{ index, c.JS_NewInt32(engine.context, 1) });
+    engine.freeValue(removed);
 }
 fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     _ = argc;
@@ -516,7 +567,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     if (!c.JS_IsObject(model)) return error.NativeSDKNoModelSelected;
     const runtime = try get(engine, self.data, "modelRuntime");
     defer engine.freeValue(runtime);
-    const manager = try get(engine, self.data, "sessionManager");
+    const manager = try publicField(self, "sessionManager");
     defer engine.freeValue(manager);
     const messages = try agentField(self, "messages");
     defer engine.freeValue(messages);
@@ -1608,6 +1659,7 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const session = try new(engine, .agent_session, data);
     defer engine.freeValue(session);
     const session_owner = try state(engine, session);
+    try @import("native_sdk_queue.zig").initialize(session_owner, session);
     try put(engine, data, "_sdkSessionValue", c.JS_DupValue(engine.context, session));
     try put(engine, data, "modelRegistry", try newModelRegistry(engine, runtime));
     try attachSessionModelLease(session_owner);
@@ -1738,7 +1790,7 @@ fn typedOperationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) call
 fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     const retained_session_method = self.kind == .agent_session and switch (operation) {
-        .getAllTools, .getToolDefinition, .getActiveToolNames, .setActiveToolsByName, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setModel, .getSessionStats, .getContextUsage, .refreshContext => true,
+        .getAllTools, .getToolDefinition, .getActiveToolNames, .setActiveToolsByName, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setModel, .getSessionStats, .getContextUsage, .refreshContext, .subscribe, .unsubscribe, .clearQueue, .steer, .followUp, .getSteeringMessages, .getFollowUpMessages, .setSteeringMode, .setFollowUpMode => true,
         else => false,
     };
     if (self.disposed and operation != .dispose and !retained_session_method) return error.NativeSDKDisposed;
@@ -1824,10 +1876,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     if (self.kind == .agent_session) {
         if (operation == .prompt) return startPrompt(self, receiver, args);
         if (operation == .subscribe) {
-            if (!c.JS_IsFunction(engine.context, first)) return error.InvalidNativeSDKListener;
-            const listener = c.JS_DupValue(engine.context, first);
-            errdefer engine.freeValue(listener);
-            try self.listeners.append(engine.gpa, listener);
+            const listeners = try get(engine, self.data, "_sdkEventListeners");
+            defer engine.freeValue(listeners);
+            const ignored = try invoke(engine, listeners, "push", &.{first});
+            engine.freeValue(ignored);
             var data = [_]c.JSValue{ receiver, first };
             return engine.checked(c.JS_NewCFunctionData2(engine.context, unsubscribeCallback, "unsubscribe", 0, 0, 2, &data));
         }
@@ -1835,8 +1887,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             self.disposed = true;
             self.aborted = true;
             try retireSessionModelLease(self);
-            for (self.listeners.items) |listener| engine.freeValue(listener);
-            self.listeners.clearRetainingCapacity();
+            try put(engine, self.data, "_sdkEventListeners", try array(engine));
             return c.pi_js_undefined();
         }
         if (operation == .abort) {
@@ -1875,7 +1926,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .getToolDefinition) return @import("native_sdk_tool_catalog.zig").getDefinition(self, first);
         if (operation == .setSessionName) {
-            const manager = try get(engine, self.data, "sessionManager");
+            const manager = try publicField(self, "sessionManager");
             defer engine.freeValue(manager);
             const value = try invoke(engine, manager, "appendSessionInfo", &.{first});
             engine.freeValue(value);
@@ -1900,11 +1951,16 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .cycleThinkingLevel) return @import("native_sdk_thinking.zig").cycle(engine, receiver, first);
         if (operation == .setModel) return @import("native_sdk_model_mutation.zig").set(engine, receiver, first, if (args.len > 1) args[1] else c.pi_js_undefined());
-        if (operation == .clearQueue) return c.pi_js_undefined();
-        if (operation == .steer or operation == .followUp) return error.NativeSDKQueueWhileRunningRequired;
+        if (operation == .clearQueue) return @import("native_sdk_queue.zig").clear(self);
+        if (operation == .getSteeringMessages or operation == .getFollowUpMessages) return @import("native_sdk_queue.zig").messages(self, if (operation == .getSteeringMessages) .steer else .follow_up);
+        if (operation == .setSteeringMode or operation == .setFollowUpMode) {
+            try @import("native_sdk_queue.zig").setMode(self, if (operation == .setSteeringMode) .steer else .follow_up, first);
+            return c.pi_js_undefined();
+        }
+        if (operation == .steer or operation == .followUp) return @import("native_sdk_queue.zig").enqueue(self, receiver, args, if (operation == .steer) .steer else .follow_up);
         if (operation == .newSession) {
             if (self.running) return error.NativeSDKSessionBusy;
-            const manager = try get(engine, self.data, "sessionManager");
+            const manager = try publicField(self, "sessionManager");
             defer engine.freeValue(manager);
             const path = try invoke(engine, manager, "newSession", args);
             engine.freeValue(path);
@@ -2372,6 +2428,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     inline for (.{ .{ Kind.session_manager, "SessionManager" }, .{ Kind.settings_manager, "SettingsManager" }, .{ Kind.resource_loader, "DefaultResourceLoader" }, .{ Kind.model_runtime, "ModelRuntime" }, .{ Kind.agent_session, "AgentSession" }, .{ Kind.session_runtime, "AgentSessionRuntime" }, .{ Kind.model_registry, "ModelRegistry" } }) |item| {
         const proto = try object(engine);
         defer engine.freeValue(proto);
+        if (item[0] == .agent_session) try installAgentPrototype(engine, proto);
         if (item[0] == .settings_manager) {
             inline for (.{ Method.applyOverrides, Method.reload, Method.flush, Method.drainErrors }) |operation| {
                 const name = @tagName(operation);

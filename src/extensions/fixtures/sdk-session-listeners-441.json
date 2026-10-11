@@ -1,0 +1,18 @@
+{
+  "trace": [
+    "add-a",
+    "add-b",
+    "add-c",
+    "remove-a",
+    "remove-c",
+    "same",
+    "same",
+    "same",
+    "throw-a",
+    "dispose-a",
+    "dispose-b",
+    "after-dispose"
+  ],
+  "caughtIdentity": true
+}
+

@@ -1,0 +1,1625 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "referenceRuntime": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "frontmatterSha256": "99142d78b94e658e0be65cf05046be8069b3700168a683e0af64219ad903bcd6",
+  "yamlVersion": "2.9.0",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "scalar-keys",
+      "yaml": "? null\n: empty\n? true\n: bool\n? 1\n: number\n? \"1\"\n: last",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "1",
+                {
+                  "type": "string",
+                  "value": "last"
+                }
+              ],
+              [
+                "",
+                {
+                  "type": "string",
+                  "value": "empty"
+                }
+              ],
+              [
+                "true",
+                {
+                  "type": "string",
+                  "value": "bool"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-numbers",
+      "yaml": "? [true, 1, .nan, .inf, -.inf, -0, null]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ true, 1, .nan, .inf, -.inf, -0, null ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-quoted",
+      "yaml": "? [\"42\", 'two''s', \"a\\u0000b\", \"line\\nbreak\"]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ \"42\", 'two''s', \"a\\0b\", \"line\\nbreak\" ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-delimiters",
+      "yaml": "? [\"a,b\", \"x: y\", \"[z]\", \" #hash\", \"\"]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ \"a,b\", \"x: y\", \"[z]\", \" #hash\", \"\" ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-nested",
+      "yaml": "? [{a: [b, c]}, [d, {e: f}]]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ { a: [ b, c ] }, [ d, { e: f } ] ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-anchor",
+      "yaml": "? &items [one, *items]\n: root\nalias: *items",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ one, *items ]",
+                {
+                  "type": "string",
+                  "value": "root"
+                }
+              ],
+              [
+                "alias",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "string",
+                "value": "one"
+              },
+              {
+                "ref": 1
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-alias",
+      "yaml": "items: &items [one, two]\n? *items\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "*items",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "string",
+                "value": "one"
+              },
+              {
+                "type": "string",
+                "value": "two"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-custom-tag",
+      "yaml": "? !custom [a, b]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ a, b ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-set",
+      "yaml": "? !!set {a: null, b: null}\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "{ a, b }",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-omap",
+      "yaml": "? !!omap [{a: 1}, {b: 2}]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ a: 1, b: 2 ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-long",
+      "yaml": "? [\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[\n  \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"\n]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "flow-key-surrogates",
+      "yaml": "? [\"\\ud83e\", \"\\udd8a\"]\n: value",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ \"\\ud83e\", \"\\udd8a\" ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "set-key-types",
+      "yaml": "items: !!set {1: null, \"1\": null, .nan: null, .NaN: null}",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "set",
+            "items": [
+              {
+                "type": "number",
+                "value": "1"
+              },
+              {
+                "type": "string",
+                "value": "1"
+              },
+              {
+                "type": "number",
+                "value": "NaN"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "set-commented-null",
+      "yaml": "items: !!set\n  a: null # comment",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Set items must all have null values at line 1, column 8:\n\nitems: !!set\n       ^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          7,
+          12
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 8
+          },
+          {
+            "line": 1,
+            "col": 13
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "pairs-complex",
+      "yaml": "items: !!pairs [[a, b], {? [c, d]: value}]",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "items",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 2
+              },
+              {
+                "ref": 3
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ a, b ]",
+                {
+                  "type": "null"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "[ c, d ]",
+                {
+                  "type": "string",
+                  "value": "value"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "omap-empty",
+      "yaml": "items: !!omap [{}, {}]",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Ordered maps must not include duplicate keys: null at line 1, column 8:\n\nitems: !!omap [{}, {}]\n       ^^^^^^\n",
+        "code": "TAG_RESOLVE_FAILED",
+        "pos": [
+          7,
+          13
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 8
+          },
+          {
+            "line": 1,
+            "col": 14
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "omap-alias-duplicate",
+      "yaml": "a: &a {x: 1}\nitems: !!omap [{*a: 1}, {*a: 2}]",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing , or : between flow map items at line 2, column 21:\n\nitems: !!omap [{*a: 1}, {*a: 2}]\n                    ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          33,
+          34
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 21
+          },
+          {
+            "line": 2,
+            "col": 22
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "merge-order",
+      "yaml": "a: &a {x: 1, z: 1}\nb: &b {x: 2, y: 2}\nitem: {!!merge <<: [*a, *b], y: 3}",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "b",
+                {
+                  "ref": 2
+                }
+              ],
+              [
+                "item",
+                {
+                  "ref": 3
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "x",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "z",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "x",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ],
+              [
+                "y",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "x",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "z",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "y",
+                {
+                  "type": "number",
+                  "value": "3"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "merge-repeat",
+      "yaml": "a: &a {x: 1}\nb: &b {y: 2}\nitem: {!!merge <<: *a, !!merge <<: *b}",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "a",
+                {
+                  "ref": 1
+                }
+              ],
+              [
+                "b",
+                {
+                  "ref": 2
+                }
+              ],
+              [
+                "item",
+                {
+                  "ref": 3
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "x",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "y",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "object",
+            "entries": [
+              [
+                "x",
+                {
+                  "type": "number",
+                  "value": "1"
+                }
+              ],
+              [
+                "y",
+                {
+                  "type": "number",
+                  "value": "2"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "forward-alias",
+      "yaml": "first: *later\nlater: &later {x: 1}",
+      "error": {
+        "name": "ReferenceError",
+        "message": "Unresolved alias (the anchor must be set before the alias): later",
+        "code": null,
+        "pos": null,
+        "linePos": null
+      },
+      "warnings": []
+    },
+    {
+      "id": "deep-nesting",
+      "yaml": "nested: [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[0]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "nested",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 2
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 3
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 4
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 5
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 6
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 7
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 8
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 9
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 10
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 11
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 12
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 13
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 14
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 15
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 16
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 17
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 18
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 19
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 20
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 21
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 22
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 23
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 24
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 25
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 26
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 27
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 28
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 29
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 30
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 31
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 32
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 33
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 34
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 35
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 36
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 37
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 38
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 39
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 40
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 41
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 42
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 43
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 44
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 45
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 46
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 47
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 48
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 49
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 50
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 51
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 52
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 53
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 54
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 55
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 56
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 57
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 58
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 59
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 60
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 61
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 62
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 63
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 64
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 65
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 66
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 67
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 68
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 69
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 70
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 71
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 72
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 73
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 74
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 75
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 76
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 77
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 78
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 79
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 80
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 81
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 82
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 83
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 84
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 85
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 86
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 87
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 88
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 89
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 90
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 91
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 92
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 93
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 94
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 95
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 96
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 97
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 98
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 99
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "ref": 100
+              }
+            ]
+          },
+          {
+            "type": "sequence",
+            "items": [
+              {
+                "type": "number",
+                "value": "0"
+              }
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "binary-valid",
+      "yaml": "bytes: !!binary SGVsbG8=",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "bytes",
+                {
+                  "ref": 1
+                }
+              ]
+            ]
+          },
+          {
+            "type": "binary",
+            "base64": "SGVsbG8="
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "unicode-long-surrogate",
+      "yaml": "value: \"\\U0000D83E\"",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "value",
+                {
+                  "type": "string",
+                  "value": "\ud83e"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    },
+    {
+      "id": "unicode-literal-surrogate",
+      "yaml": "value: \"\ud83e\"",
+      "body": "body",
+      "graph": {
+        "root": {
+          "ref": 0
+        },
+        "nodes": [
+          {
+            "type": "object",
+            "entries": [
+              [
+                "value",
+                {
+                  "type": "string",
+                  "value": "\ud83e"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+      "warnings": []
+    }
+  ]
+}

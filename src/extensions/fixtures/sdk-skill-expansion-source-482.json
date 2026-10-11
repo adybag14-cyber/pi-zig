@@ -1,0 +1,241 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "referenceRuntime": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "label": "ordinary",
+      "input": "ordinary",
+      "content": "body",
+      "trace": [],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "ordinary"
+      ]
+    },
+    {
+      "label": "unknown",
+      "input": "/skill:missing arg",
+      "content": "body",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name"
+      ],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "/skill:missing arg"
+      ]
+    },
+    {
+      "label": "plain",
+      "input": "/skill:known arg",
+      "content": "  body Ω🦊 \n",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.name",
+        "skill.filePath",
+        "skill.baseDir"
+      ],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "<skill name=\"known\" location=\"<SDK_SKILL_ROOT>\\plain.md\">\nReferences are relative to <SDK_SKILL_ROOT>.\n\nbody Ω🦊\n</skill>\n\narg"
+      ]
+    },
+    {
+      "label": "bom-crlf",
+      "input": "/skill:known  argument \t",
+      "content": "﻿---\r\nname: ignored\r\n---\r\n body Ω🦊 \r\n",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.name",
+        "skill.filePath",
+        "skill.baseDir"
+      ],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "<skill name=\"known\" location=\"<SDK_SKILL_ROOT>\\bom-crlf.md\">\nReferences are relative to <SDK_SKILL_ROOT>.\n\nbody Ω🦊\n</skill>\n\nargument"
+      ]
+    },
+    {
+      "label": "nested-yaml",
+      "input": "/skill:known",
+      "content": "---\nmetadata: {nested: [true, &a {self: *a}]}\n---\nbody",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.name",
+        "skill.filePath",
+        "skill.baseDir"
+      ],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "<skill name=\"known\" location=\"<SDK_SKILL_ROOT>\\nested-yaml.md\">\nReferences are relative to <SDK_SKILL_ROOT>.\n\nbody\n</skill>"
+      ]
+    },
+    {
+      "label": "duplicate-yaml",
+      "input": "/skill:known arg",
+      "content": "---\na: 1\na: 2\n---\nbody",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.filePath"
+      ],
+      "errors": [
+        {
+          "extensionPath": "<SDK_SKILL_ROOT>\\duplicate-yaml.md",
+          "event": "skill_expansion",
+          "error": "Map keys must be unique at line 2, column 1:\n\na: 1\na: 2\n^\n"
+        }
+      ],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "/skill:known arg"
+      ]
+    },
+    {
+      "label": "missing-file",
+      "input": "/skill:known arg",
+      "content": null,
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.filePath"
+      ],
+      "errors": [
+        {
+          "extensionPath": "<SDK_SKILL_ROOT>\\missing-file.md",
+          "event": "skill_expansion",
+          "error": "ENOENT: no such file or directory, open '<SDK_SKILL_ROOT>\\missing-file.md'"
+        }
+      ],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "/skill:known arg"
+      ]
+    },
+    {
+      "label": "callback-throws",
+      "input": "/skill:known arg",
+      "content": null,
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.filePath"
+      ],
+      "errors": [
+        {
+          "extensionPath": "<SDK_SKILL_ROOT>\\callback-throws.md",
+          "event": "skill_expansion",
+          "error": "ENOENT: no such file or directory, open '<SDK_SKILL_ROOT>\\callback-throws.md'"
+        }
+      ],
+      "outcome": {
+        "same": true,
+        "name": null,
+        "message": null
+      },
+      "steering": []
+    },
+    {
+      "label": "getter-name-throws",
+      "input": "/skill:known arg",
+      "content": "body",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name"
+      ],
+      "errors": [],
+      "outcome": {
+        "same": true,
+        "name": null,
+        "message": null
+      },
+      "steering": []
+    },
+    {
+      "label": "raw-xml",
+      "input": "/skill:known",
+      "content": "body",
+      "trace": [
+        [
+          "loader.getSkills",
+          true
+        ],
+        "loader.skills",
+        "skill.name",
+        "skill.filePath",
+        "skill.name",
+        "skill.filePath",
+        "skill.baseDir"
+      ],
+      "errors": [],
+      "outcome": {
+        "result": "queued"
+      },
+      "steering": [
+        "<skill name=\"known\"<>&\" location=\"<SDK_SKILL_ROOT>\\raw-xml.md\">\nReferences are relative to relative\"<>&.\n\nbody\n</skill>"
+      ]
+    }
+  ]
+}

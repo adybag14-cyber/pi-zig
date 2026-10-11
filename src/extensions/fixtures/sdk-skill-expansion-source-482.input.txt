@@ -1,0 +1,29 @@
+// Native differential driver for the ten immutable genuine Source482 rows.
+// The owned temporary directory comes from the Zig harness.
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+import {writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+const cwd=globalThis.sdkSkillRoot;
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const loader=new DefaultResourceLoader({cwd,agentDir:join(cwd,'agent'),noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true});
+await loader.reload();
+const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+const cases=[['ordinary','ordinary','body'],['unknown','/skill:missing arg','body'],['plain','/skill:known arg','  body Ω🦊 \n'],['bom-crlf','/skill:known  argument \t','\ufeff---\r\nname: ignored\r\n---\r\n body Ω🦊 \r\n'],['nested-yaml','/skill:known','---\nmetadata: {nested: [true, &a {self: *a}]}\n---\nbody'],['duplicate-yaml','/skill:known arg','---\na: 1\na: 2\n---\nbody'],['missing-file','/skill:known arg',null],['callback-throws','/skill:known arg',null],['getter-name-throws','/skill:known arg','body'],['raw-xml','/skill:known','body']];
+const rows=[];
+for(const[label,text,content]of cases){
+ const trace=[],errors=[],marker={label},path=join(cwd,label+'.md');
+ if(content!==null)writeFileSync(path,content);
+ const skill={get name(){trace.push('skill.name');if(label==='getter-name-throws')throw marker;return label==='raw-xml'?'known"<>&':'known'},get filePath(){trace.push('skill.filePath');return path},get baseDir(){trace.push('skill.baseDir');return label==='raw-xml'?'relative"<>&':cwd}};
+ loader.getSkills=function(){trace.push(['loader.getSkills',this===loader]);return{get skills(){trace.push('loader.skills');return[skill]}}};
+ // The raw-XML row must match the lookup name while exposing the later
+ // template-literal getter value without escaping.
+ if(label==='raw-xml'){let reads=0;Object.defineProperty(skill,'name',{get(){trace.push('skill.name');return reads++===0?'known':'known"<>&'}})}
+ await session.bindExtensions({mode:'rpc',onError(error){errors.push(error);if(label==='callback-throws')throw marker}});
+ let outcome;try{outcome={result:await session.steer(text)}}catch(error){outcome={same:error===marker,name:error?.name??null,message:error?.message??null}}
+ rows.push({label,input:text,content,trace,errors,outcome,steering:session.getSteeringMessages().slice()});
+ session.clearQueue();
+}
+session.dispose();
+const normalize=value=>typeof value==='string'?value.split(cwd).join('<SDK_SKILL_ROOT>'):Array.isArray(value)?value.map(normalize):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).map(([key,value])=>[key,normalize(value)])):value;
+
+globalThis.sdkSkillExpansionResult={rows:normalize(rows)};

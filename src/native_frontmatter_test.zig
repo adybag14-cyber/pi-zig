@@ -76,3 +76,126 @@ test "native frontmatter full schema and cyclic alias identity survive every hos
     try graphCase(std.testing.allocator);
     try std.testing.checkAllAllocationFailures(std.testing.allocator, graphCase, .{});
 }
+
+fn quotedUnitsCase(allocator: std.mem.Allocator) !void {
+    // Genuine Source481 unicode-halves values are compared as UTF16, without
+    // parsing its escaped lone-surrogate JSON through a scalar-only decoder.
+    var result = try frontmatter.parse(allocator, "---\nhigh: \"\\ud83e\"\nlow: \"\\udd8a\"\nadjacent: \"\\ud83e\\u0041\"\npair: \"\\ud83e\\udd8a\"\n---\nbody");
+    defer result.deinit();
+    try std.testing.expect(result.frontmatter.diagnostic == null);
+    const entries = result.frontmatter.root.?.data.mapping;
+    const expected = [_][]const u16{ &.{0xd83e}, &.{0xdd8a}, &.{ 0xd83e, 'A' }, &.{ 0xd83e, 0xdd8a } };
+    try std.testing.expectEqual(expected.len, entries.len);
+    for (entries, expected) |entry, units| {
+        const actual = try std.unicode.wtf8ToWtf16LeAlloc(allocator, entry.value.data.string);
+        defer allocator.free(actual);
+        try std.testing.expectEqualSlices(u16, units, actual);
+    }
+}
+test "native frontmatter preserves Source481 escaped isolated UTF16 units through allocation failure" {
+    try quotedUnitsCase(std.testing.allocator);
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, quotedUnitsCase, .{});
+}
+
+test "native frontmatter reports Source481 composition error before unresolved alias conversion" {
+    var result = try frontmatter.parse(std.testing.allocator, "---\na: *missing\na: 2\n---\nbody");
+    defer result.deinit();
+    const failure = result.frontmatter.diagnostic orelse return error.ExpectedDuplicateKey;
+    try std.testing.expectEqualStrings("YAMLParseError", failure.name);
+    try std.testing.expectEqualStrings("DUPLICATE_KEY", failure.code.?);
+    try std.testing.expectEqual(@as(usize, 12), failure.offset);
+    try std.testing.expectEqual(@as(usize, 13), failure.end);
+    const message = try frontmatter.pretty(std.testing.allocator, result.yaml_source.?, failure);
+    defer std.testing.allocator.free(message);
+    try std.testing.expectEqualStrings("Map keys must be unique at line 2, column 1:\n\na: *missing\na: 2\n^\n", message);
+}
+
+test "native frontmatter preserves Source481 set pairs and ordered map value types" {
+    const gpa = std.testing.allocator;
+    var result = try frontmatter.parse(gpa, "---\nset: !!set {a: null, b: ~}\npairs: !!pairs [a, {b: 2}, {}]\nomap: !!omap [{a: 1}, {b: 2}]\n---\nbody");
+    defer result.deinit();
+    try std.testing.expect(result.frontmatter.diagnostic == null);
+    const entries = result.frontmatter.root.?.data.mapping;
+    const set = entries[0].value.data.set;
+    try std.testing.expectEqual(@as(usize, 2), set.len);
+    try std.testing.expectEqualStrings("a", set[0].data.string);
+    try std.testing.expectEqualStrings("b", set[1].data.string);
+    const pairs = entries[1].value.data.sequence;
+    try std.testing.expectEqual(@as(usize, 3), pairs.len);
+    try std.testing.expectEqualStrings("a", pairs[0].data.mapping[0].key.data.string);
+    try std.testing.expect(pairs[0].data.mapping[0].value.data == .null);
+    try std.testing.expectEqualStrings("b", pairs[1].data.mapping[0].key.data.string);
+    try std.testing.expectEqual(@as(f64, 2), pairs[1].data.mapping[0].value.data.number);
+    try std.testing.expectEqualStrings("", pairs[2].data.mapping[0].key.data.string);
+    try std.testing.expect(pairs[2].data.mapping[0].value.data == .null);
+    const ordered = entries[2].value.data.ordered_mapping;
+    try std.testing.expectEqual(@as(usize, 2), ordered.len);
+    try std.testing.expectEqualStrings("a", ordered[0].key.data.string);
+    try std.testing.expectEqual(@as(f64, 1), ordered[0].value.data.number);
+    try std.testing.expectEqualStrings("b", ordered[1].key.data.string);
+    try std.testing.expectEqual(@as(f64, 2), ordered[1].value.data.number);
+}
+
+test "native frontmatter rejects Source481 invalid typed collections at their tag range" {
+    const Case = struct { yaml: []const u8, message: []const u8, end: usize };
+    for ([_]Case{
+        .{ .yaml = "items: !!set {a: 1}", .message = "Set items must all have null values", .end = 12 },
+        .{ .yaml = "items: !!pairs [{a: 1, b: 2}]", .message = "Each pair must have its own sequence indicator", .end = 14 },
+        .{ .yaml = "items: !!omap [{a: 1}, {a: 2}]", .message = "Ordered maps must not include duplicate keys: a", .end = 13 },
+    }) |case| {
+        const content = try std.fmt.allocPrint(std.testing.allocator, "---\n{s}\n---\nbody", .{case.yaml});
+        defer std.testing.allocator.free(content);
+        var result = try frontmatter.parse(std.testing.allocator, content);
+        defer result.deinit();
+        const diagnostic = result.frontmatter.diagnostic orelse return error.ExpectedTagError;
+        try std.testing.expectEqualStrings("TAG_RESOLVE_FAILED", diagnostic.code.?);
+        try std.testing.expectEqualStrings(case.message, diagnostic.message);
+        try std.testing.expectEqual(@as(usize, 7), diagnostic.offset);
+        try std.testing.expectEqual(case.end, diagnostic.end);
+    }
+}
+
+test "native frontmatter preserves Source481 explicit merge and rejects nonmapping sources" {
+    var result = try frontmatter.parse(std.testing.allocator, "---\ndefaults: &defaults {a: 1, b: 2}\nitem: {!!merge <<: *defaults, b: 3}\n---\nbody");
+    defer result.deinit();
+    try std.testing.expect(result.frontmatter.diagnostic == null);
+    const entries = result.frontmatter.root.?.data.mapping;
+    const defaults = entries[0].value.data.mapping;
+    const item = entries[1].value.data.mapping;
+    try std.testing.expectEqual(@as(usize, 2), item.len);
+    try std.testing.expectEqualStrings("a", item[0].key.data.string);
+    try std.testing.expectEqual(@as(f64, 1), item[0].value.data.number);
+    try std.testing.expectEqualStrings("b", item[1].key.data.string);
+    try std.testing.expectEqual(@as(f64, 3), item[1].value.data.number);
+    try std.testing.expectEqual(@as(f64, 2), defaults[1].value.data.number);
+    var invalid = try frontmatter.parse(std.testing.allocator, "---\nitem: {!!merge <<: [1]}\n---\nbody");
+    defer invalid.deinit();
+    const failure = invalid.frontmatter.diagnostic orelse return error.ExpectedMergeError;
+    try std.testing.expectEqualStrings("Error", failure.name);
+    try std.testing.expect(failure.code == null);
+    try std.testing.expectEqualStrings("Merge sources must be maps or map aliases", failure.message);
+}
+
+test "native frontmatter compares all 21 genuine Source481 values and complete errors losslessly" {
+    try @import("native_yaml_values_test.zig").exercise(std.testing.allocator);
+}
+
+fn collectionKeyCase(allocator: std.mem.Allocator) !void {
+    var result = try frontmatter.parse(allocator, "---\n? [a, b]\n: value\n? {a: b}\n: second\n---\nbody");
+    defer result.deinit();
+    try std.testing.expect(result.frontmatter.diagnostic == null);
+    const entries = result.frontmatter.root.?.data.mapping;
+    try std.testing.expectEqual(@as(usize, 2), entries.len);
+    try std.testing.expectEqualStrings("[ a, b ]", entries[0].key.data.string);
+    try std.testing.expectEqualStrings("value", entries[0].value.data.string);
+    try std.testing.expectEqualStrings("{ a: b }", entries[1].key.data.string);
+    try std.testing.expectEqualStrings("second", entries[1].value.data.string);
+}
+test "native frontmatter releases Source481 native collection key rendering on every host allocation failure" {
+    try collectionKeyCase(std.testing.allocator);
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, collectionKeyCase, .{});
+}
+
+test "native frontmatter compares all 24 genuine Source489 value and error edge observations" {
+    try @import("native_yaml_values_test.zig").exerciseEdges(std.testing.allocator);
+}

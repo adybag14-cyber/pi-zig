@@ -64,6 +64,7 @@ pub fn build(b: *std.Build) void {
             .link_libc = true,
         }),
     });
+    quickjs.root_module.linkLibrary(native_yaml);
     quickjs.root_module.addIncludePath(b.path("vendor/quickjs"));
     // Native public storage is installed for every extension VM. Carry SQLite
     // through this common dependency so CLI, SDK and bindings all receive it.
@@ -1091,6 +1092,16 @@ pub fn build(b: *std.Build) void {
     const sdk_input_run = b.addRunArtifact(sdk_input_tests);
     b.step("test-native-sdk-input", "Replay genuine Source input reducer chains and original context ownership").dependOn(&sdk_input_run.step);
     test_step.dependOn(&sdk_input_run.step);
+    const sdk_queue_order_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_queue_order_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK queue order"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_queue_order_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_queue_order_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_queue_order_run = b.addRunArtifact(sdk_queue_order_tests);
+    b.step("test-native-sdk-queue-order", "Replay genuine Source476/477 template iterator and callee ordering").dependOn(&sdk_queue_order_run.step);
+    const sdk_skill_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_skill_expansion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK skill expansion"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_skill_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_skill_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_skill_run = b.addRunArtifact(sdk_skill_tests);
+    b.step("test-native-sdk-skill-expansion", "Replay all ten genuine Source482 skill queue and error observations").dependOn(&sdk_skill_run.step);
     const sdk_ui_allocation_range = b.option(u8, "sdk-ui-allocation-range", "SDK UI exhaustive host allocation range 0..7; omit to run all indices");
     if (sdk_ui_allocation_range) |range| if (range >= 8) @panic("SDK UI allocation range must be 0..7");
     const sdk_ui_options = b.addOptions();
@@ -1989,6 +2000,7 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     linkDurable(b, module);
     if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });
     module.addIncludePath(b.path("vendor/quickjs"));
+    module.addIncludePath(b.path("vendor/libfyaml"));
     module.addIncludePath(b.path("src/extensions"));
     module.linkLibrary(library);
     module.link_libc = true;

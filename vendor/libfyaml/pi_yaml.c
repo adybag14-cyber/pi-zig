@@ -34,7 +34,7 @@ pi_yaml_document *pi_yaml_parse(const char *bytes, size_t length) {
     fy_diag_set_collect_errors(result->diag, true);
     struct fy_parse_cfg config = {0};
     config.flags = FYPCF_QUIET | FYPCF_COLLECT_DIAG | FYPCF_DEFAULT_VERSION_1_2 |
-        FYPCF_JSON_NONE | FYPCF_ALLOW_DUPLICATE_KEYS | FYPCF_DISABLE_MMAP_OPT;
+        FYPCF_JSON_NONE | FYPCF_ALLOW_DUPLICATE_KEYS | FYPCF_DISABLE_MMAP_OPT | FYPCF_PARSE_COMMENTS | FYPCF_DISABLE_DEPTH_LIMIT;
     config.diag = result->diag;
     /* Zig applies yaml2.9.0 core-schema duplicate/alias rules to the complete
        unresolved graph. Resolving here would discard aliases/cyclic identity. */
@@ -91,6 +91,13 @@ int pi_yaml_kind(pi_yaml_node *node) {
 }
 int pi_yaml_plain(pi_yaml_node *node) { return fy_node_get_style((struct fy_node *)node) == FYNS_PLAIN; }
 int pi_yaml_double_quoted(pi_yaml_node *node) { return fy_node_get_style((struct fy_node *)node) == FYNS_DOUBLE_QUOTED; }
+int pi_yaml_single_quoted(pi_yaml_node *node) { return fy_node_get_style((struct fy_node *)node) == FYNS_SINGLE_QUOTED; }
+int pi_yaml_flow(pi_yaml_node *node) { return fy_node_get_style((struct fy_node *)node) == FYNS_FLOW; }
+int pi_yaml_commented(pi_yaml_node *node) {
+    const char *top = fy_node_get_comment((struct fy_node *)node, fycp_top);
+    const char *right = fy_node_get_comment((struct fy_node *)node, fycp_right);
+    return (top && *top) || (right && *right);
+}
 pi_yaml_text pi_yaml_scalar(pi_yaml_node *node) {
     pi_yaml_text result = {0}; result.bytes = fy_node_get_scalar((struct fy_node *)node, &result.length); return result;
 }
