@@ -55,6 +55,22 @@ test "native image JavaScript-valued strategy matches every actual public worker
     , "native-public-image-worker-source");
     engine.freeValue(result);
 }
+test "native image JavaScript-valued strategy isolates simultaneous worker requests" {
+    const engine = try js.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "candidateResizeImage", try image_api.create(engine));
+    const input = @embedFile("ai/fixtures/photon-source-8x5.png");
+    try js.define(engine, global, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
+    const result = try engine.evalModule(
+        \\const bytes=new Uint8Array(imageInputBuffer),before=[...bytes];
+        \\const results=await Promise.all([candidateResizeImage(bytes,'image/png',{maxWidth:4}),candidateResizeImage(bytes,'image/png',{maxHeight:2}),candidateResizeImage(bytes,'image/png')]);
+        \\if(results[0].width!==4||results[0].height!==3||results[1].height!==2||results[2].wasResized!==false||JSON.stringify([...bytes])!==JSON.stringify(before))throw Error('concurrent image request isolation');
+        , "image-concurrent-requests");
+    engine.freeValue(result);
+}
 test "native image JavaScript-valued strategy closes an unawaited worker promise with its VM" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     errdefer engine.deinit();
