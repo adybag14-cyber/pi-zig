@@ -314,7 +314,7 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        return self.finishOperation(self.commitOnLine(callback, callback_context, scope, context), after, notify_settlement);
+        return try self.finishOperation(self.commitOnLine(callback, callback_context, scope, context), after, notify_settlement);
     }
     fn finishOperation(self: *Session, operation: anyerror!Result, after: ?AfterOperation, notify_settlement: bool) !Result {
         var result = operation catch |err| {
