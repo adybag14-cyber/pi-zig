@@ -1,0 +1,192 @@
+name: Original SDK documentation path Source oracle on three platforms
+
+on:
+  push:
+    branches: [work/sdk-doc-path-source-562-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-original-doc-path-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - name: Checkout exact Source-only oracle head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Verify original modules and every tracked input
+        shell: pwsh
+        env:
+          SOURCE_EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskRoot = (Get-Location).ProviderPath
+          $taskReceipt = Join-Path $taskRoot 'verification/sdk-original-doc-path-562'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:SOURCE_EXPECTED_HEAD) { throw 'Source head drift' }
+          $taskOracle = Join-Path $taskRoot 'verification/source-oracles/sdk-docs-562'
+          $taskManifestPath = Join-Path $taskOracle 'SOURCE-MANIFEST.json'
+          if ((Get-FileHash -LiteralPath $taskManifestPath).Hash -cne 'C07E1824BFA0DE5935C19FCAD3056F08F2E06837C4CF08956DF17650282FEBA2') { throw 'Original Source manifest drift' }
+          $taskManifest = Get-Content -LiteralPath $taskManifestPath -Raw | ConvertFrom-Json
+          if ($taskManifest.files.Count -ne 49) { throw 'Original Source dependency count drift' }
+          foreach ($taskInput in $taskManifest.files) {
+            if ((Get-FileHash -LiteralPath (Join-Path $taskOracle $taskInput.path)).Hash -cne $taskInput.sha256) { throw "Original module/dependency drift: $($taskInput.path)" }
+          }
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath (Join-Path $taskRoot $_)).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $taskReceipt 'inputs-before.json') -Encoding utf8NoBOM
+          $taskObserverInputs = @($taskInputs | ForEach-Object { [ordered]@{ path = (Join-Path $taskRoot $_.path); sha256 = $_.sha256 } })
+          $taskObserverInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $taskReceipt 'observer-inputs.json') -Encoding utf8NoBOM
+          [ordered]@{
+            head = $env:SOURCE_EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim()
+            manifest_sha256 = (Get-FileHash -LiteralPath $taskManifestPath).Hash
+            tracked_inputs = $taskInputs.Count; original_files = 49; scope = 'SOURCE-ONLY original production config documentation path functions;no native backend import/VM/compiler qualification'
+          } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskReceipt 'source.json') -Encoding utf8NoBOM
+
+      - name: Download and verify exact official Node24.14 archive
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskRoot = (Get-Location).ProviderPath
+          $taskReceipt = Join-Path $taskRoot 'verification/sdk-original-doc-path-562'
+          $taskTool = Join-Path $env:RUNNER_TEMP 'sdk-source-node-24.14.0'
+          if (Test-Path -LiteralPath $taskTool) { throw 'Refuse to overwrite existing tool directory' }
+          New-Item -ItemType Directory -Path $taskTool | Out-Null
+          $taskArch = [Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+          if ($IsWindows -and $taskArch -eq 'X64') {
+            $taskArchive = 'node-v24.14.0-win-x64.zip'
+            $taskHash = '313FA40C0D7B18575821DE8CB17483031FE07D95DE5994F6F435F3B345F85C66'
+            $taskBinary = 'node-v24.14.0-win-x64/node.exe'
+          } elseif ($IsLinux -and $taskArch -eq 'X64') {
+            $taskArchive = 'node-v24.14.0-linux-x64.tar.xz'
+            $taskHash = '41CD79BB7877C81605A9E68EC4C91547774F46A40C67A17E34D7179EF11729DF'
+            $taskBinary = 'node-v24.14.0-linux-x64/bin/node'
+          } elseif ($IsMacOS -and $taskArch -eq 'Arm64') {
+            $taskArchive = 'node-v24.14.0-darwin-arm64.tar.gz'
+            $taskHash = 'A1A54F46A750D2523D628D924AAB61758A51C9DAD3E0238BEB14141BE9615DD3'
+            $taskBinary = 'node-v24.14.0-darwin-arm64/bin/node'
+          } elseif ($IsMacOS -and $taskArch -eq 'X64') {
+            $taskArchive = 'node-v24.14.0-darwin-x64.tar.gz'
+            $taskHash = 'F2879EB810E25993A0578E5D878930266FD2EAFCFFE9F2839B3D8DB354D4879E'
+            $taskBinary = 'node-v24.14.0-darwin-x64/bin/node'
+          } else { throw "Unsupported original Source tool platform: $taskArch" }
+          $taskArchivePath = Join-Path $taskTool $taskArchive
+          Invoke-WebRequest -Uri "https://nodejs.org/dist/v24.14.0/$taskArchive" -OutFile $taskArchivePath -TimeoutSec 90
+          if ((Get-FileHash -LiteralPath $taskArchivePath).Hash -cne $taskHash) { throw 'Official Node archive checksum mismatch' }
+          if ($IsWindows) { Expand-Archive -LiteralPath $taskArchivePath -DestinationPath $taskTool }
+          else { & tar -xf $taskArchivePath -C $taskTool; if ($LASTEXITCODE -ne 0) { throw 'Node extraction failed' } }
+          $taskNode = Join-Path $taskTool $taskBinary
+          $taskNodeHash = (Get-FileHash -LiteralPath $taskNode).Hash
+          if ($IsWindows -and $taskNodeHash -cne '63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088') { throw 'Original qualified Windows Node executable mismatch' }
+          [ordered]@{ version = '24.14.0'; archive = $taskArchive; archive_sha256 = $taskHash; node = $taskNode; node_sha256 = $taskNodeHash; architecture = $taskArch } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskReceipt 'tool.json') -Encoding utf8NoBOM
+
+      - name: Execute only the owned bounded original Source oracle
+        shell: pwsh
+        timeout-minutes: 2
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskRoot = (Get-Location).ProviderPath
+          $taskReceipt = Join-Path $taskRoot 'verification/sdk-original-doc-path-562'
+          $taskTool = Get-Content -LiteralPath (Join-Path $taskReceipt 'tool.json') -Raw | ConvertFrom-Json
+          if ($IsWindows) { $taskFree = [uint64](Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory * 1024 }
+          elseif ($IsLinux) {
+            $taskLine = Get-Content -LiteralPath '/proc/meminfo' | Where-Object { $_ -match '^MemAvailable:' }
+            $taskFree = [uint64]([regex]::Match($taskLine, '\d+').Value) * 1024
+            if ((Test-Path -LiteralPath '/sys/fs/cgroup/memory.max') -and (Test-Path -LiteralPath '/sys/fs/cgroup/memory.current')) {
+              $taskLimit = (Get-Content -LiteralPath '/sys/fs/cgroup/memory.max' -Raw).Trim()
+              if ($taskLimit -match '^\d+$') { $taskFree = [Math]::Min($taskFree,[Math]::Max(0,[int64]$taskLimit-[int64](Get-Content -LiteralPath '/sys/fs/cgroup/memory.current' -Raw))) }
+            }
+          } else {
+            $taskPageSize = [uint64](& sysctl -n hw.pagesize)
+            $taskStats = (& vm_stat) -join "`n"
+            $taskPages = [uint64]0
+            foreach ($taskKind in @('free','inactive','speculative')) { $taskPages += [uint64]([regex]::Match($taskStats,"Pages ${taskKind}:\s+(\d+)").Groups[1].Value) }
+            $taskFree = $taskPages * $taskPageSize
+          }
+          [ordered]@{ free_bytes = $taskFree; minimum_bytes = 2147483648; heap_mib = 64; deadline_seconds = 30; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskReceipt 'admission.json') -Encoding utf8NoBOM
+          if ($taskFree -lt 2147483648) { throw 'Fresh Source-only 2GiB admission refused' }
+          $taskStart = [Diagnostics.ProcessStartInfo]::new()
+          $taskStart.FileName = $taskTool.node
+          $taskStart.WorkingDirectory = $taskRoot
+          $taskStart.UseShellExecute = $false
+          $taskStart.CreateNoWindow = $true
+          $taskStart.WindowStyle = [Diagnostics.ProcessWindowStyle]::Hidden
+          $taskStart.RedirectStandardOutput = $true
+          $taskStart.RedirectStandardError = $true
+          $taskStart.Environment['PI_PACKAGE_DIR'] = ''
+          $taskStart.Environment['PI_SDK_SOURCE_551_MANIFEST'] = Join-Path $taskReceipt 'observer-inputs.json'
+          $taskStart.Environment['PI_SDK_SOURCE_551_CLOSURE'] = Join-Path $taskReceipt 'executed-module-closure.json'
+          $taskStart.ArgumentList.Add('--max-old-space-size=64')
+          $taskStart.ArgumentList.Add('--import')
+          $taskObserver = Join-Path $taskRoot 'verification/source-oracles/common/source-load-observer.mjs'
+          $taskObserverUri = [UriBuilder]::new('file','',-1,$taskObserver.Replace('\','/')).Uri.AbsoluteUri
+          $taskStart.ArgumentList.Add($taskObserverUri)
+          $taskStart.ArgumentList.Add((Join-Path $taskRoot 'verification/source-oracles/sdk-docs-562/oracle.mjs'))
+          $taskOutput = Join-Path $taskReceipt 'source-doc-path-oracle.json'
+          $taskStart.ArgumentList.Add($taskOutput)
+          $taskProcess = [Diagnostics.Process]::new()
+          $taskProcess.StartInfo = $taskStart
+          if (!$taskProcess.Start()) { throw 'Original Source process failed to start' }
+          $taskPid = $taskProcess.Id
+          $taskCreated = $taskProcess.StartTime.ToUniversalTime()
+          $taskStdout = $taskProcess.StandardOutput.ReadToEndAsync()
+          $taskStderr = $taskProcess.StandardError.ReadToEndAsync()
+          [ordered]@{ pid = $taskPid; created_utc = $taskCreated.ToString('o'); executable = $taskTool.node; executable_sha256 = $taskTool.node_sha256; argv = @($taskStart.ArgumentList); status = 'running' } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $taskReceipt 'owned-process.json') -Encoding utf8NoBOM
+          if (!$taskProcess.WaitForExit(30000)) {
+            $taskFresh = [Diagnostics.Process]::GetProcessById($taskPid)
+            if ($taskFresh.StartTime.ToUniversalTime() -ne $taskCreated -or $taskFresh.MainModule.FileName -cne $taskTool.node) { throw 'Source deadline identity changed; refuse unrelated process control' }
+            $taskProcess.Kill()
+            $taskProcess.WaitForExit(5000) | Out-Null
+            throw 'Original Source oracle timed out'
+          }
+          $taskStdout.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $taskReceipt 'stdout.log') -Encoding utf8NoBOM
+          $taskStderr.GetAwaiter().GetResult() | Set-Content -LiteralPath (Join-Path $taskReceipt 'stderr.log') -Encoding utf8NoBOM
+          [ordered]@{ pid = $taskPid; created_utc = $taskCreated.ToString('o'); executable = $taskTool.node; executable_sha256 = $taskTool.node_sha256; argv = @($taskStart.ArgumentList); exit_code = $taskProcess.ExitCode; status = 'terminal'; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $taskReceipt 'owned-process.json') -Encoding utf8NoBOM
+          if ($taskProcess.ExitCode -ne 0) { throw 'Original Source oracle failed' }
+          $taskProof = Get-Content -LiteralPath $taskOutput -Raw | ConvertFrom-Json
+          if ($taskProof.schema -cne 'sdk-source-doc-path-oracle-562-v1' -or $taskProof.node.version -cne '24.14.0' -or $taskProof.records.Count -ne 3 -or $taskProof.node.sha256 -cne $taskTool.node_sha256) { throw 'Original Source receipt authority mismatch' }
+          $taskPlatform = if ($IsWindows) { 'win32' } elseif ($IsLinux) { 'linux' } else { 'darwin' }
+          if ($taskProof.node.platform -cne $taskPlatform -or $taskProof.manifestSha256 -cne 'C07E1824BFA0DE5935C19FCAD3056F08F2E06837C4CF08956DF17650282FEBA2') { throw 'Original Source platform or manifest mismatch' }
+          $taskClosure = Get-Content -LiteralPath (Join-Path $taskReceipt 'executed-module-closure.json') -Raw | ConvertFrom-Json
+          if ($taskClosure.exit_code -ne 0 -or $taskClosure.loaded_count -lt 4 -or $taskClosure.post_drift.Count -ne 0 -or @($taskClosure.records | Where-Object { $_.actual_loader_source_sha256 -cne $_.file_sha256 }).Count -ne 0) { throw 'Actual default-loader module closure drift or transformation' }
+          if ($taskClosure.manifest_sha256 -cne (Get-FileHash -LiteralPath (Join-Path $taskReceipt 'observer-inputs.json')).Hash) { throw 'Actual closure manifest differs' }
+          $taskProof.records | ConvertTo-Json -Depth 5
+
+      - name: Verify every original Source and tracked posthash
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskRoot = (Get-Location).ProviderPath
+          $taskReceipt = Join-Path $taskRoot 'verification/sdk-original-doc-path-562'
+          if (Test-Path -LiteralPath (Join-Path $taskReceipt 'inputs-before.json')) {
+            $taskInputs = Get-Content -LiteralPath (Join-Path $taskReceipt 'inputs-before.json') -Raw | ConvertFrom-Json
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -LiteralPath (Join-Path $taskRoot $_.path)).Hash -cne $_.sha256 })
+            [ordered]@{ head = (git rev-parse HEAD).Trim(); input_count = $taskInputs.Count; drift = $taskDrift } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $taskReceipt 'posthash.json') -Encoding utf8NoBOM
+            if ($taskDrift.Count -ne 0) { throw 'Original Source or tracked input changed' }
+          }
+
+      - name: Retain per-OS original Source proof and dependencies
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sdk-original-doc-path-${{ matrix.os }}-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            verification/sdk-original-doc-path-562/**
+            verification/source-oracles/sdk-docs-562/**
+            verification/source-oracles/common/source-load-observer.mjs
