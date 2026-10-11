@@ -103,12 +103,21 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
         @ptrCast(@alignCast(gpa.ptr))
     else
         null;
+    const started = std.Io.Clock.awake.now(std.testing.io).nanoseconds;
     if (failing) |allocator| std.debug.print("COMMAND_GPA_BEGIN fail_index={d} resize_fail_index={d}\n", .{ allocator.fail_index, allocator.resize_fail_index });
-    defer if (failing) |allocator| std.debug.print("COMMAND_GPA_END fail_index={d} alloc_index={d} induced={}\n", .{ allocator.fail_index, allocator.alloc_index, allocator.has_induced_failure });
+    defer if (failing) |allocator| std.debug.print("COMMAND_GPA_END fail_index={d} alloc_index={d} induced={} elapsed_ns={d}\n", .{ allocator.fail_index, allocator.alloc_index, allocator.has_induced_failure, std.Io.Clock.awake.now(std.testing.io).nanoseconds - started });
+    const trace = failing != null and failing.?.fail_index == 716;
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE setup\n", .{});
     const engine = try setup(gpa);
-    defer engine.deinit();
+    defer {
+        if (trace) std.debug.print("COMMAND_GPA_716_PHASE deinit\n", .{});
+        engine.deinit();
+        if (trace) std.debug.print("COMMAND_GPA_716_PHASE deinit_done\n", .{});
+    }
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE expected\n", .{});
     try expected(engine, "commandOriginal", @embedFile("extensions/fixtures/main-command-autocomplete-source.json"));
     const generation = engine.native_allocation_generation;
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE eval\n", .{});
     const result = engine.evalModule("const provider=createCommandProvider(commandOriginal.rootCoreMetadataNames.map(name=>({name})));for(const query of [\"/hel\",\"/model\"]){const original=commandOriginal.cases.find(row=>row.lines?.[0]===query);const result=await provider.getSuggestions(original.lines,original.row,original.col,{force:false});if(JSON.stringify(result)!==JSON.stringify(original.value))throw Error(JSON.stringify({query,result,expected:original.value}));}const original=commandOriginal.cases.find(row=>row.args?.[4]===\"/he\"),value=provider.applyCompletion(...original.args);if(JSON.stringify(value)!==JSON.stringify(original.value))throw Error(JSON.stringify({value,expected:original.value}));", "command-allocation-source.mjs") catch |err| {
         const actual = engine.nativeAllocationError(err, generation);
         if (actual != error.OutOfMemory) {
@@ -121,8 +130,11 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
         }
         return actual;
     };
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE eval_done\n", .{});
     engine.freeValue(result);
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE gc\n", .{});
     c.JS_RunGC(engine.runtime);
+    if (trace) std.debug.print("COMMAND_GPA_716_PHASE gc_done\n", .{});
 }
 test "Command Source exhaustive host allocation cleanup in native command mapping await fuzzy and application" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{});
