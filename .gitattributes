@@ -25,4 +25,5 @@ docs/native-localecompare/provenance/NODE-LICENSE-node24.14.0 -whitespace
 # These original Source programs retain their captured CRLF boundary bytes.
 src/extensions/fixtures/sdk-runner-emit-527.input.txt whitespace=cr-at-eol
 src/extensions/fixtures/sdk-runner-emit-iterators-532.input.txt whitespace=cr-at-eol
+src/durable/fixtures/durable-89-inspection-storage-guard-program.txt whitespace=cr-at-eol
 src/extensions/fixtures/sdk-runner-ui-prompts-530.input.txt whitespace=cr-at-eol

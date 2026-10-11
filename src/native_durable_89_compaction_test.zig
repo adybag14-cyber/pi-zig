@@ -132,3 +132,129 @@ fn printInspectionFailure(engine: *engine_mod.Engine, reason: c.JSValue, label: 
         } else engine.freeValue(c.JS_GetException(engine.context));
     }
 }
+
+fn printGuardReasonDiagnostic(engine: *engine_mod.Engine) void {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const diagnostic = c.JS_GetPropertyStr(engine.context, global, "inspectionGuardDiagnostic");
+    if (c.JS_IsException(diagnostic)) {
+        engine.freeValue(c.JS_GetException(engine.context));
+        return;
+    }
+    defer engine.freeValue(diagnostic);
+    if (c.JS_IsUndefined(diagnostic)) return;
+    const mode = c.JS_GetPropertyStr(engine.context, diagnostic, "mode");
+    defer engine.freeValue(mode);
+    if (c.JS_ToCString(engine.context, mode)) |bytes| {
+        defer c.JS_FreeCString(engine.context, bytes);
+        std.debug.print("Actual inspection guard failing mode: {s}\n", .{bytes});
+    } else engine.freeValue(c.JS_GetException(engine.context));
+    const failed = c.JS_GetPropertyStr(engine.context, diagnostic, "failed");
+    defer engine.freeValue(failed);
+    const original = c.JS_GetPropertyStr(engine.context, diagnostic, "cause");
+    defer engine.freeValue(original);
+    printInspectionFailure(engine, failed, "guard actual failed");
+    printInspectionFailure(engine, original, "guard original cause");
+    const cause = c.JS_GetPropertyStr(engine.context, failed, "cause");
+    if (c.JS_IsException(cause)) {
+        engine.freeValue(c.JS_GetException(engine.context));
+    } else {
+        defer engine.freeValue(cause);
+        std.debug.print("Actual inspection guard failedOriginal={} failedCauseOriginal={}\n", .{ c.JS_IsStrictEqual(engine.context, failed, original), c.JS_IsStrictEqual(engine.context, cause, original) });
+        printInspectionFailure(engine, cause, "guard actual nested cause");
+        printGuardOwnFields(engine, cause);
+    }
+}
+
+fn printGuardOwnFields(engine: *engine_mod.Engine, value: c.JSValue) void {
+    if (!c.JS_IsObject(value)) return;
+    var names: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, value, c.JS_GPN_STRING_MASK) < 0) {
+        engine.freeValue(c.JS_GetException(engine.context));
+        return;
+    }
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    for (names[0..count]) |entry| {
+        const name = c.JS_AtomToCString(engine.context, entry.atom) orelse {
+            engine.freeValue(c.JS_GetException(engine.context));
+            continue;
+        };
+        defer c.JS_FreeCString(engine.context, name);
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(engine.context, &descriptor, value, entry.atom);
+        if (present < 0) {
+            engine.freeValue(c.JS_GetException(engine.context));
+            continue;
+        }
+        if (present == 0) continue;
+        defer engine.freeValue(descriptor.value);
+        defer engine.freeValue(descriptor.getter);
+        defer engine.freeValue(descriptor.setter);
+        if ((descriptor.flags & c.JS_PROP_TMASK) == c.JS_PROP_GETSET) {
+            std.debug.print("Actual inspection guard nested own {s}: accessor (not invoked)\n", .{name});
+        } else if (c.JS_IsObject(descriptor.value)) {
+            std.debug.print("Actual inspection guard nested own {s}: object (not coerced)\n", .{name});
+        } else {
+            var length: usize = 0;
+            if (c.JS_ToCStringLen(engine.context, &length, descriptor.value)) |bytes| {
+                defer c.JS_FreeCString(engine.context, bytes);
+                std.debug.print("Actual inspection guard nested own {s}: {s}\n", .{ name, bytes[0..length] });
+            } else engine.freeValue(c.JS_GetException(engine.context));
+        }
+    }
+}
+
+fn printGuardStageDiagnostic(engine: *engine_mod.Engine) void {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const stage = c.JS_GetPropertyStr(engine.context, global, "inspectionGuardStage");
+    if (c.JS_IsException(stage)) {
+        engine.freeValue(c.JS_GetException(engine.context));
+        return;
+    }
+    defer engine.freeValue(stage);
+    if (c.JS_IsUndefined(stage)) return;
+    for ([_][:0]const u8{ "mode", "stage", "closeCalls", "reports" }) |key| {
+        const value = c.JS_GetPropertyStr(engine.context, stage, key.ptr);
+        if (c.JS_IsException(value)) {
+            engine.freeValue(c.JS_GetException(engine.context));
+            continue;
+        }
+        defer engine.freeValue(value);
+        var length: usize = 0;
+        if (c.JS_ToCStringLen(engine.context, &length, value)) |bytes| {
+            defer c.JS_FreeCString(engine.context, bytes);
+            std.debug.print("Actual inspection guard progress {s}: {s}\n", .{ key, bytes[0..length] });
+        } else engine.freeValue(c.JS_GetException(engine.context));
+    }
+}
+test "native durable actual 89 inspection Storage guard preserves read identity and close ownership" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    const result = engine.evalModule(@embedFile("durable/fixtures/durable-89-inspection-storage-guard-program.txt"), "actual-89-inspection-storage-guard") catch |err| {
+        std.debug.print("Actual 89 inspection Storage guard {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        if (engine.captured_exception) |reason| printInspectionFailure(engine, reason, "guard exception");
+        printGuardReasonDiagnostic(engine);
+        printGuardStageDiagnostic(engine);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "latestInspectionStorageGuardTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("durable/fixtures/durable-89-inspection-storage-guard-source.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual 89 inspection Storage guard trace: {s}\n", .{encoded});
+        return error.SourceInspectionStorageGuardMismatch;
+    }
+}

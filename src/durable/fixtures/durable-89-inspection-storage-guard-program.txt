@@ -1,0 +1,48 @@
+import * as M from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}};
+const rows=[];
+for(const mode of ['request-error','fatal-read','underway-read']){
+ const backing=new M.MemoryStorage(),raw={},reports=[],reached=deferred(),release=deferred();
+ const cause=mode==='request-error'?new M.StorageRequestError('actual invalid inspection read'):Object.freeze({actualInspectionFailure:mode});
+ let armed=false,closeCalls=0;
+ for(const name of ['mintId','commit','conversation','task','submission','entry','findDocument','document','scanDocuments','scanConversations','scanTasks','scanEntries','scanSubmissions','submissionByRequest','findLatestHeadMarker','close'])raw[name]=async function(...args){
+  if(this!==raw)throw Error('Wrong actual Storage receiver');
+  if(name==='close')closeCalls++;
+  if(armed&&name==='scanSubmissions'){
+   if(args[3]!==context)throw Error('Inspection read changed actual caller context');
+   if(mode==='underway-read'){reached.resolve();await release.promise}
+   else throw cause;
+  }
+  if(armed&&mode==='underway-read'&&name==='task')throw cause;
+  return backing[name](...args);
+ };
+ const harness=await M.Harness.open(raw,{models:{},registry:M.createRegistry(),onReport:error=>reports.push(error)},context);
+ try{
+  armed=true;
+  if(mode==='underway-read'){
+   const inspected=harness.inspect(context).then(value=>({value}),error=>({error}));
+   await reached.promise;
+   let failed;try{await harness.storage.task(999,context)}catch(error){failed=error}
+   if(failed!==cause||closeCalls!==0)throw Error('Independent failure identity or underway close fence absent');
+   release.resolve();const outcome=await inspected;
+   if(!(outcome.error instanceof M.SessionFailed)||outcome.error.cause!==cause)throw Error('Successful underway read not discarded with original SessionFailed cause');
+   const end=await harness.closed;
+   if(end.reason!=='failed'||end.error!==cause||reports.length!==1||reports[0]!==cause||closeCalls!==1)throw Error('Actual failed close/report ownership absent');
+   rows.push({mode,firstOriginal:failed===cause,discardedSuccessfulRead:true,sessionFailedCauseOriginal:outcome.error.cause===cause,closedReason:end.reason,closedOriginal:end.error===cause,reportedOriginal:reports.length===1&&reports[0]===cause,closeCalls});
+  }else{
+   let failed;try{await harness.inspect(context)}catch(error){failed=error}
+   if(failed!==cause)throw Error('Inspection replaced original backend read reason');
+   if(mode==='request-error'){
+    if(harness.failure!==undefined||reports.length!==0||closeCalls!==0)throw Error('Request error sealed or reported Session');
+    armed=false;const healthy=await harness.inspect(context);
+    rows.push({mode,firstOriginal:true,healthyAfter:true,scheduling:healthy.scheduling,tasks:healthy.tasks,submissions:healthy.submissions,reported:reports.length,closeCallsBeforeClose:closeCalls});
+   }else{
+    const end=await harness.closed;
+    if(end.reason!=='failed'||end.error!==cause||reports.length!==1||reports[0]!==cause||closeCalls!==1)throw Error('Actual fatal read close/report ownership absent');
+    rows.push({mode,firstOriginal:true,closedReason:end.reason,closedOriginal:end.error===cause,reportedOriginal:reports.length===1&&reports[0]===cause,closeCalls});
+   }
+  }
+ }finally{armed=false;release.resolve();await harness.close(context)}
+}
+globalThis.latestInspectionStorageGuardTrace={source:'89e5c2c075535e2f427c30fc74720d65b2944ff9',rows};export const proof=true;

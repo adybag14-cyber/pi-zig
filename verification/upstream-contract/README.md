@@ -6,6 +6,12 @@ Both SHA-1 and SHA-256 object formats are represented; a format change requires
 review. Dirty tracked source, malformed identities, duplicate paths, unsupported
 path encoding, source drift and commit changes fail explicitly.
 
+The newest immutable observation is `04566631c2b51fb688486bc1f040f60d1518c126`.
+`tree-04566631.json` records all 2,023 paths using the native capture tool against
+a clean detached checkout. Its new durable CodeMode replay and sandbox-outcome
+contracts are migration requirements still in progress. Capturing this tree
+does not change the release-parity guard or certify those native behaviors.
+
 Run `zig build maintenance -- verify-upstream-contract <upstream-checkout>
 verification/upstream-contract/tree-89e5c2c0.json` before reviewing a new target.
 The command prints all changed paths and fails with UpstreamContractDrift.

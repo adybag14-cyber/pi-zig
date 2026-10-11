@@ -27,7 +27,7 @@ pub const SessionLease = struct {
         }
     }
 };
-const Kind = enum { memory, jsonl, sqlite, sqlite_source, session, transaction };
+const Kind = enum { memory, jsonl, sqlite, sqlite_source, session, transaction, guarded_storage };
 pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc, documentState, latestHeadMarker, createSubmission, placeSubmission, settleSubmission };
 pub const State = struct {
     engine: *Engine,
@@ -68,6 +68,8 @@ pub const State = struct {
     document_cache: ?*@import("native_durable_documents.zig").Cache = null,
     cache_policy: @import("native_durable_document_retention.zig").Owner = .{},
     conversation_views: ?c.JSValue = null,
+    guarded_storage: ?c.JSValue = null,
+    guarded_calls: ?*@import("native_durable_guarded_storage.zig").Pending = null,
     fn storage(self: *State) !backend.Backend {
         if (self.storage_closed) return error.StorageClosed;
         return switch (self.kind) {
@@ -117,6 +119,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             self.session_lease.?.release();
         },
         .transaction => self.transaction.?.release(),
+        .guarded_storage => {},
     }
     c.JS_FreeValueRT(runtime, self.parent);
     c.JS_FreeValueRT(runtime, self.tail);
@@ -129,6 +132,13 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     if (self.document_cache) |cache| cache.deinit(runtime);
     self.cache_policy.deinit(runtime);
     if (self.conversation_views) |views| c.JS_FreeValueRT(runtime, views);
+    if (self.guarded_storage) |guard| c.JS_FreeValueRT(runtime, guard);
+    while (self.guarded_calls) |pending| {
+        self.guarded_calls = pending.next;
+        c.JS_FreeValueRT(runtime, pending.promise);
+        c.JS_FreeValueRT(runtime, pending.public);
+        engine.gpa.destroy(pending);
+    }
     for (self.plans.items) |*plan| plan.deinit();
     self.plans.deinit(engine.gpa);
     for (self.commit_listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
@@ -155,6 +165,12 @@ fn mark(runtime: ?*c.JSRuntime, input: c.JSValue, marker: ?*const c.JS_MarkFunc)
     if (self.document_cache) |cache| cache.mark(runtime, marker);
     self.cache_policy.mark(runtime, marker);
     if (self.conversation_views) |views| c.JS_MarkValue(runtime, views, marker);
+    if (self.guarded_storage) |guard| c.JS_MarkValue(runtime, guard, marker);
+    var current_call = self.guarded_calls;
+    while (current_call) |pending| : (current_call = pending.next) {
+        c.JS_MarkValue(runtime, pending.promise, marker);
+        c.JS_MarkValue(runtime, pending.public, marker);
+    }
     for (self.commit_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
     for (self.commit_observers.items) |listener| c.JS_MarkValue(runtime, listener, marker);
     for (self.close_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
@@ -553,6 +569,10 @@ pub fn sessionObjectWithClock(engine: *Engine, storage: c.JSValue, clock: c.JSVa
     if (cache_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     const cache_getter = try engine.checked(c.JS_NewCFunction(engine.context, cacheSizesGetter, "get documentCacheSizes", 0));
     if (c.JS_DefinePropertyGetSet(engine.context, result_object, cache_atom, cache_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    const guard = try @import("native_durable_guarded_storage.zig").object(engine, result_object);
+    self.guarded_storage = guard;
+    engine.freeValue(adapter.raw);
+    adapter.raw = c.JS_DupValue(engine.context, guard);
     _ = c.JS_SetOpaque(result_object, self);
     self.cache_policy.session = c.JS_DupValue(engine.context, result_object);
     self.cache_policy.clock = c.JS_DupValue(engine.context, clock);
@@ -715,6 +735,11 @@ fn closeAfterScheduler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     return finishBackendClose(self, data[0], data[1]);
 }
 fn finishBackendClose(self: *State, receiver: c.JSValue, context: c.JSValue) c.JSValue {
+    if (self.guarded_storage) |guard| {
+        const facade = state(self.engine, guard) catch |err| return closeFailure(self, err);
+        // Refuse the next page before waiting for the calls already admitted.
+        facade.storage_closed = true;
+    }
     if (self.session_lease.?.adapter != null and self.session.?.storage.underway.load(.acquire) != 0) {
         return self.storage_drain.?.start(receiver);
     }

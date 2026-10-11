@@ -162,7 +162,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     if (conversation) |id| {
         if (c.JS_DefinePropertyValueStr(engine.context, result, "id", c.JS_NewInt64(engine.context, @intCast(id)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     } else {
-        try sdk.put(engine, result, "storage", c.JS_DupValue(engine.context, (try durable.state(engine, session)).parent));
+        try sdk.put(engine, result, "storage", c.JS_DupValue(engine.context, (try durable.state(engine, session)).guarded_storage.?));
         const cache_atom = c.JS_NewAtom(engine.context, "documentCacheSizes");
         defer c.JS_FreeAtom(engine.context, cache_atom);
         if (cache_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
