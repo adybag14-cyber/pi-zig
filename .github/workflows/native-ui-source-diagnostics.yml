@@ -13,14 +13,20 @@ concurrency:
 
 jobs:
   ui:
-    name: Native UI (${{ matrix.os }}, ${{ matrix.mode }})
+    name: Native UI (${{ matrix.os }}, ${{ matrix.shard.mode }}, ${{ matrix.shard.suite }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        mode: [Debug, ReleaseSafe]
+        shard:
+          - { mode: Debug, suite: all }
+          - { mode: ReleaseSafe, suite: base }
+          - { mode: ReleaseSafe, suite: main }
+          - { mode: ReleaseSafe, suite: prerequisites }
+          - { mode: ReleaseSafe, suite: alt }
+          - { mode: ReleaseSafe, suite: public }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -46,9 +52,9 @@ jobs:
           $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskDirectory/inputs.json"
           [ordered]@{
             head = (git rev-parse HEAD).Trim(); tree = (git rev-parse 'HEAD^{tree}').Trim()
-            zig = $taskVersion; mode = '${{ matrix.mode }}'; vendor_commit = $taskVendor.commit
+            zig = $taskVersion; mode = '${{ matrix.shard.mode }}'; suite = '${{ matrix.shard.suite }}'; vendor_commit = $taskVendor.commit
             vendor_files = $taskVendor.files.Count; input_count = $taskInputs.Count
-            scope = 'Five focused native TUI source suites only; actual CLI frontend composition and full Pi parity remain unfinished.'
+            scope = 'Required five-suite TUI matrix; Debug aggregates five and ReleaseSafe partitions each target without dropping cases. Actual CLI frontend composition and full Pi parity remain unfinished.'
           } | ConvertTo-Json | Set-Content -LiteralPath "$taskDirectory/source.json"
       - name: Check native source formatting
         run: zig fmt --check build.zig src tools
@@ -58,7 +64,17 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
-          & zig build test-native-tui-base-source test-native-tui-main-source test-native-tui-alt-prerequisites-source test-native-tui-alt-source test-native-tui-public-source -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-ui-source/tests.log'
+          $taskTargets = switch ('${{ matrix.shard.suite }}') {
+            'all' { 'test-native-tui-base-source'; 'test-native-tui-main-source'; 'test-native-tui-alt-prerequisites-source'; 'test-native-tui-alt-source'; 'test-native-tui-public-source' }
+            'base' { 'test-native-tui-base-source' }
+            'main' { 'test-native-tui-main-source' }
+            'prerequisites' { 'test-native-tui-alt-prerequisites-source' }
+            'alt' { 'test-native-tui-alt-source' }
+            'public' { 'test-native-tui-public-source' }
+            default { throw 'Unknown native UI suite partition' }
+          }
+          [ordered]@{ targets = @($taskTargets); started_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-ui-source/target-start.json'
+          & zig build @taskTargets -Doptimize=${{ matrix.shard.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-ui-source/tests.log'
           $taskExit = $LASTEXITCODE
           [ordered]@{ exit_code = $taskExit; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-ui-source/result.json'
           if ($taskExit -ne 0) { exit $taskExit }
@@ -78,7 +94,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: native-ui-source-${{ runner.os }}-${{ matrix.mode }}-${{ github.sha }}
+          name: native-ui-source-${{ runner.os }}-${{ matrix.shard.mode }}-${{ matrix.shard.suite }}-${{ github.sha }}
           retention-days: 14
           path: |
             verification/native-ui-source/**
