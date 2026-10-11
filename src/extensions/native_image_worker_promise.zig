@@ -58,7 +58,10 @@ fn poll(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_i
     }
     owner.task.join();
     var rejected = owner.task.failure != null;
-    const result = if (rejected) failureValue(engine, owner) catch return engine.throwNativeOutOfMemory() else owner.task.result(engine) catch |err| blk: {
+    const result = if (rejected) failureValue(engine, owner) catch blk: {
+        _ = engine.throwNativeOutOfMemory();
+        break :blk c.JS_GetException(engine.context);
+    } else owner.task.result(engine) catch |err| blk: {
         rejected = true;
         if (err == error.JavaScriptException) {
             _ = engine.throwCaptured();
