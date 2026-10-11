@@ -6,6 +6,25 @@ const worker = @import("extensions/native_image_vm_worker.zig");
 const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
+test "native image JavaScript-valued strategy matches every actual public worker result" {
+    const engine = try js.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "candidateResizeImage", try image_api.create(engine));
+    const input = @embedFile("ai/fixtures/photon-source-8x5.png");
+    try js.define(engine, global, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
+    const fixture = @embedFile("extensions/fixtures/image-resize-public-worker-ea.json");
+    const captured = try engine.checked(c.JS_ParseJSON(engine.context, fixture.ptr, fixture.len, "actual-image-worker-source"));
+    try js.define(engine, global, "imageWorkerSource", captured);
+    const result = try engine.evalModule(
+        \\const bytes=new Uint8Array(imageInputBuffer),cases=[['defaults',undefined],['width',{maxWidth:4}],['height',{maxHeight:2}],['both',{maxWidth:5,maxHeight:2}],['fractional',{maxWidth:3.5,maxHeight:2.2}],['zero-width',{maxWidth:0}],['zero-height',{maxHeight:0}],['undefined-width',{maxWidth:undefined}],['undefined-height',{maxHeight:undefined}],['undefined-bytes',{maxBytes:undefined}],['undefined-quality',{maxWidth:4,jpegQuality:undefined}],['nan-width',{maxWidth:NaN}],['nan-height',{maxHeight:NaN}],['nan-bytes',{maxBytes:NaN}],['nan-quality',{maxWidth:4,jpegQuality:NaN}],['infinite-width',{maxWidth:Infinity}],['negative-width',{maxWidth:-1}],['equal-byte-limit',{maxBytes:4*Math.ceil(bytes.length/3)}],['below-byte-limit',{maxBytes:4*Math.ceil(bytes.length/3)-1}],['small-byte-budget',{maxBytes:100}],['zero-byte-budget',{maxBytes:0}],['string-quality',{maxWidth:4,jpegQuality:'85'}]];
+        \\for(let index=0;index<cases.length;index++){const[name,options]=cases[index],before=[...bytes],row=imageWorkerSource.rows[index];let result,error;try{result=await candidateResizeImage(bytes,'image/png',options)}catch(cause){error={name:cause.name,message:cause.message}};const same=result===row.result||(result&&row.result&&Reflect.ownKeys(result).length===Reflect.ownKeys(row.result).length&&Reflect.ownKeys(row.result).every(key=>Object.is(result[key],row.result[key])));if(row.name!==name||JSON.stringify(error)!==JSON.stringify(row.error)||!same||JSON.stringify([...bytes])!==JSON.stringify(before))throw Error(JSON.stringify({name,error,result,expected:row}));}
+        \\if(cases.length!==22||imageWorkerSource.rows.length!==24)throw Error('actual public Source coverage');
+    , "native-public-image-worker-source");
+    engine.freeValue(result);
+}
 test "native image JavaScript-valued strategy closes an unawaited worker promise with its VM" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     errdefer engine.deinit();
