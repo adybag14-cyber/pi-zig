@@ -584,6 +584,8 @@ pub fn build(b: *std.Build) void {
     const ownership_line_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"scheduler ea actual Storage owner line"} });
     linkSqlite(ownership_line_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-durable-ownership-line", "Compare actual native Storage owner-line retention and rejected-read sweep with ea Source").dependOn(&b.addRunArtifact(ownership_line_tests).step);
+    const opaque_checkpoint_tests = b.addTest(.{ .root_module = ownership_line_tests.root_module, .use_llvm = use_llvm, .filters = &.{"scheduler ea opaque stored checkpoint"} });
+    b.step("test-durable-ea-opaque-checkpoint", "Preserve an actual ea opaque stored checkpoint through native recovery and missing definition admission").dependOn(&b.addRunArtifact(opaque_checkpoint_tests).step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);

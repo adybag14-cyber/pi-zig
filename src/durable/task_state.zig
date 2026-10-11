@@ -54,7 +54,10 @@ pub fn validate(v: Value) !void {
     const state = try field(v, "state");
     switch (try status(v)) {
         .pending, .running, .waiting => {
-            if ((try text(try field(state, "checkpoint"), "phase")).len == 0) return error.InvalidTaskCheckpoint;
+            // A stored checkpoint belongs to that task definition/version.
+            // Recovery preserves its JSON before definition fit or migration;
+            // actual ea recovery accepts an opaque null checkpoint as well.
+            _ = try field(state, "checkpoint");
             if (try status(v) == .waiting) {
                 const on = try field(state, "on");
                 if (on != .array) return error.InvalidTaskWait;

@@ -1364,6 +1364,27 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     defer held_owner.deinit();
     try std.testing.expectEqual(model.Status.terminal, try model.status(held_owner.value));
 }
+test "durable.scheduler ea opaque stored checkpoint survives recovery before definition resolution" {
+    const gpa = std.testing.allocator;
+    var seed = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":8,\"conversationId\":1,\"kind\":\"fixture.unavailable-stored-version\",\"version\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":null}}}]");
+    defer seed.deinit();
+    var memory = try backend.memory.Memory.init(gpa);
+    defer memory.deinit();
+    _ = try memory.commit(seed.value);
+    var session = session_mod.Session.init(gpa, std.testing.io, .{ .memory = &memory });
+    defer session.deinit();
+    var scheduler = try Scheduler.init(gpa, std.testing.io, &session, .{});
+    defer scheduler.deinit();
+    try scheduler.open();
+    scheduler.enable();
+    try std.testing.expectEqual(@as(usize, 0), try scheduler.drive());
+    var recovered = (try session.storage.readTableRecord(gpa, .task, 8)).?;
+    defer recovered.deinit();
+    try std.testing.expectEqual(model.Status.pending, try model.status(recovered.value));
+    try std.testing.expect(try model.field(try model.field(recovered.value, "state"), "checkpoint") == .null);
+    try std.testing.expect(try model.field(try model.field(scheduler.live_records.get(8).?.value, "state"), "checkpoint") == .null);
+    try std.testing.expect(session.failure() == null);
+}
 fn ordinaryInIdleScope(view: *const backend.memory.State, start: model.Up, conversation: ?u64) !bool {
     var at = start;
     var remaining = view.rows.count() + 1;
