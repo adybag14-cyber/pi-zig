@@ -2,7 +2,7 @@ const std = @import("std");
 const js = @import("extensions/native_js_values.zig");
 const c = js.c;
 const options = @import("extensions/native_image_resize_options.zig");
-test "native image worker serialized options retain independent cycles and undefined values" {
+test "native image worker option serialization retains independent cycles and undefined values" {
     const source = try js.Engine.init(std.testing.allocator, .{});
     defer source.deinit();
     const target = try js.Engine.init(std.testing.allocator, .{});
