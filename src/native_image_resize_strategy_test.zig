@@ -2,6 +2,30 @@ const std = @import("std");
 const js = @import("extensions/native_js_values.zig");
 const c = js.c;
 const strategy = @import("extensions/native_image_resize_strategy.zig");
+const worker = @import("extensions/native_image_vm_worker.zig");
+const option_graph = @import("extensions/native_image_resize_options.zig");
+test "native image JavaScript-valued strategy executes on an independent owned worker VM" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
+    defer engine.freeValue(mime);
+    const options = try engine.eval("({maxWidth:4,maxHeight:3})", "image-worker-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    var encoded_mime = try option_graph.serializeForWorker(engine, mime);
+    defer encoded_mime.deinit(std.testing.allocator);
+    var encoded_options = try option_graph.serializeForWorker(engine, options);
+    defer encoded_options.deinit(std.testing.allocator);
+    const task = try worker.Worker.start(std.testing.allocator, @embedFile("ai/fixtures/photon-source-8x5.png"), encoded_mime, encoded_options);
+    defer task.deinit();
+    const result = try task.result(engine);
+    defer engine.freeValue(result);
+    try std.testing.expect(task.isDone());
+    const width = try js.get(engine, result, "width");
+    defer engine.freeValue(width);
+    var value: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &value, width) < 0) return js.capture(engine);
+    try std.testing.expectEqual(@as(i32, 4), value);
+}
 test "native image JavaScript-valued strategy matches actual original resized bytes and dimension types" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
