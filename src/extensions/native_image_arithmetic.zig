@@ -77,3 +77,24 @@ pub fn initialDimensions(engine: *js.Engine, original_width: c.JSValue, original
     }
     return result;
 }
+/// Source evaluates Array.from, Set and the quality getter in that order.
+/// Actual guest constructors and methods retain SameValueZero and mutation.
+pub fn qualitySteps(engine: *js.Engine, options: c.JSValue) !c.JSValue {
+    const array_constructor = try js.global(engine, "Array");
+    defer engine.freeValue(array_constructor);
+    const from = try js.get(engine, array_constructor, "from");
+    defer engine.freeValue(from);
+    const set_constructor = try js.global(engine, "Set");
+    defer engine.freeValue(set_constructor);
+    const input = try js.array(engine);
+    defer engine.freeValue(input);
+    const quality = try js.get(engine, options, "jpegQuality");
+    if (c.JS_SetPropertyUint32(engine.context, input, 0, quality) < 0) return js.capture(engine);
+    inline for (.{ 85, 70, 55, 40 }, 1..) |value, index| {
+        if (c.JS_SetPropertyUint32(engine.context, input, index, c.JS_NewInt32(engine.context, value)) < 0) return js.capture(engine);
+    }
+    var arguments = [_]c.JSValue{input};
+    const set = try engine.checked(c.JS_CallConstructor(engine.context, set_constructor, 1, &arguments));
+    defer engine.freeValue(set);
+    return js.call(engine, from, array_constructor, &.{set});
+}
