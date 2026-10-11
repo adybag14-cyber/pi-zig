@@ -566,6 +566,13 @@ pub fn build(b: *std.Build) void {
     });
     linkDurable(b, env_daemon.root_module);
     const install_env_daemon = b.addInstallArtifact(env_daemon, .{});
+    const terminal_primitive_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/env/pty_abi_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    terminal_primitive_tests.root_module.addCSourceFile(.{ .file = b.path("src/env/pty_abi.c"), .flags = &.{"-std=gnu11"} });
+    if (target.result.os.tag == .linux) terminal_primitive_tests.root_module.linkSystemLibrary("util", .{});
+    b.step("test-env-terminal-primitives", "Exercise actual POSIX controlling terminal raw IO resize foreground and owned child lifetime").dependOn(&b.addRunArtifact(terminal_primitive_tests).step);
     const env_build_step = b.step("env", "Build the native framed Pi environment daemon");
     env_build_step.dependOn(&install_env_daemon.step);
     const identity_fixture = b.addExecutable(.{ .name = "pi-env-watch-identity-fixture", .root_module = b.createModule(.{ .root_source_file = b.path("src/env_watch_identity_fixture.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });

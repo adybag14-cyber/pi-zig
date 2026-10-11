@@ -36,13 +36,13 @@ jobs:
           $fixture = 'src/env/fixtures/terminal-971-windows-source.json'
           if ((Get-FileHash -LiteralPath $fixture).Hash -cne 'AB0CF07267F30F447490D252EDE5B631C415C123E0F8EAB39D0EDACE502687AA') { throw 'Original capture drift' }
           @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json -Depth 4 | Set-Content verification/env-terminal/inputs.json
-          [ordered]@{ head = '${{ github.sha }}'; mode = '${{ matrix.mode }}'; zig_sha256 = (Get-FileHash -LiteralPath (Get-Command zig).Source).Hash; upstream = '97195ec3c4a40665a9008c3658e67b0782f33b18'; scope = 'Native environment and capability regressions. Actual Windows terminal error capture replay. POSIX PTY and public RemoteTerminal remain incomplete.' } | ConvertTo-Json | Set-Content verification/env-terminal/source.json
+          [ordered]@{ head = '${{ github.sha }}'; mode = '${{ matrix.mode }}'; zig_sha256 = (Get-FileHash -LiteralPath (Get-Command zig).Source).Hash; upstream = '97195ec3c4a40665a9008c3658e67b0782f33b18'; scope = 'Native environment and capability regressions. Actual Windows terminal error capture replay and physical POSIX ABI primitives. Daemon POSIX PTY and public RemoteTerminal remain incomplete.' } | ConvertTo-Json | Set-Content verification/env-terminal/source.json
       - name: Exercise native environment and shared capabilities
         timeout-minutes: 12
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          & zig build test-env test-env-capability -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/env-terminal/tests.log
+          & zig build test-env test-env-capability test-env-terminal-primitives -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/env-terminal/tests.log
           if ($LASTEXITCODE -ne 0) { throw 'Native environment regression failed' }
       - name: Verify frozen inputs
         if: always()
