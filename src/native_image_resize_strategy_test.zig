@@ -6,6 +6,28 @@ const worker = @import("extensions/native_image_vm_worker.zig");
 const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
+test "native image JavaScript-valued strategy closes an unawaited worker promise with its VM" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    errdefer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
+    const options = try engine.eval("({maxWidth:4})", "unawaited-image-options", c.JS_EVAL_TYPE_GLOBAL);
+    var encoded_mime = try option_graph.serializeForWorker(engine, mime);
+    defer encoded_mime.deinit(std.testing.allocator);
+    var encoded_options = try option_graph.serializeForWorker(engine, options);
+    defer encoded_options.deinit(std.testing.allocator);
+    engine.freeValue(mime);
+    engine.freeValue(options);
+    const task = try worker.Worker.start(std.testing.allocator, @embedFile("ai/fixtures/photon-source-8x5.png"), encoded_mime, encoded_options);
+    const promise = promises.create(engine, task) catch |err| {
+        task.deinit();
+        return err;
+    };
+    engine.freeValue(promise);
+    // Scheduler destruction releases its native callback owner, which joins
+    // the exact worker before allocator and runtime destruction complete.
+    engine.deinit();
+}
 test "native image JavaScript-valued strategy public candidate keeps clone and fallback getter traces" {
     const engine = try js.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
     defer engine.deinit();
