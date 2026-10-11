@@ -6,6 +6,7 @@ const js = a.js;
 const c = a.c;
 const awaiting = @import("native_command_source_await.zig");
 const pure = @import("native_command_source_pure.zig");
+const command_owners = @import("native_command_metadata_owner.zig");
 const Callback = enum(c_int) { commandItem, bareName, fullNameOnly, name, filtered, findCommand };
 fn has(f: *Frame, object: c.JSValue, key: []const u8) !bool {
     return js.hasKey(f.engine, object, try f.text(key));
@@ -67,6 +68,20 @@ fn resolved(f: *Frame, value: c.JSValue) !c.JSValue {
     return f.own(try f.engine.checked(c.JS_NewSettledPromise(f.engine.context, false, value)));
 }
 fn continueSuggestions(engine: *js.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
+    const token = try js.get(engine, state, "nativeArgumentOwner");
+    defer engine.freeValue(token);
+    const result = continueSuggestionsValue(engine, state, value, rejected, stage) catch |err| {
+        if (stage == 1) command_owners.closeToken(engine, token);
+        return err;
+    };
+    errdefer engine.freeValue(result);
+    if (stage == 1) command_owners.completeToken(engine, token) catch |err| {
+        command_owners.closeToken(engine, token);
+        return err;
+    };
+    return result;
+}
+fn continueSuggestionsValue(engine: *js.Engine, state: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
     if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
     if (stage == 2) return c.JS_DupValue(engine.context, value);
     const bindings = try js.get(engine, state, "bindings");
@@ -78,11 +93,20 @@ fn continueSuggestions(engine: *js.Engine, state: c.JSValue, value: c.JSValue, r
     return f.result(try suggestion(&f, value, try f.field("prefix")));
 }
 fn wait(f: *Frame, value: c.JSValue, prefix: c.JSValue, stage: c_int) !c.JSValue {
+    return waitOwned(f, value, prefix, stage, c.pi_js_undefined());
+}
+fn waitOwned(f: *Frame, value: c.JSValue, prefix: c.JSValue, stage: c_int, token: c.JSValue) !c.JSValue {
     const state = try f.record();
+    try f.define(state, "nativeArgumentOwner", token);
     try f.define(state, "bindings", f.bindings);
     try f.define(state, "prefix", prefix);
     var intrinsics: awaiting.Intrinsics = .{ .constructor = try f.get(f.bindings, "promiseConstructor"), .resolve = try f.get(f.bindings, "promiseResolve"), .then_function = try f.get(f.bindings, "promiseThen") };
     return f.own(try awaiting.continueWith(continueSuggestions, f.engine, &intrinsics, state, value, stage));
+}
+const ArgumentAwait = struct { frame: *Frame, prefix: c.JSValue };
+fn awaitArgument(raw: ?*anyopaque, value: c.JSValue, token: c.JSValue) !c.JSValue {
+    const context: *ArgumentAwait = @ptrCast(@alignCast(raw.?));
+    return waitOwned(context.frame, value, context.prefix, 1, token);
 }
 pub fn suggestions(f: *Frame, args: []const c.JSValue) anyerror!c.JSValue {
     const lines = a.v.arg(args, 0);
@@ -122,7 +146,9 @@ pub fn suggestions(f: *Frame, args: []const c.JSValue) anyerror!c.JSValue {
         const argument = try f.method(command_text, "slice", &.{try f.add(space, f.num(1))});
         const command = try f.method(try f.field("commands"), "find", &.{try arrow(f, .findCommand, name)});
         if (!f.truth(command) or !try has(f, command, "getArgumentCompletions") or !f.truth(try f.get(command, "getArgumentCompletions"))) return resolved(f, c.pi_js_null());
-        return wait(f, try f.method(command, "getArgumentCompletions", &.{argument}), argument, 1);
+        const function = try f.get(command, "getArgumentCompletions");
+        var context: ArgumentAwait = .{ .frame = f, .prefix = argument };
+        return command_owners.invoke(f.engine, command, function, argument, c.pi_js_undefined(), awaitArgument, &context);
     }
     return delegate(f, args);
 }

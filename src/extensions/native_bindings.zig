@@ -1151,11 +1151,13 @@ pub const Bindings = struct {
 
     fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        @import("native_async_scope.zig").requireTargetOwner(engine, data[0]) catch |err| return publicationFailure(engine, err);
         const self = fromOwnerData(engine, data, 0) catch |err| return publicationFailure(engine, err);
         @import("native_sdk_resource_owners.zig").assertPiRuntime(self) catch |err| return publicationFailure(engine, err);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.registration(@enumFromInt(magic), args) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
+            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
             return c.JS_ThrowTypeError(context, "Native extension registration failed: %s", @as([*:0]const u8, @errorName(err)));
         };
     }
@@ -2388,6 +2390,13 @@ pub const Bindings = struct {
 
     fn publicationFailure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
         if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.StaleNativeExtensionOwner) {
+            @import("native_async_scope.zig").throwMessage(engine, context_lifetime.default_message) catch |failure| {
+                if (failure == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+                return engine.throwCaptured();
+            };
+            unreachable;
+        }
         if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
         return c.JS_ThrowTypeError(engine.context, "Native provider publication: %s", @as([*:0]const u8, @errorName(err)));
     }

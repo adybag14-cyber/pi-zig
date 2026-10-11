@@ -12,6 +12,14 @@ fn increment(engine: *em.Engine, current: c.JSValue) !c.JSValue {
 }
 
 pub fn resolve(engine: *em.Engine, extensions: c.JSValue) !c.JSValue {
+    return resolveObserved(engine, extensions, c.pi_js_undefined());
+}
+pub fn resolveForRunner(engine: *em.Engine, extensions: c.JSValue, receiver: c.JSValue) !c.JSValue {
+    const observation = try @import("native_command_live_projection.zig").observe(engine, receiver);
+    defer observation.deinit();
+    return resolveObserved(engine, extensions, observation.value);
+}
+fn resolveObserved(engine: *em.Engine, extensions: c.JSValue, observation: c.JSValue) !c.JSValue {
     const commands = try js.array(engine);
     defer engine.freeValue(commands);
     const counts = try js.builtin(engine, "Map", &.{});
@@ -33,6 +41,7 @@ pub fn resolve(engine: *em.Engine, extensions: c.JSValue) !c.JSValue {
         while (try inner.next()) |command| {
             defer engine.freeValue(command);
             try js.push(engine, commands, command);
+            try @import("native_command_live_projection.zig").collectedValue(engine, observation, extension, command);
             // counts.set is resolved before either command.name getter and
             // counts.get is resolved before the second command.name getter.
             const setter = try js.get(engine, counts, "set");
@@ -57,7 +66,7 @@ pub fn resolve(engine: *em.Engine, extensions: c.JSValue) !c.JSValue {
     defer engine.freeValue(taken);
     const map = try js.get(engine, commands, "map");
     defer engine.freeValue(map);
-    var roots = [_]c.JSValue{ counts, seen, taken };
+    var roots = [_]c.JSValue{ counts, seen, taken, observation };
     const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, project, "", 1, 0, roots.len, &roots));
     defer engine.freeValue(callback);
     return js.call(engine, map, commands, &.{callback});
@@ -73,7 +82,10 @@ fn suffixed(engine: *em.Engine, command: c.JSValue, occurrence: c.JSValue) !c.JS
 
 fn project(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    return projectCommand(engine, if (argc > 0) args[0] else c.pi_js_undefined(), roots[0], roots[1], roots[2]) catch |err| sdk.fail(engine, err);
+    const command = if (argc > 0) args[0] else c.pi_js_undefined();
+    const result = projectCommand(engine, command, roots[0], roots[1], roots[2]) catch |err| return sdk.fail(engine, err);
+    defer engine.freeValue(result);
+    return @import("native_command_live_projection.zig").projectedValue(engine, roots[3], if (argc > 1) args[1] else c.pi_js_undefined(), command, result) catch |err| sdk.fail(engine, err);
 }
 
 fn projectCommand(engine: *em.Engine, command: c.JSValue, counts: c.JSValue, seen: c.JSValue, taken: c.JSValue) !c.JSValue {

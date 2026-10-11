@@ -155,6 +155,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, command_source_module, quickjs, sqlite_lib_dir);
     const command_source_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source"}, .use_llvm = use_llvm });
     b.step("test-native-command-autocomplete-source", "Replay 292 command-component records (142 commands,20 caller-empty-FS editor turns,97 prefixes,33 completions), holder lifecycle and host GPA; full Combined constructor remains a separate required gate").dependOn(&b.addRunArtifact(command_source_tests).step);
+    // Private live command ownership gate only; no Main/provider activation.
+    const live_command_module = b.createModule(.{ .root_source_file = b.path("src/native_command_live_owner_test.zig"), .target = target, .optimize = optimize });
+    live_command_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, live_command_module, quickjs, sqlite_lib_dir);
+    const live_command_tests = b.addTest(.{ .root_module = live_command_module, .filters = &.{"Live command metadata"}, .use_llvm = use_llvm });
+    b.step("test-native-command-live-owner", "Qualify ten private live command boundaries, exact Source18 lifetime and two Source12 shared runtime/disposal corpora, SDK isolation and host GPA; no frontend activation").dependOn(&b.addRunArtifact(live_command_tests).step);
+    const live_command_allocation_tests = b.addTest(.{ .root_module = live_command_module, .filters = &.{"Live command metadata exhaustive host allocation"}, .use_llvm = use_llvm });
+    b.step("test-native-command-live-owner-allocation-diagnostic", "Run the unchanged live-owner allocation universe with original failure index and marker diagnostics").dependOn(&b.addRunArtifact(live_command_allocation_tests).step);
     const command_allocation_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-autocomplete-allocation", "Preserve genuine native fuzzy allocation failures through the complete command GPA sweep").dependOn(&b.addRunArtifact(command_allocation_tests).step);
     const sqlite_persistence_mod = b.createModule(.{

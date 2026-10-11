@@ -59,6 +59,13 @@ pub const Engine = struct {
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
     native_sdk_public_emit_class: c.JSClassID = 0,
+    native_command_metadata: ?*anyopaque = null,
+    native_command_metadata_row_class: c.JSClassID = 0,
+    native_command_metadata_task_class: c.JSClassID = 0,
+    native_command_metadata_deinit: ?*const fn (*Engine) void = null,
+    native_command_metadata_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_command_projection_observer: ?*anyopaque = null,
+    native_command_projection_class: c.JSClassID = 0,
     native_sdk_events: ?*anyopaque = null,
     native_sdk_events_deinit: ?*const fn (*Engine) void = null,
     native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
@@ -215,6 +222,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
         if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
@@ -688,7 +696,8 @@ pub const Engine = struct {
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked;
+        const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked;
     }
     pub fn closeDurableOwner(self: *Engine) void {
         if (self.native_durable_storage_close) |cleanup| cleanup(self);

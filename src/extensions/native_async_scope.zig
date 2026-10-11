@@ -5,6 +5,7 @@ const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
 const Callback = *const fn (?*anyopaque) void;
 const Validate = *const fn (*engine_mod.Engine, ?*anyopaque) anyerror!void;
+const TargetGuard = *const fn (*engine_mod.Engine, ?*anyopaque, c.JSValue) anyerror!void;
 const Token = struct {
     gpa: std.mem.Allocator,
     context: ?*anyopaque,
@@ -16,6 +17,7 @@ const Token = struct {
     owner: ?c.JSValue = null,
     validate: ?Validate = null,
     sdk_scope: bool = false,
+    target_guard: ?TargetGuard = null,
 };
 const State = struct {
     engine: *engine_mod.Engine,
@@ -79,7 +81,10 @@ pub fn retire(engine: *engine_mod.Engine, value: c.JSValue) void {
     if (token.live) if (state(engine)) |s| if (c.JS_IsStrictEqual(engine.context, s.current, value)) token.deactivate(token.context);
     token.live = false;
     token.enabled = false;
-    token.context = null;
+    // A command token may retain native provenance for its own capability
+    // guard while allowing ordinary JS and independently-owned capabilities.
+    // Its owner JS root keeps that private context alive until token GC.
+    if (token.target_guard == null) token.context = null;
 }
 pub fn disable(engine: *engine_mod.Engine, value: c.JSValue) void {
     if (record(engine, value)) |token| token.enabled = false;
@@ -92,6 +97,17 @@ pub fn bindOwner(engine: *engine_mod.Engine, value: c.JSValue, owner: c.JSValue,
 }
 pub fn markSdk(engine: *engine_mod.Engine, value: c.JSValue) void {
     record(engine, value).?.sdk_scope = true;
+}
+pub fn bindTargetGuard(engine: *engine_mod.Engine, value: c.JSValue, guard: TargetGuard) void {
+    record(engine, value).?.target_guard = guard;
+}
+/// Only command tokens install this private guard. Existing event/provider
+/// token rules are unchanged. The target is an original native owner token.
+pub fn requireTargetOwner(engine: *engine_mod.Engine, target: c.JSValue) !void {
+    const s = state(engine) orelse return;
+    if (s.failed) return error.OutOfMemory;
+    const token = record(engine, s.current) orelse return;
+    if (token.target_guard) |guard| try guard(engine, token.context, target);
 }
 /// A separately owned Main capability keeps its own native owner validation;
 /// it does not borrow an SDK default session or change the current token.
@@ -143,6 +159,11 @@ pub fn denyWithMessage(engine: *engine_mod.Engine, value: c.JSValue, message: []
 pub fn capture(engine: *engine_mod.Engine) c.JSValue {
     return if (state(engine)) |s| c.JS_DupValue(engine.context, s.current) else c.pi_js_undefined();
 }
+/// Private native ownership lookup; no authority or pointer is exported to JS.
+pub fn ownerValue(engine: *engine_mod.Engine, value: c.JSValue) c.JSValue {
+    const token = record(engine, value) orelse return c.pi_js_undefined();
+    return if (token.owner) |owner| c.JS_DupValue(engine.context, owner) else c.pi_js_undefined();
+}
 pub fn isActive(engine: *engine_mod.Engine) bool {
     return if (state(engine)) |s| !c.JS_IsUndefined(s.current) else false;
 }
@@ -150,6 +171,7 @@ pub fn requireLive(engine: *engine_mod.Engine) !void {
     const s = state(engine) orelse return;
     if (s.failed) return error.OutOfMemory;
     if (record(engine, s.current)) |token| {
+        if (!token.live and token.target_guard != null) return;
         if (token.live and token.enabled) {
             if (token.validate) |validate| try validate(engine, token.context);
             return;

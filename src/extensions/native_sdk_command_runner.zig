@@ -52,7 +52,7 @@ fn methodValue(engine: *em.Engine, receiver: c.JSValue, operation: Method, name:
         .resolveRegisteredCommands => {
             const rows = try sdk.get(engine, receiver, "extensions");
             defer engine.freeValue(rows);
-            return @import("native_sdk_command_resolution.zig").resolve(engine, rows);
+            return @import("native_sdk_command_resolution.zig").resolveForRunner(engine, rows, receiver);
         },
         .getRegisteredCommands => {
             // Ordinary assignment intentionally invokes an inherited setter

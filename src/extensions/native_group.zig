@@ -67,6 +67,7 @@ pub const Group = struct {
     }
 
     pub fn deinit(self: *Group) void {
+        @import("native_command_metadata_owner.zig").deinit(self.engine);
         @import("native_sdk_events.zig").deinit(self.engine);
         self.deinitializing = true;
         for (self.sdk_scopes.items) |scope| scope.retired = true;
@@ -158,6 +159,7 @@ pub const Group = struct {
             if (entry.sdk_scope) |scope| {
                 const removed = self.entries.orderedRemove(index);
                 if (self.engine.native_sdk_event_retire_owner) |retire| retire(self.engine, id);
+                @import("native_command_metadata_owner.zig").retireOwner(self.engine, id);
                 removed.binding.deinit();
                 self.engine.gpa.free(removed.source);
                 scope.release();
@@ -170,6 +172,7 @@ pub const Group = struct {
             const removed = self.entries.orderedRemove(index);
             self.membership_revision +%= 1;
             if (self.engine.native_sdk_event_retire_owner) |retire| retire(self.engine, id);
+            @import("native_command_metadata_owner.zig").retireOwner(self.engine, id);
             removed.binding.deinit();
             self.engine.gpa.free(removed.source);
             for (names.items) |name| self.recordRegistration(name, self.selection_received) catch |err| {
