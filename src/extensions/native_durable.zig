@@ -908,7 +908,10 @@ fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue,
 }
 fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: context_module.Context) !void {
     const self: *State = @ptrCast(@alignCast(raw.?));
-    if (std.Thread.getCurrentId() == self.owner_thread) try @import("native_durable_documents.zig").touchPublication(self, event.changes);
+    // The facade's VM drafts were already adopted by after_storage. Raw
+    // scheduler/runtime operations instead adopt and touch through their
+    // original-line owner settlement; do not touch an unadopted tracker here.
+    if (std.Thread.getCurrentId() == self.owner_thread and self.publication_context != null) try @import("native_durable_documents.zig").touchPublication(self, event.changes);
     if (self.foreign_publication) |forward| return forward(self.foreign_publication_context, event);
     if (std.Thread.getCurrentId() != self.owner_thread) {
         return error.VMCallbackOnWorker;
