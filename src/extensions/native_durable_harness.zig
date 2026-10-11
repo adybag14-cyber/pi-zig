@@ -583,6 +583,8 @@ fn publicOpenLifecycleExercise(gpa: std.mem.Allocator) !void {
         const classified = engine.nativeAllocationError(err, generation);
         if (classified != error.OutOfMemory) {
             const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            const allocation_trace = failing.getStackTrace();
+            std.debug.dumpStackTrace(&allocation_trace);
             const captured = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else c.pi_js_undefined();
             defer engine.freeValue(captured);
             const same_native = if (engine.native_allocation_exception) |value| c.JS_IsStrictEqual(engine.context, captured, value) else false;
