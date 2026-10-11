@@ -36,26 +36,12 @@ fn failureValue(engine: *js.Engine, owner: *State) !c.JSValue {
     try js.define(engine, result, "message", try engine.checked(c.JS_NewStringLen(engine.context, if (owner.task.message) |message| message.ptr else "Image worker failed", if (owner.task.message) |message| message.len else "Image worker failed".len)));
     return result;
 }
-fn poll(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn poll(context: ?*c.JSContext, handle: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
     const owner = state(data[0]);
     if (owner.settled) return c.pi_js_undefined();
-    if (!owner.task.isDone()) {
-        schedule(engine, data[0]) catch |err| {
-            const reason = if (err == error.JavaScriptException) blk: {
-                _ = engine.throwCaptured();
-                break :blk c.JS_GetException(engine.context);
-            } else blk: {
-                _ = engine.throwNativeOutOfMemory();
-                break :blk c.JS_GetException(engine.context);
-            };
-            defer engine.freeValue(reason);
-            owner.settled = true;
-            const ignored = js.call(engine, owner.reject, c.pi_js_undefined(), &.{reason}) catch return engine.throwCaptured();
-            engine.freeValue(ignored);
-        };
-        return c.pi_js_undefined();
-    }
+    if (!owner.task.isDone()) return c.pi_js_undefined();
+    timers.cancelHandle(engine, handle) catch return engine.throwCaptured();
     owner.task.join();
     var rejected = owner.task.failure != null;
     const result = if (rejected) failureValue(engine, owner) catch blk: {
@@ -80,7 +66,7 @@ fn schedule(engine: *js.Engine, object: c.JSValue) !void {
     var data = [_]c.JSValue{object};
     const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, poll, "image worker completion", 0, 0, 1, &data));
     defer engine.freeValue(callback);
-    const handle = try timers.scheduleOnce(engine, callback, 1);
+    const handle = try timers.scheduleInterval(engine, callback, 1);
     engine.freeValue(handle);
 }
 /// Takes ownership of task on success. A failed installation leaves task with
