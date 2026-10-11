@@ -1176,7 +1176,17 @@ pub const Scheduler = struct {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             const invocation = self.invocation;
             const scheduler = invocation.scheduler;
-            const record = (try tx.currentRecord(invocation.task_id, .task)) orelse return error.UnknownTask;
+            // Source's final decision reads its committed #live copy. A task
+            // may already have ended while its guest phase Promise unwinds;
+            // reading Storage here can hold the line behind unrelated guest
+            // work before the next public operation has even been admitted.
+            const record = if (scheduler.subscription != null) live: {
+                const current = scheduler.live_records.get(invocation.task_id) orelse {
+                    invocation.end();
+                    return .null;
+                };
+                break :live current.value;
+            } else (try tx.currentRecord(invocation.task_id, .task)) orelse return error.UnknownTask;
             if (try model.status(record) != .running or scheduler.closing.load(.acquire) or (invocation.mode == .run and try model.flag(record, "abortRequested"))) {
                 invocation.end();
                 return .null;
@@ -1246,7 +1256,7 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     const Probe = struct {
         memory: *backend.memory.Memory,
         scheduler: *Scheduler,
-        operation: enum { root, seed, end_link, reload_empty, reload_reject, leaf, end_leaf, end_parent, reserve_without_history, hold_parent } = .root,
+        operation: enum { root, seed, end_link, ended_step, reload_empty, reload_reject, leaf, end_leaf, end_parent, reserve_without_history, hold_parent } = .root,
         parent: u64 = 0,
         link: u64 = 0,
         conversation: u64 = 0,
@@ -1254,6 +1264,7 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
         read_conversation: bool = false,
         read_terminal: bool = false,
         forbid_snapshot: bool = false,
+        forbid_task_reads: bool = false,
         fn own(raw: ?*anyopaque) *@This() {
             return @ptrCast(@alignCast(raw.?));
         }
@@ -1276,6 +1287,7 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
         }
         fn table(raw: ?*anyopaque, gpa: std.mem.Allocator, kind: backend.memory.Table, id: u64) !?json.Owned {
             const self = own(raw);
+            if (kind == .task and self.forbid_task_reads) return error.EndedStepReadStorage;
             if (kind == .conversation and id == self.conversation) self.read_conversation = true;
             if (kind == .task and id == self.link) self.read_terminal = true;
             return self.base().readTableRecord(gpa, kind, id);
@@ -1289,7 +1301,13 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
         fn scan(raw: ?*anyopaque, gpa: std.mem.Allocator, query: backend.query.Query) !json.Owned {
             return own(raw).base().scan(gpa, query);
         }
-        const vtable: backend.Custom.VTable = .{ .mintId = mint, .commitAt = commit, .snapshot = snapshot, .readRecord = record, .readTableRecord = table, .readEntry = entry, .readDocument = document, .scan = scan };
+        fn sourceScan(raw: ?*anyopaque, gpa: std.mem.Allocator, kind: backend.memory.Table, filters: Value, limit: u64, cursor: ?Value) !json.Owned {
+            // Actual queued-input scans are allowed. Keep the historical
+            // snapshot guard on reservation itself, rather than accidentally
+            // routing this independent Storage method through that fallback.
+            return @import("backend/source_scan.zig").scan(gpa, own(raw).memory, kind, filters, limit, cursor);
+        }
+        const vtable: backend.Custom.VTable = .{ .mintId = mint, .commitAt = commit, .snapshot = snapshot, .readRecord = record, .readTableRecord = table, .readEntry = entry, .readDocument = document, .scan = scan, .sourceScan = sourceScan };
         fn finish(self: *@This(), tx: *Transaction, id: u64) !void {
             var current = (try tx.session.storage.readTableRecord(tx.gpa, .task, id)).?;
             defer current.deinit();
@@ -1310,6 +1328,20 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
                     self.conversation = try model.number(try tx.createConversation(null, self.link), "id");
                 },
                 .end_link => try self.finish(tx, self.link),
+                .ended_step => {
+                    // The published terminal record removed the task from
+                    // #live before its actual guest handler finishes. A final
+                    // Step ends it without consulting the backend again.
+                    try std.testing.expect(!self.scheduler.live_records.contains(self.link));
+                    var invocation: Invocation = .{ .scheduler = self.scheduler, .task_id = self.link, .conversation_id = 1, .definition = undefined, .mode = .run };
+                    var step: Scheduler.Step = .{ .invocation = &invocation, .previous = checkpoint.value, .failure = null, .abort_returned = false };
+                    self.forbid_task_reads = true;
+                    defer self.forbid_task_reads = false;
+                    try std.testing.expect(try Scheduler.Step.apply(&step, tx, .{}) == .null);
+                    try std.testing.expect(!invocation.active.load(.acquire));
+                    try std.testing.expect(invocation.canceled.load(.acquire));
+                    try std.testing.expectEqual(@as(usize, 0), tx.writes.array.items.len);
+                },
                 .end_leaf => try self.finish(tx, self.leaf),
                 .end_parent => try self.finish(tx, self.parent),
                 .hold_parent => {
@@ -1374,6 +1406,8 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     try probe.run(.reserve_without_history);
     try probe.expect(rows[1]);
     try probe.run(.end_link);
+    try probe.expect(rows[2]);
+    try probe.run(.ended_step);
     try probe.expect(rows[2]);
     // Neither rejected nor empty reads publish. Their loaded ended chain is
     // swept by a separate maintenance job only after the callback has ended.
