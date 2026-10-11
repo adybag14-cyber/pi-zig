@@ -203,6 +203,13 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, native_binary_tests.root_module, quickjs, sqlite_lib_dir);
     native_binary_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-binary-operators", "Use actual guest runtime arithmetic and comparison semantics in native algorithms").dependOn(&b.addRunArtifact(native_binary_tests).step);
+    const image_strategy_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_image_resize_strategy_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native image JavaScript-valued strategy"} });
+    linkQuickJs(b, image_strategy_tests.root_module, quickjs, sqlite_lib_dir);
+    image_strategy_tests.root_module.addImport("catalog_tool", catalog_tool);
+    image_strategy_tests.root_module.addIncludePath(b.path("vendor/photon-native"));
+    image_strategy_tests.root_module.linkLibrary(@import("tools/build_photon.zig").library(b, target, optimize));
+    if (target.result.os.tag != .windows) image_strategy_tests.root_module.linkSystemLibrary("m", .{});
+    b.step("test-native-image-js-strategy", "Replay upstream image bytes using actual JS-valued options and native Photon").dependOn(&b.addRunArtifact(image_strategy_tests).step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
     process_stdio_tests.root_module.addImport("catalog_tool", catalog_tool);
