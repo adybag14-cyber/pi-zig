@@ -1315,7 +1315,9 @@ const Hub = struct {
             try Manager.deliver(manager);
             try manager.pollSignals();
             try manager.pollSleepers();
-            if (manager.context_broker) |*owner| if (try owner.drain(Manager.contextDispatch, manager)) worked = true;
+            if (manager.context_broker) |*owner| {
+                if (try owner.drain(Manager.contextDispatch, manager)) worked = true;
+            }
             if (try manager.broker.drain(Manager.dispatch, manager)) worked = true;
             if (manager.thread != null and manager.finished.load(.acquire)) {
                 manager.thread.?.join();
