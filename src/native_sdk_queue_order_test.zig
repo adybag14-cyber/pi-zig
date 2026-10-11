@@ -373,3 +373,61 @@ test "native SDK queue order actual resolver operator BigInt Symbol coercion and
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC runner constructor refs fields and implemented foundation match Source516" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-runner-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-constructor-516.input.txt"), "sdk-public-runner.mjs") catch |err| {
+        std.debug.print("SDK Source516 PUBLIC constructor setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkPublicRunnerRows", "sdk-public-runner-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-constructor-source-516.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items, 0..) |source, observed, index| {
+        if (index == 0) {
+            const expected_own = source.object.get("own").?.object.keys();
+            const actual_own = observed.object.get("own").?.object.keys();
+            try std.testing.expectEqual(expected_own.len, actual_own.len);
+            for (expected_own, actual_own) |wanted, found| try std.testing.expectEqualStrings(wanted, found);
+        }
+        var fields = source.object.iterator();
+        while (fields.next()) |entry| {
+            if (index == 0 and std.mem.eql(u8, entry.key_ptr.*, "methods")) {
+                // Compare every real installed body against the actual Source
+                // descriptor. Missing methods remain absent, inventoried work;
+                // no name-only placeholders or full class claim are allowed.
+                const available = observed.object.get("methods").?.array.items;
+                for (available) |method| {
+                    var found = false;
+                    for (entry.value_ptr.array.items) |definition| if (json.equal(method.object.get("name").?, definition.object.get("name").?)) {
+                        try std.testing.expect(json.equal(method, definition));
+                        found = true;
+                        break;
+                    };
+                    try std.testing.expect(found);
+                }
+                continue;
+            }
+            const field = observed.object.get(entry.key_ptr.*) orelse return error.MissingSource516FoundationField;
+            if (!json.equal(entry.value_ptr.*, field)) std.debug.print("SDK Source516 row{d} field{s} actual={s}\n", .{ index, entry.key_ptr.*, raw });
+            try std.testing.expect(json.equal(entry.value_ptr.*, field));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkPublicRunnerRows", "sdk-public-runner-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

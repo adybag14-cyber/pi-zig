@@ -31,7 +31,7 @@ pub fn initialize(owner: *sdk.State, session: c.JSValue) !void {
     try sdk.put(engine, session, "_extensionRunner", c.JS_DupValue(engine.context, runner));
 }
 const Method = enum(c_int) { resolveRegisteredCommands, getRegisteredCommands, getCommand, getCommandDiagnostics };
-fn getPrototype(engine: *em.Engine) !c.JSValue {
+pub fn getPrototype(engine: *em.Engine) !c.JSValue {
     if (engine.native_sdk_command_runner_prototype) |value| return c.JS_DupValue(engine.context, value);
     const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
@@ -39,6 +39,7 @@ fn getPrototype(engine: *em.Engine) !c.JSValue {
         const callback = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, if (field.value == @intFromEnum(Method.getCommand)) 1 else 0, field.value));
         if (c.JS_DefinePropertyValueStr(engine.context, result, field.name, callback, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
+    try @import("native_sdk_public_runner.zig").installPrototype(engine, result);
     engine.native_sdk_command_runner_prototype = c.JS_DupValue(engine.context, result);
     return result;
 }

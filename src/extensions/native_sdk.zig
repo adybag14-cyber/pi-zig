@@ -2437,6 +2437,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
     try @import("native_sdk_session_projection.zig").install(engine, exports);
     try @import("native_sdk_builtin_execution.zig").installFindFactories(engine, exports);
+    try @import("native_sdk_public_runner.zig").install(engine, exports);
     try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));

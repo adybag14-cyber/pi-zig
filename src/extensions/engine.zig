@@ -55,6 +55,7 @@ pub const Engine = struct {
     native_async_scope: ?*anyopaque = null,
     native_sdk_noop_ui: ?c.JSValue = null,
     native_sdk_command_runner_prototype: ?c.JSValue = null,
+    native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_events: ?*anyopaque = null,
     native_sdk_events_deinit: ?*const fn (*Engine) void = null,
     native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
@@ -208,6 +209,7 @@ pub const Engine = struct {
         @import("native_async_scope.zig").deinit(self);
         if (self.native_sdk_noop_ui) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
+        if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         if (self.native_weak_ref_constructor) |value| self.freeValue(value);
         if (self.native_weak_ref_deref) |value| self.freeValue(value);
