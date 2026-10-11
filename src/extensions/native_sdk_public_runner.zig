@@ -102,15 +102,16 @@ pub fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     try sdk.put(engine, result, "skills", try sdk.array(engine));
     return result;
 }
-const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts };
+const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts, emitCacheWarmingDecision, emitMessageEnd, emitToolResult, emitToolCall, emitBeforeProviderRequest, emitBeforeProviderHeaders, emitResourcesDiscover, emitInput };
 pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
     try @import("native_sdk_public_runner_shortcuts.zig").initialize(engine);
     inline for (std.meta.fields(Method)) |field| {
         const kind: Method = @enumFromInt(field.value);
         const arity: c_int = switch (kind) {
+            .emitInput => 4,
             .bindCore, .withUIPrompt => 3,
-            .setFlagValue, .createToolContext, .resolveToolRenderers => 2,
-            .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts => 1,
+            .setFlagValue, .createToolContext, .resolveToolRenderers, .emitResourcesDiscover => 2,
+            .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders => 1,
             else => 0,
         };
         const function = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, arity, field.value));
@@ -129,6 +130,14 @@ fn assign(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.J
 fn methodValue(engine: *em.Engine, runner: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     switch (operation) {
+        .emitCacheWarmingDecision => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .cache),
+        .emitMessageEnd => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .message),
+        .emitToolResult => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .tool_result),
+        .emitToolCall => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .tool_call),
+        .emitBeforeProviderRequest => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .request),
+        .emitBeforeProviderHeaders => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .headers),
+        .emitResourcesDiscover => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .resources),
+        .emitInput => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .input),
         .getShortcuts => return @import("native_sdk_public_runner_shortcuts.zig").get(engine, runner, first),
         .isSessionBeforeEvent => return @import("native_sdk_public_runner_emit.zig").before(engine, first),
         .emit => return @import("native_sdk_public_runner_emit.zig").emit(engine, runner, first),
