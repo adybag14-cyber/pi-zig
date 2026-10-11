@@ -33,7 +33,25 @@ fn allocationCase(allocator: std.mem.Allocator) !void {
     engine.freeValue(result);
 }
 test "native image JavaScript-valued strategy releases every induced allocator failure and recovers" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationCase, .{});
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try allocationCase(baseline.allocator());
+    const total = baseline.alloc_index;
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    std.debug.print("IMAGE_ALLOCATION_TOTAL {d}\n", .{total});
+    for (0..total) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        if (allocationCase(failing.allocator())) |_| {
+            std.debug.print("IMAGE_ALLOCATION_UNEXPECTED_SUCCESS index={d}/{d} actual={d} induced={}\n", .{ index, total, failing.alloc_index, failing.has_induced_failure });
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |err| {
+            if (err != error.OutOfMemory) {
+                std.debug.print("IMAGE_ALLOCATION_UNEXPECTED_ERROR index={d}/{d} actual={d} induced={} error={s}\n", .{ index, total, failing.alloc_index, failing.has_induced_failure, @errorName(err) });
+                return err;
+            }
+            try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+        }
+    }
     try allocationCase(std.testing.allocator);
 }
 test "native image JavaScript-valued strategy matches every actual public worker result" {
@@ -68,7 +86,7 @@ test "native image JavaScript-valued strategy isolates simultaneous worker reque
         \\const bytes=new Uint8Array(imageInputBuffer),before=[...bytes];
         \\const results=await Promise.all([candidateResizeImage(bytes,'image/png',{maxWidth:4}),candidateResizeImage(bytes,'image/png',{maxHeight:2}),candidateResizeImage(bytes,'image/png')]);
         \\if(results[0].width!==4||results[0].height!==3||results[1].height!==2||results[2].wasResized!==false||JSON.stringify([...bytes])!==JSON.stringify(before))throw Error('concurrent image request isolation');
-        , "image-concurrent-requests");
+    , "image-concurrent-requests");
     engine.freeValue(result);
 }
 test "native image JavaScript-valued strategy closes an unawaited worker promise with its VM" {
