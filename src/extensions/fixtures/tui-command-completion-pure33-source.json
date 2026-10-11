@@ -1,0 +1,592 @@
+{
+  "status": "DERIVED_EXACT_COMPONENT_SPLIT_OF_PRESERVED_ACTUAL_SOURCE34",
+  "sourceFixture": "tui-combined-completion-original-ea.json",
+  "sourceSha256": "C5D09629122A0E4BBB57EC9B03491FE0B1E9830AF24E8C7FC0A08F0DBE9A6E83",
+  "cases": [
+    {
+      "name": "completion 0",
+      "args": [
+        [
+          "/he"
+        ],
+        0,
+        3,
+        {
+          "value": "help",
+          "label": "help"
+        },
+        "/he"
+      ],
+      "result": {
+        "lines": [
+          "/help "
+        ],
+        "cursorLine": 0,
+        "cursorCol": 6
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 1",
+      "args": [
+        [
+          "  /he tail"
+        ],
+        0,
+        5,
+        {
+          "value": "help",
+          "label": "help"
+        },
+        "/he"
+      ],
+      "result": {
+        "lines": [
+          "  /help  tail"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 8
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 2",
+      "args": [
+        [
+          "　/he"
+        ],
+        0,
+        4,
+        {
+          "value": "help",
+          "label": "help"
+        },
+        "/he"
+      ],
+      "result": {
+        "lines": [
+          "　/help "
+        ],
+        "cursorLine": 0,
+        "cursorCol": 7
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 3",
+      "args": [
+        [
+          "@sr"
+        ],
+        0,
+        3,
+        {
+          "value": "@src/",
+          "label": "src/"
+        },
+        "@sr"
+      ],
+      "result": {
+        "lines": [
+          "@src/"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 5
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 4",
+      "args": [
+        [
+          "@sr tail"
+        ],
+        0,
+        3,
+        {
+          "value": "@src/file.ts",
+          "label": "file.ts"
+        },
+        "@sr"
+      ],
+      "result": {
+        "lines": [
+          "@src/file.ts  tail"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 13
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 5",
+      "args": [
+        [
+          "@\"my d\" trailing"
+        ],
+        0,
+        6,
+        {
+          "value": "@\"my dir/\"",
+          "label": "my dir/"
+        },
+        "@\"my d"
+      ],
+      "result": {
+        "lines": [
+          "@\"my dir/\" trailing"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 9
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 6",
+      "args": [
+        [
+          "\"my d\" trailing"
+        ],
+        0,
+        5,
+        {
+          "value": "\"my dir/\"",
+          "label": "my dir/"
+        },
+        "\"my d"
+      ],
+      "result": {
+        "lines": [
+          "\"my dir/\" trailing"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 8
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 7",
+      "args": [
+        [
+          "/read my d"
+        ],
+        0,
+        10,
+        {
+          "value": "\"my dir/\"",
+          "label": "my dir/"
+        },
+        "my d"
+      ],
+      "result": {
+        "lines": [
+          "/read \"my dir/\""
+        ],
+        "cursorLine": 0,
+        "cursorCol": 14
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 8",
+      "args": [
+        [
+          "src/fi"
+        ],
+        0,
+        6,
+        {
+          "value": "src/file.ts",
+          "label": "file.ts"
+        },
+        "src/fi"
+      ],
+      "result": {
+        "lines": [
+          "src/file.ts"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 11
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 9",
+      "args": [
+        [
+          "one",
+          "界/fi",
+          "three"
+        ],
+        1,
+        4,
+        {
+          "value": "界/😀.ts",
+          "label": "😀.ts"
+        },
+        "界/fi"
+      ],
+      "result": {
+        "lines": [
+          "one",
+          "界/😀.ts",
+          "three"
+        ],
+        "cursorLine": 1,
+        "cursorCol": 7
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 10",
+      "args": [
+        [
+          "😀/fi"
+        ],
+        0,
+        5,
+        {
+          "value": "😀/界/",
+          "label": "界/"
+        },
+        "😀/fi"
+      ],
+      "result": {
+        "lines": [
+          "😀/界/"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 5
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 11",
+      "args": [
+        [
+          "/cmd 😀fi"
+        ],
+        0,
+        9,
+        {
+          "value": "😀file",
+          "label": "😀file"
+        },
+        "😀fi"
+      ],
+      "result": {
+        "lines": [
+          "/cmd 😀file"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 11
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 12",
+      "args": [
+        [
+          "�fi"
+        ],
+        0,
+        3,
+        {
+          "value": "�file",
+          "label": "file"
+        },
+        "�fi"
+      ],
+      "result": {
+        "lines": [
+          "�file"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 5
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 13",
+      "args": [
+        [
+          "x"
+        ],
+        0,
+        0,
+        {
+          "value": "file",
+          "label": "file"
+        },
+        ""
+      ],
+      "result": {
+        "lines": [
+          "filex"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 4
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 14",
+      "args": [
+        [],
+        0,
+        0,
+        {
+          "value": "file",
+          "label": "file"
+        },
+        ""
+      ],
+      "result": {
+        "lines": [
+          "file"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 4
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 15",
+      "args": [
+        [
+          "/path/sub"
+        ],
+        0,
+        9,
+        {
+          "value": "/path/subdir/",
+          "label": "subdir/"
+        },
+        "/path/sub"
+      ],
+      "result": {
+        "lines": [
+          "/path/subdir/"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 13
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 16",
+      "args": [
+        [
+          "/cmd arg"
+        ],
+        0,
+        8,
+        {
+          "value": "new",
+          "label": "new"
+        },
+        "arg"
+      ],
+      "result": {
+        "lines": [
+          "/cmd new"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 8
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 17",
+      "args": [
+        [
+          "x"
+        ],
+        0,
+        -1,
+        {
+          "value": "new",
+          "label": "new"
+        },
+        "x"
+      ],
+      "result": {
+        "lines": [
+          "newx"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 3
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "completion 18",
+      "args": [
+        [
+          "x"
+        ],
+        0,
+        99,
+        {
+          "value": "new",
+          "label": "new"
+        },
+        "x"
+      ],
+      "result": {
+        "lines": [
+          "xnew"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 4
+      },
+      "fresh": true,
+      "inputUnchanged": true
+    },
+    {
+      "name": "trigger \"\"",
+      "result": true
+    },
+    {
+      "name": "trigger \"/\"",
+      "result": false
+    },
+    {
+      "name": "trigger \"/help\"",
+      "result": false
+    },
+    {
+      "name": "trigger \" /help\"",
+      "result": false
+    },
+    {
+      "name": "trigger \"　/help\"",
+      "result": false
+    },
+    {
+      "name": "trigger \"/help arg\"",
+      "result": true
+    },
+    {
+      "name": "trigger \"/help\\targ\"",
+      "result": false
+    },
+    {
+      "name": "trigger \"hello\"",
+      "result": true
+    },
+    {
+      "name": "trigger \"./path\"",
+      "result": true
+    },
+    {
+      "name": "trigger \"@file\"",
+      "result": true
+    },
+    {
+      "name": "trigger \"界。/help\"",
+      "result": true
+    },
+    {
+      "name": "actual completion item getter and iterator evaluation order",
+      "trace": [
+        "item.value",
+        "item.label",
+        "item.value",
+        "iterator:start",
+        "iterator:done",
+        "item.value",
+        "item.value"
+      ],
+      "result": {
+        "lines": [
+          "@\"my dir/\" tail"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 9
+      }
+    },
+    {
+      "name": "actual completion ordinary slice receiver and numeric cursor conversion",
+      "trace": [
+        "col.valueOf",
+        [
+          "slice",
+          true,
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          "slice",
+          true,
+          [
+            {}
+          ]
+        ],
+        "col.valueOf",
+        "value",
+        [
+          "slice",
+          true,
+          [
+            0,
+            {}
+          ]
+        ],
+        "col.valueOf",
+        "value",
+        "label",
+        "value",
+        "value"
+      ],
+      "result": {
+        "lines": [
+          "file"
+        ],
+        "cursorLine": 0,
+        "cursorCol": 4
+      }
+    },
+    {
+      "name": "original item getter exception",
+      "same": true
+    }
+  ],
+  "requiredFullCombinedConstructor": {
+    "name": "CombinedAutocompleteProvider",
+    "own": [
+      "commands",
+      "basePath",
+      "fdPath"
+    ],
+    "commandsDefault": true,
+    "commandsFresh": true,
+    "fdPath": null,
+    "commandsSame": true,
+    "baseSupplied": "base",
+    "fdSupplied": false,
+    "length": 0
+  },
+  "fullCombinedCount": 34,
+  "scope": "Pure33 retained verbatim. Full constructor record33 remains mandatory full Combined class gate; private CommandSourceFixture cannot qualify it."
+}

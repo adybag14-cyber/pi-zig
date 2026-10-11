@@ -135,7 +135,7 @@ pub fn build(b: *std.Build) void {
     command_source_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, command_source_module, quickjs, sqlite_lib_dir);
     const command_source_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source"}, .use_llvm = use_llvm });
-    b.step("test-native-command-autocomplete-source", "Replay original142 command records,20 Editor/StdinBuffer turns,97 pure prefixes,34 completions,holder lifecycle and exhaustive host GPA").dependOn(&b.addRunArtifact(command_source_tests).step);
+    b.step("test-native-command-autocomplete-source", "Replay 292 command-component records (142 commands,20 caller-empty-FS editor turns,97 prefixes,33 completions), holder lifecycle and host GPA; full Combined constructor remains a separate required gate").dependOn(&b.addRunArtifact(command_source_tests).step);
     const command_allocation_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-autocomplete-allocation", "Preserve genuine native fuzzy allocation failures through the complete command GPA sweep").dependOn(&b.addRunArtifact(command_allocation_tests).step);
     const sqlite_persistence_mod = b.createModule(.{

@@ -32,7 +32,7 @@ jobs:
           if ($head -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
           if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
           $zig = (Get-Command zig).Source
-          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = 'Debug'; scope = 'Private command-only implementation: six named tests and 293 original Source records, dynamic holder lifetime, and exhaustive host allocation cleanup. Main provider activation, fd and full Combined class remain unqualified.' } | ConvertTo-Json | Set-Content verification/native-command-source/source.json
+          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = 'Debug'; scope = 'Private command-only implementation: six named tests and 292 command-component Source records (142 commands,20 caller-empty-FS editor turns,97 prefixes,33 completions), dynamic holder lifetime, and exhaustive host allocation cleanup. The original full Combined constructor record remains preserved and mandatory under requiredFullCombinedConstructor. Main provider activation, fd and full Combined class remain unqualified.' } | ConvertTo-Json | Set-Content verification/native-command-source/source.json
           @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json | Set-Content verification/native-command-source/inputs.json
       - name: Replay command Source records and allocation cleanup
         shell: pwsh
