@@ -110,6 +110,12 @@ pub fn requireOwnedUiLive(engine: *engine_mod.Engine) !void {
     }
     try requireLive(engine);
 }
+/// Private read-only diagnostic: no callbacks, exceptions, allocation or scope switch.
+pub fn diagnostic(engine: *engine_mod.Engine) struct { active: bool = false, live: bool = false, enabled: bool = false, sdk: bool = false, depth: usize = 0, failed: bool = false } {
+    const s = state(engine) orelse return .{};
+    const token = record(engine, s.current) orelse return .{ .depth = s.depth, .failed = s.failed };
+    return .{ .active = true, .live = token.live, .enabled = token.enabled, .sdk = token.sdk_scope, .depth = s.depth, .failed = s.failed };
+}
 pub fn isSdkScope(engine: *engine_mod.Engine) bool {
     if (state(engine)) |s| if (record(engine, s.current)) |token| return token.sdk_scope;
     return false;

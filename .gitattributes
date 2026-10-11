@@ -21,3 +21,8 @@ src/tui/icu78/*.txt -whitespace
 
 # Preserve the complete pinned upstream Node license, including its indentation.
 docs/native-localecompare/provenance/NODE-LICENSE-node24.14.0 -whitespace
+
+# These original Source programs retain their captured CRLF boundary bytes.
+src/extensions/fixtures/sdk-runner-emit-527.input.txt whitespace=cr-at-eol
+src/extensions/fixtures/sdk-runner-emit-iterators-532.input.txt whitespace=cr-at-eol
+src/extensions/fixtures/sdk-runner-ui-prompts-530.input.txt whitespace=cr-at-eol

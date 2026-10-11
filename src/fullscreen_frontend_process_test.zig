@@ -170,6 +170,13 @@ const Fixture = struct {
     }
     fn deinit(self: *Fixture) void {
         const gpa = std.testing.allocator;
+        // Preserve failure-only native editor diagnostics before the owned
+        // fixture directory is removed. Child teardown has already joined IO.
+        if (self.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", gpa, .limited(1024 * 1024))) |diagnostic| {
+            defer gpa.free(diagnostic);
+            if (std.mem.indexOf(u8, diagnostic, "EDITOR_CONTROL_") != null)
+                std.debug.print("Native editor control diagnostic:\n{s}\n", .{diagnostic});
+        } else |_| {}
         gpa.free(self.binary);
         gpa.free(self.mock);
         gpa.free(self.history);
@@ -733,7 +740,11 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     try observed.send(&child, "\x1b[B", "→ Plugin Two");
     try observed.sendEditorRow(&child, "\t", "two");
     try std.testing.expect(!try observed.screen.contains("Plugin One"));
-    try observed.sendEditorRow(&child, "\x15/hel\t", "/help");
+    // Actual Source20 capture: a cold burst opens a regular command menu;
+    // only a subsequent Tab after that ready menu applies its selection.
+    try observed.sendEditorRow(&child, "\x15/hel\t", "/hel");
+    try observed.wait(&child, "→ /help", 0);
+    try observed.sendEditorRow(&child, "\t", "/help");
     try observed.sendEditorRow(&child, "\x15%cancel", "%cancel");
     try observed.sendEditorRow(&child, "\x15fresh", "fresh");
     try std.testing.io.sleep(.fromMilliseconds(400), .awake);

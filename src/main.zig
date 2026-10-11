@@ -2086,6 +2086,20 @@ fn syncExtensionScriptContext(
         host.gpa.free(footer_models.scoped);
         if (footer_models.available) |models| host.gpa.free(models);
     };
+    const resolved_commands = try host.resolvedCommandNames();
+    defer {
+        for (resolved_commands) |entry| host.gpa.free(entry.invocation_name);
+        host.gpa.free(resolved_commands);
+    }
+    var main_autocomplete_commands: std.ArrayList([]const u8) = .empty;
+    defer main_autocomplete_commands.deinit(host.gpa);
+    try main_autocomplete_commands.appendSlice(host.gpa, &coding.repl_completion.command_names);
+    for (resolved_commands) |entry| {
+        const duplicate = for (main_autocomplete_commands.items) |name| {
+            if (std.mem.eql(u8, name, entry.invocation_name)) break true;
+        } else false;
+        if (!duplicate) try main_autocomplete_commands.append(host.gpa, entry.invocation_name);
+    }
     const context = try ui_controller.contextJson(host.gpa, .{
         .runtime_bound = true,
         .settings_json = host.settings_snapshot_json,
@@ -2102,6 +2116,7 @@ fn syncExtensionScriptContext(
         .project_trusted = project_trusted,
         .active_tools = active_tools,
         .all_tools = all_tools,
+        .main_autocomplete_commands = main_autocomplete_commands.items,
         .native_tool_selection = host.native_tool_selection,
         .model_catalog = model_catalog,
         .scoped_models = footer_models.scoped,

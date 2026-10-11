@@ -157,6 +157,8 @@ pub const ContextOptions = struct {
     thinking_level: ?[]const u8 = null,
     project_trusted: bool = false,
     idle: bool = true,
+    /// Main-owned completion metadata; separate from extension API commands.
+    main_autocomplete_commands: ?[]const []const u8 = null,
     active_tools: []const []const u8 = &.{},
     all_tools: []const []const u8 = &.{},
     native_tool_selection: ?NativeToolSelection = null,
@@ -811,6 +813,16 @@ pub const Controller = struct {
         if (options.native_tool_selection) |selection| {
             try out.writer.writeAll(",\"nativeToolSelection\":");
             try std.json.Stringify.value(selection, .{}, &out.writer);
+        }
+        if (options.main_autocomplete_commands) |commands| {
+            try out.writer.writeAll(",\"mainAutocompleteCommands\":[");
+            for (commands, 0..) |name, index| {
+                if (index > 0) try out.writer.writeByte(',');
+                try out.writer.writeAll("{\"name\":");
+                try std.json.Stringify.value(name, .{}, &out.writer);
+                try out.writer.writeByte('}');
+            }
+            try out.writer.writeByte(']');
         }
         try out.writer.writeAll(",\"activeTools\":[");
         for (options.active_tools, 0..) |tool, index| {

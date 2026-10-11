@@ -670,7 +670,19 @@ const Transport = struct {
         } else {
             var control = try editor_protocol.readControl(self.engine.gpa, &request.object);
             defer control.deinit();
-            _ = try self.group.ui.editors.control(control);
+            const scopes = @import("native_async_scope.zig");
+            const before_scope = scopes.diagnostic(self.engine);
+            const before_generation = self.group.ui.editors.generation;
+            const ctrl_r = switch (control.kind) {
+                .input => |bytes| std.mem.eql(u8, bytes, "\x12"),
+                else => false,
+            };
+            const handled = self.group.ui.editors.control(control) catch |err| {
+                std.debug.print("EDITOR_CONTROL_FAILURE received=true kind={s} ctrlR={} error={s} fence={any} owner={d} editorBefore={d} editorAfter={d} component={} polling={} retiring={} creating={} scopeBefore={any} scopeAfter={any} originalError={s}\n", .{ @tagName(control.kind), ctrl_r, @errorName(err), control.fence, self.group.ui.editors.owner_generation, before_generation, self.group.ui.editors.generation, self.group.ui.editors.component != null, self.group.ui.editors.polling, self.group.ui.editors.retiring, self.group.ui.editors.creating, before_scope, scopes.diagnostic(self.engine), self.engine.last_error orelse "<none>" });
+                return err;
+            };
+            if (!handled or (ctrl_r and self.group.ui.editors.component != null))
+                std.debug.print("EDITOR_CONTROL_NO_RETIRE received=true kind={s} ctrlR={} handled={} fence={any} owner={d} editorBefore={d} editorAfter={d} component={} scopeBefore={any} scopeAfter={any}\n", .{ @tagName(control.kind), ctrl_r, handled, control.fence, self.group.ui.editors.owner_generation, before_generation, self.group.ui.editors.generation, self.group.ui.editors.component != null, before_scope, scopes.diagnostic(self.engine) });
         }
     }
     fn editorRecord(context: ?*anyopaque, record: editor_protocol.Record) !void {

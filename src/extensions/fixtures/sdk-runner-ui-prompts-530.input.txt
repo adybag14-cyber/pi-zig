@@ -1,0 +1,38 @@
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+const pack=value=>typeof value==='bigint'?{bigint:String(value)}:typeof value==='symbol'?{symbol:String(value)}:value===undefined?{undefined:true}:Object.is(value,-0)?{negativeZero:true}:typeof value==='number'&&!Number.isFinite(value)?{number:String(value)}:value;
+const rows=[],makeRunner=()=>new ExtensionRunner([],{flagValues:new Map()},'/prompts',{},{});
+const failure=(error,marker,finishMarker)=>({identity:error===marker,finishIdentity:error===finishMarker,name:error?.name,message:error?.message});
+for(const id of ['number-zero','negative-zero','string-zero','string-two','bigint-zero','bigint-one','object-zero','symbol-depth','getter-setter']){
+ const events=[],runner=makeRunner(),marker={toString(){events.push('marker.toString');return'forbidden marker'}},token={token:true};let shadow;
+ const depths={'number-zero':0,'negative-zero':-0,'string-zero':'0','string-two':'2','bigint-zero':0n,'bigint-one':1n,'object-zero':{[Symbol.toPrimitive](hint){events.push(['depth.coerce',hint]);return 0}},'symbol-depth':Symbol('depth'),'getter-setter':{[Symbol.toPrimitive](hint){events.push(['depth.coerce',hint]);return 0}}};
+ shadow=depths[id];if(id==='getter-setter')Object.defineProperty(runner,'uiPromptDepth',{get(){events.push('depth.get');return shadow},set(value){events.push(['depth.set',pack(value)]);shadow=value}});else runner.uiPromptDepth=shadow;
+ runner.emitUIPromptEvent=function(event){events.push(['event',this===runner,{...event}])};let outcome;
+ try{const result=runner.withUIPrompt('select','title',function(){events.push(['run',this===undefined]);return Promise.resolve(token)});events.push(['returnedPromise',result instanceof Promise]);outcome={token:(await result)===token}}catch(error){outcome=failure(error,marker)}
+ rows.push({id,outcome,events,depth:pack(id==='getter-setter'?shadow:runner.uiPromptDepth),active:pack(runner.activeUIPrompt)});
+}
+for(const id of ['run-throws','finally-getter-throws','finally-call-throws','finally-sync-result','finish-throws','start-throws','active-prompt-getters','borrowed-receiver']){
+ const events=[],marker={toString(){events.push('marker.toString');return'forbidden marker'}},finishMarker={finish:true},token={token:true},runner=makeRunner();
+ const receiver=id==='borrowed-receiver'?{uiPromptDepth:'0',activeUIPrompt:undefined}:runner;
+ receiver.emitUIPromptEvent=function(event){events.push(['event',this===receiver,{...event}]);if(id==='start-throws'&&event.type==='ui_prompt_start')throw marker;if(id==='finish-throws'&&event.type==='ui_prompt_end')throw finishMarker};
+ const run=function(){events.push(['run',this===undefined]);if(id==='run-throws'||id==='finish-throws')throw marker;
+  if(id==='active-prompt-getters'){let count=0;receiver.activeUIPrompt={get kind(){events.push('active.kind');return'editor'},get title(){events.push(['active.title',++count]);return count===1?'truthy':'changed title'}}}
+  if(id==='finally-getter-throws')return{get finally(){events.push('finally.get');throw marker}};
+  const value={get finally(){events.push('finally.get');return function(finish){events.push(['finally.call',this===value,finish.name,finish.length]);if(id==='finally-call-throws')throw marker;finish();return token}}};return value;
+ };let outcome;
+ try{const result=ExtensionRunner.prototype.withUIPrompt.call(receiver,'input','initial',run);events.push(['returnedToken',result===token]);outcome={token:result===token}}catch(error){outcome=failure(error,marker,finishMarker)}
+ rows.push({id,outcome,events,depth:pack(receiver.uiPromptDepth),active:pack(receiver.activeUIPrompt)});
+}
+for(const id of ['nested-inner-first','nested-outer-first']){
+ const events=[],runner=makeRunner(),first={first:true},second={second:true};let resolveOuter,resolveInner,inner;
+ runner.emitUIPromptEvent=function(event){events.push(['event',this===runner,{...event}])};
+ const outer=runner.withUIPrompt('confirm','outer',function(){events.push('outer.run');inner=runner.withUIPrompt('editor','inner',function(){events.push('inner.run');return new Promise(resolve=>{resolveInner=resolve})});return new Promise(resolve=>{resolveOuter=resolve})});events.push(['both.pending',runner.uiPromptDepth]);
+ if(id==='nested-inner-first'){resolveInner(second);events.push(['inner.result',(await inner)===second,runner.uiPromptDepth]);resolveOuter(first);events.push(['outer.result',(await outer)===first,runner.uiPromptDepth])}else{resolveOuter(first);events.push(['outer.result',(await outer)===first,runner.uiPromptDepth]);resolveInner(second);events.push(['inner.result',(await inner)===second,runner.uiPromptDepth])}
+ rows.push({id,events,depth:runner.uiPromptDepth,active:pack(runner.activeUIPrompt)});
+}
+{
+ const id='queued-event-dynamic-receiver',events=[],queued=[],event={type:'ui_prompt_start'},receiver={emit(value){events.push(['old.emit',this===receiver,value===event]);return Promise.resolve()}};
+ const original=globalThis.queueMicrotask;globalThis.queueMicrotask=function(callback){events.push(['queue',this===undefined,callback.name,callback.length]);queued.push(callback)};
+ try{const result=ExtensionRunner.prototype.emitUIPromptEvent.call(receiver,event);events.push(['returnedUndefined',result===undefined]);receiver.emit=function(value){events.push(['latest.emit',this===receiver,value===event,value.changed]);return Promise.resolve()};event.changed=true;const value=queued[0].call({different:true});events.push(['callbackReturnedUndefined',value===undefined])}finally{globalThis.queueMicrotask=original}
+ rows.push({id,events});
+}
+globalThis.sdkRunnerUIPromptRows=rows;

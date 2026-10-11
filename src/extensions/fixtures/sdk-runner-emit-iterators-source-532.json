@@ -1,0 +1,1128 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "before-switch",
+      "outcome": {
+        "value": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ]
+      ]
+    },
+    {
+      "id": "before-fork",
+      "outcome": {
+        "value": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ],
+        [
+          "type",
+          2
+        ]
+      ]
+    },
+    {
+      "id": "before-compact",
+      "outcome": {
+        "value": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ],
+        [
+          "type",
+          2
+        ],
+        [
+          "type",
+          3
+        ]
+      ]
+    },
+    {
+      "id": "before-tree",
+      "outcome": {
+        "value": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ],
+        [
+          "type",
+          2
+        ],
+        [
+          "type",
+          3
+        ],
+        [
+          "type",
+          4
+        ]
+      ]
+    },
+    {
+      "id": "before-other",
+      "outcome": {
+        "value": false
+      },
+      "events": [
+        [
+          "type",
+          1
+        ],
+        [
+          "type",
+          2
+        ],
+        [
+          "type",
+          3
+        ],
+        [
+          "type",
+          4
+        ]
+      ]
+    },
+    {
+      "id": "before-changing",
+      "outcome": {
+        "value": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ],
+        [
+          "type",
+          2
+        ],
+        [
+          "type",
+          3
+        ]
+      ]
+    },
+    {
+      "id": "before-getter-throws",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        [
+          "type",
+          1
+        ]
+      ]
+    },
+    {
+      "id": "cancel",
+      "outcome": {
+        "undefined": false,
+        "result": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "return.get"
+        ],
+        [
+          "inner",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "inner-return-throws",
+      "outcome": {
+        "marker": false,
+        "listener": false,
+        "innerClose": true,
+        "outerClose": false,
+        "next": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "return.get"
+        ],
+        [
+          "inner",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "outer-return-throws",
+      "outcome": {
+        "marker": false,
+        "listener": false,
+        "innerClose": false,
+        "outerClose": true,
+        "next": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "return.get"
+        ],
+        [
+          "inner",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "both-return-throw",
+      "outcome": {
+        "marker": false,
+        "listener": false,
+        "innerClose": true,
+        "outerClose": false,
+        "next": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "return.get"
+        ],
+        [
+          "inner",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "listener-and-return-throw",
+      "outcome": {
+        "marker": false,
+        "listener": true,
+        "innerClose": false,
+        "outerClose": false,
+        "next": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        "marker.toString",
+        "event.type",
+        "error.listener",
+        [
+          "inner",
+          "return.get"
+        ],
+        [
+          "inner",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [
+        {
+          "extensionPath": "iterator.ext",
+          "event": "session_before_fork",
+          "error": "handler marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "inner-next-throws",
+      "outcome": {
+        "marker": false,
+        "listener": false,
+        "innerClose": false,
+        "outerClose": false,
+        "next": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "return.get"
+        ],
+        [
+          "outer",
+          "return.call",
+          true,
+          0
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "outer-next-throws",
+      "outcome": {
+        "marker": false,
+        "listener": false,
+        "innerClose": false,
+        "outerClose": false,
+        "next": true
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "cancel-getter-throws",
+      "outcome": {
+        "undefined": false,
+        "result": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        "cancel.get",
+        "marker.toString",
+        "event.type",
+        "error.listener",
+        [
+          "inner",
+          "next.call",
+          true,
+          1
+        ],
+        [
+          "second",
+          true,
+          true,
+          true
+        ],
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "next.call",
+          true,
+          2
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          1
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "iterator.ext",
+          "event": "session_before_fork",
+          "error": "handler marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "handler-reject",
+      "outcome": {
+        "undefined": true,
+        "result": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "marker.toString",
+        "event.type",
+        "error.listener",
+        [
+          "inner",
+          "next.call",
+          true,
+          1
+        ],
+        [
+          "second",
+          true,
+          true,
+          true
+        ],
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "next.call",
+          true,
+          2
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          1
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "iterator.ext",
+          "event": "session_before_fork",
+          "error": "handler marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "no-cancel",
+      "outcome": {
+        "undefined": true,
+        "result": false
+      },
+      "events": [
+        "context.create",
+        "event.type",
+        "map.get",
+        [
+          "map.call",
+          true,
+          "",
+          1
+        ],
+        "slice.get",
+        [
+          "slice.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "iterator.get"
+        ],
+        [
+          "outer",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "outer",
+          "next.get"
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "iterator.get"
+        ],
+        [
+          "inner",
+          "iterator.call",
+          true,
+          0
+        ],
+        [
+          "inner",
+          "next.get"
+        ],
+        [
+          "inner",
+          "next.call",
+          true,
+          0
+        ],
+        [
+          "first",
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "next.call",
+          true,
+          1
+        ],
+        [
+          "second",
+          true,
+          true,
+          true
+        ],
+        "event.type",
+        "event.type",
+        [
+          "inner",
+          "next.call",
+          true,
+          2
+        ],
+        [
+          "outer",
+          "next.call",
+          true,
+          1
+        ]
+      ],
+      "errors": []
+    }
+  ]
+}

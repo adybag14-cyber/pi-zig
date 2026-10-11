@@ -1,0 +1,23 @@
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+const rows=[];
+for(const id of ['switch','fork','compact','tree','other','changing','getter-throws']){
+ const events=[],marker={marker:true};let count=0;
+ const values={switch:['session_before_switch'],fork:['session_before_fork'],compact:['session_before_compact'],tree:['session_before_tree'],other:['custom'],changing:['session_before_fork','session_before_switch','session_before_compact']};
+ const event={get type(){events.push(['type',++count]);if(id==='getter-throws')throw marker;const list=values[id];return list[Math.min(count-1,list.length-1)]}};let outcome;
+ try{outcome={value:ExtensionRunner.prototype.isSessionBeforeEvent.call({borrowed:true},event)}}catch(error){outcome={identity:error===marker}}
+ rows.push({id:'before-'+id,outcome,events});
+}
+for(const id of ['cancel','inner-return-throws','outer-return-throws','both-return-throw','listener-and-return-throw','inner-next-throws','outer-next-throws','cancel-getter-throws','handler-reject','no-cancel']){
+ const events=[],errors=[],context={context:true},result={cancel:true},marker={toString(){events.push('marker.toString');return'handler marker'}},listenerMarker={listener:true},closeMarker={close:true},outerMarker={outer:true},nextMarker={next:true};
+ const event={get type(){events.push('event.type');return'session_before_fork'}};
+ function iterable(name,values){let index=0;const value={get [Symbol.iterator](){events.push([name,'iterator.get']);return function(){events.push([name,'iterator.call',this===value,arguments.length]);const iterator={get next(){events.push([name,'next.get']);return function(){events.push([name,'next.call',this===iterator,index]);if((name==='inner'&&id==='inner-next-throws')||(name==='outer'&&id==='outer-next-throws'))throw nextMarker;return index<values.length?{done:false,value:values[index++]}:{done:true}}},get return(){events.push([name,'return.get']);return function(){events.push([name,'return.call',this===iterator,arguments.length]);if(name==='inner'&&['inner-return-throws','both-return-throw','listener-and-return-throw'].includes(id))throw closeMarker;if(name==='outer'&&['outer-return-throws','both-return-throw','listener-and-return-throw'].includes(id))throw outerMarker;return{done:true}}}};return iterator}}};return value}
+ const first=function(e,ctx){events.push(['first',this===undefined,e===event,ctx===context]);if(id==='listener-and-return-throw')throw marker;if(id==='handler-reject')return Promise.reject(marker);if(id==='cancel-getter-throws')return{get cancel(){events.push('cancel.get');throw marker}};if(id==='no-cancel')return false;return result};
+ const second=function(e,ctx){events.push(['second',this===undefined,e===event,ctx===context]);return undefined};
+ const handlers={get slice(){events.push('slice.get');return function(){events.push(['slice.call',this===handlers,arguments.length]);return iterable('inner',[first,second])}}};
+ const ext={path:'iterator.ext',handlers:new Map([['session_before_fork',handlers]])},extensions=[ext];Object.defineProperty(extensions,'map',{get(){events.push('map.get');return function(mapper){events.push(['map.call',this===extensions,mapper.name,mapper.length]);return iterable('outer',Array.prototype.map.call(this,mapper))}}});
+ const runner=new ExtensionRunner(extensions,{},'/iterators',{},{});runner.createContext=function(){events.push('context.create');return context};runner.onError(error=>{events.push('error.listener');errors.push({...error,ownKeys:Object.keys(error)});if(id==='listener-and-return-throw')throw listenerMarker});
+ queueMicrotask(()=>events.push('outside.microtask'));let outcome;
+ try{const pending=runner.emit(event);events.push(['returnedPromise',pending instanceof Promise]);const value=await pending;outcome={undefined:value===undefined,result:value===result}}catch(error){outcome={marker:error===marker,listener:error===listenerMarker,innerClose:error===closeMarker,outerClose:error===outerMarker,next:error===nextMarker}}
+ rows.push({id,outcome,events,errors});
+}
+globalThis.sdkRunnerEmitIteratorRows=rows;

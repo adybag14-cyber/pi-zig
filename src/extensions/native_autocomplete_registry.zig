@@ -60,7 +60,9 @@ fn base(engine: *engine_mod.Engine, context_holder: c.JSValue, magic: c_int, arg
         if (!std.mem.startsWith(u8, prefix, "/") or std.mem.indexOfAny(u8, prefix, " \t") != null) return c.pi_js_null();
         const snapshot = try get(engine, context_holder, "snapshot");
         defer engine.freeValue(snapshot);
-        const commands = try get(engine, snapshot, "commands");
+        const main_commands = try get(engine, snapshot, "mainAutocompleteCommands");
+        defer engine.freeValue(main_commands);
+        const commands = if (c.JS_IsArray(main_commands)) c.JS_DupValue(engine.context, main_commands) else try get(engine, snapshot, "commands");
         defer engine.freeValue(commands);
         if (!c.JS_IsArray(commands)) return c.pi_js_null();
         const length_value = try get(engine, commands, "length");

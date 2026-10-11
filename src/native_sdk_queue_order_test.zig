@@ -532,3 +532,121 @@ test "native SDK queue order PUBLIC renderer chains deferred roots raw errors an
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC UI prompt old numeric depth finally raw identity and queued receivers match Source530" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-ui-prompts-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-ui-prompts-530.input.txt"), "sdk-public-ui-prompts.mjs") catch |err| {
+        std.debug.print("SDK Source530 PUBLIC UI prompts setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerUIPromptRows", "sdk-public-ui-prompts-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-ui-prompts-source-530.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 20), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (std.mem.eql(u8, source.object.get("id").?.string, "symbol-depth")) {
+            // Keep the immutable Node wording. Compare the original builtin
+            // error class and every other field/trace across the two engines.
+            inline for (.{ "id", "events", "depth", "active" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            inline for (.{ "identity", "finishIdentity", "name" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source530 complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerUIPromptRows", "sdk-public-ui-prompts-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC async emit snapshots intrinsic await errors and lazy context match Source527" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-emit-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-emit-527.input.txt"), "sdk-public-emit.mjs") catch |err| {
+        std.debug.print("SDK Source527 PUBLIC emit setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerEmitRows", "sdk-public-emit-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-emit-source-527.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 9), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (std.mem.eql(u8, source.object.get("id").?.string, "post-invalidate-context")) {
+            inline for (.{ "id", "outcome", "events" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("errors").?.array.items;
+            const found = observed.object.get("errors").?.array.items;
+            try std.testing.expectEqual(@as(usize, 1), wanted.len);
+            try std.testing.expectEqual(wanted.len, found.len);
+            inline for (.{ "extensionPath", "event", "error", "ownKeys" }) |field| try std.testing.expect(json.equal(wanted[0].object.get(field).?, found[0].object.get(field).?));
+            // Runtime-rendered stack text is preserved in the original Source
+            // capture but not claimed equal between Node and QuickJS.
+            try std.testing.expect(wanted[0].object.get("stack").?.string.len > 0);
+            try std.testing.expect(found[0].object.get("stack").?.string.len > 0);
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source527 complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerEmitRows", "sdk-public-emit-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC emit custom iterator close precedence latest result and before short circuits match Source532" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-emit-iterators-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-emit-iterators-532.input.txt"), "sdk-public-emit-iterators.mjs") catch |err| {
+        std.debug.print("SDK Source532 PUBLIC emit iterators setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerEmitIteratorRows", "sdk-public-emit-iterators-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-emit-iterators-source-532.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    try std.testing.expectEqual(@as(usize, 17), rows.array.items.len);
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK Source532 complete actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkRunnerEmitIteratorRows", "sdk-public-emit-iterators-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
