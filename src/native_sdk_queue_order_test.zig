@@ -72,7 +72,7 @@ test "native SDK queue order reads ordinary writable AgentSession fields from th
     inline for (.{ "descriptors", "trace" }) |field| try std.testing.expect(json.equal(expected.value.object.get(field).?, actual.value.object.get(field).?));
 }
 
-test "native SDK queue rejects Source499 ordered duplicate command aliases and literal collisions" {
+test "native SDK queue order rejects Source499 ordered duplicate command aliases and literal collisions" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     engine.native_io = std.testing.io;
@@ -132,7 +132,7 @@ fn commandSourceBridgeValue(engine: *em.Engine, session: em.c.JSValue, extension
     defer engine.freeValue(rows);
     return em.c.pi_js_bool(engine.context, @intFromBool(em.c.JS_IsStrictEqual(engine.context, rows, extensions)));
 }
-test "native SDK actual command Maps snapshots complete rows and mutable builtin traces match Source501" {
+test "native SDK queue order actual command Maps snapshots complete rows and mutable builtin traces match Source501" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     engine.native_io = std.testing.io;
