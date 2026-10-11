@@ -25,3 +25,42 @@ pub fn scaleDimension(engine: *js.Engine, dimension: c.JSValue, limit: c.JSValue
     defer engine.freeValue(quotient);
     return math(engine, "round", quotient);
 }
+pub const Dimensions = struct {
+    width: c.JSValue,
+    height: c.JSValue,
+    pub fn deinit(self: *Dimensions, engine: *js.Engine) void {
+        engine.freeValue(self.width);
+        engine.freeValue(self.height);
+    }
+};
+/// Source keeps the option value itself after each limiting assignment. Do not
+/// convert it to a float before subsequent comparison or WASM argument coercion.
+pub fn initialDimensions(engine: *js.Engine, original_width: c.JSValue, original_height: c.JSValue, options: c.JSValue) !Dimensions {
+    var result: Dimensions = .{ .width = c.JS_DupValue(engine.context, original_width), .height = c.JS_DupValue(engine.context, original_height) };
+    errdefer result.deinit(engine);
+    const first_limit = try js.get(engine, options, "maxWidth");
+    defer engine.freeValue(first_limit);
+    if (try compare(engine, .greater, result.width, first_limit)) {
+        const used_limit = try js.get(engine, options, "maxWidth");
+        defer engine.freeValue(used_limit);
+        const height = try scaleDimension(engine, result.height, used_limit, result.width);
+        engine.freeValue(result.height);
+        result.height = height;
+        const assigned = try js.get(engine, options, "maxWidth");
+        engine.freeValue(result.width);
+        result.width = assigned;
+    }
+    const second_limit = try js.get(engine, options, "maxHeight");
+    defer engine.freeValue(second_limit);
+    if (try compare(engine, .greater, result.height, second_limit)) {
+        const used_limit = try js.get(engine, options, "maxHeight");
+        defer engine.freeValue(used_limit);
+        const width = try scaleDimension(engine, result.width, used_limit, result.height);
+        engine.freeValue(result.width);
+        result.width = width;
+        const assigned = try js.get(engine, options, "maxHeight");
+        engine.freeValue(result.height);
+        result.height = assigned;
+    }
+    return result;
+}
