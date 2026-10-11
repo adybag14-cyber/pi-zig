@@ -259,8 +259,8 @@ test "native document retention reads exact numeric types without coercion" {
     const values = try engine.eval("globalThis.coercions=0;[undefined,NaN,-1,'0',0,1,Infinity,-Infinity,null,new Number(0),{valueOf(){coercions++;return 0}}]", "retention-values.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(values);
     const expected = [_]f64{ 600_000, 600_000, 600_000, 600_000, 0, 1, std.math.inf(f64), 600_000, 600_000, 600_000, 600_000 };
-    for (expected, 0..) |want, index| {
-        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
+    for (expected, 0..) |want, item_offset| {
+        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(item_offset)));
         defer engine.freeValue(value);
         try std.testing.expectEqual(want, duration(engine, value));
     }

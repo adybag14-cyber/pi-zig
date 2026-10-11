@@ -493,9 +493,9 @@ fn createSessionOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     const policy = @import("native_durable_document_retention.zig");
     const clock = try policy.captureClock(engine, supplied);
     defer engine.freeValue(clock);
-    const result = try sessionObjectWithClock(engine, argument(args, 0), clock, !c.JS_IsUndefined(supplied));
-    (try state(engine, result)).cache_policy.plain_ms = policy.duration(engine, selected);
-    return result;
+    const session_value = try sessionObjectWithClock(engine, argument(args, 0), clock, !c.JS_IsUndefined(supplied));
+    (try state(engine, session_value)).cache_policy.plain_ms = policy.duration(engine, selected);
+    return session_value;
 }
 pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     const clock = try @import("native_durable_document_retention.zig").captureClock(engine, c.pi_js_undefined());
