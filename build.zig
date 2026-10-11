@@ -987,6 +987,8 @@ pub fn build(b: *std.Build) void {
     const run_engine_tests = b.addRunArtifact(engine_tests);
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
+    const original_oom_tests = b.addTest(.{ .root_module = engine_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native allocation original identity"} });
+    b.step("test-native-allocation-original-identity", "Preserve original native OOM identity across cleanup without accepting user or stale causes").dependOn(&b.addRunArtifact(original_oom_tests).step);
     test_step.dependOn(&run_engine_tests.step);
     const commonjs_tests = b.addTest(.{
         .filters = &.{"extensions.commonjs."},

@@ -835,6 +835,41 @@ test "native durable VM native allocation exception tracking distinguishes fresh
     try std.testing.expect(c.JS_ToBool(engine.context, user) != 0);
 }
 
+test "native allocation original identity survives cleanup OOM with scoped user and stale controls" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const first_scope = engine.native_allocation_generation;
+    _ = engine.throwNativeOutOfMemory();
+    const first = c.JS_GetException(engine.context);
+    defer engine.freeValue(first);
+    _ = engine.throwNativeOutOfMemory();
+    const second = c.JS_GetException(engine.context);
+    defer engine.freeValue(second);
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, first, second));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, second, engine.native_allocation_exception.?));
+    const classified_first = if (engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, first)))) |unexpected| bad: {
+        engine.freeValue(unexpected);
+        break :bad error.ExpectedNativeException;
+    } else |err| engine.nativeAllocationError(err, first_scope);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, first, engine.captured_exception.?));
+    const next_scope = engine.native_allocation_generation;
+    const user = try engine.eval("new InternalError('out of memory')", "user-oom-lookalike-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(user);
+    _ = engine.throwNativeOutOfMemory();
+    engine.freeValue(c.JS_GetException(engine.context));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, user))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_scope));
+    };
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, first))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_scope));
+    };
+    const stale_scope = engine.native_allocation_generation;
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, second))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, stale_scope));
+    };
+    try std.testing.expectEqual(error.OutOfMemory, classified_first);
+}
+
 test "native control pump settles an idle promise on its owner thread and bounds missing responses" {
     const Control = struct {
         polls: usize = 0,
