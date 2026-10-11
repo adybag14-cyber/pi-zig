@@ -9,7 +9,7 @@ pub fn library(b: *std.Build, target: std.Build.ResolvedTarget, optimize: std.bu
         const browser_name = b.fmt("photon_browser_{d}", .{index});
         addObject(b, result, target, optimize, browser_name, &flags);
     }
-    for ([_][]const u8{ "codec_imports", "browser_imports", "codec_alloc_guard", "photon_native", "photon_browser_native" }) |name| addObject(b, result, target, optimize, name, &flags);
+    for ([_][]const u8{ "codec_imports", "browser_imports", "codec_alloc_guard", "photon_native", "photon_browser_native", "session_api", "session_browser_api" }) |name| addObject(b, result, target, optimize, name, &flags);
     const extra_hooks = [_][]const u8{ "-Dmalloc=pi_image_malloc", "-Dcalloc=pi_image_calloc", "-Drealloc=pi_image_realloc", "-Dfree=pi_image_free", "-Dabort=pi_image_abort", "-include", b.pathFromRoot("vendor/photon-native/codec_alloc_guard.h") };
     const hooks = std.mem.concat(b.allocator, []const u8, &.{ &flags, &extra_hooks }) catch @panic("OOM");
     for ([_][]const u8{ "wasm-rt-impl", "wasm-rt-mem-impl", "wasm-rt-exceptions-impl" }) |name| addObject(b, result, target, optimize, name, hooks);

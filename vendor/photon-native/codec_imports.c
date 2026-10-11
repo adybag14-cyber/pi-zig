@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "photon.h"
+static WASM_RT_THREAD_LOCAL void (*pi_node_throw_reporter)(w2c_pi__photon *, u32, u32);
+void pi_photon_set_throw_reporter(void (*reporter)(w2c_pi__photon *, u32, u32)) { pi_node_throw_reporter = reporter; }
 struct w2c_0x5F__wbindgen__placeholder__0x5F { w2c_pi__photon *module; };
 wasm_rt_externref_t w2c_0x5F__wbindgen__placeholder__0x5F_0x5F_wbg_appendChild_fa3b00dade9fc4cf(struct w2c_0x5F__wbindgen__placeholder__0x5F* a0, wasm_rt_externref_t a1, wasm_rt_externref_t a2) {
   (void)a0;
@@ -241,6 +243,7 @@ wasm_rt_externref_t w2c_0x5F__wbindgen__placeholder__0x5F_0x5F_wbindgen_memory(s
   wasm_rt_trap(WASM_RT_TRAP_UNREACHABLE);
 }
 void w2c_0x5F__wbindgen__placeholder__0x5F_0x5F_wbindgen_throw(struct w2c_0x5F__wbindgen__placeholder__0x5F* a0, u32 a1, u32 a2) {
+  if (pi_node_throw_reporter) pi_node_throw_reporter(a0->module, a1, a2);
   (void)a0;
   (void)a1;
   (void)a2;

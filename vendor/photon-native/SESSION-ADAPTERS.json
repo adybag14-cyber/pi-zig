@@ -1,0 +1,41 @@
+{
+  "kind": "Project-authored direct C session adapters",
+  "source": "Existing pinned Node034 and Browser033 wasm2c translations unchanged",
+  "behavior": "One module per owned session; thread-local optional Rust throw payload reporter; C setjmp boundaries; allocator graph retained between operations; real image frees before whole-module teardown",
+  "files": [
+    {
+      "path": "codec_alloc_guard.c",
+      "sha256": "D68B68DD7604F3F6E626C76E76E44C73A0AC74F2CDFB3D5D4995D662ACA31A40"
+    },
+    {
+      "path": "codec_alloc_guard.h",
+      "sha256": "9CA26BFEF7F156148EFB49FD302C7526D5C136D4C91E5F4A70E2D945B0BB7794"
+    },
+    {
+      "path": "codec_imports.c",
+      "sha256": "E92938B910B9ED8F234FA193696F9E53BED7E815F552D07487241A318AB87235"
+    },
+    {
+      "path": "browser_imports.c",
+      "sha256": "1B0A088109562475A54FE9B53AEFBF47D4ED6F7A237BFA67380F474A2D475DDE"
+    },
+    {
+      "path": "session_api.c",
+      "sha256": "42945F4DE41915EEF5BAA7002E3DC88411D1A3277B43029F086644DE3C97F84A"
+    },
+    {
+      "path": "session_api.h",
+      "sha256": "EE719DE097A2D9D0B4172C466B6E59F340C645ACD0954E54DDE0CA4174211913"
+    },
+    {
+      "path": "session_browser_api.c",
+      "sha256": "F395944C379FC695F38ED447743C41ADF36612A6C9E569EA8229AF7FBB9F4085"
+    },
+    {
+      "path": "session_browser_api.h",
+      "sha256": "D1243987E764414916B4420F8395CC54302CB4877B8F00CD027E0E99920FCEA2"
+    }
+  ],
+  "validation": "External Windows Debug and ReleaseSafe typed Node resize:20 Source results, real finally error and allocation failures; composed build and platform gates pending",
+  "limitations": "Public worker, options binding, production default and full dependency SBOM remain open"
+}

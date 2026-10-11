@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "photon_browser.h"
+static WASM_RT_THREAD_LOCAL void (*pi_browser_throw_reporter)(w2c_pi__photon__browser *, u32, u32);
+void pi_browser_photon_set_throw_reporter(void (*reporter)(w2c_pi__photon__browser *, u32, u32)) { pi_browser_throw_reporter = reporter; }
 struct w2c_wbg { w2c_pi__photon__browser *module; };
 wasm_rt_externref_t w2c_wbg_0x5F_wbg_appendChild_fa3b00dade9fc4cf(struct w2c_wbg* a0, wasm_rt_externref_t a1, wasm_rt_externref_t a2) {
   (void)a0;
@@ -241,6 +243,7 @@ wasm_rt_externref_t w2c_wbg_0x5F_wbindgen_memory(struct w2c_wbg* a0) {
   wasm_rt_trap(WASM_RT_TRAP_UNREACHABLE);
 }
 void w2c_wbg_0x5F_wbindgen_throw(struct w2c_wbg* a0, u32 a1, u32 a2) {
+  if (pi_browser_throw_reporter) pi_browser_throw_reporter(a0->module, a1, a2);
   (void)a0;
   (void)a1;
   (void)a2;

@@ -115,3 +115,23 @@ void pi_image_guard_leave(PiImageGuard *guard) {
 #endif
   pi_image_active_guard = NULL;
 }
+
+int pi_image_guard_resume(PiImageGuard *guard) {
+  if (pi_image_active_guard) return 0;
+  guard->allocation_failed = 0;
+  guard->trap = 0;
+#if WASM_RT_STACK_DEPTH_COUNT
+  guard->saved_call_depth = wasm_rt_call_stack_depth;
+  wasm_rt_saved_call_stack_depth = wasm_rt_call_stack_depth;
+#endif
+  pi_image_active_guard = guard;
+  return 1;
+}
+void pi_image_guard_suspend(PiImageGuard *guard) {
+  if (pi_image_active_guard != guard) abort();
+#if WASM_RT_STACK_DEPTH_COUNT
+  wasm_rt_call_stack_depth = guard->saved_call_depth;
+#endif
+  pi_image_active_guard = NULL;
+}
+void *pi_image_guard_thread_cookie(void) { return &pi_image_active_guard; }

@@ -22,6 +22,9 @@ typedef struct {
 int pi_image_guard_enter(PiImageGuard *guard, PiImageAllocator allocator,
                          size_t max_bytes);
 void pi_image_guard_leave(PiImageGuard *guard);
+int pi_image_guard_resume(PiImageGuard *guard);
+void pi_image_guard_suspend(PiImageGuard *guard);
+void *pi_image_guard_thread_cookie(void);
 void *pi_image_malloc(size_t length);
 void *pi_image_calloc(size_t count, size_t length);
 void *pi_image_realloc(void *pointer, size_t length);
