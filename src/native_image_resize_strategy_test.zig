@@ -10,16 +10,18 @@ test "native image JavaScript-valued strategy closes an unawaited worker promise
     const engine = try js.Engine.init(std.testing.allocator, .{});
     errdefer engine.deinit();
     try @import("extensions/timers.zig").install(engine, std.testing.io);
-    const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
-    errdefer engine.freeValue(mime);
-    const options = try engine.eval("({maxWidth:4})", "unawaited-image-options", c.JS_EVAL_TYPE_GLOBAL);
-    errdefer engine.freeValue(options);
-    var encoded_mime = try option_graph.serializeForWorker(engine, mime);
+    var encoded_mime = blk: {
+        const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
+        defer engine.freeValue(mime);
+        break :blk try option_graph.serializeForWorker(engine, mime);
+    };
     defer encoded_mime.deinit(std.testing.allocator);
-    var encoded_options = try option_graph.serializeForWorker(engine, options);
+    var encoded_options = blk: {
+        const options = try engine.eval("({maxWidth:4})", "unawaited-image-options", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(options);
+        break :blk try option_graph.serializeForWorker(engine, options);
+    };
     defer encoded_options.deinit(std.testing.allocator);
-    engine.freeValue(mime);
-    engine.freeValue(options);
     const task = try worker.Worker.start(std.testing.allocator, @embedFile("ai/fixtures/photon-source-8x5.png"), encoded_mime, encoded_options);
     const promise = promises.create(engine, task) catch |err| {
         task.deinit();
