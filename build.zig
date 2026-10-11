@@ -195,6 +195,10 @@ pub fn build(b: *std.Build) void {
     const json_envelope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_json_envelope.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     const json_envelope_run = b.addRunArtifact(json_envelope_tests);
     b.step("test-native-json-envelope", "Validate ECMA JSON grammar while retaining opaque UTF16 escapes and top-level routing").dependOn(&json_envelope_run.step);
+    const image_option_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_image_resize_options_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native image worker option"} });
+    linkQuickJs(b, image_option_tests.root_module, quickjs, sqlite_lib_dir);
+    image_option_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-image-options", "Preserve Source option cloning spread order and fallback getter identity").dependOn(&b.addRunArtifact(image_option_tests).step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
     process_stdio_tests.root_module.addImport("catalog_tool", catalog_tool);
