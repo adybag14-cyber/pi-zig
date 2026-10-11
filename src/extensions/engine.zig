@@ -559,13 +559,22 @@ pub const Engine = struct {
         if (self.native_allocation_exception) |previous| self.freeValue(previous);
         self.native_allocation_exception = c.JS_DupValue(self.context, exception);
         self.native_allocation_generation +%= 1;
+        // Zero means unmarked. Keep the counter entirely in u64, including
+        // its wrap boundary; no guest number, map, property, or allocation.
+        if (self.native_allocation_generation == 0) self.native_allocation_generation = 1;
+        c.pi_js_mark_native_allocation_error(exception, self.native_allocation_generation);
         return c.JS_Throw(self.context, exception);
     }
     pub fn nativeAllocationError(self: *Engine, err: anyerror, generation: u64) anyerror {
         if (err == error.JavaScriptException and generation != self.native_allocation_generation) {
-            if (self.captured_exception) |exception| if (self.native_allocation_exception) |native| {
-                if (c.JS_IsStrictEqual(self.context, exception, native)) return error.OutOfMemory;
-            };
+            if (self.captured_exception) |exception| {
+                const tagged = c.pi_js_native_allocation_error_generation(exception);
+                // A later cleanup OOM must not erase the original error's
+                // identity. Reject errors born before this host boundary,
+                // including a previously caught native error rethrown later.
+                const distance = tagged -% generation;
+                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation) return error.OutOfMemory;
+            }
         }
         return err;
     }
@@ -868,6 +877,96 @@ test "native allocation original identity survives cleanup OOM with scoped user 
         try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, stale_scope));
     };
     try std.testing.expectEqual(error.OutOfMemory, classified_first);
+}
+
+test "native allocation original identity tags survive guest tampering proxies and u64 wrap" {
+    const Fixture = struct {
+        fn fail(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            return Engine.fromContext(context.?).throwNativeOutOfMemory();
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.bindFunction("nativeAllocationFixture", Fixture.fail, 0);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    engine.native_allocation_generation = std.math.maxInt(u64) - 1;
+    const generation = engine.native_allocation_generation;
+    _ = engine.eval(
+        \\globalThis.allocationTrapCalls = 0;
+        \\WeakMap.prototype.get = WeakMap.prototype.set = function(){ throw 'tampered WeakMap'; };
+        \\globalThis.WeakMap = new Proxy(WeakMap, {construct(){throw 'tampered constructor';}});
+        \\try { nativeAllocationFixture(); } catch (error) { globalThis.firstNativeAllocation = error; }
+        \\Object.defineProperty(firstNativeAllocation, 'native_allocation_generation', {value:0});
+        \\firstNativeAllocation.message = 'changed by guest';
+        \\Object.freeze(firstNativeAllocation);
+        \\try { nativeAllocationFixture(); } catch (_) {}
+        \\throw firstNativeAllocation;
+    , "native-allocation-u64-wrap", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation));
+    };
+    try std.testing.expectEqual(@as(u64, 1), engine.native_allocation_generation);
+    try std.testing.expectEqual(std.math.maxInt(u64), c.pi_js_native_allocation_error_generation(engine.captured_exception.?));
+    const next_generation = engine.native_allocation_generation;
+    _ = engine.eval(
+        \\try { nativeAllocationFixture(); } catch (_) {}
+        \\throw new Proxy(firstNativeAllocation, {
+        \\  get(){ allocationTrapCalls++; throw 'get trap'; },
+        \\  getPrototypeOf(){ allocationTrapCalls++; throw 'prototype trap'; }
+        \\});
+    , "native-allocation-proxy-control", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, next_generation));
+    };
+    try std.testing.expectEqual(@as(u64, 0), c.pi_js_native_allocation_error_generation(engine.captured_exception.?));
+    const traps = try engine.eval("allocationTrapCalls", "native-allocation-traps", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(traps);
+    var trap_count: i32 = -1;
+    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &trap_count, traps));
+    try std.testing.expectEqual(@as(i32, 0), trap_count);
+}
+
+test "native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error" {
+    try std.testing.expectError(error.OutOfMemory, Engine.init(std.testing.allocator, .{ .memory_limit = 1 }));
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    _ = engine.throwNativeOutOfMemory();
+    const first = c.JS_GetException(engine.context);
+    const weak_arguments = [_]c.JSValue{first};
+    const weak = try engine.checked(c.JS_CallConstructor(engine.context, engine.native_weak_ref_constructor.?, 1, &weak_arguments));
+    defer engine.freeValue(weak);
+    _ = engine.throwNativeOutOfMemory();
+    engine.freeValue(c.JS_GetException(engine.context));
+    // Releasing the ordinary reference must release the first error: the
+    // native tracker stores no table, list, or additional strong reference.
+    engine.freeValue(first);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const dereferenced = try engine.checked(c.JS_Call(engine.context, engine.native_weak_ref_deref.?, weak, 0, null));
+    defer engine.freeValue(dereferenced);
+    try std.testing.expect(c.JS_IsUndefined(dereferenced));
+    const exception = engine.native_allocation_exception.?;
+    const generation = engine.native_allocation_generation;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    c.JS_SetMemoryLimit(engine.runtime, 1);
+    defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    // At this limit even a JS allocation fails. Reading/writing the private
+    // marker and capturing/classifying an already owned error still succeed.
+    c.pi_js_mark_native_allocation_error(exception, generation);
+    try std.testing.expectEqual(generation, c.pi_js_native_allocation_error_generation(exception));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, exception))) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation - 1));
+    };
+    _ = engine.throwNativeOutOfMemory();
+    const exhausted = c.JS_GetException(engine.context);
+    defer engine.freeValue(exhausted);
+    // QuickJS may fall back to null when it cannot create an Error object.
+    // A primitive has no trustworthy native identity and must stay unmarked.
+    try std.testing.expect(c.JS_IsNull(exhausted));
+    try std.testing.expectEqual(@as(u64, 0), c.pi_js_native_allocation_error_generation(exhausted));
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, exhausted))) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
 }
 
 test "native control pump settles an idle promise on its owner thread and bounds missing responses" {
