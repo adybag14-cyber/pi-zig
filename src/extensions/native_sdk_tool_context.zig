@@ -49,7 +49,7 @@ fn commandInvoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
 }
 fn commandValue(engine: *em.Engine, kind: Command, args: []const c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     const owner = try originalOwner(engine, data);
-    if (kind == .getSystemPromptOptions) return sdk.get(engine, owner.data, "_baseSystemPromptOptions");
+    if (kind == .getSystemPromptOptions) return sdk.get(engine, data[0], "_baseSystemPromptOptions");
     const runners = @import("native_sdk_command_runner.zig");
     return runners.invoke(owner, @enumFromInt(@intFromEnum(kind) - 1), args);
 }

@@ -118,12 +118,24 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
     const input_count = if (c.JS_IsArray(inputs)) try sdk.length(engine, inputs) else 0;
     const previous = try sdk.get(engine, data, "extensionOwnerIds");
     defer engine.freeValue(previous);
-    if (input_count == 0 and (!c.JS_IsArray(previous) or try sdk.length(engine, previous) == 0)) return;
+    if (input_count == 0 and (!c.JS_IsArray(previous) or try sdk.length(engine, previous) == 0)) {
+        const result = try sdk.object(engine);
+        defer engine.freeValue(result);
+        try sdk.put(engine, result, "extensions", try sdk.array(engine));
+        try sdk.put(engine, result, "errors", try sdk.array(engine));
+        try sdk.put(engine, result, "warnings", try sdk.array(engine));
+        try sdk.put(engine, result, "runtime", try @import("native_sdk_extension_runtime.zig").create(engine, c.pi_js_undefined()));
+        try sdk.put(engine, data, "extensions", c.JS_DupValue(engine.context, result));
+        return;
+    }
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
     // A reload creates a new runtime. Saved APIs and existing sessions keep
     // their previous runtime until its own marked JS graph is collected.
     const private_scope = try @import("native_sdk_resource_owners.zig").create(group);
     defer engine.freeValue(private_scope);
+    const runtime = try @import("native_sdk_extension_runtime.zig").create(engine, private_scope);
+    defer engine.freeValue(runtime);
+    try sdk.put(engine, private_scope, "_extensionRuntime", c.JS_DupValue(engine.context, runtime));
     const ids = try sdk.array(engine);
     defer engine.freeValue(ids);
     const rows = try sdk.array(engine);
@@ -147,9 +159,13 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
         const row = try sdk.object(engine);
         defer engine.freeValue(row);
         try sdk.put(engine, row, "path", try sdk.text(engine, path));
+        try sdk.put(engine, row, "resolvedPath", try sdk.text(engine, path));
         try sdk.put(engine, row, "sourceInfo", c.JS_DupValue(engine.context, try binding.sourceInfoValue()));
         try sdk.put(engine, row, "commands", try map(engine));
+        try sdk.put(engine, row, "flags", try map(engine));
+        inline for (.{ "handlers", "shortcuts", "messageRenderers", "entryRenderers" }) |field| try sdk.put(engine, row, field, try map(engine));
         binding.sdk_command_row = c.JS_DupValue(engine.context, row);
+        try sdk.put(engine, binding.owner_token, "_sdkPendingFlagValues", try map(engine));
         binding.loadFactoryValue(factory) catch |err| {
             const diagnostic = try sdk.object(engine);
             defer engine.freeValue(diagnostic);
@@ -161,6 +177,7 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
             try group.remove(binding.owner_id);
             continue;
         };
+        try @import("native_sdk_runtime_flags.zig").commit(engine, binding.owner_token);
         try sdk.append(engine, ids, c.JS_NewInt64(engine.context, @intCast(binding.owner_id)));
         const tools = try map(engine);
         defer engine.freeValue(tools);
@@ -172,7 +189,6 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
             engine.freeValue(ignored);
         }
         try sdk.put(engine, row, "tools", c.JS_DupValue(engine.context, tools));
-        try sdk.put(engine, row, "flags", try tableMap(engine, binding.flags));
         try sdk.append(engine, rows, c.JS_DupValue(engine.context, row));
     }
     try sdk.put(engine, private_scope, "_extensionOwnerIds", c.JS_DupValue(engine.context, ids));
@@ -184,6 +200,7 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
     try sdk.put(engine, result, "extensions", c.JS_DupValue(engine.context, rows));
     try sdk.put(engine, result, "errors", c.JS_DupValue(engine.context, errors));
     try sdk.put(engine, result, "warnings", try sdk.array(engine));
+    try sdk.put(engine, result, "runtime", c.JS_DupValue(engine.context, runtime));
     try sdk.put(engine, data, "extensions", c.JS_DupValue(engine.context, result));
 }
 fn map(engine: *engine_mod.Engine) !c.JSValue {

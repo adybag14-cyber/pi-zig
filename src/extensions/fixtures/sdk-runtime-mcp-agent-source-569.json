@@ -1,0 +1,1037 @@
+{
+  "schema": "sdk-source569-runtime-mcp-agent-v1",
+  "sourceHashes": {
+    "coding-agent/src/core/extensions/loader.ts": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+    "coding-agent/src/core/mcp-servers.ts": "0AAAD23B26F31F743BDD117754F4C871EA821279BF68F8BA5D71ECCBB1602C6A",
+    "coding-agent/src/core/model-runtime.ts": "5F07A8C675F8EC6ACFFEBF91FD0675910BDBD6348E6E100CF35AD4993FC84B30",
+    "coding-agent/src/core/model-resolver.ts": "D9C26FAA20B3173B5E567B00C5635E2BA5F8501C54CB3AC126610EEA4FF6D5A8",
+    "agent/src/agent.ts": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457"
+  },
+  "rows": [
+    {
+      "id": "runtime-construction",
+      "own": [
+        {
+          "name": "sendMessage",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sendUserMessage",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "appendEntry",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setSessionName",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSessionName",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setLabel",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllTools",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSettings",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setActiveTools",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "refreshTools",
+          "value": {
+            "type": "function",
+            "name": "refreshTools",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCommands",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setModel",
+          "value": {
+            "type": "function",
+            "name": "setModel",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "flagValues",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingNativeProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mcpServers",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingVirtualModelRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "notInitialized",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 1,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "trackEventBusSubscription",
+          "value": {
+            "type": "function",
+            "name": "trackEventBusSubscription",
+            "length": 1,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerProvider",
+          "value": {
+            "type": "function",
+            "name": "registerProvider",
+            "length": 2,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerNativeProvider",
+          "value": {
+            "type": "function",
+            "name": "registerNativeProvider",
+            "length": 1,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterProvider",
+          "value": {
+            "type": "function",
+            "name": "unregisterProvider",
+            "length": 1,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "registerVirtualModel",
+            "length": 1,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "unregisterVirtualModel",
+            "length": 2,
+            "async": false,
+            "keys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "uninitializedIdentity": [
+        [
+          "sendUserMessage",
+          true
+        ],
+        [
+          "appendEntry",
+          true
+        ],
+        [
+          "setSessionName",
+          true
+        ],
+        [
+          "getSessionName",
+          true
+        ],
+        [
+          "setLabel",
+          true
+        ],
+        [
+          "getActiveTools",
+          true
+        ],
+        [
+          "getAllTools",
+          true
+        ],
+        [
+          "getSettings",
+          true
+        ],
+        [
+          "setActiveTools",
+          true
+        ],
+        [
+          "getCommands",
+          true
+        ],
+        [
+          "getThinkingLevel",
+          true
+        ],
+        [
+          "setThinkingLevel",
+          true
+        ],
+        [
+          "createContext",
+          true
+        ]
+      ],
+      "emptyFlags": [],
+      "emptyMcp": []
+    },
+    {
+      "id": "runtime-uninitialized-actions",
+      "outcomes": [
+        {
+          "name": "sendMessage",
+          "error": {
+            "name": "Error",
+            "message": "Extension runtime not initialized. Action methods cannot be called during extension loading."
+          }
+        },
+        {
+          "name": "createContext",
+          "error": {
+            "name": "Error",
+            "message": "Extension runtime not initialized. Action methods cannot be called during extension loading."
+          }
+        },
+        {
+          "name": "setModel",
+          "error": {
+            "name": "Error",
+            "message": "Extension runtime not initialized"
+          }
+        },
+        {
+          "name": "refreshTools",
+          "promise": false,
+          "value": {
+            "type": "undefined"
+          }
+        }
+      ]
+    },
+    {
+      "id": "runtime-provider-queues",
+      "before": {
+        "providers": [
+          {
+            "name": "one",
+            "config": {
+              "tag": 1
+            },
+            "extensionPath": "<unknown>"
+          },
+          {
+            "name": "two",
+            "config": {
+              "tag": 2
+            },
+            "extensionPath": "caller"
+          }
+        ],
+        "native": [
+          {
+            "provider": {
+              "id": "native-a"
+            },
+            "extensionPath": "<unknown>"
+          },
+          {
+            "provider": {
+              "id": "native-b"
+            },
+            "extensionPath": "native-path"
+          }
+        ],
+        "virtual": [
+          {
+            "definition": {
+              "provider": "one",
+              "id": "a"
+            },
+            "extensionPath": "<unknown>"
+          },
+          {
+            "definition": {
+              "provider": "one",
+              "id": "b"
+            },
+            "extensionPath": "virtual-path"
+          },
+          {
+            "definition": {
+              "provider": "two",
+              "id": "a"
+            },
+            "extensionPath": "<unknown>"
+          }
+        ]
+      },
+      "after": {
+        "providers": [
+          {
+            "name": "two",
+            "config": {
+              "tag": 2
+            },
+            "extensionPath": "caller"
+          }
+        ],
+        "native": [
+          {
+            "provider": {
+              "id": "native-b"
+            },
+            "extensionPath": "native-path"
+          }
+        ],
+        "virtual": [
+          {
+            "definition": {
+              "provider": "one",
+              "id": "a"
+            },
+            "extensionPath": "<unknown>"
+          },
+          {
+            "definition": {
+              "provider": "two",
+              "id": "a"
+            },
+            "extensionPath": "<unknown>"
+          }
+        ]
+      },
+      "refs": {
+        "native": true,
+        "virtual": true
+      }
+    },
+    {
+      "id": "runtime-invalidation-normal",
+      "outcome": {
+        "ok": true
+      },
+      "active": {
+        "name": "Error",
+        "message": "stale fixture"
+      },
+      "events": [
+        [
+          "first",
+          true
+        ],
+        [
+          "second",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "runtime-invalidation-empty-message",
+      "outcome": {
+        "ok": true
+      },
+      "active": true,
+      "events": [
+        [
+          "first",
+          true
+        ],
+        [
+          "second",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "runtime-invalidation-unsubscribe-throws",
+      "outcome": {
+        "marker": true
+      },
+      "active": {
+        "name": "Error",
+        "message": "stale fixture"
+      },
+      "events": [
+        [
+          "first",
+          true
+        ],
+        [
+          "second",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "mcp-registered-copy-order-owner",
+      "own": [
+        {
+          "name": "servers",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "changeListener",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": false,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": [
+        "constructor",
+        "register",
+        "unregister",
+        "get",
+        "list",
+        "setChangeListener"
+      ],
+      "methods": {
+        "register": {
+          "name": "register",
+          "length": 1,
+          "async": false,
+          "keys": [
+            "length",
+            "name"
+          ]
+        },
+        "unregister": {
+          "name": "unregister",
+          "length": 2,
+          "async": false,
+          "keys": [
+            "length",
+            "name"
+          ]
+        },
+        "get": {
+          "name": "get",
+          "length": 1,
+          "async": false,
+          "keys": [
+            "length",
+            "name"
+          ]
+        },
+        "list": {
+          "name": "list",
+          "length": 0,
+          "async": false,
+          "keys": [
+            "length",
+            "name"
+          ]
+        },
+        "setChangeListener": {
+          "name": "setChangeListener",
+          "length": 1,
+          "async": false,
+          "keys": [
+            "length",
+            "name"
+          ]
+        }
+      },
+      "refs": {
+        "get": true,
+        "row": true,
+        "config": true,
+        "nestedConfig": true,
+        "otherNested": true
+      },
+      "originalConfig": {
+        "command": "first",
+        "nested": {
+          "n": 1
+        }
+      },
+      "first": [
+        {
+          "name": "one",
+          "extensionPath": "A",
+          "config": {
+            "command": "first",
+            "nested": {
+              "n": 9
+            }
+          },
+          "nested": {
+            "tag": "shared"
+          }
+        },
+        {
+          "name": "two",
+          "extensionPath": "B",
+          "config": {
+            "command": "second"
+          }
+        }
+      ],
+      "replaced": [
+        {
+          "name": "one",
+          "extensionPath": "C",
+          "config": {
+            "command": "replacement"
+          }
+        },
+        {
+          "name": "two",
+          "extensionPath": "B",
+          "config": {
+            "command": "second"
+          }
+        }
+      ],
+      "rejected": [
+        {
+          "name": "one",
+          "extensionPath": "C",
+          "config": {
+            "command": "replacement"
+          }
+        },
+        {
+          "name": "two",
+          "extensionPath": "B",
+          "config": {
+            "command": "second"
+          }
+        }
+      ],
+      "after": [
+        {
+          "name": "two",
+          "extensionPath": "B",
+          "config": {
+            "command": "second"
+          }
+        }
+      ],
+      "events": [
+        [
+          "change",
+          true
+        ],
+        [
+          "change",
+          true
+        ],
+        [
+          "change",
+          true
+        ],
+        [
+          "change",
+          true
+        ],
+        [
+          "change",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "mcp-borrowed-getter-order",
+      "registerEvents": [
+        "receiver.servers",
+        "server.name",
+        [
+          "map.set",
+          true
+        ],
+        "receiver.listener",
+        [
+          "listener.this",
+          true
+        ]
+      ],
+      "listEvents": [
+        "receiver.servers",
+        "server.name",
+        "server.path",
+        "server.config",
+        "global.clone",
+        "server.config"
+      ],
+      "list": [
+        {
+          "name": "borrowed",
+          "extensionPath": "owner",
+          "config": {
+            "nested": {
+              "n": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "mcp-listener-raw-errors",
+      "register": {
+        "marker": true,
+        "present": true
+      },
+      "remove": {
+        "marker": true,
+        "present": false
+      }
+    },
+    {
+      "id": "agent-default-model-singleton",
+      "model": {
+        "id": "unknown",
+        "name": "unknown",
+        "api": "unknown",
+        "provider": "unknown",
+        "baseUrl": "",
+        "reasoning": false,
+        "input": [],
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0
+        },
+        "contextWindow": 0,
+        "maxTokens": 0
+      },
+      "shared": true,
+      "explicit": true,
+      "defaultThinking": "off",
+      "explicitThinking": "high",
+      "ownState": [
+        {
+          "name": "systemPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "model",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "thinkingLevel",
+          "value": {
+            "type": "string",
+            "value": "off"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "tools",
+          "value": {
+            "type": "undefined"
+          },
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "messages",
+          "value": {
+            "type": "undefined"
+          },
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isStreaming",
+          "value": {
+            "type": "boolean",
+            "value": false
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "streamingMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingToolCalls",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "messageKeys": [],
+      "signal": {
+        "has": false,
+        "value": {
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "agent-default-model-live-reference",
+      "secondId": "changed singleton",
+      "explicitId": "caller"
+    }
+  ]
+}

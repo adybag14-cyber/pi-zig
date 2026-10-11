@@ -267,7 +267,7 @@ pub fn defaultContext(caller: *bindings.Bindings) !?bindings.Bindings.SdkContext
     const registry = try vm.get(engine, owner.data, "modelRegistry");
     errdefer engine.freeValue(registry);
     const manager = try sdk.publicField(owner, "sessionManager");
-    return .{ .session = session, .registry = registry, .manager = manager, .lease = actual };
+    return .{ .session = session, .registry = registry, .manager = manager, .lease = actual, .provenance = .source_runtime };
 }
 /// Root the exact session, registry and manager before observing private data.
 pub const Caller = struct {

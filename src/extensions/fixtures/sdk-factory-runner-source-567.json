@@ -1,0 +1,4489 @@
+{
+  "schema": "sdk-source567-actual-factory-runner-v1",
+  "sourceHashes": {
+    "core/agent-session.ts": "19186BF8A79876131A296FE17333C6276A671F8F48401DF238C9814EEBA0F5DF",
+    "core/sdk.ts": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+    "core/extensions/runner.ts": "2A3BD7F81623928070EB956CDAC37B861A787297046F9CE7AF0522FF6D41A98A",
+    "core/extensions/loader.ts": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A"
+  },
+  "resourceLoaderAuthority": {
+    "current": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4",
+    "executedReference": "DBE87C11983B8DAC949377904F4CF0511155771498BA88D2FEFB0CD0D5DD9E28",
+    "noContextFiles": true,
+    "limit": "Reference loader; current-only loadProjectContextFiles symlink shadowing is outside this corpus"
+  },
+  "rows": [
+    {
+      "id": "factory-constructed",
+      "own": [
+        {
+          "name": "extensions",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "runtime",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiContext",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mode",
+          "value": {
+            "type": "string",
+            "value": "print"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "cwd",
+          "value": {
+            "type": "string",
+            "value": "C:\\sdk-owned-factory-566"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sessionManager",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "modelRegistry",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorListeners",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getModel",
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getScopedModels",
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isIdleFn",
+          "value": {
+            "type": "function",
+            "name": "isIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isProjectTrustedFn",
+          "value": {
+            "type": "function",
+            "name": "isProjectTrusted",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSignalFn",
+          "value": {
+            "type": "function",
+            "name": "getSignal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdleFn",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "abortFn",
+          "value": {
+            "type": "function",
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "hasPendingMessagesFn",
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getContextUsageFn",
+          "value": {
+            "type": "function",
+            "name": "getContextUsage",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "compactFn",
+          "value": {
+            "type": "function",
+            "name": "compact",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPrompt",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptOptionsFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptions",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "executeToolFn",
+          "value": {
+            "type": "function",
+            "name": "executeTool",
+            "length": 4,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCallableToolsFn",
+          "value": {
+            "type": "function",
+            "name": "getCallableTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reportedMcpServers",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "newSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "forkHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "navigateTreeHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "switchSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reloadHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shutdownHandler",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shortcutDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "commandDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "staleMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiPromptDepth",
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "activeUIPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": true,
+      "refs": {
+        "extensions": true,
+        "runtime": true,
+        "cwd": false,
+        "manager": true,
+        "registryRuntime": true,
+        "sessionRegistry": false
+      },
+      "runtimeOwn": [
+        {
+          "name": "sendMessage",
+          "value": {
+            "type": "function",
+            "name": "sendMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sendUserMessage",
+          "value": {
+            "type": "function",
+            "name": "sendUserMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "appendEntry",
+          "value": {
+            "type": "function",
+            "name": "appendEntry",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setSessionName",
+          "value": {
+            "type": "function",
+            "name": "setSessionName",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSessionName",
+          "value": {
+            "type": "function",
+            "name": "getSessionName",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setLabel",
+          "value": {
+            "type": "function",
+            "name": "setLabel",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "getActiveTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllTools",
+          "value": {
+            "type": "function",
+            "name": "getAllTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSettings",
+          "value": {
+            "type": "function",
+            "name": "getSettings",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setActiveTools",
+          "value": {
+            "type": "function",
+            "name": "setActiveTools",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "refreshTools",
+          "value": {
+            "type": "function",
+            "name": "refreshTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCommands",
+          "value": {
+            "type": "function",
+            "name": "getCommands",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setModel",
+          "value": {
+            "type": "function",
+            "name": "setModel",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "getThinkingLevel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "setThinkingLevel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "flagValues",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingNativeProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mcpServers",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingVirtualModelRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "trackEventBusSubscription",
+          "value": {
+            "type": "function",
+            "name": "trackEventBusSubscription",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerNativeProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "registerVirtualModel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "flags": [
+        [
+          "factory-flag",
+          true
+        ]
+      ],
+      "active": [
+        "alpha"
+      ],
+      "callable": [
+        "alpha"
+      ],
+      "events": []
+    },
+    {
+      "id": "factory-live-context",
+      "keys": [
+        "ui",
+        "mode",
+        "hasUI",
+        "cwd",
+        "sessionManager",
+        "modelRegistry",
+        "model",
+        "scopedModels",
+        "thinkingLevel",
+        "isIdle",
+        "isProjectTrusted",
+        "signal",
+        "abort",
+        "hasPendingMessages",
+        "shutdown",
+        "getContextUsage",
+        "compact",
+        "getSystemPrompt"
+      ],
+      "commandKeys": [
+        "ui",
+        "mode",
+        "hasUI",
+        "cwd",
+        "sessionManager",
+        "modelRegistry",
+        "model",
+        "scopedModels",
+        "thinkingLevel",
+        "isIdle",
+        "isProjectTrusted",
+        "signal",
+        "abort",
+        "hasPendingMessages",
+        "shutdown",
+        "getContextUsage",
+        "compact",
+        "getSystemPrompt",
+        "getSystemPromptOptions",
+        "waitForIdle",
+        "newSession",
+        "fork",
+        "navigateTree",
+        "switchSession",
+        "reload"
+      ],
+      "refs": {
+        "manager": true,
+        "registry": true,
+        "ui": true,
+        "signal": true,
+        "options": true
+      },
+      "values": {
+        "cwd": "C:\\sdk-owned-factory-566",
+        "hasUI": false,
+        "mode": "print",
+        "idle": true,
+        "pending": false,
+        "model": {
+          "type": "object"
+        },
+        "trusted": true
+      },
+      "defaultActions": {
+        "newSession": {
+          "cancelled": false
+        },
+        "fork": {
+          "cancelled": false
+        },
+        "navigate": {
+          "cancelled": false
+        },
+        "switchSession": {
+          "cancelled": false
+        },
+        "wait": {
+          "type": "undefined"
+        },
+        "reload": {
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "factory-bind-empty",
+      "own": [
+        {
+          "name": "extensions",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "runtime",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiContext",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mode",
+          "value": {
+            "type": "string",
+            "value": "print"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "cwd",
+          "value": {
+            "type": "string",
+            "value": "C:\\sdk-owned-factory-566"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sessionManager",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "modelRegistry",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorListeners",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getModel",
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getScopedModels",
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isIdleFn",
+          "value": {
+            "type": "function",
+            "name": "isIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isProjectTrustedFn",
+          "value": {
+            "type": "function",
+            "name": "isProjectTrusted",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSignalFn",
+          "value": {
+            "type": "function",
+            "name": "getSignal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdleFn",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "abortFn",
+          "value": {
+            "type": "function",
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "hasPendingMessagesFn",
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getContextUsageFn",
+          "value": {
+            "type": "function",
+            "name": "getContextUsage",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "compactFn",
+          "value": {
+            "type": "function",
+            "name": "compact",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPrompt",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptOptionsFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptions",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "executeToolFn",
+          "value": {
+            "type": "function",
+            "name": "executeTool",
+            "length": 4,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCallableToolsFn",
+          "value": {
+            "type": "function",
+            "name": "getCallableTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reportedMcpServers",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "newSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "forkHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "navigateTreeHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "switchSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reloadHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shutdownHandler",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shortcutDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "commandDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "staleMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiPromptDepth",
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "activeUIPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": true,
+      "refs": {
+        "extensions": true,
+        "runtime": true,
+        "cwd": false,
+        "manager": true,
+        "registryRuntime": true,
+        "sessionRegistry": false
+      },
+      "runtimeOwn": [
+        {
+          "name": "sendMessage",
+          "value": {
+            "type": "function",
+            "name": "sendMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sendUserMessage",
+          "value": {
+            "type": "function",
+            "name": "sendUserMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "appendEntry",
+          "value": {
+            "type": "function",
+            "name": "appendEntry",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setSessionName",
+          "value": {
+            "type": "function",
+            "name": "setSessionName",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSessionName",
+          "value": {
+            "type": "function",
+            "name": "getSessionName",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setLabel",
+          "value": {
+            "type": "function",
+            "name": "setLabel",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "getActiveTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllTools",
+          "value": {
+            "type": "function",
+            "name": "getAllTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSettings",
+          "value": {
+            "type": "function",
+            "name": "getSettings",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setActiveTools",
+          "value": {
+            "type": "function",
+            "name": "setActiveTools",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "refreshTools",
+          "value": {
+            "type": "function",
+            "name": "refreshTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCommands",
+          "value": {
+            "type": "function",
+            "name": "getCommands",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setModel",
+          "value": {
+            "type": "function",
+            "name": "setModel",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "getThinkingLevel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "setThinkingLevel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "flagValues",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingNativeProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mcpServers",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingVirtualModelRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "trackEventBusSubscription",
+          "value": {
+            "type": "function",
+            "name": "trackEventBusSubscription",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerNativeProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "registerVirtualModel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "flags": [
+        [
+          "factory-flag",
+          true
+        ]
+      ],
+      "active": [
+        "alpha"
+      ],
+      "callable": [
+        "alpha"
+      ],
+      "events": [
+        [
+          "session_start",
+          "startup",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "factory-bind-live",
+      "own": [
+        {
+          "name": "extensions",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "runtime",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiContext",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mode",
+          "value": {
+            "type": "string",
+            "value": "interactive"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "cwd",
+          "value": {
+            "type": "string",
+            "value": "C:\\sdk-owned-factory-566"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sessionManager",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "modelRegistry",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorListeners",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getModel",
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getScopedModels",
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isIdleFn",
+          "value": {
+            "type": "function",
+            "name": "isIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isProjectTrustedFn",
+          "value": {
+            "type": "function",
+            "name": "isProjectTrusted",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSignalFn",
+          "value": {
+            "type": "function",
+            "name": "getSignal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdleFn",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "abortFn",
+          "value": {
+            "type": "function",
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "hasPendingMessagesFn",
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getContextUsageFn",
+          "value": {
+            "type": "function",
+            "name": "getContextUsage",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "compactFn",
+          "value": {
+            "type": "function",
+            "name": "compact",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPrompt",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptOptionsFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptions",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "executeToolFn",
+          "value": {
+            "type": "function",
+            "name": "executeTool",
+            "length": 4,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCallableToolsFn",
+          "value": {
+            "type": "function",
+            "name": "getCallableTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reportedMcpServers",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "newSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "forkHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "navigateTreeHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "switchSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reloadHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shutdownHandler",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shortcutDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "commandDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "staleMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiPromptDepth",
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "activeUIPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": true,
+      "refs": {
+        "extensions": true,
+        "runtime": true,
+        "cwd": false,
+        "manager": true,
+        "registryRuntime": true,
+        "sessionRegistry": false
+      },
+      "runtimeOwn": [
+        {
+          "name": "sendMessage",
+          "value": {
+            "type": "function",
+            "name": "sendMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sendUserMessage",
+          "value": {
+            "type": "function",
+            "name": "sendUserMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "appendEntry",
+          "value": {
+            "type": "function",
+            "name": "appendEntry",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setSessionName",
+          "value": {
+            "type": "function",
+            "name": "setSessionName",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSessionName",
+          "value": {
+            "type": "function",
+            "name": "getSessionName",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setLabel",
+          "value": {
+            "type": "function",
+            "name": "setLabel",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "getActiveTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllTools",
+          "value": {
+            "type": "function",
+            "name": "getAllTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSettings",
+          "value": {
+            "type": "function",
+            "name": "getSettings",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setActiveTools",
+          "value": {
+            "type": "function",
+            "name": "setActiveTools",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "refreshTools",
+          "value": {
+            "type": "function",
+            "name": "refreshTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCommands",
+          "value": {
+            "type": "function",
+            "name": "getCommands",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setModel",
+          "value": {
+            "type": "function",
+            "name": "setModel",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "getThinkingLevel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "setThinkingLevel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "flagValues",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingNativeProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mcpServers",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingVirtualModelRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "trackEventBusSubscription",
+          "value": {
+            "type": "function",
+            "name": "trackEventBusSubscription",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerNativeProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "registerVirtualModel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "flags": [
+        [
+          "factory-flag",
+          true
+        ]
+      ],
+      "active": [
+        "alpha"
+      ],
+      "callable": [
+        "alpha"
+      ],
+      "events": [
+        [
+          "action.get",
+          "waitForIdle"
+        ],
+        [
+          "action.get",
+          "newSession"
+        ],
+        [
+          "action.get",
+          "fork"
+        ],
+        [
+          "action.get",
+          "navigateTree"
+        ],
+        [
+          "action.get",
+          "switchSession"
+        ],
+        [
+          "action.get",
+          "reload"
+        ],
+        [
+          "session_start",
+          "startup",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "factory-action-identities",
+      "actions": [
+        {
+          "slot": "waitForIdleFn",
+          "same": true
+        },
+        {
+          "slot": "newSessionHandler",
+          "same": true
+        },
+        {
+          "slot": "forkHandler",
+          "same": true
+        },
+        {
+          "slot": "navigateTreeHandler",
+          "same": true
+        },
+        {
+          "slot": "switchSessionHandler",
+          "same": true
+        },
+        {
+          "slot": "reloadHandler",
+          "same": true
+        }
+      ],
+      "uiWrapped": true,
+      "hasUI": true,
+      "mode": "interactive"
+    },
+    {
+      "id": "factory-live-bindings-context",
+      "keys": [
+        "ui",
+        "mode",
+        "hasUI",
+        "cwd",
+        "sessionManager",
+        "modelRegistry",
+        "model",
+        "scopedModels",
+        "thinkingLevel",
+        "isIdle",
+        "isProjectTrusted",
+        "signal",
+        "abort",
+        "hasPendingMessages",
+        "shutdown",
+        "getContextUsage",
+        "compact",
+        "getSystemPrompt",
+        "getSystemPromptOptions",
+        "waitForIdle",
+        "newSession",
+        "fork",
+        "navigateTree",
+        "switchSession",
+        "reload"
+      ],
+      "hasUI": true,
+      "mode": "interactive",
+      "refs": {
+        "registry": true,
+        "options": true,
+        "signal": true
+      },
+      "events": [
+        [
+          "command",
+          "arguments",
+          false
+        ],
+        [
+          "ui.notify",
+          false,
+          [
+            "notice",
+            "info"
+          ]
+        ],
+        [
+          "abort",
+          false
+        ],
+        [
+          "shutdown",
+          false
+        ],
+        [
+          "action.call",
+          "waitForIdle",
+          true,
+          []
+        ],
+        [
+          "action.call",
+          "newSession",
+          true,
+          [
+            {
+              "parentSession": "parent"
+            }
+          ]
+        ],
+        [
+          "action.call",
+          "fork",
+          true,
+          [
+            "entry",
+            {
+              "position": "at"
+            }
+          ]
+        ],
+        [
+          "action.call",
+          "navigateTree",
+          true,
+          [
+            "target",
+            {
+              "summarize": false
+            }
+          ]
+        ],
+        [
+          "action.call",
+          "switchSession",
+          true,
+          [
+            "session-path",
+            {}
+          ]
+        ],
+        [
+          "action.call",
+          "reload",
+          true,
+          []
+        ]
+      ]
+    },
+    {
+      "id": "factory-rebind-empty-preserves",
+      "own": [
+        {
+          "name": "extensions",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "runtime",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiContext",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mode",
+          "value": {
+            "type": "string",
+            "value": "interactive"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "cwd",
+          "value": {
+            "type": "string",
+            "value": "C:\\sdk-owned-factory-566"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sessionManager",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "modelRegistry",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorListeners",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getModel",
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getScopedModels",
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isIdleFn",
+          "value": {
+            "type": "function",
+            "name": "isIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isProjectTrustedFn",
+          "value": {
+            "type": "function",
+            "name": "isProjectTrusted",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSignalFn",
+          "value": {
+            "type": "function",
+            "name": "getSignal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdleFn",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "abortFn",
+          "value": {
+            "type": "function",
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "hasPendingMessagesFn",
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getContextUsageFn",
+          "value": {
+            "type": "function",
+            "name": "getContextUsage",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "compactFn",
+          "value": {
+            "type": "function",
+            "name": "compact",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPrompt",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptOptionsFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptions",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "executeToolFn",
+          "value": {
+            "type": "function",
+            "name": "executeTool",
+            "length": 4,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCallableToolsFn",
+          "value": {
+            "type": "function",
+            "name": "getCallableTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reportedMcpServers",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "newSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "forkHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "navigateTreeHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "switchSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reloadHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shutdownHandler",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shortcutDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "commandDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "staleMessage",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiPromptDepth",
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "activeUIPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": true,
+      "refs": {
+        "extensions": true,
+        "runtime": true,
+        "cwd": false,
+        "manager": true,
+        "registryRuntime": true,
+        "sessionRegistry": false
+      },
+      "runtimeOwn": [
+        {
+          "name": "sendMessage",
+          "value": {
+            "type": "function",
+            "name": "sendMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sendUserMessage",
+          "value": {
+            "type": "function",
+            "name": "sendUserMessage",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "appendEntry",
+          "value": {
+            "type": "function",
+            "name": "appendEntry",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setSessionName",
+          "value": {
+            "type": "function",
+            "name": "setSessionName",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSessionName",
+          "value": {
+            "type": "function",
+            "name": "getSessionName",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setLabel",
+          "value": {
+            "type": "function",
+            "name": "setLabel",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "getActiveTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllTools",
+          "value": {
+            "type": "function",
+            "name": "getAllTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSettings",
+          "value": {
+            "type": "function",
+            "name": "getSettings",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setActiveTools",
+          "value": {
+            "type": "function",
+            "name": "setActiveTools",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "refreshTools",
+          "value": {
+            "type": "function",
+            "name": "refreshTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCommands",
+          "value": {
+            "type": "function",
+            "name": "getCommands",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setModel",
+          "value": {
+            "type": "function",
+            "name": "setModel",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "getThinkingLevel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "setThinkingLevel",
+          "value": {
+            "type": "function",
+            "name": "setThinkingLevel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "flagValues",
+          "value": {
+            "type": "Map"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingNativeProviderRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mcpServers",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "pendingVirtualModelRegistrations",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "trackEventBusSubscription",
+          "value": {
+            "type": "function",
+            "name": "trackEventBusSubscription",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerNativeProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterProvider",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "registerVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "registerVirtualModel",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "flags": [
+        [
+          "factory-flag",
+          true
+        ]
+      ],
+      "active": [
+        "alpha"
+      ],
+      "callable": [
+        "alpha"
+      ],
+      "events": [
+        [
+          "action.get",
+          "waitForIdle"
+        ],
+        [
+          "action.get",
+          "newSession"
+        ],
+        [
+          "action.get",
+          "fork"
+        ],
+        [
+          "action.get",
+          "navigateTree"
+        ],
+        [
+          "action.get",
+          "switchSession"
+        ],
+        [
+          "action.get",
+          "reload"
+        ],
+        [
+          "session_start",
+          "startup",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "factory-error-listener",
+      "count": 1,
+      "events": [
+        [
+          "error",
+          true,
+          "probe",
+          "original"
+        ]
+      ]
+    },
+    {
+      "id": "factory-live-options-rebuild",
+      "changed": true,
+      "originalSelected": [
+        "alpha"
+      ],
+      "currentSelected": [],
+      "active": [],
+      "callable": [],
+      "events": []
+    },
+    {
+      "id": "factory-disposed-owned-guards",
+      "outcomes": [
+        {
+          "name": "runner.assertActive",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        },
+        {
+          "name": "context.getSystemPromptOptions",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        },
+        {
+          "name": "context.model",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        },
+        {
+          "name": "command.waitForIdle",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        },
+        {
+          "name": "runner.getActiveTools",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        },
+        {
+          "name": "api.getActiveTools",
+          "error": {
+            "name": "Error",
+            "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          }
+        }
+      ],
+      "refs": {
+        "sameRunner": true,
+        "extensions": true,
+        "runtime": true
+      },
+      "events": []
+    },
+    {
+      "id": "factory-disposed-pure-reflection",
+      "own": [
+        {
+          "name": "extensions",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "runtime",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiContext",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "mode",
+          "value": {
+            "type": "string",
+            "value": "interactive"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "cwd",
+          "value": {
+            "type": "string",
+            "value": "C:\\sdk-owned-factory-566"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "sessionManager",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "modelRegistry",
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "errorListeners",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getModel",
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getScopedModels",
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isIdleFn",
+          "value": {
+            "type": "function",
+            "name": "isIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "isProjectTrustedFn",
+          "value": {
+            "type": "function",
+            "name": "isProjectTrusted",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSignalFn",
+          "value": {
+            "type": "function",
+            "name": "getSignal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdleFn",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "abortFn",
+          "value": {
+            "type": "function",
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "hasPendingMessagesFn",
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getContextUsageFn",
+          "value": {
+            "type": "function",
+            "name": "getContextUsage",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "compactFn",
+          "value": {
+            "type": "function",
+            "name": "compact",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPrompt",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getSystemPromptOptionsFn",
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptions",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "executeToolFn",
+          "value": {
+            "type": "function",
+            "name": "executeTool",
+            "length": 4,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "getCallableToolsFn",
+          "value": {
+            "type": "function",
+            "name": "getCallableTools",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reportedMcpServers",
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "newSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "forkHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "navigateTreeHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "switchSessionHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "reloadHandler",
+          "value": {
+            "type": "function",
+            "name": "",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shutdownHandler",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "shortcutDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "commandDiagnostics",
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "staleMessage",
+          "value": {
+            "type": "string",
+            "value": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "uiPromptDepth",
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        {
+          "name": "activeUIPrompt",
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ],
+      "prototype": true,
+      "commands": [
+        {
+          "name": "capture",
+          "invocationName": "capture",
+          "description": "Capture actual context"
+        }
+      ],
+      "flags": [
+        [
+          "factory-flag",
+          true
+        ]
+      ]
+    }
+  ]
+}

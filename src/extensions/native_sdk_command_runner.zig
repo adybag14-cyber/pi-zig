@@ -1,5 +1,5 @@
 //! Actual session-owned command action state and callback receiver.
-//! This narrow runner value does not implement the full ExtensionRunner class.
+//! The actual factory calls the real public constructor with five live refs.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -17,18 +17,38 @@ fn slot(action: Action) [*:0]const u8 {
 }
 pub fn initialize(owner: *sdk.State, session: c.JSValue) !void {
     const engine = owner.engine;
-    const prototype = try getPrototype(engine);
-    defer engine.freeValue(prototype);
-    const runner = try engine.checked(c.JS_NewObjectProto(engine.context, prototype));
+    const resources = try sdk.get(engine, owner.data, "resourceLoader");
+    defer engine.freeValue(resources);
+    const extensions = try js.invoke(engine, resources, "getExtensions", &.{});
+    defer engine.freeValue(extensions);
+    const runtime = try sdk.get(engine, extensions, "runtime");
+    defer engine.freeValue(runtime);
+    const rows = try sdk.get(engine, extensions, "extensions");
+    defer engine.freeValue(rows);
+    const cwd = try sdk.get(engine, owner.data, "_sdkToolCwd");
+    defer engine.freeValue(cwd);
+    const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, cwd);
+    defer engine.freeValue(normalized);
+    const requested = try engine.toString(normalized);
+    defer engine.gpa.free(requested);
+    const current = try sdk.cwd(engine);
+    defer engine.gpa.free(current);
+    const path = try @import("node_path.zig").resolve(engine.gpa, current, &.{requested}, if (@import("builtin").os.tag == .windows) .win32 else .posix);
+    defer engine.gpa.free(path);
+    const working = try sdk.text(engine, path);
+    defer engine.freeValue(working);
+    const manager = try sdk.publicField(owner, "sessionManager");
+    defer engine.freeValue(manager);
+    const registry = try sdk.get(engine, owner.data, "modelRegistry");
+    defer engine.freeValue(registry);
+    var args = [_]c.JSValue{ rows, runtime, working, manager, registry };
+    const constructor = engine.native_sdk_command_runner_constructor orelse return error.NativeSDKRunnerConstructorUnavailable;
+    const runner = try engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
     defer engine.freeValue(runner);
-    try sdk.put(engine, runner, "extensions", try @import("native_sdk_resource_owners.zig").sessionExtensionRows(engine, owner.data));
-    try sdk.put(engine, runner, "commandDiagnostics", try sdk.array(engine));
-    inline for (@import("std").meta.fields(Action)) |field| {
-        const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, defaultAction, "", 0, field.value, 0, null));
-        try sdk.put(engine, runner, slot(@enumFromInt(field.value)), callback);
-    }
     try sdk.put(engine, owner.data, "_sdkCommandRunner", c.JS_DupValue(engine.context, runner));
     try sdk.put(engine, session, "_extensionRunner", c.JS_DupValue(engine.context, runner));
+    try @import("native_sdk_factory_core.zig").bind(engine, session, runner);
+    try @import("native_sdk_factory_core.zig").applyBindings(engine, owner, session, runner);
 }
 const Method = enum(c_int) { resolveRegisteredCommands, getRegisteredCommands, getCommand, getCommandDiagnostics };
 pub fn getPrototype(engine: *em.Engine) !c.JSValue {
@@ -84,10 +104,8 @@ pub fn bind(owner: *sdk.State) !void {
     defer engine.freeValue(runner);
     const actions = try sdk.get(engine, owner.data, "extension_commandContextActions");
     defer engine.freeValue(actions);
-    if (c.JS_ToBool(engine.context, actions) != 1) return;
-    // Source binds each getter once in this order. Rebinding with no new
-    // actions reuses the saved object and observes its getters again.
-    inline for (@import("std").meta.fields(Action)) |field| try sdk.put(engine, runner, slot(@enumFromInt(field.value)), try sdk.get(engine, actions, field.name));
+    const ignored = try js.invoke(engine, runner, "bindCommandContext", &.{actions});
+    engine.freeValue(ignored);
 }
 pub fn invoke(owner: *sdk.State, action: Action, args: []const c.JSValue) !c.JSValue {
     const engine = owner.engine;

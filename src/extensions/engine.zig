@@ -55,6 +55,8 @@ pub const Engine = struct {
     native_async_scope: ?*anyopaque = null,
     native_sdk_noop_ui: ?c.JSValue = null,
     native_sdk_command_runner_prototype: ?c.JSValue = null,
+    native_sdk_mcp_registry_prototype: ?c.JSValue = null,
+    native_sdk_agent_default_model: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -230,6 +232,8 @@ pub const Engine = struct {
         @import("native_async_scope.zig").deinit(self);
         if (self.native_sdk_noop_ui) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
+        if (self.native_sdk_mcp_registry_prototype) |value| self.freeValue(value);
+        if (self.native_sdk_agent_default_model) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
         if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);

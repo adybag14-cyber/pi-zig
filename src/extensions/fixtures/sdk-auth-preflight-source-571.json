@@ -1,0 +1,494 @@
+{
+  "schema": "sdk-source571-actual-auth-preflight-v1",
+  "sourceHashes": {
+    "core/agent-session.ts": "19186BF8A79876131A296FE17333C6276A671F8F48401DF238C9814EEBA0F5DF",
+    "core/auth-guidance.ts": "8FBEE7C272953BF881F22E9CE4B163BB0DF9C091F63EE823DBFE32186991EFE0",
+    "core/model-runtime.ts": "5F07A8C675F8EC6ACFFEBF91FD0675910BDBD6348E6E100CF35AD4993FC84B30",
+    "core/extensions/runner.ts": "2A3BD7F81623928070EB956CDAC37B861A787297046F9CE7AF0522FF6D41A98A"
+  },
+  "packageDir": "C:/sdk-auth-package",
+  "rows": [
+    {
+      "id": "unknown-default",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        [
+          "runtime.hasConfiguredAuth.call",
+          "unknown",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        [
+          "runtime.checkAuth.call",
+          "unknown",
+          true
+        ],
+        "runtime.isUsingOAuth.get",
+        [
+          "session.model",
+          4
+        ],
+        [
+          "runtime.isUsingOAuth.call",
+          "unknown",
+          true
+        ],
+        [
+          "session.model",
+          5
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": false,
+        "name": "Error",
+        "message": "No API key found for the selected model.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\sdk-auth-package\\docs\\providers.md\n  C:\\sdk-auth-package\\docs\\models.md"
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "model-null",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": false,
+        "name": "Error",
+        "message": "No model selected.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\sdk-auth-package\\docs\\providers.md\n  C:\\sdk-auth-package\\docs\\models.md\n\nThen use /model to select a model."
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "check-undefined",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.isUsingOAuth.get",
+        [
+          "session.model",
+          4
+        ],
+        "model.provider",
+        [
+          "runtime.isUsingOAuth.call",
+          "fixture",
+          true
+        ],
+        [
+          "session.model",
+          5
+        ],
+        "model.provider"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": false,
+        "name": "Error",
+        "message": "No API key found for fixture.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\sdk-auth-package\\docs\\providers.md\n  C:\\sdk-auth-package\\docs\\models.md"
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "oauth-failure",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.isUsingOAuth.get",
+        [
+          "session.model",
+          4
+        ],
+        "model.provider",
+        [
+          "runtime.isUsingOAuth.call",
+          "fixture",
+          true
+        ],
+        [
+          "session.model",
+          5
+        ],
+        "model.provider",
+        [
+          "session.model",
+          6
+        ],
+        "model.provider"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": false,
+        "name": "Error",
+        "message": "Authentication failed for \"fixture\". Credentials may have expired or network is unavailable. Run '/login fixture' to re-authenticate."
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "check-null",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ],
+        "boundary.before-agent-start"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": true
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "check-false",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ],
+        "boundary.before-agent-start"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": true
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "check-zero",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ],
+        "boundary.before-agent-start"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": true
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "configured-object",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "boundary.before-agent-start"
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": true
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "check-reject",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        "model.provider",
+        [
+          "runtime.checkAuth.call",
+          "fixture",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true,
+        "boundary": false
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "has-throws",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        "model.provider",
+        [
+          "runtime.hasConfiguredAuth.call",
+          "fixture",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true,
+        "boundary": false
+      },
+      "notifications": [],
+      "messages": 0
+    },
+    {
+      "id": "provider-cycling",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "session.model",
+          1
+        ],
+        "runtime.hasConfiguredAuth.get",
+        [
+          "session.model",
+          2
+        ],
+        [
+          "runtime.hasConfiguredAuth.call",
+          "provider2",
+          true
+        ],
+        "runtime.checkAuth.get",
+        [
+          "session.model",
+          3
+        ],
+        [
+          "runtime.checkAuth.call",
+          "provider3",
+          true
+        ],
+        "runtime.isUsingOAuth.get",
+        [
+          "session.model",
+          4
+        ],
+        [
+          "runtime.isUsingOAuth.call",
+          "provider4",
+          true
+        ],
+        [
+          "session.model",
+          5
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "boundary": false,
+        "name": "Error",
+        "message": "No API key found for provider5.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\sdk-auth-package\\docs\\providers.md\n  C:\\sdk-auth-package\\docs\\models.md"
+      },
+      "notifications": [],
+      "messages": 0
+    }
+  ]
+}

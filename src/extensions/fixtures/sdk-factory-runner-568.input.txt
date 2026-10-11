@@ -1,0 +1,64 @@
+import{ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession,ExtensionRunner}from'@earendil-works/pi-coding-agent';
+const rows=[],events=[],contexts=[],errors=[],cwd='/sdk-owned-factory-566';
+const asyncPrototype=Object.getPrototypeOf(async()=>{});
+const fnShape=fn=>({name:fn.name,length:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String)});
+const describe=value=>value===undefined?{type:'undefined'}:value===null?{type:'null'}:typeof value==='function'?{type:'function',...fnShape(value)}:typeof value==='object'?{type:value instanceof Set?'Set':value instanceof Map?'Map':Array.isArray(value)?'array':'object'}:{type:typeof value,value};
+const own=object=>Reflect.ownKeys(object).map(key=>{const d=Object.getOwnPropertyDescriptor(object,key);return{name:String(key),value:'value'in d?describe(d.value):{get:d.get&&fnShape(d.get),set:d.set&&fnShape(d.set)},writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}});
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const manager=SessionManager.inMemory(cwd),settings=SettingsManager.inMemory();
+let api;
+const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',settingsManager:settings,noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:'owned-factory',factory:pi=>{
+ api=pi;
+ pi.registerFlag('factory-flag',{type:'boolean',default:true});
+ pi.registerCommand('capture',{description:'Capture actual context',handler:function(args,ctx){events.push(['command',args,this===undefined]);contexts.push(ctx)}});
+ pi.on('session_start',function(event,ctx){events.push(['session_start',event.reason,this===undefined]);contexts.push(ctx)});
+ pi.registerTool({name:'alpha',description:'Alpha',parameters:{type:'object'},execute:async()=>({content:[]})});
+}}]});
+await loader.reload();
+const result=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:manager,settingsManager:settings,tools:['alpha']});
+const session=result.session,runner=session._extensionRunner,extensionResult=loader.getExtensions();
+const snapshot=id=>rows.push({id,own:own(runner),prototype:Object.getPrototypeOf(runner)===ExtensionRunner.prototype,refs:{extensions:runner.extensions===extensionResult.extensions,runtime:runner.runtime===extensionResult.runtime,cwd:runner.cwd===cwd,manager:runner.sessionManager===manager,registryRuntime:runner.modelRegistry.runtime===runtime,sessionRegistry:runner.modelRegistry===session.modelRegistry},runtimeOwn:own(runner.runtime),flags:[...runner.getFlagValues()],active:runner.getActiveTools(),callable:runner.getCallableToolsFn().map(tool=>tool.name),events:events.splice(0)});
+snapshot('factory-constructed');
+{
+ const ctx=runner.createContext(),command=runner.createCommandContext(),other={unrelated:true};
+ const options=command.getSystemPromptOptions.call(other);
+ rows.push({id:'factory-live-context',keys:Reflect.ownKeys(ctx).map(String),commandKeys:Reflect.ownKeys(command).map(String),refs:{manager:ctx.sessionManager===manager,registry:ctx.modelRegistry===runner.modelRegistry,ui:ctx.ui===runner.getUIContext(),signal:ctx.signal===session.agent.signal,options:options===session._baseSystemPromptOptions},values:{cwd:ctx.cwd,hasUI:ctx.hasUI,mode:ctx.mode,idle:ctx.isIdle(),pending:ctx.hasPendingMessages(),model:describe(ctx.model),trusted:ctx.isProjectTrusted()},defaultActions:{newSession:await runner.newSessionHandler(),fork:await runner.forkHandler(),navigate:await runner.navigateTreeHandler(),switchSession:await runner.switchSessionHandler(),wait:describe(await runner.waitForIdleFn()),reload:describe(await runner.reloadHandler())}});
+}
+await session.bindExtensions({});
+snapshot('factory-bind-empty');
+const ui={notify:function(...args){events.push(['ui.notify',this===ui,args])}};
+const actionNames=['waitForIdle','newSession','fork','navigateTree','switchSession','reload'];
+const actionSlots=['waitForIdleFn','newSessionHandler','forkHandler','navigateTreeHandler','switchSessionHandler','reloadHandler'];
+const actions={};
+for(const name of actionNames)Object.defineProperty(actions,name,{enumerable:true,get(){events.push(['action.get',name]);return callbacks[name]}});
+const callbacks=Object.fromEntries(actionNames.map(name=>[name,async function(...args){events.push(['action.call',name,this===runner,args]);return name==='waitForIdle'||name==='reload'?undefined:{cancelled:false,tag:name}}]));
+const bindings={uiContext:ui,mode:'interactive',commandContextActions:actions,abortHandler:function(){events.push(['abort',this===undefined])},shutdownHandler:function(){events.push(['shutdown',this===undefined])},onError:function(error){errors.push(error);events.push(['error',this===undefined,error.event,error.error])}};
+await session.bindExtensions(bindings);
+snapshot('factory-bind-live');
+rows.push({id:'factory-action-identities',actions:actionSlots.map((slot,i)=>({slot,same:runner[slot]===callbacks[actionNames[i]]})),uiWrapped:runner.getUIContext()!==ui,hasUI:runner.hasUI(),mode:runner.mode});
+await session.prompt('/capture arguments');
+const capturedCommandContext=contexts.at(-1);
+{
+ const ctx=contexts.at(-1);
+ const first=ctx.getSystemPromptOptions();
+ ctx.ui.notify('notice','info');ctx.abort();runner.shutdown();
+ await ctx.waitForIdle();await ctx.newSession({parentSession:'parent'});await ctx.fork('entry',{position:'at'});await ctx.navigateTree('target',{summarize:false});await ctx.switchSession('session-path',{withSession:undefined});await ctx.reload();
+ rows.push({id:'factory-live-bindings-context',keys:Reflect.ownKeys(ctx).map(String),hasUI:ctx.hasUI,mode:ctx.mode,refs:{registry:ctx.modelRegistry===runner.modelRegistry,options:first===session._baseSystemPromptOptions,signal:ctx.signal===session.agent.signal},events:events.splice(0)});
+}
+await session.bindExtensions({});
+snapshot('factory-rebind-empty-preserves');
+runner.emitError({extensionPath:'fixture',event:'probe',error:'original'});
+rows.push({id:'factory-error-listener',count:errors.length,events:events.splice(0)});
+const oldContext=runner.createCommandContext(),oldCommand=capturedCommandContext,oldOptions=oldContext.getSystemPromptOptions();
+session.setActiveToolsByName([]);
+rows.push({id:'factory-live-options-rebuild',changed:oldContext.getSystemPromptOptions()!==oldOptions,originalSelected:oldOptions.selectedTools,currentSelected:oldContext.getSystemPromptOptions().selectedTools,active:runner.getActiveTools(),callable:runner.getCallableToolsFn().map(tool=>tool.name),events:events.splice(0)});
+session.dispose();
+{
+ const outcomes=[];
+ for(const [name,call] of [['runner.assertActive',()=>runner.assertActive()],['context.getSystemPromptOptions',()=>oldContext.getSystemPromptOptions()],['context.model',()=>oldContext.model],['command.waitForIdle',()=>oldCommand.waitForIdle()],['runner.getActiveTools',()=>runner.getActiveTools()],['api.getActiveTools',()=>api.getActiveTools()]]){
+  try{const value=await call();outcomes.push({name,value:describe(value)})}catch(error){outcomes.push({name,error:{name:error.name,message:error.message}})}
+ }
+ rows.push({id:'factory-disposed-owned-guards',outcomes,refs:{sameRunner:session._extensionRunner===runner,extensions:runner.extensions===extensionResult.extensions,runtime:runner.runtime===extensionResult.runtime},events:events.splice(0)});
+}
+rows.push({id:'factory-disposed-pure-reflection',own:own(runner),prototype:Object.getPrototypeOf(runner)===ExtensionRunner.prototype,commands:runner.getRegisteredCommands().map(command=>({name:command.name,invocationName:command.invocationName,description:command.description})),flags:[...runner.getFlagValues()]});
+globalThis.sdkFactoryRunnerRows=rows;

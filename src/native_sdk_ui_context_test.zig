@@ -10,7 +10,7 @@ fn exercise(gpa: std.mem.Allocator, allocation_probe: bool) !void {
     const group = try group_mod.Group.init(engine);
     defer group.deinit();
     const binding = try group.add("sdk-ui-allocation.mjs");
-    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    if (engine.host_scheduler == null) try @import("extensions/timers.zig").install(engine, std.testing.io);
     try binding.installSchemas();
     try @import("extensions/node_path.zig").install(engine, std.testing.io);
     const source = try std.mem.replaceOwned(u8, gpa, @embedFile("extensions/fixtures/sdk-ui-context-6fb2e78.txt"), "__SDK_UI_CWD__", if (builtin.os.tag == .windows) "'C:/sdk-ui-allocation'" else "'/sdk-ui-allocation'");

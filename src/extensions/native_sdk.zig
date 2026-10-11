@@ -518,21 +518,55 @@ fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(
     _ = argc;
     const engine = engine_mod.Engine.fromContext(context.?);
     const self = state(engine, args[0]) catch return c.pi_js_undefined();
+    const runtime = get(engine, self.data, "modelRuntime") catch |err| return finishPromptFailure(engine, self, args, err);
+    defer engine.freeValue(runtime);
+    const authentication = @import("native_sdk_prompt_auth.zig").begin(engine, args[0], runtime) catch |err| return finishPromptFailure(engine, self, args, err);
+    if (authentication) |pending| {
+        defer engine.freeValue(pending);
+        const fulfilled = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 0, 5, args)) catch |err| return finishPromptFailure(engine, self, args, err);
+        defer engine.freeValue(fulfilled);
+        const rejected = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 1, 5, args)) catch |err| return finishPromptFailure(engine, self, args, err);
+        defer engine.freeValue(rejected);
+        const continuation = engine.checked(c.JS_PromiseThen(context, pending, fulfilled, rejected)) catch |err| return finishPromptFailure(engine, self, args, err);
+        engine.freeValue(continuation);
+        return c.pi_js_undefined();
+    }
+    return continuePrompt(engine, self, args);
+}
+fn promptAuthResume(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const self = state(engine, args[0]) catch return c.pi_js_undefined();
+    const value = if (argc > 0) argv[0] else c.pi_js_undefined();
+    if (magic != 0) return settlePrompt(engine, self, args, value, true);
+    const runtime = get(engine, self.data, "modelRuntime") catch |err| return finishPromptFailure(engine, self, args, err);
+    defer engine.freeValue(runtime);
+    @import("native_sdk_prompt_auth.zig").finish(engine, args[0], runtime, value) catch |err| return finishPromptFailure(engine, self, args, err);
+    return continuePrompt(engine, self, args);
+}
+fn finishPromptFailure(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue, err: anyerror) c.JSValue {
+    _ = fail(engine, err);
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    return settlePrompt(engine, self, args, reason, true);
+}
+fn continuePrompt(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue) c.JSValue {
     var rejection: ?c.JSValue = null;
     runPrompt(self, args[1], args[2]) catch |err| {
         const raised = fail(engine, err);
         _ = raised;
-        rejection = c.JS_GetException(context);
+        rejection = c.JS_GetException(engine.context);
     };
-    self.running = false;
-    const idle_resolve = get(engine, self.data, "promptIdleResolve") catch return c.JS_ThrowOutOfMemory(context);
-    defer engine.freeValue(idle_resolve);
-    const idle_result = c.JS_Call(context, idle_resolve, c.pi_js_undefined(), 0, null);
-    engine.freeValue(idle_result);
-    const value = rejection orelse c.pi_js_undefined();
     defer if (rejection) |held| engine.freeValue(held);
+    return settlePrompt(engine, self, args, rejection orelse c.pi_js_undefined(), rejection != null);
+}
+fn settlePrompt(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue, value: c.JSValue, rejected: bool) c.JSValue {
+    self.running = false;
+    const idle_resolve = get(engine, self.data, "promptIdleResolve") catch return c.JS_ThrowOutOfMemory(engine.context);
+    defer engine.freeValue(idle_resolve);
+    const idle_result = c.JS_Call(engine.context, idle_resolve, c.pi_js_undefined(), 0, null);
+    engine.freeValue(idle_result);
     var values = [_]c.JSValue{value};
-    const result = c.JS_Call(context, if (rejection == null) args[3] else args[4], c.pi_js_undefined(), 1, &values);
+    const result = c.JS_Call(engine.context, if (rejected) args[4] else args[3], c.pi_js_undefined(), 1, &values);
     return result;
 }
 fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
@@ -1344,6 +1378,9 @@ fn initResources(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(data);
     try put(engine, data, "options", if (c.JS_IsObject(options)) c.JS_DupValue(engine.context, options) else try object(engine));
     try put(engine, data, "extensions", try jsonObject(engine, "{\"extensions\":[],\"errors\":[],\"warnings\":[]}"));
+    const extensions = try get(engine, data, "extensions");
+    defer engine.freeValue(extensions);
+    try put(engine, extensions, "runtime", try @import("native_sdk_extension_runtime.zig").create(engine, c.pi_js_undefined()));
     inline for (.{ "skills", "prompts", "themes" }) |name| {
         const value = try object(engine);
         defer engine.freeValue(value);
@@ -1598,31 +1635,9 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     var model = try get(engine, opts, "model");
     defer engine.freeValue(model);
     if (!c.JS_IsObject(model)) {
-        const provider = try invoke(engine, settings, "getDefaultProvider", &.{});
-        defer engine.freeValue(provider);
-        const id = try invoke(engine, settings, "getDefaultModel", &.{});
-        defer engine.freeValue(id);
-        if (c.JS_IsString(provider) and c.JS_IsString(id)) {
-            const candidate = try invoke(engine, runtime, "getModel", &.{ provider, id });
-            defer engine.freeValue(candidate);
-            const configured = try invoke(engine, runtime, "hasConfiguredAuth", &.{provider});
-            defer engine.freeValue(configured);
-            if (c.JS_IsObject(candidate) and c.JS_ToBool(engine.context, configured) == 1) {
-                engine.freeValue(model);
-                model = c.JS_DupValue(engine.context, candidate);
-            }
-        }
-        if (!c.JS_IsObject(model)) {
-            const available = try invoke(engine, runtime, "getAvailable", &.{});
-            defer engine.freeValue(available);
-            const rows = try engine.awaitValue(available);
-            defer engine.freeValue(rows);
-            if (try length(engine, rows) > 0) {
-                const candidate = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, 0));
-                engine.freeValue(model);
-                model = candidate;
-            }
-        }
+        const selected = try @import("native_sdk_factory_model.zig").select(engine, runtime, settings);
+        engine.freeValue(model);
+        model = selected;
     }
     try put(engine, data, "model", c.JS_DupValue(engine.context, model));
     const scoped = try get(engine, opts, "scopedModels");
@@ -1663,13 +1678,15 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try put(engine, data, "messages", try get(engine, context_value, "messages"));
     const agent = try object(engine);
     defer engine.freeValue(agent);
-    const agent_state = try object(engine);
+    const initial_messages = try get(engine, data, "messages");
+    defer engine.freeValue(initial_messages);
+    const initial_thinking = try get(engine, data, "thinkingLevel");
+    defer engine.freeValue(initial_thinking);
+    const initial_tools = try get(engine, data, "customTools");
+    defer engine.freeValue(initial_tools);
+    const agent_state = try @import("native_sdk_agent_state.zig").create(engine, model, initial_thinking, initial_tools, initial_messages);
     defer engine.freeValue(agent_state);
-    try put(engine, agent_state, "messages", try get(engine, data, "messages"));
-    try put(engine, agent_state, "model", c.JS_DupValue(engine.context, model));
-    try put(engine, agent_state, "thinkingLevel", try get(engine, data, "thinkingLevel"));
-    try put(engine, agent_state, "tools", try get(engine, data, "customTools"));
-    try put(engine, agent, "state", try @import("native_sdk_session_state.zig").view(engine, agent_state));
+    try put(engine, agent, "state", c.JS_DupValue(engine.context, agent_state));
     try put(engine, data, "agent", c.JS_DupValue(engine.context, agent));
     const session = try new(engine, .agent_session, data);
     defer engine.freeValue(session);
@@ -1904,6 +1921,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             self.disposed = true;
             self.aborted = true;
             try retireSessionModelLease(self);
+            const runner = try get(engine, self.data, "_sdkCommandRunner");
+            defer engine.freeValue(runner);
+            if (c.JS_IsObject(runner)) {
+                const invalidated = try @import("native_js_values.zig").invoke(engine, runner, "invalidate", &.{});
+                engine.freeValue(invalidated);
+            }
             try put(engine, self.data, "_sdkEventListeners", try array(engine));
             return c.pi_js_undefined();
         }

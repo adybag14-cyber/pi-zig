@@ -1,0 +1,52 @@
+const{createExtensionRuntime,McpServerRegistry}=globalThis.sdkRuntimeNative;
+const rows=[],asyncPrototype=Object.getPrototypeOf(async()=>{});
+const shape=fn=>({name:fn.name,length:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,keys:Reflect.ownKeys(fn).map(String)});
+const describe=value=>value===undefined?{type:'undefined'}:value===null?{type:'null'}:typeof value==='function'?{type:'function',...shape(value)}:typeof value==='object'?{type:value instanceof Set?'Set':value instanceof Map?'Map':Array.isArray(value)?'array':'object'}:{type:typeof value,value};
+const own=obj=>Reflect.ownKeys(obj).map(key=>{const d=Object.getOwnPropertyDescriptor(obj,key);return{name:String(key),value:describe(d.value),writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}});
+{
+ const runtime=createExtensionRuntime();
+ rows.push({id:'runtime-construction',own:own(runtime),uninitializedIdentity:['sendUserMessage','appendEntry','setSessionName','getSessionName','setLabel','getActiveTools','getAllTools','getSettings','setActiveTools','getCommands','getThinkingLevel','setThinkingLevel','createContext'].map(name=>[name,runtime[name]===runtime.sendMessage]),emptyFlags:[...runtime.flagValues],emptyMcp:runtime.mcpServers.list()});
+ const outcomes=[];
+ for(const name of ['sendMessage','createContext','setModel','refreshTools']){try{const value=runtime[name]();outcomes.push({name,promise:value instanceof Promise,value:describe(await value)})}catch(error){outcomes.push({name,error:{name:error.name,message:error.message}})}}
+ rows.push({id:'runtime-uninitialized-actions',outcomes});
+}
+{
+ const runtime=createExtensionRuntime(),a={id:'native-a'},b={id:'native-b'},v1={provider:'one',id:'a'},v2={provider:'one',id:'b'},v3={provider:'two',id:'a'};
+ runtime.registerProvider('one',{tag:1});runtime.registerProvider('two',{tag:2},'caller');runtime.registerNativeProvider(a);runtime.registerNativeProvider(b,'native-path');runtime.registerVirtualModel(v1);runtime.registerVirtualModel(v2,'virtual-path');runtime.registerVirtualModel(v3);
+ const snapshot=()=>({providers:runtime.pendingProviderRegistrations.map(x=>({...x})),native:runtime.pendingNativeProviderRegistrations.map(x=>({...x})),virtual:runtime.pendingVirtualModelRegistrations.map(x=>({...x}))});
+ const before=snapshot();runtime.unregisterProvider('one');runtime.unregisterProvider('native-a');runtime.unregisterVirtualModel('one','b');
+ rows.push({id:'runtime-provider-queues',before,after:snapshot(),refs:{native:runtime.pendingNativeProviderRegistrations[0].provider===b,virtual:runtime.pendingVirtualModelRegistrations[0].definition===v1}});
+}
+for(const id of ['normal','empty-message','unsubscribe-throws']){
+ const runtime=createExtensionRuntime(),events=[],marker={marker:true};
+ const first=runtime.trackEventBusSubscription(function(){events.push(['first',this===undefined]);if(id==='unsubscribe-throws')throw marker});
+ const second=runtime.trackEventBusSubscription(function(){events.push(['second',this===undefined])});
+ if(id==='normal'){first();first()}
+ let outcome;try{runtime.invalidate(id==='empty-message'?'':'stale fixture');outcome={ok:true}}catch(error){outcome={marker:error===marker}}
+ let active;try{runtime.assertActive();active=true}catch(error){active={name:error.name,message:error.message}}
+ runtime.invalidate('next');second();
+ rows.push({id:'runtime-invalidation-'+id,outcome,active,events});
+}
+{
+ const registry=new McpServerRegistry(),events=[],nested={tag:'shared'},a={name:'one',extensionPath:'A',config:{command:'first',nested:{n:1}},nested},b={name:'two',extensionPath:'B',config:{command:'second'}},replacement={name:'one',extensionPath:'C',config:{command:'replacement'}};
+ registry.setChangeListener(function(){events.push(['change',this===registry])});registry.register(a);registry.register(b);
+ const first=registry.list();first[0].config.nested.n=9;const refs={get:registry.get('one')===a,row:first[0]!==a,config:first[0].config!==a.config,nestedConfig:first[0].config.nested!==a.config.nested,otherNested:first[0].nested===nested};
+ registry.register(replacement);const replaced=registry.list();registry.unregister('one','A');const rejected=registry.list();registry.unregister('one','C');registry.unregister('missing',undefined);
+ rows.push({id:'mcp-registered-copy-order-owner',own:own(registry),prototype:Reflect.ownKeys(McpServerRegistry.prototype).map(String),methods:Object.fromEntries(['register','unregister','get','list','setChangeListener'].map(name=>[name,shape(registry[name])])),refs,originalConfig:a.config,first,replaced,rejected,after:registry.list(),events});
+}
+{
+ const events=[],map=new Map(),server={get name(){events.push('server.name');return'borrowed'},get extensionPath(){events.push('server.path');return'owner'},get config(){events.push('server.config');return{nested:{n:1}}}},receiver={get servers(){events.push('receiver.servers');return map},get changeListener(){events.push('receiver.listener');return function(){events.push(['listener.this',this===receiver])}}};
+ const set=map.set;map.set=function(...args){events.push(['map.set',this===map]);return set.apply(this,args)};
+ McpServerRegistry.prototype.register.call(receiver,server);
+ const registerEvents=events.splice(0),savedDescriptor=Object.getOwnPropertyDescriptor(globalThis,'structuredClone'),clone=globalThis.structuredClone;
+ Object.defineProperty(globalThis,'structuredClone',{configurable:true,get(){events.push('global.clone');return clone}});
+ let list;try{list=McpServerRegistry.prototype.list.call(receiver)}finally{Object.defineProperty(globalThis,'structuredClone',savedDescriptor)}
+ rows.push({id:'mcp-borrowed-getter-order',registerEvents,listEvents:events.splice(0),list});
+}
+{
+ const marker={raw:true},registry=new McpServerRegistry();registry.setChangeListener(()=>{throw marker});let register,remove;
+ try{registry.register({name:'one',extensionPath:'owner',config:{}})}catch(error){register={marker:error===marker,present:registry.get('one')!==undefined}}
+ try{registry.unregister('one','owner')}catch(error){remove={marker:error===marker,present:registry.get('one')!==undefined}}
+ rows.push({id:'mcp-listener-raw-errors',register,remove});
+}
+globalThis.sdkRuntimeMcpRows=rows;

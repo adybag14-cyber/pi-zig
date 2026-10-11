@@ -281,6 +281,17 @@ fn bindCommands(engine: *em.Engine, runner: c.JSValue, actions: c.JSValue) !c.JS
     inline for (.{ .{ "waitForIdle", "waitForIdleFn", Default.waitForIdleFn }, .{ "newSession", "newSessionHandler", Default.newSessionHandler }, .{ "fork", "forkHandler", Default.forkHandler }, .{ "navigateTree", "navigateTreeHandler", Default.navigateTreeHandler }, .{ "switchSession", "switchSessionHandler", Default.switchSessionHandler }, .{ "reload", "reloadHandler", Default.reloadHandler } }) |entry| {
         var roots = [_]c.JSValue{runner};
         const value = if (c.JS_ToBool(engine.context, actions) == 1) try sdk.get(engine, actions, entry[0]) else try engine.checked(c.JS_NewCFunctionData2(engine.context, defaultCall, "", 0, @intFromEnum(entry[2]), roots.len, &roots));
+        if (c.JS_ToBool(engine.context, actions) != 1) {
+            const async_prototype = engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)) catch |err| {
+                engine.freeValue(value);
+                return err;
+            };
+            defer engine.freeValue(async_prototype);
+            if (c.JS_SetPrototype(engine.context, value, async_prototype) < 0) {
+                engine.freeValue(value);
+                return js.capture(engine);
+            }
+        }
         try assign(engine, runner, entry[1], value);
     }
     return c.pi_js_undefined();

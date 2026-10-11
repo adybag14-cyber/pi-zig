@@ -56,7 +56,15 @@ const ContextMethod = enum(c_int) {
 pub const Bindings = struct {
     /// Owner-only capabilities captured from the SDK session's private data.
     /// JSON context snapshots cannot create or replace this admission.
-    pub const SdkContext = struct { session: c.JSValue, registry: c.JSValue, manager: c.JSValue, lease: @import("native_sdk_model_bridge.zig").Lease };
+    pub const SdkContext = struct {
+        session: c.JSValue,
+        registry: c.JSValue,
+        manager: c.JSValue,
+        lease: @import("native_sdk_model_bridge.zig").Lease,
+        /// Native owners explicitly select their admitted session. Ordinary Pi
+        /// calls retain Source's constructor-captured shared runtime instead.
+        provenance: enum { native_owner, source_runtime } = .native_owner,
+    };
     pub const SavedSdkContext = struct { context: ?SdkContext, snapshot: ?c.JSValue };
     pub const InvocationBroker = struct { active: ?*Bindings = null };
     pub const ToolLookupFn = *const fn (?*anyopaque, []const u8) ?c.JSValue;
@@ -440,6 +448,13 @@ pub const Bindings = struct {
     }
 
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        if (self.sdk_resource_owner and (method == .registerFlag or method == .getFlag)) {
+            const name = if (args.len > 0) args[0] else c.pi_js_undefined();
+            const flags = @import("native_sdk_runtime_flags.zig");
+            if (method == .getFlag) return flags.get(self.engine, self.owner_token, name);
+            const options = if (args.len > 1) args[1] else c.pi_js_undefined();
+            return flags.register(self.engine, self.owner_token, self.sdk_command_row orelse return error.InvalidSDKResourceOwner, name, options, self.factory_active);
+        }
         const runtime_method = switch (method) {
             .getActiveTools, .getAllTools, .getCommands, .getSettings, .getSessionName, .getThinkingLevel, .setSessionName, .setThinkingLevel, .setActiveTools, .sendUserMessage, .appendEntry, .setLabel, .setModel => true,
             else => false,
@@ -473,6 +488,24 @@ pub const Bindings = struct {
                 defer self.engine.freeValue(message);
                 const reason = try @import("native_js_values.zig").builtin(self.engine, "Error", &.{message});
                 return self.engine.checked(c.JS_Throw(self.engine.context, reason));
+            }
+            if (self.sdk_resource_owner and method != .sendUserMessage and (if (self.sdk_context) |scope| scope.provenance == .source_runtime else true)) {
+                // Admission still comes from the genuine private caller and
+                // original session/registry/manager lease. Dispatch then uses
+                // the constructor-captured shared runtime, as the Source API
+                // does; public JSON snapshots grant no ownership authority.
+                var admitted = try @import("native_sdk_resource_owners.zig").retainCaller(self);
+                defer admitted.deinit();
+                const runtime = try @import("native_sdk_runtime_flags.zig").runtime(self.engine, self.owner_token);
+                defer self.engine.freeValue(runtime);
+                const count: usize = switch (method) {
+                    .appendEntry, .setLabel => 2,
+                    .setSessionName, .setThinkingLevel, .setActiveTools, .setModel => 1,
+                    else => 0,
+                };
+                var forwarded = [_]c.JSValue{ c.pi_js_undefined(), c.pi_js_undefined() };
+                for (0..@min(args.len, count)) |index| forwarded[index] = args[index];
+                return @import("native_js_values.zig").invoke(self.engine, runtime, @tagName(method), forwarded[0..count]);
             }
         }
 
@@ -535,11 +568,11 @@ pub const Bindings = struct {
             .on => {
                 if (!c.JS_IsFunction(self.engine.context, args[1])) return error.InvalidExtensionHandler;
                 var handler_data = [_]c.JSValue{args[1]};
-                const wrapper = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, forwardHandler, 2, 0, handler_data.len, &handler_data));
+                const wrapper = try self.engine.checked(if (self.sdk_resource_owner) c.JS_NewCFunctionData2(self.engine.context, forwardHandler, "registeredHandler", 0, 0, handler_data.len, &handler_data) else c.JS_NewCFunctionData(self.engine.context, forwardHandler, 2, 0, handler_data.len, &handler_data));
                 defer self.engine.freeValue(wrapper);
                 const event_name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
                 defer self.engine.freeValue(event_name);
-                var data = [_]c.JSValue{ event_name, wrapper, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
+                var data = [_]c.JSValue{ event_name, wrapper, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class), self.sdk_command_row orelse c.pi_js_undefined() };
                 defer self.engine.freeValue(data[3]);
                 const unsubscribe = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, unsubscribeHandler, 0, 0, data.len, &data));
                 errdefer self.engine.freeValue(unsubscribe);
@@ -560,6 +593,21 @@ pub const Bindings = struct {
                 const handler = c.JS_DupValue(self.engine.context, wrapper);
                 errdefer self.engine.freeValue(handler);
                 try entry.value_ptr.append(self.gpa, handler);
+                if (self.sdk_command_row) |row| {
+                    const js_values = @import("native_js_values.zig");
+                    const handlers_map = try js_values.get(self.engine, row, "handlers");
+                    defer self.engine.freeValue(handlers_map);
+                    var list = try js_values.invoke(self.engine, handlers_map, "get", &.{event_name});
+                    defer self.engine.freeValue(list);
+                    if (c.JS_IsNull(list) or c.JS_IsUndefined(list)) {
+                        const array = try self.engine.checked(c.JS_NewArray(self.engine.context));
+                        self.engine.freeValue(list);
+                        list = array;
+                    }
+                    try js_values.push(self.engine, list, wrapper);
+                    const stored = try js_values.invoke(self.engine, handlers_map, "set", &.{ event_name, list });
+                    self.engine.freeValue(stored);
+                }
                 return unsubscribe;
             },
             .registerCommand => try self.store(&self.commands, name, args[1]),
@@ -911,6 +959,9 @@ pub const Bindings = struct {
 
     fn unsubscribeHandler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        if (c.JS_IsObject(data[4])) {
+            unsubscribeMap(engine, data[4], data[0], data[1]) catch |err| return publicationFailure(engine, err);
+        }
         const self = fromOwnerData(engine, data, 2) catch return c.pi_js_undefined();
         const name = engine.toString(data[0]) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
@@ -932,6 +983,25 @@ pub const Bindings = struct {
             }
         }
         return c.pi_js_undefined();
+    }
+    fn unsubscribeMap(engine: *engine_mod.Engine, row: c.JSValue, event: c.JSValue, handler: c.JSValue) !void {
+        const js_values = @import("native_js_values.zig");
+        const map = try js_values.get(engine, row, "handlers");
+        defer engine.freeValue(map);
+        const list = try js_values.invoke(engine, map, "get", &.{event});
+        defer engine.freeValue(list);
+        if (c.JS_ToBool(engine.context, list) != 1) return;
+        const index = try js_values.invoke(engine, list, "indexOf", &.{handler});
+        defer engine.freeValue(index);
+        if (c.JS_IsStrictEqual(engine.context, index, c.JS_NewInt32(engine.context, -1))) return;
+        const removed = try js_values.invoke(engine, list, "splice", &.{ index, c.JS_NewInt32(engine.context, 1) });
+        engine.freeValue(removed);
+        const length = try js_values.get(engine, list, "length");
+        defer engine.freeValue(length);
+        if (c.JS_IsStrictEqual(engine.context, length, c.JS_NewInt32(engine.context, 0))) {
+            const deleted = try js_values.invoke(engine, map, "delete", &.{event});
+            engine.freeValue(deleted);
+        }
     }
 
     fn sdkAction(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
@@ -1291,7 +1361,7 @@ pub const Bindings = struct {
         defer self.engine.freeValue(manager);
         if (!c.JS_IsStrictEqual(self.engine.context, registry, scope.registry) or !c.JS_IsStrictEqual(self.engine.context, manager, scope.manager)) return error.InvalidNativeSDKContext;
         const previous: SavedSdkContext = .{ .context = self.sdk_context, .snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else null };
-        self.sdk_context = .{ .session = c.JS_DupValue(self.engine.context, scope.session), .registry = c.JS_DupValue(self.engine.context, scope.registry), .manager = c.JS_DupValue(self.engine.context, scope.manager), .lease = scope.lease };
+        self.sdk_context = .{ .session = c.JS_DupValue(self.engine.context, scope.session), .registry = c.JS_DupValue(self.engine.context, scope.registry), .manager = c.JS_DupValue(self.engine.context, scope.manager), .lease = scope.lease, .provenance = scope.provenance };
         return previous;
     }
     fn freeSdkContext(self: *Bindings, scope: SdkContext) void {

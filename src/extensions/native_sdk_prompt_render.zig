@@ -119,6 +119,11 @@ fn docsText(scope: *Scope) !c.JSValue {
     text = try scope.concat(try scope.concat(text, try scope.text("\n- Examples: ")), try scope.stringify(try packagePath(scope, "examples")));
     return scope.concat(text, try scope.text(" (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)"));
 }
+pub fn resolvePackagePath(engine: *em.Engine, leaf: []const u8) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return c.JS_DupValue(engine.context, try packagePath(&scope, leaf));
+}
 fn projectText(scope: *Scope, files: c.JSValue) !c.JSValue {
     const mapped = try map(scope, files, "map", .project_file, &.{});
     const lines = try scope.own(try @import("native_sdk_transcript_replay.zig").arraySpread(scope.engine, mapped, try scope.text("Project-specific instructions and guidelines:")));

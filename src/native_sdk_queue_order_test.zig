@@ -2,6 +2,129 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const group_mod = @import("extensions/native_group.zig");
 const json = @import("mcp/protocol.zig").json;
+test "native SDK queue order FACTORY actual Source567 eleven shared runner runtime binding and disposal cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-factory-runner-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-factory-runner-568.input.txt"), "sdk-factory-runner.mjs") catch |err| {
+        std.debug.print("SDK Source567 factory: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkFactoryRunnerRows", "sdk-factory-runner-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-factory-runner-source-567.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 11), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (!json.equal(source, observed)) std.debug.print("SDK Source567 factory complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+    }
+    const cleared = try engine.eval("delete globalThis.sdkFactoryRunnerRows", "sdk-factory-runner-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+fn sdkRuntimeSourceHelper(context: ?*em.c.JSContext, _: em.c.JSValue, argc: c_int, argv: [*c]em.c.JSValue, magic: c_int) callconv(.c) em.c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    const sdk = @import("extensions/native_sdk.zig");
+    if (magic == 0) return @import("extensions/native_sdk_extension_runtime.zig").create(engine, em.c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+    var args = [_]em.c.JSValue{ em.c.pi_js_undefined(), em.c.pi_js_undefined(), em.c.pi_js_undefined(), em.c.pi_js_undefined() };
+    for (0..@min(args.len, @as(usize, @intCast(argc)))) |index| args[index] = argv[index];
+    return @import("extensions/native_sdk_agent_state.zig").create(engine, args[0], args[1], args[2], args[3]) catch |err| sdk.fail(engine, err);
+}
+test "native SDK queue order PRIVATE loader runtime and MCP genuine production bodies match all nine actual Source569 rows" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-runtime-mcp-root");
+    try root.installSchemas();
+    const sdk = @import("extensions/native_sdk.zig");
+    const js = @import("extensions/native_js_values.zig");
+    const namespace = try sdk.object(engine);
+    defer engine.freeValue(namespace);
+    try sdk.put(engine, namespace, "createExtensionRuntime", try engine.checked(em.c.pi_js_function_magic(engine.context, sdkRuntimeSourceHelper, "createExtensionRuntime", 0, 0)));
+    const registry = try @import("extensions/native_sdk_mcp_registry.zig").create(engine);
+    defer engine.freeValue(registry);
+    try sdk.put(engine, namespace, "McpServerRegistry", try js.get(engine, registry, "constructor"));
+    const global = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "sdkRuntimeNative", em.c.JS_DupValue(engine.context, namespace));
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runtime-mcp-569.input.txt"), "sdk-runtime-mcp.mjs") catch |err| {
+        std.debug.print("SDK Source569 runtime/MCP: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRuntimeMcpRows", "sdk-runtime-mcp-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runtime-mcp-agent-source-569.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 11), rows.len);
+    try std.testing.expectEqual(@as(usize, 9), actual.value.array.items.len);
+    for (rows[0..9], actual.value.array.items) |source, observed| {
+        if (!json.equal(source, observed)) std.debug.print("SDK Source569 runtime/MCP complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRuntimeMcpRows;delete globalThis.sdkRuntimeNative", "sdk-runtime-mcp-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+test "native SDK queue order PRIVATE Agent state constructor fields and real shared default model match Source569 state observations" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-agent-state-root");
+    try root.installSchemas();
+    const sdk = @import("extensions/native_sdk.zig");
+    const global = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "sdkCreateAgentState", try engine.checked(em.c.pi_js_function_magic(engine.context, sdkRuntimeSourceHelper, "createAgentState", 4, 1)));
+    const result = engine.evalModule(
+        \\const first=sdkCreateAgentState(undefined,undefined,[],[]),second=sdkCreateAgentState(undefined,undefined,[],[]),model={provider:'caller',id:'caller'},third=sdkCreateAgentState(model,'high',[],[]);
+        \\const describe=value=>value===undefined?{type:'undefined'}:typeof value==='object'?{type:value instanceof Set?'Set':'object'}:{type:typeof value,value};
+        \\const own=obj=>Reflect.ownKeys(obj).map(key=>{const d=Object.getOwnPropertyDescriptor(obj,key);return{name:String(key),value:describe(d.value),writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}});
+        \\globalThis.sdkAgentStateObserved={model:first.model,shared:first.model===second.model,explicit:third.model===model,defaultThinking:first.thinkingLevel,explicitThinking:third.thinkingLevel,ownState:own(first),messageKeys:first.messages.map(message=>Reflect.ownKeys(message).map(String))};
+        \\first.model.id='changed singleton';globalThis.sdkAgentStateLive={secondId:second.model.id,explicitId:third.model.id};first.model.id='unknown';
+    , "sdk-agent-state-constructor.mjs") catch |err| {
+        std.debug.print("SDK Source569 Agent state: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(result);
+    const observed = try engine.eval("[sdkAgentStateObserved,sdkAgentStateLive]", "sdk-agent-state-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(observed);
+    const raw = try engine.stringify(observed);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runtime-mcp-agent-source-569.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    inline for (.{ "model", "shared", "explicit", "defaultThinking", "explicitThinking", "ownState", "messageKeys" }) |field| try std.testing.expect(json.equal(rows[9].object.get(field).?, actual.value.array.items[0].object.get(field).?));
+    inline for (.{ "secondId", "explicitId" }) |field| try std.testing.expect(json.equal(rows[10].object.get(field).?, actual.value.array.items[1].object.get(field).?));
+    // This exercises the real state helper used by the factory. The broader
+    // public Agent class, its signal and prototype are not exported by this test.
+    const cleared = try engine.eval("delete globalThis.sdkCreateAgentState;delete globalThis.sdkAgentStateObserved;delete globalThis.sdkAgentStateLive", "sdk-agent-state-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
 test "native SDK queue order PUBLIC constructor full thirteen actual Source564 newTarget fields and default callback cases" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

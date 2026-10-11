@@ -49,6 +49,9 @@ pub fn rebuild(owner: *sdk.State) !void {
     defer engine.freeValue(skills);
     try sdk.put(engine, options, "skills", try copyRows(engine, skills, true));
     try sdk.put(engine, owner.data, "_baseSystemPromptOptions", c.JS_DupValue(engine.context, options));
+    const session = try sdk.sessionDataSessionValue(engine, owner.data);
+    defer engine.freeValue(session);
+    try sdk.put(engine, session, "_baseSystemPromptOptions", c.JS_DupValue(engine.context, options));
 }
 pub const Metadata = struct { snippets: c.JSValue, guidelines: c.JSValue };
 /// Source refresh normalizes all snippets first, then all guidelines. Activation
