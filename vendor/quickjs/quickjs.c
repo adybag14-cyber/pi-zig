@@ -16183,6 +16183,12 @@ JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
     }
     return status < 0 ? JS_EXCEPTION : stack[0];
 }
+JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value)
+{
+    JSValue stack[1] = { JS_DupValue(ctx, value) };
+    return js_unary_arith_slow(ctx, stack + 1, OP_inc) < 0
+        ? JS_EXCEPTION : stack[0];
+}
 
 static bool tag_is_number(uint32_t tag)
 {
