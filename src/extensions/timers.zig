@@ -178,6 +178,20 @@ pub fn scheduleOnce(engine: *engine_mod.Engine, callback: c.JSValue, delay_ms: u
     defer engine.freeValue(args[1]);
     return schedule(engine, &args, false);
 }
+pub fn scheduleInterval(engine: *engine_mod.Engine, callback: c.JSValue, delay_ms: u32) !c.JSValue {
+    var args = [_]c.JSValue{ callback, c.JS_NewInt64(engine.context, delay_ms) };
+    defer engine.freeValue(args[1]);
+    return schedule(engine, &args, true);
+}
+pub fn cancelHandle(engine: *engine_mod.Engine, handle: c.JSValue) !void {
+    const state = try scheduler(engine);
+    const retained = handleState(handle);
+    retained.cancelled = true;
+    for (state.timers.items, 0..) |timer, index| if (timer.id == retained.id) {
+        state.freeTimer(state.timers.orderedRemove(index));
+        return;
+    };
+}
 
 fn clearCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
