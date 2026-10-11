@@ -72,7 +72,7 @@ test "native SDK queue order reads ordinary writable AgentSession fields from th
     inline for (.{ "descriptors", "trace" }) |field| try std.testing.expect(json.equal(expected.value.object.get(field).?, actual.value.object.get(field).?));
 }
 
-test "native SDK queue rejects Source499 ordered duplicate command aliases and literal collisions" {
+test "native SDK queue order rejects Source499 ordered duplicate command aliases and literal collisions" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     engine.native_io = std.testing.io;
