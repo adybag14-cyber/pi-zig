@@ -115,6 +115,20 @@ pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
             else => 0,
         };
         const function = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, arity, field.value));
+        switch (kind) {
+            .emit, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitResourcesDiscover, .emitInput => {
+                const async_prototype = engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)) catch |err| {
+                    engine.freeValue(function);
+                    return err;
+                };
+                defer engine.freeValue(async_prototype);
+                if (c.JS_SetPrototype(engine.context, function, async_prototype) < 0) {
+                    engine.freeValue(function);
+                    return js.capture(engine);
+                }
+            },
+            else => {},
+        }
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
 }

@@ -1,0 +1,721 @@
+{
+  "source": "89e5c2c075535e2f427c30fc74720d65b2944ff9",
+  "scope": "Actual complete class declaration; builtin type erasure; method metadata only; no imports/constructor/body execution",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-sdk-runner-method-metadata-89e5-20261011.mjs",
+      "sha256": "b1befbfee6f8fcb29dce69f4322c1694536af723a0b8a1f00f65c9f84dc1f707"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/core/extensions/runner.ts",
+      "sha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a"
+    }
+  ],
+  "methods": [
+    {
+      "name": "bindCore",
+      "arity": 3,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "bindCommandContext",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "setUIContext",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "wrapUIPromptContext",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "withUIPrompt",
+      "arity": 3,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitUIPromptEvent",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getUIContext",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "hasUI",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getExtensionPaths",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getAllRegisteredTools",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getToolDefinition",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getFlags",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "setFlagValue",
+      "arity": 2,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getFlagValues",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getShortcuts",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getShortcutDiagnostics",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "invalidate",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "assertActive",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "onError",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitError",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "reportUnhandledMcpServers",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "hasHandlers",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getMessageRenderer",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getMarkdownTransformers",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "resolveToolRenderers",
+      "arity": 2,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getEntryRenderer",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "resolveRegisteredCommands",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getModelRegistry",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getRegisteredCommands",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getCommandDiagnostics",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getCommand",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "shutdown",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "getActiveTools",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "createContext",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "createToolContext",
+      "arity": 2,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "createCommandContext",
+      "arity": 0,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitBoundary",
+      "arity": 2,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "isSessionBeforeEvent",
+      "arity": 1,
+      "async": false,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emit",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitCacheWarmingDecision",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitMessageEnd",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitToolResult",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitToolCall",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitUserBash",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitContext",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitBeforeProviderRequest",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitBeforeProviderHeaders",
+      "arity": 1,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitBeforeAgentStart",
+      "arity": 3,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitResourcesDiscover",
+      "arity": 2,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    {
+      "name": "emitInput",
+      "arity": 4,
+      "async": true,
+      "ownKeys": [
+        "length",
+        "name"
+      ],
+      "descriptor": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": true
+      }
+    }
+  ],
+  "postDrift": 0
+}

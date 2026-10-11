@@ -2,6 +2,35 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const group_mod = @import("extensions/native_group.zig");
 const json = @import("mcp/protocol.zig").json;
+test "native SDK queue order PUBLIC implemented method metadata matches complete original Source class declaration" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-method-metadata-root");
+    try root.installSchemas();
+    const global = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const source = @embedFile("extensions/fixtures/sdk-runner-method-metadata-89e5-source.json");
+    try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
+    const result = engine.evalModule(
+        \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
+        \\const missing=['emitBoundary','emitUserBash','emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
+        \\if(sdkMethodSource.methods.length!==50)throw Error('Source method inventory');
+        \\for(const expected of sdkMethodSource.methods){const descriptor=Object.getOwnPropertyDescriptor(ExtensionRunner.prototype,expected.name);
+        \\ if(missing.includes(expected.name)){if(descriptor!==undefined)throw Error('unqualified method inventory changed');absent++;continue}
+        \\ if(typeof descriptor?.value!=='function')throw Error('missing implemented method '+expected.name);const fn=descriptor.value;
+        \\ const actual={name:fn.name,arity:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String),descriptor:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable}};
+        \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));implemented++;
+        \\}
+        \\if(implemented!==46||absent!==4)throw Error('partial native method inventory');
+    , "sdk-method-metadata-native") catch |err| {
+        std.debug.print("SDK method metadata: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+}
 
 fn exercise(gpa: std.mem.Allocator, comptime capture: []const u8) !void {
     const engine = try em.Engine.init(gpa, .{});
