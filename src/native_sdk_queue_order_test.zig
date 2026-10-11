@@ -532,3 +532,45 @@ test "native SDK queue order PUBLIC renderer chains deferred roots raw errors an
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC UI prompt old numeric depth finally raw identity and queued receivers match Source530" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-ui-prompts-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-ui-prompts-530.input.txt"), "sdk-public-ui-prompts.mjs") catch |err| {
+        std.debug.print("SDK Source530 PUBLIC UI prompts setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerUIPromptRows", "sdk-public-ui-prompts-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-ui-prompts-source-530.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 20), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (std.mem.eql(u8, source.object.get("id").?.string, "symbol-depth")) {
+            // Keep the immutable Node wording. Compare the original builtin
+            // error class and every other field/trace across the two engines.
+            inline for (.{ "id", "events", "depth", "active" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            inline for (.{ "identity", "finishIdentity", "name" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source530 complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerUIPromptRows", "sdk-public-ui-prompts-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

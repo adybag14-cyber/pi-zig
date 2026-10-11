@@ -1,0 +1,763 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "number-zero",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "negative-zero",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "string-zero",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "string-two",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "depth": 2,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "bigint-zero",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "bigint-one",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "depth": {
+        "bigint": "1"
+      },
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "object-zero",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "depth.coerce",
+          "number"
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "symbol-depth",
+      "outcome": {
+        "identity": false,
+        "finishIdentity": false,
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a number"
+      },
+      "events": [],
+      "depth": {
+        "symbol": "Symbol(depth)"
+      },
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "getter-setter",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        "depth.get",
+        [
+          "depth.coerce",
+          "number"
+        ],
+        [
+          "depth.set",
+          1
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "depth.get",
+        [
+          "depth.set",
+          0
+        ],
+        [
+          "depth.set",
+          0
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "select",
+            "title": "title"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "run-throws",
+      "outcome": {
+        "identity": true,
+        "finishIdentity": false
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "finally-getter-throws",
+      "outcome": {
+        "identity": true,
+        "finishIdentity": false
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        "finally.get",
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "finally-call-throws",
+      "outcome": {
+        "identity": true,
+        "finishIdentity": false
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        "finally.get",
+        [
+          "finally.call",
+          true,
+          "finish",
+          0
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "finally-sync-result",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        "finally.get",
+        [
+          "finally.call",
+          true,
+          "finish",
+          0
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "returnedToken",
+          true
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "finish-throws",
+      "outcome": {
+        "identity": false,
+        "finishIdentity": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "start-throws",
+      "outcome": {
+        "identity": true,
+        "finishIdentity": false
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ]
+      ],
+      "depth": 1,
+      "active": {
+        "kind": "input",
+        "title": "initial"
+      }
+    },
+    {
+      "id": "active-prompt-getters",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        "finally.get",
+        [
+          "finally.call",
+          true,
+          "finish",
+          0
+        ],
+        "active.kind",
+        [
+          "active.title",
+          1
+        ],
+        [
+          "active.title",
+          2
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "editor",
+            "title": "changed title"
+          }
+        ],
+        [
+          "returnedToken",
+          true
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "borrowed-receiver",
+      "outcome": {
+        "token": true
+      },
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "run",
+          true
+        ],
+        "finally.get",
+        [
+          "finally.call",
+          true,
+          "finish",
+          0
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "input",
+            "title": "initial"
+          }
+        ],
+        [
+          "returnedToken",
+          true
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "nested-inner-first",
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "confirm",
+            "title": "outer"
+          }
+        ],
+        "outer.run",
+        "inner.run",
+        [
+          "both.pending",
+          2
+        ],
+        [
+          "inner.result",
+          true,
+          1
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "confirm",
+            "title": "outer"
+          }
+        ],
+        [
+          "outer.result",
+          true,
+          0
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "nested-outer-first",
+      "events": [
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_start",
+            "reason": "ui_prompt",
+            "kind": "confirm",
+            "title": "outer"
+          }
+        ],
+        "outer.run",
+        "inner.run",
+        [
+          "both.pending",
+          2
+        ],
+        [
+          "outer.result",
+          true,
+          1
+        ],
+        [
+          "event",
+          true,
+          {
+            "type": "ui_prompt_end",
+            "reason": "ui_prompt",
+            "kind": "confirm",
+            "title": "outer"
+          }
+        ],
+        [
+          "inner.result",
+          true,
+          0
+        ]
+      ],
+      "depth": 0,
+      "active": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "queued-event-dynamic-receiver",
+      "events": [
+        [
+          "queue",
+          true,
+          "",
+          0
+        ],
+        [
+          "returnedUndefined",
+          true
+        ],
+        [
+          "latest.emit",
+          true,
+          true,
+          true
+        ],
+        [
+          "callbackReturnedUndefined",
+          true
+        ]
+      ]
+    }
+  ]
+}
