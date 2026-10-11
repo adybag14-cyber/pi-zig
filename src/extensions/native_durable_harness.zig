@@ -562,3 +562,27 @@ fn constructorAllocationExercise(gpa: std.mem.Allocator) !void {
 test "native durable VM Harness and conversation constructors clean up every GPA failure and owner cycle" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, constructorAllocationExercise, .{});
 }
+
+fn publicOpenLifecycleExercise(gpa: std.mem.Allocator) !void {
+    const engine = try Engine.init(gpa, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("abort_signal.zig").install(engine);
+    const generation = engine.native_allocation_generation;
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage}from'@earendil-works/pi-durable';
+        \\let closes=0,reports=0;const context={},reason={cancel:true},failure={storage:true};
+        \\const options={models:{},registry:{snapshot(){return{task(){return{}},tasks(){return[]}}},subscribe(){return()=>{}}},onReport(error){if(error!==failure)throw Error('wrong reporter cause');reports++;throw {reporter:true}}};
+        \\function storage(){const value=new MemoryStorage(),close=value.close;value.close=async function(context){closes++;return close.call(value,context)};return value}
+        \\const opened=Harness.open(storage(),options,context);if(!(opened instanceof Promise))throw Error('missing public promise');const harness=await opened;await harness.close(context);
+        \\const controller=new AbortController(),cancelled=Harness.open(storage(),options,{abortSignal:controller.signal});controller.abort(reason);try{await cancelled;throw Error('cancelled open succeeded')}catch(error){if(error!==reason)throw error}
+        \\const broken=storage();broken.scanTasks=async()=>{throw failure};try{await Harness.open(broken,options,context);throw Error('failed open succeeded')}catch(error){if(error!==failure)throw error}
+        \\if(closes!==3||reports!==1)throw Error('public open lifecycle '+closes+'/'+reports);
+    , "public-open-lifecycle-allocation-fixture") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(result);
+}
+
+test "native durable public open lifecycle Promise failure cleanup and reporter release every GPA failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, publicOpenLifecycleExercise, .{});
+}

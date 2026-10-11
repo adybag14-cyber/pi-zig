@@ -577,6 +577,8 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-cdaf-retention", "Replay latest Source public document retention and observer reload behavior").dependOn(&b.addRunArtifact(cdaf_retention_tests).step);
     const cdaf_retention_pin_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf retention pins"} });
     b.step("test-native-durable-cdaf-retention-pins", "Replay actual Source observer incarnation pins unload and held-transaction timer expiry").dependOn(&b.addRunArtifact(cdaf_retention_pin_tests).step);
+    const public_open_lifecycle_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native durable public open lifecycle"} });
+    b.step("test-native-durable-public-open-lifecycle", "Exercise public open continuation cleanup and reporter roots through every GPA failure").dependOn(&b.addRunArtifact(public_open_lifecycle_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, ea_nested_tests.root_module);
