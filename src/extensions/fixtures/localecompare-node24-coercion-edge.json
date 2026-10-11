@@ -1,0 +1,966 @@
+{
+  "status": "ACTUAL_NODE_LOCALECOMPARE_COERCION_EDGE_CAPTURE",
+  "node": "24.14.0",
+  "icu": "78.2",
+  "execArgv": [
+    "--max-old-space-size=64"
+  ],
+  "inputHashes": {
+    "runtime": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "input": "b92d2d4d2f7799ef25390fc964f4b4a7df2e028ae903d50c334ceaf68496b935",
+    "capture": "56214a750babd03cbb590e5469b3309f44749895a6f76038817172741957c2fd"
+  },
+  "prePostDrift": 0,
+  "cases": [
+    {
+      "role": "receiver",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "locales",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "usage",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "localeMatcher",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "collation",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "caseFirst",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "undefined",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "null",
+      "result": -1,
+      "trace": [
+        "get:toPrimitive",
+        "toString"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "false",
+      "error": {
+        "name": "TypeError",
+        "message": "'false' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "true",
+      "error": {
+        "name": "TypeError",
+        "message": "'true' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "zero",
+      "error": {
+        "name": "TypeError",
+        "message": "'0' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "one",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "NaN",
+      "error": {
+        "name": "TypeError",
+        "message": "'NaN' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "string",
+      "error": {
+        "name": "TypeError",
+        "message": "'x' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "'1' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "symbol",
+      "error": {
+        "name": "TypeError",
+        "message": "'Symbol(hook)' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "object",
+      "error": {
+        "name": "TypeError",
+        "message": "'#<Object>' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "sensitivity",
+      "hook": "array",
+      "error": {
+        "name": "TypeError",
+        "message": "'[object Array]' returned for property 'Symbol(Symbol.toPrimitive)' of object '[object Object]' is not a function"
+      },
+      "trace": [
+        "get:toPrimitive"
+      ]
+    },
+    {
+      "role": "receiver",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform 'get' on a proxy that has been revoked"
+      },
+      "trace": []
+    },
+    {
+      "role": "locales",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform 'get' on a proxy that has been revoked"
+      },
+      "trace": []
+    },
+    {
+      "role": "localeEntry",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform 'get' on a proxy that has been revoked"
+      },
+      "trace": []
+    },
+    {
+      "role": "options",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform 'get' on a proxy that has been revoked"
+      },
+      "trace": []
+    },
+    {
+      "role": "optionValue",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot perform 'get' on a proxy that has been revoked"
+      },
+      "trace": []
+    },
+    {
+      "role": "hookValue",
+      "hook": "revoked-proxy",
+      "error": {
+        "name": "TypeError",
+        "message": "'null' returned for property 'Symbol(Symbol.toPrimitive)' of object '#<Object>' is not a function"
+      },
+      "trace": []
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "status": "ACTUAL_NODE_LOCALECOMPARE_LIFECYCLE_CAPTURE",
+  "node": "24.14.0",
+  "icu": "78.2",
+  "execArgv": [
+    "--expose-gc",
+    "--max-old-space-size=64"
+  ],
+  "inputHashes": {
+    "runtime": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "input": "619acdb97b2830095c67c87612de8eddd78672e298927785483a74dba3821b7f",
+    "capture": "806335caf1b46cc8a6475c258ed65317fb37c789f6b5c4a96e7773e1db7815ca"
+  },
+  "prePostDrift": 0,
+  "cases": [
+    {
+      "name": "retained-after-replacement-and-gc",
+      "value": {
+        "retained": -1,
+        "replacement": 987
+      }
+    },
+    {
+      "name": "retained-after-deletion-and-gc",
+      "value": {
+        "retained": 1,
+        "own": false
+      }
+    },
+    {
+      "name": "captured-primitive-symbol-after-global-replacement",
+      "value": {
+        "result": -1,
+        "trace": [
+          "string"
+        ]
+      }
+    },
+    {
+      "name": "captured-TypeError-after-global-replacement",
+      "value": {
+        "intrinsic": true,
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string"
+      }
+    },
+    {
+      "name": "captured-RangeError-after-global-replacement",
+      "value": {
+        "intrinsic": true,
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "String-and-Intl-global-replacement",
+      "value": 1
+    },
+    {
+      "name": "inherited-options-getters-with-gc",
+      "value": {
+        "result": -1,
+        "trace": [
+          "usage",
+          "localeMatcher",
+          "collation",
+          "numeric",
+          "caseFirst",
+          "sensitivity",
+          "ignorePunctuation"
+        ]
+      }
+    },
+    {
+      "name": "arraylike-locale-getters-with-gc",
+      "value": {
+        "result": 1,
+        "trace": [
+          "get:length",
+          "has:0",
+          "get:0",
+          "has:1",
+          "get:1"
+        ]
+      }
+    },
+    {
+      "name": "getter-thrown-object-identity-after-gc",
+      "value": {
+        "same": true,
+        "tag": "original reason"
+      }
+    },
+    {
+      "name": "receiver-thrown-object-identity-after-gc",
+      "value": {
+        "same": true,
+        "tag": "receiver reason"
+      }
+    },
+    {
+      "name": "retained-after-Function-prototype-call-mutation",
+      "value": -1
+    },
+    {
+      "name": "retained-repeated-gc-and-prototype-replacement",
+      "value": -16
+    }
+  ]
+}

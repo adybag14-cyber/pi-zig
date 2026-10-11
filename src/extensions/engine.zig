@@ -183,6 +183,16 @@ pub const Engine = struct {
         c.JS_SetRuntimeOpaque(runtime, self);
         c.JS_SetInterruptHandler(runtime, interrupt, self);
         c.JS_SetModuleLoaderFunc(runtime, null, moduleLoader, self);
+        // These fields may acquire values if startup installation fails. The
+        // existing errdefers own the context/runtime and captured intrinsics.
+        errdefer {
+            if (self.captured_exception) |value| self.freeValue(value);
+            if (self.native_allocation_exception) |value| self.freeValue(value);
+            if (self.last_error) |value| gpa.free(value);
+        }
+        // Capture genuine symbols and error constructors before guest code can
+        // replace globals or String.prototype. ICU bootstrap requires no Io.
+        try @import("native_localecompare_binding.zig").install(self);
         // Capture pristine intrinsics before any extension input executes.
         // Lease affinity must not depend on mutable globals/prototypes.
         const global = c.JS_GetGlobalObject(context);

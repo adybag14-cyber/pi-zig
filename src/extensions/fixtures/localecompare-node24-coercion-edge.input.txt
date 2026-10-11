@@ -1,0 +1,31 @@
+const coercionEdgeCases = (() => {
+  const compare=String.prototype.localeCompare, apply=Reflect.apply, primitive=Symbol.toPrimitive, cases=[];
+  const hooks=[['undefined',()=>undefined],['null',()=>null],['false',()=>false],['true',()=>true],['zero',()=>0],['one',()=>1],['NaN',()=>NaN],['string',()=>'x'],['bigint',()=>1n],['symbol',()=>Symbol('hook')],['object',()=>({})],['array',()=>[]]];
+  const roles=[['receiver','a'],['locales','en'],['usage','sort'],['localeMatcher','lookup'],['collation','phonebk'],['caseFirst','upper'],['sensitivity','base']];
+  for(const [role,fallback] of roles)for(const [label,make] of hooks){
+    const trace=[],value={toString(){trace.push('toString');return fallback;},valueOf(){trace.push('valueOf');return fallback;}};
+    Object.defineProperty(value,primitive,{get(){trace.push('get:toPrimitive');return make();}});
+    let observed;
+    try {
+      const receiver=role==='receiver'?value:'a',locales=role==='locales'?[value]:'en',options=role==='receiver'||role==='locales'?undefined:{[role]:value};
+      observed={result:apply(compare,receiver,['b',locales,options])};
+    } catch(error){observed={error:{name:error.name,message:error.message}};}
+    cases.push({role,hook:label,...observed,trace});
+  }
+  for(const role of ['receiver','locales','localeEntry','options','optionValue','hookValue']){
+    const trace=[],revocable=Proxy.revocable({},{});revocable.revoke();const value=revocable.proxy;
+    let observed;
+    try {
+      let receiver='a',locales='en',options;
+      if(role==='receiver')receiver=value;
+      if(role==='locales')locales=value;
+      if(role==='localeEntry')locales=[value];
+      if(role==='options')options=value;
+      if(role==='optionValue')options={sensitivity:value};
+      if(role==='hookValue')receiver={[primitive]:value};
+      observed={result:apply(compare,receiver,['b',locales,options])};
+    } catch(error){observed={error:{name:error.name,message:error.message}};}
+    cases.push({role,hook:'revoked-proxy',...observed,trace});
+  }
+  return cases;
+})();

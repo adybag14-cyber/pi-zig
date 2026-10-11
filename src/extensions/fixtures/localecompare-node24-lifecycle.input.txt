@@ -1,0 +1,86 @@
+const lifecycleCases = (() => {
+  const originalString = String, originalSymbol = Symbol, originalTypeError = TypeError, originalRangeError = RangeError;
+  const prototype = originalString.prototype, descriptor = Object.getOwnPropertyDescriptor(prototype, 'localeCompare');
+  const retained = descriptor.value, apply = Reflect.apply, primitive = originalSymbol.toPrimitive;
+  const cases = [], compare = (receiver, ...args) => apply(retained, receiver, args);
+  const record = (name, work) => {
+    try { cases.push({name, value:work()}); }
+    catch(error) { cases.push({name, error:{name:error.name, message:error.message}}); }
+  };
+  try {
+    record('retained-after-replacement-and-gc', () => {
+      prototype.localeCompare = () => 987;
+      nativeRunGc();
+      return {retained:compare('2','10','en',{numeric:true}), replacement:'2'.localeCompare('10')};
+    });
+    record('retained-after-deletion-and-gc', () => {
+      delete prototype.localeCompare;
+      nativeRunGc();
+      return {retained:compare('z','a','en'), own:Object.hasOwn(prototype,'localeCompare')};
+    });
+    record('captured-primitive-symbol-after-global-replacement', () => {
+      globalThis.Symbol = {toPrimitive:'guest replacement'};
+      const trace = [], receiver = {[primitive](hint){trace.push(hint);nativeRunGc();return '2';}};
+      try { return {result:compare(receiver,'10','en',{numeric:true}), trace}; }
+      finally { globalThis.Symbol = originalSymbol; }
+    });
+    record('captured-TypeError-after-global-replacement', () => {
+      globalThis.TypeError = function GuestTypeError(){};
+      try { compare(originalSymbol('receiver'),'x'); }
+      catch(error) { return {intrinsic:error instanceof originalTypeError,name:error.name,message:error.message}; }
+      finally { globalThis.TypeError = originalTypeError; }
+    });
+    record('captured-RangeError-after-global-replacement', () => {
+      globalThis.RangeError = function GuestRangeError(){};
+      try { compare('a','b','en--US'); }
+      catch(error) { return {intrinsic:error instanceof originalRangeError,name:error.name,message:error.message}; }
+      finally { globalThis.RangeError = originalRangeError; }
+    });
+    record('String-and-Intl-global-replacement', () => {
+      const originalIntl = globalThis.Intl;
+      globalThis.String = function GuestString(){throw Error('guest String invoked');};
+      globalThis.Intl = {};
+      try { nativeRunGc();return compare('ä','z','sv'); }
+      finally { globalThis.String=originalString;globalThis.Intl=originalIntl; }
+    });
+    record('inherited-options-getters-with-gc', () => {
+      const trace=[], options=Object.create(Object.fromEntries(['usage','localeMatcher','collation','numeric','caseFirst','sensitivity','ignorePunctuation'].map(key=>[key,undefined])));
+      for(const key of ['usage','localeMatcher','collation','numeric','caseFirst','sensitivity','ignorePunctuation'])Object.defineProperty(Object.getPrototypeOf(options),key,{get(){trace.push(key);nativeRunGc();return key==='numeric'?true:undefined;}});
+      return {result:compare('2','10','en',options),trace};
+    });
+    record('arraylike-locale-getters-with-gc', () => {
+      const trace=[], locales=new Proxy({length:2,0:'zz',1:'sv'},{has(target,key){trace.push('has:'+key);nativeRunGc();return Reflect.has(target,key);},get(target,key){trace.push('get:'+originalString(key));nativeRunGc();return Reflect.get(target,key);}});
+      return {result:compare('ä','z',locales),trace};
+    });
+    record('getter-thrown-object-identity-after-gc', () => {
+      const reason={tag:'original reason'}, options={get numeric(){nativeRunGc();throw reason;}};
+      try { compare('a','b','en',options); }
+      catch(error) { nativeRunGc();return {same:error===reason,tag:error.tag}; }
+    });
+    record('receiver-thrown-object-identity-after-gc', () => {
+      const reason={tag:'receiver reason'}, receiver={[primitive](){nativeRunGc();throw reason;}};
+      try { compare(receiver,'b'); }
+      catch(error) { nativeRunGc();return {same:error===reason,tag:error.tag}; }
+    });
+    record('retained-after-Function-prototype-call-mutation', () => {
+      const saved=Function.prototype.call;
+      Function.prototype.call=function(){throw Error('guest call invoked');};
+      try { return compare('2','10','en',{numeric:true}); }
+      finally { Function.prototype.call=saved; }
+    });
+    record('retained-repeated-gc-and-prototype-replacement', () => {
+      let sum=0;
+      for(let index=0;index<16;index++){
+        prototype.localeCompare=()=>index;
+        nativeRunGc();
+        sum+=compare('2','10','en',{numeric:true});
+      }
+      return sum;
+    });
+  } finally {
+    Object.defineProperty(prototype,'localeCompare',descriptor);
+    globalThis.String=originalString;globalThis.Symbol=originalSymbol;globalThis.TypeError=originalTypeError;globalThis.RangeError=originalRangeError;
+  }
+  nativeRunGc();
+  return cases;
+})();

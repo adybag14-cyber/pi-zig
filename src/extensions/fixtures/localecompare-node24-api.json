@@ -1,0 +1,483 @@
+{
+  "status": "ACTUAL_NODE_LOCALECOMPARE_API_INPUT_CAPTURE",
+  "node": "24.14.0",
+  "icu": "78.2",
+  "inputHashes": {
+    "runtime": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "input": "2aa638c366a9c9bc093797da94771b1bb999e18cbd552e081ae6ae233af39eae",
+    "capture": "e5d4e4efcc01f14245e8eb1ada7eb1113d44f59b40f526ca2a7ed9029b4cf372"
+  },
+  "prePostDrift": 0,
+  "cases": [
+    {
+      "name": "actual receiver null",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "String.prototype.localeCompare called on null or undefined"
+      }
+    },
+    {
+      "name": "actual receiver undefined",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "String.prototype.localeCompare called on null or undefined"
+      }
+    },
+    {
+      "name": "actual receiver Symbol(receiver)",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string"
+      }
+    },
+    {
+      "name": "actual receiver 42",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual receiver true",
+      "trace": [],
+      "result": 1
+    },
+    {
+      "name": "actual receiver 1",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual Symbol other",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a string"
+      }
+    },
+    {
+      "name": "actual locales scalar undefined",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locales scalar null",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot convert undefined or null to object"
+      }
+    },
+    {
+      "name": "actual locales scalar 42",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locales scalar true",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locales scalar 1",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locales scalar Symbol(list)",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag en-GB",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag EN-gb",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag de",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag sv",
+      "trace": [],
+      "result": 1
+    },
+    {
+      "name": "actual locale tag tr",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag th",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag ja",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag zh",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag und",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag zz",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag root",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "actual locale tag i-klingon",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "actual locale tag en-a-foo-a-bar",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid language tag: en-a-foo-a-bar"
+      }
+    },
+    {
+      "name": "actual locale tag en-u-kn-true-kf-upper",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag de-u-co-phonebk",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag en-u-co-search",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag en--GB",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "actual locale tag abcd",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "actual locale tag abcde",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag de-1901-1901",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid language tag: de-1901-1901"
+      }
+    },
+    {
+      "name": "actual locale tag en-x-test",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale tag x-test",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Incorrect locale information provided"
+      }
+    },
+    {
+      "name": "actual locale tag en-US-u-unknown",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual locale element 42",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale element true",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale element 1",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale element Symbol(element)",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale element null",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale element undefined",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "Language ID should be string or object."
+      }
+    },
+    {
+      "name": "actual locale arraylike getter order",
+      "trace": [
+        "get length",
+        "has 0",
+        "get 0",
+        "locale0 toString",
+        "has 1",
+        "get 1",
+        "locale1 toString"
+      ],
+      "result": -1
+    },
+    {
+      "name": "actual locale length conversion",
+      "trace": [
+        "get length",
+        "length valueOf",
+        "get0"
+      ],
+      "result": -1
+    },
+    {
+      "name": "actual complete coercion order",
+      "trace": [
+        "receiver primitive string",
+        "other primitive string",
+        "locale primitive string",
+        "get usage",
+        "get localeMatcher",
+        "get collation",
+        "get numeric",
+        "get caseFirst",
+        "get sensitivity",
+        "get ignorePunctuation"
+      ],
+      "result": -1
+    },
+    {
+      "name": "actual options scalar null",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "message": "String.prototype.localeCompare called on null or undefined"
+      }
+    },
+    {
+      "name": "actual options scalar undefined",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual options scalar false",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual options scalar 42",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual options scalar options",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual invalid option usage bad",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Value bad out of range for String.prototype.localeCompare options property usage"
+      }
+    },
+    {
+      "name": "actual invalid option localeMatcher bad",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Value bad out of range for String.prototype.localeCompare options property localeMatcher"
+      }
+    },
+    {
+      "name": "actual invalid option collation a",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid collation : a"
+      }
+    },
+    {
+      "name": "actual invalid option collation standard",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual invalid option caseFirst bad",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Value bad out of range for String.prototype.localeCompare options property caseFirst"
+      }
+    },
+    {
+      "name": "actual invalid option sensitivity bad",
+      "trace": [],
+      "error": {
+        "name": "RangeError",
+        "message": "Value bad out of range for String.prototype.localeCompare options property sensitivity"
+      }
+    },
+    {
+      "name": "actual boolean options never coerce objects",
+      "trace": [],
+      "result": 0
+    },
+    {
+      "name": "actual string option object conversion",
+      "trace": [
+        "caseFirst toString",
+        "sensitivity toString"
+      ],
+      "result": 1
+    },
+    {
+      "name": "actual unknown option getter is unused",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual supported option usage",
+      "trace": [],
+      "result": 1
+    },
+    {
+      "name": "actual supported option localeMatcher",
+      "trace": [],
+      "result": -1
+    },
+    {
+      "name": "actual supported option collation",
+      "trace": [],
+      "result": 1
+    },
+    {
+      "name": "actual original option failure usage",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure localeMatcher",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure collation",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure numeric",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure caseFirst",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure sensitivity",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    },
+    {
+      "name": "actual original option failure ignorePunctuation",
+      "trace": [],
+      "error": {
+        "original": true
+      }
+    }
+  ],
+  "metadata": {
+    "name": "localeCompare",
+    "length": 1,
+    "ownKeys": [
+      "length",
+      "name"
+    ],
+    "tag": "[object Function]",
+    "constructible": false,
+    "enumerable": false,
+    "writable": true,
+    "configurable": true
+  }
+}

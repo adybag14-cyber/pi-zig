@@ -64,6 +64,9 @@ pub fn build(b: *std.Build) void {
             .link_libc = true,
         }),
     });
+    const native_icu = @import("tools/build_native_icu.zig").add(b, target, optimize);
+    quickjs.root_module.linkLibrary(native_icu.library);
+    quickjs.root_module.link_libcpp = true;
     quickjs.root_module.linkLibrary(native_yaml);
     quickjs.root_module.addIncludePath(b.path("vendor/quickjs"));
     // Native public storage is installed for every extension VM. Carry SQLite
@@ -112,6 +115,18 @@ pub fn build(b: *std.Build) void {
     });
     const catalog_tool = b.createModule(.{ .root_source_file = b.path("tools/catalog.zig"), .target = target, .optimize = optimize });
     mod.addImport("catalog_tool", catalog_tool);
+    const locale_compare_source_step = b.step("test-native-localecompare-source", "Replay original69 API, original2100 JS comparisons, original90 coercion edges, original12 lifecycle and exhaustive host allocation cleanup");
+    for ([_]struct { file: []const u8, filter: []const u8 }{
+        .{ .file = "src/native_localecompare_binding_source_test.zig", .filter = "Native localeCompare Source" },
+        .{ .file = "src/native_localecompare_coercion_edge_source_test.zig", .filter = "Native localeCompare Coercion Source" },
+        .{ .file = "src/native_localecompare_lifecycle_source_test.zig", .filter = "Native localeCompare Lifecycle Source" },
+    }) |entry| {
+        const source_module = b.createModule(.{ .root_source_file = b.path(entry.file), .target = target, .optimize = optimize });
+        source_module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, source_module, quickjs, sqlite_lib_dir);
+        const source_tests = b.addTest(.{ .root_module = source_module, .filters = &.{entry.filter}, .use_llvm = use_llvm });
+        locale_compare_source_step.dependOn(&b.addRunArtifact(source_tests).step);
+    }
     linkQuickJs(b, mod, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, mod, typescript_parser);
     const sqlite_persistence_mod = b.createModule(.{
@@ -194,13 +209,11 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-process-stream-protocol", "Check binary process IO, exact leases, EOF ordering and paired detach").dependOn(&process_protocol_run.step);
     const physical_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_physical_stdio_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"physical stdio"}, .use_llvm = use_llvm });
     linkQuickJs(b, physical_stdio_tests.root_module, quickjs, sqlite_lib_dir);
-    linkDurable(b, physical_stdio_tests.root_module);
     physical_stdio_tests.root_module.addImport("catalog_tool", catalog_tool);
     const physical_stdio_run = b.addRunArtifact(physical_stdio_tests);
     b.step("test-native-physical-stdio", "Check physical stdio adapter forwarding, Main queue continuity and replacement sink EOF").dependOn(&physical_stdio_run.step);
     const physical_stdio_fixture = b.addExecutable(.{ .name = "pi-physical-stdio-fixture", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_physical_stdio_fixture.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     linkQuickJs(b, physical_stdio_fixture.root_module, quickjs, sqlite_lib_dir);
-    linkDurable(b, physical_stdio_fixture.root_module);
     physical_stdio_fixture.root_module.addImport("catalog_tool", catalog_tool);
     const physical_fixture_install = b.addInstallArtifact(physical_stdio_fixture, .{});
     b.step("build-native-physical-stdio-fixture", "Build an actual physical stdio owner for bounded pipe and cancellation checks").dependOn(&physical_fixture_install.step);
@@ -2057,6 +2070,8 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.addIncludePath(b.path("vendor/quickjs"));
     module.addIncludePath(b.path("vendor/libfyaml"));
     module.addIncludePath(b.path("src/extensions"));
+    module.addImport("native_icu_api", b.modules.get("native_icu_api").?);
+    module.link_libcpp = true;
     module.linkLibrary(library);
     module.link_libc = true;
 }
