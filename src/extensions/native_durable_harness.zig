@@ -61,7 +61,21 @@ fn queueOpen(engine: *Engine, result: c.JSValue, context: c.JSValue) !c.JSValue 
 fn finishOpen(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     completeOpen(engine, data[0], data[1]) catch |err| return failedOpen(engine, data[0], data[1], err);
-    return c.JS_DupValue(engine.context, data[0]);
+    return awaitTasksOpened(engine, data[0]) catch |err| failedOpen(engine, data[0], data[1], err);
+}
+fn awaitTasksOpened(engine: *Engine, harness: c.JSValue) !c.JSValue {
+    // Source TaskScheduler.open schedules its initial reconcile and resolves
+    // an async Promise. Harness.open then awaits that Promise before exposing
+    // the Harness. Retain the same real await boundary and its owner roots.
+    var data = [_]c.JSValue{harness};
+    const continuation = try engine.checked(c.JS_NewCFunctionData(engine.context, tasksOpened, 0, 0, data.len, &data));
+    defer engine.freeValue(continuation);
+    const completed = try durable.resolvedPromise(engine, c.pi_js_undefined());
+    defer engine.freeValue(completed);
+    return engine.checked(c.JS_PromiseThen(engine.context, completed, continuation, c.pi_js_undefined()));
+}
+fn tasksOpened(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.JS_DupValue(context, data[0]);
 }
 fn failedOpen(engine: *Engine, harness: c.JSValue, context: c.JSValue, err: anyerror) c.JSValue {
     _ = durable.reject(engine, err);

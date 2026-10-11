@@ -16,7 +16,9 @@ pub const FaultMessage = struct {
     phase_generation: u64,
     message: ?@import("backend/json.zig").Owned = null,
 };
-pub const Lease = struct { owner_generation: u64, worker_thread: std.Thread.Id, line_epoch: u32, success: bool, cleanup: ?*const Cleanup = null, fault_message: ?*FaultMessage = null };
+pub const StorageHook = enum { before, after };
+pub const Assembly = struct { transaction: *@import("session.zig").Transaction, hook: StorageHook, native_frame: ?*const anyopaque = null };
+pub const Lease = struct { owner_generation: u64, worker_thread: std.Thread.Id, line_epoch: u32, success: bool, cleanup: ?*const Cleanup = null, fault_message: ?*FaultMessage = null, assembly: ?*const Assembly = null };
 pub const Dispatch = *const fn (?*anyopaque, Lease) anyerror!void;
 pub const Notify = struct { context: ?*anyopaque = null, call: ?*const fn (?*anyopaque) void = null };
 const Request = struct {
@@ -133,6 +135,127 @@ pub const Channel = struct {
         }
     }
 };
+
+test "owner settlement assembly hooks retain sealed original line and restore before failure or reentrant close ACK" {
+    for ([_]enum { normal, before_failure, after_failure, reentrant_close }{ .normal, .before_failure, .after_failure, .reentrant_close }) |mode| try assemblyExercise(@intFromEnum(mode));
+}
+fn assemblyExercise(mode: u8) !void {
+    const backend = @import("backend/root.zig");
+    const session_mod = @import("session.zig");
+    var memory = try backend.memory.Memory.init(std.testing.allocator);
+    defer memory.deinit();
+    var session = session_mod.Session.init(std.testing.allocator, std.testing.io, .{ .memory = &memory });
+    defer session.deinit();
+    var channel = Channel.init(std.testing.io, 91, .{});
+    defer channel.deinit();
+    const Probe = struct {
+        session: *session_mod.Session,
+        channel: *Channel,
+        mode: u8,
+        tx: ?*session_mod.Transaction = null,
+        failure: ?anyerror = null,
+        done: std.atomic.Value(bool) = .init(false),
+        before: bool = false,
+        after: bool = false,
+        active_control: bool = false,
+        restored: bool = true,
+        epoch: ?u32 = null,
+        fn request(self: *@This(), hook: StorageHook) !void {
+            var frame: Assembly = .{ .transaction = self.tx.?, .hook = hook };
+            defer self.restored = self.restored and self.tx.?.ownerThread == std.Thread.getCurrentId();
+            try self.channel.call(.{ .owner_generation = 91, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.session.line_epoch.load(.acquire), .success = true, .assembly = &frame });
+        }
+        fn beforeStorage(raw: ?*anyopaque) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            return self.request(.before);
+        }
+        fn afterStorage(raw: ?*anyopaque) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            return self.request(.after);
+        }
+        fn operation(raw: ?*anyopaque, tx: *session_mod.Transaction, _: @import("types.zig").Context) !backend.json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.tx = tx.retain();
+            var frame: Assembly = .{ .transaction = tx, .hook = .before };
+            const worker = std.Thread.getCurrentId();
+            const epoch = self.session.line_epoch.load(.acquire);
+            try std.testing.expectError(error.OwnerSettlementWrongWorker, self.channel.call(.{ .owner_generation = 91, .worker_thread = self.channel.owner, .line_epoch = epoch, .success = true, .assembly = &frame }));
+            try std.testing.expectError(error.StaleSettlementOwnerGeneration, self.channel.call(.{ .owner_generation = 90, .worker_thread = worker, .line_epoch = epoch, .success = true, .assembly = &frame }));
+            try std.testing.expectError(error.StaleTransactionOwnerLine, self.channel.call(.{ .owner_generation = 91, .worker_thread = worker, .line_epoch = epoch +% 1, .success = true, .assembly = &frame }));
+            try self.request(.before); // Active Tx must reject sealed delegation.
+            _ = try tx.createRootConversation();
+            tx.before_storage = beforeStorage;
+            tx.before_storage_context = self;
+            tx.after_storage = afterStorage;
+            tx.after_storage_context = self;
+            return .null;
+        }
+        fn run(self: *@This()) void {
+            defer self.done.store(true, .release);
+            var result = self.session.commit(operation, self, .{}, .{}) catch |err| {
+                self.failure = err;
+                return;
+            };
+            result.deinit();
+        }
+        fn owner(raw: ?*anyopaque, lease: Lease) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const tx = lease.assembly.?.transaction;
+            if (self.session.line_epoch.load(.acquire) != lease.line_epoch) return error.StaleTransactionOwnerLine;
+            try std.testing.expectEqual(lease.worker_thread, self.session.ownerThread.load(.acquire));
+            try std.testing.expect(self.session.mutex.tryLock());
+            self.session.mutex.unlock(self.session.io);
+            try std.testing.expect(self.session.storage.backend_mutex.tryLock());
+            self.session.storage.backend_mutex.unlock(self.session.io);
+            if (tx.active) {
+                try std.testing.expectError(error.TransactionNotSealed, tx.delegateAssemblyOwner(self.channel.owner, lease.worker_thread, lease.line_epoch));
+                self.active_control = true;
+                return;
+            }
+            self.epoch = lease.line_epoch;
+            try std.testing.expectError(error.WrongDelegatedTransactionOwner, tx.delegateAssemblyOwner(lease.worker_thread, lease.worker_thread, lease.line_epoch));
+            try std.testing.expectError(error.StaleTransactionOwnerLine, tx.delegateAssemblyOwner(self.channel.owner, lease.worker_thread, lease.line_epoch +% 1));
+            try std.testing.expectError(error.TransactionClosed, tx.delegateOwner(self.channel.owner, lease.worker_thread, lease.line_epoch));
+            const execution = try tx.delegateAssemblyOwner(self.channel.owner, lease.worker_thread, lease.line_epoch);
+            defer execution.restore();
+            try std.testing.expect(!tx.active);
+            try std.testing.expectError(error.TransactionClosed, tx.createRootConversation());
+            if (lease.assembly.?.hook == .before) {
+                try std.testing.expect(tx.committed_seq == null);
+                self.before = true;
+                if (self.mode == 1) return error.OriginalAssemblyHookFailure;
+                if (self.mode == 3) self.channel.close();
+            } else {
+                try std.testing.expect(tx.committed_seq != null and self.before);
+                self.after = true;
+                if (self.mode == 2) return error.OriginalAssemblyHookFailure;
+            }
+        }
+    };
+    var probe: Probe = .{ .session = &session, .channel = &channel, .mode = mode };
+    const worker = try std.Thread.spawn(.{}, Probe.run, .{&probe});
+    var joined = false;
+    defer if (!joined) {
+        channel.close();
+        worker.join();
+    };
+    while (!probe.done.load(.acquire)) {
+        _ = try channel.drain(Probe.owner, &probe);
+        try std.testing.io.sleep(.fromMilliseconds(1), .awake);
+    }
+    worker.join();
+    joined = true;
+    const tx = probe.tx orelse return error.MissingAssemblyTransaction;
+    defer tx.release();
+    try std.testing.expect(probe.restored and probe.active_control and probe.before);
+    try std.testing.expect(!tx.active and session.ownerThread.load(.acquire) == 0);
+    try std.testing.expect(session.line_epoch.load(.acquire) != probe.epoch.?);
+    try std.testing.expectEqual(mode != 1 and mode != 3, probe.after);
+    if (mode == 0) try std.testing.expect(probe.failure == null) else try std.testing.expectEqual(if (mode == 3) error.OwnerSettlementClosed else error.OriginalAssemblyHookFailure, probe.failure.?);
+    try std.testing.expectEqual(@as(usize, if (mode == 1) 0 else 1), memory.state.rows.count());
+    try std.testing.expectEqual(@as(usize, 0), channel.active);
+    try std.testing.expectEqual(@as(usize, 0), channel.calls.load(.acquire));
+}
 
 test "owner settlement cleanup retains an active original Transaction until owner mutation and reentrant close finish" {
     try cleanupExecutionExercise(false);

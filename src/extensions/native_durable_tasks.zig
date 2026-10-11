@@ -16,6 +16,19 @@ const Engine = engine_mod.Engine;
 const Migration = struct { key: []u8, value: ?json.Owned };
 const MigrationFailure = struct { token: c.JSValue, reason: c.JSValue };
 const PhaseFailure = struct { runtime: scheduling.Runtime, generation: u64, reason: c.JSValue };
+// The worker sees this native frame only. Facade roots and VM callback contexts
+// live separately in the owner's OutcomeHooks record.
+const OutcomeHookFrame = struct { manager: *Manager, transaction: *session_mod.Transaction, worker: std.Thread.Id, epoch: u32, generation: u64 };
+const OutcomeHooks = struct {
+    frame: *OutcomeHookFrame,
+    facade: c.JSValue,
+    before: ?*const fn (?*anyopaque) anyerror!void,
+    before_context: ?*anyopaque,
+    after: ?*const fn (?*anyopaque) anyerror!void,
+    after_context: ?*anyopaque,
+    before_done: bool = false,
+    after_done: bool = false,
+};
 const NativeDefinition = struct { manager: *Manager, id: usize, migrations: std.ArrayList(Migration) = .empty };
 const Definition = struct { native: *NativeDefinition, token: c.JSValue };
 const Event = struct {
@@ -111,6 +124,7 @@ pub const Manager = struct {
     definitions: std.ArrayList(Definition) = .empty,
     migration_errors: std.AutoHashMapUnmanaged(u64, MigrationFailure) = .{},
     phase_failures: std.AutoHashMapUnmanaged(usize, PhaseFailure) = .{},
+    outcome_hooks: std.ArrayList(OutcomeHooks) = .empty,
     preparing_migrations: bool = false,
     ledger: std.ArrayList(*Entry) = .empty,
     events: std.ArrayList(Event) = .empty,
@@ -218,6 +232,9 @@ pub const Manager = struct {
         self.task_aborts.deinit(self.engine);
         self.clearPhaseFailures();
         self.phase_failures.deinit(self.engine.gpa);
+        self.retireOutcomeHooks();
+        std.debug.assert(self.outcome_hooks.items.len == 0);
+        self.outcome_hooks.deinit(self.engine.gpa);
         self.scheduler.deinit();
         self.abort_controls.deinit(self.engine);
         for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
@@ -631,6 +648,7 @@ pub const Manager = struct {
     fn cleanupDispatch(raw: ?*anyopaque, lease: settlement_mod.Lease) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         try self.validateSettlement(lease);
+        if (lease.assembly) |frame| return self.assembleOutcomeHooks(lease, frame);
         const tx = if (lease.cleanup) |frame| frame.transaction else if (lease.fault_message) |frame| frame.transaction else return error.MissingOutcomeCleanupFrame;
         if (tx.session != &self.lease.value or !tx.active) return error.OutcomeCleanupOutsideOriginalTransaction;
         const execution = try tx.delegateOwner(self.broker.owner, lease.worker_thread, lease.line_epoch);
@@ -704,6 +722,13 @@ pub const Manager = struct {
         if (self.settling_cache) return error.ReentrantOutcomeCleanup;
         self.settling_cache = true;
         defer self.settling_cache = false;
+        // Reserve the native frame and owner root slot before any guest access.
+        // No new allocation is needed to hand the prepared hooks to a worker.
+        const foreign_line = self.lease.value.ownerThread.load(.acquire) != self.broker.owner;
+        const hook_frame = if (foreign_line) try self.engine.gpa.create(OutcomeHookFrame) else null;
+        var hooks_admitted = false;
+        errdefer if (!hooks_admitted) if (hook_frame) |frame| self.engine.gpa.destroy(frame);
+        if (foreign_line) try self.outcome_hooks.ensureUnusedCapacity(self.engine.gpa, 1);
         const facade = try durable.transactionObject(self.engine, tx, self.session);
         defer self.engine.freeValue(facade);
         const exports = self.engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableModuleUnavailable;
@@ -719,6 +744,74 @@ pub const Manager = struct {
         defer self.engine.freeValue(failure);
         try @import("native_durable_compaction_status.zig").fail(self.engine, live, c.JS_NewInt64(self.engine.context, @intCast(try json.asInteger(try json.required(record, "id")))), failure);
         if ((try durable.state(self.engine, facade)).documents) |drafts| try drafts.finish();
+        if (hook_frame) |frame| {
+            frame.* = .{ .manager = self, .transaction = tx, .worker = self.lease.value.ownerThread.load(.acquire), .epoch = self.lease.value.line_epoch.load(.acquire), .generation = self.generation };
+            self.outcome_hooks.appendAssumeCapacity(.{ .frame = frame, .facade = c.JS_DupValue(self.engine.context, facade), .before = tx.before_storage, .before_context = tx.before_storage_context, .after = tx.after_storage, .after_context = tx.after_storage_context });
+            tx.before_storage = beforeOutcomeStorage;
+            tx.before_storage_context = frame;
+            tx.after_storage = afterOutcomeStorage;
+            tx.after_storage_context = frame;
+            hooks_admitted = true;
+        }
+    }
+    fn beforeOutcomeStorage(raw: ?*anyopaque) !void {
+        return requestOutcomeHook(raw, .before);
+    }
+    fn afterOutcomeStorage(raw: ?*anyopaque) !void {
+        return requestOutcomeHook(raw, .after);
+    }
+    fn requestOutcomeHook(raw: ?*anyopaque, hook: settlement_mod.StorageHook) !void {
+        const frame: *OutcomeHookFrame = @ptrCast(@alignCast(raw.?));
+        if (std.Thread.getCurrentId() != frame.worker) return error.WrongOutcomeHookWorker;
+        var request: settlement_mod.Assembly = .{ .transaction = frame.transaction, .hook = hook, .native_frame = frame };
+        try frame.manager.outcome_settlement.?.call(.{ .owner_generation = frame.generation, .worker_thread = frame.worker, .line_epoch = frame.epoch, .success = true, .assembly = &request });
+    }
+    fn assembleOutcomeHooks(self: *Manager, lease: settlement_mod.Lease, request: *const settlement_mod.Assembly) !void {
+        if (self.settling_cache) return error.ReentrantOutcomeAssembly;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
+        const tx = request.transaction;
+        if (tx.session != &self.lease.value) return error.WrongOutcomeHookSession;
+        var index: ?usize = null;
+        for (self.outcome_hooks.items, 0..) |item, position| if (request.native_frame == @as(?*const anyopaque, @ptrCast(item.frame)) and item.frame.transaction == tx and item.frame.worker == lease.worker_thread and item.frame.epoch == lease.line_epoch and item.frame.generation == lease.owner_generation) {
+            index = position;
+            break;
+        };
+        const item = &self.outcome_hooks.items[index orelse return error.StaleOutcomeHookFrame];
+        const execution = try tx.delegateAssemblyOwner(self.broker.owner, lease.worker_thread, lease.line_epoch);
+        defer execution.restore();
+        switch (request.hook) {
+            .before => {
+                if (item.before_done or item.after_done or tx.before_storage != beforeOutcomeStorage or tx.before_storage_context != @as(?*anyopaque, @ptrCast(item.frame)) or tx.committed_seq != null) return error.StaleBeforeOutcomeHook;
+                // Mark before calling guest code, so reentry cannot repeat it.
+                item.before_done = true;
+                if (item.before) |callback| try callback(item.before_context);
+            },
+            .after => {
+                if (!item.before_done or item.after_done or tx.after_storage != afterOutcomeStorage or tx.after_storage_context != @as(?*anyopaque, @ptrCast(item.frame)) or tx.committed_seq == null) return error.StaleAfterOutcomeHook;
+                item.after_done = true;
+                if (item.after) |callback| try callback(item.after_context);
+            },
+        }
+        try self.validateSettlement(lease);
+        if (tx.active) return error.OutcomeAssemblyReopenedTransaction;
+    }
+    fn retireOutcomeHooks(self: *Manager) void {
+        // A retained facade owns its original native Tx and Drafts until the
+        // worker releases THIS line, including validation/Storage failures.
+        const owner = self.lease.value.ownerThread.load(.acquire);
+        const epoch = self.lease.value.line_epoch.load(.acquire);
+        var index: usize = 0;
+        while (index < self.outcome_hooks.items.len) {
+            const frame = self.outcome_hooks.items[index].frame;
+            if (owner == frame.worker and epoch == frame.epoch) {
+                index += 1;
+                continue;
+            }
+            const item = self.outcome_hooks.orderedRemove(index);
+            self.engine.freeValue(item.facade);
+            self.engine.gpa.destroy(item.frame);
+        }
     }
     fn validateSettlement(self: *Manager, lease: settlement_mod.Lease) !void {
         if (std.Thread.getCurrentId() != self.broker.owner or lease.owner_generation != self.generation or self.lease.value.ownerThread.load(.acquire) != lease.worker_thread or self.lease.value.line_epoch.load(.acquire) != lease.line_epoch) return error.StaleDocumentSettlementLease;
@@ -1298,6 +1391,7 @@ pub const Manager = struct {
             thread.join();
             self.thread = null;
         }
+        self.retireOutcomeHooks();
         self.settleJoins() catch {};
     }
     fn joinPromise(self: *Manager) !c.JSValue {
@@ -1512,6 +1606,7 @@ const Hub = struct {
                 worked = true;
             }
             manager.retirePhaseFailures();
+            manager.retireOutcomeHooks();
             while (true) {
                 manager.mutex.lockUncancelable(manager.lease.value.io);
                 if (manager.events.items.len == 0) {

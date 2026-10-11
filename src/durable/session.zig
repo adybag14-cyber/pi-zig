@@ -502,9 +502,19 @@ pub const Transaction = struct {
     /// Session line ownership never moves, and the caller restores this scope
     /// before acknowledging the waiting worker, including errors and close.
     pub fn delegateOwner(self: *Transaction, authorized_owner: std.Thread.Id, original_worker: std.Thread.Id, epoch: u32) !OwnerExecution {
+        return self.delegateExecution(authorized_owner, original_worker, epoch, false);
+    }
+    /// Assembly has sealed the public Tx, but still owns its original line.
+    /// Owner-side checkpoint/adoption hooks must not reopen user Tx methods.
+    pub fn delegateAssemblyOwner(self: *Transaction, authorized_owner: std.Thread.Id, original_worker: std.Thread.Id, epoch: u32) !OwnerExecution {
+        return self.delegateExecution(authorized_owner, original_worker, epoch, true);
+    }
+    fn delegateExecution(self: *Transaction, authorized_owner: std.Thread.Id, original_worker: std.Thread.Id, epoch: u32, sealed: bool) !OwnerExecution {
         const current = std.Thread.getCurrentId();
         if (current != authorized_owner or current == original_worker) return error.WrongDelegatedTransactionOwner;
-        if (!self.active) return error.TransactionClosed;
+        if (sealed) {
+            if (self.active) return error.TransactionNotSealed;
+        } else if (!self.active) return error.TransactionClosed;
         if (self.ownerThread != original_worker or self.session.ownerThread.load(.acquire) != original_worker or self.session.line_epoch.load(.acquire) != epoch) return error.StaleTransactionOwnerLine;
         self.ownerThread = current;
         return .{ .transaction = self, .original = original_worker, .delegate = current, .epoch = epoch };
