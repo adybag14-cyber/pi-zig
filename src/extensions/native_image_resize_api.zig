@@ -37,7 +37,12 @@ fn bytes(engine: *js.Engine, value: c.JSValue) !BufferView {
     if (offset > total or length > total - offset or (pointer == null and length != 0)) return js.typeError(engine, "Invalid image byte buffer");
     return .{ .backing = backing, .bytes = if (length == 0) &.{} else pointer[offset .. offset + length] };
 }
-fn fallback(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, retained: []const c.JSValue) !c.JSValue {
+fn fallback(engine: *js.Engine, _: c.JSValue, rejected_arguments: []const c.JSValue, retained: []const c.JSValue) !c.JSValue {
+    if (rejected_arguments.len > 0) if (engine.native_allocation_exception) |native| {
+        if (c.JS_IsStrictEqual(engine.context, rejected_arguments[0], native)) {
+            return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, native)));
+        }
+    };
     const input = try bytes(engine, retained[0]);
     defer engine.freeValue(input.backing);
     return strategy.resize(engine, input.bytes, retained[1], retained[2]);
@@ -54,6 +59,7 @@ fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
     const request = start(engine, input, mime, options) catch |err| {
         // Source attempts the original options again when clone/worker setup
         // fails. Discard that first error, preserving the fallback's exception.
+        if (err == error.OutOfMemory) return rejected(engine, err);
         if (err == error.JavaScriptException) {
             _ = engine.throwCaptured();
             const ignored = c.JS_GetException(engine.context);
