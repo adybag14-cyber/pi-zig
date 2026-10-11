@@ -33,7 +33,7 @@ pub fn resize(engine: *js.Engine, input: []const u8, mime: c.JSValue, options: c
     defer session.deinit();
     var context: Context = .{ .engine = engine, .session = session };
     var cause: ?anyerror = null;
-    var result = attempt(&context, input, mime, opts) catch |err| blk: {
+    const result = attempt(&context, input, mime, opts) catch |err| blk: {
         cause = err;
         if (err == error.JavaScriptException) {
             const failure = engine.throwCaptured();

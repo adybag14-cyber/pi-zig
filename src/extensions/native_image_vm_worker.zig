@@ -40,7 +40,7 @@ pub const Worker = struct {
         defer engine.freeValue(mime);
         const request_options = try self.options.read(engine);
         defer engine.freeValue(request_options);
-        const result = strategy.resize(engine, self.input, mime, request_options) catch |err| {
+        const resized = strategy.resize(engine, self.input, mime, request_options) catch |err| {
             if (err == error.JavaScriptException) {
                 _ = engine.throwCaptured();
                 const failure = c.JS_GetException(engine.context);
@@ -51,9 +51,9 @@ pub const Worker = struct {
             } else if (engine.last_error) |message| self.message = try self.allocator.dupe(u8, message);
             return err;
         };
-        defer engine.freeValue(result);
+        defer engine.freeValue(resized);
         var length: usize = 0;
-        const encoded = c.JS_WriteObject(engine.context, &length, result, c.JS_WRITE_OBJ_REFERENCE);
+        const encoded = c.JS_WriteObject(engine.context, &length, resized, c.JS_WRITE_OBJ_REFERENCE);
         if (encoded == null) return js.capture(engine);
         defer c.js_free(engine.context, encoded);
         self.output = try self.allocator.dupe(u8, encoded[0..length]);

@@ -98,11 +98,14 @@ pub fn create(engine: *js.Engine, task: *worker.Worker) !c.JSValue {
     errdefer engine.gpa.destroy(owner);
     const object = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(class)));
     owner.* = .{ .allocator = engine.gpa, .task = task, .resolve = functions[0], .reject = functions[1] };
-    c.JS_SetOpaque(object, owner);
+    if (c.JS_SetOpaque(object, owner) < 0) {
+        engine.freeValue(object);
+        return error.OutOfMemory;
+    }
     // Once object owns its state, errors must detach it before freeing the
     // object so the caller still owns task and the function references.
     schedule(engine, object) catch |err| {
-        c.JS_SetOpaque(object, null);
+        _ = c.JS_SetOpaque(object, null);
         engine.freeValue(object);
         return err;
     };
