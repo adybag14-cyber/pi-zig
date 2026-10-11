@@ -12,8 +12,11 @@ daemon now owns controlling-terminal creation, raw ordered output, queued input,
 resizing, foreground job reporting, exit grace and cancellation. Initial Linux
 gates exercise actual terminal primitives, native framed requests and the
 unchanged upstream Connection/RemoteTerminal client. Full POSIX differential,
-stress and platform qualification remain required. The native public
-RemoteTerminal client and extension export still require implementation.
+stress and platform qualification remain required. The native Zig terminal
+client now provides session-fenced open, ordered one-MiB writes, resize,
+foreground, cancellation, retained exit/failure results and raw output callbacks.
+Physical Linux tests include input larger than the protocol frame limit.
+The JavaScript extension export and full client/platform qualification remain open.
 
 Implemented native surfaces include bounded big-endian framing and fragmented
 sync, owned JSON/payload records, connection-local retained file/directory and

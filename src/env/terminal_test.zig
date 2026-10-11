@@ -2,6 +2,7 @@
 const std = @import("std");
 const native = @import("connection.zig");
 const wire = @import("frame.zig");
+const client = @import("terminal.zig");
 fn connect() !*native.Connection {
     var environment = try std.process.Environ.createMap(std.testing.environ, std.testing.allocator);
     defer environment.deinit();
@@ -124,4 +125,144 @@ test "POSIX terminal framed daemon reports the foreground job and retires before
     defer retired.deinit();
     try std.testing.expectEqualStrings("EBADF", retired.json.value.object.get("code").?.string);
     try std.testing.expectError(error.StaleDaemonSession, connection.begin(.{ .op = "ptyForeground", .target = terminal.id }, "", 9718));
+}
+test "native terminal client preserves upstream Windows unsupported error fields" {
+    if (@import("builtin").os.tag != .windows) return error.SkipZigTest;
+    const connection = try connect();
+    defer connection.deinit();
+    const Ignore = struct {
+        fn data(_: ?*anyopaque, _: []const u8) void {}
+    };
+    var result = try client.Terminal.open(std.testing.allocator, std.testing.io, .{ .native = connection }, .{ .cwd = ".", .cols = 80, .rows = 24, .onData = Ignore.data });
+    try std.testing.expect(result == .failure);
+    defer result.failure.deinit();
+    try std.testing.expectEqualStrings("ENOTSUP", result.failure.code());
+    try std.testing.expectEqualStrings("Terminals are not supported on this system yet", result.failure.message());
+    try std.testing.expectEqual(@as(usize, 2), result.failure.fields.value.object.count());
+}
+test "native terminal client retains raw output normal exit and retired foreground failure" {
+    if (@import("builtin").os.tag == .windows) return error.SkipZigTest;
+    const connection = try connect();
+    defer connection.deinit();
+    const Capture = struct {
+        io: std.Io,
+        mutex: std.Io.Mutex = .init,
+        bytes: std.ArrayList(u8) = .empty,
+        failure: bool = false,
+        fn data(raw: ?*anyopaque, bytes: []const u8) void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(self.io);
+            defer self.mutex.unlock(self.io);
+            self.bytes.appendSlice(std.heap.page_allocator, bytes) catch {
+                self.failure = true;
+            };
+        }
+    };
+    var capture: Capture = .{ .io = std.testing.io };
+    defer capture.bytes.deinit(std.heap.page_allocator);
+    const opened = try client.Terminal.open(std.testing.allocator, std.testing.io, .{ .native = connection }, .{ .cwd = "/tmp", .argv = &.{ "/bin/sh", "-c", "printf '\\377\\000CLIENT\\n'; exit 7" }, .cols = 80, .rows = 24, .onData = Capture.data, .context = &capture });
+    try std.testing.expect(opened == .terminal);
+    const terminal = opened.terminal;
+    defer terminal.deinit();
+    const outcome = try terminal.wait(std.testing.allocator);
+    try std.testing.expect(outcome == .exit_code);
+    try std.testing.expectEqual(@as(i64, 7), outcome.exit_code);
+    const repeated = try terminal.wait(std.testing.allocator);
+    try std.testing.expectEqual(@as(i64, 7), repeated.exit_code);
+    capture.mutex.lockUncancelable(std.testing.io);
+    const found = !capture.failure and std.mem.indexOf(u8, capture.bytes.items, "\xff\x00CLIENT\r\n") != null;
+    capture.mutex.unlock(std.testing.io);
+    try std.testing.expect(found);
+    var foreground = try terminal.foreground(std.testing.allocator);
+    try std.testing.expect(foreground == .failure);
+    defer foreground.failure.deinit();
+    try std.testing.expectEqualStrings("EBADF", foreground.failure.code());
+}
+test "native terminal client ordered input resize foreground and abort use the original daemon session" {
+    if (@import("builtin").os.tag == .windows) return error.SkipZigTest;
+    const connection = try connect();
+    defer connection.deinit();
+    const Ignore = struct {
+        fn data(_: ?*anyopaque, _: []const u8) void {}
+    };
+    const opened = try client.Terminal.open(std.testing.allocator, std.testing.io, .{ .native = connection }, .{ .cwd = "/tmp", .argv = &.{ "/bin/sh", "-i" }, .cols = 80, .rows = 24, .onData = Ignore.data });
+    try std.testing.expect(opened == .terminal);
+    const terminal = opened.terminal;
+    defer terminal.deinit();
+    terminal.resize(100, 30);
+    terminal.write("sleep 30\n");
+    const io = std.testing.io;
+    const deadline = std.Io.Clock.awake.now(io).addDuration(.fromSeconds(5));
+    while (true) {
+        var foreground = try terminal.foreground(std.testing.allocator);
+        try std.testing.expect(foreground == .job);
+        if (foreground.job) |*job| {
+            const found = job.pid != terminal.pid and job.name != null and std.mem.eql(u8, job.name.?, "sleep");
+            job.deinit(std.testing.allocator);
+            if (found) break;
+        }
+        if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.TerminalForegroundTimeout;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    terminal.close();
+    var outcome = try terminal.wait(std.testing.allocator);
+    try std.testing.expect(outcome == .failure);
+    defer outcome.failure.deinit();
+    try std.testing.expectEqualStrings("aborted", outcome.failure.code());
+    try std.testing.expectEqualStrings("aborted", outcome.failure.message());
+}
+test "native terminal client chunks input beyond the protocol frame limit without changing raw bytes" {
+    if (@import("builtin").os.tag == .windows) return error.SkipZigTest;
+    const connection = try connect();
+    defer connection.deinit();
+    const Capture = struct {
+        io: std.Io,
+        mutex: std.Io.Mutex = .init,
+        bytes: std.ArrayList(u8) = .empty,
+        failed: bool = false,
+        fn data(raw: ?*anyopaque, bytes: []const u8) void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(self.io);
+            defer self.mutex.unlock(self.io);
+            self.bytes.appendSlice(std.heap.page_allocator, bytes) catch {
+                self.failed = true;
+            };
+        }
+        fn length(self: *@This()) !usize {
+            self.mutex.lockUncancelable(self.io);
+            defer self.mutex.unlock(self.io);
+            if (self.failed) return error.TerminalCaptureAllocationFailed;
+            return self.bytes.items.len;
+        }
+    };
+    const io = std.testing.io;
+    var capture: Capture = .{ .io = io };
+    defer capture.bytes.deinit(std.heap.page_allocator);
+    const opened = try client.Terminal.open(std.testing.allocator, io, .{ .native = connection }, .{ .cwd = "/tmp", .argv = &.{ "/bin/sh", "-c", "stty raw -echo; printf READY; exec cat" }, .cols = 80, .rows = 24, .onData = Capture.data, .context = &capture });
+    try std.testing.expect(opened == .terminal);
+    const terminal = opened.terminal;
+    defer terminal.deinit();
+    var deadline = std.Io.Clock.awake.now(io).addDuration(.fromSeconds(10));
+    while (try capture.length() < 5) {
+        if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.TerminalReadyTimeout;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    const payload = try std.testing.allocator.alloc(u8, wire.maximum_frame + 1024 * 1024 + 17);
+    defer std.testing.allocator.free(payload);
+    for (payload, 0..) |*byte, index| byte.* = @truncate(index * 17 + 33);
+    terminal.write(payload);
+    deadline = std.Io.Clock.awake.now(io).addDuration(.fromSeconds(10));
+    while (try capture.length() < payload.len + 5) {
+        if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.TerminalPayloadTimeout;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    capture.mutex.lockUncancelable(io);
+    const exact = std.mem.eql(u8, capture.bytes.items[0..5], "READY") and std.mem.eql(u8, capture.bytes.items[5..], payload);
+    capture.mutex.unlock(io);
+    try std.testing.expect(exact);
+    terminal.close();
+    var outcome = try terminal.wait(std.testing.allocator);
+    try std.testing.expect(outcome == .failure);
+    defer outcome.failure.deinit();
+    try std.testing.expectEqualStrings("aborted", outcome.failure.code());
 }
