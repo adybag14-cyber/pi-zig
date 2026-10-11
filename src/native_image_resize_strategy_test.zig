@@ -66,6 +66,7 @@ test "native image JavaScript-valued strategy public candidate keeps clone and f
         \\const bytes=new Uint8Array(imageInputBuffer),before=[...bytes],calls=[];
         \\const options={get maxWidth(){calls.push('maxWidth');return 4},get maxHeight(){calls.push('maxHeight');return 3}};
         \\const result=await candidateResizeImage(bytes,'image/png',options);if(result.width!==4||result.height!==3||JSON.stringify(calls)!=='["maxWidth","maxHeight"]'||JSON.stringify([...bytes])!==JSON.stringify(before))throw Error('Source worker options/input mismatch');
+        \\const mutable=new Uint8Array(imageInputBuffer.slice(0)),mutations=[];const isolated=await candidateResizeImage(mutable,'image/png',{get maxWidth(){mutations.push('maxWidth');mutable.fill(0);return 4},get maxHeight(){mutations.push('maxHeight');return 3}});if(isolated.data!==result.data||!mutable.every(value=>value===0)||JSON.stringify(mutations)!=='["maxWidth","maxHeight"]')throw Error('worker byte copy must precede option clone');
         \\const marker={original:true},failed=[];const rejected={get maxWidth(){failed.push('maxWidth');throw marker}};let promise;try{promise=candidateResizeImage(bytes,'image/png',rejected)}catch(error){throw Error('async image threw synchronously')};try{await promise;throw Error('missing image rejection')}catch(error){if(error!==marker)throw error};if(JSON.stringify(failed)!=='["maxWidth","maxWidth"]')throw Error('fallback original getter trace');
     , "native-image-public-candidate");
     engine.freeValue(result);
