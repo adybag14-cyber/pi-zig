@@ -1,0 +1,11 @@
+# Original Source cwd oracle for SDK tests
+
+This directory is a test-only oracle package. Native runtime code never imports it. `oracle.mjs` executes the unchanged original production `resolvePath` export from `upstream/paths.js`, after checking every original module and dependency against `SOURCE-MANIFEST.json`.
+
+The authority is Pi commit `ea448f454af474f3e2fe9733b331e17b0662f5d6`. `sdk.ts:192` calls `resolvePath(options.cwd ?? options.sessionManager?.getCwd() ?? process.cwd())`. The original TypeScript SDK and path helper are retained as reference text, and the original compiled path and child-process modules are copied byte for byte from the source-matched reference build. The child-process module and its six pinned dependencies are required by the original module imports; no process-spawn function is called by this oracle. Original licenses are retained.
+
+The three controlled absolute-rooted inputs correspond exactly to Source505 `default-actions` and Source507/508/509 `metadata-and-copy` and `empty-metadata`. Original captures were recorded on Windows with current drive C:. Original `resolvePath` returns drive D: on a D: Windows runner and POSIX `/sdk-...` paths on Linux/macOS. This is an environment-dependent Source result.
+
+The test helper uses the independently generated receipt only when `PI_SDK_SOURCE_CWD_ORACLE` names it. It validates Source/module/manifest hashes, exact Node24.14, current OS, exact row/phase selectors and the original captured Windows values. It projects only Source505 `options.cwd` once and each normalized-options capture's `before.cwd`, `mutated.cwd`, and `after.cwd` in two known rows: one plus six times three, nineteen precise comparisons. Every projected value remains compared against the native result. All other fields and complete traces retain their original equality checks. The byte-original Source captures are unchanged. Without a receipt, the original Windows C: capture remains the expectation.
+
+Source-only oracle qualification does not qualify native SDK tests. The Zig projection helper and native target need their own admitted graph after the per-OS original Source receipts are verified. Full class/factory/SDK parity remains false.

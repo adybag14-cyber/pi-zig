@@ -1,0 +1,256 @@
+{
+  "schema": "sdk-original-path-source-542-v1",
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "sdk_sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+  "paths_ts_sha256": "64C3EBEF724FA21ED0042E127908B4323A5D2F1B8AAA91EEE550442332FE8502",
+  "production_modules": "Byte-identical original compiled paths.js/child-process.js;no implementation substitution",
+  "packages": [
+    {
+      "name": "cross-spawn",
+      "version": "7.0.6"
+    },
+    {
+      "name": "isexe",
+      "version": "2.0.0"
+    },
+    {
+      "name": "path-key",
+      "version": "3.1.1"
+    },
+    {
+      "name": "shebang-command",
+      "version": "2.0.0"
+    },
+    {
+      "name": "shebang-regex",
+      "version": "3.0.0"
+    },
+    {
+      "name": "which",
+      "version": "2.0.2"
+    }
+  ],
+  "scope": "Test-only Source oracle for exactknown cwd fields;never imported by native runtime;alloriginalSourcefixtures remain byte-identical",
+  "files": [
+    {
+      "path": "node_modules/cross-spawn/index.js",
+      "bytes": 1192,
+      "sha256": "B8E01CB18BA87EE1B0E5EB2EB1CE6CBB25A2BDD229F9E08671F8A10ED7E3AD35"
+    },
+    {
+      "path": "node_modules/cross-spawn/lib/enoent.js",
+      "bytes": 1471,
+      "sha256": "0F9AAB5C708991CF01D3FDA557318C4600A46071138742EE8596244F7FD73EF5"
+    },
+    {
+      "path": "node_modules/cross-spawn/lib/parse.js",
+      "bytes": 3065,
+      "sha256": "0A67601365A3AE413653C8C9D3C6BFF2202861E1EB8B5D28BF46D4812A4465EA"
+    },
+    {
+      "path": "node_modules/cross-spawn/lib/util/escape.js",
+      "bytes": 1383,
+      "sha256": "5D61B2829E0E7912874E1E664146554D0CD02FD5524ABF4EA59A879F0FC30675"
+    },
+    {
+      "path": "node_modules/cross-spawn/lib/util/readShebang.js",
+      "bytes": 549,
+      "sha256": "B05BA732E167FCF9A4FD67EBB4A5C28CCA4712A36376C0B0F2E4E1D37E7F18D2"
+    },
+    {
+      "path": "node_modules/cross-spawn/lib/util/resolveCommand.js",
+      "bytes": 1557,
+      "sha256": "E525FE739ABA01CF5EEE6473DF449CDDA93DF6266EFFA8EAE0FCFB9A4E6C5DE6"
+    },
+    {
+      "path": "node_modules/cross-spawn/LICENSE",
+      "bytes": 1105,
+      "sha256": "AAA78451B6FECD1B9C4594C796C133C0E90CAD100372FF8BC6DE615E9EF9ADF1"
+    },
+    {
+      "path": "node_modules/cross-spawn/package.json",
+      "bytes": 1655,
+      "sha256": "2E106CD9B4AE4E34EAD35218371A0D4E172DA72515A4F8F97D69A2E1FE3DEE82"
+    },
+    {
+      "path": "node_modules/cross-spawn/README.md",
+      "bytes": 4117,
+      "sha256": "022AA5BC5706CE14899569741B420E8CB59108C90871D341F31B684D279BD594"
+    },
+    {
+      "path": "node_modules/isexe/.npmignore",
+      "bytes": 23,
+      "sha256": "CA06E7CE01CCDD1F477910E1CD1339C23119ECF2386350B8AD876983E1DA92EA"
+    },
+    {
+      "path": "node_modules/isexe/index.js",
+      "bytes": 1192,
+      "sha256": "7AF7A68708317AB2B8743B44591D98CA6F5CA787E89E7C289154471FD2F67331"
+    },
+    {
+      "path": "node_modules/isexe/LICENSE",
+      "bytes": 765,
+      "sha256": "4EC3D4C66CD87F5C8D8AD911B10F99BF27CB00CDFCFF82621956E379186B016B"
+    },
+    {
+      "path": "node_modules/isexe/mode.js",
+      "bytes": 909,
+      "sha256": "0381513485DD6D0799B160A5C0BF7B4A79D1ECE5C32182DE44AA73F756A7AC54"
+    },
+    {
+      "path": "node_modules/isexe/package.json",
+      "bytes": 786,
+      "sha256": "395C2AF9ABEEAAFE7391974C1EACFB2A2BDEEF187F21C3F5582C49E0368E59BF"
+    },
+    {
+      "path": "node_modules/isexe/README.md",
+      "bytes": 1395,
+      "sha256": "AB12FF031A831156EBD4F4253C2E8047D37547FB95FDE416BE524C8B8CFE4C74"
+    },
+    {
+      "path": "node_modules/isexe/test/basic.js",
+      "bytes": 4996,
+      "sha256": "7FA5CE613B782CB924483BCCD775A56F129B9B381DF4D346A9C951A789B31A90"
+    },
+    {
+      "path": "node_modules/isexe/windows.js",
+      "bytes": 890,
+      "sha256": "B422B8FBB7815542DFBD1B3ADAEC5700249A1934C44A1D994654329C06FC1018"
+    },
+    {
+      "path": "node_modules/path-key/index.d.ts",
+      "bytes": 1032,
+      "sha256": "804FB0C13D2EBD79F57CDDFDDA769F13217B423B2A7151E0C456CDECF635AE80"
+    },
+    {
+      "path": "node_modules/path-key/index.js",
+      "bytes": 415,
+      "sha256": "FDBAFDC163F668FE325333D62387365C9B074E01253E32824A4DBF5CC552705D"
+    },
+    {
+      "path": "node_modules/path-key/license",
+      "bytes": 1109,
+      "sha256": "48DA2F39E100D4085767E94966B43F4FA95FF6A0698FBA57ED460914E35F94A0"
+    },
+    {
+      "path": "node_modules/path-key/package.json",
+      "bytes": 650,
+      "sha256": "25594DAB72681C910D9CC919263A4DAF27D77A75E0D2C26A4D958D6D6B798F86"
+    },
+    {
+      "path": "node_modules/path-key/readme.md",
+      "bytes": 1347,
+      "sha256": "DCD0D891BC1A13EEFA64655C4601387DAECBF5C93F96D868F9C0EAF97C723C1A"
+    },
+    {
+      "path": "node_modules/shebang-command/index.js",
+      "bytes": 387,
+      "sha256": "D98C3AA373C72016E990A723E919AF495423BC4AC1DAA0736C5F45FAC0418D7F"
+    },
+    {
+      "path": "node_modules/shebang-command/license",
+      "bytes": 1116,
+      "sha256": "69DEE148A2CC470554DFA7142E830662062394D0FE67CDDD379ABA90DC60D6B3"
+    },
+    {
+      "path": "node_modules/shebang-command/package.json",
+      "bytes": 558,
+      "sha256": "44DE390AE5ED6C5F9758B8B9C90B93FA53977D5361731600429F1DE08F4B3F30"
+    },
+    {
+      "path": "node_modules/shebang-command/readme.md",
+      "bytes": 495,
+      "sha256": "7918385F0C22CAC3AEAE9BCEBDC589649F3CD4B62CE087AFD60EE35CE6F5B6F8"
+    },
+    {
+      "path": "node_modules/shebang-regex/index.d.ts",
+      "bytes": 446,
+      "sha256": "74EA646F59F36406D55EA5F8438878D3CD6EE96D2B19C239FF0301E8D1AB80AB"
+    },
+    {
+      "path": "node_modules/shebang-regex/index.js",
+      "bytes": 42,
+      "sha256": "E91E547BAD596A389841FD7938BFCBD22AF82F44A01F794E86878E4FF0274250"
+    },
+    {
+      "path": "node_modules/shebang-regex/license",
+      "bytes": 1109,
+      "sha256": "48DA2F39E100D4085767E94966B43F4FA95FF6A0698FBA57ED460914E35F94A0"
+    },
+    {
+      "path": "node_modules/shebang-regex/package.json",
+      "bytes": 582,
+      "sha256": "B8018C6B8CC9900DFD1AC18A54956BA34C453FDC2DA5E5FE555EE8F04133A1C5"
+    },
+    {
+      "path": "node_modules/shebang-regex/readme.md",
+      "bytes": 649,
+      "sha256": "E2A766922C93592759DA2F6982D4EAC586C2578E1DBA11E120B244BB2764A848"
+    },
+    {
+      "path": "node_modules/which/bin/node-which",
+      "bytes": 985,
+      "sha256": "055F0AC4EED1A1591D033D59462972968BF3483B4CC07E163589569C0FB999F0"
+    },
+    {
+      "path": "node_modules/which/CHANGELOG.md",
+      "bytes": 2667,
+      "sha256": "89BC599CA0B3A119D711C62855B2E3619B734BF371EF55DCC049454313F9904E"
+    },
+    {
+      "path": "node_modules/which/LICENSE",
+      "bytes": 765,
+      "sha256": "4EC3D4C66CD87F5C8D8AD911B10F99BF27CB00CDFCFF82621956E379186B016B"
+    },
+    {
+      "path": "node_modules/which/package.json",
+      "bytes": 1043,
+      "sha256": "43010039ED5E89F7186960BE682B3CB5CDA5AB6CDFB06CBFD4F081CF0E7B4260"
+    },
+    {
+      "path": "node_modules/which/README.md",
+      "bytes": 1352,
+      "sha256": "0C91F714F46006BC9A543E629A3CE3B63700FA8CFBE7C6310A0BCFF2738356DD"
+    },
+    {
+      "path": "node_modules/which/which.js",
+      "bytes": 3163,
+      "sha256": "76845E1FE7851267FB7EE72B18F2D916996D330150E31E48F4657A79E9B46B5B"
+    },
+    {
+      "path": "oracle.mjs",
+      "bytes": 2937,
+      "sha256": "95B6DC15A65D5BBD62D9F3F507AFBBD9A1E4BF6829632B4FA705487B90D1784E"
+    },
+    {
+      "path": "package.json",
+      "bytes": 133,
+      "sha256": "4644190055988430F31E900B65544524443AE95198DF4ACED2E674525D6F5B0E"
+    },
+    {
+      "path": "UPSTREAM-LICENSE",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "upstream/child-process.js",
+      "bytes": 4056,
+      "sha256": "CFC7B3361E42B61EE75AECC2B436FF7462F7E4431B4B646DA7166F3C5706C9B8"
+    },
+    {
+      "path": "upstream/paths.js",
+      "bytes": 4617,
+      "sha256": "D5D48C2B2B2442C7E72AEE6E98A79D828A52DCE9526B152288186834C1DCF4A5"
+    },
+    {
+      "path": "upstream/paths.ts.reference.txt",
+      "bytes": 4950,
+      "sha256": "64C3EBEF724FA21ED0042E127908B4323A5D2F1B8AAA91EEE550442332FE8502"
+    },
+    {
+      "path": "upstream/sdk.ts.reference.txt",
+      "bytes": 18273,
+      "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28"
+    }
+  ]
+}
