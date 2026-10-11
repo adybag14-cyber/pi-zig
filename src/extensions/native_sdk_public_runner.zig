@@ -102,13 +102,13 @@ pub fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     try sdk.put(engine, result, "skills", try sdk.array(engine));
     return result;
 }
-const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext };
+const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext };
 pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
     inline for (std.meta.fields(Method)) |field| {
         const kind: Method = @enumFromInt(field.value);
         const arity: c_int = switch (kind) {
             .bindCore => 3,
-            .setFlagValue, .createToolContext => 2,
+            .setFlagValue, .createToolContext, .resolveToolRenderers => 2,
             .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer => 1,
             else => 0,
         };
@@ -205,6 +205,7 @@ fn methodValue(engine: *em.Engine, runner: c.JSValue, operation: Method, args: [
         .bindCommandContext => return bindCommands(engine, runner, first),
         .createContext, .createCommandContext => return @import("native_sdk_public_runner_context.zig").create(engine, runner, operation == .createCommandContext),
         .createToolContext => return @import("native_sdk_public_runner_tool_context.zig").create(engine, runner, first, if (args.len > 1) args[1] else c.pi_js_undefined()),
+        .resolveToolRenderers => return @import("native_sdk_public_runner_renderers.zig").resolve(engine, runner, first, if (args.len > 1) args[1] else c.pi_js_undefined()),
         else => return @import("native_sdk_public_runner_catalog.zig").invoke(engine, runner, @tagName(operation), args),
     }
 }

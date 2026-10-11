@@ -1,0 +1,14 @@
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+const rows=[];
+for(const id of ['chain','base','deferred','raw-throw','deferred-throw','mutable-flatmap','markdown-getters']){
+ const events=[],marker={tag:'result'},initial={tag:'initial'},reason={toString(){events.push('raw.toString');return'raw reason'}};let savedNext,snapshot,runner;
+ const one=function(name,next){events.push(['one',this===snapshot,name,next.name,next.length]);if(id==='raw-throw')throw reason;if(id==='deferred'||id==='deferred-throw'){savedNext=next;return initial}return next()};
+ const two=function(name,next){events.push(['two',this===snapshot,name,next.name,next.length]);if(id==='deferred-throw')throw reason;return next()};
+ const original=[one],first={get toolRenderers(){events.push('first.tools');return original}},second={get toolRenderers(){events.push('second.tools');return[two]}},extensions=id==='base'?[]:[first,second];
+ let firstMarkdown=0;Object.defineProperty(first,'markdownTransformer',{get(){events.push(['first.markdown',++firstMarkdown]);return firstMarkdown===1?one:marker}});Object.defineProperty(second,'markdownTransformer',{get(){events.push('second.markdown');return false}});
+ Object.defineProperty(extensions,'flatMap',{configurable:true,get(){events.push('flatMap.get');return function(mapper){events.push(['flatMap.call',this===extensions,arguments.length,mapper.name,mapper.length]);snapshot=id==='mutable-flatmap'?[function(name,next){events.push(['replacement',this===snapshot,name]);return marker}]:Array.prototype.flatMap.call(this,mapper);return snapshot}}});
+ const runtime={flagValues:new Map(),getThinkingLevel:()=> 'off',invalidate(message){events.push(['invalidate',message])}};runner=new ExtensionRunner(extensions,runtime,'/renderer',{},{});const base=function(){events.push(['base',this===undefined,arguments.length]);return marker};let outcome;
+ try{const result=id==='markdown-getters'?runner.getMarkdownTransformers():runner.resolveToolRenderers('target',base);outcome=id==='markdown-getters'?{length:result.length,firstMarker:result[0]===marker}:{marker:result===marker,initial:result===initial};if(savedNext){original.splice(0,1,()=>undefined);runner.invalidate('old runtime');const later=savedNext();outcome.deferredMarker=later===marker}}catch(error){outcome={identity:error===reason}}
+ rows.push({id,outcome,events});
+}
+globalThis.sdkRunnerRendererRows=rows;

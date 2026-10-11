@@ -1,0 +1,220 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "chain",
+      "outcome": {
+        "marker": true,
+        "initial": false
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        "first.tools",
+        "second.tools",
+        [
+          "one",
+          true,
+          "target",
+          "",
+          0
+        ],
+        [
+          "two",
+          true,
+          "target",
+          "",
+          0
+        ],
+        [
+          "base",
+          true,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "base",
+      "outcome": {
+        "marker": true,
+        "initial": false
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        [
+          "base",
+          true,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "deferred",
+      "outcome": {
+        "marker": false,
+        "initial": true,
+        "deferredMarker": true
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        "first.tools",
+        "second.tools",
+        [
+          "one",
+          true,
+          "target",
+          "",
+          0
+        ],
+        [
+          "invalidate",
+          "old runtime"
+        ],
+        [
+          "two",
+          true,
+          "target",
+          "",
+          0
+        ],
+        [
+          "base",
+          true,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "raw-throw",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        "first.tools",
+        "second.tools",
+        [
+          "one",
+          true,
+          "target",
+          "",
+          0
+        ]
+      ]
+    },
+    {
+      "id": "deferred-throw",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        "first.tools",
+        "second.tools",
+        [
+          "one",
+          true,
+          "target",
+          "",
+          0
+        ],
+        [
+          "invalidate",
+          "old runtime"
+        ],
+        [
+          "two",
+          true,
+          "target",
+          "",
+          0
+        ]
+      ]
+    },
+    {
+      "id": "mutable-flatmap",
+      "outcome": {
+        "marker": true,
+        "initial": false
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        [
+          "replacement",
+          true,
+          "target"
+        ]
+      ]
+    },
+    {
+      "id": "markdown-getters",
+      "outcome": {
+        "length": 1,
+        "firstMarker": true
+      },
+      "events": [
+        "flatMap.get",
+        [
+          "flatMap.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        [
+          "first.markdown",
+          1
+        ],
+        [
+          "first.markdown",
+          2
+        ],
+        "second.markdown"
+      ]
+    }
+  ]
+}
