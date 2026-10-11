@@ -2,6 +2,41 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const group_mod = @import("extensions/native_group.zig");
 const json = @import("mcp/protocol.zig").json;
+test "native SDK queue order FACTORY all eleven actual current Source588 auth traces retain preflight lookup order and raw identity" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{ "pi-sdk-auth", "sdk-auth-current-588.mjs" });
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-auth-current-588-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-auth-preflight-589.input.txt"), "sdk-auth-current-588.mjs") catch |err| {
+        std.debug.print("SDK actual Source588 auth: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkAuthPreflightRows", "sdk-auth-current-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-auth-preflight-source-571.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 11), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (!json.equal(source, observed)) std.debug.print("SDK Source588 auth complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+    }
+    const cleared = try engine.eval("delete globalThis.sdkAuthPreflightRows", "sdk-auth-current-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
 test "native SDK queue order FACTORY actual Source567 eleven shared runner runtime binding and disposal cases" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

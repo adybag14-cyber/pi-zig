@@ -523,9 +523,9 @@ fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(
     const authentication = @import("native_sdk_prompt_auth.zig").begin(engine, args[0], runtime) catch |err| return finishPromptFailure(engine, self, args, err);
     if (authentication) |pending| {
         defer engine.freeValue(pending);
-        const fulfilled = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 0, 5, args)) catch |err| return finishPromptFailure(engine, self, args, err);
+        const fulfilled = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 0, 6, args)) catch |err| return finishPromptFailure(engine, self, args, err);
         defer engine.freeValue(fulfilled);
-        const rejected = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 1, 5, args)) catch |err| return finishPromptFailure(engine, self, args, err);
+        const rejected = engine.checked(c.JS_NewCFunctionData2(context, promptAuthResume, "", 1, 1, 6, args)) catch |err| return finishPromptFailure(engine, self, args, err);
         defer engine.freeValue(rejected);
         const continuation = engine.checked(c.JS_PromiseThen(context, pending, fulfilled, rejected)) catch |err| return finishPromptFailure(engine, self, args, err);
         engine.freeValue(continuation);
@@ -550,6 +550,43 @@ fn finishPromptFailure(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSV
     return settlePrompt(engine, self, args, reason, true);
 }
 fn continuePrompt(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue) c.JSValue {
+    beforeAgentPrompt(engine, args) catch |err| return finishPromptFailure(engine, self, args, err);
+    return c.pi_js_undefined();
+}
+fn beforeAgentPrompt(engine: *engine_mod.Engine, args: [*c]c.JSValue) !void {
+    // Source reads the selected-tool baseline before resolving the ordinary
+    // runner/method, then reads the live options again for the call argument.
+    const baseline = try get(engine, args[0], "_baseSystemPromptOptions");
+    defer engine.freeValue(baseline);
+    const selected = try get(engine, baseline, "selectedTools");
+    defer engine.freeValue(selected);
+    const runner = try get(engine, args[0], "_extensionRunner");
+    defer engine.freeValue(runner);
+    const callback = try get(engine, runner, "emitBeforeAgentStart");
+    defer engine.freeValue(callback);
+    const options = try get(engine, args[0], "_baseSystemPromptOptions");
+    defer engine.freeValue(options);
+    const pending = try @import("native_js_values.zig").call(engine, callback, runner, &.{ args[1], args[5], options });
+    defer engine.freeValue(pending);
+    const awaited_before = try engine.checked(c.JS_PiPromiseResolve(engine.context, pending));
+    defer engine.freeValue(awaited_before);
+    const fulfilled = try engine.checked(c.JS_NewCFunctionData2(engine.context, promptBeforeResume, "", 1, 0, 6, args));
+    defer engine.freeValue(fulfilled);
+    const rejected = try engine.checked(c.JS_NewCFunctionData2(engine.context, promptBeforeResume, "", 1, 1, 6, args));
+    defer engine.freeValue(rejected);
+    const continuation = try engine.checked(c.JS_PromiseThen(engine.context, awaited_before, fulfilled, rejected));
+    engine.freeValue(continuation);
+}
+fn promptBeforeResume(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const self = state(engine, args[0]) catch return c.pi_js_undefined();
+    const value = if (argc > 0) argv[0] else c.pi_js_undefined();
+    if (magic != 0) return settlePrompt(engine, self, args, value, true);
+    // The public runner executes its genuine before-agent reduction. The
+    // existing agent loop still needs complete result/loadout ingestion.
+    return runPromptContinuation(engine, self, args);
+}
+fn runPromptContinuation(engine: *engine_mod.Engine, self: *State, args: [*c]c.JSValue) c.JSValue {
     var rejection: ?c.JSValue = null;
     runPrompt(self, args[1], args[2]) catch |err| {
         const raised = fail(engine, err);
@@ -574,6 +611,9 @@ fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JS
     if (try @import("native_sdk_command_execution.zig").start(self, receiver, args)) |command| return command;
     if (self.running) return error.NativeSDKPromptAlreadyRunning;
     const engine = self.engine;
+    const options = if (args.len > 1) args[1] else c.pi_js_undefined();
+    const images = if (c.JS_IsNull(options) or c.JS_IsUndefined(options)) c.pi_js_undefined() else try get(engine, options, "images");
+    defer engine.freeValue(images);
     var functions: [2]c.JSValue = undefined;
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     errdefer engine.freeValue(result);
@@ -588,7 +628,7 @@ fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JS
     defer for (idle_functions) |function| engine.freeValue(function);
     try put(engine, self.data, "promptIdle", c.JS_DupValue(engine.context, idle));
     try put(engine, self.data, "promptIdleResolve", c.JS_DupValue(engine.context, idle_functions[0]));
-    var task = [_]c.JSValue{ receiver, args[0], if (args.len > 1) args[1] else c.pi_js_undefined(), functions[0], functions[1] };
+    var task = [_]c.JSValue{ receiver, args[0], options, functions[0], functions[1], images };
     if (c.JS_EnqueueJob(engine.context, promptJob, task.len, &task) < 0) return error.OutOfMemory;
     self.running = true;
     self.aborted = false;

@@ -52,3 +52,20 @@ Still required: complete Agent/AgentSession and SDK prompt/lifecycle behavior,
 general fatal-rejection handling through Main, full terminal/editor parity,
 native deterministic CodeMode start/replay and durable integration, exact-head
 cross-platform/ReleaseSafe qualification, packaging and final release checks.
+
+The subsequent three-path auth connection passed 190/190 Windows Debug tests:
+135 shared cases and the 55 unchanged retained UI cases. The real public runner
+lookup/call and intrinsic await preserve all eleven latest-Source auth traces;
+the preceding 39 SDK queue cases remain intact. Independent coverage verified
+126 named cases and 135 compiled cases, with complete command/live allocation
+ranges. All 3,988 source and 19,546 tool inputs were unchanged. This qualifies
+that prompt boundary only; complete before-agent results, loadout, message/image
+ingestion, input, streaming and AgentLoop behavior remain open.
+
+The first Linux Debug hosted job at `b556de2` passed 133/134 cases. The single
+factory comparison differs from its Windows Source capture in ten cwd values
+and identity observations: Windows resolves the supplied `/sdk-owned-factory-566`
+to a drive-qualified path; POSIX retains the supplied absolute path. All other
+captured records match. A genuine POSIX upstream capture and native qualification
+are required before platform-specific expected records can be accepted. This
+negative is preserved; no cross-platform pass is inferred from the Windows gate.

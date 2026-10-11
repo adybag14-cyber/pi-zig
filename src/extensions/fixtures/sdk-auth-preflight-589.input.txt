@@ -1,0 +1,22 @@
+import{ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession}from'@earendil-works/pi-coding-agent';
+const savedPackage=process.env.PI_PACKAGE_DIR;process.env.PI_PACKAGE_DIR='C:/sdk-auth-package';
+const rows=[];
+for(const id of ['unknown-default','model-null','check-undefined','oauth-failure','check-null','check-false','check-zero','configured-object','check-reject','has-throws','provider-cycling']){
+ const events=[],notifications=[],marker={raw:true},stop={stop:true},cwd='/sdk-auth-preflight-571',settings=SettingsManager.inMemory();
+ const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+ const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',settingsManager:settings,noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true});await loader.reload();
+ const explicit={id:'fixture',name:'Fixture',provider:'fixture',api:'fixture',baseUrl:'https://invalid.example',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:1000,maxTokens:100};
+ const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:settings,tools:[],...(id==='unknown-default'?{}:{model:explicit})});
+ await session.bindExtensions({});session.subscribe(event=>notifications.push(event.type));
+ let modelReads=0;
+ const model=id==='model-null'?null:id==='unknown-default'?session.agent.state.model:{...explicit,get provider(){events.push('model.provider');return'fixture'},get id(){events.push('model.id');return'fixture'}};
+ Object.defineProperty(session,'model',{configurable:true,get(){events.push(['session.model',++modelReads]);if(id==='provider-cycling')return{provider:'provider'+modelReads,id:'fixture'};return model}});
+ Object.defineProperty(runtime,'hasConfiguredAuth',{configurable:true,get(){events.push('runtime.hasConfiguredAuth.get');return function(provider){events.push(['runtime.hasConfiguredAuth.call',provider,this===runtime]);if(id==='has-throws')throw marker;return id==='configured-object'?{}:false}}});
+ Object.defineProperty(runtime,'checkAuth',{configurable:true,get(){events.push('runtime.checkAuth.get');return function(provider){events.push(['runtime.checkAuth.call',provider,this===runtime]);if(id==='check-reject')return Promise.reject(marker);return Promise.resolve(id==='check-null'?null:id==='check-false'?false:id==='check-zero'?0:undefined)}}});
+ Object.defineProperty(runtime,'isUsingOAuth',{configurable:true,get(){events.push('runtime.isUsingOAuth.get');return function(provider){events.push(['runtime.isUsingOAuth.call',provider,this===runtime]);return id==='oauth-failure'}}});
+ Object.defineProperty(session._extensionRunner,'emitBeforeAgentStart',{configurable:true,get(){events.push('boundary.before-agent-start');throw stop}});
+ let outcome;try{const pending=session.prompt('preflight',{expandPromptTemplates:false,preflightResult(value){events.push(['preflight',value])}});events.push(['returnedPromise',pending instanceof Promise]);await pending;outcome={unexpectedSuccess:true}}catch(error){outcome={raw:error===marker,boundary:error===stop,name:error?.name,message:error?.message}}
+ rows.push({id,events,outcome,notifications,messages:session.messages.length});session.dispose();
+}
+if(savedPackage===undefined)delete process.env.PI_PACKAGE_DIR;else process.env.PI_PACKAGE_DIR=savedPackage;
+globalThis.sdkAuthPreflightRows=rows;
