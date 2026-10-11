@@ -38,6 +38,13 @@ pub const Worker = struct {
         defer engine.deinit();
         const mime = try self.mime.read(engine);
         defer engine.freeValue(mime);
+        // Source validates the worker request before calling the codec. An
+        // invalid MIME value must take the owner's original-options fallback,
+        // including its second getter pass, rather than resize a cloned value.
+        if (!c.JS_IsString(mime)) {
+            self.message = try self.allocator.dupe(u8, "Invalid image resize worker request");
+            return error.InvalidImageResizeWorkerRequest;
+        }
         const request_options = try self.options.read(engine);
         defer engine.freeValue(request_options);
         const resized = strategy.resize(engine, self.input, mime, request_options) catch |err| {
