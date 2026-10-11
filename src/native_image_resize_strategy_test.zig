@@ -7,7 +7,8 @@ const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
 fn allocationCase(allocator: std.mem.Allocator) !void {
-    const engine = try js.Engine.init(allocator, .{ .host_await_timeout_ms = 5000 });
+    var serialized_allocator: @import("test_support/locked_allocator.zig").Locked = .{ .backing = allocator };
+    const engine = try js.Engine.init(serialized_allocator.allocator(), .{ .host_await_timeout_ms = 5000 });
     defer engine.deinit();
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     const global = c.JS_GetGlobalObject(engine.context);
