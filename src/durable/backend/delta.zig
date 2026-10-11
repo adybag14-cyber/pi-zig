@@ -12,7 +12,7 @@ fn pathOf(value: Value, nonempty: bool) ![]const Value {
             if (reserved(key)) return error.UnsafeDeltaPath;
         },
         .float, .integer => {
-            _ = try json.asInteger(segment);
+            _ = json.asInteger(segment) catch return error.UnsafeDeltaPath;
         },
         else => return error.UnsafeDeltaPath,
     };
@@ -72,6 +72,16 @@ pub fn apply(gpa: std.mem.Allocator, root: *Value, operations: Value) !void {
                 if (tuple[4] != .array) return error.InvalidDelta;
                 const at: usize = @intCast(@min(requested, target.array.items.len));
                 const count: usize = @intCast(@min(remove, target.array.items.len - at));
+                if (at == target.array.items.len and count == 0) {
+                    // This tree is already caller-owned. Snapshot additions
+                    // before growing it, including a batch that aliases the
+                    // target, and publish only after every clone succeeds.
+                    const additions = try gpa.alloc(Value, tuple[4].array.items.len);
+                    defer gpa.free(additions);
+                    for (tuple[4].array.items, additions) |item, *copy| copy.* = try json.clone(gpa, item);
+                    try target.array.appendSlice(additions);
+                    continue;
+                }
                 var result: std.array_list.Managed(Value) = .init(gpa);
                 try result.appendSlice(target.array.items[0..at]);
                 for (tuple[4].array.items) |item| try result.append(try json.clone(gpa, item));
@@ -136,4 +146,59 @@ test "durable deltas preserve UTF16 truncation  and  reject sparse unsafe  and  
     var bad = try json.Owned.parse(gpa, "[[\"s\",[\"__proto__\",\"x\"],true]]");
     defer bad.deinit();
     try std.testing.expectError(error.UnsafeDeltaPath, apply(base.arena.allocator(), &base.value, bad.value));
+}
+test "durable delta actual 091 append values and unsafe paths match original mutable Source" {
+    var captured = try json.Owned.parse(std.testing.allocator, @embedFile("../fixtures/chord-091-append-source.json"));
+    defer captured.deinit();
+    for (captured.value.object.get("rows").?.array.items) |row| {
+        var actual = try json.Owned.empty(std.testing.allocator);
+        defer actual.deinit();
+        actual.value = try json.clone(actual.arena.allocator(), row.object.get("base").?);
+        const operations = row.object.get("ops").?;
+        if (row.object.get("mutableError")) |failure| {
+            const unsafe = std.mem.eql(u8, failure.object.get("name").?.string, "UnsafePathError");
+            try std.testing.expectError(if (unsafe) error.UnsafeDeltaPath else error.UnresolvableDeltaPath, apply(actual.arena.allocator(), &actual.value, operations));
+        } else {
+            try apply(actual.arena.allocator(), &actual.value, operations);
+            try std.testing.expect(json.equal(actual.value, row.object.get("mutableValue").?));
+            try std.testing.expect(row.object.get("baseUnchanged").?.bool);
+        }
+    }
+}
+test "durable delta append allocation stays proportional to final owned array" {
+    var measured: std.testing.FailingAllocator = .init(std.testing.allocator, .{});
+    var owner = try json.Owned.empty(measured.allocator());
+    defer owner.deinit();
+    const a = owner.arena.allocator();
+    owner.value = .{ .array = .init(a) };
+    try owner.value.array.appendNTimes(.null, 1000);
+    const before = measured.allocated_bytes;
+    for (0..1000) |index| {
+        var item = [_]Value{.{ .integer = @intCast(index) }};
+        var tuple = [_]Value{ .{ .string = "p" }, .{ .array = .init(a) }, .{ .integer = @intCast(1000 + index) }, .{ .integer = 0 }, .{ .array = .fromOwnedSlice(a, &item) } };
+        var operation = [_]Value{.{ .array = .fromOwnedSlice(a, &tuple) }};
+        try apply(a, &owner.value, .{ .array = .fromOwnedSlice(a, &operation) });
+    }
+    try std.testing.expectEqual(@as(usize, 2000), owner.value.array.items.len);
+    const allocated = measured.allocated_bytes - before;
+    std.debug.print("CHORD_APPEND_NATIVE allocated_bytes={d} appended=1000 final_length=2000\n", .{allocated});
+    try std.testing.expect(allocated <= 2 * 1024 * 1024);
+}
+test "durable delta append allocation failure preserves the original array until publication" {
+    const Check = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            var owner = try json.Owned.parse(gpa, "[0]");
+            defer owner.deinit();
+            var operations = try json.Owned.parse(std.testing.allocator, "[[\"p\",[],1,0,[{\"a\":\"one\",\"b\":[1,2,3]},{\"a\":\"two\",\"b\":[4,5,6]}]]]");
+            defer operations.deinit();
+            apply(owner.arena.allocator(), &owner.value, operations.value) catch |err| {
+                try std.testing.expectEqual(@as(usize, 1), owner.value.array.items.len);
+                try std.testing.expectEqual(@as(f64, 0), try json.asNumber(owner.value.array.items[0]));
+                return err;
+            };
+            try std.testing.expectEqual(@as(usize, 3), owner.value.array.items.len);
+            try std.testing.expectEqualStrings("two", owner.value.array.items[2].object.get("a").?.string);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
 }
