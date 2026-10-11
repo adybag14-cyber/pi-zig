@@ -32,7 +32,7 @@ jobs:
           if ($head -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
           if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
           $zig = (Get-Command zig).Source
-          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = 'Debug'; scope = 'Private command-only implementation: six named tests and 293 original Source records, dynamic holder lifetime, and exhaustive host allocation cleanup. Main provider activation, fd and full Combined class remain unqualified.' } | ConvertTo-Json | Set-Content verification/native-command-allocation/source.json
+          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = 'Debug'; scope = 'One named command allocation sweep plus imported checks. The full six-test command gate retains separate filesystem and constructor scope failures. Main provider activation, fd and full Combined class remain unqualified.' } | ConvertTo-Json | Set-Content verification/native-command-allocation/source.json
           @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json | Set-Content verification/native-command-allocation/inputs.json
       - name: Replay command Source records and allocation cleanup
         shell: pwsh
