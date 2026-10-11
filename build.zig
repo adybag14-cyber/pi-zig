@@ -1144,6 +1144,10 @@ pub fn build(b: *std.Build) void {
     sdk_queue_order_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_queue_order_run = b.addRunArtifact(sdk_queue_order_tests);
     b.step("test-native-sdk-queue-order", "Replay genuine Source476/477 template iterator and callee ordering").dependOn(&sdk_queue_order_run.step);
+    const sdk_await_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_await_primitives_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK await primitives"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_await_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_await_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-await-primitives", "Compare intrinsic await resolution and old ToNumeric with guest semantics").dependOn(&b.addRunArtifact(sdk_await_tests).step);
     const sdk_skill_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_skill_expansion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK skill expansion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_skill_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_skill_tests.root_module.addImport("catalog_tool", catalog_tool);
