@@ -23,4 +23,9 @@ comptime {
     _ = @import("native_image_resize_strategy_test.zig");
     _ = @import("native_command_autocomplete_source_test.zig");
     _ = @import("native_durable_owner_settlement_test.zig");
+    _ = @import("native_command_live_owner_test.zig");
+    _ = @import("native_durable_89_compaction_test.zig");
+    _ = @import("native_durable_inspection_compare.zig");
+    _ = @import("native_summary_transcript_source_test.zig");
+    _ = @import("mcp/codemode_declarations.zig");
 }

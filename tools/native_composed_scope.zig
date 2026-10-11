@@ -1,5 +1,5 @@
 //! Shared selection for the composed artifact and its independent coverage gate.
-pub const filters: []const []const u8 = &.{ "composed native coverage inventory", "native SDK queue order", "Native localeCompare Source", "Native localeCompare Coercion Source", "Native localeCompare Lifecycle Source", "native allocation original identity", "native durable public open lifecycle", "physical stdio", "native image worker option", "native image JavaScript-valued strategy", "Command Source", "actual cdaf public document retention", "actual cdaf settings phase", "actual cdaf retention pins", "owner settlement", "document retention", "actual ea inflight index", "native durable actual e6 input entry" };
+pub const filters: []const []const u8 = &.{ "composed native coverage inventory", "native SDK queue order", "Native localeCompare Source", "Native localeCompare Coercion Source", "Native localeCompare Lifecycle Source", "native allocation original identity", "native durable public open lifecycle", "physical stdio", "native image worker option", "native image JavaScript-valued strategy", "Command Source", "actual cdaf public document retention", "actual cdaf settings phase", "actual cdaf retention pins", "owner settlement", "document retention", "actual ea inflight index", "native durable actual e6 input entry", "Live command metadata", "native durable actual 89 compaction failure public contract", "native durable inspection timestamp comparison", "latest89 serializer", "native codemode declaration" };
 pub const source_files: []const []const u8 = &.{
     "src/native_composed_vm_test.zig",
     "src/native_durable_e6_input_entry_test.zig",
@@ -20,4 +20,10 @@ pub const source_files: []const []const u8 = &.{
     "src/durable/owner_settlement.zig",
     "src/durable/session.zig",
     "src/durable/document_retention.zig",
+    "src/native_command_live_owner_test.zig",
+    "src/native_durable_89_compaction_test.zig",
+    "src/native_durable_inspection_compare.zig",
+    "src/agent/compaction.zig",
+    "src/agent/branch_summary.zig",
+    "src/mcp/codemode_declarations.zig",
 };
