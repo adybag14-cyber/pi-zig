@@ -368,6 +368,61 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
     engine.freeValue(late);
     c.JS_RunGC(engine.runtime);
 }
-test "Live command metadata exhaustive host allocation unwinds projection arguments scope and retirement" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{});
+fn allocationShard(comptime shard: usize) !void {
+    const shards = 8;
+    comptime std.debug.assert(shard < shards);
+    // Exactly the std.testing unlimited baseline and complete induced-failure
+    // universe. Separate bounded tests accommodate macOS stack unwinding.
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try allocationProbe(baseline.allocator());
+    const total = baseline.alloc_index;
+    if (total == 0) return error.EmptyAllocationFailureUniverse;
+    const begin = total / shards * shard + total % shards * shard / shards;
+    const end = total / shards * (shard + 1) + total % shards * (shard + 1) / shards;
+    for (begin..end) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        if (allocationProbe(failing.allocator())) |_| {
+            return if (failing.has_induced_failure) error.SwallowedOutOfMemoryError else error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.print("Live command allocation leak index={d}/{d} allocated={d} freed={d} allocations={d} deallocations={d}\n{f}\n", .{ index, total, failing.allocated_bytes, failing.freed_bytes, failing.allocations, failing.deallocations, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => return err,
+        }
+    }
+    std.debug.print("LIVE_GPA_SHARD={{\"index\":{d},\"shards\":8,\"begin\":{d},\"end\":{d},\"total\":{d}}}\n", .{ shard, begin, end, total });
+}
+test "Live command metadata exhaustive host allocation cleanup shard 1 of 8" {
+    try allocationShard(0);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 2 of 8" {
+    try allocationShard(1);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 3 of 8" {
+    try allocationShard(2);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 4 of 8" {
+    try allocationShard(3);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 5 of 8" {
+    try allocationShard(4);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 6 of 8" {
+    try allocationShard(5);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 7 of 8" {
+    try allocationShard(6);
+}
+
+test "Live command metadata exhaustive host allocation cleanup shard 8 of 8" {
+    try allocationShard(7);
 }

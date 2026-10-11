@@ -4,12 +4,18 @@ const scope = @import("native_composed_scope.zig");
 const marker = "COMPOSED_NATIVE_TEST_INVENTORY=";
 const allocation_marker = "COMMAND_GPA_SHARD=";
 pub fn verifyAllocationShards(gpa: std.mem.Allocator, log: []const u8) !usize {
+    return verifyShardRanges(gpa, log, allocation_marker);
+}
+pub fn verifyLiveAllocationShards(gpa: std.mem.Allocator, log: []const u8) !usize {
+    return verifyShardRanges(gpa, log, "LIVE_GPA_SHARD=");
+}
+fn verifyShardRanges(gpa: std.mem.Allocator, log: []const u8, range_marker: []const u8) !usize {
     const Range = struct { index: usize, shards: usize, begin: usize, end: usize, total: usize };
     var offset: usize = 0;
     var seen: u8 = 0;
     var total: ?usize = null;
-    while (std.mem.indexOfPos(u8, log, offset, allocation_marker)) |start| {
-        const rest = log[start + allocation_marker.len ..];
+    while (std.mem.indexOfPos(u8, log, offset, range_marker)) |start| {
+        const rest = log[start + range_marker.len ..];
         const end = std.mem.indexOfScalar(u8, rest, '\n') orelse rest.len;
         const parsed = try std.json.parseFromSlice(Range, gpa, std.mem.trim(u8, rest[0..end], "\r\n "), .{});
         defer parsed.deinit();
@@ -24,7 +30,7 @@ pub fn verifyAllocationShards(gpa: std.mem.Allocator, log: []const u8) !usize {
         const expected_begin = range.total / 8 * range.index + range.total % 8 * range.index / 8;
         const expected_end = range.total / 8 * (range.index + 1) + range.total % 8 * (range.index + 1) / 8;
         if (range.begin != expected_begin or range.end != expected_end) return error.IncompleteAllocationRange;
-        offset = start + allocation_marker.len + end;
+        offset = start + range_marker.len + end;
     }
     if (seen != 255) return error.IncompleteAllocationShardCoverage;
     return total.?;
@@ -67,6 +73,10 @@ pub fn verifyLog(gpa: std.mem.Allocator, wanted: []const []const u8, log: []cons
     if (std.mem.indexOf(u8, log, complete) == null) return error.IncompleteTestExecution;
     for (wanted) |name| if (std.mem.startsWith(u8, name, "Command Source exhaustive host allocation cleanup shard ")) {
         _ = try verifyAllocationShards(gpa, log);
+        break;
+    };
+    for (wanted) |name| if (std.mem.startsWith(u8, name, "Live command metadata exhaustive host allocation cleanup shard ")) {
+        _ = try verifyLiveAllocationShards(gpa, log);
         break;
     };
     return parsed.value.len;
@@ -125,4 +135,24 @@ test "composed allocation coverage rejects omitted duplicate and incomplete fail
     try std.testing.expectError(error.AllocationUniverseDrift, verifyAllocationShards(gpa, allocation_marker ++ "{\"index\":0,\"shards\":8,\"begin\":0,\"end\":2,\"total\":17}\n" ++ allocation_marker ++ "{\"index\":1,\"shards\":8,\"begin\":2,\"end\":4,\"total\":18}\n"));
     try log.appendSlice(gpa, allocation_marker ++ "{\"index\":0,\"shards\":8,\"begin\":0,\"end\":2,\"total\":17}\n");
     try std.testing.expectError(error.DuplicateAllocationShard, verifyAllocationShards(gpa, log.items));
+}
+
+test "composed live allocation coverage rejects missing duplicate partial and cross-universe ranges independently" {
+    const gpa = std.testing.allocator;
+    var log: std.ArrayList(u8) = .empty;
+    defer log.deinit(gpa);
+    // A command record must never satisfy the independent live universe.
+    try log.appendSlice(gpa, "COMMAND_GPA_SHARD={\"index\":0,\"shards\":8,\"begin\":0,\"end\":2,\"total\":17}\n");
+    try std.testing.expectError(error.IncompleteAllocationShardCoverage, verifyLiveAllocationShards(gpa, log.items));
+    for (0..8) |index| {
+        const row = try std.fmt.allocPrint(gpa, "LIVE_GPA_SHARD={{\"index\":{d},\"shards\":8,\"begin\":{d},\"end\":{d},\"total\":17}}\n", .{ index, 17 * index / 8, 17 * (index + 1) / 8 });
+        defer gpa.free(row);
+        try log.appendSlice(gpa, row);
+    }
+    try std.testing.expectEqual(@as(usize, 17), try verifyLiveAllocationShards(gpa, log.items));
+    try std.testing.expectError(error.IncompleteAllocationShardCoverage, verifyLiveAllocationShards(gpa, ""));
+    try std.testing.expectError(error.IncompleteAllocationRange, verifyLiveAllocationShards(gpa, "LIVE_GPA_SHARD={\"index\":0,\"shards\":8,\"begin\":1,\"end\":2,\"total\":17}\n"));
+    try std.testing.expectError(error.AllocationUniverseDrift, verifyLiveAllocationShards(gpa, "LIVE_GPA_SHARD={\"index\":0,\"shards\":8,\"begin\":0,\"end\":2,\"total\":17}\nLIVE_GPA_SHARD={\"index\":1,\"shards\":8,\"begin\":2,\"end\":4,\"total\":18}\n"));
+    try log.appendSlice(gpa, "LIVE_GPA_SHARD={\"index\":0,\"shards\":8,\"begin\":0,\"end\":2,\"total\":17}\n");
+    try std.testing.expectError(error.DuplicateAllocationShard, verifyLiveAllocationShards(gpa, log.items));
 }
