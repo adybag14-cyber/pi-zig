@@ -126,11 +126,10 @@ pub fn build(b: *std.Build) void {
     const composed_vm_tests = b.addTest(.{
         .root_module = composed_vm_module,
         .use_llvm = use_llvm,
-        .filters = &.{ "native SDK queue order", "Native localeCompare Source", "Native localeCompare Coercion Source", "Native localeCompare Lifecycle Source", "native allocation original identity", "native durable public open lifecycle", "physical stdio", "native image worker option", "native image JavaScript-valued strategy", "Command Source", "actual cdaf public document retention", "actual cdaf settings phase", "actual cdaf retention pins", "owner settlement", "document retention", "actual ea inflight index" },
-        .test_runner = .{ .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") }, .mode = .simple },
+        .filters = @import("tools/native_composed_scope.zig").filters,
     });
     const composed_vm_run = b.addRunArtifact(composed_vm_tests);
-    composed_vm_run.stdio = .inherit;
+    composed_vm_run.has_side_effects = true;
     b.step("test-native-composed-vm", "Run unchanged SDK locale allocation retention image command and stdio suites in one VM test artifact").dependOn(&composed_vm_run.step);
     mod.addImport("catalog_tool", catalog_tool);
     const locale_compare_source_step = b.step("test-native-localecompare-source", "Replay original69 API, original2100 JS comparisons, original90 coercion edges, original12 lifecycle and exhaustive host allocation cleanup");

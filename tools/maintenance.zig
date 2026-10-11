@@ -6,6 +6,7 @@ const config_schemas = @import("config_schemas.zig");
 const artifacts = @import("artifacts.zig");
 const release = @import("release.zig");
 const upstream_contract = @import("upstream_contract.zig");
+const composed_coverage = @import("native_composed_coverage.zig");
 const release_config = @import("release_config");
 
 const forbidden_names = [_][]const u8{
@@ -228,6 +229,11 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
+    if (args.len == 4 and std.mem.eql(u8, args[1], "verify-composed-coverage")) {
+        try composed_coverage.verify(init.gpa, init.io, args[2], args[3], writer);
+        try writer.flush();
+        return;
+    }
     if (args.len == 2 and std.mem.eql(u8, args[1], "verify-artifacts")) {
         try artifacts.verify(init.gpa, init.io, writer);
         try writer.flush();
@@ -321,6 +327,7 @@ pub fn main(init: std.process.Init) !void {
         return;
     }
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
+        "       pi-maintenance verify-composed-coverage <repository> <test-log>\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++
         "       pi-maintenance artifact-manifest <checkpoint> | verify-artifacts | verify-release [tag]\n" ++
         "       pi-maintenance import-catalog <catalog-json> <version> <commit> <source-archive> <revision> <destination>\n" ++
