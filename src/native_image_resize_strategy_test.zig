@@ -90,6 +90,33 @@ test "native image JavaScript-valued strategy isolates simultaneous worker reque
     , "image-concurrent-requests");
     engine.freeValue(result);
 }
+test "native image JavaScript-valued strategy matches latest worker shared options and invalid MIME fallback chronology" {
+    const engine = try js.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "candidateResizeImage", try image_api.create(engine));
+    const input = @embedFile("ai/fixtures/photon-source-8x5.png");
+    try js.define(engine, global, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
+    const fixture = @embedFile("extensions/fixtures/image-worker-boundary-89e5-source.json");
+    try js.define(engine, global, "imageBoundarySource", try engine.checked(c.JS_ParseJSON(engine.context, fixture.ptr, fixture.len, "image-boundary-89e5-source")));
+    const result = engine.evalModule(
+        \\const rows=[];
+        \\for(const name of ['shared-options','boxed-mime','undefined-mime','null-mime']){
+        \\ const calls=[],input=new Uint8Array(imageInputBuffer),before=[...input],mime=name==='boxed-mime'?new String('image/png'):name==='undefined-mime'?undefined:name==='null-mime'?null:'image/png';
+        \\ const shared=new SharedArrayBuffer(8),options={get maxWidth(){calls.push('maxWidth');return 4},get maxHeight(){calls.push('maxHeight');return 3},shared,view:new Uint8Array(shared)};
+        \\ const result=await candidateResizeImage(input,mime,options);
+        \\ rows.push({name,calls,result,mimeIdentity:result===null?null:result.mimeType===mime,inputUnchanged:JSON.stringify([...input])===JSON.stringify(before)});
+        \\}
+        \\if(rows.length!==4||imageBoundarySource.rows.length!==4)throw Error('latest image Source count');
+        \\for(let index=0;index<rows.length;index++)if(JSON.stringify(rows[index])!==JSON.stringify(imageBoundarySource.rows[index]))throw Error(JSON.stringify({index,actual:rows[index],expected:imageBoundarySource.rows[index]}));
+    , "image-boundary-89e5-native") catch |err| {
+        std.debug.print("Latest image boundary: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+}
 test "native image JavaScript-valued strategy closes an unawaited worker promise with its VM" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     errdefer engine.deinit();
