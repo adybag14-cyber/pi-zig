@@ -51,4 +51,6 @@ test "native binary operators preserve guest coercion BigInt exception and borro
     const text = try engine.toString(encoded);
     defer engine.gpa.free(text);
     try std.testing.expectEqualStrings("85,70,55,40", text);
+    try std.testing.expect(try image_math.fitsEncodedSize(engine, 4, options));
+    try std.testing.expectEqual(@as(u32, 4), try image_math.wasmDimension(engine, dimensions.width));
 }
