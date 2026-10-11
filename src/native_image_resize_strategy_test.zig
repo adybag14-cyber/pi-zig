@@ -6,6 +6,23 @@ const worker = @import("extensions/native_image_vm_worker.zig");
 const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
+fn allocationCase(allocator: std.mem.Allocator) !void {
+    const engine = try js.Engine.init(allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "candidateResizeImage", try image_api.create(engine));
+    const input = @embedFile("ai/fixtures/photon-source-8x5.png");
+    try js.define(engine, global, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
+    const generation = engine.native_allocation_generation;
+    const result = engine.evalModule("await candidateResizeImage(new Uint8Array(imageInputBuffer),'image/png',{maxWidth:4,maxHeight:3})", "image-allocation-lifecycle") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(result);
+}
+test "native image JavaScript-valued strategy releases every induced allocator failure and recovers" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationCase, .{});
+    try allocationCase(std.testing.allocator);
+}
 test "native image JavaScript-valued strategy matches every actual public worker result" {
     const engine = try js.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
     defer engine.deinit();
