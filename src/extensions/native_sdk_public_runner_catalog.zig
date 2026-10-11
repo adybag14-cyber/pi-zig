@@ -19,6 +19,7 @@ pub fn invoke(engine: *em.Engine, runner: c.JSValue, method: []const u8, args: [
     }
     const extensions = try sdk.get(engine, runner, "extensions");
     defer engine.freeValue(extensions);
+    if (std.mem.eql(u8, method, "getMarkdownTransformers")) return @import("native_sdk_public_runner_renderers.zig").markdown(engine, extensions);
     const symbol = try engine.checked(JS_GetIteratorSymbol(engine.context));
     defer engine.freeValue(symbol);
     if (std.mem.eql(u8, method, "getExtensionPaths")) {
@@ -28,23 +29,16 @@ pub fn invoke(engine: *em.Engine, runner: c.JSValue, method: []const u8, args: [
     }
     const collecting_tools = std.mem.eql(u8, method, "getAllRegisteredTools");
     const collecting_flags = std.mem.eql(u8, method, "getFlags");
-    const markdown = std.mem.eql(u8, method, "getMarkdownTransformers");
     const handlers = std.mem.eql(u8, method, "hasHandlers");
     const definition = std.mem.eql(u8, method, "getToolDefinition");
     const entries = std.mem.eql(u8, method, "getEntryRenderer");
-    const collected = if (collecting_tools or collecting_flags) try js.builtin(engine, "Map", &.{}) else if (markdown) try sdk.array(engine) else c.pi_js_undefined();
+    const collected = if (collecting_tools or collecting_flags) try js.builtin(engine, "Map", &.{}) else c.pi_js_undefined();
     errdefer engine.freeValue(collected);
     var outer = try js.Iterator.init(engine, extensions, symbol);
     defer outer.deinit();
     errdefer outer.closePreserving();
     while (try outer.next()) |extension| {
         defer engine.freeValue(extension);
-        if (markdown) {
-            const transformer = try sdk.get(engine, extension, "markdownTransformer");
-            defer engine.freeValue(transformer);
-            if (c.JS_ToBool(engine.context, transformer) == 1) try js.push(engine, collected, transformer);
-            continue;
-        }
         const map = try sdk.get(engine, extension, if (collecting_tools or definition) "tools" else if (collecting_flags) "flags" else if (handlers) "handlers" else if (entries) "entryRenderers" else "messageRenderers");
         defer engine.freeValue(map);
         if (entries and (c.JS_IsUndefined(map) or c.JS_IsNull(map))) continue;
@@ -83,7 +77,7 @@ pub fn invoke(engine: *em.Engine, runner: c.JSValue, method: []const u8, args: [
             }
         }
     }
-    if (collecting_flags or markdown) return collected;
+    if (collecting_flags) return collected;
     if (collecting_tools) {
         defer engine.freeValue(collected);
         const values = try js.invoke(engine, collected, "values", &.{});
