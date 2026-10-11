@@ -30,6 +30,7 @@ const Watch = struct {
     scheduled: bool = false,
     running: bool = false,
     retired: bool = false,
+    pinned: bool = false,
     fn clear(self: *Watch, runtime: ?*c.JSRuntime) void {
         for (self.pending.items) |frame| {
             c.JS_FreeValueRT(runtime, frame.value);
@@ -39,6 +40,9 @@ const Watch = struct {
         self.pending.clearRetainingCapacity();
     }
     fn detach(self: *Watch) !void {
+        const pinned = self.pinned;
+        self.pinned = false;
+        errdefer if (pinned) docs.releaseRecord(self.engine, self.parent, self.id) catch {};
         inline for (.{ "commit_detach", "close_detach" }) |name| {
             const callback = @field(self, name);
             if (!c.JS_IsUndefined(callback)) {
@@ -54,6 +58,7 @@ const Watch = struct {
             const result = try sdk.invoke(self.engine, self.signal, "removeEventListener", &.{ abort, self.cancellation });
             self.engine.freeValue(result);
         }
+        if (pinned) try docs.releaseRecord(self.engine, self.parent, self.id);
     }
     fn terminate(self: *Watch, reason: []const u8, failure: ?c.JSValue) !void {
         if (!c.JS_IsUndefined(self.end)) return;
@@ -121,7 +126,7 @@ pub fn acquire(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c.
     var data = [_]c.JSValue{ session, array };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, queued, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, session, callback);
+    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
 fn queued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -157,6 +162,10 @@ fn create(engine: *Engine, parent: c.JSValue, observation: docs.Observation) !c.
     self.* = .{ .engine = engine, .parent = c.JS_DupValue(engine.context, parent), .value = c.JS_DupValue(engine.context, observation.value), .closed = c.pi_js_undefined(), .resolve = c.pi_js_undefined(), .listener = c.pi_js_undefined(), .commit_detach = c.pi_js_undefined(), .close_detach = c.pi_js_undefined(), .signal = c.pi_js_undefined(), .cancellation = c.pi_js_undefined(), .end = c.pi_js_undefined(), .id = try json.asInteger(try json.required(observation.record.value, "id")), .version = observation.version };
     _ = c.JS_SetOpaque(object, self);
     errdefer self.detach() catch {};
+    if (observation.cached) {
+        try docs.pinRecord(engine, parent, self.id);
+        self.pinned = true;
+    }
     var functions: [2]c.JSValue = undefined;
     self.closed = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     self.resolve = functions[0];
@@ -255,7 +264,13 @@ pub fn advanceProjection(engine: *Engine, object: c.JSValue, value: c.JSValue, o
     errdefer engine.freeValue(ops);
     if (self.pending.items.len >= 100) self.clear(engine.runtime);
     self.pending.appendAssumeCapacity(.{ .value = c.JS_DupValue(engine.context, frame_value), .ops = ops, .context = clean });
-    if (c.JS_IsNull(value)) self.retired = true;
+    if (c.JS_IsNull(value)) {
+        self.retired = true;
+        if (self.pinned) {
+            self.pinned = false;
+            try docs.releaseRecord(self.engine, self.parent, self.id);
+        }
+    }
     if (self.started) try schedule(self, object);
 }
 fn reportProjection(self: *Watch, failure: c.JSValue) !void {
@@ -386,6 +401,10 @@ fn receive(engine: *Engine, object: c.JSValue, publication_value: c.JSValue, con
         var ops: c.JSValue = undefined;
         if (c.JS_IsNull(value)) {
             self.retired = true;
+            if (self.pinned) {
+                self.pinned = false;
+                try docs.releaseRecord(self.engine, self.parent, self.id);
+            }
             ops = try replacement(engine, value);
         } else {
             const version_value = try sdk.get(engine, change, "version");

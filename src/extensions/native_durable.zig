@@ -39,6 +39,7 @@ pub const State = struct {
     foreign_publication: ?*const fn (?*anyopaque, *const session_module.Publication) anyerror!void = null,
     foreign_publication_context: ?*anyopaque = null,
     after_commit: ?*const fn (?*anyopaque) anyerror!void = null,
+    before_document_settlement: ?*const fn (?*anyopaque) anyerror!void = null,
     transaction: ?*session_module.Transaction = null,
     parent: c.JSValue,
     tail: c.JSValue,
@@ -65,6 +66,7 @@ pub const State = struct {
     plans: std.ArrayList(json.Owned) = .empty,
     documents: ?*@import("native_durable_documents.zig").Drafts = null,
     document_cache: ?*@import("native_durable_documents.zig").Cache = null,
+    cache_policy: @import("native_durable_document_retention.zig").Owner = .{},
     conversation_views: ?c.JSValue = null,
     fn storage(self: *State) !backend.Backend {
         if (self.storage_closed) return error.StorageClosed;
@@ -125,6 +127,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     if (self.creation_owner) |owner| c.JS_FreeValueRT(runtime, owner);
     if (self.documents) |documents| documents.deinit(runtime);
     if (self.document_cache) |cache| cache.deinit(runtime);
+    self.cache_policy.deinit(runtime);
     if (self.conversation_views) |views| c.JS_FreeValueRT(runtime, views);
     for (self.plans.items) |*plan| plan.deinit();
     self.plans.deinit(engine.gpa);
@@ -150,6 +153,7 @@ fn mark(runtime: ?*c.JSRuntime, input: c.JSValue, marker: ?*const c.JS_MarkFunc)
     if (self.creation_owner) |owner| c.JS_MarkValue(runtime, owner, marker);
     if (self.documents) |documents| documents.mark(runtime, marker);
     if (self.document_cache) |cache| cache.mark(runtime, marker);
+    self.cache_policy.mark(runtime, marker);
     if (self.conversation_views) |views| c.JS_MarkValue(runtime, views, marker);
     for (self.commit_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
     for (self.commit_observers.items) |listener| c.JS_MarkValue(runtime, listener, marker);
@@ -194,6 +198,18 @@ pub fn reject(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException or err == error.OwnerStorageRequestError or err == error.OwnerStorageCanceledRead) return engine.throwCaptured();
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native durable: %s", @as([*:0]const u8, @errorName(err)));
+}
+/// An intrinsic async return always creates a fresh promise, independently of
+/// the guest's writable global Promise constructor or resolve method.
+pub fn resolvedPromise(engine: *Engine, value: c.JSValue) !c.JSValue {
+    var functions: [2]c.JSValue = undefined;
+    const pending = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+    errdefer engine.freeValue(pending);
+    defer for (functions) |function| engine.freeValue(function);
+    var args = [_]c.JSValue{value};
+    const settled = try engine.checked(c.JS_Call(engine.context, functions[0], c.pi_js_undefined(), 1, &args));
+    engine.freeValue(settled);
+    return pending;
 }
 pub fn rejectedPromise(engine: *Engine, err: anyerror) c.JSValue {
     _ = reject(engine, err);
@@ -349,6 +365,7 @@ fn memoryObjectWithMethods(engine: *Engine, own_methods: bool) !c.JSValue {
     return object;
 }
 pub fn install(engine: *Engine) !void {
+    if (engine.host_scheduler == null) if (engine.native_io) |io| try @import("timers.zig").install(engine, io);
     try @import("native_durable_context.zig").install(engine);
     if (engine.native_durable_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_class);
     const definition: c.JSClassDef = .{ .class_name = "Native durable object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
@@ -476,9 +493,28 @@ fn methods(engine: *Engine, target: c.JSValue, operations: []const Method) !void
 }
 fn createSession(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return sessionObject(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| reject(engine, err);
+    return createSessionOwned(engine, argv[0..@intCast(argc)]) catch |err| reject(engine, err);
+}
+fn createSessionOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
+    const options = argument(args, 1);
+    const absent = c.JS_IsUndefined(options) or c.JS_IsNull(options);
+    const selected = if (absent) c.pi_js_undefined() else try sdk.get(engine, options, "documentRetentionMs");
+    defer engine.freeValue(selected);
+    const supplied = if (absent) c.pi_js_undefined() else try sdk.get(engine, options, "now");
+    defer engine.freeValue(supplied);
+    const policy = @import("native_durable_document_retention.zig");
+    const clock = try policy.captureClock(engine, supplied);
+    defer engine.freeValue(clock);
+    const session_value = try sessionObjectWithClock(engine, argument(args, 0), clock, !c.JS_IsUndefined(supplied));
+    (try state(engine, session_value)).cache_policy.plain_ms = policy.duration(engine, selected);
+    return session_value;
 }
 pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
+    const clock = try @import("native_durable_document_retention.zig").captureClock(engine, c.pi_js_undefined());
+    defer engine.freeValue(clock);
+    return sessionObjectWithClock(engine, storage, clock, false);
+}
+pub fn sessionObjectWithClock(engine: *Engine, storage: c.JSValue, clock: c.JSValue, custom_clock: bool) !c.JSValue {
     // Even a base native Storage instance can gain an own method/getter or a
     // changed prototype method after this call. Defer all actual lookups to
     // invocation; never unwrap the public receiver into a bypass capability.
@@ -512,10 +548,22 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     _ = try native.subscribe(publication, self);
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
     if (c.JS_DefinePropertyValueStr(engine.context, result_object, "closed", c.JS_DupValue(engine.context, closed_promise), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    const cache_atom = c.JS_NewAtom(engine.context, "documentCacheSizes");
+    defer c.JS_FreeAtom(engine.context, cache_atom);
+    if (cache_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    const cache_getter = try engine.checked(c.JS_NewCFunction(engine.context, cacheSizesGetter, "get documentCacheSizes", 0));
+    if (c.JS_DefinePropertyGetSet(engine.context, result_object, cache_atom, cache_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     _ = c.JS_SetOpaque(result_object, self);
+    self.cache_policy.session = c.JS_DupValue(engine.context, result_object);
+    self.cache_policy.clock = c.JS_DupValue(engine.context, clock);
+    self.cache_policy.custom_clock = custom_clock;
     adapter.session = self;
     adapter.session_value = result_object;
     return result_object;
+}
+fn cacheSizesGetter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return @import("native_durable_document_retention.zig").sizes(engine, receiver) catch |err| reject(engine, err);
 }
 pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, parent: c.JSValue) !c.JSValue {
     const result_object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_class));
@@ -535,6 +583,16 @@ const CommitCall = struct {
     context: c.JSValue,
     drafts: ?*@import("native_durable_documents.zig").Drafts = null,
     transaction_value: ?c.JSValue = null,
+    fn after(raw: ?*anyopaque, success: bool) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const owner = try state(self.engine, self.receiver);
+        if (owner.before_document_settlement) |prepare| try prepare(owner.foreign_publication_context);
+        if (success) if (self.drafts) |drafts| drafts.adopt(self.receiver) catch |err| {
+            _ = owner.session.?.fail(err);
+            return err;
+        };
+        try @import("native_durable_document_retention.zig").sweepOnLine(owner);
+    }
     fn run(raw: ?*anyopaque, native: *session_module.Transaction, _: context_module.Context) !json.Value {
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         self.engine.native_exception_diagnostics_suppressed += 1;
@@ -562,6 +620,7 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     const self = state(engine, data[0]) catch |err| return reject(engine, err);
     if (operation == 1) {
         self.session.?.close();
+        @import("native_durable_documents.zig").closeCache(self);
         for (self.commit_listeners.items) |listener| engine.freeValue(listener);
         self.commit_listeners.clearRetainingCapacity();
         if (!c.JS_IsUndefined(data[4])) {
@@ -585,7 +644,7 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     var call: CommitCall = .{ .engine = engine, .change = data[1], .receiver = data[0], .returned = c.pi_js_undefined(), .context = data[2] };
     defer if (call.transaction_value) |value| engine.freeValue(value);
     const scope = if (c.JS_IsUndefined(data[3])) session_module.Scope{} else session_module.Scope{ .conversationId = number(engine, data[3]) catch |err| return reject(engine, err) };
-    var native_result = (self.session.?.tryCommit(CommitCall.run, &call, scope, .{}) catch |err| {
+    var native_result = (self.session.?.tryCommitWithAfter(CommitCall.run, &call, scope, .{}, .{ .callback = CommitCall.after, .context = &call }) catch |err| {
         engine.freeValue(call.returned);
         return reject(engine, err);
     }) orelse return @import("native_durable_storage.zig").deferCommit(engine, data[0..5]) catch |err| reject(engine, err);
@@ -624,7 +683,7 @@ fn queuedRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, 
     const scope = @import("native_durable_storage.zig").withContext(native, data[2]);
     defer scope.restore();
     var call: ReadCall = .{ .engine = engine, .callback = data[1], .returned = c.pi_js_undefined() };
-    var completed = (native.session.?.tryCommit(ReadCall.run, &call, .{}, .{}) catch |err| {
+    var completed = (native.session.?.tryRead(ReadCall.run, &call, .{}, .{}) catch |err| {
         engine.freeValue(call.returned);
         return reject(engine, err);
     }) orelse return @import("native_durable_storage.zig").deferRead(engine, data[0..5]) catch |err| reject(engine, err);
@@ -777,6 +836,7 @@ pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Metho
     self.tail = next;
     if (operation == .close) {
         self.closing = true;
+        @import("native_durable_document_retention.zig").stop(self);
         self.close_pending = c.JS_DupValue(engine.context, queued);
         @import("native_durable_tasks.zig").retireSession(engine, receiver);
     }
@@ -855,6 +915,10 @@ fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue,
 }
 fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: context_module.Context) !void {
     const self: *State = @ptrCast(@alignCast(raw.?));
+    // The facade's VM drafts were already adopted by after_storage. Raw
+    // scheduler/runtime operations instead adopt and touch through their
+    // original-line owner settlement; do not touch an unadopted tracker here.
+    if (std.Thread.getCurrentId() == self.owner_thread and self.publication_context != null) try @import("native_durable_documents.zig").touchPublication(self, event.changes);
     if (self.foreign_publication) |forward| return forward(self.foreign_publication_context, event);
     if (std.Thread.getCurrentId() != self.owner_thread) {
         return error.VMCallbackOnWorker;

@@ -643,6 +643,15 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-public-open-lifecycle", "Exercise public open continuation cleanup and reporter roots through every GPA failure").dependOn(&b.addRunArtifact(public_open_lifecycle_tests).step);
     const ea_inflight_index_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual ea inflight index"} });
     b.step("test-native-durable-ea-inflight-index", "Replay an actual Storage Promise gate and serialized read readiness").dependOn(&b.addRunArtifact(ea_inflight_index_tests).step);
+    const cdaf_retention_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf public document retention"} });
+    b.step("test-native-durable-cdaf-retention", "Replay latest Source public document retention and observer reload behavior").dependOn(&b.addRunArtifact(cdaf_retention_tests).step);
+    const cdaf_retention_phase_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{ "actual cdaf public document retention", "actual cdaf settings phase" } });
+    b.step("test-native-durable-cdaf-retention-phase", "Preserve public retention and compare actual Source getter phases and field order").dependOn(&b.addRunArtifact(cdaf_retention_phase_tests).step);
+    const cdaf_retention_pin_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf retention pins"} });
+    b.step("test-native-durable-cdaf-retention-pins", "Replay actual Source observer incarnation pins unload and held-transaction timer expiry").dependOn(&b.addRunArtifact(cdaf_retention_pin_tests).step);
+    const owner_settlement_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_owner_settlement_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "owner settlement", "document retention" } });
+    linkSqlite(owner_settlement_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-owner-settlement", "Verify original worker line ownership, reentrant close, operation order and document retention index").dependOn(&b.addRunArtifact(owner_settlement_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, ea_nested_tests.root_module, typescript_parser);

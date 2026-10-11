@@ -8,6 +8,7 @@ const owner_index = @import("../durable/ownership_index.zig");
 const session_mod = @import("../durable/session.zig");
 const backend = @import("../durable/backend/root.zig");
 const broker_mod = @import("native_durable_broker.zig");
+const settlement_mod = @import("../durable/owner_settlement.zig");
 const aborts = @import("abort_signal.zig");
 const json = backend.json;
 const c = engine_mod.c;
@@ -19,6 +20,10 @@ const Event = struct {
     seq: u64,
     changes: json.Owned,
     ready: bool = true,
+    cache_ready: bool = true,
+    cache_adopted: bool = false,
+    owner_public_commit: bool = false,
+    line_epoch: u32 = 0,
     index: ?owner_index.Index = null,
     fn deinit(self: *Event) void {
         self.changes.deinit();
@@ -93,6 +98,13 @@ pub const Manager = struct {
     snapshot: c.JSValue,
     scheduler: scheduling.Scheduler,
     broker: broker_mod.Broker,
+    settlement: ?settlement_mod.Channel = null,
+    native_owner: ?*durable.State = null,
+    settling_cache: bool = false,
+    settling_contexts: bool = false,
+    context_broker: ?broker_mod.Broker = null,
+    context_expiry: ?struct { at: f64, timer: c.JSValue, generation: u64 } = null,
+    next_context_expiry: u64 = 1,
     definitions: std.ArrayList(Definition) = .empty,
     ledger: std.ArrayList(*Entry) = .empty,
     events: std.ArrayList(Event) = .empty,
@@ -177,6 +189,15 @@ pub const Manager = struct {
             if (c.JS_IsUndefined(current)) self.scheduler.removeDefinition(name);
         }
     }
+    fn detachSettlement(self: *Manager) void {
+        if (self.native_owner) |native| {
+            if (native.session.?.owner_settlement) |hook| {
+                if (hook.context == @as(*anyopaque, @ptrCast(self))) native.session.?.owner_settlement = null;
+            }
+            if (native.foreign_publication_context == @as(*anyopaque, @ptrCast(self))) native.before_document_settlement = null;
+        }
+        self.native_owner = null;
+    }
     fn retain(self: *Manager) *Manager {
         _ = self.refs.fetchAdd(1, .monotonic);
         return self;
@@ -184,6 +205,9 @@ pub const Manager = struct {
     fn release(self: *Manager) void {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0 and self.first_phase == null and self.active_dispatches == 0);
+        self.detachSettlement();
+        if (self.settlement) |*channel| channel.deinit();
+        if (self.context_broker) |*owner| owner.deinit();
         self.task_aborts.deinit(self.engine);
         self.scheduler.deinit();
         self.abort_controls.deinit(self.engine);
@@ -326,6 +350,9 @@ pub const Manager = struct {
         var changes = try json.Owned.empty(std.heap.page_allocator);
         errdefer changes.deinit();
         changes.value = try json.clone(changes.arena.allocator(), event.changes);
+        const line_owner = self.lease.value.ownerThread.load(.acquire);
+        const epoch = self.lease.value.line_epoch.load(.acquire);
+        const owner_public = if (self.native_owner) |native| std.Thread.getCurrentId() == native.owner_thread and native.publication_context != null else false;
         self.mutex.lockUncancelable(self.lease.value.io);
         // Native Session runs internal observers before external subscribers.
         // Usually the scheduler has already prepared this exact sequence's
@@ -336,7 +363,7 @@ pub const Manager = struct {
             return error.PublicationOwnershipIndexSequenceMismatch;
         }
         const prepared = self.prepared_publication_index;
-        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
+        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or line_owner == 0, .cache_ready = line_owner == 0 or self.settlement == null, .owner_public_commit = owner_public, .line_epoch = epoch }) catch |err| {
             self.mutex.unlock(self.lease.value.io);
             return err;
         };
@@ -398,10 +425,11 @@ pub const Manager = struct {
     fn publicationPending(self: *Manager) bool {
         self.mutex.lockUncancelable(self.lease.value.io);
         defer self.mutex.unlock(self.lease.value.io);
-        return self.events.items.len != 0 and !self.events.items[0].ready;
+        return self.events.items.len != 0 and (!self.events.items[0].ready or !self.events.items[0].cache_ready);
     }
     pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (self.settling_cache) return;
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
             if (self.events.items.len == 0) {
@@ -409,7 +437,7 @@ pub const Manager = struct {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
-            if (!self.events.items[0].ready) {
+            if (!self.events.items[0].ready or !self.events.items[0].cache_ready) {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
@@ -417,13 +445,23 @@ pub const Manager = struct {
             self.mutex.unlock(self.lease.value.io);
             defer event.deinit();
             self.adoptIndex(&event.index);
-            try self.cachePublication(event.changes.value);
+            if (!event.cache_adopted) try self.cachePublication(event.changes.value) else {
+                try settlePublishedWaiters(self, false);
+                try self.settleContextsForPublication(event.changes.value);
+            }
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
-        try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
+        try self.cachePublicationWithDocuments(changes, true);
+        // Keep the original ownership-index readiness handshake. Reserved-line
+        // cache adoption precedes maintenance and must not settle idle waiters.
+        try settlePublishedWaiters(self, false);
+        try self.settleContextsForPublication(changes);
+    }
+    fn cachePublicationWithDocuments(self: *Manager, changes: json.Value, adopt_documents: bool) !void {
+        if (adopt_documents) try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
         for (changes.array.items) |change| {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
@@ -480,10 +518,72 @@ pub const Manager = struct {
             if (entry.found_existing) entry.value_ptr.deinit();
             entry.value_ptr.* = snapshot;
         }
-        // Source resolves its waiters while observing the committed publication,
-        // before finishing a phase aborts its invocation signal. A later poll
-        // cannot decide which of those already-ordered events won.
-        try settlePublishedWaiters(self, false);
+    }
+    fn afterOperation(raw: ?*anyopaque, success: bool) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        const native = self.native_owner.?;
+        const lease: settlement_mod.Lease = .{ .owner_generation = self.generation, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.lease.value.line_epoch.load(.acquire), .success = success };
+        if (lease.worker_thread == native.owner_thread) {
+            if (self.closed) return;
+            _ = self.retain();
+            defer self.release();
+            return self.settleReserved(lease);
+        }
+        // The worker reads only immutable binding fields and atomic lease
+        // values. Owner retirement closes the channel instead of racing closed.
+        self.settlement.?.call(lease) catch |err| {
+            if (err != error.OwnerSettlementClosed) return err;
+        };
+    }
+    fn prepareOwnerCommit(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        const native = self.native_owner.?;
+        if (std.Thread.getCurrentId() != native.owner_thread or self.lease.value.ownerThread.load(.acquire) != native.owner_thread) return error.OwnerCommitPreparationOutsideLine;
+        _ = self.retain();
+        defer self.release();
+        if (self.settling_cache) return error.ReentrantDocumentSettlement;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
+        const epoch = self.lease.value.line_epoch.load(.acquire);
+        for (self.events.items) |*event| if (event.line_epoch == epoch and !event.cache_adopted) {
+            self.adoptIndex(&event.index);
+            try self.cachePublicationWithDocuments(event.changes.value, false);
+            event.cache_adopted = true;
+        };
+    }
+    fn settleDispatch(raw: ?*anyopaque, lease: settlement_mod.Lease) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        try self.settleReserved(lease);
+    }
+    fn validateSettlement(self: *Manager, lease: settlement_mod.Lease) !void {
+        if (std.Thread.getCurrentId() != self.broker.owner or lease.owner_generation != self.generation or self.lease.value.ownerThread.load(.acquire) != lease.worker_thread or self.lease.value.line_epoch.load(.acquire) != lease.line_epoch) return error.StaleDocumentSettlementLease;
+    }
+    fn settleReserved(self: *Manager, lease: settlement_mod.Lease) !void {
+        try self.validateSettlement(lease);
+        if (self.settling_cache) return error.ReentrantDocumentSettlement;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
+        const native = self.native_owner.?;
+        const owner_public = lease.worker_thread == native.owner_thread and native.publication_context != null;
+        // This original line prevents another publisher from relocating events.
+        // No OS mutex is held while actual VM cache work/getters run.
+        if (!native.closing) {
+            if (!owner_public) {
+                for (self.events.items) |*event| if (event.line_epoch == lease.line_epoch and !event.cache_adopted) {
+                    self.adoptIndex(&event.index);
+                    try self.cachePublicationWithDocuments(event.changes.value, true);
+                    event.cache_adopted = true;
+                };
+                try @import("native_durable_document_retention.zig").sweepReserved(native);
+            }
+        }
+        try self.validateSettlement(lease);
+        self.mutex.lockUncancelable(self.lease.value.io);
+        for (self.events.items) |*event| if (event.line_epoch == lease.line_epoch) {
+            event.cache_adopted = true;
+            event.cache_ready = true;
+        };
+        self.mutex.unlock(self.lease.value.io);
     }
     fn clearLiveTaskRecords(self: *Manager) void {
         var records = self.live_task_records.valueIterator();
@@ -550,6 +650,144 @@ pub const Manager = struct {
             self.read_replies.appendAssumeCapacity(.{ .query = query, .record = record });
             self.mutex.unlock(self.lease.value.io);
         }
+    }
+    fn awaitScopeReads(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (std.Thread.getCurrentId() != self.broker.owner) return;
+        if (self.lease.value.ownerThread.load(.acquire) != self.broker.owner) return error.ScopeAwaitOutsideOriginalLine;
+        // A real intrinsic promise reaction represents Source's awaited
+        // asynchronous scope-read completion. The C stack, Transaction and
+        // original line remain reserved while other owner microtasks run.
+        const ready = try durable.resolvedPromise(self.engine, c.pi_js_undefined());
+        defer self.engine.freeValue(ready);
+        const pending = try self.engine.checked(c.JS_PromiseThen(self.engine.context, ready, c.pi_js_undefined(), c.pi_js_undefined()));
+        defer self.engine.freeValue(pending);
+        const value = try self.engine.awaitValue(pending);
+        self.engine.freeValue(value);
+    }
+    fn reconciledContexts(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (std.Thread.getCurrentId() == self.broker.owner) {
+            if (self.closed) return;
+            try Manager.deliver(self);
+            return self.settleIdleContexts();
+        }
+        // Reconciliation has released its Session line. This separate owner
+        // request carries no JS values and does not borrow a later line lease.
+        var response = self.context_broker.?.call(std.heap.page_allocator, .{ .owner_generation = self.generation, .task_id = 0, .invocation_generation = 0 }, .null, null) catch |err| {
+            if (err == error.OwnerBrokerClosed) return;
+            return err;
+        };
+        response.deinit();
+    }
+    fn contextDispatch(raw: ?*anyopaque, identity: broker_mod.Identity, _: json.Value, _: *const std.atomic.Value(bool)) !json.Owned {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (identity.owner_generation != self.generation or identity.task_id != 0 or identity.invocation_generation != 0) return error.StaleContextSettlementOwner;
+        if (!self.closed) {
+            try Manager.deliver(self);
+            try self.settleIdleContexts();
+        }
+        return json.Owned.empty(std.heap.page_allocator);
+    }
+    fn reportContextFailure(self: *Manager, err: anyerror) void {
+        _ = durable.reject(self.engine, err);
+        const reason = c.JS_GetException(self.engine.context);
+        defer self.engine.freeValue(reason);
+        const native = self.native_owner orelse return;
+        if (native.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(self.engine, harness, reason);
+    }
+    fn contextRetentionValue(self: *Manager) c.JSValue {
+        const value = @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options) catch |err| {
+            self.reportContextFailure(err);
+            return c.JS_NewInt32(self.engine.context, 0);
+        };
+        defer self.engine.freeValue(value);
+        return sdk.get(self.engine, value, "contextRetentionMs") catch |err| {
+            self.reportContextFailure(err);
+            return c.JS_NewInt32(self.engine.context, 0);
+        };
+    }
+    fn contextRetentionNumber(self: *Manager, value: c.JSValue) !f64 {
+        var number: f64 = 0;
+        if (c.JS_ToFloat64(self.engine.context, &number, value) < 0) {
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+        }
+        return number;
+    }
+    fn settleContextsForPublication(self: *Manager, changes: json.Value) !void {
+        for (changes.array.items) |change| if (std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) {
+            return self.settleIdleContexts();
+        };
+    }
+    fn settleIdleContexts(self: *Manager) !void {
+        if (self.closed or self.settling_contexts) return;
+        self.settling_contexts = true;
+        defer self.settling_contexts = false;
+        try settleWaitersMode(self, true);
+        try self.updateClock();
+        const now = Manager.nativeClock(self);
+        const retention = self.contextRetentionValue();
+        defer self.engine.freeValue(retention);
+        var contexts = self.contexts.iterator();
+        while (contexts.next()) |entry| if (entry.value_ptr.*) |*cached| {
+            const expired = if (cached.idle_since) |since| @as(f64, @floatFromInt(now - since)) >= try self.contextRetentionNumber(retention) else false;
+            if (expired) {
+                self.engine.freeValue(cached.view);
+                entry.value_ptr.* = null;
+            } else if (!try self.publishedIdle(entry.key_ptr.*)) {
+                cached.idle_since = null;
+            } else if (try self.contextRetentionNumber(retention) > 0) {
+                if (cached.idle_since == null) cached.idle_since = now;
+            } else {
+                self.engine.freeValue(cached.view);
+                entry.value_ptr.* = null;
+            }
+        };
+        // Source #settleIdle always asks #scheduleExpiry, including no contexts.
+        try self.scheduleContextExpiry();
+    }
+    fn stopContextExpiry(self: *Manager) void {
+        const expiry = self.context_expiry orelse return;
+        self.context_expiry = null;
+        defer self.engine.freeValue(expiry.timer);
+        if (ownerGlobal(self.engine, "clearTimeout", &.{expiry.timer})) |value| self.engine.freeValue(value) else |_| {}
+    }
+    fn scheduleContextExpiry(self: *Manager) !void {
+        const retention = self.contextRetentionValue();
+        defer self.engine.freeValue(retention);
+        var at: ?f64 = null;
+        var values = self.contexts.valueIterator();
+        while (values.next()) |slot| if (slot.*) |cached| if (cached.idle_since) |since| {
+            const candidate = @as(f64, @floatFromInt(since)) + try self.contextRetentionNumber(retention);
+            if (at == null or candidate < at.?) at = candidate;
+        };
+        if (self.context_expiry) |expiry| if (at != null and expiry.at == at.?) return;
+        self.stopContextExpiry();
+        if (at == null or self.closed) return;
+        const generation = self.next_context_expiry;
+        self.next_context_expiry +%= 1;
+        const owner_generation = try self.engine.checked(c.JS_NewBigUint64(self.engine.context, self.generation));
+        defer self.engine.freeValue(owner_generation);
+        const timer_generation = try self.engine.checked(c.JS_NewBigUint64(self.engine.context, generation));
+        defer self.engine.freeValue(timer_generation);
+        var data = [_]c.JSValue{ self.session, owner_generation, timer_generation };
+        const callback = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, contextExpiryReady, 0, 0, data.len, &data));
+        defer self.engine.freeValue(callback);
+        try self.updateClock();
+        const delay = @min(@max(@as(f64, 0), at.? - @as(f64, @floatFromInt(Manager.nativeClock(self)))), @as(f64, 2_147_483_647));
+        const timer = try ownerGlobal(self.engine, "setTimeout", &.{ callback, c.JS_NewFloat64(self.engine.context, delay) });
+        errdefer self.engine.freeValue(timer);
+        const unref = try sdk.get(self.engine, timer, "unref");
+        defer self.engine.freeValue(unref);
+        if (!c.JS_IsFunction(self.engine.context, unref)) {
+            const cleared = try ownerGlobal(self.engine, "clearTimeout", &.{timer});
+            self.engine.freeValue(cleared);
+            self.engine.freeValue(timer);
+            return;
+        }
+        const ignored = try self.engine.checked(c.JS_Call(self.engine.context, unref, timer, 0, null));
+        self.engine.freeValue(ignored);
+        self.context_expiry = .{ .at = at.?, .timer = timer, .generation = generation };
     }
     fn recoveredContext(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
@@ -841,6 +1079,9 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        if (self.settlement) |*channel| channel.close();
+        if (self.context_broker) |*owner| owner.close();
+        self.stopContextExpiry();
         self.clearLiveTaskRecords();
         if (durable.state(self.engine, self.session)) |native| {
             // Source's failed promise ends an already-observing abort join at
@@ -985,6 +1226,80 @@ fn schedulerMethodOwned(engine: *Engine, receiver: c.JSValue, operation: Schedul
         .open, .join, .abort, .inspect => return error.NativeTaskSchedulerMethodUnavailable,
     }
 }
+fn ownerGlobal(engine: *Engine, name: [:0]const u8, args: []const c.JSValue) !c.JSValue {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const function = try sdk.get(engine, global, name);
+    defer engine.freeValue(function);
+    return engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), @intCast(args.len), if (args.len == 0) null else @constCast(args.ptr)));
+}
+fn managerFromCaptures(engine: *Engine, data: []const c.JSValue) !*Manager {
+    const raw = engine.native_durable_control_context orelse return error.StaleTaskOwner;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    var generation: u64 = 0;
+    if (c.JS_ToBigUint64(engine.context, &generation, data[1]) < 0) return error.JavaScriptException;
+    for (owner.managers.items) |manager| if (manager.generation == generation and c.JS_IsStrictEqual(engine.context, manager.session, data[0])) return manager;
+    return error.StaleTaskOwner;
+}
+fn queueInitialReconcile(self: *Manager) !void {
+    const engine = self.engine;
+    const generation = try engine.checked(c.JS_NewBigUint64(engine.context, self.generation));
+    defer engine.freeValue(generation);
+    var data = [_]c.JSValue{ self.session, generation, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined() };
+    const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, initialReconcile, 0, 0, data.len, &data));
+    defer engine.freeValue(callback);
+    const queued = try ownerGlobal(engine, "queueMicrotask", &.{callback});
+    engine.freeValue(queued);
+}
+fn initialReconcile(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = managerFromCaptures(engine, data[0..5]) catch return c.pi_js_undefined();
+    if (self.closed) return c.pi_js_undefined();
+    const callback = engine.checked(c.JS_NewCFunctionData(engine.context, queuedReconcile, 0, 0, 5, data)) catch |err| return durable.reject(engine, err);
+    defer engine.freeValue(callback);
+    const pending = durable.enqueue(engine, self.session, callback) catch |err| return durable.reject(engine, err);
+    defer engine.freeValue(pending);
+    const failed = engine.checked(c.JS_NewCFunctionData(engine.context, reconcileFailed, 1, 0, 5, data)) catch |err| return durable.reject(engine, err);
+    defer engine.freeValue(failed);
+    const observed = engine.checked(c.JS_PromiseThen(engine.context, pending, c.pi_js_undefined(), failed)) catch |err| return durable.reject(engine, err);
+    engine.freeValue(observed);
+    return c.pi_js_undefined();
+}
+fn queuedReconcile(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return retryQueuedReconcile(Engine.fromContext(context.?), data[0..5]);
+}
+pub fn retryQueuedReconcile(engine: *Engine, data: []const c.JSValue) c.JSValue {
+    const self = managerFromCaptures(engine, data) catch return c.pi_js_undefined();
+    if (self.closed) return c.pi_js_undefined();
+    _ = self.retain();
+    defer self.release();
+    const complete = self.scheduler.tryReconcile() catch |err| return durable.reject(engine, err);
+    if (!complete) return @import("native_durable_storage.zig").deferSchedulerReconcile(engine, data) catch |err| durable.reject(engine, err);
+    return c.pi_js_undefined();
+}
+fn reconcileFailed(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = managerFromCaptures(engine, data[0..5]) catch return c.pi_js_undefined();
+    if (!self.closed and argc > 0) {
+        const native = durable.state(engine, self.session) catch return c.pi_js_undefined();
+        durable.captureStorageFailure(native, self.session, args[0]);
+        _ = native.session.?.fail(error.JavaScriptException);
+    }
+    return c.pi_js_undefined();
+}
+fn contextExpiryReady(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = managerFromCaptures(engine, data[0..3]) catch return c.pi_js_undefined();
+    if (self.closed) return c.pi_js_undefined();
+    var generation: u64 = 0;
+    if (c.JS_ToBigUint64(context, &generation, data[2]) < 0) return engine.throwCaptured();
+    const expiry = self.context_expiry orelse return c.pi_js_undefined();
+    if (expiry.generation != generation) return c.pi_js_undefined();
+    self.context_expiry = null;
+    engine.freeValue(expiry.timer);
+    self.settleIdleContexts() catch |err| return durable.reject(engine, err);
+    return c.pi_js_undefined();
+}
 const Hub = struct {
     engine: *Engine,
     managers: std.ArrayList(*Manager) = .empty,
@@ -993,14 +1308,23 @@ const Hub = struct {
         const self: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
         var worked = false;
         for (self.managers.items) |manager| {
+            if (manager.settling_cache or manager.settling_contexts) continue;
+            _ = manager.retain();
+            defer manager.release();
             if (!manager.closed) try manager.refreshRegistry();
             if (try manager.pollPhases()) worked = true;
+            if (manager.settlement) |*channel| if (try channel.drain(Manager.settleDispatch, manager)) {
+                worked = true;
+            };
             try Manager.deliver(manager);
             if (try manager.abort_controls.pump(manager)) worked = true;
             if (try manager.task_aborts.pump(manager)) worked = true;
             try Manager.deliver(manager);
             try manager.pollSignals();
             try manager.pollSleepers();
+            if (manager.context_broker) |*owner| {
+                if (try owner.drain(Manager.contextDispatch, manager)) worked = true;
+            }
             if (try manager.broker.drain(Manager.dispatch, manager)) worked = true;
             if (manager.thread != null and manager.finished.load(.acquire)) {
                 manager.thread.?.join();
@@ -1014,7 +1338,7 @@ const Hub = struct {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
-                if (!manager.events.items[0].ready) {
+                if (!manager.events.items[0].ready or !manager.events.items[0].cache_ready) {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
@@ -1022,7 +1346,10 @@ const Hub = struct {
                 manager.mutex.unlock(manager.lease.value.io);
                 defer event.deinit();
                 manager.adoptIndex(&event.index);
-                try manager.cachePublication(event.changes.value);
+                if (!event.cache_adopted) try manager.cachePublication(event.changes.value) else {
+                    try settlePublishedWaiters(manager, false);
+                    try manager.settleContextsForPublication(event.changes.value);
+                }
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
                 worked = true;
@@ -1055,6 +1382,7 @@ const Hub = struct {
             manager.mutex.unlock(manager.lease.value.io);
             manager.discardPhases();
             const session = durable.state(engine, manager.session) catch unreachable;
+            manager.detachSettlement();
             session.foreign_publication = null;
             session.foreign_publication_context = null;
             session.after_commit = null;
@@ -1183,16 +1511,23 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(registry);
     const snapshot = try sdk.invoke(engine, registry, "snapshot", &.{});
     errdefer engine.freeValue(snapshot);
-    const clock_callback = try sdk.get(engine, options, "now");
+    const clock_callback = if (native.cache_policy.custom_clock) c.JS_DupValue(engine.context, native.cache_policy.clock.?) else c.pi_js_undefined();
     errdefer engine.freeValue(clock_callback);
     const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
     var context_admitted = false;
     errdefer if (!context_admitted) engine.freeValue(scheduler_context);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .defer_initial_reconcile = true, .after_scope_reads = Manager.awaitScopeReads, .after_reconcile = Manager.reconciledContexts, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
+    self.native_owner = native;
+    self.settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
+    self.context_broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
     context_admitted = true;
     errdefer {
         self.closed = true;
+        self.detachSettlement();
+        self.settlement.?.deinit();
+        self.context_broker.?.deinit();
+        self.stopContextExpiry();
         self.clearLiveTaskRecords();
         self.live_task_records.deinit(engine.gpa);
         if (self.published_index) |*index| index.deinit();
@@ -1218,9 +1553,12 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     native.foreign_publication = Manager.forward;
     native.foreign_publication_context = self;
     native.after_commit = Manager.deliver;
+    native.before_document_settlement = Manager.prepareOwnerCommit;
+    native.session.?.owner_settlement = .{ .callback = Manager.afterOperation, .context = self };
     native.session.?.source_clock = Manager.nativeClock;
     native.session.?.source_clock_context = self;
     errdefer {
+        self.detachSettlement();
         native.foreign_publication = null;
         native.foreign_publication_context = null;
         native.after_commit = null;
@@ -1242,6 +1580,15 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
         if (table == .task) try self.cacheLiveTaskRecord(row.value_ptr.record);
     }
     owner.managers.appendAssumeCapacity(self);
+    // Source open awaits recovery, then schedules reconciliation without
+    // awaiting it. Its actual scope-read await retains the native line below.
+    queueInitialReconcile(self) catch |err| {
+        for (owner.managers.items, 0..) |manager, index| if (manager == self) {
+            _ = owner.managers.orderedRemove(index);
+            break;
+        };
+        return err;
+    };
 }
 fn loadDefinitions(self: *Manager) !void {
     const engine = self.engine;
@@ -1974,6 +2321,56 @@ test "native durable VM actual ea open failure cleanup preserves original cause 
         return error.SourceOpenFailureCleanupMismatch;
     }
 }
+test "native durable VM actual cdaf public document retention settings observer and reload semantics" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-cdaf-public-retention-program.txt"), "actual-cdaf-public-retention") catch |err| {
+        diagnoseSourceFailure(engine, "cdaf-public-retention", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "documentRetentionTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-cdaf-public-retention.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual cdaf public retention trace: {s}\n", .{encoded});
+        return error.SourceCdafPublicRetentionMismatch;
+    }
+}
+test "native durable VM actual cdaf retention pins survive unload retirement and real timer line ownership" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-cdaf-retention-pins-program.txt"), "actual-cdaf-retention-pins") catch |err| {
+        diagnoseSourceFailure(engine, "cdaf-public-retention", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "retentionPinsTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-cdaf-retention-pins.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual cdaf retention pins trace: {s}\n", .{encoded});
+        return error.SourceCdafRetentionPinsMismatch;
+    }
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
@@ -2442,34 +2839,17 @@ fn settleWaiters(self: *Manager) !void {
     return settlePublishedWaiters(self, true);
 }
 fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
-    // Scheduler.idle acquires the native Session line. A worker can be waiting
-    // for the owner to finish a transaction, so inspect only after it exits.
-    if (expire_contexts and self.thread == null and !self.closed and self.contexts.count() != 0) {
-        try self.updateClock();
-        const now = Manager.nativeClock(self);
-        const settings = try @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options);
-        defer self.engine.freeValue(settings);
-        const retention_value = try sdk.get(self.engine, settings, "contextRetentionMs");
-        defer self.engine.freeValue(retention_value);
-        var retention: f64 = 0;
-        if (c.JS_ToFloat64(self.engine.context, &retention, retention_value) < 0) return error.JavaScriptException;
-        var contexts = self.contexts.iterator();
-        while (contexts.next()) |entry| if (entry.value_ptr.*) |*cached| {
-            const expired = if (cached.idle_since) |since| @as(f64, @floatFromInt(now - since)) >= retention else false;
-            if (expired or (retention <= 0 and try self.scheduler.idle(entry.key_ptr.*))) {
-                self.engine.freeValue(cached.view);
-                entry.value_ptr.* = null;
-            } else if (!try self.scheduler.idle(entry.key_ptr.*)) {
-                cached.idle_since = null;
-            } else if (cached.idle_since == null) {
-                cached.idle_since = now;
-            }
-        };
-    }
+    // Context expiry runs only from actual reconciliation, task publication,
+    // or its own timer, never once per owner pump or ordinary waiter read.
+    _ = expire_contexts;
+    return settleWaitersMode(self, false);
+}
+fn settleWaitersMode(self: *Manager, idle_only: bool) !void {
     var index = self.waiters.items.len;
     while (index > 0) {
         index -= 1;
         const waiter = self.waiters.items[index];
+        if (idle_only and waiter.id != null) continue;
         var value = c.pi_js_undefined();
         var rejected = false;
         const signal = if (c.JS_IsUndefined(waiter.context) or c.JS_IsNull(waiter.context)) c.pi_js_undefined() else try sdk.get(self.engine, waiter.context, "abortSignal");
@@ -3673,5 +4053,31 @@ test "native durable VM actual ea inflight index follows real Storage gate and s
         defer std.testing.allocator.free(encoded);
         std.debug.print("Actual ea inflight index trace: {s}\n", .{encoded});
         return error.SourceInflightIndexMismatch;
+    }
+}
+
+test "native durable VM actual cdaf settings phase resolves Source field order after public open" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-cdaf-settings-phase-program.txt"), "actual-cdaf-settings-phase") catch |err| {
+        diagnoseSourceFailure(engine, "cdaf-settings-phase", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "settingsPhaseTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-cdaf-settings-phase-source.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual cdaf settings phase trace: {s}\n", .{encoded});
+        return error.SourceCdafSettingsPhaseMismatch;
     }
 }
