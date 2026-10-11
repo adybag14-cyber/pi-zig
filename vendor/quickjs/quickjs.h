@@ -784,6 +784,8 @@ JS_EXTERN JSValue JS_NewBigInt64(JSContext *ctx, int64_t v);
 JS_EXTERN JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
                                     JSValueConst left, JSValueConst right);
 JS_EXTERN JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value);
+/* Borrowed input, owned actual interpreter ToNumeric result. */
+JS_EXTERN JSValue JS_PiToNumeric(JSContext *ctx, JSValueConst value);
 JS_EXTERN JSValue JS_NewBigUint64(JSContext *ctx, uint64_t v);
 
 static inline bool JS_IsNumber(JSValueConst v)
@@ -1156,6 +1158,8 @@ typedef enum JSPromiseStateEnum {
 } JSPromiseStateEnum;
 
 JS_EXTERN JSValue JS_NewPromiseCapability(JSContext *ctx, JSValue *resolving_funcs);
+/* Borrowed input, owned intrinsic PromiseResolve result as used by await. */
+JS_EXTERN JSValue JS_PiPromiseResolve(JSContext *ctx, JSValueConst value);
 JS_EXTERN JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
                                 JSValueConst on_fulfilled,
                                 JSValueConst on_rejected);

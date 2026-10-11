@@ -14116,6 +14116,12 @@ static JSValue JS_ToNumeric(JSContext *ctx, JSValueConst val)
     return JS_ToNumericFree(ctx, js_dup(val));
 }
 
+/* Borrowed host input, owned actual interpreter ToNumeric result. */
+JSValue JS_PiToNumeric(JSContext *ctx, JSValueConst value)
+{
+    return JS_ToNumeric(ctx, value);
+}
+
 static __exception int __JS_ToFloat64Free(JSContext *ctx, double *pres,
                                           JSValue val)
 {
@@ -56220,6 +56226,12 @@ static JSValue js_promise_resolve(JSContext *ctx, JSValueConst this_val,
     }
     JS_FreeValue(ctx, ret);
     return result_promise;
+}
+
+/* Intrinsic PromiseResolve used by await, without mutable global lookup. */
+JSValue JS_PiPromiseResolve(JSContext *ctx, JSValueConst value)
+{
+    return js_promise_resolve(ctx, ctx->promise_ctor, 1, &value, 0);
 }
 
 static JSValue js_promise_withResolvers(JSContext *ctx, JSValueConst this_val,

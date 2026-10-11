@@ -1,0 +1,17 @@
+// Test-only reference programs use actual guest await, never host implementation.
+const OriginalPromise=Promise,marker={marker:true};
+async function guest(value){return await value}
+async function native(value){const resolved=nativeIntrinsicResolve(value);const continuation=nativeIntrinsicThen(resolved,value=>value,reason=>{throw reason});return await continuation}
+for(const kind of ['ordinary','different-constructor','constructor-throws','thenable','then-throws','primitive']){
+ const trace=[],reason={toString(){trace.push('reason.toString');return'forbidden diagnostic'}};
+ const make=()=>{
+  if(kind==='primitive')return 3n;
+  if(kind==='thenable'||kind==='then-throws'){const value={get then(){trace.push('thenable.get');if(kind==='then-throws')throw reason;return function(resolve){trace.push(['thenable.call',this===value]);resolve(marker)}}};return value}
+  const value=OriginalPromise.resolve(marker);Object.defineProperty(value,'constructor',{get(){trace.push('promise.constructor');if(kind==='constructor-throws')throw reason;return kind==='different-constructor'?function Different(){}:OriginalPromise}});Object.defineProperty(value,'then',{get(){trace.push('promise.then');return OriginalPromise.prototype.then}});return value;
+ };
+ let expected,actual,sourceError,nativeError;try{expected=await guest(make())}catch(error){sourceError=error}const before=trace.splice(0);try{actual=await native(make())}catch(error){nativeError=error}
+ if(expected!==actual||sourceError!==nativeError||JSON.stringify(before)!==JSON.stringify(trace))throw Error('intrinsic await mismatch '+kind+' '+JSON.stringify({before,trace}));
+ if(trace.includes('reason.toString'))throw Error('unexpected diagnostic conversion');
+}
+const borrowed=OriginalPromise.resolve(marker);if(nativeIntrinsicResolve(borrowed)!==borrowed)throw Error('intrinsic promise identity');if(await borrowed!==marker)throw Error('borrowed promise released');
+const savedGlobal=globalThis.Promise;globalThis.Promise=function FakePromise(){throw Error('mutable global Promise consulted')};try{if(await native(OriginalPromise.resolve(marker))!==marker)throw Error('intrinsic global mismatch')}finally{globalThis.Promise=savedGlobal}
