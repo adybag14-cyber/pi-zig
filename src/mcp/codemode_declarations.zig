@@ -50,6 +50,7 @@ const Context = struct {
     root: Value,
     resolving: std.StringHashMapUnmanaged(void) = .empty,
     expansions: usize = 0,
+    tags: bool = true,
     fn join(self: *Context, values: []const []const u8, separator: []const u8) ![]const u8 {
         return std.mem.join(self.a, separator, values);
     }
@@ -169,7 +170,7 @@ const Context = struct {
             };
             const key_text = if (validIdentifier(key)) key else try std.json.Stringify.valueAlloc(self.a, key, .{});
             try members.append(self.a, try std.fmt.allocPrint(self.a, "{s}{s}: {s};", .{ key_text, if (required) "" else "?", try self.render(value, depth + 1) }));
-            commented = commented or description(value).len > 0;
+            commented = commented or description(value).len > 0 or (self.tags and (try constraintTags(self.a, value)).len > 0);
         }
         if (object.get("additionalProperties")) |additional| {
             if (additional != .bool or additional.bool) try members.append(self.a, try std.fmt.allocPrint(self.a, "[key: string]: {s};", .{if (additional == .bool) "unknown" else try self.render(additional, depth + 1)}));
@@ -179,10 +180,16 @@ const Context = struct {
         var lines: std.ArrayList([]const u8) = .empty;
         try lines.append(self.a, "{");
         for (names, 0..) |key, index| {
-            var comments = std.mem.splitScalar(u8, description(properties.get(key).?), '\n');
+            const property = properties.get(key).?;
+            const normalized = try normalizeLineTerminators(self.a, description(property), false);
+            var comments = std.mem.splitScalar(u8, normalized, '\n');
             while (comments.next()) |line| {
                 const trimmed = trimJs(line);
                 if (trimmed.len > 0) try lines.append(self.a, try std.fmt.allocPrint(self.a, "  // {s}", .{trimmed}));
+            }
+            if (self.tags) {
+                const tags = try constraintTags(self.a, property);
+                if (tags.len > 0) try lines.append(self.a, try std.fmt.allocPrint(self.a, "  // {s}", .{tags}));
             }
             const indented = try std.mem.replaceOwned(u8, self.a, members.items[index], "\n", "\n  ");
             try lines.append(self.a, try std.fmt.allocPrint(self.a, "  {s}", .{indented}));
@@ -201,6 +208,132 @@ fn description(value: Value) []const u8 {
     if (value != .object) return "";
     const text = value.object.get("description") orelse return "";
     return if (text == .string) trimJs(text.string) else "";
+}
+fn jsLength(text: []const u8) !usize {
+    var count: usize = 0;
+    var iterator = (try std.unicode.Wtf8View.init(text)).iterator();
+    while (iterator.nextCodepoint()) |point| count += if (point > 0xffff) @as(usize, 2) else 1;
+    return count;
+}
+fn normalizeLineTerminators(a: std.mem.Allocator, text: []const u8, escape: bool) ![]const u8 {
+    var output: std.ArrayList(u8) = .empty;
+    var iterator = (try std.unicode.Wtf8View.init(text)).iterator();
+    while (iterator.nextCodepointSlice()) |slice| {
+        const point = try std.unicode.wtf8Decode(slice);
+        if (point == 10 or point == 13 or point == 0x2028 or point == 0x2029) {
+            if (escape) try output.appendSlice(a, try std.fmt.allocPrint(a, "\\u{x:0>4}", .{point})) else try output.append(a, '\n');
+        } else try output.appendSlice(a, slice);
+    }
+    return output.toOwnedSlice(a);
+}
+fn numeric(value: Value) ?f64 {
+    return switch (value) {
+        .integer => @floatFromInt(value.integer),
+        .float => value.float,
+        .number_string => std.fmt.parseFloat(f64, value.number_string) catch null,
+        else => null,
+    };
+}
+fn numberText(a: std.mem.Allocator, number: f64) ![]const u8 {
+    if (std.math.isNan(number)) return "NaN";
+    if (!std.math.isFinite(number)) return if (number < 0) "-Infinity" else "Infinity";
+    if (number == 0) return "0";
+    const magnitude = @abs(number);
+    if (magnitude >= 1e21 or magnitude < 1e-6) {
+        const scientific = try std.fmt.allocPrint(a, "{e}", .{number});
+        const at = std.mem.indexOfScalar(u8, scientific, 'e') orelse return scientific;
+        const exponent = try std.fmt.parseInt(i32, scientific[at + 1 ..], 10);
+        return std.fmt.allocPrint(a, "{s}e{s}{d}", .{ scientific[0..at], if (exponent >= 0) "+" else "", exponent });
+    }
+    return std.fmt.allocPrint(a, "{d}", .{number});
+}
+fn annotationJson(a: std.mem.Allocator, value: Value) anyerror![]const u8 {
+    if (numeric(value)) |number| return if (std.math.isFinite(number)) numberText(a, number) else "null";
+    if (value == .array) {
+        var parts: std.ArrayList([]const u8) = .empty;
+        for (value.array.items) |item| try parts.append(a, try annotationJson(a, item));
+        return std.fmt.allocPrint(a, "[{s}]", .{try std.mem.join(a, ",", parts.items)});
+    }
+    if (value == .object) {
+        var parts: std.ArrayList([]const u8) = .empty;
+        var iterator = value.object.iterator();
+        while (iterator.next()) |entry| try parts.append(a, try std.fmt.allocPrint(a, "{s}:{s}", .{ try std.json.Stringify.valueAlloc(a, entry.key_ptr.*, .{}), try annotationJson(a, entry.value_ptr.*) }));
+        return std.fmt.allocPrint(a, "{{{s}}}", .{try std.mem.join(a, ",", parts.items)});
+    }
+    return std.json.Stringify.valueAlloc(a, value, .{});
+}
+fn isIntegerType(value: ?Value) bool {
+    const item = value orelse return false;
+    if (item == .string) return std.mem.eql(u8, item.string, "integer");
+    if (item == .array) for (item.array.items) |entry| {
+        if (entry == .string and std.mem.eql(u8, entry.string, "integer")) return true;
+    };
+    return false;
+}
+fn constraintValue(schema: Value, key: []const u8) ?Value {
+    const exclusive = if (std.mem.eql(u8, key, "minimum") or std.mem.eql(u8, key, "exclusiveMinimum")) "exclusiveMinimum" else if (std.mem.eql(u8, key, "maximum") or std.mem.eql(u8, key, "exclusiveMaximum")) "exclusiveMaximum" else return schema.object.get(key);
+    if (schema.object.get(exclusive)) |flag| if (flag == .bool and flag.bool) {
+        if (std.mem.eql(u8, key, exclusive)) return schema.object.get(if (std.mem.eql(u8, exclusive, "exclusiveMinimum")) "minimum" else "maximum");
+        return null;
+    };
+    return schema.object.get(key);
+}
+fn constraintTags(a: std.mem.Allocator, property: Value) ![]const u8 {
+    if (property != .object) return "";
+    var schemas: [2]Value = .{ property, .null };
+    var count: usize = 1;
+    const variants = property.object.get("anyOf") orelse property.object.get("oneOf");
+    if (variants) |list| if (list == .array) {
+        var single: ?Value = null;
+        var nonnull: usize = 0;
+        for (list.array.items) |variant| {
+            const kind = if (variant == .object) variant.object.get("type") else null;
+            if (kind != null and kind.? == .string and std.mem.eql(u8, kind.?.string, "null")) continue;
+            nonnull += 1;
+            single = variant;
+        }
+        if (nonnull == 1 and single.? == .object) {
+            schemas[1] = single.?;
+            count = 2;
+        }
+    };
+    var tags: std.ArrayList([]const u8) = .empty;
+    for (schemas[0..count]) |schema| if (isIntegerType(schema.object.get("type"))) {
+        try tags.append(a, "@integer");
+        break;
+    };
+    for ([_][]const u8{ "minimum", "exclusiveMinimum", "maximum", "exclusiveMaximum", "multipleOf", "minLength", "maxLength", "pattern", "format", "minItems", "maxItems" }) |key| {
+        const lower = std.mem.eql(u8, key, "minimum") or std.mem.eql(u8, key, "exclusiveMinimum") or std.mem.eql(u8, key, "minLength") or std.mem.eql(u8, key, "minItems");
+        const upper = std.mem.eql(u8, key, "maximum") or std.mem.eql(u8, key, "exclusiveMaximum") or std.mem.eql(u8, key, "maxLength") or std.mem.eql(u8, key, "maxItems");
+        if (lower or upper) {
+            var bound: ?f64 = null;
+            for (schemas[0..count]) |schema| if (constraintValue(schema, key)) |value| if (numeric(value)) |number| {
+                bound = if (bound) |previous| if (lower) @max(previous, number) else @min(previous, number) else number;
+            };
+            if (bound) |number| try tags.append(a, try std.fmt.allocPrint(a, "@{s} {s}", .{ key, try numberText(a, number) }));
+        } else {
+            var previous: ?Value = null;
+            for (schemas[0..count]) |schema| if (constraintValue(schema, key)) |value| {
+                if (value != .string and numeric(value) == null) continue;
+                if (previous) |old| {
+                    if (old == .string and value == .string and std.mem.eql(u8, old.string, value.string)) continue;
+                    if (numeric(old) != null and numeric(value) != null and numeric(old).? == numeric(value).?) continue;
+                }
+                previous = value;
+                const text = if (value == .string) value.string else try numberText(a, numeric(value).?);
+                try tags.append(a, try std.fmt.allocPrint(a, "@{s} {s}", .{ key, text }));
+            };
+        }
+    }
+    for (schemas[0..count]) |schema| if (schema.object.get("uniqueItems")) |value| if (value == .bool and value.bool) {
+        try tags.append(a, "@uniqueItems");
+        break;
+    };
+    if (property.object.get("default")) |value| if (value != .null) try tags.append(a, try std.fmt.allocPrint(a, "@default {s}", .{try annotationJson(a, value)}));
+    if (property.object.get("deprecated")) |value| if (value == .bool and value.bool) try tags.append(a, "@deprecated");
+    var filtered: std.ArrayList([]const u8) = .empty;
+    for (tags.items) |tag| if (try jsLength(tag) <= 80) try filtered.append(a, try normalizeLineTerminators(a, tag, true));
+    return std.mem.join(a, " ", filtered.items);
 }
 pub fn trimJs(text: []const u8) []const u8 {
     var iterator = (std.unicode.Wtf8View.init(text) catch return text).iterator();
@@ -221,10 +354,12 @@ pub fn schemaToType(gpa: std.mem.Allocator, schema: Value, max_chars: ?usize) ![
     defer arena.deinit();
     var context: Context = .{ .a = arena.allocator(), .root = schema };
     const result = try context.render(schema, 0);
-    var characters: usize = 0;
-    var iterator = (try std.unicode.Wtf8View.init(result)).iterator();
-    while (iterator.nextCodepoint()) |point| characters += if (point > 0xffff) @as(usize, 2) else 1;
-    return gpa.dupe(u8, if (max_chars) |limit| if (characters > limit) "unknown" else result else result);
+    if (max_chars) |limit| if (try jsLength(result) > limit) {
+        var untagged: Context = .{ .a = arena.allocator(), .root = schema, .tags = false };
+        const fallback = try untagged.render(schema, 0);
+        return gpa.dupe(u8, if (try jsLength(fallback) > limit) "unknown" else fallback);
+    };
+    return gpa.dupe(u8, result);
 }
 pub fn sample(gpa: std.mem.Allocator, name: []const u8, text: []const u8, input: Value, output: ?Value) ![]u8 {
     const id = try discovery.identifier(gpa, name);
@@ -259,7 +394,18 @@ pub fn outputType(gpa: std.mem.Allocator, schema: ?Value) ![]u8 {
     };
     return schemaToType(gpa, schema orelse .null, null);
 }
-test "native codemode declaration schema and samples replay current original renderer" {
+test "native codemode declaration annotations match actual 8a9 original renderer" {
+    const gpa = std.testing.allocator;
+    const captured = try std.json.parseFromSlice(Value, gpa, @embedFile("fixtures/codemode-declarations-8a9.json"), .{});
+    defer captured.deinit();
+    for (captured.value.object.get("cases").?.array.items) |row| {
+        const limit = if (row.object.get("maxChars")) |value| @as(?usize, @intCast(value.integer)) else null;
+        const actual = try schemaToType(gpa, row.object.get("schema").?, limit);
+        defer gpa.free(actual);
+        try std.testing.expectEqualStrings(row.object.get("output").?.string, actual);
+    }
+}
+test "native codemode declaration schema and samples replay historical original renderer" {
     const gpa = std.testing.allocator;
     const captured = try std.json.parseFromSlice(Value, gpa, @embedFile("fixtures/codemode-declarations-original-6fb.json"), .{});
     defer captured.deinit();

@@ -1,0 +1,593 @@
+{
+  "upstream": "8a9c051f80090895abbc64262bc90d95b42103c4",
+  "cases": [
+    {
+      "name": "all-constraints",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1,
+            "exclusiveMinimum": 0,
+            "maximum": 10,
+            "exclusiveMaximum": 11,
+            "multipleOf": 2,
+            "default": 4,
+            "deprecated": true
+          },
+          "s": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8,
+            "pattern": "^[a-z]+$",
+            "format": "email"
+          },
+          "a": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "uniqueItems": true
+          }
+        }
+      },
+      "output": "{\n  // @minItems 1 @maxItems 5 @uniqueItems\n  a?: Array<string>;\n  // @integer @minimum 1 @exclusiveMinimum 0 @maximum 10 @exclusiveMaximum 11 @multipleOf 2 @default 4 @deprecated\n  n?: number;\n  // @minLength 1 @maxLength 8 @pattern ^[a-z]+$ @format email\n  s?: string;\n}"
+    },
+    {
+      "name": "optional-merge",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 10,
+                "maximum": 50,
+                "format": "int32"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "minimum": 0,
+            "maximum": 20,
+            "format": "port",
+            "default": null
+          }
+        }
+      },
+      "output": "{\n  // @integer @minimum 10 @maximum 20 @format port @format int32\n  n?: number | null;\n}"
+    },
+    {
+      "name": "draft04",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "maximum": 10,
+            "exclusiveMaximum": false
+          },
+          "m": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 5,
+                "exclusiveMaximum": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "maximum": 8
+          }
+        }
+      },
+      "output": "{\n  // @maximum 8 @exclusiveMaximum 5\n  m?: number | null;\n  // @integer @exclusiveMinimum 0 @maximum 10\n  n?: number;\n}"
+    },
+    {
+      "name": "line-escapes",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "sep": {
+            "type": "string",
+            "pattern": "^[\r\n  ]$",
+            "default": " ",
+            "description": "a b\rb\nc"
+          }
+        }
+      },
+      "output": "{\n  // a\n  // b\n  // b\n  // c\n  // @pattern ^[\\u000d\\u000a\\u2028\\u2029]$ @default \"\\u2028\"\n  sep?: string;\n}"
+    },
+    {
+      "name": "long-tags",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "default": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "m": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "default": false
+          }
+        }
+      },
+      "output": "{\n  // @pattern xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx @default false\n  m?: string;\n  n?: string;\n}"
+    },
+    {
+      "name": "budget-undefined",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "output": "{\n  // @integer @minimum 1\n  n?: number;\n}"
+    },
+    {
+      "name": "budget-20",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "maxChars": 20,
+      "output": "{ n?: number; }"
+    },
+    {
+      "name": "budget-10",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "maxChars": 10,
+      "output": "unknown"
+    },
+    {
+      "name": "budget-0",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "maxChars": 0,
+      "output": "unknown"
+    },
+    {
+      "name": "type-array",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "minimum": 3
+          },
+          "s": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "date"
+          },
+          "multi": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "number",
+                "maximum": 5
+              }
+            ],
+            "minimum": 0
+          }
+        }
+      },
+      "output": "{\n  // @minimum 0\n  multi?: number;\n  // @integer @minimum 3\n  n?: null | number;\n  // @format date\n  s?: string | null;\n}"
+    },
+    {
+      "name": "annotations",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "f": {
+            "default": false
+          },
+          "z": {
+            "default": 0
+          },
+          "a": {
+            "default": []
+          },
+          "o": {
+            "default": {
+              "z": 1,
+              "a": 2
+            }
+          },
+          "n": {
+            "default": null
+          },
+          "ref": {
+            "$ref": "#/$defs/X",
+            "minimum": 3
+          }
+        },
+        "$defs": {
+          "X": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "output": "{\n  // @default []\n  a?: unknown;\n  // @default false\n  f?: unknown;\n  n?: unknown;\n  // @default {\"z\":1,\"a\":2}\n  o?: unknown;\n  // @minimum 3\n  ref?: number;\n  // @default 0\n  z?: unknown;\n}"
+    },
+    {
+      "name": "tag-width-70",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{\n  // @pattern xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n  s?: string;\n}"
+    },
+    {
+      "name": "tag-width-71",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{\n  // @pattern xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n  s?: string;\n}"
+    },
+    {
+      "name": "tag-width-72",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-73",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-74",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-75",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-76",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-77",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-78",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-79",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-80",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "tag-width-81",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "numeric-1e+21",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 1e+21,
+            "multipleOf": 1e+21,
+            "default": {
+              "value": 1e+21
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 1e+21 @multipleOf 1e+21 @default {\"value\":1e+21}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-100000000000000000000",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 100000000000000000000,
+            "multipleOf": 100000000000000000000,
+            "default": {
+              "value": 100000000000000000000
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 100000000000000000000 @multipleOf 100000000000000000000 @default {\"value\":100000000000000000000}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-0.000001",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 0.000001,
+            "multipleOf": 0.000001,
+            "default": {
+              "value": 0.000001
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 0.000001 @multipleOf 0.000001 @default {\"value\":0.000001}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-1e-7",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 1e-7,
+            "multipleOf": 1e-7,
+            "default": {
+              "value": 1e-7
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 1e-7 @multipleOf 1e-7 @default {\"value\":1e-7}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-0.1",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 0.1,
+            "multipleOf": 0.1,
+            "default": {
+              "value": 0.1
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 0.1 @multipleOf 0.1 @default {\"value\":0.1}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-0",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 0,
+            "multipleOf": 0,
+            "default": {
+              "value": 0
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 0 @multipleOf 0 @default {\"value\":0}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-5e-324",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 5e-324,
+            "multipleOf": 5e-324,
+            "default": {
+              "value": 5e-324
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 5e-324 @multipleOf 5e-324 @default {\"value\":5e-324}\n  n?: number;\n}"
+    },
+    {
+      "name": "numeric-1.7976931348623157e+308",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number",
+            "minimum": 1.7976931348623157e+308,
+            "multipleOf": 1.7976931348623157e+308,
+            "default": {
+              "value": 1.7976931348623157e+308
+            }
+          }
+        }
+      },
+      "output": "{\n  // @minimum 1.7976931348623157e+308 @multipleOf 1.7976931348623157e+308 @default {\"value\":1.7976931348623157e+308}\n  n?: number;\n}"
+    },
+    {
+      "name": "unicode-width-35",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+          }
+        }
+      },
+      "output": "{\n  // @pattern 😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\n  s?: string;\n}"
+    },
+    {
+      "name": "unicode-width-36",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    },
+    {
+      "name": "unicode-width-37",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "s": {
+            "type": "string",
+            "pattern": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+          }
+        }
+      },
+      "output": "{ s?: string; }"
+    }
+  ]
+}
