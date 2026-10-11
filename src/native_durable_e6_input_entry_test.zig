@@ -11,7 +11,6 @@ test "native durable actual e6 input entry public contract uses a genuinely held
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try durable.install(engine);
-    try @import("extensions/timers.zig").install(engine, std.testing.io);
     try @import("extensions/text_decoder.zig").install(engine);
     const result = engine.evalModule(@embedFile("durable/fixtures/durable-e6-input-entry-program.txt"), "actual-e6-input-entry-public") catch |err| {
         std.debug.print("Actual e6 input entry {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
