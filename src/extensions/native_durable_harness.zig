@@ -568,7 +568,7 @@ fn publicOpenLifecycleExercise(gpa: std.mem.Allocator) !void {
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try durable.install(engine);
-    try @import("abort_signal.zig").install(engine);
+    if (engine.abort_signal_class == 0) try @import("abort_signal.zig").install(engine);
     const generation = engine.native_allocation_generation;
     const result = engine.evalModule(
         \\import{Harness,MemoryStorage}from'@earendil-works/pi-durable';
