@@ -1,0 +1,432 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "reserved-first",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": "custom",
+            "tag": "b",
+            "sameA": false,
+            "sameB": true,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping."
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping.",
+          "path": "reserved.ext"
+        },
+        {
+          "type": "warning",
+          "message": "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext.",
+          "path": "second.ext"
+        }
+      ]
+    },
+    {
+      "id": "reserved-last",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": "custom",
+            "tag": "b",
+            "sameA": false,
+            "sameB": true,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping."
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping.",
+          "path": "reserved.ext"
+        },
+        {
+          "type": "warning",
+          "message": "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext.",
+          "path": "second.ext"
+        }
+      ]
+    },
+    {
+      "id": "extension-conflict",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": "custom",
+            "tag": "b",
+            "sameA": false,
+            "sameB": true,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping."
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping.",
+          "path": "reserved.ext"
+        },
+        {
+          "type": "warning",
+          "message": "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext.",
+          "path": "second.ext"
+        }
+      ]
+    },
+    {
+      "id": "warnings-throw",
+      "outcome": {
+        "identity": true
+      },
+      "events": [
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping.",
+          "path": "reserved.ext"
+        }
+      ]
+    },
+    {
+      "id": "normalized-object",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": {
+              "normalized": true
+            },
+            "tag": "a",
+            "sameA": true,
+            "sameB": false,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        "key.lower.get",
+        [
+          "key.lower.call",
+          true,
+          0
+        ],
+        [
+          "normalized.coerce",
+          "string"
+        ],
+        [
+          "normalized.coerce",
+          "string"
+        ],
+        "key.lower.get",
+        [
+          "key.lower.call",
+          true,
+          0
+        ],
+        [
+          "normalized.coerce",
+          "string"
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut conflict: '[object Object]' is built-in shortcut for custom and first.ext. Using first.ext."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut conflict: '[object Object]' is built-in shortcut for custom and first.ext. Using first.ext.",
+          "path": "first.ext"
+        }
+      ]
+    },
+    {
+      "id": "diagnostic-accessors",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": "custom",
+            "tag": "b",
+            "sameA": false,
+            "sameB": true,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        [
+          "diagnostics.set",
+          true,
+          0
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        [
+          "path.get",
+          "r"
+        ],
+        "diagnostics.get",
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping."
+        ],
+        [
+          "path.get",
+          "a"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        [
+          "path.get",
+          "b"
+        ],
+        "diagnostics.get",
+        [
+          "hasUI",
+          true
+        ],
+        [
+          "warn",
+          true,
+          "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext."
+        ]
+      ],
+      "diagnostics": [
+        {
+          "type": "warning",
+          "message": "Extension shortcut 'Ctrl+C' from reserved.ext conflicts with built-in shortcut. Skipping.",
+          "path": "reserved.ext"
+        },
+        {
+          "type": "warning",
+          "message": "Extension shortcut conflict: 'CUSTOM' registered by both first.ext and second.ext. Using second.ext.",
+          "path": "second.ext"
+        }
+      ]
+    },
+    {
+      "id": "pair-iterator",
+      "outcome": {
+        "map": true,
+        "entries": [
+          {
+            "key": "custom",
+            "tag": "a",
+            "sameA": true,
+            "sameB": false,
+            "sameReserved": false
+          }
+        ]
+      },
+      "events": [
+        "pair.start",
+        "pair.close"
+      ],
+      "diagnostics": []
+    },
+    {
+      "id": "invalid-key",
+      "outcome": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "key.toLowerCase is not a function"
+      },
+      "events": [],
+      "diagnostics": []
+    }
+  ]
+}
