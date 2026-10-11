@@ -1,0 +1,100 @@
+name: Native image API candidate diagnostics
+
+on:
+  push:
+    branches: [work/native-image-api-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-image-api-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  platform-debug:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact diagnostic head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Install exact Zig release
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2
+        with:
+          version: 0.16.0
+          use-cache: false
+
+      - name: Record source, tool, and complete tracked inputs
+        shell: pwsh
+        env:
+          IMAGE_EXPECTED_HEAD: ${{ github.sha }}
+          IMAGE_RUN_ID: ${{ github.run_id }}
+          IMAGE_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceiptDir = 'verification/native-image-api-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          $taskHead = (git rev-parse HEAD).Trim()
+          if ($taskHead -cne $env:IMAGE_EXPECTED_HEAD) { throw 'Checkout does not match the pushed diagnostic head' }
+          $taskVersion = (& zig version).Trim()
+          if ($taskVersion -cne '0.16.0') { throw "Unexpected Zig release: $taskVersion" }
+          $taskZig = (Get-Command zig).Source
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_ -Force).Length; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskReceiptDir/inputs-before.json"
+          [ordered]@{
+            head = $taskHead; tree = (git rev-parse 'HEAD^{tree}').Trim()
+            zig_version = $taskVersion; zig_path = $taskZig; zig_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskZig).Hash
+            run_id = $env:IMAGE_RUN_ID; run_attempt = $env:IMAGE_RUN_ATTEMPT
+            os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+            input_count = $taskInputs.Count; input_manifest_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath "$taskReceiptDir/inputs-before.json").Hash
+            recorded_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            scope = 'Native image API candidate Debug diagnostic only; actual Source results, worker VM and owner Promise. Full public image API and Pi parity remain incomplete.'
+          } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/source-tool.json"
+
+      - name: Replay actual native image worker and Source API cases
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskStarted = [DateTimeOffset]::UtcNow.ToString('o')
+          & zig build test-native-binary-operators test-native-image-options test-native-image-js-strategy -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-image-api-diagnostics/build.log'
+          $taskExitCode = $LASTEXITCODE
+          [ordered]@{ exit_code = $taskExitCode; started_utc = $taskStarted; completed_utc = [DateTimeOffset]::UtcNow.ToString('o'); optimize = 'Debug'; jobs = 1; per_test_timeout = '120s' } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-image-api-diagnostics/build-result.json'
+          if ($taskExitCode -ne 0) { exit $taskExitCode }
+
+      - name: Preserve posthashes and exact executable identity
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceiptDir = 'verification/native-image-api-diagnostics'
+          New-Item -ItemType Directory -Path $taskReceiptDir -Force | Out-Null
+          if (Test-Path -LiteralPath "$taskReceiptDir/inputs-before.json") {
+            $taskInputs = @(Get-Content -Raw -LiteralPath "$taskReceiptDir/inputs-before.json" | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -Algorithm SHA256 -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ head = (git rev-parse HEAD).Trim(); input_count = $taskInputs.Count; drift = $taskDrift; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskReceiptDir/posthash.json"
+            if ($taskDrift.Count -ne 0) { throw 'Compiled tracked source changed during diagnostic execution' }
+          }
+          git status --short | Set-Content -LiteralPath "$taskReceiptDir/git-status.txt"
+
+      - name: Upload exact image candidate diagnostic receipts and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-image-api-${{ matrix.os }}-debug-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: |
+            verification/native-image-api-diagnostics/**
+            .github/workflows/native-image-api-diagnostics.yml
+            vendor/photon-native/SESSION-ADAPTERS.json
