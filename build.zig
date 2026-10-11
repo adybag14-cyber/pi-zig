@@ -199,6 +199,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, image_option_tests.root_module, quickjs, sqlite_lib_dir);
     image_option_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-image-options", "Preserve Source option cloning spread order and fallback getter identity").dependOn(&b.addRunArtifact(image_option_tests).step);
+    const native_binary_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_binary_operator_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native binary operators"} });
+    linkQuickJs(b, native_binary_tests.root_module, quickjs, sqlite_lib_dir);
+    native_binary_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-binary-operators", "Use actual guest runtime arithmetic and comparison semantics in native algorithms").dependOn(&b.addRunArtifact(native_binary_tests).step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
     process_stdio_tests.root_module.addImport("catalog_tool", catalog_tool);
