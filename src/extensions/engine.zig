@@ -931,7 +931,7 @@ test "native allocation original identity tags allocate nothing under exhausted 
     defer engine.deinit();
     _ = engine.throwNativeOutOfMemory();
     const first = c.JS_GetException(engine.context);
-    const weak_arguments = [_]c.JSValue{first};
+    var weak_arguments = [_]c.JSValue{first};
     const weak = try engine.checked(c.JS_CallConstructor(engine.context, engine.native_weak_ref_constructor.?, 1, &weak_arguments));
     defer engine.freeValue(weak);
     _ = engine.throwNativeOutOfMemory();
