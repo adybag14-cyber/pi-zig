@@ -16,7 +16,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
     try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
     const result = engine.evalModule(
         \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
-        \\const missing=['emitBoundary','emitUserBash','emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
+        \\const missing=['emitBoundary','emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
         \\if(sdkMethodSource.methods.length!==50)throw Error('Source method inventory');
         \\for(const expected of sdkMethodSource.methods){const descriptor=Object.getOwnPropertyDescriptor(ExtensionRunner.prototype,expected.name);
         \\ if(missing.includes(expected.name)){if(descriptor!==undefined)throw Error('unqualified method inventory changed');absent++;continue}
@@ -24,7 +24,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
         \\ const actual={name:fn.name,arity:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String),descriptor:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable}};
         \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));implemented++;
         \\}
-        \\if(implemented!==46||absent!==4)throw Error('partial native method inventory');
+        \\if(implemented!==47||absent!==3)throw Error('partial native method inventory');
     , "sdk-method-metadata-native") catch |err| {
         std.debug.print("SDK method metadata: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
@@ -769,6 +769,118 @@ test "native SDK queue order PUBLIC eight real async reducers preserve all fourt
     // The nine original Source cases for boundary/userBash/context/agentStart
     // remain immutable in the capture. Their four bodies are still absent.
     const cleared = try engine.eval("delete globalThis.sdkRunnerReducerRows", "sdk-public-reducers-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC user bash exact validation getters report and rethrow match eighteen Source539 cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-user-bash-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-user-bash-549.input.txt"), "sdk-public-user-bash.mjs") catch |err| {
+        std.debug.print("SDK Source539 PUBLIC user bash setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerUserBashRows", "sdk-public-user-bash-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-user-bash-source-539.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 18), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        try std.testing.expectEqual(@as(usize, 4), source.object.count());
+        try std.testing.expectEqual(source.object.count(), observed.object.count());
+        inline for (.{ "id", "outcome", "events" }) |field| {
+            if (!json.equal(source.object.get(field).?, observed.object.get(field).?)) std.debug.print("SDK Source539 complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+        }
+        const wanted_errors = source.object.get("errors").?.array.items;
+        const found_errors = observed.object.get("errors").?.array.items;
+        try std.testing.expectEqual(wanted_errors.len, found_errors.len);
+        for (wanted_errors, found_errors) |wanted, found| {
+            if (wanted.object.get("stack")) |stack| {
+                try std.testing.expectEqual(@as(usize, 5), wanted.object.count());
+                try std.testing.expectEqual(wanted.object.count(), found.object.count());
+                inline for (.{ "extensionPath", "event", "error", "ownKeys" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+                // Preserve the original Node-generated Error stack verbatim in
+                // the fixture. Runtime frame text is not portable; both actual
+                // engines must still produce a nonempty string at the same key.
+                try std.testing.expect(stack == .string and stack.string.len > 0);
+                const observed_stack = found.object.get("stack").?;
+                try std.testing.expect(observed_stack == .string and observed_stack.string.len > 0);
+            } else {
+                try std.testing.expect(json.equal(wanted, found));
+            }
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerUserBashRows", "sdk-public-user-bash-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC user bash preserves three original Source535 foundation cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-user-bash-foundation-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-user-bash-foundation-550.input.txt"), "sdk-public-user-bash-foundation.mjs") catch |err| {
+        std.debug.print("SDK Source535 PUBLIC user bash foundation: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerUserBashFoundationRows", "sdk-public-user-bash-foundation-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-535.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 23), rows.len);
+    try std.testing.expectEqual(@as(usize, 3), actual.value.array.items.len);
+    var index: usize = 0;
+    for (rows) |source| {
+        if (!std.mem.eql(u8, source.object.get("method").?.string, "emitUserBash")) continue;
+        try std.testing.expect(index < actual.value.array.items.len);
+        const observed = actual.value.array.items[index];
+        try std.testing.expectEqual(@as(usize, 5), source.object.count());
+        try std.testing.expectEqual(source.object.count(), observed.object.count());
+        inline for (.{ "id", "method", "outcome", "events" }) |field| {
+            if (!json.equal(source.object.get(field).?, observed.object.get(field).?)) std.debug.print("SDK Source535 user bash complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+        }
+        const wanted_errors = source.object.get("errors").?.array.items;
+        const found_errors = observed.object.get("errors").?.array.items;
+        try std.testing.expectEqual(wanted_errors.len, found_errors.len);
+        for (wanted_errors, found_errors) |wanted, found| {
+            try std.testing.expectEqual(@as(usize, 5), wanted.object.count());
+            try std.testing.expectEqual(wanted.object.count(), found.object.count());
+            inline for (.{ "extensionPath", "event", "error", "ownKeys" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+            // Generated engine stack frames differ, with every other field and
+            // the stack key, type and nonempty presence still checked.
+            const wanted_stack = wanted.object.get("stack").?;
+            const found_stack = found.object.get("stack").?;
+            try std.testing.expect(wanted_stack == .string and wanted_stack.string.len > 0);
+            try std.testing.expect(found_stack == .string and found_stack.string.len > 0);
+        }
+        index += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 3), index);
+    const cleared = try engine.eval("delete globalThis.sdkRunnerUserBashFoundationRows", "sdk-public-user-bash-foundation-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }

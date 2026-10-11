@@ -7,7 +7,7 @@ const js = @import("native_js_values.zig");
 const c = em.c;
 const reducers = @import("native_sdk_public_runner_reducers.zig");
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
-pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input };
+pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash };
 pub const Root = enum { runner, event, context, extension, result, resolve, reject, parameter0, parameter1, parameter2, parameter3, current, aux, aux2 };
 pub const State = struct {
     allocator: std.mem.Allocator,
@@ -258,6 +258,15 @@ fn instanceOfError(engine: *em.Engine, reason: c.JSValue) !bool {
     return result != 0;
 }
 fn report(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
+    try reportValue(engine, retained, reason);
+    // user_bash reports the exact failure and then rejects with that original
+    // value. A throwing listener replaces it before this point is reached.
+    if (retained.kind == .user_bash) {
+        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+        return js.capture(engine);
+    }
+}
+fn reportValue(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     if (retained.kind == .cache or retained.kind == .input) return reportInline(engine, retained, reason);
     const message = try errorMessage(engine, reason);
     defer engine.freeValue(message);

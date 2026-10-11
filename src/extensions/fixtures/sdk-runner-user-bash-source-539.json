@@ -1,0 +1,717 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "undefined",
+      "outcome": {
+        "sameCandidate": false,
+        "sameFallback": true,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "second",
+          true,
+          true
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "null",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "false",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "function",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "both",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations-null",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations-valid",
+      "outcome": {
+        "sameCandidate": true,
+        "sameFallback": false,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "operations-getters",
+      "outcome": {
+        "sameCandidate": true,
+        "sameFallback": false,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "candidate.operations",
+        "candidate.result",
+        "candidate.operations",
+        "operations.exec"
+      ],
+      "errors": []
+    },
+    {
+      "id": "operations-exec-throws",
+      "outcome": {
+        "identity": true,
+        "listenerIdentity": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "candidate.operations",
+        "candidate.result",
+        "candidate.operations",
+        "operations.exec",
+        "marker.toString",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "result-valid",
+      "outcome": {
+        "sameCandidate": true,
+        "sameFallback": false,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "result-missing-exit",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "result-inherited-exit",
+      "outcome": {
+        "sameCandidate": true,
+        "sameFallback": false,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "result-getters",
+      "outcome": {
+        "sameCandidate": true,
+        "sameFallback": false,
+        "undefined": false
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "candidate.operations",
+        "candidate.result",
+        "candidate.result",
+        [
+          "result.get",
+          "output",
+          1
+        ],
+        [
+          "result.has",
+          "exitCode"
+        ],
+        [
+          "result.get",
+          "exitCode",
+          1
+        ],
+        [
+          "result.get",
+          "exitCode",
+          2
+        ],
+        [
+          "result.get",
+          "cancelled",
+          1
+        ],
+        [
+          "result.get",
+          "truncated",
+          1
+        ],
+        [
+          "result.get",
+          "fullOutputPath",
+          1
+        ],
+        [
+          "result.get",
+          "fullOutputPath",
+          2
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "result-change-exit",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "candidate.operations",
+        "candidate.result",
+        "candidate.result",
+        [
+          "result.get",
+          "output",
+          1
+        ],
+        [
+          "result.has",
+          "exitCode"
+        ],
+        [
+          "result.get",
+          "exitCode",
+          1
+        ],
+        [
+          "result.get",
+          "exitCode",
+          2
+        ],
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "result-change-path",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "candidate.operations",
+        "candidate.result",
+        "candidate.result",
+        [
+          "result.get",
+          "output",
+          1
+        ],
+        [
+          "result.has",
+          "exitCode"
+        ],
+        [
+          "result.get",
+          "exitCode",
+          1
+        ],
+        [
+          "result.get",
+          "exitCode",
+          2
+        ],
+        [
+          "result.get",
+          "cancelled",
+          1
+        ],
+        [
+          "result.get",
+          "truncated",
+          1
+        ],
+        [
+          "result.get",
+          "fullOutputPath",
+          1
+        ],
+        [
+          "result.get",
+          "fullOutputPath",
+          2
+        ],
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "result-invalid-booleans",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": false,
+        "name": "Error",
+        "message": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object"
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listener-throws",
+      "outcome": {
+        "identity": false,
+        "listenerIdentity": true
+      },
+      "events": [
+        "context.create",
+        [
+          "first",
+          true,
+          true,
+          "user_bash"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "user-bash.ext",
+          "event": "user_bash",
+          "error": "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object",
+          "stack": "Error: Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object\n    at ExtensionRunner.emitUserBash (file:///C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/extensions/runner.js:982:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/capture-sdk-runner-user-bash-source-539.mjs:19:148",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    }
+  ]
+}

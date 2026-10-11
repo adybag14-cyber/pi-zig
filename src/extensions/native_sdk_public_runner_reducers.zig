@@ -26,7 +26,7 @@ pub fn initialize(engine: *em.Engine, retained: *State) !void {
         .tool_result => retained.replace(engine, .current, try js.spread(engine, original)),
         .request, .headers, .input => retained.replace(engine, .current, c.JS_DupValue(engine.context, original)),
         .resources => retained.replace(engine, .current, try sdk.array(engine)),
-        .tool_call => {},
+        .tool_call, .user_bash => {},
         .generic => unreachable,
     }
     if (retained.kind == .input) retained.replace(engine, .aux, c.JS_DupValue(engine.context, retained.get(.parameter1)));
@@ -44,6 +44,7 @@ pub fn typeName(kind: dispatch.Kind) [*:0]const u8 {
         .headers => "before_provider_headers",
         .resources => "resources_discover",
         .input => "input",
+        .user_bash => "user_bash",
         .cache, .generic => unreachable,
     };
 }
@@ -51,7 +52,7 @@ pub fn eventType(engine: *em.Engine, retained: *State) !c.JSValue {
     return if (retained.kind == .cache) sdk.get(engine, retained.get(.parameter0), "type") else sdk.text(engine, std.mem.span(typeName(retained.kind)));
 }
 pub fn prepare(engine: *em.Engine, retained: *State) !void {
-    if (retained.kind == .cache or retained.kind == .tool_call) {
+    if (retained.kind == .cache or retained.kind == .tool_call or retained.kind == .user_bash) {
         retained.replace(engine, .event, c.JS_DupValue(engine.context, retained.get(.parameter0)));
         return;
     }
@@ -127,6 +128,18 @@ pub fn accept(engine: *em.Engine, retained: *State, result: c.JSValue) !bool {
                     retained.modified = true;
                 }
             }
+        },
+        .user_bash => {
+            if (c.JS_IsUndefined(result)) return false;
+            if (!try @import("native_sdk_public_runner_user_bash.zig").valid(engine, result)) {
+                const message = try sdk.text(engine, "Invalid user_bash handler result: return undefined for local execution or exactly one valid { operations } or { result } object");
+                defer engine.freeValue(message);
+                const reason = try js.builtin(engine, "Error", &.{message});
+                _ = c.JS_Throw(engine.context, reason);
+                return js.capture(engine);
+            }
+            retained.replace(engine, .result, c.JS_DupValue(engine.context, result));
+            return true;
         },
         .tool_call => {
             if (c.JS_ToBool(engine.context, result) != 1) return false;
@@ -231,7 +244,7 @@ pub fn output(engine: *em.Engine, retained: *State) !c.JSValue {
     switch (retained.kind) {
         .cache, .request => return c.JS_DupValue(engine.context, retained.get(.current)),
         .message => return if (retained.modified) c.JS_DupValue(engine.context, retained.get(.current)) else c.pi_js_undefined(),
-        .tool_call => return c.JS_DupValue(engine.context, retained.get(.result)),
+        .tool_call, .user_bash => return c.JS_DupValue(engine.context, retained.get(.result)),
         .headers => return c.JS_DupValue(engine.context, retained.get(.parameter0)),
         .tool_result => {
             if (!retained.modified) return c.pi_js_undefined();
