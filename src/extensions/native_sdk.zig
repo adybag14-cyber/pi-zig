@@ -1372,8 +1372,22 @@ fn resourcesReload(self: *State) !c.JSValue {
             defer engine.freeValue(result);
             const settled = try engine.awaitValue(result);
             defer engine.freeValue(settled);
-            try put(engine, self.data, names[0], try clone(engine, settled));
+            if (comptime std.mem.eql(u8, names[0], "skills")) {
+                const published = try @import("native_sdk_resources.zig").skillOverride(engine, settled);
+                try put(engine, self.data, names[0], published);
+            } else if (comptime std.mem.eql(u8, names[0], "agentsFiles")) {
+                try put(engine, self.data, names[0], c.JS_DupValue(engine.context, settled));
+            } else try put(engine, self.data, names[0], try clone(engine, settled));
         }
+    }
+    const append_override = try get(engine, options, "appendSystemPromptOverride");
+    defer engine.freeValue(append_override);
+    if (c.JS_IsFunction(engine.context, append_override)) {
+        const base = try get(engine, self.data, "appendSystemPrompt");
+        defer engine.freeValue(base);
+        var args = [_]c.JSValue{base};
+        const result = try engine.checked(c.JS_Call(engine.context, append_override, options, 1, &args));
+        try put(engine, self.data, "appendSystemPrompt", result);
     }
     const override = try get(engine, options, "systemPromptOverride");
     defer engine.freeValue(override);

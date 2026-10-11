@@ -240,3 +240,35 @@ test "native SDK queue order actual command actions defaults bound receiver rebi
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+fn normalizedOptions(comptime capture: []const u8) !void {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-normalized-options-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-normalized-options-" ++ capture ++ ".input.txt"), "sdk-normalized-options.mjs") catch |err| {
+        std.debug.print("SDK Source{s} normalized options setup: {s}\n", .{ capture, engine.last_error orelse "no diagnostic" });
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkNormalizedOptionsRows", "sdk-normalized-options-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ ".json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete normalized options Source{s} actual={s}\n", .{ capture, raw });
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkNormalizedOptionsRows", "sdk-normalized-options-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+test "native SDK queue order normalized options actual metadata graphs whitelist and shallow identities match Source507 508 509" {
+    inline for (.{ "507", "508", "509" }) |capture| try normalizedOptions(capture);
+}

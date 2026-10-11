@@ -28,7 +28,11 @@ pub fn rebuild(owner: *sdk.State) !void {
         defer engine.freeValue(tool);
         const name = try sdk.get(engine, tool, "name");
         defer engine.freeValue(name);
-        const snippet = try sdk.get(engine, tool, "promptSnippet");
+        // ToolInfo intentionally excludes promptSnippet and retains raw
+        // guideline arrays. Normalize the actual registry definition.
+        const definition = try @import("native_sdk_tool_catalog.zig").getDefinition(owner, name);
+        defer engine.freeValue(definition);
+        const snippet = try sdk.get(engine, definition, "promptSnippet");
         defer engine.freeValue(snippet);
         if (c.JS_ToBool(engine.context, snippet) == 1) {
             const normalized = try normalizeSnippet(engine, snippet);
@@ -37,7 +41,7 @@ pub fn rebuild(owner: *sdk.State) !void {
             defer engine.freeValue(size);
             if (c.JS_ToBool(engine.context, size) == 1) try js.setKey(engine, snippets, name, normalized);
         }
-        const raw = try sdk.get(engine, tool, "promptGuidelines");
+        const raw = try sdk.get(engine, definition, "promptGuidelines");
         defer engine.freeValue(raw);
         const normalized = try normalizeGuidelines(engine, raw);
         defer engine.freeValue(normalized);
