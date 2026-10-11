@@ -302,8 +302,11 @@ pub const Drafts = struct {
                 replaced = true;
                 break;
             };
-            if (!replaced) values.items.appendAssumeCapacity(prepared);
-            try @import("native_durable_document_retention.zig").touch(values.owner, prepared.address.value, try json.asInteger(try json.required(prepared.record.value, "id")));
+            if (!replaced) {
+                values.items.appendAssumeCapacity(prepared);
+                // Source's host.install touches only a new cached incarnation.
+                try @import("native_durable_document_retention.zig").touch(values.owner, prepared.address.value, try json.asInteger(try json.required(prepared.record.value, "id")));
+            }
         }
         for (self.items.items) |doc| if (doc.retired) {
             var index: usize = 0;
@@ -330,6 +333,15 @@ pub const Drafts = struct {
         self.adopted = true;
     }
 };
+/// After adoption, Source touches each actual committed document publication
+/// before observers run. A retired incarnation is already absent and is skipped.
+pub fn touchPublication(owner: *durable.State, changes: json.Value) !void {
+    for (changes.array.items) |change| {
+        if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "document")) continue;
+        const record = try json.required(change, "record");
+        try touchRecord(owner, try backend.memory.idOf(record));
+    }
+}
 pub fn publicationValue(owner: *durable.State, record: json.Value, version: u64) ?c.JSValue {
     const values = owner.document_cache orelse return null;
     for (values.items.items) |item| {
@@ -744,7 +756,7 @@ pub fn snapshot(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c
     defer engine.freeValue(version_value);
     if (try (try cache(engine, session)).get(resolved.value.value, try durable.number(engine, version_value))) |value| {
         try checkSemantics(engine, definition_value, value.record.value);
-        return sdk.promise(engine, value.value);
+        return durable.resolvedPromise(engine, value.value);
     }
     const arguments = try sdk.array(engine);
     defer engine.freeValue(arguments);
@@ -752,7 +764,12 @@ pub fn snapshot(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c
     var data = [_]c.JSValue{ session, arguments };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, snapshotQueued, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
+    const pending = try durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
+    defer engine.freeValue(pending);
+    // Source snapshot awaits its queued load before returning the tracker.
+    // The intrinsic reaction preserves that real async continuation, allowing
+    // a zero-retention sweep already enqueued by the load to run before close.
+    return engine.checked(c.JS_PromiseThen(engine.context, pending, c.pi_js_undefined(), c.pi_js_undefined()));
 }
 pub fn snapshotAsOf(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const arguments = try sdk.array(engine);

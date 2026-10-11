@@ -199,6 +199,18 @@ pub fn reject(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native durable: %s", @as([*:0]const u8, @errorName(err)));
 }
+/// An intrinsic async return always creates a fresh promise, independently of
+/// the guest's writable global Promise constructor or resolve method.
+pub fn resolvedPromise(engine: *Engine, value: c.JSValue) !c.JSValue {
+    var functions: [2]c.JSValue = undefined;
+    const pending = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+    errdefer engine.freeValue(pending);
+    defer for (functions) |function| engine.freeValue(function);
+    var args = [_]c.JSValue{value};
+    const settled = try engine.checked(c.JS_Call(engine.context, functions[0], c.pi_js_undefined(), 1, &args));
+    engine.freeValue(settled);
+    return pending;
+}
 pub fn rejectedPromise(engine: *Engine, err: anyerror) c.JSValue {
     _ = reject(engine, err);
     const reason = c.JS_GetException(engine.context);
@@ -896,6 +908,7 @@ fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue,
 }
 fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: context_module.Context) !void {
     const self: *State = @ptrCast(@alignCast(raw.?));
+    if (std.Thread.getCurrentId() == self.owner_thread) try @import("native_durable_documents.zig").touchPublication(self, event.changes);
     if (self.foreign_publication) |forward| return forward(self.foreign_publication_context, event);
     if (std.Thread.getCurrentId() != self.owner_thread) {
         return error.VMCallbackOnWorker;

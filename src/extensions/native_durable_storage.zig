@@ -376,6 +376,7 @@ const Hub = struct {
                 .runtime_commit => @import("native_durable_tasks.zig").retryRuntimeCommit(engine, &request.captures),
                 .runtime_memo => @import("native_durable_tasks.zig").retryRuntimeMemo(engine, &request.captures),
                 .task_abort => @import("native_durable_task_abort.zig").retry(engine, &request.captures),
+                .scheduler_reconcile => @import("native_durable_tasks.zig").retryQueuedReconcile(engine, &request.captures),
             };
 
             defer engine.freeValue(value);
@@ -454,7 +455,7 @@ pub fn deinit(engine: *Engine) void {
     engine.native_durable_storage_close = null;
 }
 const PendingCommit = struct {
-    kind: enum { commit, read, runtime_commit, runtime_memo, task_abort },
+    kind: enum { commit, read, runtime_commit, runtime_memo, task_abort, scheduler_reconcile },
     captures: [5]c.JSValue,
     resolve: c.JSValue,
     reject: c.JSValue,
@@ -466,6 +467,9 @@ const PendingCommit = struct {
 };
 pub fn deferCommit(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
     return admitPending(engine, captures, .commit);
+}
+pub fn deferSchedulerReconcile(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
+    return admitPending(engine, captures, .scheduler_reconcile);
 }
 pub fn deferRead(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
     return admitPending(engine, captures, .read);

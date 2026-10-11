@@ -39,6 +39,9 @@ pub const Options = struct {
     poll_reads: ?*const fn (?*anyopaque, *session_mod.Session) anyerror!void = null,
     index_changed: ?*const fn (?*anyopaque, ?u64, *const ownership.Index) anyerror!void = null,
     after_recover: ?*const fn (?*anyopaque) anyerror!void = null,
+    defer_initial_reconcile: bool = false,
+    after_scope_reads: ?*const fn (?*anyopaque) anyerror!void = null,
+    after_reconcile: ?*const fn (?*anyopaque) anyerror!void = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -288,7 +291,7 @@ pub const Scheduler = struct {
         var result = try self.session.commit(recover, self, .{}, .{});
         result.deinit();
         if (self.options.after_recover) |after| try after(self.options.callback_context);
-        try self.reconcile();
+        if (!self.options.defer_initial_reconcile) try self.reconcile();
     }
     pub fn removeDefinition(self: *Scheduler, name: []const u8) void {
         self.mutex.lockUncancelable(self.io);
@@ -563,6 +566,18 @@ pub const Scheduler = struct {
             return err;
         };
         result.deinit();
+        if (self.options.after_reconcile) |after| try after(self.options.callback_context);
+    }
+    /// Owner microtasks preserve queue order without blocking a worker-held
+    /// mutation line. The caller retains its queued operation on busy admission.
+    pub fn tryReconcile(self: *Scheduler) !bool {
+        var result = (self.session.tryCommit(reconcileLine, self, .{}, .{}) catch |err| {
+            if (err != error.SessionClosed) _ = self.session.fail(err);
+            return err;
+        }) orelse return false;
+        result.deinit();
+        if (self.options.after_reconcile) |after| try after(self.options.callback_context);
+        return true;
     }
     fn anyFailed(self: *Scheduler, members: Value) !bool {
         for (members.array.items) |member| {
@@ -622,6 +637,10 @@ pub const Scheduler = struct {
         if (self.options.poll_reads) |poll| try poll(self.options.callback_context, tx.session);
         const a = tx.owned.arena.allocator();
         const queued = if (cascade) try self.queuedInputs(a) else &.{};
+        // Source awaits the asynchronous scope read before staging marks. The
+        // VM facade can yield a real promise job while this original line and
+        // Transaction remain reserved; pure-native schedulers need no VM hook.
+        if (self.options.after_scope_reads) |after| try after(self.options.callback_context);
         // Collect every mark before staging any, so an explicit request wins
         // over restart propagation in the same pass. Cascades stop at another
         // intent, whose own walk supplies the nearest inherited reason.
