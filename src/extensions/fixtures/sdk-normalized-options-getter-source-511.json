@@ -1,0 +1,88 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "initial",
+      "value": {
+        "snippets": {
+          "alpha": "first snippet"
+        },
+        "guidelines": {
+          "alpha": [
+            "first rule"
+          ]
+        },
+        "selected": [
+          "alpha"
+        ]
+      },
+      "events": []
+    },
+    {
+      "id": "rebuild-cached",
+      "value": {
+        "snippets": {
+          "alpha": "first snippet"
+        },
+        "guidelines": {
+          "alpha": [
+            "first rule"
+          ]
+        },
+        "selected": [
+          "alpha"
+        ]
+      },
+      "events": []
+    },
+    {
+      "id": "toolInfo-raw",
+      "value": [
+        {
+          "name": "alpha",
+          "guidelines": [
+            " second rule ",
+            "second rule"
+          ],
+          "hasSnippet": false
+        }
+      ],
+      "events": [
+        [
+          "guidelines",
+          "second"
+        ]
+      ]
+    },
+    {
+      "id": "register-refresh",
+      "value": {
+        "snippets": {
+          "alpha": "second snippet"
+        },
+        "guidelines": {
+          "alpha": [
+            "second rule"
+          ]
+        },
+        "selected": [
+          "alpha"
+        ]
+      },
+      "events": [
+        [
+          "snippet",
+          "second"
+        ],
+        [
+          "guidelines",
+          "second"
+        ]
+      ]
+    }
+  ]
+}

@@ -17,38 +17,11 @@ pub fn rebuild(owner: *sdk.State) !void {
     defer engine.freeValue(selected);
     try sdk.put(engine, options, "selectedTools", try copyRows(engine, selected, false));
     try sdk.put(engine, options, "hiddenTools", try sdk.array(engine));
-    const snippets = try sdk.object(engine);
-    defer engine.freeValue(snippets);
-    const guidelines = try sdk.object(engine);
-    defer engine.freeValue(guidelines);
-    const tools = try @import("native_sdk_tool_catalog.zig").sessionRows(owner);
-    defer engine.freeValue(tools);
-    for (0..try sdk.length(engine, tools)) |index| {
-        const tool = try engine.checked(c.JS_GetPropertyUint32(engine.context, tools, @intCast(index)));
-        defer engine.freeValue(tool);
-        const name = try sdk.get(engine, tool, "name");
-        defer engine.freeValue(name);
-        // ToolInfo intentionally excludes promptSnippet and retains raw
-        // guideline arrays. Normalize the actual registry definition.
-        const definition = try @import("native_sdk_tool_catalog.zig").getDefinition(owner, name);
-        defer engine.freeValue(definition);
-        const snippet = try sdk.get(engine, definition, "promptSnippet");
-        defer engine.freeValue(snippet);
-        if (c.JS_ToBool(engine.context, snippet) == 1) {
-            const normalized = try normalizeSnippet(engine, snippet);
-            defer engine.freeValue(normalized);
-            const size = try sdk.get(engine, normalized, "length");
-            defer engine.freeValue(size);
-            if (c.JS_ToBool(engine.context, size) == 1) try js.setKey(engine, snippets, name, normalized);
-        }
-        const raw = try sdk.get(engine, definition, "promptGuidelines");
-        defer engine.freeValue(raw);
-        const normalized = try normalizeGuidelines(engine, raw);
-        defer engine.freeValue(normalized);
-        if (try sdk.length(engine, normalized) != 0) try js.setKey(engine, guidelines, name, normalized);
-    }
-    try sdk.put(engine, options, "toolSnippets", c.JS_DupValue(engine.context, snippets));
-    try sdk.put(engine, options, "toolGuidelines", c.JS_DupValue(engine.context, guidelines));
+    const metadata = try @import("native_sdk_tool_catalog.zig").promptMetadata(owner);
+    defer engine.freeValue(metadata.snippets);
+    defer engine.freeValue(metadata.guidelines);
+    try sdk.put(engine, options, "toolSnippets", try js.spread(engine, metadata.snippets));
+    try sdk.put(engine, options, "toolGuidelines", try copyGuidelines(engine, metadata.guidelines));
     try sdk.put(engine, options, "promptGuidelines", try sdk.array(engine));
     const appended = try sdk.invoke(engine, loader, "getAppendSystemPrompt", &.{});
     defer engine.freeValue(appended);
@@ -76,6 +49,53 @@ pub fn rebuild(owner: *sdk.State) !void {
     defer engine.freeValue(skills);
     try sdk.put(engine, options, "skills", try copyRows(engine, skills, true));
     try sdk.put(engine, owner.data, "_baseSystemPromptOptions", c.JS_DupValue(engine.context, options));
+}
+pub const Metadata = struct { snippets: c.JSValue, guidelines: c.JSValue };
+/// Source refresh normalizes all snippets first, then all guidelines. Activation
+/// rebuilds copy this retained cache without reading definition getters again.
+pub fn normalizeMetadata(engine: *em.Engine, records: anytype) !Metadata {
+    const snippets = try sdk.object(engine);
+    errdefer engine.freeValue(snippets);
+    const guidelines = try sdk.object(engine);
+    errdefer engine.freeValue(guidelines);
+    for (records) |record| {
+        const snippet = try sdk.get(engine, record.definition, "promptSnippet");
+        defer engine.freeValue(snippet);
+        if (c.JS_ToBool(engine.context, snippet) != 1) continue;
+        const normalized = try normalizeSnippet(engine, snippet);
+        defer engine.freeValue(normalized);
+        const size = try sdk.get(engine, normalized, "length");
+        defer engine.freeValue(size);
+        if (c.JS_ToBool(engine.context, size) != 1) continue;
+        const name = try sdk.get(engine, record.definition, "name");
+        defer engine.freeValue(name);
+        try js.setKey(engine, snippets, name, normalized);
+    }
+    for (records) |record| {
+        const raw = try sdk.get(engine, record.definition, "promptGuidelines");
+        defer engine.freeValue(raw);
+        const normalized = try normalizeGuidelines(engine, raw);
+        defer engine.freeValue(normalized);
+        if (try sdk.length(engine, normalized) == 0) continue;
+        const name = try sdk.get(engine, record.definition, "name");
+        defer engine.freeValue(name);
+        try js.setKey(engine, guidelines, name, normalized);
+    }
+    return .{ .snippets = snippets, .guidelines = guidelines };
+}
+fn copyGuidelines(engine: *em.Engine, source: c.JSValue) !c.JSValue {
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    var names: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, source, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    for (names[0..count]) |name| {
+        const rows = try engine.checked(c.JS_GetProperty(engine.context, source, name.atom));
+        defer engine.freeValue(rows);
+        if (c.JS_DefinePropertyValue(engine.context, result, name.atom, try copyRows(engine, rows, false), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    }
+    return result;
 }
 fn copyRows(engine: *em.Engine, rows: c.JSValue, shallow: bool) !c.JSValue {
     const result = try sdk.array(engine);

@@ -121,6 +121,7 @@ pub const Bindings = struct {
     tool_update_promise: ?c.JSValue = null,
     publication_sequence: u64 = 0,
     registration_revision: u64 = 0,
+    tool_registration_revision: u64 = 0,
 
     pub const InvocationState = struct {
         actions: std.ArrayList(c.JSValue) = .empty,
@@ -517,6 +518,7 @@ pub const Bindings = struct {
             defer self.gpa.free(name);
             if (name.len == 0) return error.InvalidExtensionToolName;
             try self.store(&self.tools, name, args[0]);
+            self.tool_registration_revision = std.math.add(u64, self.tool_registration_revision, 1) catch return error.NativeToolRegistrationRevisionExhausted;
             if (self.registration_fn) |notify| try notify(self.tool_context, self, name);
             return c.pi_js_undefined();
         }
