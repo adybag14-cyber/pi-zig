@@ -98,3 +98,15 @@ pub fn qualitySteps(engine: *js.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(set);
     return js.call(engine, from, array_constructor, &.{set});
 }
+pub fn fitsEncodedSize(engine: *js.Engine, encoded_size: usize, options: c.JSValue) !bool {
+    const size = c.JS_NewFloat64(engine.context, @floatFromInt(encoded_size));
+    defer engine.freeValue(size);
+    const limit = try js.get(engine, options, "maxBytes");
+    defer engine.freeValue(limit);
+    return compare(engine, .less, size, limit);
+}
+pub fn wasmDimension(engine: *js.Engine, dimension: c.JSValue) !u32 {
+    var result: u32 = 0;
+    if (c.JS_ToUint32(engine.context, &result, dimension) < 0) return js.capture(engine);
+    return result;
+}
