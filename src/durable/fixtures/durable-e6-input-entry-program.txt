@@ -1,0 +1,47 @@
+import {Harness,MemoryStorage,defineDoc,createRegistry,InboxDoc,LiveDoc} from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+let enter;const reached=new Promise(resolve=>enter=resolve);let providerCalls=0;
+// The structural getModel/streamSimple user-provider ABI is also exercised by
+// the preserved actual EA nested-call fixture. The request remains genuinely
+// in flight until Harness close cancels its actual signal.
+const models={getModel:()=>({id:'faux-1',maxTokens:100,contextWindow:10000}),streamSimple:(_model,_request,options)=>{
+ providerCalls++;enter();const signal=options.signal;
+ const pending=new Promise((_resolve,reject)=>{if(signal.aborted)reject(signal.reason);else signal.addEventListener('abort',()=>reject(signal.reason),{once:true})});
+ return {async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}};await pending},result:async()=>{await pending}};
+}};
+const harness=await Harness.open(new MemoryStorage(),{models,registry:createRegistry()},context);
+const cases=[];
+try {
+ const root=await harness.root(context,{agent:{model:{provider:'faux',modelId:'faux-1'}}});
+ const entries=async()=>[...(await root.entries({},1000,undefined,context)).items].reverse();
+ const inbox=async()=>(await harness.snapshot(InboxDoc,root.id,context)).items;
+ const before=(await entries()).length,errors=[];
+ for(const kind of [123,'','pi.user','pi.compaction',null]){
+  try{await root.submit({type:'input',content:'invalid',entry:{kind}},context);errors.push({kind,accepted:true})}
+  catch(error){errors.push({kind,name:error.name,message:error.message})}
+ }
+ cases.push({name:'invalid',errors,wrote:(await entries()).length!==before,live:await harness.snapshot(LiveDoc,root.id,context)});
+ const metadata={author:'ann',extra:[1,{tag:'kept'}]};
+ const input=await root.submit({type:'input',requestId:'known',content:'ann: hi',entry:{kind:'chat.mention',data:metadata,model:[{role:'user',content:'forged',timestamp:0}],head:'self',edits:[],extra:true}},context);
+ await reached;const inputStatus=await input.status(context);const inputRow=(await entries()).find(row=>row.id===inputStatus.entry);
+ cases.push({name:'idle-input',providerCalls,status:(await input.status(context)).status,entry:{kind:inputRow.kind,data:inputRow.data,model:inputRow.model.map(({role,content,timestamp})=>({role,content,timestampIsNumber:typeof timestamp==='number'})),headPresent:Object.hasOwn(inputRow,'head'),editsPresent:Object.hasOwn(inputRow,'edits'),extraPresent:Object.hasOwn(inputRow,'extra')},busy:(await harness.snapshot(LiveDoc,root.id,context)).run!==undefined});
+ let duplicateInvalid;
+ try{await root.submit({type:'input',requestId:'known',content:'ignored',entry:{kind:'pi.invalid'}},context);duplicateInvalid={accepted:true}}
+ catch(error){duplicateInvalid={name:error.name,message:error.message}}
+ const duplicate=await root.submit({type:'input',requestId:'known',content:'ignored',entry:{kind:'application.duplicate'}},context);
+ cases.push({name:'request-validation-order',invalid:duplicateInvalid,validSameId:duplicate.id===input.id});
+ const note=await root.submit({type:'write',entry:{kind:'note',data:'busy display'}},context);
+ cases.push({name:'display-while-busy',status:(await note.status(context)).status,lastKind:(await entries()).at(-1).kind,inboxCount:(await inbox()).length});
+ const model=await root.submit({type:'write',entry:{kind:'model.empty',model:[]}},context);
+ const edits=await root.submit({type:'write',entry:{kind:'edits.empty',edits:[]}},context);
+ const entry={kind:'chat.queued',data:{author:'before'},model:[{forged:true}],head:'self',edits:[],extra:true};
+ const queued=await root.submit({type:'input',content:'later',entry,whenBusy:'steer'},context);
+ entry.kind='changed.after.submit';entry.data.author='after';
+ const afterQueue=await root.submit({type:'write',entry:{kind:'after.queue',data:'still display-only'}},context);
+ cases.push({name:'presence-and-queued-copy',model:(await model.status(context)).status,edits:(await edits.status(context)).status,queued:(await queued.status(context)).status,display:(await afterQueue.status(context)).status,lastKind:(await entries()).at(-1).kind,items:(await inbox()).map(({mode,content,entry})=>({mode,...(content===undefined?{}:{content}),entry}))});
+ const reset=await root.reset(undefined,context);
+ const behind=await root.submit({type:'write',entry:{kind:'behind.reset',data:'later context'}},context);
+ cases.push({name:'queued-reset-fence',behind:(await behind.status(context)).status,lastKind:(await entries()).at(-1).kind,items:(await inbox()).map(({mode,entry})=>({mode,kind:entry?.kind,head:entry?.head}))});
+ if(providerCalls!==1||cases[3].status!=='done'||cases[4].model!=='queued'||cases[4].edits!=='queued'||cases[4].queued!=='queued'||cases[4].display!=='done'||cases[5].behind!=='queued')throw Error(JSON.stringify({coverageFailure:true,providerCalls,cases}));
+} finally {await harness.close(context)}
+globalThis.e6InputEntryTrace={source:'e6b9a6af5d45fd191f8e90b56176a0c41aab3199',cases};export const proof=true;
