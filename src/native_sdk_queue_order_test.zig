@@ -211,3 +211,32 @@ test "native SDK queue order command execution catalogue contexts and reload inc
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order actual command actions defaults bound receiver rebind and stale contexts match Source505" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-actions-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-command-actions-505.input.txt"), "sdk-command-actions.mjs") catch |err| {
+        std.debug.print("SDK Source505 setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandActionsRows", "sdk-command-actions-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-actions-source-505.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete command actions Source505 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkCommandActionsRows", "sdk-command-actions-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

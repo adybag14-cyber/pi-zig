@@ -11,6 +11,7 @@ pub fn bind(engine: *engine_mod.Engine, session: c.JSValue, bindings: c.JSValue)
         defer engine.freeValue(value);
         if (!c.JS_IsUndefined(value)) try sdk.put(engine, state.data, "extension_" ++ field, c.JS_DupValue(engine.context, value));
     }
+    try @import("native_sdk_command_runner.zig").bind(state);
     const raw = try sdk.get(engine, state.data, "extension_uiContext");
     defer engine.freeValue(raw);
     const wrapped = if (c.JS_ToBool(engine.context, raw) == 1) try wrap(engine, session, raw) else try noop(engine);

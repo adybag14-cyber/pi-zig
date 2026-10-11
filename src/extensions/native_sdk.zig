@@ -1667,6 +1667,8 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     errdefer if (session_owner.model_lease_anchor) |anchor| @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, engine.runtime, anchor);
     try @import("native_sdk_tool_catalog.zig").initialize(session_owner, opts);
     try @import("native_sdk_tool_catalog.zig").initializeActive(session_owner, opts);
+    try @import("native_sdk_command_runner.zig").initialize(session_owner, session);
+    try @import("native_sdk_system_prompt_options.zig").rebuild(session_owner);
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
@@ -1920,6 +1922,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .setActiveToolsByName) {
             try @import("native_sdk_tool_catalog.zig").setActive(self, first);
+            try @import("native_sdk_system_prompt_options.zig").rebuild(self);
             return c.pi_js_undefined();
         }
         if (operation == .getAllTools) {
