@@ -1,0 +1,73 @@
+name: Native allocation identity and mandatory cleanup
+
+on:
+  push:
+    branches: [work/native-native-oom-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-native-oom-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze source and tool identity
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path verification/native-oom -Force | Out-Null
+          $head = (git rev-parse HEAD).Trim()
+          if ($head -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $zig = (Get-Command zig).Source
+          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = '${{ matrix.mode }}'; scope = 'Native error identity controls and exhaustive public open lifecycle allocation failures. Latest retention, scheduler and full Pi parity remain separate requirements.' } | ConvertTo-Json | Set-Content verification/native-oom/source.json
+          @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json | Set-Content verification/native-oom/inputs.json
+      - name: Exercise native error identity and full public lifecycle allocation sweep
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig fmt --check build.zig src tools
+          if ($LASTEXITCODE -ne 0) { throw 'Native source formatting failed' }
+          & zig build test-native-allocation-original-identity test-native-durable-public-open-lifecycle -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/native-oom/tests.log
+          $result = $LASTEXITCODE
+          [ordered]@{ exit_code = $result; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content verification/native-oom/result.json
+          if ($result -ne 0) { exit $result }
+      - name: Verify inputs and preserve executable hashes
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $inputs = @(Get-Content -Raw verification/native-oom/inputs.json | ConvertFrom-Json)
+          $drift = @($inputs | Where-Object { (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 })
+          [ordered]@{ inputs = $inputs.Count; mismatches = $drift.Count } | ConvertTo-Json | Set-Content verification/native-oom/posthash.json
+          if (Test-Path zig-out/bin) {
+            @(Get-ChildItem zig-out/bin -File | ForEach-Object { [ordered]@{ name = $_.Name; bytes = $_.Length; sha256 = (Get-FileHash -LiteralPath $_.FullName).Hash } }) | ConvertTo-Json | Set-Content verification/native-oom/executables.json
+          }
+          if ($drift.Count -ne 0) { throw 'Tracked source changed during execution' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked tree changed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-oom-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-oom/**
