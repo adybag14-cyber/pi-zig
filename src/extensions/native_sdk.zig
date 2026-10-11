@@ -536,8 +536,9 @@ fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(
     return result;
 }
 fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    if (self.running) return error.NativeSDKPromptAlreadyRunning;
     if (args.len == 0 or !c.JS_IsString(args[0])) return error.NativeSDKMissingPrompt;
+    if (try @import("native_sdk_command_execution.zig").start(self, receiver, args)) |command| return command;
+    if (self.running) return error.NativeSDKPromptAlreadyRunning;
     const engine = self.engine;
     var functions: [2]c.JSValue = undefined;
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));

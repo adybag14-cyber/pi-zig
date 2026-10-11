@@ -1,0 +1,37 @@
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),rows=[];
+const errorValue=error=>({name:error?.name,message:error?.message});
+async function setup(id,factory){const cwd='/sdk-command-execution/'+id,manager=SessionManager.inMemory(cwd),loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:id,factory}]});await loader.reload();const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:manager,settingsManager:SettingsManager.inMemory(),tools:[]});return{cwd,manager,loader,session};}
+for(const id of ['basic-and-bypass','async-preflight','map-values-catalogue','throwing-command','during-streaming']){
+ const trace=[],errors=[],marker={marker:id};let api,active,throwErrorCallback=false;
+ const handler=async function(args,ctx){trace.push({kind:'handler',args,receiver:{name:this.name,invocationName:this.invocationName,keys:Reflect.ownKeys(this).map(String),sameRegistered:this===active.loader.getExtensions().extensions[0].commands.get('foo')},context:{keys:Object.keys(ctx),sessionId:ctx.sessionManager.getSessionId()===active.manager.getSessionId(),hasUI:ctx.hasUI,commandMethods:['getSystemPromptOptions','waitForIdle','newSession','fork','navigateTree','switchSession','reload'].map(name=>({name,type:typeof ctx[name],functionName:ctx[name]?.name,length:ctx[name]?.length}))}});
+  if(id==='async-preflight'){trace.push('handler.before-await');await Promise.resolve();trace.push('handler.after-await')}
+  if(id==='throwing-command')throw {toString(){trace.push('reason.toString');return'plain reason'}};
+ };
+ active=await setup(id,pi=>{api=pi;pi.registerCommand('foo',{description:'original',handler})});
+ const {session,loader}=active;
+ await session.bindExtensions({mode:'rpc',onError(error){errors.push(error);if(throwErrorCallback)throw marker}});
+ if(id==='map-values-catalogue'){const map=loader.getExtensions().extensions[0].commands;map.set('foo',{name:'alias',description:'mutated',handler});map.set('different-key',{name:'alias',description:'second',handler});}
+ if(id==='during-streaming')session.agent.state.isStreaming=true;
+ const before=api.getCommands(),detached=before.map(row=>({...row}));if(before[0])before[0].description='changed copy';const after=api.getCommands();
+ const command=id==='map-values-catalogue'?'/alias:1  value \t ':'/foo  value \t ';
+ let outcome;try{const returned=await session.prompt(command,{preflightResult:function(value){trace.push(['preflight',value,this===undefined])}});outcome={returnedUndefined:returned===undefined}}catch(error){outcome={error:errorValue(error),identity:error===marker}};
+ let extra=null;
+ if(id==='basic-and-bypass'){try{await session.prompt('/foo',{expandPromptTemplates:false});extra={returned:true}}catch(error){extra={error:errorValue(error)}}}
+ if(id==='throwing-command'){throwErrorCallback=true;try{await session.prompt('/foo',{preflightResult(value){trace.push(['second.preflight',value])}});extra={returned:true}}catch(error){extra={error:errorValue(error),identity:error===marker}}}
+ if(id==='during-streaming')session.agent.state.isStreaming=false;
+ rows.push({id,before:detached,after,trace,errors,outcome,extra,messages:session.messages.length});session.dispose();
+}
+{
+ const id='reload-incarnation',trace=[],apis=[];let phase=0;
+ const active=await setup(id,pi=>{apis.push(pi);const tag=++phase;pi.registerCommand('foo',{description:'phase'+tag,handler:function(args){trace.push({tag,args,receiver:this.invocationName})}})});
+ const old=active.session,oldExtensions=active.loader.getExtensions().extensions,oldMap=oldExtensions[0].commands;
+ await active.loader.reload();const {session:currentSession}=await createAgentSession({cwd:active.cwd,modelRuntime:runtime,resourceLoader:active.loader,sessionManager:SessionManager.inMemory(active.cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+ oldMap.set('foo',{name:'old-name',description:'old mutated',handler:function(args){trace.push({tag:'old mutation',args,receiver:this.invocationName})}});
+ const oldCatalogue=apis[0].getCommands(),newCatalogue=apis[1].getCommands();
+ await old.prompt('/old-name old');await currentSession.prompt('/foo new');
+ old.dispose();let oldApiAfterDispose;try{apis[0].getCommands();oldApiAfterDispose={returned:true}}catch(error){oldApiAfterDispose={error:errorValue(error)}}
+ const newAfterOldDispose=apis[1].getCommands();await currentSession.prompt('/foo survives');
+ rows.push({id,distinctArray:oldExtensions!==active.loader.getExtensions().extensions,oldCatalogue,newCatalogue,trace,oldApiAfterDispose,newAfterOldDispose});currentSession.dispose();
+}
+globalThis.sdkCommandExecutionRows=rows;
