@@ -1,0 +1,240 @@
+{
+  "upstream": "8a9c051f80090895abbc64262bc90d95b42103c4",
+  "scope": "Actual host execution and validation only; supplied VmLauncher protocol fixture, no VM execution claim",
+  "rows": [
+    {
+      "name": "negative-clock",
+      "error": {
+        "name": "Error",
+        "message": "startedAt must be a non-negative number of milliseconds since the epoch"
+      }
+    },
+    {
+      "name": "infinite-clock",
+      "error": {
+        "name": "Error",
+        "message": "startedAt must be a non-negative number of milliseconds since the epoch"
+      }
+    },
+    {
+      "name": "nan-clock",
+      "error": {
+        "name": "Error",
+        "message": "startedAt must be a non-negative number of milliseconds since the epoch"
+      }
+    },
+    {
+      "name": "fractional-seed",
+      "error": {
+        "name": "Error",
+        "message": "seed must be a 32-bit unsigned integer"
+      }
+    },
+    {
+      "name": "negative-seed",
+      "error": {
+        "name": "Error",
+        "message": "seed must be a 32-bit unsigned integer"
+      }
+    },
+    {
+      "name": "overflow-seed",
+      "error": {
+        "name": "Error",
+        "message": "seed must be a 32-bit unsigned integer"
+      }
+    },
+    {
+      "name": "duplicate-names",
+      "error": {
+        "name": "Error",
+        "message": "Tool names must be unique"
+      }
+    },
+    {
+      "name": "duplicate-script-names",
+      "error": {
+        "name": "Error",
+        "message": "Tool script names must be unique"
+      }
+    },
+    {
+      "name": "reserved-global",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"tools\""
+      }
+    },
+    {
+      "name": "nan-now",
+      "error": {
+        "name": "Error",
+        "message": "The clock value of result 1 is not a finite number"
+      }
+    },
+    {
+      "name": "zero-seq",
+      "error": {
+        "name": "Error",
+        "message": "Result number 0 is not a positive integer used once"
+      }
+    },
+    {
+      "name": "fractional-seq",
+      "error": {
+        "name": "Error",
+        "message": "Result number 1.5 is not a positive integer used once"
+      }
+    },
+    {
+      "name": "missing-id",
+      "error": {
+        "name": "Error",
+        "message": "Call 99 is not waiting for a result"
+      }
+    },
+    {
+      "name": "array-properties",
+      "error": {
+        "name": "Error",
+        "message": "The properties of result 1 are not an object"
+      }
+    },
+    {
+      "name": "null-properties",
+      "error": {
+        "name": "Error",
+        "message": "The properties of result 1 are not an object"
+      }
+    },
+    {
+      "name": "bigint-value",
+      "error": {
+        "name": "TypeError",
+        "message": "Do not know how to serialize a BigInt"
+      }
+    },
+    {
+      "name": "duplicate-result",
+      "error": {
+        "name": "Error",
+        "message": "Result number 1 is not a positive integer used once"
+      }
+    },
+    {
+      "name": "already-answered-call",
+      "error": {
+        "name": "Error",
+        "message": "Call 1 is not waiting for a result"
+      }
+    },
+    {
+      "name": "actual-host-wire",
+      "initial": {
+        "code": "return 7",
+        "tools": [
+          {
+            "name": "a-b",
+            "jsName": "a_b",
+            "description": ""
+          }
+        ],
+        "globals": [
+          {
+            "name": "math.echo",
+            "spread": true
+          }
+        ],
+        "memoryLimitBytes": 1024,
+        "store": {
+          "x": "{\"value\":1}"
+        },
+        "deterministic": {
+          "startedAt": 1234.5,
+          "seed": 4294967295
+        }
+      },
+      "posts": [
+        {
+          "type": "result",
+          "id": 2,
+          "ok": false,
+          "payload": "actual reject",
+          "seq": 2,
+          "now": 1200,
+          "properties": "{\"structuredOutput\":{\"x\":2},\"name\":\"ignored\",\"message\":\"ignored\",\"stack\":\"ignored\"}"
+        },
+        {
+          "type": "result",
+          "id": 1,
+          "ok": true,
+          "payload": "{\"done\":true}",
+          "seq": 1,
+          "now": 1235
+        }
+      ],
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "a-b",
+          "args": {
+            "a": 1
+          }
+        },
+        {
+          "id": 2,
+          "target": "global",
+          "name": "math.echo",
+          "args": [
+            2
+          ]
+        }
+      ],
+      "notifications": [
+        [
+          "started",
+          "actual-control-fixture"
+        ],
+        [
+          "idle",
+          0,
+          0
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": 7,
+        "output": [],
+        "calls": [
+          {
+            "name": "a-b",
+            "status": "ok",
+            "durationMs": 0.22569999999999624
+          }
+        ],
+        "storeWrites": {
+          "set": {
+            "out": 3
+          },
+          "delete": [
+            "old"
+          ]
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "stopped": 1,
+      "afterFinishDeliverIgnored": true
+    },
+    {
+      "name": "closed",
+      "error": {
+        "name": "Error",
+        "message": "Sandbox is closed"
+      }
+    }
+  ]
+}

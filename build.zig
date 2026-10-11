@@ -163,6 +163,16 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-command-live-owner", "Replay all55 Source live command records across metadata6 retained7 lifetime18 and two shared12 corpora, twelve private boundaries and complete raw/frontend host GPA; no Main activation").dependOn(&b.addRunArtifact(live_command_tests).step);
     const live_command_allocation_tests = b.addTest(.{ .root_module = live_command_module, .filters = &.{"Live command metadata exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-live-owner-allocation-diagnostic", "Run the unchanged live-owner allocation universe with original failure index and marker diagnostics").dependOn(&b.addRunArtifact(live_command_allocation_tests).step);
+    const ui8a9_pure_module = b.createModule(.{ .root_source_file = b.path("src/native_ui8a9_pure_test.zig"), .target = target, .optimize = optimize });
+    const ui8a9_pure_tests = b.addTest(.{ .root_module = ui8a9_pure_module, .filters = &.{ "Source8a9 pure stdin", "Source8a9 terminal capabilities" }, .use_llvm = use_llvm });
+    b.step("test-ui8a9-pure", "Replay actual8a9 delayed terminal replies and all928 capability inputs with complete pure framing allocation cleanup").dependOn(&b.addRunArtifact(ui8a9_pure_tests).step);
+    const codemode_run_host_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_run_host_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"CodeMode host"}, .use_llvm = use_llvm });
+    b.step("test-codemode-run-host", "Verify native host answer ownership ordered delivery and original host protocol records; VM integration remains separate").dependOn(&b.addRunArtifact(codemode_run_host_tests).step);
+    const ui8a9_source_module = b.createModule(.{ .root_source_file = b.path("src/native_ui8a9_source_test.zig"), .target = target, .optimize = optimize });
+    ui8a9_source_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, ui8a9_source_module, quickjs, sqlite_lib_dir);
+    const ui8a9_source_tests = b.addTest(.{ .root_module = ui8a9_source_module, .filters = &.{"Source8a9 native"}, .use_llvm = use_llvm });
+    b.step("test-ui8a9-source", "Replay actual8a9 native StdinBuffer14 real timer scenarios and ten Herdr capability profiles").dependOn(&b.addRunArtifact(ui8a9_source_tests).step);
     const command_allocation_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-autocomplete-allocation", "Preserve genuine native fuzzy allocation failures through the complete command GPA sweep").dependOn(&b.addRunArtifact(command_allocation_tests).step);
     const sqlite_persistence_mod = b.createModule(.{
@@ -1380,7 +1390,7 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&native_layout_run.step);
     const native_terminal_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_terminal_image_test.zig"), .target = target, .optimize = optimize }),
-        .filters = &.{"Source6fb terminal capabilities"},
+        .filters = &.{"terminal capabilities pure Main detector"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, native_terminal_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1482,7 +1492,7 @@ pub fn build(b: *std.Build) void {
     const tui_public_audit_tests = b.addTest(.{ .root_module = tui_public_source_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public TUI final"} });
     const tui_public_audit_run = b.addRunArtifact(tui_public_audit_tests);
     b.step("audit-native-tui-public-source", "Audit complete Source TUI runtime namespace and prototypes").dependOn(&tui_public_audit_run.step);
-    const tui_public_slice_tests = b.addTest(.{ .root_module = tui_public_source_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public TUI slice"} });
+    const tui_public_slice_tests = b.addTest(.{ .root_module = tui_public_source_module, .use_llvm = use_llvm, .filters = &.{"public TUI slice"} });
     const tui_public_slice_run = b.addRunArtifact(tui_public_slice_tests);
     b.step("test-native-tui-public-source", "Replay implemented Source public TUI behavior slices").dependOn(&tui_public_slice_run.step);
     test_step.dependOn(&tui_public_slice_run.step);
