@@ -179,10 +179,10 @@ jobs:
           EXPECTED_HEAD: ${{ github.sha }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $source = Get-Content -Raw 'verification/tui-coverage/base/source.json' | ConvertFrom-Json
+          $source = Get-Content -Raw 'verification/tui-coverage/base/verification/native-ui-source/source.json' | ConvertFrom-Json
           $tree = (git rev-parse 'HEAD^{tree}').Trim()
           if ($source.head -cne $env:EXPECTED_HEAD -or $source.tree -cne $tree) { throw 'Shard zero source mismatch' }
-          [string[]]$logs = @('verification/tui-coverage/base/tests.log')
+          [string[]]$logs = @('verification/tui-coverage/base/verification/native-ui-source/tests.log')
           foreach ($index in 1..7) {
             $dir = "verification/tui-coverage/ranges/tui-allocation-$index-$env:EXPECTED_HEAD"
             $identity = @(Get-Content "$dir/source-$index.txt")
