@@ -98,6 +98,9 @@ pub const Bindings = struct {
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
     tools: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     commands: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+    /// SDK loader exposes this exact row/Map; generic optional-JSValue scope
+    /// marking and retirement own the edge, never a borrowed callback pointer.
+    sdk_command_row: ?c.JSValue = null,
     tool_order: std.ArrayList([]const u8) = .empty,
     command_order: std.ArrayList([]const u8) = .empty,
     flags: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -353,6 +356,7 @@ pub const Bindings = struct {
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
         if (self.sdk_context) |scope| self.freeSdkContext(scope);
         if (self.source_info_value) |value| self.engine.freeValue(value);
+        if (self.sdk_command_row) |value| self.engine.freeValue(value);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
@@ -477,6 +481,16 @@ pub const Bindings = struct {
             self.registration_revision = std.math.add(u64, self.registration_revision, 1) catch return error.NativeRegistrationRevisionExhausted;
         }
         if (@intFromEnum(method) >= @intFromEnum(Method.getActiveTools) and @intFromEnum(method) <= @intFromEnum(Method.getThinkingLevel)) return self.readonlyApi(method);
+        if (method == .registerCommand) if (self.sdk_command_row) |row| {
+            const name_value = if (args.len > 0) args[0] else c.pi_js_undefined();
+            const options = if (args.len > 1) args[1] else c.pi_js_undefined();
+            const snapshot = try @import("native_sdk_command_registry.zig").register(self.engine, row, name_value, options);
+            defer self.engine.freeValue(snapshot);
+            const name = try self.engine.toString(name_value);
+            defer self.gpa.free(name);
+            try self.store(&self.commands, name, snapshot);
+            return c.pi_js_undefined();
+        };
         if (args.len == 0) return error.MissingExtensionArgument;
         if (method == .registerProvider or method == .unregisterProvider) return self.providerRegistration(method, args);
         if (method == .registerMessageRenderer or method == .registerEntryRenderer or method == .registerMarkdownTransformer or method == .registerToolRenderer) {

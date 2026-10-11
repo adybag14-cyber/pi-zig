@@ -1,0 +1,44 @@
+// The two test-only native callbacks invoke production resolver/scope access directly.
+// No public _extensionRunner object parity is claimed by this component harness.
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const rows=[];
+for(const id of ['registration-snapshot','map-value-name','map-delete-replace-order','resolved-row-spread','map-values-iterator','mutable-constructors-methods']){
+ const trace=[],handler=function handler(){},nested={value:1},symbol=Symbol('fixture'),saved={};
+ const cwd='/sdk-command-rows/'+id;
+ const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:id,factory(pi){
+  if(id==='registration-snapshot'){
+   const options={name:'renamed',nested,[symbol]:'symbol-value',get handler(){trace.push('options.handler');return handler},get description(){trace.push('options.description');return'original'}};
+   pi.registerCommand('foo',options);saved.options=options;Object.defineProperty(options,'description',{value:'changed',enumerable:true,configurable:true});nested.value=2;
+  }else{pi.registerCommand('foo',{description:'first',handler});pi.registerCommand('tail',{description:'tail',handler});}
+ }}]});
+ await loader.reload();
+ const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+ const extensions=loader.getExtensions().extensions,map=extensions[0].commands;
+ const registryIdentity=nativeSDKSameCommandRows(session,extensions);
+ if(id==='map-value-name'){map.set('foo',{name:'value-name',description:'mapped',handler});map.set('unrelated-key',{name:'value-name',description:'second',handler});}
+ if(id==='map-delete-replace-order'){map.delete('foo');map.set('foo',{name:'foo',description:'last',handler});map.set('tail',{name:'tail',description:'replaced',handler});}
+ if(id==='resolved-row-spread'){const raw={get name(){trace.push('row.name');return'foo'},get description(){trace.push('row.description');return'accessor'},nested,handler,[symbol]:'symbol-value'};Object.defineProperty(raw,'hidden',{value:3});map.set('foo',raw);saved.raw=raw;}
+ if(id==='map-values-iterator'){
+  map.values=function(){trace.push(['values.receiver',this===map]);let index=0;const values=[{name:'iterated',description:'one',handler},{name:'iterated',description:'two',handler}];return{[Symbol.iterator](){trace.push('iterator');return this},next(){trace.push(['next',index]);return index<values.length?{done:false,value:values[index++]}:{done:true}}}};
+ }
+ let commands;
+ if(id==='mutable-constructors-methods'){
+  const OriginalMap=globalThis.Map,OriginalSet=globalThis.Set,originalGet=OriginalMap.prototype.get,originalSet=OriginalMap.prototype.set,originalHas=OriginalSet.prototype.has,originalAdd=OriginalSet.prototype.add,originalMap=Array.prototype.map,originalPush=Array.prototype.push;
+  const record=value=>Reflect.apply(originalPush,trace,[value]);
+  globalThis.Map=class extends OriginalMap{constructor(...args){super(...args);record('Map.constructor')}};
+  globalThis.Set=class extends OriginalSet{constructor(...args){super(...args);record('Set.constructor')}};
+  OriginalMap.prototype.get=function(key){record(['Map.get',key]);return Reflect.apply(originalGet,this,[key])};
+  OriginalMap.prototype.set=function(key,value){record(['Map.set',key,value]);return Reflect.apply(originalSet,this,[key,value])};
+  OriginalSet.prototype.has=function(key){record(['Set.has',key]);return Reflect.apply(originalHas,this,[key])};
+  OriginalSet.prototype.add=function(key){record(['Set.add',key]);return Reflect.apply(originalAdd,this,[key])};
+  Array.prototype.map=function(...args){record(['Array.map',this.length]);return Reflect.apply(originalMap,this,args)};
+  Array.prototype.push=function(...args){record(['Array.push',this.length,args.length]);return Reflect.apply(originalPush,this,args)};
+  try{commands=nativeSDKResolveCommands(session)}finally{globalThis.Map=OriginalMap;globalThis.Set=OriginalSet;OriginalMap.prototype.get=originalGet;OriginalMap.prototype.set=originalSet;OriginalSet.prototype.has=originalHas;OriginalSet.prototype.add=originalAdd;Array.prototype.map=originalMap;Array.prototype.push=originalPush;}
+ }else commands=nativeSDKResolveCommands(session);
+ const resolutionTrace=trace.slice();
+ const projected=commands.map(command=>({name:command.name,description:command.description,invocationName:command.invocationName,keys:Reflect.ownKeys(command).map(key=>typeof key==='symbol'?'symbol:'+key.description:key),nestedIdentity:command.nested===nested,symbolValue:command[symbol]??null,handlerIdentity:command.handler===handler,descriptionDescriptor:Object.getOwnPropertyDescriptor(command,'description')?{data:'value'in Object.getOwnPropertyDescriptor(command,'description'),writable:Object.getOwnPropertyDescriptor(command,'description').writable,enumerable:Object.getOwnPropertyDescriptor(command,'description').enumerable,configurable:Object.getOwnPropertyDescriptor(command,'description').configurable}:null}));
+ const probes=[];for(const name of ['foo','renamed','value-name','value-name:1','value-name:2','tail','iterated','iterated:1','iterated:2']){let result;try{result={disposition:await session.steer('/'+name)}}catch(error){result={error:{name:error.name,message:error.message}}}probes.push({name,...result});}
+ rows.push({id,registryIdentity,resolutionTrace,commands:projected,probes,steering:session.getSteeringMessages()});session.dispose();
+}
+globalThis.sdkCommandRowsResult=rows;

@@ -120,3 +120,49 @@ test "native SDK queue rejects Source499 ordered duplicate command aliases and l
     defer engine.freeValue(disposed);
     em.c.JS_RunGC(engine.runtime);
 }
+
+fn commandSourceBridge(context: ?*em.c.JSContext, _: em.c.JSValue, argc: c_int, args: [*c]em.c.JSValue, magic: c_int, _: [*c]em.c.JSValue) callconv(.c) em.c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return commandSourceBridgeValue(engine, if (argc > 0) args[0] else em.c.pi_js_undefined(), if (argc > 1) args[1] else em.c.pi_js_undefined(), magic) catch |err| @import("extensions/native_sdk.zig").fail(engine, err);
+}
+fn commandSourceBridgeValue(engine: *em.Engine, session: em.c.JSValue, extensions: em.c.JSValue, operation: c_int) !em.c.JSValue {
+    const owner = try @import("extensions/native_sdk.zig").state(engine, session);
+    if (operation == 0) return @import("extensions/native_sdk_commands.zig").resolve(owner);
+    const rows = try @import("extensions/native_sdk_resource_owners.zig").sessionExtensionRows(engine, owner.data);
+    defer engine.freeValue(rows);
+    return em.c.pi_js_bool(engine.context, @intFromBool(em.c.JS_IsStrictEqual(engine.context, rows, extensions)));
+}
+test "native SDK actual command Maps snapshots complete rows and mutable builtin traces match Source501" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-rows-root");
+    try root.installSchemas();
+    const global = em.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    inline for (.{ "nativeSDKResolveCommands", "nativeSDKSameCommandRows" }, 0..) |name, operation| {
+        const callback = try engine.checked(em.c.JS_NewCFunctionData2(engine.context, commandSourceBridge, name, if (operation == 0) 1 else 2, @intCast(operation), 0, null));
+        if (em.c.JS_DefinePropertyValueStr(engine.context, global, name, callback, em.c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    }
+    // The fixture's test-only callbacks call the actual production resolver
+    // and scope accessors; AgentSession._extensionRunner's public object
+    // surface is a separate prerequisite, not emulated by a guest facade.
+    const loaded = try engine.evalModule(@embedFile("extensions/fixtures/sdk-command-rows-501.input.txt"), "sdk-command-rows.mjs");
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandRowsResult", "sdk-command-rows-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-rows-source-501.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete command Source501 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkCommandRowsResult;delete globalThis.nativeSDKResolveCommands;delete globalThis.nativeSDKSameCommandRows", "sdk-command-rows-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
