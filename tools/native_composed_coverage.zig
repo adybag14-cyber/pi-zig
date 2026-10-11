@@ -12,6 +12,8 @@ pub fn verifyLog(gpa: std.mem.Allocator, wanted: []const []const u8, log: []cons
     if (parsed.value.len == 0 or wanted.len == 0) return error.EmptyTestCoverage;
     var seen: std.StringHashMapUnmanaged(void) = .empty;
     defer seen.deinit(gpa);
+    var covered: std.StringHashMapUnmanaged(void) = .empty;
+    defer covered.deinit(gpa);
     for (parsed.value) |name| {
         const item = try seen.getOrPut(gpa, name);
         if (item.found_existing) return error.DuplicateCompiledTestName;
@@ -22,12 +24,17 @@ pub fn verifyLog(gpa: std.mem.Allocator, wanted: []const []const u8, log: []cons
         var matches: usize = 0;
         for (parsed.value) |actual| if (std.mem.endsWith(u8, actual, suffix)) {
             matches += 1;
+            try covered.put(gpa, actual, {});
         };
         if (matches != 1) {
             std.debug.print("Composed coverage missing or ambiguous Source test: {s}\n", .{name});
             return error.MissingNamedTestCoverage;
         }
     }
+    for (parsed.value) |name| if (std.mem.indexOf(u8, name, ".test.") != null and !covered.contains(name)) {
+        std.debug.print("Composed named test has no Source inventory entry: {s}\n", .{name});
+        return error.UnmappedNamedTestCoverage;
+    };
     const complete = try std.fmt.allocPrint(gpa, "run test {d} pass ({d} total)", .{ parsed.value.len, parsed.value.len });
     defer gpa.free(complete);
     if (std.mem.indexOf(u8, log, complete) == null) return error.IncompleteTestExecution;
@@ -70,4 +77,5 @@ test "composed coverage rejects missing duplicated and unexecuted compiled cases
     try std.testing.expectError(error.DuplicateCompiledTestName, verifyLog(allocator, &wanted, marker ++ "[\"fixture.test.actual case\",\"fixture.test.actual case\"]\n"));
     try std.testing.expectError(error.MissingNamedTestCoverage, verifyLog(allocator, &wanted, marker ++ "[\"fixture.test.other\"]\n+- run test 1 pass (1 total)\n"));
     try std.testing.expectError(error.IncompleteTestExecution, verifyLog(allocator, &wanted, marker ++ "[\"fixture.test.actual case\"]\n+- run test 0 pass (1 total)\n"));
+    try std.testing.expectError(error.UnmappedNamedTestCoverage, verifyLog(allocator, &wanted, marker ++ "[\"fixture.test.actual case\",\"other.test.hidden case\"]\n+- run test 2 pass (2 total)\n"));
 }

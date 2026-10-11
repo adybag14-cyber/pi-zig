@@ -11,6 +11,7 @@ pub const source_files: []const []const u8 = &.{
     "src/extensions/native_durable_storage.zig",
     "src/extensions/native_durable_tasks.zig",
     "src/extensions/native_durable_harness.zig",
+    "src/extensions/native_durable_document_retention.zig",
     "src/extensions/native_physical_stdio.zig",
     "src/native_image_resize_options_test.zig",
     "src/native_image_resize_strategy_test.zig",

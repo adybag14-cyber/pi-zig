@@ -131,6 +131,8 @@ pub fn build(b: *std.Build) void {
     const composed_vm_run = b.addRunArtifact(composed_vm_tests);
     composed_vm_run.has_side_effects = true;
     b.step("test-native-composed-vm", "Run unchanged SDK locale allocation retention image command and stdio suites in one VM test artifact").dependOn(&composed_vm_run.step);
+    const coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/native_composed_coverage.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    b.step("test-native-composed-coverage", "Reject missing duplicate skipped or unexecuted composed tests").dependOn(&b.addRunArtifact(coverage_tests).step);
     mod.addImport("catalog_tool", catalog_tool);
     const locale_compare_source_step = b.step("test-native-localecompare-source", "Replay original69 API, original2100 JS comparisons, original90 coercion edges, original12 lifecycle and exhaustive host allocation cleanup");
     for ([_]struct { file: []const u8, filter: []const u8 }{
