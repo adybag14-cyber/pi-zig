@@ -1001,6 +1001,8 @@ test "native SDK queue order PUBLIC before agent start full normalization lazy r
     defer actual.deinit();
     var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-agent-start-source-560.json"));
     defer expected.deinit();
+    const projected_docs = try @import("test_support/sdk_source_docs.zig").project(std.testing.allocator, &expected);
+    try std.testing.expect(projected_docs == 0 or projected_docs == 6);
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 18), rows.len);
     try std.testing.expectEqual(rows.len, actual.value.array.items.len);
