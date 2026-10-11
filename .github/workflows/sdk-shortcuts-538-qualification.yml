@@ -1,0 +1,166 @@
+name: Frozen SDK 538 Windows Debug qualification
+
+on:
+  push:
+    branches: [work/sdk-shortcuts-538-hosted-qualification-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-shortcuts-538-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  frozen-windows-debug:
+    runs-on: windows-latest
+    timeout-minutes: 22
+    steps:
+      - name: Checkout exact workflow-only head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Install pinned stable Zig
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2
+        with:
+          version: 0.16.0
+          use-cache: false
+
+      - name: Verify frozen source, tool, original captures, and all inputs
+        shell: pwsh
+        env:
+          SDK_WORKFLOW_HEAD: ${{ github.sha }}
+          SDK_RUN_ID: ${{ github.run_id }}
+          SDK_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskDirectory = 'verification/sdk-shortcuts-538'
+          New-Item -ItemType Directory -Path $taskDirectory -Force | Out-Null
+          $taskFrozen = 'd972fedd9b0c92a3c2bdd25d6a188adfce9aaa42'
+          $taskTree = 'ceb643aea951bbfae3cbf5eb567e870c29626818'
+          $taskWorkflow = '.github/workflows/sdk-shortcuts-538-qualification.yml'
+          if ((git rev-parse HEAD).Trim() -cne $env:SDK_WORKFLOW_HEAD) { throw 'Wrong workflow checkout' }
+          if ((git rev-parse 'HEAD^').Trim() -cne $taskFrozen) { throw 'Workflow-only parent is not frozen538' }
+          if ((git rev-parse "${taskFrozen}^{tree}").Trim() -cne $taskTree) { throw 'Wrong frozen product tree' }
+          $taskChanges = @(git diff --name-only $taskFrozen HEAD)
+          if ($taskChanges.Count -ne 1 -or $taskChanges[0] -cne $taskWorkflow) { throw 'Hosted head changes product source' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Checkout has tracked changes' }
+          $taskVersion = (& zig version).Trim()
+          if ($taskVersion -cne '0.16.0') { throw 'Zig baseline drift' }
+          $taskZig = (Get-Command zig).Source
+          $taskZigHash = (Get-FileHash -LiteralPath $taskZig -Algorithm SHA256).Hash
+          if ($taskZigHash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864') { throw 'Official Windows x64 Zig executable drift' }
+          $taskCritical = [ordered]@{
+            'vendor/quickjs/quickjs.c' = '9C083378CD1D529E8326927C53811E4B18CF4C3EA9EDD655F449F8281A9DC133'
+            'vendor/quickjs/quickjs.h' = '508BFCCB800674E2F23F5634A7340967FEC6B5AA9A42EFB1C12568008643251B'
+            'src/extensions/fixtures/sdk-runner-emit-source-527.json' = '0D1381DFFF8C71B241D36813DCFEF0DDD62A2EE59C61F199424362B688437662'
+            'src/extensions/fixtures/sdk-runner-emit-iterators-source-532.json' = 'EAF27B99B7E9C8BEACCA191CBF37F5CC681A81AFC162302879344039736E616D'
+            'src/extensions/fixtures/sdk-runner-ui-prompts-source-530.json' = 'DEB6FF1CEB298688F1F8DD4B7A34C48E8B736A8EC79DE9EA4624F20721056333'
+            'src/extensions/fixtures/sdk-runner-shortcuts-source-534.json' = '50CA3B5D0A8D8ED468B53B4992EA412776B1E2194DC2894E4581A4D6466D73DA'
+          }
+          foreach ($taskEntry in $taskCritical.GetEnumerator()) {
+            if ((Get-FileHash -LiteralPath $taskEntry.Key -Algorithm SHA256).Hash -cne $taskEntry.Value) { throw "Frozen critical input drift: $($taskEntry.Key)" }
+          }
+          $taskPaths = @(git ls-tree -r --name-only $taskFrozen | Sort-Object)
+          if ($taskPaths.Count -ne 2697) { throw 'Frozen product input count differs from 2697' }
+          $taskInputs = @($taskPaths | ForEach-Object {
+            [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_ -Force).Length; sha256 = (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskDirectory/inputs-before.json" -Encoding utf8NoBOM
+          $taskNames = @([regex]::Matches([IO.File]::ReadAllText('src/native_sdk_queue_order_test.zig'), '(?m)^test "([^"]+)"') | ForEach-Object { $_.Groups[1].Value })
+          if ($taskNames.Count -ne 19 -or @($taskNames | Where-Object { !$_.StartsWith('native SDK queue order') }).Count -ne 0) { throw 'Named Source test/filter coverage drift' }
+          $taskNames | ConvertTo-Json | Set-Content -LiteralPath "$taskDirectory/expected-named-tests.json" -Encoding utf8NoBOM
+          [ordered]@{
+            workflow_head = $env:SDK_WORKFLOW_HEAD; workflow_tree = (git rev-parse 'HEAD^{tree}').Trim()
+            frozen_source = $taskFrozen; frozen_tree = $taskTree; input_count = $taskInputs.Count
+            input_manifest_sha256 = (Get-FileHash -LiteralPath "$taskDirectory/inputs-before.json").Hash
+            workflow_sha256 = (Get-FileHash -LiteralPath $taskWorkflow).Hash
+            zig_version = $taskVersion; zig_path = $taskZig; zig_sha256 = $taskZigHash
+            pinned_windows_archive_sha256 = '68659EB5F1E4EB1437A722F1DD889C5A322C9954607F5EDCF337BC3684A75A7E'
+            run_id = $env:SDK_RUN_ID; run_attempt = $env:SDK_RUN_ATTEMPT
+            os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+            expected_actual_tests = 27; expected_named_tests = 19; expected_imported_tests = 8
+            source534_rows = 8; real_members = 39; absent_members = 12; full_sdk_parity = $false
+            factory_class_ownfields_complete = $false; full_class_parity = $false
+            exclusions = @(
+              'Source504 factory/auth basic.extra exact rejection is unclaimed'
+              'Source516 full51 prototype comparison is excluded;12 actual bodies remain absent'
+              'Source513 builtin operator error wording is unclaimed;class/traces/rows compared'
+              'Source521 null-options builtin wording is unclaimed;class/order compared'
+              'Source530 symbol-depth builtin wording is unclaimed;class/all other fields compared'
+              'Source527 stale-context runtime stack text is unclaimed;presence/type/message/ownKeys/traces compared'
+              'Source534 invalid-key builtin wording is unclaimed;class/all other fields compared'
+            )
+            scope = 'Frozen538 corrected real console harness and all prior SDK queue assertions only. Original Source captures retained. Full class/factory/Main parity is not claimed.'
+            recorded_utc = [DateTimeOffset]::UtcNow.ToString('o')
+          } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskDirectory/source-tool.json" -Encoding utf8NoBOM
+
+      - name: Run the complete frozen twenty-seven-test graph
+        shell: pwsh
+        timeout-minutes: 20
+        env:
+          NO_COLOR: '1'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskDirectory = 'verification/sdk-shortcuts-538'
+          $taskStarted = [DateTimeOffset]::UtcNow.ToString('o')
+          & zig build test-native-sdk-queue-order -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskDirectory/tests.log"
+          $taskExit = $LASTEXITCODE
+          $taskRaw = [IO.File]::ReadAllText("$taskDirectory/tests.log")
+          $taskLog = [regex]::Replace($taskRaw, '\x1b\[[0-9;]*[A-Za-z]', '')
+          $taskCoverage = $taskLog -match 'Build Summary:[^\r\n]*27/27 tests passed' -and $taskLog -match 'run test 27 pass \(27 total\)'
+          [ordered]@{
+            exit_code = $taskExit; complete_expected_coverage = $taskCoverage
+            expected_actual_tests = 27; expected_named_tests = 19; expected_imported_tests = 8
+            started_utc = $taskStarted; completed_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            target = 'test-native-sdk-queue-order'; optimize = 'Debug'; jobs = 1; per_test_timeout = '120s'
+          } | ConvertTo-Json | Set-Content -LiteralPath "$taskDirectory/build-result.json" -Encoding utf8NoBOM
+          if ($taskExit -ne 0) { exit $taskExit }
+          if (!$taskCoverage) { throw 'Test count or coverage mismatch; do not qualify this run' }
+          $taskBinaries = @(Get-ChildItem -LiteralPath '.zig-cache/o' -File -Recurse -Filter 'test.exe')
+          if ($taskBinaries.Count -ne 1) { throw 'Cannot establish exact single test executable identity' }
+          $taskBinary = $taskBinaries[0]
+          $taskBinaryText = [Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($taskBinary.FullName))
+          $taskNames = @(Get-Content -LiteralPath "$taskDirectory/expected-named-tests.json" -Raw | ConvertFrom-Json)
+          foreach ($taskName in $taskNames) { if (!$taskBinaryText.Contains($taskName)) { throw "Compiled named test absent: $taskName" } }
+          [ordered]@{
+            path = $taskBinary.FullName; bytes = $taskBinary.Length; sha256 = (Get-FileHash -LiteralPath $taskBinary.FullName).Hash
+            compiled_named_tests = $taskNames; compiled_named_count = $taskNames.Count
+          } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskDirectory/executable.json" -Encoding utf8NoBOM
+
+      - name: Verify all frozen posthashes
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskDirectory = 'verification/sdk-shortcuts-538'
+          New-Item -ItemType Directory -Path $taskDirectory -Force | Out-Null
+          if (Test-Path -LiteralPath "$taskDirectory/inputs-before.json") {
+            $taskInputs = @(Get-Content -LiteralPath "$taskDirectory/inputs-before.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path -Algorithm SHA256).Hash -cne $_.sha256 })
+            $taskSource = Get-Content -LiteralPath "$taskDirectory/source-tool.json" -Raw | ConvertFrom-Json
+            $taskWorkflowDrift = (Get-FileHash -LiteralPath '.github/workflows/sdk-shortcuts-538-qualification.yml').Hash -cne $taskSource.workflow_sha256
+            [ordered]@{
+              workflow_head = (git rev-parse HEAD).Trim(); frozen_source = $taskSource.frozen_source
+              input_count = $taskInputs.Count; drift = $taskDrift; workflow_drift = $taskWorkflowDrift
+              checked_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath "$taskDirectory/posthash.json" -Encoding utf8NoBOM
+            if ($taskInputs.Count -ne 2697 -or $taskDrift.Count -ne 0 -or $taskWorkflowDrift) { throw 'Frozen source or workflow changed during execution' }
+          }
+          git status --short | Set-Content -LiteralPath "$taskDirectory/git-status.txt" -Encoding utf8NoBOM
+
+      - name: Retain original Source captures and complete qualification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sdk-shortcuts-538-windows-debug-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            verification/sdk-shortcuts-538/**
+            .github/workflows/sdk-shortcuts-538-qualification.yml
+            src/extensions/fixtures/sdk-*
