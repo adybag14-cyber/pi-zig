@@ -1,7 +1,10 @@
 {
-  "status": "DERIVED_EXACT_COMPONENT_SPLIT_OF_PRESERVED_ACTUAL_SOURCE34",
-  "sourceFixture": "tui-combined-completion-original-ea.json",
-  "sourceSha256": "C5D09629122A0E4BBB57EC9B03491FE0B1E9830AF24E8C7FC0A08F0DBE9A6E83",
+  "status": "EXACT_NODE_JSON_SPLIT_OF_UNCHANGED_ACTUAL_SOURCE34",
+  "sourceHead": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "builtReferenceHead": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "sourceFixtureSha256": "c5d09629122a0e4bbb57ec9b03491fe0b1e9830af24e8c7fc0a08f0dbe9a6e83",
+  "actualSourceRepeatSha256": "d9961a721f3ee4dec51664734f65f0508cb01e21f2ba71a854d7c3dccc77ebe1",
   "cases": [
     {
       "name": "completion 0",
@@ -299,19 +302,19 @@
       "name": "completion 12",
       "args": [
         [
-          "�fi"
+          "\ud800fi"
         ],
         0,
         3,
         {
-          "value": "�file",
+          "value": "\ud800file",
           "label": "file"
         },
-        "�fi"
+        "\ud800fi"
       ],
       "result": {
         "lines": [
-          "�file"
+          "\ud800file"
         ],
         "cursorLine": 0,
         "cursorCol": 5
@@ -588,5 +591,5 @@
     "length": 0
   },
   "fullCombinedCount": 34,
-  "scope": "Pure33 retained verbatim. Full constructor record33 remains mandatory full Combined class gate; private CommandSourceFixture cannot qualify it."
+  "scope": "33 records preserve exact JS UTF16 and match actual Source151 repeat; original34/full constructor remain unchanged and mandatory for full Combined gate."
 }
