@@ -28,4 +28,5 @@ comptime {
     _ = @import("native_durable_inspection_compare.zig");
     _ = @import("native_summary_transcript_source_test.zig");
     _ = @import("mcp/codemode_declarations.zig");
+    _ = @import("native_chord_append_source_test.zig");
 }
