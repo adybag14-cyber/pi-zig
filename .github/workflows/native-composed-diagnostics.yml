@@ -18,6 +18,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
         mode: [Debug, ReleaseSafe]
+        family: [vm, processes]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
@@ -37,7 +38,7 @@ jobs:
           if ($head -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
           if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
           $zig = (Get-Command zig).Source
-          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = '${{ matrix.mode }}'; scope = 'One composed VM artifact retains original SDK, locale, native allocation, lifecycle, retention, public image, command component and stdio assertions. Actual pipes and Main remain separate process tests. Native coverage gate requires every selected Source test name and complete execution. Interactive PTY, four absent SDK bodies, full Combined and full Pi parity remain separate requirements.' } | ConvertTo-Json | Set-Content verification/native-composed/source.json
+          [ordered]@{ head = $head; tree = (git rev-parse 'HEAD^{tree}').Trim(); zig_sha256 = (Get-FileHash -LiteralPath $zig).Hash; mode = '${{ matrix.mode }}'; family = '${{ matrix.family }}'; scope = 'One composed VM artifact retains original SDK, locale, native allocation, lifecycle, retention, public image, command component and stdio assertions. Actual pipes and Main remain separate process tests. Native coverage gate requires every selected Source test name and complete execution. Interactive PTY, full SDK factory and owned AgentSession behavior, full Combined and full Pi parity remain separate requirements.' } | ConvertTo-Json | Set-Content verification/native-composed/source.json
           @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json | Set-Content verification/native-composed/inputs.json
       - name: Verify original modules and every tracked input
         shell: pwsh
@@ -181,7 +182,8 @@ jobs:
             if ($taskDrift.Count -ne 0) { throw 'Original Source or tracked input changed' }
           }
 
-      - name: Exercise composed SDK locale lifetime and actual Main streams
+      - name: Exercise composed SDK locale allocation and lifetime suites
+        if: matrix.family == 'vm'
         shell: pwsh
         timeout-minutes: 22
         run: |
@@ -189,12 +191,27 @@ jobs:
           $PSNativeCommandUseErrorActionPreference = $false
           & zig fmt --check build.zig src tools
           if ($LASTEXITCODE -ne 0) { throw 'Native source formatting failed' }
-          & zig build test-native-composed-vm test-native-physical-stdio-process test-main-native-context-process -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/native-composed/tests.log
+          & zig build test-native-composed-vm -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/native-composed/tests.log
           $result = $LASTEXITCODE
           [ordered]@{ exit_code = $result; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content verification/native-composed/result.json
           if ($result -ne 0) { exit $result }
           & zig build test-native-composed-coverage maintenance -j1 --summary all -- verify-composed-coverage . verification/native-composed/tests.log 2>&1 | Tee-Object verification/native-composed/coverage.log
           if ($LASTEXITCODE -ne 0) { throw 'Missing or incomplete named native coverage' }
+      - name: Exercise actual Main and native process streams
+        if: matrix.family == 'processes'
+        shell: pwsh
+        # Main's cold compiler graph has its own job; every original process
+        # test and the 120-second test guard remain required.
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig fmt --check build.zig src tools
+          if ($LASTEXITCODE -ne 0) { throw 'Native source formatting failed' }
+          & zig build test-native-physical-stdio-process test-main-native-context-process -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all --verbose 2>&1 | Tee-Object verification/native-composed/tests.log
+          $result = $LASTEXITCODE
+          [ordered]@{ exit_code = $result; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content verification/native-composed/result.json
+          if ($result -ne 0) { exit $result }
       - name: Verify inputs and preserve executable hashes
         if: always()
         shell: pwsh
@@ -212,7 +229,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: native-composed-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          name: native-composed-${{ matrix.os }}-${{ matrix.mode }}-${{ matrix.family }}-${{ github.sha }}
           retention-days: 14
           include-hidden-files: true
           path: |
