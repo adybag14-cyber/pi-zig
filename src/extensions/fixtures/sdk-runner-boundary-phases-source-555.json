@@ -1,0 +1,2050 @@
+{
+  "schema": "sdk-source555-boundary-phases-v1",
+  "runnerSha256": "2A3BD7F81623928070EB956CDAC37B861A787297046F9CE7AF0522FF6D41A98A",
+  "rows": [
+    {
+      "id": "plain",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          3
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 2,
+            "entries": [
+              {
+                "tag": "first"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [],
+      "builds": 3
+    },
+    {
+      "id": "initial-thenable",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        "initial.then.get",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "initial.then.call",
+          true
+        ],
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          3
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 2,
+            "entries": [
+              {
+                "tag": "first"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [],
+      "builds": 3
+    },
+    {
+      "id": "initial-throw",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "initial-reject",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "initial-constructor-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        "initial.constructor",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "initial-then-get-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        "initial.then.get",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "empty",
+      "outcome": {
+        "value": {
+          "entries": [],
+          "continue": false,
+          "context": {
+            "build": 1,
+            "entries": []
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          0
+        ]
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "register-during-initial",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 4,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          2
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          3
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 2,
+            "entries": [
+              {
+                "tag": "first"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "late",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "second"
+            }
+          ],
+          false,
+          {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          4,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [],
+      "builds": 4
+    },
+    {
+      "id": "handler-throw",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "build",
+          true,
+          2,
+          []
+        ],
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 2,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    },
+    {
+      "id": "handler-reject",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "build",
+          true,
+          2,
+          []
+        ],
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 2,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    },
+    {
+      "id": "result-getters",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        "result.entries",
+        "result.entries",
+        "result.continue",
+        "result.continue",
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          3
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 2,
+            "entries": [
+              {
+                "tag": "first"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [],
+      "builds": 3
+    },
+    {
+      "id": "continue-get-error",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        "result.entries",
+        "result.entries",
+        "result.continue",
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          false,
+          {
+            "build": 2,
+            "entries": [
+              {
+                "tag": "first"
+              }
+            ]
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    },
+    {
+      "id": "null-fields",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          null
+        ],
+        [
+          "base.type",
+          3
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          null,
+          null,
+          {
+            "build": 2,
+            "entries": null
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [],
+      "builds": 3
+    },
+    {
+      "id": "rebuild-invalid",
+      "outcome": {
+        "value": {
+          "entries": [],
+          "continue": false,
+          "context": {
+            "build": 1,
+            "entries": []
+          },
+          "valid": false
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ],
+        "ext.path",
+        [
+          "base.type",
+          5
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "Invalid boundary entries: original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        },
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "Invalid boundary entries: original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    },
+    {
+      "id": "rebuild-recover",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "Invalid boundary entries: original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    },
+    {
+      "id": "spread-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag"
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "event-type-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ]
+      ],
+      "errors": [],
+      "builds": 1
+    },
+    {
+      "id": "handler-listener-error",
+      "outcome": {
+        "marker": false,
+        "listener": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 1
+    },
+    {
+      "id": "builder-listener-error",
+      "outcome": {
+        "marker": false,
+        "listener": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "marker.primitive",
+          "string"
+        ],
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "Invalid boundary entries: original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 2
+    },
+    {
+      "id": "builder-error-message-hint",
+      "outcome": {
+        "value": {
+          "entries": [
+            {
+              "tag": "second"
+            }
+          ],
+          "continue": false,
+          "context": {
+            "build": 3,
+            "entries": [
+              {
+                "tag": "second"
+              }
+            ]
+          },
+          "valid": true
+        },
+        "keys": [
+          "entries",
+          "continue",
+          "context",
+          "valid"
+        ],
+        "sameFirst": false,
+        "sameSecond": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "build",
+          true,
+          1,
+          []
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "base.type",
+          1
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "base.type",
+          2
+        ],
+        "base.tag",
+        [
+          "one",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [],
+          false,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          2,
+          [
+            {
+              "tag": "first"
+            }
+          ]
+        ],
+        "ext.path",
+        [
+          "base.type",
+          3
+        ],
+        [
+          "error.message.primitive",
+          "string"
+        ],
+        "error.listener",
+        [
+          "base.type",
+          4
+        ],
+        "base.tag",
+        [
+          "two",
+          true,
+          true,
+          [
+            "type",
+            "tag",
+            "entries",
+            "continue",
+            "context"
+          ],
+          [
+            {
+              "tag": "first"
+            }
+          ],
+          true,
+          {
+            "build": 1,
+            "entries": []
+          }
+        ],
+        [
+          "build",
+          true,
+          3,
+          [
+            {
+              "tag": "second"
+            }
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "boundary.ext",
+          "event": "turn_end",
+          "error": "Invalid boundary entries: controlled message",
+          "stack": "controlled stack",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "builds": 3
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+const ids = ['plain','initial-thenable','initial-throw','initial-reject','initial-constructor-error','initial-then-get-error','empty','register-during-initial','handler-throw','handler-reject','result-getters','continue-get-error','null-fields','rebuild-invalid','rebuild-recover','spread-error','event-type-error','handler-listener-error','builder-listener-error','builder-error-message-hint'];
+const rows = [];
+for (const id of ids) {
+  const events = [], errors = [], context = { tag: 'context' }, first = [{ tag: 'first' }], second = [{ tag: 'second' }];
+  const marker = { [Symbol.toPrimitive](hint) { events.push(['marker.primitive',hint]); return 'original marker'; } }, listenerMarker = { listener: true };
+  let builds = 0, typeReads = 0, runner;
+  const base = { get type() { events.push(['base.type',++typeReads]); if (id === 'event-type-error') throw marker; return 'turn_end'; }, get tag() { events.push('base.tag'); if (id === 'spread-error') throw marker; return 'base'; } };
+  const inspect = (label,event,ctx,receiver) => events.push([label,receiver === undefined,ctx === context,Object.keys(event),event.entries,event.continue,event.context]);
+  const one = function(event,ctx) {
+    inspect('one',event,ctx,this);
+    if (id === 'handler-throw' || id === 'handler-listener-error') throw marker;
+    if (id === 'handler-reject') return Promise.reject(marker);
+    if (id === 'null-fields') return { entries: null, continue: null };
+    if (id === 'result-getters' || id === 'continue-get-error') return {
+      get entries() { events.push('result.entries'); return first; },
+      get continue() { events.push('result.continue'); if (id === 'continue-get-error') throw marker; return true; },
+    };
+    return { entries: first, continue: true };
+  };
+  const two = function(event,ctx) { inspect('two',event,ctx,this); return { entries: second, continue: false }; };
+  const extensions = id === 'empty' ? [] : [{ get path() { events.push('ext.path'); return 'boundary.ext'; }, handlers: new Map([['turn_end',[one,two]]]) }];
+  Object.defineProperty(extensions,'map',{ get() { events.push('extensions.map'); return function(mapper) { events.push(['extensions.map.call',this === extensions,mapper.name,mapper.length,this.length]); return Array.prototype.map.call(this,mapper); }; } });
+  const build = function(entries) {
+    events.push(['build',this === undefined,++builds,entries]);
+    const value = { build: builds, entries };
+    if (builds === 1) {
+      if (id === 'initial-throw') throw marker;
+      if (id === 'initial-reject') return Promise.reject(marker);
+      if (id === 'initial-constructor-error') { const p=Promise.resolve(value); Object.defineProperty(p,'constructor',{get(){events.push('initial.constructor');throw marker;}}); return p; }
+      if (id === 'initial-then-get-error') return { get then() { events.push('initial.then.get'); throw marker; } };
+      if (id === 'initial-thenable') return { get then() { events.push('initial.then.get'); return function(resolve) { events.push(['initial.then.call',this !== undefined]); resolve(value); }; } };
+      if (id === 'register-during-initial') extensions.push({path:'late.ext',handlers:new Map([['turn_end',[function(event,ctx){inspect('late',event,ctx,this);return undefined;}] ]])});
+    }
+    if (builds > 1 && (id === 'rebuild-invalid' || id === 'builder-listener-error' || id === 'rebuild-recover' && builds === 2)) throw marker;
+    if (builds === 2 && id === 'builder-error-message-hint') {
+      const error = new Error('controlled'); error.stack='controlled stack';
+      error.message = { [Symbol.toPrimitive](hint) { events.push(['error.message.primitive',hint]); return 'controlled message'; } };
+      throw error;
+    }
+    return value;
+  };
+  runner = new ExtensionRunner(extensions,{},'/boundary',{},{});
+  runner.createContext = function() { events.push(['context.create',this === runner]); return context; };
+  runner.onError(error => { events.push('error.listener'); errors.push({...error,ownKeys:Object.keys(error)}); if (id === 'handler-listener-error' || id === 'builder-listener-error') throw listenerMarker; });
+  queueMicrotask(() => events.push('outside.microtask'));
+  let outcome;
+  try {
+    const pending=runner.emitBoundary(base,build); events.push(['returnedPromise',pending instanceof Promise]);
+    const result=await pending; outcome={value:result,keys:Object.keys(result),sameFirst:result.entries===first,sameSecond:result.entries===second};
+  } catch(error) { outcome={marker:error===marker,listener:error===listenerMarker,name:error?.name,message:error?.message}; }
+  rows.push({id,outcome,events,errors,builds});
+}
+globalThis.sdkRunnerBoundaryPhaseRows=rows;

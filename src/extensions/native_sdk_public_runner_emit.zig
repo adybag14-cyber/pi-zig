@@ -7,12 +7,15 @@ const js = @import("native_js_values.zig");
 const c = em.c;
 const reducers = @import("native_sdk_public_runner_reducers.zig");
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
-pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash };
+pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash, boundary };
+const Phase = enum { handler, boundary_initial, boundary_rebuild };
 pub const Root = enum { runner, event, context, extension, result, resolve, reject, parameter0, parameter1, parameter2, parameter3, current, aux, aux2 };
 pub const State = struct {
     allocator: std.mem.Allocator,
     values: [std.meta.fields(Root).len]c.JSValue,
     kind: Kind,
+    phase: Phase = .handler,
+    boundary_valid: bool = true,
     modified: bool = false,
     early_return: bool = false,
     outer: ?js.Iterator = null,
@@ -113,6 +116,14 @@ fn start(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
     retained.replace(engine, .context, try js.invoke(engine, retained.get(.runner), "createContext", &.{}));
     if (retained.kind != .generic) try reducers.initialize(engine, retained);
+    if (retained.kind == .boundary) {
+        retained.phase = .boundary_initial;
+        return buildBoundary(engine, owner);
+    }
+    return snapshotHandlers(engine, owner);
+}
+fn snapshotHandlers(engine: *em.Engine, owner: c.JSValue) !void {
+    const retained = state(owner);
     const extensions = try sdk.get(engine, retained.get(.runner), "extensions");
     defer engine.freeValue(extensions);
     const event_type = if (retained.kind == .generic) try sdk.get(engine, retained.get(.event), "type") else try reducers.eventType(engine, retained);
@@ -156,11 +167,14 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
         if (retained.inner) |*iterator| {
             if (try iterator.next()) |handler| {
                 defer engine.freeValue(handler);
+                // Source constructs this event outside the handler try block.
+                if (retained.kind == .boundary) try reducers.prepare(engine, retained);
                 const value = invokeHandler(engine, retained, handler) catch |err| {
                     if (retained.kind == .tool_call) return err;
                     const reason = captureReason(engine, err);
                     defer engine.freeValue(reason);
                     try report(engine, retained, reason);
+                    if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
                 };
                 defer engine.freeValue(value);
@@ -169,6 +183,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
                     const reason = captureReason(engine, err);
                     defer engine.freeValue(reason);
                     try report(engine, retained, reason);
+                    if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
                 };
                 defer engine.freeValue(promise);
@@ -177,6 +192,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
                     const reason = captureReason(engine, err);
                     defer engine.freeValue(reason);
                     try report(engine, retained, reason);
+                    if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
                     continue;
                 };
                 return;
@@ -198,7 +214,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
     }
 }
 fn invokeHandler(engine: *em.Engine, retained: *State, handler: c.JSValue) !c.JSValue {
-    if (retained.kind != .generic) try reducers.prepare(engine, retained);
+    if (retained.kind != .generic and retained.kind != .boundary) try reducers.prepare(engine, retained);
     return js.call(engine, handler, c.pi_js_undefined(), &.{ retained.get(.event), retained.get(.context) });
 }
 fn awaitHandler(engine: *em.Engine, owner: c.JSValue, promise: c.JSValue) !void {
@@ -222,6 +238,23 @@ fn resumeCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSV
 fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool) !void {
     const retained = state(owner);
     if (retained.finished) return;
+    if (retained.phase != .handler) {
+        const initial = retained.phase == .boundary_initial;
+        retained.phase = .handler;
+        if (rejected) {
+            if (initial) {
+                _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+                return js.capture(engine);
+            }
+            retained.boundary_valid = false;
+            try reportBoundaryBuild(engine, retained, value);
+        } else {
+            retained.replace(engine, .aux2, c.JS_DupValue(engine.context, value));
+            retained.boundary_valid = true;
+        }
+        if (initial) return snapshotHandlers(engine, owner);
+        return advance(engine, owner);
+    }
     if (rejected) {
         if (retained.kind == .tool_call) {
             _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
@@ -238,7 +271,29 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
         };
         if (cancel) return finish(engine, owner);
     }
+    if (retained.kind == .boundary and try rebuildBoundary(engine, owner)) return;
     try advance(engine, owner);
+}
+fn buildBoundary(engine: *em.Engine, owner: c.JSValue) !void {
+    const retained = state(owner);
+    const value = try js.call(engine, retained.get(.parameter1), c.pi_js_undefined(), &.{retained.get(.current)});
+    defer engine.freeValue(value);
+    const promise = try engine.checked(c.JS_PiPromiseResolve(engine.context, value));
+    defer engine.freeValue(promise);
+    try awaitHandler(engine, owner, promise);
+}
+fn rebuildBoundary(engine: *em.Engine, owner: c.JSValue) !bool {
+    const retained = state(owner);
+    retained.phase = .boundary_rebuild;
+    buildBoundary(engine, owner) catch |err| {
+        retained.phase = .handler;
+        retained.boundary_valid = false;
+        const reason = captureReason(engine, err);
+        defer engine.freeValue(reason);
+        try reportBoundaryBuild(engine, retained, reason);
+        return false;
+    };
+    return true;
 }
 fn accept(engine: *em.Engine, retained: *State, value: c.JSValue) !bool {
     if (retained.kind != .generic) return reducers.accept(engine, retained, value);
@@ -267,7 +322,7 @@ fn report(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     }
 }
 fn reportValue(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
-    if (retained.kind == .cache or retained.kind == .input) return reportInline(engine, retained, reason);
+    if (retained.kind == .cache or retained.kind == .input or retained.kind == .boundary) return reportInline(engine, retained, reason);
     const message = try errorMessage(engine, reason);
     defer engine.freeValue(message);
     const stack = if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined();
@@ -301,6 +356,26 @@ fn reportInline(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
     try sdk.put(engine, error_value, "event", try reportEventType(engine, retained));
     try sdk.put(engine, error_value, "error", try errorMessage(engine, reason));
+    try sdk.put(engine, error_value, "stack", if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
+    const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
+    engine.freeValue(ignored);
+}
+fn reportBoundaryBuild(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
+    const method = try sdk.get(engine, retained.get(.runner), "emitError");
+    defer engine.freeValue(method);
+    const error_value = try sdk.object(engine);
+    defer engine.freeValue(error_value);
+    try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
+    try sdk.put(engine, error_value, "event", try reducers.eventType(engine, retained));
+    const message = try errorMessage(engine, reason);
+    defer engine.freeValue(message);
+    // Template substitution performs ToString, including string-hint hooks
+    // and Symbol rejection, before concatenating the literal prefix.
+    const converted = try engine.checked(c.JS_ToString(engine.context, message));
+    defer engine.freeValue(converted);
+    const prefix = try sdk.text(engine, "Invalid boundary entries: ");
+    defer engine.freeValue(prefix);
+    try sdk.put(engine, error_value, "error", try engine.checked(c.JS_PiBinaryOperator(engine.context, 0, prefix, converted)));
     try sdk.put(engine, error_value, "stack", if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
     const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
     engine.freeValue(ignored);

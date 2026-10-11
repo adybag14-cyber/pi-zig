@@ -26,6 +26,10 @@ pub fn initialize(engine: *em.Engine, retained: *State) !void {
         .tool_result => retained.replace(engine, .current, try js.spread(engine, original)),
         .request, .headers, .input => retained.replace(engine, .current, c.JS_DupValue(engine.context, original)),
         .resources => retained.replace(engine, .current, try sdk.array(engine)),
+        .boundary => {
+            retained.replace(engine, .current, try sdk.array(engine));
+            retained.replace(engine, .aux, c.pi_js_bool(engine.context, 0));
+        },
         .tool_call, .user_bash => {},
         .generic => unreachable,
     }
@@ -45,13 +49,22 @@ pub fn typeName(kind: dispatch.Kind) [*:0]const u8 {
         .resources => "resources_discover",
         .input => "input",
         .user_bash => "user_bash",
-        .cache, .generic => unreachable,
+        .cache, .boundary, .generic => unreachable,
     };
 }
 pub fn eventType(engine: *em.Engine, retained: *State) !c.JSValue {
-    return if (retained.kind == .cache) sdk.get(engine, retained.get(.parameter0), "type") else sdk.text(engine, std.mem.span(typeName(retained.kind)));
+    return if (retained.kind == .cache or retained.kind == .boundary) sdk.get(engine, retained.get(.parameter0), "type") else sdk.text(engine, std.mem.span(typeName(retained.kind)));
 }
 pub fn prepare(engine: *em.Engine, retained: *State) !void {
+    if (retained.kind == .boundary) {
+        const event = try js.spread(engine, retained.get(.parameter0));
+        errdefer engine.freeValue(event);
+        try sdk.put(engine, event, "entries", c.JS_DupValue(engine.context, retained.get(.current)));
+        try sdk.put(engine, event, "continue", c.JS_DupValue(engine.context, retained.get(.aux)));
+        try sdk.put(engine, event, "context", c.JS_DupValue(engine.context, retained.get(.aux2)));
+        retained.replace(engine, .event, event);
+        return;
+    }
     if (retained.kind == .cache or retained.kind == .tool_call or retained.kind == .user_bash) {
         retained.replace(engine, .event, c.JS_DupValue(engine.context, retained.get(.parameter0)));
         return;
@@ -83,6 +96,14 @@ pub fn prepare(engine: *em.Engine, retained: *State) !void {
 }
 pub fn accept(engine: *em.Engine, retained: *State, result: c.JSValue) !bool {
     switch (retained.kind) {
+        .boundary => {
+            const entries = try optional(engine, result, "entries");
+            defer engine.freeValue(entries);
+            if (!c.JS_IsUndefined(entries)) retained.replace(engine, .current, try sdk.get(engine, result, "entries"));
+            const should_continue = try optional(engine, result, "continue");
+            defer engine.freeValue(should_continue);
+            if (!c.JS_IsUndefined(should_continue)) retained.replace(engine, .aux, try sdk.get(engine, result, "continue"));
+        },
         .cache => {
             const action = try optional(engine, result, "action");
             defer engine.freeValue(action);
@@ -242,6 +263,15 @@ fn collectPaths(engine: *em.Engine, retained: *State, result: c.JSValue, name: [
 }
 pub fn output(engine: *em.Engine, retained: *State) !c.JSValue {
     switch (retained.kind) {
+        .boundary => {
+            const result = try sdk.object(engine);
+            errdefer engine.freeValue(result);
+            try sdk.put(engine, result, "entries", if (retained.boundary_valid) c.JS_DupValue(engine.context, retained.get(.current)) else try sdk.array(engine));
+            try sdk.put(engine, result, "continue", if (retained.boundary_valid) c.JS_DupValue(engine.context, retained.get(.aux)) else c.pi_js_bool(engine.context, 0));
+            try sdk.put(engine, result, "context", c.JS_DupValue(engine.context, retained.get(.aux2)));
+            try sdk.put(engine, result, "valid", c.pi_js_bool(engine.context, @intFromBool(retained.boundary_valid)));
+            return result;
+        },
         .cache, .request => return c.JS_DupValue(engine.context, retained.get(.current)),
         .message => return if (retained.modified) c.JS_DupValue(engine.context, retained.get(.current)) else c.pi_js_undefined(),
         .tool_call, .user_bash => return c.JS_DupValue(engine.context, retained.get(.result)),

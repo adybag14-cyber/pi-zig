@@ -16,7 +16,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
     try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
     const result = engine.evalModule(
         \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
-        \\const missing=['emitBoundary','emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
+        \\const missing=['emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
         \\if(sdkMethodSource.methods.length!==50)throw Error('Source method inventory');
         \\for(const expected of sdkMethodSource.methods){const descriptor=Object.getOwnPropertyDescriptor(ExtensionRunner.prototype,expected.name);
         \\ if(missing.includes(expected.name)){if(descriptor!==undefined)throw Error('unqualified method inventory changed');absent++;continue}
@@ -24,7 +24,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
         \\ const actual={name:fn.name,arity:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String),descriptor:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable}};
         \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));implemented++;
         \\}
-        \\if(implemented!==47||absent!==3)throw Error('partial native method inventory');
+        \\if(implemented!==48||absent!==2)throw Error('partial native method inventory');
     , "sdk-method-metadata-native") catch |err| {
         std.debug.print("SDK method metadata: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
@@ -881,6 +881,78 @@ test "native SDK queue order PUBLIC user bash preserves three original Source535
     }
     try std.testing.expectEqual(@as(usize, 3), index);
     const cleared = try engine.eval("delete globalThis.sdkRunnerUserBashFoundationRows", "sdk-public-user-bash-foundation-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC boundary preserves initial await rebuild invalidation and recovery Source535 cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-boundary-foundation-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-boundary-foundation-554.input.txt"), "sdk-public-boundary-foundation.mjs") catch |err| {
+        std.debug.print("SDK Source535 PUBLIC boundary foundation: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerBoundaryFoundationRows", "sdk-public-boundary-foundation-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-535.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 23), rows.len);
+    try std.testing.expectEqual(@as(usize, 3), actual.value.array.items.len);
+    var index: usize = 0;
+    for (rows) |source| {
+        if (!std.mem.eql(u8, source.object.get("method").?.string, "emitBoundary")) continue;
+        try std.testing.expect(index < actual.value.array.items.len);
+        const observed = actual.value.array.items[index];
+        if (!json.equal(source, observed)) std.debug.print("SDK Source535 boundary complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+        index += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 3), index);
+    const cleared = try engine.eval("delete globalThis.sdkRunnerBoundaryFoundationRows", "sdk-public-boundary-foundation-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC boundary twenty actual Source555 phase getter failure and receiver cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-boundary-phases-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-boundary-phases-555.input.txt"), "sdk-public-boundary-phases.mjs") catch |err| {
+        std.debug.print("SDK Source555 PUBLIC boundary phases: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerBoundaryPhaseRows", "sdk-public-boundary-phases-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-boundary-phases-source-555.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 20), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (!json.equal(source, observed)) std.debug.print("SDK Source555 boundary complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerBoundaryPhaseRows", "sdk-public-boundary-phases-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
