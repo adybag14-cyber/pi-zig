@@ -98,7 +98,11 @@ fn attempt(ctx: *Context, input: []const u8, mime: c.JSValue, opts: c.JSValue) !
             defer engine.freeValue(selected_mime);
             if (!values.truthy(engine, selected_mime)) {
                 engine.freeValue(selected_mime);
-                selected_mime = try values.text(engine, "image/png");
+                const prefix = try values.text(engine, "image/");
+                defer engine.freeValue(prefix);
+                const selected_format = if (c.JS_IsNull(format_value) or c.JS_IsUndefined(format_value)) try values.text(engine, "png") else c.JS_DupValue(engine.context, format_value);
+                defer engine.freeValue(selected_format);
+                selected_mime = try values.concat(engine, &.{ prefix, selected_format });
             }
             return output.create(engine, input, selected_mime, ow, oh, ow, oh, false);
         }
