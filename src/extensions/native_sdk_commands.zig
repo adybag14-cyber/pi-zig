@@ -2,9 +2,14 @@
 const sdk = @import("native_sdk.zig");
 const em = @import("engine.zig");
 pub fn resolve(owner: *sdk.State) !em.c.JSValue {
-    const rows = try @import("native_sdk_resource_owners.zig").sessionExtensionRows(owner.engine, owner.data);
-    defer owner.engine.freeValue(rows);
-    return @import("native_sdk_command_resolution.zig").resolve(owner.engine, rows);
+    const runner = try sdk.get(owner.engine, owner.data, "_sdkCommandRunner");
+    defer owner.engine.freeValue(runner);
+    return @import("native_js_values.zig").invoke(owner.engine, runner, "getRegisteredCommands", &.{});
+}
+pub fn getCommand(owner: *sdk.State, name: em.c.JSValue) !em.c.JSValue {
+    const runner = try sdk.get(owner.engine, owner.data, "_sdkCommandRunner");
+    defer owner.engine.freeValue(runner);
+    return @import("native_js_values.zig").invoke(owner.engine, runner, "getCommand", &.{name});
 }
 pub fn catalog(owner: *sdk.State) !em.c.JSValue {
     const engine = owner.engine;
