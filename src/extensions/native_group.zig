@@ -547,6 +547,7 @@ pub const Group = struct {
         if (caller.sdk_resource_owner and caller.sdk_context == null) return sdk_owners.uninitialized(self.engine);
         var sdk_caller = if (caller.sdk_context != null) try sdk_owners.retainCaller(caller) else null;
         defer if (sdk_caller) |*retained| retained.deinit();
+        if (sdk_caller) |*retained| return @import("native_sdk_commands.zig").catalog(retained.owner);
         var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();

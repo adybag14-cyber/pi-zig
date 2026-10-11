@@ -166,3 +166,48 @@ test "native SDK queue order actual command Maps snapshots complete rows and mut
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order command execution catalogue contexts and reload incarnation match Source504" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-execution-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-command-execution-504.input.txt"), "sdk-command-execution.mjs") catch |err| {
+        std.debug.print("SDK Source504 setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandExecutionRows", "sdk-command-execution-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-execution-source-504.json"));
+    defer expected.deinit();
+    const expected_rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(expected_rows.len, actual.value.array.items.len);
+    for (expected_rows, actual.value.array.items, 0..) |expected_row, actual_row, index| {
+        var fields = expected_row.object.iterator();
+        while (fields.next()) |entry| {
+            // This original Source run automatically chose an unauthenticated
+            // default model. Native's existing factory selects no model. The
+            // bypass must reject without a command call or message; exact
+            // factory/auth/docs-path error parity remains explicitly open.
+            if (index == 0 and std.mem.eql(u8, entry.key_ptr.*, "extra")) {
+                const extra = actual_row.object.get("extra").?;
+                try std.testing.expect(extra.object.get("error") != null);
+                continue;
+            }
+            const observed = actual_row.object.get(entry.key_ptr.*) orelse return error.MissingSource504Field;
+            if (!json.equal(entry.value_ptr.*, observed)) std.debug.print("SDK Source504 row{d} field{s} actual={s}\n", .{ index, entry.key_ptr.*, raw });
+            try std.testing.expect(json.equal(entry.value_ptr.*, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkCommandExecutionRows", "sdk-command-execution-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

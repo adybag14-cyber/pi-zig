@@ -6,11 +6,18 @@ const sdk = @import("native_sdk.zig");
 const c = em.c;
 const Field = enum(c_int) { ui, mode, hasUI, cwd, sessionManager, modelRegistry, model, scopedModels, thinkingLevel, isIdle, isProjectTrusted, signal, abort, hasPendingMessages, shutdown, getContextUsage, compact, getSystemPrompt, tools, executeTool };
 pub fn create(engine: *em.Engine, session: c.JSValue, generation: c.JSValue, runtime_id: c.JSValue, tool_call_id: c.JSValue, default_signal: c.JSValue) !c.JSValue {
+    return createContext(engine, session, generation, runtime_id, tool_call_id, default_signal, false);
+}
+pub fn createCommand(engine: *em.Engine, session: c.JSValue, generation: c.JSValue, runtime_id: c.JSValue) !c.JSValue {
+    return createContext(engine, session, generation, runtime_id, c.pi_js_undefined(), c.pi_js_undefined(), true);
+}
+fn createContext(engine: *em.Engine, session: c.JSValue, generation: c.JSValue, runtime_id: c.JSValue, tool_call_id: c.JSValue, default_signal: c.JSValue, comptime command: bool) !c.JSValue {
     const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
     var data = [_]c.JSValue{ session, generation, runtime_id, tool_call_id, default_signal };
     inline for (std.meta.fields(Field)) |field| {
         const kind: Field = @enumFromInt(field.value);
+        if (command and (kind == .tools or kind == .executeTool)) continue;
         const getter = switch (kind) {
             .ui, .mode, .hasUI, .cwd, .sessionManager, .modelRegistry, .model, .scopedModels, .thinkingLevel, .signal, .tools => true,
             else => false,
@@ -24,7 +31,34 @@ pub fn create(engine: *em.Engine, session: c.JSValue, generation: c.JSValue, run
             if (c.JS_DefinePropertyGetSet(engine.context, result, atom, function, c.pi_js_undefined(), flags) < 0) return error.JavaScriptException;
         } else if (c.JS_DefinePropertyValueStr(engine.context, result, field.name, function, flags | (if (kind == .executeTool) @as(c_int, 0) else c.JS_PROP_WRITABLE)) < 0) return error.JavaScriptException;
     }
+    if (command) inline for (std.meta.fields(Command)) |field| {
+        const kind: Command = @enumFromInt(field.value);
+        const arity: c_int = switch (kind) {
+            .newSession => 1,
+            .fork, .navigateTree, .switchSession => 2,
+            else => 0,
+        };
+        try sdk.put(engine, result, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, commandInvoke, "", arity, field.value, data.len, &data)));
+    };
     return result;
+}
+const Command = enum(c_int) { getSystemPromptOptions, waitForIdle, newSession, fork, navigateTree, switchSession, reload };
+fn commandInvoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return commandValue(engine, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}, data) catch |err| sdk.fail(engine, err);
+}
+fn commandValue(engine: *em.Engine, kind: Command, args: []const c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+    const owner = try originalOwner(engine, data);
+    const actions = try sdk.get(engine, owner.data, "extension_commandContextActions");
+    defer engine.freeValue(actions);
+    if (kind != .getSystemPromptOptions and kind != .waitForIdle and c.JS_IsObject(actions)) return sdk.invoke(engine, actions, @tagName(kind), args);
+    return switch (kind) {
+        .waitForIdle, .newSession => sdk.invoke(engine, data[0], @tagName(kind), args),
+        // Preserve existing explicit gaps; exposing the actual method surface
+        // must not invent successful session replacement or reload behavior.
+        .getSystemPromptOptions => error.NativeSDKSystemPromptOptionsUnavailable,
+        else => error.NativeSDKCommandContextActionUnavailable,
+    };
 }
 fn originalOwner(engine: *em.Engine, data: [*c]c.JSValue) !*sdk.State {
     const owner = sdk.state(engine, data[0]) catch return stale(engine);

@@ -1,0 +1,845 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "basic-and-bypass",
+      "before": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:basic-and-bypass>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "after": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:basic-and-bypass>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        {
+          "kind": "handler",
+          "args": " value \t ",
+          "receiver": {
+            "name": "foo",
+            "invocationName": "foo",
+            "keys": [
+              "name",
+              "sourceInfo",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        [
+          "preflight",
+          "handled",
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "returnedUndefined": true
+      },
+      "extra": {
+        "error": {
+          "name": "Error",
+          "message": "No API key found for the selected model.\n\nUse /login to log into a provider via OAuth or API key. See:\n  C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\providers.md\n  C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\packages\\coding-agent\\docs\\models.md"
+        }
+      },
+      "messages": 0
+    },
+    {
+      "id": "async-preflight",
+      "before": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:async-preflight>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "after": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:async-preflight>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        {
+          "kind": "handler",
+          "args": " value \t ",
+          "receiver": {
+            "name": "foo",
+            "invocationName": "foo",
+            "keys": [
+              "name",
+              "sourceInfo",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        "handler.before-await",
+        "handler.after-await",
+        [
+          "preflight",
+          "handled",
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "returnedUndefined": true
+      },
+      "extra": null,
+      "messages": 0
+    },
+    {
+      "id": "map-values-catalogue",
+      "before": [
+        {
+          "name": "alias:1",
+          "description": "mutated",
+          "source": "extension"
+        },
+        {
+          "name": "alias:2",
+          "description": "second",
+          "source": "extension"
+        }
+      ],
+      "after": [
+        {
+          "name": "alias:1",
+          "description": "mutated",
+          "source": "extension"
+        },
+        {
+          "name": "alias:2",
+          "description": "second",
+          "source": "extension"
+        }
+      ],
+      "trace": [
+        {
+          "kind": "handler",
+          "args": " value \t ",
+          "receiver": {
+            "name": "alias",
+            "invocationName": "alias:1",
+            "keys": [
+              "name",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        [
+          "preflight",
+          "handled",
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "returnedUndefined": true
+      },
+      "extra": null,
+      "messages": 0
+    },
+    {
+      "id": "throwing-command",
+      "before": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:throwing-command>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "after": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:throwing-command>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        {
+          "kind": "handler",
+          "args": " value \t ",
+          "receiver": {
+            "name": "foo",
+            "invocationName": "foo",
+            "keys": [
+              "name",
+              "sourceInfo",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        "reason.toString",
+        [
+          "preflight",
+          "handled",
+          true
+        ],
+        {
+          "kind": "handler",
+          "args": "",
+          "receiver": {
+            "name": "foo",
+            "invocationName": "foo",
+            "keys": [
+              "name",
+              "sourceInfo",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        "reason.toString"
+      ],
+      "errors": [
+        {
+          "extensionPath": "command:foo",
+          "event": "command",
+          "error": "plain reason"
+        },
+        {
+          "extensionPath": "command:foo",
+          "event": "command",
+          "error": "plain reason"
+        }
+      ],
+      "outcome": {
+        "returnedUndefined": true
+      },
+      "extra": {
+        "error": {},
+        "identity": true
+      },
+      "messages": 0
+    },
+    {
+      "id": "during-streaming",
+      "before": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:during-streaming>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "after": [
+        {
+          "name": "foo",
+          "description": "original",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:during-streaming>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        {
+          "kind": "handler",
+          "args": " value \t ",
+          "receiver": {
+            "name": "foo",
+            "invocationName": "foo",
+            "keys": [
+              "name",
+              "sourceInfo",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "sameRegistered": false
+          },
+          "context": {
+            "keys": [
+              "ui",
+              "mode",
+              "hasUI",
+              "cwd",
+              "sessionManager",
+              "modelRegistry",
+              "model",
+              "scopedModels",
+              "thinkingLevel",
+              "isIdle",
+              "isProjectTrusted",
+              "signal",
+              "abort",
+              "hasPendingMessages",
+              "shutdown",
+              "getContextUsage",
+              "compact",
+              "getSystemPrompt",
+              "getSystemPromptOptions",
+              "waitForIdle",
+              "newSession",
+              "fork",
+              "navigateTree",
+              "switchSession",
+              "reload"
+            ],
+            "sessionId": true,
+            "hasUI": false,
+            "commandMethods": [
+              {
+                "name": "getSystemPromptOptions",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "waitForIdle",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              },
+              {
+                "name": "newSession",
+                "type": "function",
+                "functionName": "",
+                "length": 1
+              },
+              {
+                "name": "fork",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "navigateTree",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "switchSession",
+                "type": "function",
+                "functionName": "",
+                "length": 2
+              },
+              {
+                "name": "reload",
+                "type": "function",
+                "functionName": "",
+                "length": 0
+              }
+            ]
+          }
+        },
+        [
+          "preflight",
+          "handled",
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "returnedUndefined": true
+      },
+      "extra": null,
+      "messages": 0
+    },
+    {
+      "id": "reload-incarnation",
+      "distinctArray": true,
+      "oldCatalogue": [
+        {
+          "name": "old-name",
+          "description": "old mutated",
+          "source": "extension"
+        }
+      ],
+      "newCatalogue": [
+        {
+          "name": "foo",
+          "description": "phase2",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:reload-incarnation>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        {
+          "tag": "old mutation",
+          "args": "old",
+          "receiver": "old-name"
+        },
+        {
+          "tag": 2,
+          "args": "new",
+          "receiver": "foo"
+        },
+        {
+          "tag": 2,
+          "args": "survives",
+          "receiver": "foo"
+        }
+      ],
+      "oldApiAfterDispose": {
+        "error": {
+          "name": "Error",
+          "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+        }
+      },
+      "newAfterOldDispose": [
+        {
+          "name": "foo",
+          "description": "phase2",
+          "source": "extension",
+          "sourceInfo": {
+            "path": "<inline:reload-incarnation>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ]
+    }
+  ]
+}
