@@ -697,3 +697,49 @@ test "native SDK queue order PUBLIC shortcuts reserved precedence diagnostics ge
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC eight real async reducers preserve all fourteen selected Source535 cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-reducers-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-reducers-540.input.txt"), "sdk-public-reducers.mjs") catch |err| {
+        std.debug.print("SDK Source535 PUBLIC reducers setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerReducerRows", "sdk-public-reducers-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-535.json"));
+    defer expected.deinit();
+    const methods = .{ "emitCacheWarmingDecision", "emitMessageEnd", "emitToolResult", "emitToolCall", "emitBeforeProviderRequest", "emitBeforeProviderHeaders", "emitResourcesDiscover", "emitInput" };
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 23), rows.len);
+    try std.testing.expectEqual(@as(usize, 14), actual.value.array.items.len);
+    var index: usize = 0;
+    for (rows) |source| {
+        var selected = false;
+        inline for (methods) |name| if (std.mem.eql(u8, name, source.object.get("method").?.string)) {
+            selected = true;
+        };
+        if (!selected) continue;
+        try std.testing.expect(index < actual.value.array.items.len);
+        const observed = actual.value.array.items[index];
+        if (!json.equal(source, observed)) std.debug.print("SDK Source535 selected complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+        index += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 14), index);
+    // The nine original Source cases for boundary/userBash/context/agentStart
+    // remain immutable in the capture. Their four bodies are still absent.
+    const cleared = try engine.eval("delete globalThis.sdkRunnerReducerRows", "sdk-public-reducers-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

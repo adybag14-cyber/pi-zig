@@ -1,21 +1,27 @@
-//! Real async public emit with intrinsic await and supplied ordinary iterators.
+//! Shared private runtime for actual public emit and eight typed reducers.
+//! Shares intrinsic await ownership while preserving eight real reducer bodies.
 const std = @import("std");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const c = em.c;
+const reducers = @import("native_sdk_public_runner_reducers.zig");
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
-const Root = enum { runner, event, context, extension, result, resolve, reject };
-const State = struct {
+pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input };
+pub const Root = enum { runner, event, context, extension, result, resolve, reject, parameter0, parameter1, parameter2, parameter3, current, aux, aux2 };
+pub const State = struct {
     allocator: std.mem.Allocator,
-    values: [7]c.JSValue,
+    values: [std.meta.fields(Root).len]c.JSValue,
+    kind: Kind,
+    modified: bool = false,
+    early_return: bool = false,
     outer: ?js.Iterator = null,
     inner: ?js.Iterator = null,
     finished: bool = false,
-    fn get(self: *State, root: Root) c.JSValue {
+    pub fn get(self: *State, root: Root) c.JSValue {
         return self.values[@intFromEnum(root)];
     }
-    fn replace(self: *State, engine: *em.Engine, root: Root, owned: c.JSValue) void {
+    pub fn replace(self: *State, engine: *em.Engine, root: Root, owned: c.JSValue) void {
         engine.freeValue(self.get(root));
         self.values[@intFromEnum(root)] = owned;
     }
@@ -48,18 +54,26 @@ fn mark(runtime: ?*c.JSRuntime, owner: c.JSValue, callback: ?*const c.JS_MarkFun
         c.JS_MarkValue(runtime, iterator.next_function, callback);
     }
 }
-fn create(engine: *em.Engine, runner: c.JSValue, event: c.JSValue, functions: [2]c.JSValue) !c.JSValue {
-    var class: c.JSClassID = 0;
-    _ = c.JS_NewClassID(engine.runtime, &class);
-    const definition: c.JSClassDef = .{ .class_name = "Native public emit continuation", .finalizer = finalize, .gc_mark = mark };
-    if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
-    const owner = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(class)));
+fn create(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: Kind, functions: [2]c.JSValue) !c.JSValue {
+    if (engine.native_sdk_public_emit_class == 0) {
+        var class: c.JSClassID = 0;
+        _ = c.JS_NewClassID(engine.runtime, &class);
+        const definition: c.JSClassDef = .{ .class_name = "Native public emit continuation", .finalizer = finalize, .gc_mark = mark };
+        if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+        engine.native_sdk_public_emit_class = class;
+    }
+    const owner = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(engine.native_sdk_public_emit_class)));
     errdefer engine.freeValue(owner);
     const retained = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(retained);
-    retained.* = .{ .allocator = engine.gpa, .values = .{
-        c.JS_DupValue(engine.context, runner), c.JS_DupValue(engine.context, event), c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), c.JS_DupValue(engine.context, functions[0]), c.JS_DupValue(engine.context, functions[1]),
-    } };
+    var values: [std.meta.fields(Root).len]c.JSValue = undefined;
+    for (&values) |*value| value.* = c.pi_js_undefined();
+    values[@intFromEnum(Root.runner)] = c.JS_DupValue(engine.context, runner);
+    values[@intFromEnum(Root.event)] = if (args.len > 0) c.JS_DupValue(engine.context, args[0]) else c.pi_js_undefined();
+    values[@intFromEnum(Root.resolve)] = c.JS_DupValue(engine.context, functions[0]);
+    values[@intFromEnum(Root.reject)] = c.JS_DupValue(engine.context, functions[1]);
+    for (args[0..@min(args.len, 4)], 0..) |argument, index| values[@intFromEnum(Root.parameter0) + index] = c.JS_DupValue(engine.context, argument);
+    retained.* = .{ .allocator = engine.gpa, .values = values, .kind = kind };
     if (c.JS_SetOpaque(owner, retained) < 0) {
         for (retained.values) |value| engine.freeValue(value);
         return error.OutOfMemory;
@@ -77,11 +91,14 @@ pub fn before(engine: *em.Engine, event: c.JSValue) !c.JSValue {
     return c.pi_js_bool(engine.context, 0);
 }
 pub fn emit(engine: *em.Engine, runner: c.JSValue, event: c.JSValue) !c.JSValue {
+    return run(engine, runner, &.{event}, .generic);
+}
+pub fn run(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind: Kind) !c.JSValue {
     var functions: [2]c.JSValue = undefined;
     const promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     errdefer engine.freeValue(promise);
     defer for (functions) |function| engine.freeValue(function);
-    const owner = create(engine, runner, event, functions) catch |err| {
+    const owner = create(engine, runner, args, kind, functions) catch |err| {
         const reason = captureReason(engine, err);
         defer engine.freeValue(reason);
         const ignored = try js.call(engine, functions[1], c.pi_js_undefined(), &.{reason});
@@ -95,9 +112,10 @@ pub fn emit(engine: *em.Engine, runner: c.JSValue, event: c.JSValue) !c.JSValue 
 fn start(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
     retained.replace(engine, .context, try js.invoke(engine, retained.get(.runner), "createContext", &.{}));
+    if (retained.kind != .generic) try reducers.initialize(engine, retained);
     const extensions = try sdk.get(engine, retained.get(.runner), "extensions");
     defer engine.freeValue(extensions);
-    const event_type = try sdk.get(engine, retained.get(.event), "type");
+    const event_type = if (retained.kind == .generic) try sdk.get(engine, retained.get(.event), "type") else try reducers.eventType(engine, retained);
     defer engine.freeValue(event_type);
     const method = try sdk.get(engine, extensions, "map");
     defer engine.freeValue(method);
@@ -138,7 +156,8 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
         if (retained.inner) |*iterator| {
             if (try iterator.next()) |handler| {
                 defer engine.freeValue(handler);
-                const value = js.call(engine, handler, c.pi_js_undefined(), &.{ retained.get(.event), retained.get(.context) }) catch |err| {
+                const value = invokeHandler(engine, retained, handler) catch |err| {
+                    if (retained.kind == .tool_call) return err;
                     const reason = captureReason(engine, err);
                     defer engine.freeValue(reason);
                     try report(engine, retained, reason);
@@ -146,13 +165,20 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
                 };
                 defer engine.freeValue(value);
                 const promise = engine.checked(c.JS_PiPromiseResolve(engine.context, value)) catch |err| {
+                    if (retained.kind == .tool_call) return err;
                     const reason = captureReason(engine, err);
                     defer engine.freeValue(reason);
                     try report(engine, retained, reason);
                     continue;
                 };
                 defer engine.freeValue(promise);
-                try awaitHandler(engine, owner, promise);
+                awaitHandler(engine, owner, promise) catch |err| {
+                    if (retained.kind == .tool_call) return err;
+                    const reason = captureReason(engine, err);
+                    defer engine.freeValue(reason);
+                    try report(engine, retained, reason);
+                    continue;
+                };
                 return;
             }
             iterator.deinit();
@@ -160,7 +186,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
         }
         if (try retained.outer.?.next()) |row| {
             defer engine.freeValue(row);
-            retained.replace(engine, .extension, try sdk.get(engine, row, "ext"));
+            if (retained.kind != .tool_call) retained.replace(engine, .extension, try sdk.get(engine, row, "ext"));
             const handlers = try sdk.get(engine, row, "handlers");
             defer engine.freeValue(handlers);
             const symbol = try engine.checked(JS_GetIteratorSymbol(engine.context));
@@ -170,6 +196,10 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
             try finish(engine, owner);
         }
     }
+}
+fn invokeHandler(engine: *em.Engine, retained: *State, handler: c.JSValue) !c.JSValue {
+    if (retained.kind != .generic) try reducers.prepare(engine, retained);
+    return js.call(engine, handler, c.pi_js_undefined(), &.{ retained.get(.event), retained.get(.context) });
 }
 fn awaitHandler(engine: *em.Engine, owner: c.JSValue, promise: c.JSValue) !void {
     var roots = [_]c.JSValue{owner};
@@ -193,9 +223,14 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     const retained = state(owner);
     if (retained.finished) return;
     if (rejected) {
+        if (retained.kind == .tool_call) {
+            _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+            return js.capture(engine);
+        }
         try report(engine, retained, value);
     } else {
         const cancel = accept(engine, retained, value) catch |err| blk: {
+            if (retained.kind == .tool_call) return err;
             const reason = captureReason(engine, err);
             defer engine.freeValue(reason);
             try report(engine, retained, reason);
@@ -206,6 +241,7 @@ fn resumeValue(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
     try advance(engine, owner);
 }
 fn accept(engine: *em.Engine, retained: *State, value: c.JSValue) !bool {
+    if (retained.kind != .generic) return reducers.accept(engine, retained, value);
     const before_event = try js.invoke(engine, retained.get(.runner), "isSessionBeforeEvent", &.{retained.get(.event)});
     defer engine.freeValue(before_event);
     if (c.JS_ToBool(engine.context, before_event) != 1 or c.JS_ToBool(engine.context, value) != 1) return false;
@@ -222,11 +258,8 @@ fn instanceOfError(engine: *em.Engine, reason: c.JSValue) !bool {
     return result != 0;
 }
 fn report(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
-    const message = if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "message") else blk: {
-        const string = try js.global(engine, "String");
-        defer engine.freeValue(string);
-        break :blk try js.call(engine, string, c.pi_js_undefined(), &.{reason});
-    };
+    if (retained.kind == .cache or retained.kind == .input) return reportInline(engine, retained, reason);
+    const message = try errorMessage(engine, reason);
     defer engine.freeValue(message);
     const stack = if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined();
     defer engine.freeValue(stack);
@@ -235,18 +268,42 @@ fn report(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
     const error_value = try sdk.object(engine);
     defer engine.freeValue(error_value);
     try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
-    try sdk.put(engine, error_value, "event", try sdk.get(engine, retained.get(.event), "type"));
+    try sdk.put(engine, error_value, "event", try reportEventType(engine, retained));
     try sdk.put(engine, error_value, "error", c.JS_DupValue(engine.context, message));
     try sdk.put(engine, error_value, "stack", c.JS_DupValue(engine.context, stack));
     const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
     engine.freeValue(ignored);
 }
+fn errorMessage(engine: *em.Engine, reason: c.JSValue) !c.JSValue {
+    return if (try instanceOfError(engine, reason)) sdk.get(engine, reason, "message") else blk: {
+        const string = try js.global(engine, "String");
+        defer engine.freeValue(string);
+        break :blk try js.call(engine, string, c.pi_js_undefined(), &.{reason});
+    };
+}
+fn reportEventType(engine: *em.Engine, retained: *State) !c.JSValue {
+    return if (retained.kind == .generic) sdk.get(engine, retained.get(.event), "type") else reducers.eventType(engine, retained);
+}
+fn reportInline(engine: *em.Engine, retained: *State, reason: c.JSValue) !void {
+    const method = try sdk.get(engine, retained.get(.runner), "emitError");
+    defer engine.freeValue(method);
+    const error_value = try sdk.object(engine);
+    defer engine.freeValue(error_value);
+    try sdk.put(engine, error_value, "extensionPath", try sdk.get(engine, retained.get(.extension), "path"));
+    try sdk.put(engine, error_value, "event", try reportEventType(engine, retained));
+    try sdk.put(engine, error_value, "error", try errorMessage(engine, reason));
+    try sdk.put(engine, error_value, "stack", if (try instanceOfError(engine, reason)) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
+    const ignored = try js.call(engine, method, retained.get(.runner), &.{error_value});
+    engine.freeValue(ignored);
+}
 fn finish(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
+    const result = if (retained.kind == .generic) c.JS_DupValue(engine.context, retained.get(.result)) else try reducers.output(engine, retained);
+    defer engine.freeValue(result);
     if (retained.inner) |*iterator| try iterator.close();
     if (retained.outer) |*iterator| try iterator.close();
     retained.finished = true;
-    const ignored = try js.call(engine, retained.get(.resolve), c.pi_js_undefined(), &.{retained.get(.result)});
+    const ignored = try js.call(engine, retained.get(.resolve), c.pi_js_undefined(), &.{result});
     engine.freeValue(ignored);
 }
 fn captureReason(engine: *em.Engine, err: anyerror) c.JSValue {
