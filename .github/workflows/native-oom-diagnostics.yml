@@ -2,13 +2,13 @@ name: Native allocation identity and mandatory cleanup
 
 on:
   push:
-    branches: [work/native-native-oom-20261011]
+    branches: [work/native-oom-20261011]
 
 permissions:
   contents: read
 
 concurrency:
-  group: native-native-oom-${{ github.ref }}
+  group: native-oom-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
