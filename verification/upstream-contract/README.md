@@ -7,7 +7,7 @@ review. Dirty tracked source, malformed identities, duplicate paths, unsupported
 path encoding, source drift and commit changes fail explicitly.
 
 Run `zig build maintenance -- verify-upstream-contract <upstream-checkout>
-verification/upstream-contract/tree-42a3497d.json` before reviewing a new target.
+verification/upstream-contract/tree-89e5c2c0.json` before reviewing a new target.
 The command prints all changed paths and fails with UpstreamContractDrift.
 Even a different commit with an identical tree requires provenance review.
 After review and original/native contract regression updates, create a new
@@ -20,7 +20,7 @@ implementation and process/ownership/parity gates. Untracked local files are
 outside the upstream Git contract. Invalid UTF-8 paths fail instead of being
 silently normalized. Case-distinct paths are retained as distinct Git paths.
 
-The selected migration target is now
+The preceding migration target was
 `42a3497d03ad17e308a2299fa824727894f2c0ec` (Pi 1.1.0 plus newer commits).
 The native capture command records all 1,988 tracked paths and verifies them
 against the clean upstream checkout. Previous immutable manifests remain
@@ -44,3 +44,18 @@ This selected-source drift baseline records the migration target. The native
 migration is still in progress; changing this baseline does not certify the
 remaining SDK, UI, transport or public-API contracts, enable the native default,
 or replace the separate release-parity guard.
+
+The current migration target is
+`89e5c2c075535e2f427c30fc74720d65b2944ff9` (Pi 1.1.0 plus newer commits).
+`tree-89e5c2c0.json` records its complete tracked tree using the native capture
+tool against a clean detached upstream checkout. Earlier records remain intact.
+Subsequent upstream changes therefore remain visible as explicit drift.
+
+The newer source includes retention timing, custom input entries, image worker
+boundaries, the `pi.dev` schema URLs, omission of thinking from compaction
+summaries, and persistent compaction failure reporting. Each behavior needs its
+own source comparison and native lifecycle checks. The schema projection is
+generated from the immutable archive; the other migrations have independent
+implementation and qualification status. Updating this structural target does
+not certify full compatibility, change the native default, or authorize bridge
+removal or release.

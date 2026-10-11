@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: mlugg/setup-zig@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2
         with:
           version: 0.16.0
           use-cache: false
@@ -33,4 +33,4 @@ jobs:
       - name: Fetch current upstream authority
         run: git clone --depth=1 --branch main https://github.com/earendil-works/pi.git "$RUNNER_TEMP/pi-upstream-contract"
       - name: Detect all tracked upstream contract changes
-        run: zig build maintenance -- verify-upstream-contract "$RUNNER_TEMP/pi-upstream-contract" verification/upstream-contract/tree-42a3497d.json
+        run: zig build maintenance -- verify-upstream-contract "$RUNNER_TEMP/pi-upstream-contract" verification/upstream-contract/tree-89e5c2c0.json
