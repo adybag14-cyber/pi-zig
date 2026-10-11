@@ -42,4 +42,13 @@ test "native binary operators preserve guest coercion BigInt exception and borro
     try std.testing.expect(c.JS_IsString(dimensions.width));
     if (c.JS_ToFloat64(engine.context, &numeric, dimensions.height) < 0) return js.capture(engine);
     try std.testing.expectEqual(@as(f64, 3), numeric);
+    const quality_options = try engine.eval("({jpegQuality:85})", "image-quality-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(quality_options);
+    const qualities = try image_math.qualitySteps(engine, quality_options);
+    defer engine.freeValue(qualities);
+    const encoded = try js.invoke(engine, qualities, "join", &.{});
+    defer engine.freeValue(encoded);
+    const text = try engine.toString(encoded);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("85,70,55,40", text);
 }
