@@ -253,7 +253,20 @@ test "native terminal client chunks input beyond the protocol frame limit withou
     terminal.write(payload);
     deadline = std.Io.Clock.awake.now(io).addDuration(.fromSeconds(10));
     while (try capture.length() < payload.len + 5) {
-        if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.TerminalPayloadTimeout;
+        if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) {
+            capture.mutex.lockUncancelable(io);
+            defer capture.mutex.unlock(io);
+            const ready = capture.bytes.items.len >= 5 and std.mem.eql(u8, capture.bytes.items[0..5], "READY");
+            const received = if (ready) capture.bytes.items[5..] else capture.bytes.items;
+            const compared = @min(received.len, payload.len);
+            var mismatch: ?usize = null;
+            for (received[0..compared], payload[0..compared], 0..) |actual, expected, index| if (actual != expected) {
+                mismatch = index;
+                break;
+            };
+            std.debug.print("TERMINAL_PAYLOAD_TIMEOUT ready={} received={d} expected={d} first_mismatch={?d}\n", .{ ready, received.len, payload.len, mismatch });
+            return error.TerminalPayloadTimeout;
+        }
         try io.sleep(.fromMilliseconds(1), .awake);
     }
     capture.mutex.lockUncancelable(io);
