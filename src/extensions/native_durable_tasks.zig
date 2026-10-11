@@ -3797,3 +3797,29 @@ fn definitionAllocationExercise(gpa: std.mem.Allocator) !void {
 test "native durable VM task definitions scheduler subscriptions and Session leases roll back every GPA failure" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, definitionAllocationExercise, .{});
 }
+
+test "native durable VM actual cdaf settings phase resolves Source field order after public open" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-cdaf-settings-phase-program.txt"), "actual-cdaf-settings-phase") catch |err| {
+        diagnoseSourceFailure(engine, "cdaf-settings-phase", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "settingsPhaseTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-cdaf-settings-phase-source.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual cdaf settings phase trace: {s}\n", .{encoded});
+        return error.SourceCdafSettingsPhaseMismatch;
+    }
+}

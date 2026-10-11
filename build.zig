@@ -575,6 +575,8 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-ea-open-failure", "Replay actual Source failed-open cleanup and original cancellation identity").dependOn(&b.addRunArtifact(ea_open_failure_tests).step);
     const cdaf_retention_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf public document retention"} });
     b.step("test-native-durable-cdaf-retention", "Replay latest Source public document retention and observer reload behavior").dependOn(&b.addRunArtifact(cdaf_retention_tests).step);
+    const cdaf_retention_phase_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{ "actual cdaf public document retention", "actual cdaf settings phase" } });
+    b.step("test-native-durable-cdaf-retention-phase", "Preserve public retention and compare actual Source getter phases and field order").dependOn(&b.addRunArtifact(cdaf_retention_phase_tests).step);
     const cdaf_retention_pin_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf retention pins"} });
     b.step("test-native-durable-cdaf-retention-pins", "Replay actual Source observer incarnation pins unload and held-transaction timer expiry").dependOn(&b.addRunArtifact(cdaf_retention_pin_tests).step);
     const public_open_lifecycle_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native durable public open lifecycle"} });
