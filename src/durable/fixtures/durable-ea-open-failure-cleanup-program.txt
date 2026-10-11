@@ -1,0 +1,11 @@
+import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';
+import{BACKGROUND_CONTEXT,withAbortSignal}from'@earendil-works/chord/context';
+const rows=[];
+for(const mode of['scan-error','scan-raw','scan-and-close-error','preabort','abort-after-return']){
+ const backing=new MemoryStorage(),controller=new AbortController(),context=withAbortSignal(controller.signal,BACKGROUND_CONTEXT),openReason=mode==='scan-error'?new Error('open-scan-error'):{kind:'open-reason',mode},closeReason={kind:'close-reason'},reports=[],events=[];let closes=0,scans=0,closeSignal,closeRetainsContext=false;
+ const raw={};for(const name of['mintId','commit','conversation','task','submission','entry','findDocument','document','scanDocuments','scanConversations','scanTasks','scanEntries','scanSubmissions','submissionByRequest','findLatestHeadMarker','close'])raw[name]=async function(...args){if(name==='scanTasks'){scans++;events.push('scanTasks');if(mode.startsWith('scan'))throw openReason}if(name==='close'){closes++;events.push('close');closeSignal=args[0].abortSignal===undefined;closeRetainsContext=args[0]!==context;if(mode==='scan-and-close-error')throw closeReason}return backing[name](...args)};
+ if(mode==='preabort')controller.abort(openReason);
+ let opening=Harness.open(raw,{models:{},registry:createRegistry(),onReport:e=>reports.push(e)},context);events.push('returned');if(mode==='abort-after-return')controller.abort(openReason);let caught;try{const harness=await opening;events.push('opened');await harness.close(BACKGROUND_CONTEXT)}catch(error){caught=error;events.push('caught')}
+ rows.push({mode,promise:opening instanceof Promise,originalIdentity:caught===openReason,errorName:caught?.name??null,errorMessage:caught?.message??null,closes,scans,closeWithoutSignal:closeSignal??null,closeDerivedContext:closeRetainsContext,reports:reports.map(e=>({isClose:e===closeReason,isOpen:e===openReason,name:e?.name??null})),events});
+}
+globalThis.openFailureTrace={source:'ea448f454af474f3e2fe9733b331e17b0662f5d6',rows};

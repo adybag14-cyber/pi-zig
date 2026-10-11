@@ -1949,6 +1949,31 @@ test "native durable VM actual ea open returns Promise before held owner scope S
         return error.SourceOpenScopePromiseMismatch;
     }
 }
+test "native durable VM actual ea open failure cleanup preserves original cause and abort-free close" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-open-failure-cleanup-program.txt"), "actual-ea-open-failure-cleanup") catch |err| {
+        diagnoseSourceFailure(engine, "open-failure-cleanup", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "openFailureTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-open-failure-cleanup.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea open failure cleanup trace: {s}\n", .{encoded});
+        return error.SourceOpenFailureCleanupMismatch;
+    }
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
