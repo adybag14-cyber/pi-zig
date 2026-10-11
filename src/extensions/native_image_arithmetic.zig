@@ -29,6 +29,19 @@ pub fn scaleDimension(engine: *js.Engine, dimension: c.JSValue, limit: c.JSValue
     defer engine.freeValue(quotient);
     return js.call(engine, round, object, &.{quotient});
 }
+fn scaleOption(engine: *js.Engine, dimension: c.JSValue, options: c.JSValue, name: [*:0]const u8, divisor: c.JSValue) !c.JSValue {
+    const object = try js.global(engine, "Math");
+    defer engine.freeValue(object);
+    const round = try js.get(engine, object, "round");
+    defer engine.freeValue(round);
+    const limit = try js.get(engine, options, name);
+    defer engine.freeValue(limit);
+    const product = try binary(engine, .multiply, dimension, limit);
+    defer engine.freeValue(product);
+    const quotient = try binary(engine, .divide, product, divisor);
+    defer engine.freeValue(quotient);
+    return js.call(engine, round, object, &.{quotient});
+}
 pub const Dimensions = struct {
     width: c.JSValue,
     height: c.JSValue,
@@ -45,9 +58,7 @@ pub fn initialDimensions(engine: *js.Engine, original_width: c.JSValue, original
     const first_limit = try js.get(engine, options, "maxWidth");
     defer engine.freeValue(first_limit);
     if (try compare(engine, .greater, result.width, first_limit)) {
-        const used_limit = try js.get(engine, options, "maxWidth");
-        defer engine.freeValue(used_limit);
-        const height = try scaleDimension(engine, result.height, used_limit, result.width);
+        const height = try scaleOption(engine, result.height, options, "maxWidth", result.width);
         engine.freeValue(result.height);
         result.height = height;
         const assigned = try js.get(engine, options, "maxWidth");
@@ -57,9 +68,7 @@ pub fn initialDimensions(engine: *js.Engine, original_width: c.JSValue, original
     const second_limit = try js.get(engine, options, "maxHeight");
     defer engine.freeValue(second_limit);
     if (try compare(engine, .greater, result.height, second_limit)) {
-        const used_limit = try js.get(engine, options, "maxHeight");
-        defer engine.freeValue(used_limit);
-        const width = try scaleDimension(engine, result.width, used_limit, result.height);
+        const width = try scaleOption(engine, result.width, options, "maxHeight", result.height);
         engine.freeValue(result.width);
         result.width = width;
         const assigned = try js.get(engine, options, "maxHeight");
