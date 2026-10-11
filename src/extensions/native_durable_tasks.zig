@@ -1880,7 +1880,7 @@ test "native durable VM failed ownership observer keeps original Session failure
     try std.testing.expect(manager.publicationPending());
     try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
 }
-fn partialOwnerReplay(program: []const u8, golden: []const u8, name: []const u8) !void {
+fn partialOwnerReplay(program: []const u8, golden: []const u8, name: [:0]const u8) !void {
     const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
