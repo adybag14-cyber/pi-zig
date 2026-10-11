@@ -2,7 +2,7 @@ name: Native composed SDK locale and lifecycle qualification
 
 on:
   push:
-    branches: [work/native-composed-20261011]
+    branches: [work/native-composed-20261011, work/native-windows-main-rs-20261011]
 
 permissions:
   contents: read
@@ -15,12 +15,9 @@ jobs:
   platform:
     strategy:
       fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        mode: [Debug, ReleaseSafe]
-        family: [vm, processes]
+      matrix: ${{ fromJSON(github.ref_name == 'work/native-windows-main-rs-20261011' && '{"include":[{"os":"windows-latest","mode":"ReleaseSafe","family":"processes"}]}' || '{"os":["windows-latest","ubuntu-latest","macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["vm","processes"]}') }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: ${{ matrix.os == 'windows-latest' && matrix.mode == 'ReleaseSafe' && matrix.family == 'processes' && 35 || 25 }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -322,7 +319,9 @@ jobs:
         shell: pwsh
         # Main's cold compiler graph has its own job; every original process
         # test and the 120-second test guard remain required.
-        timeout-minutes: 22
+        # The observed Windows ReleaseSafe cold Main compile exceeded 22m
+        # after 12m of dependency work; allow 32m for this compiler workload.
+        timeout-minutes: ${{ matrix.os == 'windows-latest' && matrix.mode == 'ReleaseSafe' && 32 || 22 }}
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
