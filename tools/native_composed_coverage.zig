@@ -3,7 +3,7 @@ const std = @import("std");
 const scope = @import("native_composed_scope.zig");
 const marker = "COMPOSED_NATIVE_TEST_INVENTORY=";
 const allocation_marker = "COMMAND_GPA_SHARD=";
-fn verifyAllocationShards(gpa: std.mem.Allocator, log: []const u8) !usize {
+pub fn verifyAllocationShards(gpa: std.mem.Allocator, log: []const u8) !usize {
     const Range = struct { index: usize, shards: usize, begin: usize, end: usize, total: usize };
     var offset: usize = 0;
     var seen: u8 = 0;

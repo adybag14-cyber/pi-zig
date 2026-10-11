@@ -234,6 +234,14 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
+    if (args.len == 3 and std.mem.eql(u8, args[1], "verify-command-allocation-coverage")) {
+        const log = try std.Io.Dir.cwd().readFileAlloc(init.io, args[2], init.gpa, .limited(16 * 1024 * 1024));
+        defer init.gpa.free(log);
+        const count = try composed_coverage.verifyAllocationShards(init.gpa, log);
+        try writer.print("command_allocation_indices={d} shards=8 complete=true\n", .{count});
+        try writer.flush();
+        return;
+    }
     if (args.len == 2 and std.mem.eql(u8, args[1], "verify-artifacts")) {
         try artifacts.verify(init.gpa, init.io, writer);
         try writer.flush();
@@ -328,6 +336,7 @@ pub fn main(init: std.process.Init) !void {
     }
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
         "       pi-maintenance verify-composed-coverage <repository> <test-log>\n" ++
+        "       pi-maintenance verify-command-allocation-coverage <test-log>\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++
         "       pi-maintenance artifact-manifest <checkpoint> | verify-artifacts | verify-release [tag]\n" ++
         "       pi-maintenance import-catalog <catalog-json> <version> <commit> <source-archive> <revision> <destination>\n" ++
