@@ -21,6 +21,7 @@ fn optional(engine: *em.Engine, value: c.JSValue, name: [*:0]const u8) !c.JSValu
 pub fn initialize(engine: *em.Engine, retained: *State) !void {
     const original = retained.get(.parameter0);
     switch (retained.kind) {
+        .context => try @import("native_sdk_public_runner_context_reducer.zig").initialize(engine, retained),
         .cache => retained.replace(engine, .current, try sdk.get(engine, original, "action")),
         .message => retained.replace(engine, .current, try sdk.get(engine, original, "message")),
         .tool_result => retained.replace(engine, .current, try js.spread(engine, original)),
@@ -49,13 +50,15 @@ pub fn typeName(kind: dispatch.Kind) [*:0]const u8 {
         .resources => "resources_discover",
         .input => "input",
         .user_bash => "user_bash",
-        .cache, .boundary, .generic => unreachable,
+        .cache, .boundary, .context, .generic => unreachable,
     };
 }
 pub fn eventType(engine: *em.Engine, retained: *State) !c.JSValue {
+    if (retained.kind == .context) return sdk.text(engine, if (retained.context_system) "context_with_system" else "context");
     return if (retained.kind == .cache or retained.kind == .boundary) sdk.get(engine, retained.get(.parameter0), "type") else sdk.text(engine, std.mem.span(typeName(retained.kind)));
 }
 pub fn prepare(engine: *em.Engine, retained: *State) !void {
+    if (retained.kind == .context) return @import("native_sdk_public_runner_context_reducer.zig").prepare(engine, retained);
     if (retained.kind == .boundary) {
         const event = try js.spread(engine, retained.get(.parameter0));
         errdefer engine.freeValue(event);
@@ -96,6 +99,7 @@ pub fn prepare(engine: *em.Engine, retained: *State) !void {
 }
 pub fn accept(engine: *em.Engine, retained: *State, result: c.JSValue) !bool {
     switch (retained.kind) {
+        .context => try @import("native_sdk_public_runner_context_reducer.zig").accept(engine, retained, result),
         .boundary => {
             const entries = try optional(engine, result, "entries");
             defer engine.freeValue(entries);
@@ -263,6 +267,7 @@ fn collectPaths(engine: *em.Engine, retained: *State, result: c.JSValue, name: [
 }
 pub fn output(engine: *em.Engine, retained: *State) !c.JSValue {
     switch (retained.kind) {
+        .context => return c.JS_DupValue(engine.context, retained.get(.current)),
         .boundary => {
             const result = try sdk.object(engine);
             errdefer engine.freeValue(result);

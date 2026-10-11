@@ -1,0 +1,1014 @@
+{
+  "schema": "sdk-source557-context8-foundation2-v1",
+  "source536": [
+    {
+      "id": "unchanged",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base",
+            "sections": {
+              "a": "one",
+              "gone": "remove"
+            },
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "first",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "delta"
+              },
+              {
+                "type": "image",
+                "data": "ignored"
+              }
+            ],
+            "sections": {
+              "a": "two",
+              "gone": null,
+              "b": "new"
+            },
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ],
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 2
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "system",
+              [
+                {
+                  "type": "text",
+                  "text": "delta"
+                },
+                {
+                  "type": "image",
+                  "data": "ignored"
+                }
+              ]
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "same-elements-returned",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base",
+            "sections": {
+              "a": "one",
+              "gone": "remove"
+            },
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "first",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "delta"
+              },
+              {
+                "type": "image",
+                "data": "ignored"
+              }
+            ],
+            "sections": {
+              "a": "two",
+              "gone": null,
+              "b": "new"
+            },
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ],
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 2
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "system",
+              [
+                {
+                  "type": "text",
+                  "text": "delta"
+                },
+                {
+                  "type": "image",
+                  "data": "ignored"
+                }
+              ]
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "inplace-mutation",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base\n\ndelta",
+            "sections": {
+              "a": "two",
+              "b": "new"
+            },
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": "added",
+            "timestamp": 3
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base\n\ndelta"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "assistant",
+              "added"
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "returned-change",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base\n\ndelta",
+            "sections": {
+              "a": "two",
+              "b": "new"
+            },
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": "returned",
+            "timestamp": 3
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base\n\ndelta"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "assistant",
+              "returned"
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "remove-leading-system",
+      "outcome": {
+        "result": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": "added",
+            "timestamp": 3
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base\n\ndelta"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "assistant",
+              "added"
+            ]
+          ]
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "one.ext",
+          "event": "context_with_system",
+          "error": "Handler removed the leading system message; the request has no prompt or initial tool declarations. Keep it at index 0 or replace a dropped prefix with getCurrentSystemMessage().",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second-phase-new-handler",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base\n\ndelta",
+            "sections": {
+              "a": "two",
+              "b": "new"
+            },
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": "added",
+            "timestamp": 3
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          2
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base\n\ndelta"
+            ],
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "assistant",
+              "added"
+            ]
+          ]
+        ],
+        [
+          "late.system",
+          true,
+          true,
+          "system"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "clone-getter",
+      "outcome": {
+        "result": [
+          {
+            "role": "system",
+            "content": "base",
+            "sections": {
+              "a": "one",
+              "gone": "remove"
+            },
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "first",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 0
+          },
+          {
+            "role": "user",
+            "content": "getter text",
+            "timestamp": 1
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "delta"
+              },
+              {
+                "type": "image",
+                "data": "ignored"
+              }
+            ],
+            "sections": {
+              "a": "two",
+              "gone": null,
+              "b": "new"
+            },
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ],
+            "toolsAdded": [
+              {
+                "name": "b",
+                "description": "second",
+                "parameters": {}
+              }
+            ],
+            "timestamp": 2
+          }
+        ],
+        "sameInput": false,
+        "inputUnchanged": true,
+        "inputRoles": [
+          "system",
+          "user",
+          "system"
+        ]
+      },
+      "events": [
+        "context.create",
+        "input.content.get",
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "context",
+          true,
+          true,
+          [
+            [
+              "user",
+              "getter text"
+            ]
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "extensions.map.get",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1,
+          1
+        ],
+        [
+          "system",
+          true,
+          true,
+          [
+            [
+              "system",
+              "base"
+            ],
+            [
+              "user",
+              "getter text"
+            ],
+            [
+              "system",
+              [
+                {
+                  "type": "text",
+                  "text": "delta"
+                },
+                {
+                  "type": "image",
+                  "data": "ignored"
+                }
+              ]
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "clone-symbol-error",
+      "outcome": {
+        "name": "DataCloneError",
+        "message": "Symbol(clone) could not be cloned."
+      },
+      "events": [
+        "context.create",
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "errors": []
+    }
+  ],
+  "source535": [
+    {
+      "id": "context-mutate",
+      "method": "emitContext",
+      "outcome": {
+        "value": [
+          {
+            "role": "user",
+            "content": "initial"
+          },
+          {
+            "role": "user",
+            "content": "added"
+          }
+        ],
+        "undefined": false,
+        "sameFirstMessage": false,
+        "sameSecondMessage": false,
+        "sameHandled": false,
+        "sameBlocked": false,
+        "sameHeaders": false,
+        "keys": [
+          "0",
+          "1"
+        ]
+      },
+      "events": [
+        "context.create",
+        [
+          "one.receiver",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ]
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        [
+          "two.receiver",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "user",
+              "added"
+            ]
+          ]
+        ],
+        [
+          "system.receiver",
+          true
+        ],
+        [
+          "system",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context_with_system"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "user",
+              "added"
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "context-system-remove",
+      "method": "emitContext",
+      "outcome": {
+        "value": [
+          {
+            "role": "user",
+            "content": "initial"
+          },
+          {
+            "role": "user",
+            "content": "added"
+          }
+        ],
+        "undefined": false,
+        "sameFirstMessage": false,
+        "sameSecondMessage": false,
+        "sameHandled": false,
+        "sameBlocked": false,
+        "sameHeaders": false,
+        "keys": [
+          "0",
+          "1"
+        ]
+      },
+      "events": [
+        "context.create",
+        [
+          "one.receiver",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ]
+          ]
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "one.after",
+        [
+          "two.receiver",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "user",
+              "added"
+            ]
+          ]
+        ],
+        [
+          "system.receiver",
+          true
+        ],
+        [
+          "system",
+          true,
+          [
+            "type",
+            "messages"
+          ],
+          "context_with_system"
+        ],
+        [
+          "context.event",
+          [
+            [
+              "user",
+              "initial"
+            ],
+            [
+              "user",
+              "added"
+            ]
+          ]
+        ]
+      ],
+      "errors": []
+    }
+  ]
+}
