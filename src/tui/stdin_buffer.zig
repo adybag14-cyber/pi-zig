@@ -6,6 +6,7 @@
 //! clock hook so callers can implement the Escape/incomplete-sequence timeout
 //! with any event loop.
 const std = @import("std");
+const reply_header = @import("terminal_reply_header.zig");
 
 pub const bracketed_paste_start = "\x1b[200~";
 pub const bracketed_paste_end = "\x1b[201~";
@@ -65,7 +66,7 @@ pub const StdinBuffer = struct {
     }
 
     pub fn pendingTimeoutMs(self: *const StdinBuffer) ?u64 {
-        if (self.buffer.items.len == 0) return null;
+        if (self.buffer.items.len == 0 or reply_header.recognized(u8, self.buffer.items)) return null;
         return if (std.mem.eql(u8, self.buffer.items, "\x1b")) self.options.escape_timeout_ms else self.options.sequence_timeout_ms;
     }
 
@@ -116,7 +117,13 @@ pub const StdinBuffer = struct {
         const timeout = self.pendingTimeoutMs() orelse return false;
         self.elapsed_ms +|= milliseconds;
         if (self.elapsed_ms < timeout) return false;
-        return try self.flushInto(events);
+        const flushed = (try self.flush()) orelse return false;
+        defer self.allocator.free(flushed);
+        if (flushed.len > 2 and reply_header.isControlString(u8, flushed)) {
+            try self.emitData(flushed[0..2], events);
+            try self.process(flushed[2..], events);
+        } else try self.emitData(flushed, events);
+        return true;
     }
 
     pub fn flushInto(self: *StdinBuffer, events: *std.ArrayList(Event)) !bool {
@@ -131,7 +138,7 @@ pub const StdinBuffer = struct {
     /// Return an owned copy of an incomplete sequence, matching the original
     /// `flush()` API. Paste payloads intentionally remain in paste mode.
     pub fn flush(self: *StdinBuffer) !?[]u8 {
-        if (self.buffer.items.len == 0) return null;
+        if (self.buffer.items.len == 0 or reply_header.recognized(u8, self.buffer.items)) return null;
         const owned = try self.allocator.dupe(u8, self.buffer.items);
         self.buffer.clearRetainingCapacity();
         self.pending_kitty_printable = null;
@@ -173,6 +180,27 @@ pub const StdinBuffer = struct {
         while (position < bytes.len) {
             const remaining = bytes[position..];
             if (remaining[0] == 0x1b) {
+                if (reply_header.recognized(u8, remaining)) {
+                    var index: usize = 2;
+                    var skipped: ?usize = null;
+                    while (index < remaining.len) : (index += 1) {
+                        const byte = remaining[index];
+                        if (byte == 0x18 or byte == 0x1a) {
+                            skipped = index + 1;
+                            break;
+                        }
+                        if (byte == 0x1b and index + 1 < remaining.len) {
+                            if (remaining[index + 1] == '\\') break;
+                            skipped = index;
+                            break;
+                        }
+                        if (remaining[1] == ']' and byte == 7) break;
+                    }
+                    if (skipped) |count| {
+                        position += count;
+                        continue;
+                    }
+                }
                 const length = completeEscapeLength(remaining) orelse break;
                 // WezTerm can concatenate a raw Escape press with a Kitty
                 // release sequence. Do not consume the second ESC as Meta-ESC.

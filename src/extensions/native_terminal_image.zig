@@ -165,7 +165,7 @@ fn detectBase(engine: *Engine, process: c.JSValue, environment: c.JSValue, probe
         return capabilities(engine, null, true_color_hint, hyperlink);
     }
     if (try testString(engine, term, "startsWith", "screen")) return capabilities(engine, null, true_color_hint, c.pi_js_bool(engine.context, 0));
-    if (try equals(engine, term_program, "herdr")) return capabilities(engine, null, true_color_hint, c.pi_js_bool(engine.context, 1));
+    if (try equals(engine, term_program, "herdr")) return capabilities(engine, "kitty", true_color_hint, c.pi_js_bool(engine.context, 1));
     if (try envTruthy(engine, environment, "KITTY_WINDOW_ID") or try equals(engine, term_program, "kitty")) return capabilities(engine, "kitty", true, c.pi_js_bool(engine.context, 1));
     if (try equals(engine, term_program, "ghostty") or try testString(engine, term, "includes", "ghostty") or try envTruthy(engine, environment, "GHOSTTY_RESOURCES_DIR")) return capabilities(engine, "kitty", true, c.pi_js_bool(engine.context, 1));
     if (try envTruthy(engine, environment, "WEZTERM_PANE") or try equals(engine, term_program, "wezterm")) return capabilities(engine, "kitty", true, c.pi_js_bool(engine.context, 1));

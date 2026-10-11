@@ -646,14 +646,14 @@ test "Source6fb public TUI slice Node24 tick batches retain separate private ori
     };
     engine.freeValue(result);
 }
-test "Source6fb public TUI slice StdinBuffer fragments UTF16 paste timeouts emitter and ordinary fields" {
+test "Source8a9 public TUI slice StdinBuffer fragments UTF16 paste timeouts emitter and ordinary fields" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try @import("native_tui.zig").install(engine);
     const root = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
-    const bytes = @embedFile("fixtures/stdin-buffer-original-6fb.json");
-    try js.define(engine, root, "stdinBufferSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "stdin-buffer-original-6fb.json")));
+    const bytes = @embedFile("fixtures/stdin-buffer-original-8a9.json");
+    try js.define(engine, root, "stdinBufferSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "stdin-buffer-original-8a9.json")));
     const result = engine.evalModule("import{StdinBuffer}from'pi-tui';import{EventEmitter}from'node:events';\n" ++ @embedFile("fixtures/stdin-buffer-original-6fb.input.txt") ++
         \\for(let i=0;i<stdinBufferSource.cases.length;i++){const actual=stdinBufferResults[i],expected=stdinBufferSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "stdin-buffer-original.mjs") catch |err| {

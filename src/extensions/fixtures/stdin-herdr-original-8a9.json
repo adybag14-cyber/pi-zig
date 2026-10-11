@@ -1,0 +1,773 @@
+{
+  "status": "ACTUAL_UPSTREAM8A9_STDIN_AND_HERDR_SOURCE",
+  "authority": "8a9c051f80090895abbc64262bc90d95b42103c4",
+  "node": "24.14.0",
+  "execArgv": [
+    "--max-old-space-size=64"
+  ],
+  "sourceExecution": "Direct actual TypeScript source import through pinned Node24 native type stripping; no authored replacement implementation",
+  "scope": "Real StdinBuffer timers/events with controlled timeout options; actual exported image detection with controlled environment and exported no-spawn tmux callback",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\ui-upstream8a9-source-20261011-a\\capture-stdin-herdr.mjs",
+      "sha256": "726ce86768ebe92ab5c261aad859396e589276c07241ddf038517c81244002a6"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-contract-8a9c-20261011/package.json",
+      "sha256": "7bc43225e6c5b4311d0906f3b844f929bccfe608487d898c8c5b698f284ddf91"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-contract-8a9c-20261011/packages/tui/package.json",
+      "sha256": "25d27adb55392f5bfa4f354f5b5e070f1d5dcb1bb3ef92af244b08541a3ba51d"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-contract-8a9c-20261011/packages/tui/src/stdin-buffer.ts",
+      "sha256": "82da9ff728e77269bbfa24c28eda81f26f744efef9e05113c2401ed52c823054"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-contract-8a9c-20261011/packages/tui/src/terminal-image.ts",
+      "sha256": "fa09e7725f1158e1bb3b53c3d0539cc6c066a7c058bee33142ad2f33e8ac5736"
+    }
+  ],
+  "prePostDrift": 0,
+  "stdin": [
+    {
+      "id": "delayed-osc11-bel",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11;rgb:aa/",
+      "tail": "bb/cc\u0007q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]11;rgb:aa/bb/cc\u0007",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]11;rgb:aa/bb/cc\u0007",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "delayed-osc4-st",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]4;123;rgb:aa/",
+      "tail": "bb/cc\u001b\\q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]4;123;rgb:aa/"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]4;123;rgb:aa/"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]4;123;rgb:aa/bb/cc\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]4;123;rgb:aa/bb/cc\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "delayed-osc7501-bel",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]7501;?status",
+      "tail": "\u0007\r",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]7501;?status"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]7501;?status"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]7501;?status\u0007",
+            "\r"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]7501;?status\u0007",
+            "\r"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "delayed-xtversion",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001bP>|Herdr",
+      "tail": "\u001b\\q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001bP>|Herdr"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001bP>|Herdr"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001bP>|Herdr\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001bP>|Herdr\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "delayed-kitty-reply",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b_Gi=123,p=4;OK",
+      "tail": "\u001b\\q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b_Gi=123,p=4;OK"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b_Gi=123,p=4;OK"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b_Gi=123,p=4;OK\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b_Gi=123,p=4;OK\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "reply-can-cancel",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11;rgb:aa/",
+      "tail": "\u0018q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "reply-sub-cancel",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11;rgb:aa/",
+      "tail": "\u001aq",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "reply-new-escape-resync",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11;rgb:aa/",
+      "tail": "\u001b[Aq",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b[A",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b[A",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "trailing-escape-waits-for-st",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11;rgb:aa/\u001b",
+      "tail": "\\q",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/\u001b"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11;rgb:aa/\u001b"
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]11;rgb:aa/\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]11;rgb:aa/\u001b\\",
+            "q"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-alt-bracket-text-enter",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]hello\r",
+      "tail": "",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]hello\r"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [
+            "\u001b]",
+            "h",
+            "e",
+            "l",
+            "l",
+            "o",
+            "\r"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]",
+            "h",
+            "e",
+            "l",
+            "l",
+            "o",
+            "\r"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]",
+            "h",
+            "e",
+            "l",
+            "l",
+            "o",
+            "\r"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-unknown-osc",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]xyz",
+      "tail": "",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]xyz"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [
+            "\u001b]",
+            "x",
+            "y",
+            "z"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]",
+            "x",
+            "y",
+            "z"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]",
+            "x",
+            "y",
+            "z"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-incomplete-known-header",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b]11",
+      "tail": "",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b]11"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [
+            "\u001b]",
+            "1",
+            "1"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b]",
+            "1",
+            "1"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b]",
+            "1",
+            "1"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "legacy-uppercase-kitty-header",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b_GI=1;",
+      "tail": "",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b_GI=1;"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [
+            "\u001b_",
+            "G",
+            "I",
+            "=",
+            "1",
+            ";"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b_",
+            "G",
+            "I",
+            "=",
+            "1",
+            ";"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b_",
+            "G",
+            "I",
+            "=",
+            "1",
+            ";"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    },
+    {
+      "id": "standalone-escape",
+      "options": {
+        "timeout": 5,
+        "escapeTimeout": 2
+      },
+      "first": "\u001b",
+      "tail": "",
+      "stages": [
+        {
+          "phase": "first",
+          "data": [],
+          "paste": [],
+          "buffer": "\u001b"
+        },
+        {
+          "phase": "after-deadline",
+          "data": [
+            "\u001b"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "tail",
+          "data": [
+            "\u001b"
+          ],
+          "paste": [],
+          "buffer": ""
+        },
+        {
+          "phase": "after-tail-deadline",
+          "data": [
+            "\u001b"
+          ],
+          "paste": [],
+          "buffer": ""
+        }
+      ]
+    }
+  ],
+  "caps": [
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": false,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "HERDR",
+        "KITTY_WINDOW_ID": "7",
+        "COLORTERM": "truecolor"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr",
+        "TERM": "xterm-256color",
+        "COLORTERM": "24bit"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "Herdr",
+        "TERM": "xterm-kitty"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": false,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "kitty"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "unknown",
+        "KITTY_WINDOW_ID": "7"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr",
+        "TERM": "dumb",
+        "COLORTERM": "truecolor"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr",
+        "NO_COLOR": "1",
+        "COLORTERM": "truecolor"
+      },
+      "value": {
+        "images": "kitty",
+        "trueColor": true,
+        "hyperlinks": true
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr",
+        "TERM": "screen",
+        "COLORTERM": "truecolor"
+      },
+      "value": {
+        "images": null,
+        "trueColor": true,
+        "hyperlinks": false
+      }
+    },
+    {
+      "env": {
+        "TERM_PROGRAM": "herdr",
+        "TERM": "tmux",
+        "COLORTERM": "truecolor"
+      },
+      "value": {
+        "images": null,
+        "trueColor": true,
+        "hyperlinks": false
+      }
+    }
+  ]
+}

@@ -7,9 +7,9 @@
 //! process-global JavaScript environment.
 const std = @import("std");
 
-test "Source6fb terminal capabilities pure Main detector replays original environment profile and overrides" {
+test "Source8a9 terminal capabilities pure Main detector replays original environment profile and overrides" {
     const gpa = std.testing.allocator;
-    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/terminal-capabilities-original-6fb.json"), .{});
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/terminal-capabilities-original-8a9.json"), .{});
     defer fixture.deinit();
     for (fixture.value.object.get("cases").?.array.items, 0..) |entry, index| {
         const variables = entry.object.get("environment").?.object;
@@ -162,7 +162,7 @@ fn detectCapabilitiesBase(env: Environment, is_windows_console: bool, tmux_forwa
         return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = false };
     }
     if (eqlLower(env.term_program, "herdr")) {
-        return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = true };
+        return .{ .images = .kitty, .true_color = has_true_color_hint, .hyperlinks = true };
     }
     if (present(env.kitty_window_id) or eqlLower(env.term_program, "kitty")) {
         return .{ .images = .kitty, .true_color = true, .hyperlinks = true };

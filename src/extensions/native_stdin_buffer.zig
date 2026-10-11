@@ -28,6 +28,16 @@ fn sameText(engine: *js.Engine, value: c.JSValue, text: []const u8) !bool {
     defer engine.freeValue(expected);
     return c.JS_IsStrictEqual(engine.context, value, expected);
 }
+fn isControlString(engine: *js.Engine, value: c.JSValue) !bool {
+    inline for (.{ "\x1b]", "\x1bP", "\x1b_" }) |prefix| {
+        const argument = try v.text(engine, prefix);
+        defer engine.freeValue(argument);
+        const matched = try js.invoke(engine, value, "startsWith", &.{argument});
+        defer engine.freeValue(matched);
+        if (v.truthy(engine, matched)) return true;
+    }
+    return false;
+}
 fn clearTimer(engine: *js.Engine, object: c.JSValue) !void {
     if (!try truthyField(engine, object, "timeout")) return;
     const function = try js.global(engine, "clearTimeout");
@@ -77,7 +87,7 @@ const Extracted = struct {
         engine.freeValue(self.remainder);
     }
 };
-fn extract(engine: *js.Engine, input: c.JSValue) !Extracted {
+fn extract(engine: *js.Engine, input: c.JSValue, header: c.JSValue) !Extracted {
     const units = try utf16.unitsAlloc(engine, input);
     defer engine.gpa.free(units);
     const sequences = try js.array(engine);
@@ -86,8 +96,26 @@ fn extract(engine: *js.Engine, input: c.JSValue) !Extracted {
     while (position < units.len) {
         if (units[position] == 0x1b) {
             const remaining = units[position..];
+            const text = try utf16.string(engine, remaining);
+            defer engine.freeValue(text);
+            const terminal_reply = if (try isControlString(engine, text)) matched: {
+                const found = try js.invoke(engine, header, "test", &.{text});
+                defer engine.freeValue(found);
+                break :matched v.truthy(engine, found);
+            } else false;
             var end: usize = 1;
             while (end <= remaining.len) : (end += 1) {
+                if (terminal_reply and end > 2) {
+                    const character = remaining[end - 1];
+                    if (character == 0x18 or character == 0x1a) {
+                        position += end;
+                        break;
+                    }
+                    if (character == 0x1b and end < remaining.len and remaining[end] != '\\') {
+                        position += end - 1;
+                        break;
+                    }
+                }
                 if (!complete(remaining[0..end])) continue;
                 if (end == 2 and remaining[1] == 0x1b and end < remaining.len and std.mem.indexOfScalar(u16, &.{ '[', ']', 'O', 'P', '_' }, remaining[end]) != null) {
                     const sequence = try utf16.string(engine, &.{0x1b});
@@ -156,7 +184,26 @@ fn timerCall(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _
 fn timerOperation(engine: *js.Engine, object: c.JSValue, symbol: c.JSValue) !void {
     const flushed = try js.invoke(engine, object, "flush", &.{});
     defer engine.freeValue(flushed);
-    try emitSequences(engine, object, flushed, symbol);
+    var iterator = try js.Iterator.init(engine, flushed, symbol);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |sequence| {
+        defer engine.freeValue(sequence);
+        if (try v.numberField(engine, sequence, "length") > 2 and try isControlString(engine, sequence)) {
+            const emitter = try js.get(engine, object, "emitDataSequence");
+            defer engine.freeValue(emitter);
+            const first = try js.invoke(engine, sequence, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, 2) });
+            defer engine.freeValue(first);
+            const emitted = try js.call(engine, emitter, object, &.{first});
+            engine.freeValue(emitted);
+            const process = try js.get(engine, object, "process");
+            defer engine.freeValue(process);
+            const tail = try js.invoke(engine, sequence, "slice", &.{c.JS_NewInt32(engine.context, 2)});
+            defer engine.freeValue(tail);
+            const processed = try js.call(engine, process, object, &.{tail});
+            engine.freeValue(processed);
+        } else try invokeVoid(engine, object, "emitDataSequence", &.{sequence});
+    }
 }
 fn processInput(engine: *js.Engine, object: c.JSValue, input: c.JSValue, data: [*c]c.JSValue) !void {
     if (process_depth >= 64) {
@@ -228,7 +275,7 @@ fn processInput(engine: *js.Engine, object: c.JSValue, input: c.JSValue, data: [
         if (try v.number(engine, start) > 0) {
             const before = try fieldSlice(engine, object, "buffer", &.{ c.JS_NewInt32(engine.context, 0), start });
             defer engine.freeValue(before);
-            const parsed = try extract(engine, before);
+            const parsed = try extract(engine, before, data[3]);
             defer parsed.deinit(engine);
             try emitSequences(engine, object, parsed.sequences, data[1]);
         }
@@ -246,13 +293,20 @@ fn processInput(engine: *js.Engine, object: c.JSValue, input: c.JSValue, data: [
     }
     const buffer = try js.get(engine, object, "buffer");
     defer engine.freeValue(buffer);
-    const parsed = try extract(engine, buffer);
+    const parsed = try extract(engine, buffer, data[3]);
     defer parsed.deinit(engine);
     try v.set(engine, object, "buffer", c.JS_DupValue(engine.context, parsed.remainder));
     try emitSequences(engine, object, parsed.sequences, data[1]);
     const current = try js.get(engine, object, "buffer");
     defer engine.freeValue(current);
     if (try v.numberField(engine, current, "length") > 0) {
+        const test_header = try js.get(engine, data[3], "test");
+        defer engine.freeValue(test_header);
+        const reply_buffer = try js.get(engine, object, "buffer");
+        defer engine.freeValue(reply_buffer);
+        const recognized = try js.call(engine, test_header, data[3], &.{reply_buffer});
+        defer engine.freeValue(recognized);
+        if (v.truthy(engine, recognized)) return;
         const tested = try js.get(engine, object, "buffer");
         defer engine.freeValue(tested);
         const delay = try js.get(engine, object, if (try sameText(engine, tested, "\x1b")) "escapeTimeoutMs" else "timeoutMs");
@@ -378,7 +432,12 @@ pub fn install(engine: *js.Engine, exports: c.JSValue) !void {
     defer engine.freeValue(iterator);
     const primitive = try js.get(engine, symbol, "toPrimitive");
     defer engine.freeValue(primitive);
-    var data = [_]c.JSValue{ record, iterator, primitive };
+    const pattern = try v.text(engine, "^\\x1b(?:\\](?:1[01];|4;\\d{1,3};|7501;\\?)|P>\\||_G(?:[a-z]=\\d+,)*[a-z]=\\d+;)");
+    defer engine.freeValue(pattern);
+    var pattern_args = [_]c.JSValue{pattern};
+    const header = try engine.checked(c.JS_CallConstructor(engine.context, engine.intrinsic_regexp_constructor, pattern_args.len, &pattern_args));
+    defer engine.freeValue(header);
+    var data = [_]c.JSValue{ record, iterator, primitive, header };
     inline for (std.meta.fields(Method)) |field| {
         const name: [:0]const u8 = field.name;
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, name.ptr, if (field.value <= @intFromEnum(Method.emitDataSequence)) 1 else 0, @intCast(field.value), data.len, &data));
