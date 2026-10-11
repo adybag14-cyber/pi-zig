@@ -35,7 +35,7 @@ test "native binary operators preserve guest coercion BigInt exception and borro
     var numeric: f64 = 0;
     if (c.JS_ToFloat64(engine.context, &numeric, scaled) < 0) return js.capture(engine);
     try std.testing.expectEqual(@as(f64, 3), numeric);
-    const options = try engine.eval("({maxWidth:'4',maxHeight:3})", "image-dimension-options", c.JS_EVAL_TYPE_GLOBAL);
+    const options = try engine.eval("({maxWidth:'4',maxHeight:3,maxBytes:5})", "image-dimension-options", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(options);
     var dimensions = try image_math.initialDimensions(engine, c.JS_NewInt32(engine.context, 8), c.JS_NewInt32(engine.context, 5), options);
     defer dimensions.deinit(engine);
