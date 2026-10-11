@@ -1,0 +1,140 @@
+name: Durable e6 input entry native baseline harness correction
+
+"on":
+  push:
+    branches: [durable/hosted-e6-input-entry-baseline-c1-20261011]
+    paths: [.github/workflows/durable-settings-phase-diagnostics.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: durable-settings-phase-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows-debug:
+    runs-on: windows-2022
+    timeout-minutes: 22
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      SOURCE_BASE: d19b4aab7d0a3475f3374796fa2b8a9a10a21fd9
+      ZIG_ARCHIVE_SHA256: 68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e
+      ZIG_EXE_SHA256: 086ce9d47ba42f33a514e1a6e04eb1d4a8fa1d75e0868e0213caad447c91e864
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        timeout-minutes: 1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Freeze every tracked source input and assert workflow-only change
+        timeout-minutes: 1
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'verification/durable-settings-phase'
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $head=(git rev-parse HEAD).Trim()
+          if($LASTEXITCODE -ne 0 -or $head -ne $env:GITHUB_SHA){throw 'Checkout identity mismatch'}
+          if((git rev-parse HEAD^).Trim() -ne $env:SOURCE_BASE){throw 'Expected the exact frozen source parent'}
+          $changed=@(git diff --name-only $env:SOURCE_BASE HEAD)
+          if($LASTEXITCODE -ne 0 -or $changed.Count -ne 1 -or $changed[0] -ne '.github/workflows/durable-settings-phase-diagnostics.yml'){throw 'Product source changed'}
+          $inputs=@(foreach($path in @(git ls-files)){[ordered]@{path=$path;sha256=(Get-FileHash -LiteralPath $path).Hash.ToLowerInvariant()}})
+          if($inputs.Count -ne 2410){throw 'Unexpected complete source inventory'}
+          [ordered]@{head=$head;tree=(git rev-parse 'HEAD^{tree}').Trim();sourceBase=$env:SOURCE_BASE;workflowOnly=$changed;inputs=$inputs;runner=$env:RUNNER_NAME;os=$env:RUNNER_OS;freePhysicalKiB=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory;utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'source.pre.json')
+
+      - name: Install the exact verified Zig 0.16.0 archive
+        timeout-minutes: 4
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'verification/durable-settings-phase'
+          $archive=Join-Path $env:RUNNER_TEMP 'durable-zig-0.16.0.zip'
+          Invoke-WebRequest -Uri 'https://ziglang.org/download/0.16.0/zig-x86_64-windows-0.16.0.zip' -OutFile $archive -TimeoutSec 180
+          if((Get-FileHash -LiteralPath $archive).Hash.ToLowerInvariant() -ne $env:ZIG_ARCHIVE_SHA256){throw 'Zig archive digest mismatch'}
+          $toolParent=Join-Path $env:RUNNER_TEMP 'durable-zig-0.16.0'
+          New-Item -ItemType Directory -Path $toolParent -Force | Out-Null
+          Expand-Archive -LiteralPath $archive -DestinationPath $toolParent
+          $tool=Join-Path $toolParent 'zig-x86_64-windows-0.16.0'
+          $exe=Join-Path $tool 'zig.exe'
+          if((Get-FileHash -LiteralPath $exe).Hash.ToLowerInvariant() -ne $env:ZIG_EXE_SHA256){throw 'Zig executable digest mismatch'}
+          $version=(& $exe version).Trim()
+          if($LASTEXITCODE -ne 0 -or $version -ne '0.16.0'){throw 'Zig version mismatch'}
+          $inputs=@(Get-ChildItem -LiteralPath $tool -Recurse -File | ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash.ToLowerInvariant()}})
+          [ordered]@{version=$version;archive=$archive;archiveSha256=$env:ZIG_ARCHIVE_SHA256;executable=$exe;executableSha256=$env:ZIG_EXE_SHA256;inputs=$inputs;utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'tool.pre.json')
+          "DURABLE_ZIG=$exe" | Out-File -LiteralPath $env:GITHUB_ENV -Append
+
+      - name: Collect the unchanged actual e6 public program native baseline
+        timeout-minutes: 13
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'verification/durable-settings-phase'
+          $start=[Diagnostics.ProcessStartInfo]::new()
+          $start.FileName=$env:DURABLE_ZIG
+          $start.WorkingDirectory=$env:GITHUB_WORKSPACE
+          $start.UseShellExecute=$false
+          $start.CreateNoWindow=$true
+          $start.RedirectStandardOutput=$true
+          $start.RedirectStandardError=$true
+          $argv=@('build','test-native-durable-e6-input-entry','-Doptimize=Debug','-j1','--test-timeout','120s','--summary','all')
+          foreach($argument in $argv){$start.ArgumentList.Add($argument)}
+          $process=[Diagnostics.Process]::new()
+          $process.StartInfo=$start
+          if(-not $process.Start()){throw 'Owned baseline failed to start'}
+          $created=$process.StartTime.ToUniversalTime()
+          $identity=Get-CimInstance Win32_Process -Filter "ProcessId = $($process.Id)"
+          if($identity -and (-not $identity.ExecutablePath -or -not $identity.CommandLine -or -not $identity.CreationDate)){$identity=$null}
+          $record=[ordered]@{head=$env:GITHUB_SHA;sourceBase=$env:SOURCE_BASE;pid=$process.Id;executable=$start.FileName;argv=$argv;command_line=if($identity){$identity.CommandLine}else{$start.FileName+' '+($argv -join ' ')};command_line_source=if($identity){'live Win32_Process'}else{'exact ProcessStartInfo argv'};created_utc=$created.ToString('o');identity_source='retained kernel Process handle and exact native launch; complete live CIM when available';status='running';utc=[DateTimeOffset]::UtcNow.ToString('o')}
+          $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'owned-job.json')
+          $stdout=$process.StandardOutput.ReadToEndAsync()
+          $stderr=$process.StandardError.ReadToEndAsync()
+          $finished=$process.WaitForExit(12*60*1000)
+          if(-not $finished){
+            $live=Get-CimInstance Win32_Process -Filter "ProcessId = $($process.Id)"
+            if(-not $live -or $live.ExecutablePath -cne $start.FileName -or [Math]::Abs((([DateTimeOffset]$live.CreationDate).UtcDateTime-$created).Ticks) -gt 10 -or $live.ExecutablePath -match 'codex'){throw 'Timeout ownership mismatch; no termination attempted'}
+            if($identity -and $live.CommandLine -cne $identity.CommandLine){throw 'Owned command line changed'}
+            $process.Kill($true)
+            $process.WaitForExit()
+          }
+          [IO.File]::WriteAllText((Join-Path $out 'stdout.log'),$stdout.GetAwaiter().GetResult())
+          [IO.File]::WriteAllText((Join-Path $out 'stderr.log'),$stderr.GetAwaiter().GetResult())
+          $record.status=if(-not $finished){'timed_out'}elseif($process.ExitCode -eq 0){'passed'}else{'failed'}
+          $record.exit_code=$process.ExitCode
+          $record.completed_utc=[DateTimeOffset]::UtcNow.ToString('o')
+          $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'owned-job.json')
+          Get-Content -LiteralPath (Join-Path $out 'stderr.log')
+          if(-not $finished -or $process.ExitCode -ne 0){exit 1}
+
+      - name: Always recheck complete source and tool bytes
+        if: always()
+        timeout-minutes: 1
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'verification/durable-settings-phase'
+          $source=Get-Content -Raw -LiteralPath (Join-Path $out 'source.pre.json') | ConvertFrom-Json
+          $sourceBad=@(foreach($entry in $source.inputs){if((Get-FileHash -LiteralPath $entry.path).Hash.ToLowerInvariant() -ne $entry.sha256){$entry.path}})
+          $toolBad=@()
+          $toolPre=Join-Path $out 'tool.pre.json'
+          $toolAvailable=Test-Path -LiteralPath $toolPre
+          if($toolAvailable){
+            $tool=Get-Content -Raw -LiteralPath $toolPre | ConvertFrom-Json
+            $toolBad=@(foreach($entry in $tool.inputs){if((Get-FileHash -LiteralPath $entry.path).Hash.ToLowerInvariant() -ne $entry.sha256){$entry.path}})
+            if((Get-FileHash -LiteralPath $tool.archive).Hash.ToLowerInvariant() -ne $tool.archiveSha256){$toolBad+='archive'}
+          }
+          $jobPath=Join-Path $out 'owned-job.json'
+          $job=if(Test-Path -LiteralPath $jobPath){Get-Content -Raw -LiteralPath $jobPath | ConvertFrom-Json}
+          $alive=if($job){@(Get-CimInstance Win32_Process -Filter "ProcessId = $($job.pid)").Count}else{0}
+          [ordered]@{head=(git rev-parse HEAD).Trim();sourceBase=$env:SOURCE_BASE;sourceCount=$source.inputs.Count;sourceDifferences=$sourceBad;toolAvailable=$toolAvailable;toolCount=if($toolAvailable){$tool.inputs.Count}else{0};toolDifferences=$toolBad;ownedPid=if($job){$job.pid};ownedPidStillPresent=$alive;jobStatus=if($job){$job.status}else{'not_started'};utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $out 'posthash.json')
+          if($sourceBad.Count -ne 0 -or $toolBad.Count -ne 0 -or $alive -ne 0){throw 'Source/tool or owned-process postcheck failed'}
+
+      - name: Preserve failure and success evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        timeout-minutes: 2
+        with:
+          name: durable-settings-phase-${{ github.sha }}
+          path: verification/durable-settings-phase/**
+          if-no-files-found: error
+          retention-days: 14
