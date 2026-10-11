@@ -16,7 +16,20 @@ fn allocationCase(allocator: std.mem.Allocator) !void {
     const input = @embedFile("ai/fixtures/photon-source-8x5.png");
     try js.define(engine, global, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
     const generation = engine.native_allocation_generation;
-    const result = engine.evalModule("await candidateResizeImage(new Uint8Array(imageInputBuffer),'image/png',{maxWidth:4,maxHeight:3})", "image-allocation-lifecycle") catch |err| return engine.nativeAllocationError(err, generation);
+    const result = engine.evalModule("await candidateResizeImage(new Uint8Array(imageInputBuffer),'image/png',{maxWidth:4,maxHeight:3})", "image-allocation-lifecycle") catch |err| {
+        const actual = engine.nativeAllocationError(err, generation);
+        if (actual != error.OutOfMemory) {
+            std.debug.print("Image allocation failure original={s} classified={s} nativeGeneration={d}->{d}\n", .{ @errorName(err), @errorName(actual), generation, engine.native_allocation_generation });
+            if (engine.captured_exception) |exception| {
+                const message = c.JS_ToCString(engine.context, exception);
+                if (message != null) {
+                    defer c.JS_FreeCString(engine.context, message);
+                    std.debug.print("Actual image exception {s}\n", .{std.mem.span(message)});
+                }
+            }
+        }
+        return actual;
+    };
     engine.freeValue(result);
 }
 test "native image JavaScript-valued strategy releases every induced allocator failure and recovers" {
