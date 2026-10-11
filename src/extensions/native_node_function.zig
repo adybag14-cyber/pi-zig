@@ -16,7 +16,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
 }
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native Node function: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {

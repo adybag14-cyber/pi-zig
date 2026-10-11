@@ -76,7 +76,7 @@ fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
         return promise;
     };
     defer engine.freeValue(request);
-    return js.invoke(engine, request, "then", &.{ c.pi_js_undefined(), on_failure });
+    return engine.checked(c.JS_PromiseThen(engine.context, request, c.pi_js_undefined(), on_failure));
 }
 fn start(engine: *js.Engine, input: c.JSValue, mime: c.JSValue, options: c.JSValue) !c.JSValue {
     const constructor = try js.global(engine, "Uint8Array");
@@ -101,5 +101,18 @@ fn start(engine: *js.Engine, input: c.JSValue, mime: c.JSValue, options: c.JSVal
     };
 }
 pub fn create(engine: *js.Engine) !c.JSValue {
-    return function.create(engine, "resizeImage", 3, invoke, &.{});
+    const result = try engine.checked(c.JS_NewCFunction(engine.context, call, "resizeImage", 3));
+    errdefer engine.freeValue(result);
+    const prototype = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
+    defer engine.freeValue(prototype);
+    if (c.JS_SetPrototype(engine.context, result, prototype) < 0) return js.capture(engine);
+    return result;
+}
+fn call(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    return invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, &.{}) catch |err| {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        return c.JS_ThrowTypeError(context, "Native image function: %s", @as([*:0]const u8, @errorName(err)));
+    };
 }

@@ -6,6 +6,55 @@ const worker = @import("extensions/native_image_vm_worker.zig");
 const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
+const dimension_note = @import("extensions/native_image_dimension_note.zig");
+fn noteAllocation(gpa: std.mem.Allocator) !void {
+    const engine = try js.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "candidateFormatDimensionNote", try dimension_note.create(engine));
+    const generation = engine.native_allocation_generation;
+    const result = engine.eval("candidateFormatDimensionNote({wasResized:true,originalWidth:8,originalHeight:5,width:4,height:3})", "image-note-allocation", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        const actual = engine.nativeAllocationError(err, generation);
+        if (actual != error.OutOfMemory) std.debug.print("Image note GPA: {s} generation={d}->{d} original={s}\n", .{ @errorName(actual), generation, engine.native_allocation_generation, engine.last_error orelse "no diagnostic" });
+        return actual;
+    };
+    engine.freeValue(result);
+}
+test "native image JavaScript-valued strategy dimension notes release every native allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, noteAllocation, .{});
+}
+test "native image JavaScript-valued strategy public function metadata and fourteen original dimension note cases" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "candidateResizeImage", try image_api.create(engine));
+    try js.define(engine, root, "candidateFormatDimensionNote", try dimension_note.create(engine));
+    const fixture = @embedFile("extensions/fixtures/image-public-contract-89e5-source.json");
+    try js.define(engine, root, "imagePublicSource", try engine.checked(c.JS_ParseJSON(engine.context, fixture.ptr, fixture.len, "image-public-contract-89e5-source")));
+    const result = engine.evalModule(
+        \\const formatDimensionNote=candidateFormatDimensionNote;
+        \\function metadata(fn){let construct;try{Reflect.construct(function(){},[],fn);construct=true}catch(cause){construct=cause.name}return{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),asyncPrototype:Object.getPrototypeOf(fn)===Object.getPrototypeOf(async()=>{}),construct,nameDescriptor:Object.getOwnPropertyDescriptor(fn,'name'),lengthDescriptor:Object.getOwnPropertyDescriptor(fn,'length')}}
+        \\const actualMetadata={resize:metadata(candidateResizeImage),note:metadata(formatDimensionNote)};
+        \\if(JSON.stringify(actualMetadata)!==JSON.stringify(imagePublicSource.metadata))throw Error(JSON.stringify({actualMetadata,expected:imagePublicSource.metadata}));
+    ++ @embedFile("extensions/fixtures/image-dimension-note-89e5.input.txt") ++
+        \\if(imageNoteRows.length!==14||imagePublicSource.rows.length!==14)throw Error('dimension note Source count');
+        \\for(let index=0;index<14;index++){const actual=imageNoteRows[index],expected=imagePublicSource.rows[index];
+        \\ if(['bigints','mixed-numeric','null','undefined','symbol'].includes(expected.id)){
+        \\  if(actual.error?.name!==expected.error.name||typeof actual.error.message!=='string')throw Error('builtin error class/wording type');
+        \\  // Preserve the original message in the fixture. Engine-generated
+        \\  // builtin wording differs; every other field and custom reason is exact.
+        \\  actual.error.message=expected.error.message;
+        \\ }
+        \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index,actual,expected}));
+        \\}
+    , "image-public-functions-89e5-native") catch |err| {
+        std.debug.print("Image public functions: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+}
 fn allocationCase(allocator: std.mem.Allocator) !void {
     var serialized_allocator: @import("test_support/locked_allocator.zig").Locked = .{ .backing = allocator };
     const engine = try js.Engine.init(serialized_allocator.allocator(), .{ .host_await_timeout_ms = 5000 });

@@ -1,0 +1,218 @@
+{
+  "source": "89e5c2c075535e2f427c30fc74720d65b2944ff9",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-image-public-contract-89e5-20261011.mjs",
+      "sha256": "c3ba21adca372dbc7675f4fc896386da35621e0d393ad879711dc8d37887fc11"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/package.json",
+      "sha256": "c62fcf34a420f8707ac307dd0fc154270979288b0590946017c8bebab8c6d4a7"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/package.json",
+      "sha256": "0d7cba980eead336b8fc4feafb4f899f085e9bbdc04320b3eb79aec27f18f36e"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/utils/image-resize.ts",
+      "sha256": "5e56345bdf2fadc01d81392473f8da6ef85a741ad3c69ff88286931dacef6d24"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/utils/image-resize-worker.ts",
+      "sha256": "10c44a69b0150a088328a1a2a30332f993598d01eaa4c7e583185d3eab911da2"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/utils/image-resize-core.ts",
+      "sha256": "9e9bbe879ace4e3d817f8c79f77f17252d49904f4a12f989fce53792fa890b29"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/utils/exif-orientation.ts",
+      "sha256": "fbca93e04682d00139c319a0721417d47b505e0c6e5787f4d9d9dba164194ad0"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-89e5c2c0-20261011/packages/coding-agent/src/utils/photon.ts",
+      "sha256": "806c3941b96e09705e26cd2d449ee8971b3498bbde495f7512b20906120d96a9"
+    }
+  ],
+  "metadata": {
+    "resize": {
+      "name": "resizeImage",
+      "length": 3,
+      "keys": [
+        "length",
+        "name"
+      ],
+      "asyncPrototype": true,
+      "construct": "TypeError",
+      "nameDescriptor": {
+        "value": "resizeImage",
+        "writable": false,
+        "enumerable": false,
+        "configurable": true
+      },
+      "lengthDescriptor": {
+        "value": 3,
+        "writable": false,
+        "enumerable": false,
+        "configurable": true
+      }
+    },
+    "note": {
+      "name": "formatDimensionNote",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "asyncPrototype": false,
+      "construct": true,
+      "nameDescriptor": {
+        "value": "formatDimensionNote",
+        "writable": false,
+        "enumerable": false,
+        "configurable": true
+      },
+      "lengthDescriptor": {
+        "value": 1,
+        "writable": false,
+        "enumerable": false,
+        "configurable": true
+      }
+    }
+  },
+  "rows": [
+    {
+      "id": "unchanged",
+      "trace": [],
+      "value": null,
+      "error": null
+    },
+    {
+      "id": "normal",
+      "trace": [],
+      "value": "[Image: original 8x5, displayed at 4x3. Multiply coordinates by 2.00 to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "zero",
+      "trace": [],
+      "value": "[Image: original 0x5, displayed at 0x3. Multiply coordinates by NaN to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "infinity",
+      "trace": [],
+      "value": "[Image: original 8x5, displayed at 0x3. Multiply coordinates by Infinity to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "strings",
+      "trace": [],
+      "value": "[Image: original 8x5, displayed at 4x3. Multiply coordinates by 2.00 to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "bigints",
+      "trace": [],
+      "value": null,
+      "error": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "scale.toFixed is not a function"
+      }
+    },
+    {
+      "id": "mixed-numeric",
+      "trace": [],
+      "value": null,
+      "error": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "Cannot mix BigInt and other types, use explicit conversions"
+      }
+    },
+    {
+      "id": "null",
+      "trace": [],
+      "value": null,
+      "error": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'wasResized')"
+      }
+    },
+    {
+      "id": "undefined",
+      "trace": [],
+      "value": null,
+      "error": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'wasResized')"
+      }
+    },
+    {
+      "id": "symbol",
+      "trace": [],
+      "value": null,
+      "error": {
+        "identity": false,
+        "name": "TypeError",
+        "message": "Cannot convert a Symbol value to a number"
+      }
+    },
+    {
+      "id": "getters",
+      "trace": [
+        "wasResized",
+        "originalWidth",
+        "width",
+        "originalWidth",
+        "originalHeight",
+        "width",
+        "height"
+      ],
+      "value": "[Image: original 8x5, displayed at 4x3. Multiply coordinates by 2.00 to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "throw-identity",
+      "trace": [
+        "wasResized"
+      ],
+      "value": null,
+      "error": {
+        "identity": true,
+        "name": null,
+        "message": null
+      }
+    },
+    {
+      "id": "coercion",
+      "trace": [
+        "originalWidth:number",
+        "width:number",
+        "originalWidth:string",
+        "width:string"
+      ],
+      "value": "[Image: original 8x5, displayed at 4x3. Multiply coordinates by 2.00 to map to original image.]",
+      "error": null
+    },
+    {
+      "id": "fixed-mutation",
+      "trace": [
+        "originalWidth",
+        "originalWidth",
+        "toFixed:2:2"
+      ],
+      "value": "[Image: original 8x5, displayed at 4x3. Multiply coordinates by custom to map to original image.]",
+      "error": null
+    }
+  ],
+  "postDrift": 0
+}
