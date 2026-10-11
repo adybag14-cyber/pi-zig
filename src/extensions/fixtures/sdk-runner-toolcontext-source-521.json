@@ -1,0 +1,373 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "default-fallback",
+      "keys": [
+        "ui",
+        "mode",
+        "hasUI",
+        "cwd",
+        "sessionManager",
+        "modelRegistry",
+        "model",
+        "scopedModels",
+        "thinkingLevel",
+        "isIdle",
+        "isProjectTrusted",
+        "signal",
+        "abort",
+        "hasPendingMessages",
+        "shutdown",
+        "getContextUsage",
+        "compact",
+        "getSystemPrompt"
+      ],
+      "descriptor": {
+        "tools": {
+          "enumerable": false,
+          "configurable": false,
+          "getter": true,
+          "functionName": "get",
+          "length": 0
+        },
+        "executeTool": {
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "getter": false,
+          "functionName": "value",
+          "length": 2
+        }
+      },
+      "tools": [],
+      "distinctTools": true,
+      "promise": true,
+      "value": {
+        "toolCall": {
+          "type": "toolCall",
+          "id": "caller/0",
+          "name": "fallback",
+          "arguments": {}
+        },
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Nested tool calls are not available in this context"
+            }
+          ],
+          "details": {}
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "undefined",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": false,
+          "symbolSame": false
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "null-signal",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        "options.custom",
+        "options.signal",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal",
+            "custom",
+            "Symbol(option)"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": true,
+          "symbolSame": true
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "false-signal",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        "options.custom",
+        "options.signal",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal",
+            "custom",
+            "Symbol(option)"
+          ],
+          "signalDefault": false,
+          "signalFalse": true,
+          "customSame": true,
+          "symbolSame": true
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "primitive",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": false,
+          "symbolSame": false
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "null-options",
+      "outcome": {
+        "identity": false,
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot read properties of null (reading 'signal')"
+        }
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "id": "throwing-signal",
+      "outcome": {
+        "identity": true,
+        "error": {}
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "id": "sync-return",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        "options.custom",
+        "options.signal",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal",
+            "custom",
+            "Symbol(option)"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": true,
+          "symbolSame": true
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "sync-throw",
+      "outcome": {
+        "identity": true,
+        "error": {}
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        "options.custom",
+        "options.signal",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal",
+            "custom",
+            "Symbol(option)"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": true,
+          "symbolSame": true
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "promise-return",
+      "outcome": {
+        "promise": true,
+        "identity": true
+      },
+      "events": [
+        "execute.get",
+        "execute.get",
+        "options.signal",
+        "options.custom",
+        "options.signal",
+        {
+          "kind": "callback",
+          "receiver": true,
+          "callId": "caller",
+          "name": "nested",
+          "sameArgs": true,
+          "keys": [
+            "signal",
+            "custom",
+            "Symbol(option)"
+          ],
+          "signalDefault": true,
+          "signalFalse": false,
+          "customSame": true,
+          "symbolSame": true
+        },
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "id": "borrowed-context",
+      "same": true,
+      "keys": [
+        "kept"
+      ],
+      "toolsSame": true,
+      "descriptors": [
+        {
+          "name": "tools",
+          "enumerable": false,
+          "configurable": false
+        },
+        {
+          "name": "executeTool",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        }
+      ]
+    },
+    {
+      "id": "stale",
+      "toolsError": {
+        "name": "Error",
+        "message": "tool context stale"
+      },
+      "stalePromise": true,
+      "staleError": {
+        "name": "Error",
+        "message": "tool context stale"
+      }
+    }
+  ]
+}

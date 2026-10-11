@@ -460,3 +460,46 @@ test "native SDK queue order PUBLIC bindCore getter phases provider queues and l
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC tool context descriptors nested Promise options and borrowed refs match Source521" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-tool-context-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-toolcontext-521.input.txt"), "sdk-public-tool-context.mjs") catch |err| {
+        std.debug.print("SDK Source521 PUBLIC tool context setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerToolContextRows", "sdk-public-tool-context-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-toolcontext-source-521.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        const name = source.object.get("id").?.string;
+        if (std.mem.eql(u8, name, "null-options")) {
+            inline for (.{ "id", "events", "calls" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            try std.testing.expect(json.equal(wanted.object.get("identity").?, found.object.get("identity").?));
+            try std.testing.expect(json.equal(wanted.object.get("error").?.object.get("name").?, found.object.get("error").?.object.get("name").?));
+            // Original Node builtin wording remains in the immutable capture;
+            // semantic error class/order is compared across the two engines.
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source521 actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerToolContextRows", "sdk-public-tool-context-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
