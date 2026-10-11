@@ -233,6 +233,8 @@ test "native SDK queue order actual command actions defaults bound receiver rebi
     defer actual.deinit();
     var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-actions-source-505.json"));
     defer expected.deinit();
+    const projected = try @import("test_support/sdk_source_cwd.zig").project(std.testing.allocator, &expected, .command_actions);
+    try std.testing.expect(projected == 0 or projected == 1);
     const rows = expected.value.object.get("rows").?;
     if (!json.equal(rows, actual.value)) std.debug.print("SDK complete command actions Source505 actual={s}\n", .{raw});
     try std.testing.expect(json.equal(rows, actual.value));
@@ -262,6 +264,8 @@ fn normalizedOptions(comptime capture: []const u8) !void {
     defer actual.deinit();
     var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ ".json"));
     defer expected.deinit();
+    const projected = try @import("test_support/sdk_source_cwd.zig").project(std.testing.allocator, &expected, .normalized_options);
+    try std.testing.expect(projected == 0 or projected == 6);
     const rows = expected.value.object.get("rows").?;
     if (!json.equal(rows, actual.value)) std.debug.print("SDK complete normalized options Source{s} actual={s}\n", .{ capture, raw });
     try std.testing.expect(json.equal(rows, actual.value));
