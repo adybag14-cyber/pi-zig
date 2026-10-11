@@ -1,0 +1,241 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "actual-method-descriptors",
+      "sameExtensions": true,
+      "methods": [
+        {
+          "name": "resolveRegisteredCommands",
+          "own": false,
+          "functionName": "resolveRegisteredCommands",
+          "length": 0,
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getRegisteredCommands",
+          "own": false,
+          "functionName": "getRegisteredCommands",
+          "length": 0,
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getCommand",
+          "own": false,
+          "functionName": "getCommand",
+          "length": 1,
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getCommandDiagnostics",
+          "own": false,
+          "functionName": "getCommandDiagnostics",
+          "length": 0,
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "id": "borrowed-get-registered",
+      "commands": [
+        {
+          "keys": [
+            "name",
+            "sourceInfo",
+            "handler",
+            "description",
+            "invocationName"
+          ],
+          "name": "foo",
+          "invocationName": "foo",
+          "description": "phase1",
+          "handlerIdentity": true,
+          "sourceInfo": {
+            "path": "<inline:runner-contract>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        },
+        {
+          "keys": [
+            "name",
+            "sourceInfo",
+            "handler",
+            "description",
+            "invocationName"
+          ],
+          "name": "tail",
+          "invocationName": "tail",
+          "description": "tail1",
+          "handlerIdentity": true,
+          "sourceInfo": {
+            "path": "<inline:runner-contract>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ],
+      "trace": [
+        [
+          "diagnostics.set",
+          true,
+          true,
+          0
+        ],
+        [
+          "resolve.get",
+          true
+        ],
+        [
+          "extensions.get",
+          true
+        ]
+      ],
+      "newDiagnostics": true,
+      "emptyDiagnostics": true
+    },
+    {
+      "id": "borrowed-get-command",
+      "sameRow": true,
+      "diagnostics": [
+        "unchanged"
+      ],
+      "trace": [
+        [
+          "resolve.call",
+          true
+        ],
+        "find.get",
+        [
+          "find.call",
+          true,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "diagnostic-setter-error",
+      "trace": [
+        "diagnostics.set"
+      ],
+      "identity": true
+    },
+    {
+      "id": "resolver-getter-error",
+      "trace": [
+        "diagnostics.set",
+        "resolve.get"
+      ],
+      "identity": true
+    },
+    {
+      "id": "fresh-resolution",
+      "distinctArray": true,
+      "distinctRow": true,
+      "sameHandler": true,
+      "diagnosticsEmpty": true,
+      "sameDiagnostics": true
+    },
+    {
+      "id": "disposed-runner-retains-rows",
+      "distinctRunner": true,
+      "distinctExtensions": true,
+      "oldOutcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "description",
+              "handler",
+              "invocationName"
+            ],
+            "name": "old-name",
+            "invocationName": "old-name",
+            "description": "old mutation",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "sourceInfo",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": "tail",
+            "invocationName": "tail",
+            "description": "tail1",
+            "handlerIdentity": true,
+            "sourceInfo": {
+              "path": "<inline:runner-contract>",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ],
+        "found": "old-name"
+      },
+      "oldApi": {
+        "error": {
+          "name": "Error",
+          "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+        }
+      },
+      "newCommands": [
+        {
+          "keys": [
+            "name",
+            "sourceInfo",
+            "handler",
+            "description",
+            "invocationName"
+          ],
+          "name": "foo",
+          "invocationName": "foo",
+          "description": "phase2",
+          "handlerIdentity": true,
+          "sourceInfo": {
+            "path": "<inline:runner-contract>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        },
+        {
+          "keys": [
+            "name",
+            "sourceInfo",
+            "handler",
+            "description",
+            "invocationName"
+          ],
+          "name": "tail",
+          "invocationName": "tail",
+          "description": "tail2",
+          "handlerIdentity": true,
+          "sourceInfo": {
+            "path": "<inline:runner-contract>",
+            "source": "inline",
+            "scope": "temporary",
+            "origin": "top-level"
+          }
+        }
+      ]
+    }
+  ]
+}

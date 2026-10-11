@@ -285,7 +285,18 @@ pub const Group = struct {
     fn registration(context: ?*anyopaque, caller: *bindings_mod.Bindings, name: []const u8) !void {
         const self: *Group = @ptrCast(@alignCast(context.?));
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
-        if (caller.sdk_resource_owner) return;
+        if (caller.sdk_resource_owner) {
+            if (caller.factory_active) return;
+            const session = if (caller.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.session) else admitted: {
+                const scope = (try sdk_owners.defaultContext(caller)) orelse return;
+                defer sdk_owners.releaseContext(self.engine, scope);
+                break :admitted c.JS_DupValue(self.engine.context, scope.session);
+            };
+            defer self.engine.freeValue(session);
+            const owner = try @import("native_sdk.zig").state(self.engine, session);
+            try @import("native_sdk_tool_catalog.zig").refreshRegistration(owner);
+            return;
+        }
         // The original runtime refresh callback is unbound during initial
         // factories. Reading user default/exposure getters must wait until all
         // factories have completed and the registry is admitted.

@@ -244,17 +244,7 @@ fn rejectExtensionCommand(owner: *sdk.State, input: c.JSValue) !void {
     else
         try sdk.invoke(engine, input, "slice", &.{ one, index });
     defer engine.freeValue(selected);
-    const commands = try @import("native_sdk_commands.zig").resolve(owner);
-    defer engine.freeValue(commands);
-    // ExtensionRunner.getCommand calls the mutable Array.find even when the
-    // resolved command list is empty. Its predicate compares without coercion.
-    const find = try sdk.get(engine, commands, "find");
-    defer engine.freeValue(find);
-    var roots = [_]c.JSValue{selected};
-    const predicate = try engine.checked(c.JS_NewCFunctionData2(engine.context, commandMatches, "", 1, 0, roots.len, &roots));
-    defer engine.freeValue(predicate);
-    var parameters = [_]c.JSValue{predicate};
-    const found = try engine.checked(c.JS_Call(engine.context, find, commands, 1, &parameters));
+    const found = try @import("native_sdk_commands.zig").getCommand(owner, selected);
     defer engine.freeValue(found);
     if (c.JS_ToBool(engine.context, found) != 1) return;
     const name = try engine.toString(selected);
@@ -262,12 +252,6 @@ fn rejectExtensionCommand(owner: *sdk.State, input: c.JSValue) !void {
     const message = try std.fmt.allocPrint(engine.gpa, "Extension command \"/{s}\" cannot be queued. Use prompt() or execute the command when not streaming.", .{name});
     defer engine.gpa.free(message);
     _ = try sdk.sourceError(engine, message);
-}
-fn commandMatches(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    const name = sdk.get(engine, if (argc > 0) args[0] else c.pi_js_undefined(), "invocationName") catch |err| return sdk.fail(engine, err);
-    defer engine.freeValue(name);
-    return c.pi_js_bool(context, @intFromBool(c.JS_IsStrictEqual(context, name, roots[0])));
 }
 fn afterInput(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);

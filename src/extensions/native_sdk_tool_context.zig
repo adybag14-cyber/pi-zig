@@ -49,16 +49,9 @@ fn commandInvoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
 }
 fn commandValue(engine: *em.Engine, kind: Command, args: []const c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     const owner = try originalOwner(engine, data);
-    const actions = try sdk.get(engine, owner.data, "extension_commandContextActions");
-    defer engine.freeValue(actions);
-    if (kind != .getSystemPromptOptions and kind != .waitForIdle and c.JS_IsObject(actions)) return sdk.invoke(engine, actions, @tagName(kind), args);
-    return switch (kind) {
-        .waitForIdle, .newSession => sdk.invoke(engine, data[0], @tagName(kind), args),
-        // Preserve existing explicit gaps; exposing the actual method surface
-        // must not invent successful session replacement or reload behavior.
-        .getSystemPromptOptions => error.NativeSDKSystemPromptOptionsUnavailable,
-        else => error.NativeSDKCommandContextActionUnavailable,
-    };
+    if (kind == .getSystemPromptOptions) return sdk.get(engine, owner.data, "_baseSystemPromptOptions");
+    const runners = @import("native_sdk_command_runner.zig");
+    return runners.invoke(owner, @enumFromInt(@intFromEnum(kind) - 1), args);
 }
 fn originalOwner(engine: *em.Engine, data: [*c]c.JSValue) !*sdk.State {
     const owner = sdk.state(engine, data[0]) catch return stale(engine);

@@ -1,0 +1,661 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "bind-and-live",
+      "outcome": {
+        "returned": true
+      },
+      "bindingEvents": [
+        [
+          "action.get",
+          "sendMessage"
+        ],
+        [
+          "action.get",
+          "sendUserMessage"
+        ],
+        [
+          "action.get",
+          "appendEntry"
+        ],
+        [
+          "action.get",
+          "setSessionName"
+        ],
+        [
+          "action.get",
+          "getSessionName"
+        ],
+        [
+          "action.get",
+          "setLabel"
+        ],
+        [
+          "action.get",
+          "getActiveTools"
+        ],
+        [
+          "action.get",
+          "getAllTools"
+        ],
+        [
+          "action.get",
+          "getSettings"
+        ],
+        [
+          "action.get",
+          "setActiveTools"
+        ],
+        [
+          "action.get",
+          "refreshTools"
+        ],
+        [
+          "action.get",
+          "getCommands"
+        ],
+        [
+          "action.get",
+          "setModel"
+        ],
+        [
+          "action.get",
+          "getThinkingLevel"
+        ],
+        [
+          "action.get",
+          "setThinkingLevel"
+        ],
+        [
+          "context.get",
+          "getModel"
+        ],
+        [
+          "context.get",
+          "getScopedModels"
+        ],
+        [
+          "context.get",
+          "isIdle"
+        ],
+        [
+          "context.get",
+          "isProjectTrusted"
+        ],
+        [
+          "context.get",
+          "getSignal"
+        ],
+        [
+          "context.get",
+          "abort"
+        ],
+        [
+          "context.get",
+          "hasPendingMessages"
+        ],
+        [
+          "context.get",
+          "shutdown"
+        ],
+        [
+          "context.get",
+          "getContextUsage"
+        ],
+        [
+          "context.get",
+          "compact"
+        ],
+        [
+          "context.get",
+          "getSystemPrompt"
+        ],
+        [
+          "context.get",
+          "getSystemPromptOptions"
+        ],
+        [
+          "context.get",
+          "executeTool"
+        ],
+        [
+          "context.get",
+          "getCallableTools"
+        ],
+        [
+          "mcp.listener",
+          true,
+          "",
+          0
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.call",
+          "registerProvider",
+          true,
+          [
+            "legacy-good",
+            "cfg"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.call",
+          "registerProvider",
+          true,
+          [
+            "legacy-fail",
+            "bad"
+          ]
+        ],
+        "legacy.toString",
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.call",
+          "registerNativeProvider",
+          true,
+          [
+            "native-good"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.call",
+          "registerNativeProvider",
+          true,
+          [
+            "native-fail"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerVirtualModel"
+        ],
+        [
+          "registry.virtual",
+          true,
+          "virtual-good"
+        ],
+        [
+          "provider.get",
+          "registerVirtualModel"
+        ],
+        [
+          "registry.virtual",
+          true,
+          "virtual-fail"
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "legacy-fail.ext",
+          "event": "register_provider",
+          "error": "legacy failure",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        },
+        {
+          "extensionPath": "native-fail.ext",
+          "event": "register_provider",
+          "error": "native failure",
+          "stack": "controlled-native-stack",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        },
+        {
+          "extensionPath": "virtual-fail.ext",
+          "event": "register_virtual_model",
+          "error": "Symbol(virtual failure)",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "actionsSame": true,
+      "queues": {
+        "legacyNew": true,
+        "legacy": 0,
+        "nativeNew": true,
+        "native": 0,
+        "virtualNew": true,
+        "virtual": 0
+      },
+      "before": {
+        "model": {
+          "id": "first"
+        },
+        "scoped": [
+          {
+            "tag": "first"
+          }
+        ],
+        "idle": true,
+        "thinking": "high",
+        "prompt": "bound prompt",
+        "base": {
+          "selectedTools": [
+            "read",
+            "bash",
+            "edit",
+            "write"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {},
+          "toolGuidelines": {},
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {},
+          "cwd": "/bind-core/bind-and-live",
+          "contextFiles": [],
+          "skills": []
+        },
+        "baseDistinct": true
+      },
+      "after": {
+        "oldModel": {
+          "id": "first"
+        },
+        "oldScoped": [
+          {
+            "tag": "first"
+          }
+        ],
+        "newModel": {
+          "id": "later"
+        },
+        "newScoped": [
+          {
+            "tag": "later"
+          }
+        ],
+        "oldIdle": "later-idle",
+        "newIdle": "later-idle"
+      },
+      "events": [
+        [
+          "context.call",
+          "getModel",
+          true,
+          false,
+          0
+        ],
+        [
+          "context.call",
+          "getScopedModels",
+          true,
+          false,
+          0
+        ],
+        [
+          "context.call",
+          "isIdle",
+          false,
+          true,
+          0
+        ],
+        [
+          "action.call",
+          "getThinkingLevel",
+          true,
+          0
+        ],
+        [
+          "context.call",
+          "getSystemPrompt",
+          false,
+          true,
+          0
+        ],
+        [
+          "context.call",
+          "getModel",
+          true,
+          false,
+          0
+        ],
+        [
+          "context.call",
+          "getScopedModels",
+          true,
+          false,
+          0
+        ],
+        [
+          "later.idle",
+          true
+        ],
+        [
+          "later.idle",
+          true
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.call",
+          "registerProvider",
+          true,
+          [
+            "live",
+            "live"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.get",
+          "registerNativeProvider"
+        ],
+        [
+          "provider.call",
+          "registerNativeProvider",
+          true,
+          [
+            "live-native"
+          ]
+        ],
+        [
+          "provider.get",
+          "unregisterProvider"
+        ],
+        [
+          "provider.get",
+          "unregisterProvider"
+        ],
+        [
+          "provider.call",
+          "unregisterProvider",
+          true,
+          [
+            "removed"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerVirtualModel"
+        ],
+        [
+          "registry.virtual",
+          true,
+          "live-virtual"
+        ],
+        [
+          "provider.get",
+          "unregisterVirtualModel"
+        ],
+        [
+          "registry.unvirtual",
+          true,
+          [
+            "provider",
+            "id"
+          ]
+        ]
+      ],
+      "liveCallbacks": [
+        {
+          "name": "createContext",
+          "functionName": "",
+          "length": 0
+        },
+        {
+          "name": "registerProvider",
+          "functionName": "",
+          "length": 2
+        },
+        {
+          "name": "registerNativeProvider",
+          "functionName": "",
+          "length": 1
+        },
+        {
+          "name": "unregisterProvider",
+          "functionName": "",
+          "length": 1
+        },
+        {
+          "name": "registerVirtualModel",
+          "functionName": "registerVirtualModel",
+          "length": 1
+        },
+        {
+          "name": "unregisterVirtualModel",
+          "functionName": "",
+          "length": 2
+        }
+      ]
+    },
+    {
+      "id": "listener-failure",
+      "outcome": {
+        "identity": true
+      },
+      "bindingEvents": [
+        [
+          "action.get",
+          "sendMessage"
+        ],
+        [
+          "action.get",
+          "sendUserMessage"
+        ],
+        [
+          "action.get",
+          "appendEntry"
+        ],
+        [
+          "action.get",
+          "setSessionName"
+        ],
+        [
+          "action.get",
+          "getSessionName"
+        ],
+        [
+          "action.get",
+          "setLabel"
+        ],
+        [
+          "action.get",
+          "getActiveTools"
+        ],
+        [
+          "action.get",
+          "getAllTools"
+        ],
+        [
+          "action.get",
+          "getSettings"
+        ],
+        [
+          "action.get",
+          "setActiveTools"
+        ],
+        [
+          "action.get",
+          "refreshTools"
+        ],
+        [
+          "action.get",
+          "getCommands"
+        ],
+        [
+          "action.get",
+          "setModel"
+        ],
+        [
+          "action.get",
+          "getThinkingLevel"
+        ],
+        [
+          "action.get",
+          "setThinkingLevel"
+        ],
+        [
+          "context.get",
+          "getModel"
+        ],
+        [
+          "context.get",
+          "getScopedModels"
+        ],
+        [
+          "context.get",
+          "isIdle"
+        ],
+        [
+          "context.get",
+          "isProjectTrusted"
+        ],
+        [
+          "context.get",
+          "getSignal"
+        ],
+        [
+          "context.get",
+          "abort"
+        ],
+        [
+          "context.get",
+          "hasPendingMessages"
+        ],
+        [
+          "context.get",
+          "shutdown"
+        ],
+        [
+          "context.get",
+          "getContextUsage"
+        ],
+        [
+          "context.get",
+          "compact"
+        ],
+        [
+          "context.get",
+          "getSystemPrompt"
+        ],
+        [
+          "context.get",
+          "getSystemPromptOptions"
+        ],
+        [
+          "context.get",
+          "executeTool"
+        ],
+        [
+          "context.get",
+          "getCallableTools"
+        ],
+        [
+          "mcp.listener",
+          true,
+          "",
+          0
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.call",
+          "registerProvider",
+          true,
+          [
+            "legacy-good",
+            "cfg"
+          ]
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.get",
+          "registerProvider"
+        ],
+        [
+          "provider.call",
+          "registerProvider",
+          true,
+          [
+            "legacy-fail",
+            "bad"
+          ]
+        ],
+        "legacy.toString"
+      ],
+      "errors": [
+        {
+          "extensionPath": "legacy-fail.ext",
+          "event": "register_provider",
+          "error": "legacy failure",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "pendingIdentity": true,
+      "pendingLength": 2,
+      "nativeIdentity": true,
+      "liveProviderInstalled": false
+    }
+  ]
+}

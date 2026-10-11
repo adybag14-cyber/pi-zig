@@ -19,12 +19,7 @@ pub fn start(owner: *sdk.State, session: c.JSValue, args: []const c.JSValue) !?c
     const split = @import("std").mem.indexOfScalar(u8, source, ' ') orelse source.len;
     const command_name = try sdk.text(engine, source[1..split]);
     defer engine.freeValue(command_name);
-    const rows = try @import("native_sdk_commands.zig").resolve(owner);
-    defer engine.freeValue(rows);
-    var search_roots = [_]c.JSValue{command_name};
-    const predicate = try engine.checked(c.JS_NewCFunctionData2(engine.context, matches, "", 1, 0, search_roots.len, &search_roots));
-    defer engine.freeValue(predicate);
-    const command = try sdk.invoke(engine, rows, "find", &.{predicate});
+    const command = try @import("native_sdk_commands.zig").getCommand(owner, command_name);
     defer engine.freeValue(command);
     if (c.JS_ToBool(engine.context, command) != 1) return null;
     const lease = try sdk.sessionModelLease(owner);
@@ -48,12 +43,6 @@ pub fn start(owner: *sdk.State, session: c.JSValue, args: []const c.JSValue) !?c
     const done = try engine.checked(c.JS_NewCFunctionData2(engine.context, handled, "", 0, 0, roots.len, &roots));
     defer engine.freeValue(done);
     return try sdk.invoke(engine, promise, "then", &.{ done, rejected });
-}
-fn matches(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    const name = sdk.get(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), "invocationName") catch |err| return sdk.fail(engine, err);
-    defer engine.freeValue(name);
-    return c.pi_js_bool(context, @intFromBool(c.JS_IsStrictEqual(context, name, roots[0])));
 }
 fn syncFailure(engine: *em.Engine, err: anyerror, rejected: c.JSValue) !?c.JSValue {
     _ = sdk.fail(engine, err);

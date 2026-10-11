@@ -1372,8 +1372,22 @@ fn resourcesReload(self: *State) !c.JSValue {
             defer engine.freeValue(result);
             const settled = try engine.awaitValue(result);
             defer engine.freeValue(settled);
-            try put(engine, self.data, names[0], try clone(engine, settled));
+            if (comptime std.mem.eql(u8, names[0], "skills")) {
+                const published = try @import("native_sdk_resources.zig").skillOverride(engine, settled);
+                try put(engine, self.data, names[0], published);
+            } else if (comptime std.mem.eql(u8, names[0], "agentsFiles")) {
+                try put(engine, self.data, names[0], c.JS_DupValue(engine.context, settled));
+            } else try put(engine, self.data, names[0], try clone(engine, settled));
         }
+    }
+    const append_override = try get(engine, options, "appendSystemPromptOverride");
+    defer engine.freeValue(append_override);
+    if (c.JS_IsFunction(engine.context, append_override)) {
+        const base = try get(engine, self.data, "appendSystemPrompt");
+        defer engine.freeValue(base);
+        var args = [_]c.JSValue{base};
+        const result = try engine.checked(c.JS_Call(engine.context, append_override, options, 1, &args));
+        try put(engine, self.data, "appendSystemPrompt", result);
     }
     const override = try get(engine, options, "systemPromptOverride");
     defer engine.freeValue(override);
@@ -1667,6 +1681,8 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     errdefer if (session_owner.model_lease_anchor) |anchor| @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, engine.runtime, anchor);
     try @import("native_sdk_tool_catalog.zig").initialize(session_owner, opts);
     try @import("native_sdk_tool_catalog.zig").initializeActive(session_owner, opts);
+    try @import("native_sdk_command_runner.zig").initialize(session_owner, session);
+    try @import("native_sdk_system_prompt_options.zig").rebuild(session_owner);
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
@@ -1920,6 +1936,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .setActiveToolsByName) {
             try @import("native_sdk_tool_catalog.zig").setActive(self, first);
+            try @import("native_sdk_system_prompt_options.zig").rebuild(self);
             return c.pi_js_undefined();
         }
         if (operation == .getAllTools) {
@@ -2420,6 +2437,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
     try @import("native_sdk_session_projection.zig").install(engine, exports);
     try @import("native_sdk_builtin_execution.zig").installFindFactories(engine, exports);
+    try @import("native_sdk_public_runner.zig").install(engine, exports);
     try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));

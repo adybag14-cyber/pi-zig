@@ -211,3 +211,295 @@ test "native SDK queue order command execution catalogue contexts and reload inc
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order actual command actions defaults bound receiver rebind and stale contexts match Source505" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-actions-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-command-actions-505.input.txt"), "sdk-command-actions.mjs") catch |err| {
+        std.debug.print("SDK Source505 setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandActionsRows", "sdk-command-actions-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-actions-source-505.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete command actions Source505 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkCommandActionsRows", "sdk-command-actions-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+fn normalizedOptions(comptime capture: []const u8) !void {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-normalized-options-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-normalized-options-" ++ capture ++ ".input.txt"), "sdk-normalized-options.mjs") catch |err| {
+        std.debug.print("SDK Source{s} normalized options setup: {s}\n", .{ capture, engine.last_error orelse "no diagnostic" });
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkNormalizedOptionsRows", "sdk-normalized-options-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ ".json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete normalized options Source{s} actual={s}\n", .{ capture, raw });
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkNormalizedOptionsRows", "sdk-normalized-options-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+test "native SDK queue order normalized options actual metadata graphs whitelist and shallow identities match Source507 508 509" {
+    inline for (.{ "507", "508", "509" }) |capture| try normalizedOptions(capture);
+}
+
+test "native SDK queue order normalized metadata getter cache raw ToolInfo and registration refresh match Source511" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-normalized-getter-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-normalized-options-getter-511.input.txt"), "sdk-normalized-getter.mjs") catch |err| {
+        std.debug.print("SDK Source511 normalized getter setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkNormalizedGetterRows", "sdk-normalized-getter-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-normalized-options-getter-source-511.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete normalized getter Source511 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkNormalizedGetterRows", "sdk-normalized-getter-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order actual runner borrowed receiver descriptors diagnostic lookup and disposed rows match Source514" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-runner-contract-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-contract-514.input.txt"), "sdk-runner-contract.mjs") catch |err| {
+        std.debug.print("SDK Source514 actual runner setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerContractRows", "sdk-runner-contract-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-contract-source-514.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete actual runner Source514 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkRunnerContractRows", "sdk-runner-contract-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order actual resolver operator BigInt Symbol coercion and suffix traces match Source513" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-operator-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-command-operators-513.input.txt"), "sdk-command-operators.mjs") catch |err| {
+        std.debug.print("SDK Source513 actual operators setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandOperatorRows", "sdk-command-operators-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-operators-source-513.json"));
+    defer expected.deinit();
+    const expected_rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(expected_rows.len, actual.value.array.items.len);
+    for (expected_rows, actual.value.array.items) |source, observed| {
+        inline for (.{ "id", "trace", "constructed" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+        const outcome = source.object.get("outcome").?;
+        const native = observed.object.get("outcome").?;
+        if (outcome.object.get("error")) |failure| {
+            // ECMAScript exception class and original coercion/order are the
+            // operator contract. Preserve the captured Node wording unchanged;
+            // exact Node/QuickJS builtin error-message parity remains open.
+            const actual_failure = native.object.get("error") orelse return error.MissingSource513Exception;
+            try std.testing.expect(json.equal(failure.object.get("name").?, actual_failure.object.get("name").?));
+        } else {
+            if (!json.equal(outcome, native)) std.debug.print("SDK Source513 outcome actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(outcome, native));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkCommandOperatorRows", "sdk-command-operators-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC runner constructor refs fields and implemented foundation match Source516" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-runner-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-constructor-516.input.txt"), "sdk-public-runner.mjs") catch |err| {
+        std.debug.print("SDK Source516 PUBLIC constructor setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkPublicRunnerRows", "sdk-public-runner-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-constructor-source-516.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items, 0..) |source, observed, index| {
+        if (index == 0) {
+            const expected_own = source.object.get("own").?.object.keys();
+            const actual_own = observed.object.get("own").?.object.keys();
+            try std.testing.expectEqual(expected_own.len, actual_own.len);
+            for (expected_own, actual_own) |wanted, found| try std.testing.expectEqualStrings(wanted, found);
+        }
+        var fields = source.object.iterator();
+        while (fields.next()) |entry| {
+            if (index == 0 and std.mem.eql(u8, entry.key_ptr.*, "methods")) {
+                // Compare every real installed body against the actual Source
+                // descriptor. Missing methods remain absent, inventoried work;
+                // no name-only placeholders or full class claim are allowed.
+                const available = observed.object.get("methods").?.array.items;
+                for (available) |method| {
+                    var found = false;
+                    for (entry.value_ptr.array.items) |definition| if (json.equal(method.object.get("name").?, definition.object.get("name").?)) {
+                        try std.testing.expect(json.equal(method, definition));
+                        found = true;
+                        break;
+                    };
+                    try std.testing.expect(found);
+                }
+                continue;
+            }
+            const field = observed.object.get(entry.key_ptr.*) orelse return error.MissingSource516FoundationField;
+            if (!json.equal(entry.value_ptr.*, field)) std.debug.print("SDK Source516 row{d} field{s} actual={s}\n", .{ index, entry.key_ptr.*, raw });
+            try std.testing.expect(json.equal(entry.value_ptr.*, field));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkPublicRunnerRows", "sdk-public-runner-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC bindCore getter phases provider queues and live receivers match Source519" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-bindcore-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-bindcore-519.input.txt"), "sdk-public-bindcore.mjs") catch |err| {
+        std.debug.print("SDK Source519 PUBLIC bindCore setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerBindCoreRows", "sdk-public-bindcore-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-bindcore-source-519.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?;
+    if (!json.equal(rows, actual.value)) std.debug.print("SDK complete PUBLIC bindCore Source519 actual={s}\n", .{raw});
+    try std.testing.expect(json.equal(rows, actual.value));
+    const cleared = try engine.eval("delete globalThis.sdkRunnerBindCoreRows", "sdk-public-bindcore-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC tool context descriptors nested Promise options and borrowed refs match Source521" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-tool-context-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-toolcontext-521.input.txt"), "sdk-public-tool-context.mjs") catch |err| {
+        std.debug.print("SDK Source521 PUBLIC tool context setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerToolContextRows", "sdk-public-tool-context-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-toolcontext-source-521.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        const name = source.object.get("id").?.string;
+        if (std.mem.eql(u8, name, "null-options")) {
+            inline for (.{ "id", "events", "calls" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            try std.testing.expect(json.equal(wanted.object.get("identity").?, found.object.get("identity").?));
+            try std.testing.expect(json.equal(wanted.object.get("error").?.object.get("name").?, found.object.get("error").?.object.get("name").?));
+            // Original Node builtin wording remains in the immutable capture;
+            // semantic error class/order is compared across the two engines.
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source521 actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerToolContextRows", "sdk-public-tool-context-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

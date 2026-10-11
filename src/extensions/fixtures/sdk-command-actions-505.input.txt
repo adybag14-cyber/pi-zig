@@ -1,0 +1,25 @@
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),rows=[];
+const names=['waitForIdle','newSession','fork','navigateTree','switchSession','reload'];
+async function setup(id){const cwd='/sdk-command-actions/'+id,contexts=[],trace=[],loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:id,factory:pi=>pi.registerCommand('capture',{handler:(_args,ctx)=>{contexts.push(ctx)}})}]});await loader.reload();const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});return{cwd,loader,session,contexts,trace};}
+const err=error=>({name:error?.name,message:error?.message});
+async function probe(context,trace,tag){const out=[];for(const name of names){const args=[{tag:tag+'.options'},'second','ignored'];let result;try{const pending=context[name](...args);trace.push([tag,name,'returned',pending instanceof Promise]);result={promise:pending instanceof Promise,value:await pending};if(result.value===undefined)result.undefined=true}catch(error){result={error:err(error)}}out.push({name,result})}return out;}
+{
+ const active=await setup('default-actions');await active.session.prompt('/capture');const context=active.contexts[0];const first=context.getSystemPromptOptions(),second=context.getSystemPromptOptions();
+ rows.push({id:'default-actions',options:first,optionsSame:first===second,methods:await probe(context,active.trace,'default'),trace:active.trace});active.session.dispose();
+}
+{
+ const active=await setup('bound-rebind'),{session,trace}=active,actions={},marker={tag:'marker'};let receiver;
+ for(const name of names)Object.defineProperty(actions,name,{enumerable:true,get(){trace.push(['bind.get',name]);return function(...args){if(receiver===undefined)receiver=this;trace.push(['action',name,'receiverActions',this===actions,'receiverRunner',this===session._extensionRunner,'sameReceiver',this===receiver,'args',args]);return Promise.resolve({tag:name,args:args.length})}}});
+ await session.bindExtensions({commandContextActions:actions});await session.prompt('/capture');const context=active.contexts[0],firstOptions=context.getSystemPromptOptions();
+ const bound=await probe(context,trace,'bound');await session.bindExtensions({});const reset=await probe(context,trace,'reset');
+ await session.bindExtensions({commandContextActions:{waitForIdle(){throw marker},newSession(){return marker},fork:()=>Promise.resolve(marker),navigateTree:()=>Promise.reject(marker),switchSession:()=>undefined,reload:()=>Promise.resolve()}});
+ const rebind=[];for(const name of names){try{const pending=context[name]('one','two','three');rebind.push({name,promise:pending instanceof Promise,identity:(await pending)===marker})}catch(error){rebind.push({name,rejectedIdentity:error===marker})}}
+ rows.push({id:'bound-rebind',bound,reset,rebind,optionsSame:firstOptions===context.getSystemPromptOptions(),trace});session.dispose();
+}
+{
+ const active=await setup('stale-context'),{session,loader}=active;await session.prompt('/capture');const old=active.contexts[0];await loader.reload();const {session:next}=await createAgentSession({cwd:active.cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(active.cwd),settingsManager:SettingsManager.inMemory(),tools:[]});await next.prompt('/capture');const fresh=active.contexts.at(-1);
+ const oldBefore=await probe(old,active.trace,'old-before-dispose');session.dispose();const oldAfter=await probe(old,active.trace,'old-after-dispose');let oldOptions;try{old.getSystemPromptOptions();oldOptions={returned:true}}catch(error){oldOptions={error:err(error)}}
+ const freshAfter=await probe(fresh,active.trace,'fresh-after-old-dispose');rows.push({id:'stale-context',oldBefore,oldAfter,oldOptions,freshAfter,trace:active.trace});next.dispose();
+}
+globalThis.sdkCommandActionsRows=rows;

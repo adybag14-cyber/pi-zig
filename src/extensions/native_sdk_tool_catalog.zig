@@ -26,6 +26,8 @@ pub const State = struct {
     initialized: bool = false,
     refreshing: bool = false,
     scope_generation: u64 = 0,
+    prompt_snippets: ?c.JSValue = null,
+    prompt_guidelines: ?c.JSValue = null,
     fn release(self: *State, runtime: ?*c.JSRuntime, records: *std.ArrayList(Record)) void {
         for (records.items) |record| {
             self.engine.gpa.free(record.name);
@@ -39,10 +41,14 @@ pub const State = struct {
         self.retire();
         self.release(runtime, &self.records);
         self.versions.deinit(self.engine.gpa);
+        if (self.prompt_snippets) |value| c.JS_FreeValueRT(runtime, value);
+        if (self.prompt_guidelines) |value| c.JS_FreeValueRT(runtime, value);
         self.arena.deinit();
         self.engine.gpa.destroy(self);
     }
     pub fn mark(self: *State, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
+        if (self.prompt_snippets) |value| c.JS_MarkValue(runtime, value, marker);
+        if (self.prompt_guidelines) |value| c.JS_MarkValue(runtime, value, marker);
         for (self.records.items) |record| {
             c.JS_MarkValue(runtime, record.definition, marker);
             c.JS_MarkValue(runtime, record.source, marker);
@@ -110,6 +116,11 @@ pub const State = struct {
         const custom = try vm.get(self.engine, owner.data, "customTools");
         defer self.engine.freeValue(custom);
         try self.appendDefinitions(&next, custom, "sdk");
+        const metadata = try @import("native_sdk_system_prompt_options.zig").normalizeMetadata(self.engine, next.items);
+        if (self.prompt_snippets) |value| self.engine.freeValue(value);
+        if (self.prompt_guidelines) |value| self.engine.freeValue(value);
+        self.prompt_snippets = metadata.snippets;
+        self.prompt_guidelines = metadata.guidelines;
         var previous = self.records;
         self.records = next;
         next = .empty;
@@ -219,7 +230,7 @@ fn ownerVersions(owner: *sdk.State) !std.ArrayList(Version) {
             error.UnknownNativeExtensionOwner => null,
             else => return err,
         } else null;
-        try result.append(engine.gpa, .{ .id = @intCast(id), .revision = if (binding) |actual| actual.registration_revision else null });
+        try result.append(engine.gpa, .{ .id = @intCast(id), .revision = if (binding) |actual| actual.tool_registration_revision else null });
     }
     return result;
 }
@@ -237,6 +248,16 @@ fn current(owner: *sdk.State) !*State {
     const self = owner.tool_catalog orelse return error.NativeSDKToolCatalogUnavailable;
     try self.refresh(owner);
     return self;
+}
+pub fn promptMetadata(owner: *sdk.State) !@import("native_sdk_system_prompt_options.zig").Metadata {
+    const self = try current(owner);
+    return .{ .snippets = c.JS_DupValue(owner.engine.context, self.prompt_snippets orelse return error.NativeSDKPromptMetadataUnavailable), .guidelines = c.JS_DupValue(owner.engine.context, self.prompt_guidelines orelse return error.NativeSDKPromptMetadataUnavailable) };
+}
+pub fn refreshRegistration(owner: *sdk.State) !void {
+    const active = try activeNames(owner);
+    defer owner.engine.freeValue(active);
+    try setActive(owner, active);
+    try @import("native_sdk_system_prompt_options.zig").rebuild(owner);
 }
 pub fn getDefinition(owner: *sdk.State, name: c.JSValue) !c.JSValue {
     owner.engine.native_exception_diagnostics_suppressed += 1;

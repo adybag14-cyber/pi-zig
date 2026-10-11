@@ -6,6 +6,26 @@ const skills_mod = @import("../coding_agent/skills.zig");
 const prompts_mod = @import("../coding_agent/prompts.zig");
 const c = engine_mod.c;
 const group_mod = @import("native_group.zig");
+/// Source skillsOverride copies individual skill records while retaining their
+/// nested values, diagnostics and provided sourceInfo. JSON round trips lose
+/// the live graph and silently erase functions/symbols/accessors.
+pub fn skillOverride(engine: *engine_mod.Engine, resolved: c.JSValue) !c.JSValue {
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    const rows = try sdk.get(engine, resolved, "skills");
+    defer engine.freeValue(rows);
+    const copied = try sdk.array(engine);
+    defer engine.freeValue(copied);
+    for (0..try sdk.length(engine, rows)) |index| {
+        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
+        defer engine.freeValue(row);
+        const item = try @import("native_js_values.zig").spread(engine, row);
+        try sdk.append(engine, copied, item);
+    }
+    try sdk.put(engine, result, "skills", c.JS_DupValue(engine.context, copied));
+    try sdk.put(engine, result, "diagnostics", try sdk.get(engine, resolved, "diagnostics"));
+    return result;
+}
 pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
     const io = engine.native_io orelse return;
     const options = try sdk.get(engine, data, "options");

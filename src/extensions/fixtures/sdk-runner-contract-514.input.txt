@@ -1,0 +1,25 @@
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),out=[];
+const cwd='/sdk-runner-contract',handler=function handler(){},apis=[];let phase=0;const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[{name:'runner-contract',factory:pi=>{apis.push(pi);const tag=++phase;pi.registerCommand('foo',{handler,description:'phase'+tag});pi.registerCommand('tail',{handler,description:'tail'+tag})}}]});await loader.reload();const{session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});const runner=session._extensionRunner,prototype=Object.getPrototypeOf(runner),extensions=loader.getExtensions().extensions;
+const describe=commands=>commands.map(command=>({keys:Reflect.ownKeys(command).map(String),name:command.name,invocationName:command.invocationName,description:command.description,handlerIdentity:command.handler===handler,sourceInfo:command.sourceInfo}));
+out.push({id:'actual-method-descriptors',sameExtensions:runner.extensions===extensions,methods:['resolveRegisteredCommands','getRegisteredCommands','getCommand','getCommandDiagnostics'].map(name=>{const d=Object.getOwnPropertyDescriptor(prototype,name);return{name,own:Object.hasOwn(runner,name),functionName:d.value.name,length:d.value.length,writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}})});
+{
+ const trace=[],previous=[{old:true}];let diagnostic=previous;const receiver={get extensions(){trace.push(['extensions.get',this===receiver]);return extensions},get resolveRegisteredCommands(){trace.push(['resolve.get',this===receiver]);return runner.resolveRegisteredCommands},set commandDiagnostics(value){trace.push(['diagnostics.set',this===receiver,Array.isArray(value),value.length]);diagnostic=value}};
+ const commands=runner.getRegisteredCommands.call(receiver);out.push({id:'borrowed-get-registered',commands:describe(commands),trace,newDiagnostics:diagnostic!==previous,emptyDiagnostics:diagnostic.length===0});
+}
+{
+ const trace=[],row={name:'raw',invocationName:'picked',handler,description:'custom'},array=[row];Object.defineProperty(array,'find',{configurable:true,get(){trace.push('find.get');return function(predicate){trace.push(['find.call',this===array,arguments.length]);return Array.prototype.find.call(this,predicate)}}});const receiver={resolveRegisteredCommands(){trace.push(['resolve.call',this===receiver]);return array},commandDiagnostics:['unchanged']};const result=runner.getCommand.call(receiver,'picked');out.push({id:'borrowed-get-command',sameRow:result===row,diagnostics:receiver.commandDiagnostics,trace});
+}
+{
+ const trace=[],marker={marker:true},receiver={set commandDiagnostics(_value){trace.push('diagnostics.set');throw marker},get resolveRegisteredCommands(){trace.push('resolve.get');return runner.resolveRegisteredCommands}};let identity=false;try{runner.getRegisteredCommands.call(receiver)}catch(error){identity=error===marker}out.push({id:'diagnostic-setter-error',trace,identity});
+}
+{
+ const trace=[],marker={marker:true},receiver={set commandDiagnostics(_value){trace.push('diagnostics.set')},get resolveRegisteredCommands(){trace.push('resolve.get');throw marker}};let identity=false;try{runner.getRegisteredCommands.call(receiver)}catch(error){identity=error===marker}out.push({id:'resolver-getter-error',trace,identity});
+}
+{
+ const first=runner.getRegisteredCommands(),second=runner.getRegisteredCommands(),diag=runner.getCommandDiagnostics();out.push({id:'fresh-resolution',distinctArray:first!==second,distinctRow:first[0]!==second[0],sameHandler:first[0].handler===second[0].handler,diagnosticsEmpty:diag.length===0,sameDiagnostics:diag===runner.commandDiagnostics});
+}
+await loader.reload();const{session:next}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});const nextRunner=next._extensionRunner;extensions[0].commands.set('foo',{name:'old-name',description:'old mutation',handler});session.dispose();
+let oldOutcome;try{oldOutcome={commands:describe(runner.getRegisteredCommands()),found:runner.getCommand('old-name')?.invocationName}}catch(error){oldOutcome={error:{name:error.name,message:error.message}}}let oldApi;try{apis[0].getCommands();oldApi={returned:true}}catch(error){oldApi={error:{name:error.name,message:error.message}}}
+out.push({id:'disposed-runner-retains-rows',distinctRunner:runner!==nextRunner,distinctExtensions:runner.extensions!==nextRunner.extensions,oldOutcome,oldApi,newCommands:describe(nextRunner.getRegisteredCommands())});next.dispose();
+globalThis.sdkRunnerContractRows=out;
