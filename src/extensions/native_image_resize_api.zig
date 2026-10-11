@@ -73,7 +73,12 @@ fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
     return js.invoke(engine, request, "then", &.{ c.pi_js_undefined(), on_failure });
 }
 fn start(engine: *js.Engine, input: c.JSValue, mime: c.JSValue, options: c.JSValue) !c.JSValue {
-    const view = try bytes(engine, input);
+    const constructor = try js.global(engine, "Uint8Array");
+    defer engine.freeValue(constructor);
+    var constructor_arguments = [_]c.JSValue{input};
+    const copied_value = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &constructor_arguments));
+    defer engine.freeValue(copied_value);
+    const view = try bytes(engine, copied_value);
     defer engine.freeValue(view.backing);
     // Source copies caller bytes before postMessage invokes option getters.
     // A getter may mutate the caller's original buffer during structured clone.
