@@ -325,7 +325,10 @@ pub const Task = struct {
                 try self.output.sendBulk(.event, self.pending.frame.id, .{ .kind = "output" }, buffer[0..@intCast(count)]);
                 if (exited) idle_until = Io.Clock.awake.now(io).nanoseconds + 100 * std.time.ns_per_ms;
             } else if (idle_until != null and now >= idle_until.?) break;
-            if (!exited or !ended) try io.sleep(.fromMilliseconds(1), .awake);
+            // Drain ready PTY bytes like Source's blocking reader. Sleeping
+            // after every successful read throttles small macOS PTY chunks
+            // and can stall a large write behind output backpressure.
+            if (count <= 0 and (!exited or !ended)) try io.sleep(.fromMilliseconds(1), .awake);
         }
         // A reply can reach the client as soon as it is queued. Retire the
         // terminal before publishing its outcome, as upstream does.

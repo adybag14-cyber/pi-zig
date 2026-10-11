@@ -2,7 +2,7 @@ name: Native environment terminal contract
 
 on:
   push:
-    branches: [work/native-env-terminal-20261011]
+    branches: [work/native-env-terminal-20261011, work/native-mac-terminal-throughput-20261011]
 
 permissions:
   contents: read
@@ -15,10 +15,7 @@ jobs:
   platform:
     strategy:
       fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        mode: [Debug, ReleaseSafe]
-        family: [environment, capabilities]
+      matrix: ${{ fromJSON(github.ref_name == 'work/native-mac-terminal-throughput-20261011' && '{"os":["macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["environment"]}' || '{"os":["windows-latest","ubuntu-latest","macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["environment","capabilities"]}') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.family == 'capabilities' && 25 || 15 }}
     steps:
