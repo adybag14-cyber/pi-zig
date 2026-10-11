@@ -1,5 +1,5 @@
-//! Private resize API candidate. Arguments stay on the owner; codec work runs
-//! in an independently owned VM. Public export waits for Source qualification.
+//! Public resize API. Arguments stay on the owner; codec work runs in an
+//! independently owned VM, with original-input fallback after worker failure.
 const js = @import("native_js_values.zig");
 const c = js.c;
 const graph = @import("native_image_resize_options.zig");

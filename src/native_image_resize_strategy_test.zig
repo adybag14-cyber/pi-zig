@@ -7,6 +7,30 @@ const option_graph = @import("extensions/native_image_resize_options.zig");
 const promises = @import("extensions/native_image_worker_promise.zig");
 const image_api = @import("extensions/native_image_resize_api.zig");
 const dimension_note = @import("extensions/native_image_dimension_note.zig");
+test "native image JavaScript-valued strategy public SDK exports execute native worker and dimension note with no Node host" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const group = try @import("extensions/native_group.zig").Group.init(engine);
+    defer group.deinit();
+    const owner = try group.add("image-public-api-owner");
+    try owner.installSchemas();
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const input = @embedFile("ai/fixtures/photon-source-8x5.png");
+    try js.define(engine, root, "imageInputBuffer", try engine.checked(c.JS_NewArrayBufferCopy(engine.context, input.ptr, input.len)));
+    const result = engine.evalModule(
+        \\import{resizeImage,formatDimensionNote}from'@earendil-works/pi-coding-agent';
+        \\const value=await resizeImage(new Uint8Array(imageInputBuffer),'image/png',{maxWidth:4,maxHeight:3});
+        \\if(value.width!==4||value.height!==3||formatDimensionNote(value)!=='[Image: original 8x5, displayed at 4x3. Multiply coordinates by 2.00 to map to original image.]')throw Error('public SDK native image behavior');
+        \\if(Object.getPrototypeOf(resizeImage)!==Object.getPrototypeOf(async()=>{})||Object.hasOwn(resizeImage,'prototype'))throw Error('public native async function metadata');
+    , "image-public-sdk-native") catch |err| {
+        std.debug.print("Public SDK image exports: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+}
 fn noteAllocation(gpa: std.mem.Allocator) !void {
     const engine = try js.Engine.init(gpa, .{});
     defer engine.deinit();

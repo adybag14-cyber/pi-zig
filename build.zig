@@ -25,12 +25,17 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     b.step("test-codemode-source", "Compare ECMAScript source directives with actual upstream results").dependOn(&b.addRunArtifact(codemode_source_tests).step);
+    const native_photon_library = @import("tools/build_photon.zig").library(b, target, optimize);
+    const native_photon_link = b.addModule("native_photon_link", .{ .root_source_file = b.path("src/ai/photon_session.zig"), .target = target, .optimize = optimize, .link_libc = true });
+    native_photon_link.addIncludePath(b.path("vendor/photon-native"));
+    native_photon_link.linkLibrary(native_photon_library);
+    if (target.result.os.tag != .windows) native_photon_link.linkSystemLibrary("m", .{});
     const photon_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_photon_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,
     });
     photon_tests.root_module.addIncludePath(b.path("vendor/photon-native"));
-    photon_tests.root_module.linkLibrary(@import("tools/build_photon.zig").library(b, target, optimize));
+    photon_tests.root_module.linkLibrary(native_photon_library);
     if (target.result.os.tag != .windows) photon_tests.root_module.linkSystemLibrary("m", .{});
     b.step("test-native-photon", "Compare native C image algorithms and Zig resize ownership against actual upstream results").dependOn(&b.addRunArtifact(photon_tests).step);
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
@@ -246,9 +251,6 @@ pub fn build(b: *std.Build) void {
     const image_strategy_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_image_resize_strategy_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native image JavaScript-valued strategy"} });
     linkQuickJs(b, image_strategy_tests.root_module, quickjs, sqlite_lib_dir);
     image_strategy_tests.root_module.addImport("catalog_tool", catalog_tool);
-    image_strategy_tests.root_module.addIncludePath(b.path("vendor/photon-native"));
-    image_strategy_tests.root_module.linkLibrary(@import("tools/build_photon.zig").library(b, target, optimize));
-    if (target.result.os.tag != .windows) image_strategy_tests.root_module.linkSystemLibrary("m", .{});
     b.step("test-native-image-js-strategy", "Replay upstream image bytes using actual JS-valued options and native Photon").dependOn(&b.addRunArtifact(image_strategy_tests).step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
@@ -2089,6 +2091,8 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.addIncludePath(b.path("vendor/libfyaml"));
     module.addIncludePath(b.path("src/extensions"));
     module.addImport("native_icu_api", b.modules.get("native_icu_api").?);
+    module.addIncludePath(b.path("vendor/photon-native"));
+    module.addImport("native_photon_link", b.modules.get("native_photon_link").?);
     module.link_libcpp = true;
     module.linkLibrary(library);
     module.link_libc = true;
