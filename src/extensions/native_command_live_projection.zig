@@ -121,9 +121,17 @@ pub fn projectedValue(engine: *js.Engine, token: c.JSValue, index: c.JSValue, co
 /// same collision suffix algorithm as the existing authoritative Group DTO.
 /// SDK uses its genuine runner and private scope, never Main/sibling entries.
 pub fn project(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.JSValue) !c.JSValue {
+    return projectMode(group, caller, snapshot, false);
+}
+/// Original registered name and resolved invocationName for Source frontend
+/// filtering/mapping. The existing provider projection stays separate.
+pub fn projectResolved(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.JSValue) !c.JSValue {
+    return projectMode(group, caller, snapshot, true);
+}
+fn projectMode(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.JSValue, resolved: bool) !c.JSValue {
     if (group.deinitializing or try group.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
     if (caller.sdk_resource_owner and caller.sdk_context == null) return sdk_owners.uninitialized(group.engine);
-    if (caller.sdk_context != null) return projectSdk(group, caller, snapshot);
+    if (caller.sdk_context != null) return projectSdk(group, caller, snapshot, resolved);
     const engine = group.engine;
     var arena: std.heap.ArenaAllocator = .init(engine.gpa);
     defer arena.deinit();
@@ -169,14 +177,15 @@ pub fn project(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.
         try taken.put(allocator, invocation, {});
         const metadata = try js.spread(engine, row.definition);
         defer engine.freeValue(metadata);
-        try js.define(engine, metadata, "name", try sdk.text(engine, invocation));
+        try js.define(engine, metadata, "name", try sdk.text(engine, if (resolved) row.key else invocation));
+        if (resolved) try js.define(engine, metadata, "invocationName", try sdk.text(engine, invocation));
         const owned = try owners.copyMetadata(engine, row.anchor, metadata);
         defer engine.freeValue(owned);
         try js.push(engine, result, owned);
     }
     return result;
 }
-fn projectSdk(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.JSValue) !c.JSValue {
+fn projectSdk(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.JSValue, keep_resolved: bool) !c.JSValue {
     const engine = group.engine;
     var retained = try sdk_owners.retainCaller(caller);
     defer retained.deinit();
@@ -210,6 +219,10 @@ fn projectSdk(group: *group_mod.Group, caller: *bindings.Bindings, snapshot: c.J
             break;
         };
         if (!observed or !owners.isOwned(engine, row)) return error.UnownedNativeCommandProjection;
+        if (keep_resolved) {
+            try js.push(engine, result, row);
+            continue;
+        }
         const metadata = try js.spread(engine, row);
         defer engine.freeValue(metadata);
         const invocation = try js.get(engine, row, "invocationName");

@@ -16,17 +16,31 @@ fn mainProject(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValu
     return value;
 }
 fn mainProjectValue(engine: *js.Engine, snapshot: c.JSValue, roots: [*c]c.JSValue) !c.JSValue {
+    return mainProjectMode(engine, snapshot, roots, false);
+}
+fn mainResolvedProject(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(ctx.?);
+    return mainProjectMode(engine, if (argc > 0) args[0] else c.pi_js_undefined(), roots, true) catch |err| @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
+}
+fn mainProjectMode(engine: *js.Engine, snapshot: c.JSValue, roots: [*c]c.JSValue, resolved: bool) !c.JSValue {
     var class: i64 = 0;
     if (c.JS_ToInt64(engine.context, &class, roots[1]) < 0) return js.capture(engine);
     const binding = bindings.Bindings.liveOwner(engine, roots[0], @intCast(class)) orelse return error.StaleNativeExtensionOwner;
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.StaleNativeExtensionOwner));
-    return projection.project(group, binding, snapshot);
+    return if (resolved) projection.projectResolved(group, binding, snapshot) else projection.project(group, binding, snapshot);
 }
 fn bindProject(engine: *js.Engine, binding: *bindings.Bindings, name: [*:0]const u8) !void {
     const root = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
     var roots = [_]c.JSValue{ binding.owner_token, c.JS_NewInt64(engine.context, binding.owner_class) };
     const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, mainProject, name, 1, 0, 2, &roots));
+    try js.define(engine, root, name, function);
+}
+fn bindResolvedProject(engine: *js.Engine, binding: *bindings.Bindings, name: [*:0]const u8) !void {
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    var roots = [_]c.JSValue{ binding.owner_token, c.JS_NewInt64(engine.context, binding.owner_class) };
+    const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, mainResolvedProject, name, 1, 0, 2, &roots));
     try js.define(engine, root, name, function);
 }
 fn setup(gpa: std.mem.Allocator) !*js.Engine {
@@ -64,6 +78,22 @@ fn sdkProject(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue
     return sdkProjectValue(engine, if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
 }
 fn sdkProjectValue(engine: *js.Engine, session: c.JSValue) !c.JSValue {
+    return sdkProjectMode(engine, session, false);
+}
+fn sdkProjectResolved(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(ctx.?);
+    return sdkProjectMode(engine, if (argc > 0) args[0] else c.pi_js_undefined(), true) catch |err| @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
+}
+fn sdkRunner(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(ctx.?);
+    const state = sdk.state(engine, if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| return @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
+    return sdk.get(engine, state.data, "_sdkCommandRunner") catch |err| @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
+}
+fn frontendProject(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(ctx.?);
+    return @import("extensions/native_command_frontend_projection.zig").extensionRows(engine, if (argc > 0) args[0] else c.pi_js_undefined(), if (argc > 1) args[1] else c.pi_js_undefined(), if (argc > 2) args[2] else c.pi_js_undefined()) catch |err| @import("extensions/native_tui_alt_frame.zig").fail(engine, err);
+}
+fn sdkProjectMode(engine: *js.Engine, session: c.JSValue, resolved: bool) !c.JSValue {
     const state = try sdk.state(engine, session);
     const sdk_owners = @import("extensions/native_sdk_resource_owners.zig");
     const rows = try sdk_owners.sessionExtensionRows(engine, state.data);
@@ -92,7 +122,7 @@ fn sdkProjectValue(engine: *js.Engine, session: c.JSValue) !c.JSValue {
     defer binding.restoreSdkContext(saved);
     const snapshot = try js.object(engine);
     defer engine.freeValue(snapshot);
-    return projection.project(group, binding, snapshot);
+    return if (resolved) projection.projectResolved(group, binding, snapshot) else projection.project(group, binding, snapshot);
 }
 fn sdkInvalidate(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(ctx.?);
@@ -207,6 +237,9 @@ test "Live command metadata genuine SDK owners isolate aliases sessions reload a
     try main.loadFactory("export default pi=>pi.registerCommand('main-only',{handler(){}})", "main-command-sdk-boundary.mjs");
     try bindProject(engine, main, "projectSdkBoundaryMain");
     try engine.bindFunction("projectActualSdkCommands", sdkProject, 1);
+    try engine.bindFunction("projectActualSdkResolved", sdkProjectResolved, 1);
+    try engine.bindFunction("actualSdkRunner", sdkRunner, 1);
+    try engine.bindFunction("mapActualFrontendCommands", frontendProject, 3);
     try replay(engine,
         \\import{createAgentSession,DefaultResourceLoader,ModelRuntime,SessionManager,SettingsManager}from'@earendil-works/pi-coding-agent';
         \\const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),settings=SettingsManager.inMemory({defaultTools:[]}),callbacks=[],hints=[];let finishA,generation=0;
@@ -241,6 +274,9 @@ fn replaySdkSource(engine: *js.Engine, bytes: []const u8, original: []const u8, 
     defer engine.freeValue(root);
     try js.define(engine, root, "actualCommandLifetimeSource", try engine.checked(c.JS_ParseJSON(engine.context, original.ptr, original.len, "actual-command-lifetime-source")));
     try engine.bindFunction("projectActualSdkCommands", sdkProject, 1);
+    try engine.bindFunction("projectActualSdkResolved", sdkProjectResolved, 1);
+    try engine.bindFunction("actualSdkRunner", sdkRunner, 1);
+    try engine.bindFunction("mapActualFrontendCommands", frontendProject, 3);
     try engine.bindFunction("invalidateActualSdkRunner", sdkInvalidate, 1);
     try engine.bindFunction("removeActualSdkExtensions", sdkRemove, 1);
     var scratch = std.testing.tmpDir(.{});
@@ -281,6 +317,26 @@ test "Live command metadata actual Source12 A disposal invalidates shared Pi whi
     try main.installSchemas();
     try replaySdkSource(engine, @embedFile("extensions/fixtures/main-live-command-shared-dispose-native.input.txt"), @embedFile("extensions/fixtures/main-live-command-shared-dispose-source.json"), "liveCommandSharedRuntimeCases", 12, "actual-source12-command-shared-dispose.mjs");
 }
+test "Live command metadata actual Source6 complete raw and frontend projection records" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const main = try group.add("source6-command-frontend-root.mjs");
+    try main.installSchemas();
+    try sourceAuthority(engine);
+    try replaySdkSource(engine, @embedFile("extensions/fixtures/main-live-command-metadata-native.input.txt"), @embedFile("extensions/fixtures/main-live-command-metadata-source.json"), "liveCommandMetadataCases", 6, "actual-source6-command-frontend.mjs");
+}
+test "Live command metadata actual Source7 complete retained and fresh provider registration records" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const main = try group.add("source7-command-retained-root.mjs");
+    try main.installSchemas();
+    try sourceAuthority(engine);
+    try replaySdkSource(engine, @embedFile("extensions/fixtures/main-live-command-retained-registration-native.input.txt"), @embedFile("extensions/fixtures/main-live-command-retained-registration-source.json"), "liveCommandRetainedCases", 7, "actual-source7-command-retained.mjs");
+}
 fn allocationFailure(engine: *js.Engine, gpa: std.mem.Allocator, err: anyerror, generation: u64, stage: []const u8) anyerror {
     const actual = engine.nativeAllocationError(err, generation);
     if (actual != error.OutOfMemory) {
@@ -303,10 +359,12 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
     const owner = group.add("gpa-command-owner.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "Group.add");
     owner.loadFactory("export default pi=>pi.registerCommand('owned',{argumentHint:'<x>',handler(){},getArgumentCompletions:async function(prefix){await Promise.resolve();return [{value:prefix,label:this.name}]}})", "gpa-command-owner.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "loadFactory");
     bindProject(engine, owner, "projectLiveGpa") catch |err| return allocationFailure(engine, gpa, err, generation, "bindProject");
-    const result = engine.evalModule("const rows=projectLiveGpa(" ++ context ++ "),provider=globalThis.gpaRetainedCommandProvider=createLiveCommandProvider(rows),result=await provider.getSuggestions(['/owned p'],0,8,{force:false});if(result.prefix!=='p'||result.items[0].value!=='p'||result.items[0].label!=='owned'||rows[0].argumentHint!=='<x>')throw Error('actual allocation-path behavior');", "live-command-owner-allocation.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "eval-live");
+    bindResolvedProject(engine, owner, "projectLiveResolvedGpa") catch |err| return allocationFailure(engine, gpa, err, generation, "bindResolvedProject");
+    engine.bindFunction("mapActualFrontendCommands", frontendProject, 3) catch |err| return allocationFailure(engine, gpa, err, generation, "bindFrontendProject");
+    const result = engine.evalModule("const rows=projectLiveGpa(" ++ context ++ "),provider=globalThis.gpaRetainedCommandProvider=createLiveCommandProvider(rows),result=await provider.getSuggestions(['/owned p'],0,8,{force:false});if(result.prefix!=='p'||result.items[0].value!=='p'||result.items[0].label!=='owned'||rows[0].argumentHint!=='<x>')throw Error('actual allocation-path behavior');const frontendRows=mapActualFrontendCommands(projectLiveResolvedGpa(" ++ context ++ "),[],{prefixAutocompleteDescription(description){return description}});if(JSON.stringify(Object.keys(frontendRows[0]))!==JSON.stringify(['name','description','getArgumentCompletions'])||Object.hasOwn(frontendRows[0],'argumentHint')||frontendRows[0].getArgumentCompletions!==rows[0].getArgumentCompletions)throw Error('Source frontend metadata allocation behavior');const frontend=globalThis.gpaRetainedFrontendProvider=createLiveCommandProvider(frontendRows),mapped=await frontend.getSuggestions(['/owned p'],0,8,{force:false});if(mapped.prefix!=='p'||mapped.items[0].value!=='p'||mapped.items[0].label!=='owned')throw Error('Source frontend argument allocation behavior');", "live-command-owner-allocation.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "eval-live");
     engine.freeValue(result);
     owner.invalidateContext() catch |err| return allocationFailure(engine, gpa, err, generation, "context-retirement");
-    const late = engine.evalModule("const result=await gpaRetainedCommandProvider.getSuggestions([\"/owned p\"],0,8,{force:false});if(result.items[0].value!==\"p\")throw Error(\"Source retired pure callback failed during GPA\");", "live-command-retired-allocation.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "eval-retired");
+    const late = engine.evalModule("const result=await gpaRetainedCommandProvider.getSuggestions([\"/owned p\"],0,8,{force:false});if(result.items[0].value!==\"p\")throw Error(\"Source retired pure callback failed during GPA\");if((await gpaRetainedFrontendProvider.getSuggestions(['/owned p'],0,8,{force:false})).items[0].value!=='p')throw Error('Source retired frontend pure callback failed during GPA');", "live-command-retired-allocation.mjs") catch |err| return allocationFailure(engine, gpa, err, generation, "eval-retired");
     engine.freeValue(late);
     c.JS_RunGC(engine.runtime);
 }

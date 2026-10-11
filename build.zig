@@ -160,7 +160,7 @@ pub fn build(b: *std.Build) void {
     live_command_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, live_command_module, quickjs, sqlite_lib_dir);
     const live_command_tests = b.addTest(.{ .root_module = live_command_module, .filters = &.{"Live command metadata"}, .use_llvm = use_llvm });
-    b.step("test-native-command-live-owner", "Qualify ten private live command boundaries, exact Source18 lifetime and two Source12 shared runtime/disposal corpora, SDK isolation and host GPA; no frontend activation").dependOn(&b.addRunArtifact(live_command_tests).step);
+    b.step("test-native-command-live-owner", "Replay all55 Source live command records across metadata6 retained7 lifetime18 and two shared12 corpora, twelve private boundaries and complete raw/frontend host GPA; no Main activation").dependOn(&b.addRunArtifact(live_command_tests).step);
     const live_command_allocation_tests = b.addTest(.{ .root_module = live_command_module, .filters = &.{"Live command metadata exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-live-owner-allocation-diagnostic", "Run the unchanged live-owner allocation universe with original failure index and marker diagnostics").dependOn(&b.addRunArtifact(live_command_allocation_tests).step);
     const command_allocation_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source exhaustive host allocation"}, .use_llvm = use_llvm });

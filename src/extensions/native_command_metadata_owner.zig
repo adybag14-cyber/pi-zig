@@ -268,6 +268,16 @@ pub fn copyMetadata(engine: *js.Engine, anchor: c.JSValue, metadata: c.JSValue) 
     _ = c.JS_SetOpaque(result, row);
     return result;
 }
+/// Source frontend copies properties but must not grant a guest replacement
+/// the original registration's capability scope.
+pub fn copyRetainedMetadata(engine: *js.Engine, anchor: c.JSValue, metadata: c.JSValue) !c.JSValue {
+    const original = rowRecord(engine, anchor) orelse return error.UnownedNativeCommandProjection;
+    const result = try copyMetadata(engine, anchor, metadata);
+    const retained = rowRecord(engine, result).?;
+    engine.freeValue(retained.callback);
+    retained.callback = c.JS_DupValue(engine.context, original.callback);
+    return result;
+}
 /// Preserve both Source getter reads at the caller. The caller supplies the
 /// second read and its existing await operation; no added JS promise handlers.
 pub fn invoke(engine: *js.Engine, receiver: c.JSValue, callback: c.JSValue, prefix: c.JSValue, signal: c.JSValue, continuation: Continue, context: ?*anyopaque) !c.JSValue {

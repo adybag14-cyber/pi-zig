@@ -1,0 +1,28 @@
+const liveMetadataCases=[];
+for(const id of ['duplicates','literal-before','literal-after','builtin-filter','unicode','replacement-order']){
+  const trace=[],hint={toString(){trace.push('hint.toString');return '<topic>'}},callbacks=[];
+  const fixture=id==='duplicates'?[['same','tail'],['same']]:id==='literal-before'?[['same:1','same'],['same']]:id==='literal-after'?[['same'],['same','same:1']]:id==='builtin-filter'?[['model','model','help','outside']]:id==='unicode'?[['界','𐐀name'],['界']]:[['same','tail','same'],['same']];
+  // Caller construction adapts to genuine SDK factories. The callback/hint
+  // bodies, registration order, observations and expected records stay Source.
+  const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),settings=SettingsManager.inMemory({defaultTools:[]});
+  const loader=new DefaultResourceLoader({cwd:sourceFixtureDirectory,agentDir:sourceFixtureDirectory,noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:fixture.map((names,owner)=>pi=>{
+    for(const[name,index]of names.map((name,index)=>[name,index])){
+      const callback=function(prefix){trace.push({event:'argument',owner,index,argc:arguments.length,prefix,receiver:this.name,ordinary:Object.getPrototypeOf(this)===Object.prototype});return Promise.resolve([{value:owner+':'+prefix,label:'Owner '+owner}])};
+      callbacks.push(callback);pi.registerCommand(name,{description:'owner '+owner,argumentHint:hint,getArgumentCompletions:callback,handler(){}});
+    }
+  })});await loader.reload();
+  const{session}=await createAgentSession({cwd:sourceFixtureDirectory,agentDir:sourceFixtureDirectory,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(sourceFixtureDirectory),settingsManager:settings,tools:[],model:{id:'fixture',name:'Fixture',api:'openai-responses',provider:'fixture',baseUrl:'https://example.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:1024}});await session.bindExtensions({});
+  const runner=actualSdkRunner(session);runner.commandDiagnostics=['obsolete'];
+  const rows=projectActualSdkResolved(session);
+  const mode={prefixAutocompleteDescription:function(description){return description}};
+  const builtins=actualCommandLifetimeSource.builtinNames.map(name=>({name}));
+  const extensionRows=mapActualFrontendCommands(projectActualSdkResolved(session),builtins,mode);
+  const provider=createLiveCommandProvider(extensionRows);
+  const rawIdentity=rows.map(row=>({name:row.name,invocationName:row.invocationName,callbackOriginal:callbacks.includes(row.getArgumentCompletions),hintOriginal:row.argumentHint===hint}));
+  const projectedIdentity=extensionRows.map(row=>({name:row.name,callbackOriginal:callbacks.includes(row.getArgumentCompletions),hintPresent:Object.hasOwn(row,'argumentHint'),keys:Object.keys(row)}));
+  const argumentsObserved=[];
+  for(const row of extensionRows){const text='/'+row.name+' p';argumentsObserved.push({name:row.name,result:await provider.getSuggestions([text],0,text.length,{force:false,signal:new AbortController().signal})})}
+  liveMetadataCases.push({id,rawIdentity,projectedIdentity,argumentsObserved,trace,diagnostics:runner.getCommandDiagnostics()});
+  session.dispose();
+}
+globalThis.liveCommandMetadataCases=JSON.parse(JSON.stringify(liveMetadataCases));
