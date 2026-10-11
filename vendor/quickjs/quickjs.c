@@ -1210,6 +1210,11 @@ struct JSObject {
         } array;    /* 12/20 bytes */
         JSRegExp regexp;    /* JS_CLASS_REGEXP: 8/16 bytes */
         JSValue object_data;    /* for JS_SetObjectData(): 8/16/16 bytes */
+        struct { /* JS_CLASS_ERROR: data aliases object_data above. */
+            JSValue data;
+            /* Host-only identity tag; not a property or a GC root. */
+            uint64_t native_allocation_generation;
+        } native_error;
     } u;
     /* byte sizes: 40/48/72 */
 };
@@ -6308,6 +6313,9 @@ static JSValue JS_NewObjectFromShape(JSContext *ctx, JSShape *sh, JSClassID clas
         p->u.array.count = 0;
         break;
     case JS_CLASS_ERROR:
+        p->u.native_error.native_allocation_generation = 0;
+        p->u.object_data = JS_UNDEFINED;
+        break;
     case JS_CLASS_NUMBER:
     case JS_CLASS_STRING:
     case JS_CLASS_BOOLEAN:
@@ -8638,6 +8646,27 @@ static int JS_ThrowTypeErrorReadOnly(JSContext *ctx, int flags, JSAtom atom)
     } else {
         return false;
     }
+}
+
+/* Private embedding ABI. Unlike a WeakMap, these operations cannot allocate,
+   call guest code, or keep an error alive after its ordinary references die. */
+void pi_js_mark_native_allocation_error(JSValueConst value, uint64_t generation)
+{
+    if (JS_VALUE_GET_TAG(value) == JS_TAG_OBJECT) {
+        JSObject *p = JS_VALUE_GET_OBJ(value);
+        if (p->class_id == JS_CLASS_ERROR)
+            p->u.native_error.native_allocation_generation = generation;
+    }
+}
+
+uint64_t pi_js_native_allocation_error_generation(JSValueConst value)
+{
+    if (JS_VALUE_GET_TAG(value) == JS_TAG_OBJECT) {
+        JSObject *p = JS_VALUE_GET_OBJ(value);
+        if (p->class_id == JS_CLASS_ERROR)
+            return p->u.native_error.native_allocation_generation;
+    }
+    return 0;
 }
 
 JSValue JS_ThrowOutOfMemory(JSContext *ctx)

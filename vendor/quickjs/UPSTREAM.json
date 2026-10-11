@@ -4,7 +4,7 @@
   "commit": "6d46d07d04041b40f4f49eaa7fdebe44c314c699",
   "license": "MIT",
   "files": {
-    "quickjs.c": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+    "quickjs.c": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
     "quickjs.h": "508bfccb800674e2f23f5634a7340967fec6b5aa9a42efb1c12568008643251b",
     "dtoa.c": "a8d2cf2d04db406e0c16acdd95ab0e709d309902865722f41dac07a1ba5676af",
     "dtoa.h": "1c4a4540c0038632c8a4c225472fbc21bd476fb35c4da4a857a11965b58231b9",
@@ -28,18 +28,21 @@
     "NATIVE_ASYNC_CONTEXT.md": "2d8cf6b8b1a6ec9338729f5bf6b249f2830bc5c82fff6797e5ab656229d7213e",
     "NATIVE_ASYNC_ITERATOR_INTRINSIC.md": "a98a6bd8b524f38491590c3f7c4a825859710f2236921b2b40789f61358dd74d",
     "NATIVE_ASYNC_FUNCTION_INTRINSIC.md": "133332f337ff6e6419b8e3f8be7e9adc24c48b4b3e86138a30a4ab0f6faf065a",
-    "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md": "74650f985f52283a5e1d42de89cdf389a906170b4626c7315608ebf0067fbe9a"
+    "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md": "74650f985f52283a5e1d42de89cdf389a906170b4626c7315608ebf0067fbe9a",
+    "NATIVE_BINARY_OPERATORS.md": "936f10d3fd328d3203cfe07de7ff5ee883e4bca46ec9c36dcb9667a5d5f222ec",
+    "NATIVE_AWAIT_PRIMITIVES.md": "4f14c3c549709be445a24ba08f18ff4994a2784bdd136d3aaf3265e6a09e6deb",
+    "NATIVE_ALLOCATION_ERROR_IDENTITY.md": "2b056375c59c59c927816d9762177fc12dcea23424c2f0e17492905253228031"
   },
   "local_patches": [
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "reason": "Use correctly typed DynBuf allocator adapters for normalize and localeCompare",
       "provenance": "NATIVE_ABI_FIXES.md"
     },
     {
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "reason": "Keep WeakRef constructor and deref targets through a complete native job checkpoint",
       "provenance": "NATIVE_WEAKREF_KEPT_OBJECTS.md",
@@ -54,7 +57,7 @@
     },
     {
       "provenance": "NATIVE_ASYNC_CONTEXT.md",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "file": "quickjs.c",
       "reason": "Capture private native execution context at job and promise reaction registration"
@@ -68,7 +71,7 @@
     },
     {
       "reason": "Expose the owned context intrinsic async iterator prototype without a guest host shim",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
       "file": "quickjs.c",
       "provenance": "NATIVE_ASYNC_ITERATOR_INTRINSIC.md"
@@ -83,7 +86,7 @@
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "reason": "Expose the owned context intrinsic AsyncFunction prototype without a guest host shim",
       "provenance": "NATIVE_ASYNC_FUNCTION_INTRINSIC.md"
     },
@@ -97,7 +100,7 @@
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "reason": "Expose owned immutable iterator and toPrimitive well-known symbol identities",
       "provenance": "NATIVE_WELL_KNOWN_SYMBOL_INTRINSICS.md"
     },
@@ -111,7 +114,7 @@
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "reason": "Expose actual interpreter binary arithmetic and comparison to native host algorithms",
       "provenance": "NATIVE_BINARY_OPERATORS.md"
     },
@@ -125,7 +128,7 @@
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "9c083378cd1d529e8326927c53811e4b18cf4c3ea9edd655f449f8281a9dc133",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
       "reason": "Expose intrinsic await PromiseResolve and original ToNumeric through borrowed-value host boundaries",
       "provenance": "NATIVE_AWAIT_PRIMITIVES.md"
     },
@@ -135,6 +138,13 @@
       "patched_sha256": "508bfccb800674e2f23f5634a7340967fec6b5aa9a42efb1c12568008643251b",
       "reason": "Expose intrinsic await PromiseResolve and original ToNumeric through borrowed-value host boundaries",
       "provenance": "NATIVE_AWAIT_PRIMITIVES.md"
+    },
+    {
+      "file": "quickjs.c",
+      "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
+      "patched_sha256": "123a54cb2534fd0268e3f36e75b4adef3500fd8a61267f8e6250e1fb31b2b94c",
+      "reason": "Track genuine native allocator Error identity with allocation-free private u64 object generation tags",
+      "provenance": "NATIVE_ALLOCATION_ERROR_IDENTITY.md"
     }
   ]
 }
