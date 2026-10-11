@@ -41,7 +41,14 @@ pub const Worker = struct {
         const request_options = try self.options.read(engine);
         defer engine.freeValue(request_options);
         const result = strategy.resize(engine, self.input, mime, request_options) catch |err| {
-            if (engine.last_error) |message| self.message = try self.allocator.dupe(u8, message);
+            if (err == error.JavaScriptException) {
+                _ = engine.throwCaptured();
+                const failure = c.JS_GetException(engine.context);
+                defer engine.freeValue(failure);
+                const message = js.get(engine, failure, "message") catch return err;
+                defer engine.freeValue(message);
+                self.message = try engine.toString(message);
+            } else if (engine.last_error) |message| self.message = try self.allocator.dupe(u8, message);
             return err;
         };
         defer engine.freeValue(result);
