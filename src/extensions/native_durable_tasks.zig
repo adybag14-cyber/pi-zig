@@ -100,6 +100,7 @@ pub const Manager = struct {
     broker: broker_mod.Broker,
     settlement: ?settlement_mod.Channel = null,
     native_owner: ?*durable.State = null,
+    settling_cache: bool = false,
     definitions: std.ArrayList(Definition) = .empty,
     ledger: std.ArrayList(*Entry) = .empty,
     events: std.ArrayList(Event) = .empty,
@@ -184,6 +185,15 @@ pub const Manager = struct {
             if (c.JS_IsUndefined(current)) self.scheduler.removeDefinition(name);
         }
     }
+    fn detachSettlement(self: *Manager) void {
+        if (self.native_owner) |native| {
+            if (native.session.?.owner_settlement) |hook| {
+                if (hook.context == @as(*anyopaque, @ptrCast(self))) native.session.?.owner_settlement = null;
+            }
+            if (native.foreign_publication_context == @as(*anyopaque, @ptrCast(self))) native.before_document_settlement = null;
+        }
+        self.native_owner = null;
+    }
     fn retain(self: *Manager) *Manager {
         _ = self.refs.fetchAdd(1, .monotonic);
         return self;
@@ -191,9 +201,7 @@ pub const Manager = struct {
     fn release(self: *Manager) void {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0 and self.first_phase == null and self.active_dispatches == 0);
-        if (self.native_owner) |native| if (native.session.?.owner_settlement) |hook| {
-            if (hook.context == @as(*anyopaque, @ptrCast(self))) native.session.?.owner_settlement = null;
-        };
+        self.detachSettlement();
         if (self.settlement) |*channel| channel.deinit();
         self.task_aborts.deinit(self.engine);
         self.scheduler.deinit();
@@ -409,6 +417,7 @@ pub const Manager = struct {
     }
     pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (self.settling_cache) return;
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
             if (self.events.items.len == 0) {
@@ -424,13 +433,16 @@ pub const Manager = struct {
             self.mutex.unlock(self.lease.value.io);
             defer event.deinit();
             self.adoptIndex(&event.index);
-            if (!event.cache_adopted) try self.cachePublication(event.changes.value);
+            if (!event.cache_adopted) try self.cachePublication(event.changes.value) else try settlePublishedWaiters(self, false);
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
-        return self.cachePublicationWithDocuments(changes, true);
+        try self.cachePublicationWithDocuments(changes, true);
+        // Keep the original ownership-index readiness handshake. Reserved-line
+        // cache adoption precedes maintenance and must not settle idle waiters.
+        try settlePublishedWaiters(self, false);
     }
     fn cachePublicationWithDocuments(self: *Manager, changes: json.Value, adopt_documents: bool) !void {
         if (adopt_documents) try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
@@ -490,23 +502,32 @@ pub const Manager = struct {
             if (entry.found_existing) entry.value_ptr.deinit();
             entry.value_ptr.* = snapshot;
         }
-        // Source resolves its waiters while observing the committed publication,
-        // before finishing a phase aborts its invocation signal. A later poll
-        // cannot decide which of those already-ordered events won.
-        try settlePublishedWaiters(self, false);
     }
     fn afterOperation(raw: ?*anyopaque, success: bool) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
-        if (self.closed) return;
         const native = self.native_owner.?;
         const lease: settlement_mod.Lease = .{ .owner_generation = self.generation, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.lease.value.line_epoch.load(.acquire), .success = success };
-        if (lease.worker_thread == native.owner_thread) return self.settleReserved(lease);
-        try self.settlement.?.call(lease);
+        if (lease.worker_thread == native.owner_thread) {
+            if (self.closed) return;
+            _ = self.retain();
+            defer self.release();
+            return self.settleReserved(lease);
+        }
+        // The worker reads only immutable binding fields and atomic lease
+        // values. Owner retirement closes the channel instead of racing closed.
+        self.settlement.?.call(lease) catch |err| {
+            if (err != error.OwnerSettlementClosed) return err;
+        };
     }
     fn prepareOwnerCommit(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         const native = self.native_owner.?;
         if (std.Thread.getCurrentId() != native.owner_thread or self.lease.value.ownerThread.load(.acquire) != native.owner_thread) return error.OwnerCommitPreparationOutsideLine;
+        _ = self.retain();
+        defer self.release();
+        if (self.settling_cache) return error.ReentrantDocumentSettlement;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
         const epoch = self.lease.value.line_epoch.load(.acquire);
         for (self.events.items) |*event| if (event.line_epoch == epoch and !event.cache_adopted) {
             self.adoptIndex(&event.index);
@@ -523,6 +544,9 @@ pub const Manager = struct {
     }
     fn settleReserved(self: *Manager, lease: settlement_mod.Lease) !void {
         try self.validateSettlement(lease);
+        if (self.settling_cache) return error.ReentrantDocumentSettlement;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
         const native = self.native_owner.?;
         const owner_public = lease.worker_thread == native.owner_thread and native.publication_context != null;
         // This original line prevents another publisher from relocating events.
@@ -531,7 +555,7 @@ pub const Manager = struct {
             if (!owner_public) {
                 for (self.events.items) |*event| if (event.line_epoch == lease.line_epoch and !event.cache_adopted) {
                     self.adoptIndex(&event.index);
-                    try self.cachePublication(event.changes.value);
+                    try self.cachePublicationWithDocuments(event.changes.value, true);
                     event.cache_adopted = true;
                 };
                 try @import("native_durable_document_retention.zig").sweepReserved(native);
@@ -1054,6 +1078,9 @@ const Hub = struct {
         const self: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
         var worked = false;
         for (self.managers.items) |manager| {
+            if (manager.settling_cache) continue;
+            _ = manager.retain();
+            defer manager.release();
             if (!manager.closed) try manager.refreshRegistry();
             if (try manager.pollPhases()) worked = true;
             if (manager.settlement) |*channel| if (try channel.drain(Manager.settleDispatch, manager)) {
@@ -1086,7 +1113,7 @@ const Hub = struct {
                 manager.mutex.unlock(manager.lease.value.io);
                 defer event.deinit();
                 manager.adoptIndex(&event.index);
-                if (!event.cache_adopted) try manager.cachePublication(event.changes.value);
+                if (!event.cache_adopted) try manager.cachePublication(event.changes.value) else try settlePublishedWaiters(manager, false);
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
                 worked = true;
@@ -1119,6 +1146,7 @@ const Hub = struct {
             manager.mutex.unlock(manager.lease.value.io);
             manager.discardPhases();
             const session = durable.state(engine, manager.session) catch unreachable;
+            manager.detachSettlement();
             session.foreign_publication = null;
             session.foreign_publication_context = null;
             session.after_commit = null;
@@ -1254,9 +1282,13 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer if (!context_admitted) engine.freeValue(scheduler_context);
     self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
+    self.native_owner = native;
+    self.settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
     context_admitted = true;
     errdefer {
         self.closed = true;
+        self.detachSettlement();
+        self.settlement.?.deinit();
         self.clearLiveTaskRecords();
         self.live_task_records.deinit(engine.gpa);
         if (self.published_index) |*index| index.deinit();
@@ -1282,9 +1314,12 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     native.foreign_publication = Manager.forward;
     native.foreign_publication_context = self;
     native.after_commit = Manager.deliver;
+    native.before_document_settlement = Manager.prepareOwnerCommit;
+    native.session.?.owner_settlement = .{ .callback = Manager.afterOperation, .context = self };
     native.session.?.source_clock = Manager.nativeClock;
     native.session.?.source_clock_context = self;
     errdefer {
+        self.detachSettlement();
         native.foreign_publication = null;
         native.foreign_publication_context = null;
         native.after_commit = null;

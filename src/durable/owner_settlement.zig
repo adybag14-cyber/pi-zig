@@ -162,3 +162,127 @@ test "owner settlement keeps admitted worker lease through reentrant close and r
     stale_thread.join();
     try std.testing.expectEqual(error.StaleSettlementOwnerGeneration, worker.failure.?);
 }
+
+test "owner settlement original line acknowledges before a newer worker holds the next publication" {
+    const session_mod = @import("session.zig");
+    const backend = @import("backend/root.zig");
+    const types = @import("types.zig");
+    const io = std.testing.io;
+    var store = try backend.memory.Memory.init(std.testing.allocator);
+    defer store.deinit();
+    var session = session_mod.Session.init(std.testing.allocator, io, .{ .memory = &store });
+    defer session.deinit();
+    var channel = Channel.init(io, 41, .{});
+    defer channel.deinit();
+    const State = struct {
+        session: *session_mod.Session,
+        channel: *Channel,
+        newer_entered: std.Io.Event = .unset,
+        release_newer: std.Io.Event = .unset,
+        owner_settled: usize = 0,
+        first_epoch: ?u32 = null,
+        first_transaction: ?*session_mod.Transaction = null,
+        second_transaction: ?*session_mod.Transaction = null,
+        first_failure: ?anyerror = null,
+        second_failure: ?anyerror = null,
+        owner_failure: ?anyerror = null,
+        fn commitFirst(raw: ?*anyopaque, tx: *session_mod.Transaction, _: types.Context) !backend.json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.first_transaction = tx.retain();
+            return .null;
+        }
+        fn commitSecond(raw: ?*anyopaque, tx: *session_mod.Transaction, _: types.Context) !backend.json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.second_transaction = tx.retain();
+            self.newer_entered.set(self.session.io);
+            // This newer real Transaction retains the next mutation line until
+            // the owner releases its publication. Owner must never reacquire it
+            // to finish cache work belonging to the previous operation.
+            self.release_newer.waitUncancelable(self.session.io);
+            return .null;
+        }
+        fn first(self: *@This()) void {
+            var result = self.session.commit(commitFirst, self, .{}, .{}) catch |err| {
+                self.first_failure = err;
+                return;
+            };
+            result.deinit();
+        }
+        fn second(self: *@This()) void {
+            var result = self.session.commit(commitSecond, self, .{}, .{}) catch |err| {
+                self.second_failure = err;
+                return;
+            };
+            result.deinit();
+        }
+        fn after(raw: ?*anyopaque, success: bool) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try self.channel.call(.{ .owner_generation = 41, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.session.line_epoch.load(.acquire), .success = success });
+        }
+        fn noOp(_: ?*anyopaque, _: *session_mod.Transaction, _: types.Context) !backend.json.Value {
+            return .null;
+        }
+        fn settle(raw: ?*anyopaque, lease: Lease) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.settleOwned(lease) catch |err| {
+                self.owner_failure = err;
+                return err;
+            };
+        }
+        fn settleOwned(self: *@This(), lease: Lease) !void {
+            try std.testing.expect(lease.success);
+            try std.testing.expectEqual(lease.worker_thread, self.session.ownerThread.load(.acquire));
+            try std.testing.expectEqual(lease.line_epoch, self.session.line_epoch.load(.acquire));
+            try std.testing.expect(self.session.mutex.tryLock());
+            self.session.mutex.unlock(self.session.io);
+            try std.testing.expect(self.channel.mutex.tryLock());
+            self.channel.mutex.unlock(self.session.io);
+            try std.testing.expect((try self.session.tryRead(noOp, null, .{}, .{})) == null);
+            if (self.owner_settled == 0) {
+                try std.testing.expect(!self.first_transaction.?.active);
+                self.first_epoch = lease.line_epoch;
+            } else {
+                try std.testing.expect(!self.second_transaction.?.active);
+                try std.testing.expect(self.first_epoch.? != lease.line_epoch);
+            }
+            self.owner_settled += 1;
+        }
+    };
+    var state: State = .{ .session = &session, .channel = &channel };
+    session.owner_settlement = .{ .callback = State.after, .context = &state };
+    const first = try std.Thread.spawn(.{}, State.first, .{&state});
+    var first_joined = false;
+    var second_thread: ?std.Thread = null;
+    var second_joined = false;
+    defer {
+        state.release_newer.set(io);
+        channel.close();
+        if (!first_joined) first.join();
+        if (!second_joined) if (second_thread) |thread| thread.join();
+        if (state.first_transaction) |tx| tx.release();
+        if (state.second_transaction) |tx| tx.release();
+        session.owner_settlement = null;
+    }
+    while (channel.pending() == 0) try io.sleep(.fromMilliseconds(1), .awake);
+    second_thread = try std.Thread.spawn(.{}, State.second, .{&state});
+    try std.testing.expect(try channel.drain(State.settle, &state));
+    if (state.owner_failure) |err| return err;
+    state.newer_entered.waitUncancelable(io);
+    first.join();
+    first_joined = true;
+    try std.testing.expect(state.first_failure == null);
+    try std.testing.expectEqual(@as(usize, 1), state.owner_settled);
+    try std.testing.expect(state.second_transaction.?.active);
+    // The owner has already completed the first settlement although a newer
+    // worker now owns the line and awaits an owner-side publication release.
+    try std.testing.expect((try session.tryRead(State.noOp, null, .{}, .{})) == null);
+    state.release_newer.set(io);
+    while (channel.pending() == 0) try io.sleep(.fromMilliseconds(1), .awake);
+    try std.testing.expect(try channel.drain(State.settle, &state));
+    if (state.owner_failure) |err| return err;
+    second_thread.?.join();
+    second_joined = true;
+    try std.testing.expect(state.second_failure == null);
+    try std.testing.expectEqual(@as(usize, 2), state.owner_settled);
+    try std.testing.expectEqual(@as(std.Thread.Id, 0), session.ownerThread.load(.acquire));
+}
