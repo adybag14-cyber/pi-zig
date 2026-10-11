@@ -110,3 +110,22 @@ pub fn wasmDimension(engine: *js.Engine, dimension: c.JSValue) !u32 {
     if (c.JS_ToUint32(engine.context, &result, dimension) < 0) return js.capture(engine);
     return result;
 }
+pub fn nextDimension(engine: *js.Engine, dimension: c.JSValue) !c.JSValue {
+    const one = c.JS_NewInt32(engine.context, 1);
+    if (c.JS_IsStrictEqual(engine.context, dimension, one)) return one;
+    const max_object = try js.global(engine, "Math");
+    defer engine.freeValue(max_object);
+    const max = try js.get(engine, max_object, "max");
+    defer engine.freeValue(max);
+    const floor_object = try js.global(engine, "Math");
+    defer engine.freeValue(floor_object);
+    const floor = try js.get(engine, floor_object, "floor");
+    defer engine.freeValue(floor);
+    const ratio = c.JS_NewFloat64(engine.context, 0.75);
+    defer engine.freeValue(ratio);
+    const product = try binary(engine, .multiply, dimension, ratio);
+    defer engine.freeValue(product);
+    const rounded = try js.call(engine, floor, floor_object, &.{product});
+    defer engine.freeValue(rounded);
+    return js.call(engine, max, max_object, &.{ one, rounded });
+}
