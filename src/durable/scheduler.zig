@@ -38,6 +38,7 @@ pub const Options = struct {
     withdraw_inputs: ?*const fn (?*anyopaque, *Transaction, u64) anyerror!void = null,
     poll_reads: ?*const fn (?*anyopaque, *session_mod.Session) anyerror!void = null,
     index_changed: ?*const fn (?*anyopaque, ?u64, *const ownership.Index) anyerror!void = null,
+    after_recover: ?*const fn (?*anyopaque) anyerror!void = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -165,55 +166,17 @@ const RuntimeCommit = struct {
             var state = next_state;
             if (std.mem.eql(u8, name, "waiting")) {
                 if (invocation.mode == .abort) return invocation.diagnose(error.AbortHandlerCannotWait, "Abort handler of task {d} cannot wait", .{invocation.task_id});
-                const view = try overlay(scheduler.gpa, tx);
-                defer view.destroy(scheduler.gpa);
-                try validateWait(.{ .state = view }, record, next_state, invocation);
+                try scheduler.validateCandidateWait(tx, record, next_state, invocation);
             } else if (std.mem.eql(u8, name, "terminal")) {
-                const view = try overlay(scheduler.gpa, tx);
-                defer view.destroy(scheduler.gpa);
-                if (try (model.Graph{ .state = view }).hasOwnedLive(invocation.task_id)) state = try model.outcomeState(tx.owned.arena.allocator(), "completing", try model.field(state, "outcome"));
+                var candidate = try scheduler.candidateIndex(tx);
+                defer candidate.deinit();
+                if (try candidate.hasOrdinaryBelow(scheduler.gpa, ownership.Node.task(invocation.task_id))) state = try model.outcomeState(tx.owned.arena.allocator(), "completing", try model.field(state, "outcome"));
             } else if (!std.mem.eql(u8, name, "running")) return error.InvalidRuntimeState;
             try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, state));
         }
         return .null;
     }
 };
-fn overlay(gpa: std.mem.Allocator, tx: *Transaction) !*backend.memory.State {
-    var predicted: backend.memory.Memory = .{ .gpa = gpa, .state = try tx.session.storage.snapshot(gpa) };
-    defer predicted.deinit();
-    var prepared = try predicted.prepare(tx.writes, null);
-    defer prepared.deinit();
-    const state = prepared.state.?;
-    prepared.state = null;
-    return state;
-}
-fn queuedConversations(view: *backend.memory.State) ![]const u64 {
-    const a = view.arena.allocator();
-    var ids: std.ArrayList(u64) = .empty;
-    var rows = view.rows.iterator();
-    while (rows.next()) |item| if (item.value_ptr.table == .submission and std.mem.eql(u8, try model.text(item.value_ptr.record, "status"), "queued")) try ids.append(a, item.key_ptr.*);
-    std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
-    var conversations: std.ArrayList(u64) = .empty;
-    for (ids.items) |id| {
-        const conversation = try model.number(view.rows.get(id).?.record, "conversationId");
-        if (std.mem.indexOfScalar(u64, conversations.items, conversation) == null) try conversations.append(a, conversation);
-    }
-    return conversations.items;
-}
-fn validateWait(graph: model.Graph, record: Value, state: Value, invocation: *Invocation) !void {
-    const members = try model.field(state, "on");
-    if (members != .array) return error.InvalidTaskWait;
-    for (members.array.items) |member| {
-        const id = try json.asInteger(member);
-        const task_id = try model.number(record, "id");
-        if (id == task_id or try graph.reaches(try model.parent(record), .{ .task = id }, true)) return invocation.diagnose(error.TaskCannotWaitOnOwner, "Task {d} cannot wait on itself or its owner {d}", .{ task_id, id });
-        const child = graph.task(id) catch |err| return invocation.diagnose(err, "Task {d} does not exist", .{id});
-        if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
-            const owner = json.get(child, "owner");
-            if (owner == null or try json.asInteger(owner.?) != task_id) return invocation.diagnose(error.FailFastRequiresChild, "Task {d} can wait failFast only on tasks it owns; {d} is not one", .{ task_id, id });
-        }
-    }
-}
 pub const Scheduler = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -236,6 +199,7 @@ pub const Scheduler = struct {
     maintenance_subscription: ?u64 = null,
     fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
     index_dirty: bool = false,
+    cascade_pending: bool = true,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, session: *session_mod.Session, options: Options) !Scheduler {
         if (options.max_workers == 0 or options.max_workers > 64 or options.max_phase_steps == 0) return error.InvalidSchedulerBounds;
         return .{ .gpa = gpa, .io = io, .session = session, .options = options, .migration_failures = .init(gpa), .ownership_index = .init(gpa) };
@@ -323,6 +287,7 @@ pub const Scheduler = struct {
         }
         var result = try self.session.commit(recover, self, .{}, .{});
         result.deinit();
+        if (self.options.after_recover) |after| try after(self.options.callback_context);
         try self.reconcile();
     }
     pub fn removeDefinition(self: *Scheduler, name: []const u8) void {
@@ -364,6 +329,18 @@ pub const Scheduler = struct {
             if (!std.mem.eql(u8, try model.text(change, "type"), "task")) continue;
             try self.trackRecord(try model.field(change, "value"));
         }
+        for (event.changes.array.items) |change| {
+            const kind = try model.text(change, "type");
+            if (std.mem.eql(u8, kind, "submission")) {
+                if (queuedInput(try model.field(change, "value"))) self.cascade_pending = true;
+            } else if (std.mem.eql(u8, kind, "task")) {
+                const record = try model.field(change, "value");
+                if (try model.live(record) and !try model.flag(record, "background") and !try model.flag(record, "abortRequested")) {
+                    const parent = (try recordLink(record)).parent();
+                    if (!self.ownership_index.known(parent) or try self.ownership_index.cancellingOwner(parent) != null) self.cascade_pending = true;
+                }
+            }
+        }
         try self.ownership_index.sweep();
         if (self.options.index_changed) |changed| try changed(self.options.callback_context, event.seq, &self.ownership_index);
         self.index_dirty = false;
@@ -396,6 +373,9 @@ pub const Scheduler = struct {
         const id = try model.number(record, "id");
         const status = try model.status(record);
         const prior_record = self.live_records.get(id);
+        if (status != .terminal and ((try model.flag(record, "abortRequested") and (prior_record == null or !try model.flag(prior_record.?.value, "abortRequested"))) or
+            (prior_record != null and json.get(prior_record.?.value, "abortReason") != null and json.get(record, "abortReason") == null) or
+            (status == .completing and (prior_record == null or try model.status(prior_record.?.value) != .completing) and try model.cancellation(record)))) self.cascade_pending = true;
         if (try model.failed(record) and (prior_record == null or !try model.failed(prior_record.?.value))) {
             if (self.ownership_index.waiters.get(id)) |waiters| for (waiters.keys()) |waiter| try self.fail_fast_checks.put(self.gpa, waiter, {});
         }
@@ -480,17 +460,98 @@ pub const Scheduler = struct {
         defer self.gpa.free(unloaded);
         for (unloaded) |id| if (self.ownership_index.unloaded.contains(id)) try self.loadChain(ownership.Node.task(id));
     }
+    fn candidateRecord(tx: *Transaction, table: backend.memory.Table, id: u64) !?Value {
+        var position = tx.writes.array.items.len;
+        while (position > 0) {
+            position -= 1;
+            const write = tx.writes.array.items[position];
+            if (!std.mem.eql(u8, try model.text(write, "type"), @tagName(table))) continue;
+            const record = try model.field(write, "value");
+            if (try model.number(record, "id") == id) return record;
+        }
+        return null;
+    }
+    fn loadCandidateParent(self: *Scheduler, tx: *Transaction, start: ownership.Node) !void {
+        var at = start;
+        var remaining = tx.writes.array.items.len + 1;
+        while (remaining > 0) : (remaining -= 1) {
+            if (try candidateRecord(tx, if (at.kind == .task) .task else .conversation, at.id)) |record| {
+                if (at.kind == .task) {
+                    at = (try recordLink(record)).parent();
+                } else {
+                    const owner = json.get(record, "owner") orelse return;
+                    at = ownership.Node.task(try model.number(owner, "taskId"));
+                }
+            } else {
+                try self.loadChain(at);
+                return;
+            }
+        }
+        return error.TaskOwnershipCycle;
+    }
+    /// A candidate view contains committed live work and all staged task and
+    /// conversation links. Uncommitted nodes are never installed in the real
+    /// index. Load only the committed owner chain above each staged parent.
+    fn candidateIndex(self: *Scheduler, tx: *Transaction) !ownership.Index {
+        try self.loadScopes();
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "task")) {
+            try self.loadCandidateParent(tx, (try recordLink(try model.field(write, "value"))).parent());
+        };
+        var candidate = try self.ownership_index.duplicate(self.gpa);
+        errdefer candidate.deinit();
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "conversation")) {
+            const record = try model.field(write, "value");
+            try candidate.setEdge(try model.number(record, "id"), if (json.get(record, "owner")) |owner| try model.number(owner, "taskId") else null);
+        };
+        for (tx.writes.array.items) |write| if (std.mem.eql(u8, try model.text(write, "type"), "task")) {
+            try indexRecord(self.gpa, &candidate, try model.field(write, "value"));
+        };
+        return candidate;
+    }
+    fn validateCandidateWait(self: *Scheduler, tx: *Transaction, record: Value, state: Value, invocation: *Invocation) !void {
+        try self.loadCandidateParent(tx, (try recordLink(record)).parent());
+        var candidate = try self.candidateIndex(tx);
+        defer candidate.deinit();
+        const members = try model.field(state, "on");
+        if (members != .array) return error.InvalidTaskWait;
+        const task_id = try model.number(record, "id");
+        for (members.array.items) |member| {
+            const id = try json.asInteger(member);
+            if (id == task_id or try candidate.reaches((try recordLink(record)).parent(), ownership.Node.task(id), true)) return invocation.diagnose(error.TaskCannotWaitOnOwner, "Task {d} cannot wait on itself or its owner {d}", .{ task_id, id });
+            var fetched: ?json.Owned = null;
+            defer if (fetched) |*value| value.deinit();
+            const child = (try candidateRecord(tx, .task, id)) orelse if (self.live_records.get(id)) |live_record| live_record.value else blk: {
+                fetched = try self.session.storage.readTableRecord(self.gpa, .task, id);
+                break :blk if (fetched) |value| value.value else return invocation.diagnose(error.UnknownTask, "Task {d} does not exist", .{id});
+            };
+            if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
+                const owner = json.get(child, "owner");
+                if (owner == null or try json.asInteger(owner.?) != task_id) return invocation.diagnose(error.FailFastRequiresChild, "Task {d} can wait failFast only on tasks it owns; {d} is not one", .{ task_id, id });
+            }
+        }
+    }
     fn recover(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         const view = try self.session.storage.snapshot(self.gpa);
         defer view.destroy(self.gpa);
+        const Recovery = struct { record: Value, status: model.Status, id: u64 };
+        var recovered: std.ArrayList(Recovery) = .empty;
+        defer recovered.deinit(self.gpa);
         var rows = view.rows.iterator();
-        while (rows.next()) |item| {
-            if (item.value_ptr.table != .task) continue;
-            const record = item.value_ptr.record;
+        while (rows.next()) |item| if (item.value_ptr.table == .task and try model.live(item.value_ptr.record)) try recovered.append(self.gpa, .{ .record = item.value_ptr.record, .status = try model.status(item.value_ptr.record), .id = item.key_ptr.* });
+        // Source scans each live status in this order and each page by id.
+        // Preserve that order in live/downward sets and original Storage reads.
+        std.mem.sort(Recovery, recovered.items, {}, struct {
+            fn less(_: void, left: Recovery, right: Recovery) bool {
+                if (left.status != right.status) return @intFromEnum(left.status) < @intFromEnum(right.status);
+                return left.id < right.id;
+            }
+        }.less);
+        for (recovered.items) |item| {
+            const record = item.record;
             if (try model.live(record)) try self.trackRecord(record);
             if (try model.live(record)) if (json.get(record, "abandonOnRestart")) |flag| {
-                if (flag == .bool and flag.bool) try self.abandoned.put(self.gpa, item.key_ptr.*, {});
+                if (flag == .bool and flag.bool) try self.abandoned.put(self.gpa, item.id, {});
             };
             if (try model.status(record) == .running) try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", try model.field(try model.field(record, "state"), "checkpoint"))));
         }
@@ -531,10 +592,10 @@ pub const Scheduler = struct {
         var cursor: ?json.Owned = null;
         defer if (cursor) |*value| value.deinit();
         while (true) {
-            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 100, if (cursor) |value| value.value else null);
+            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 256, if (cursor) |value| value.value else null);
             defer page.deinit();
             for ((try model.field(page.value, "items")).array.items) |submission| {
-                if (!std.mem.eql(u8, try model.text(submission, "type"), "input")) continue;
+                if (!queuedInput(submission)) continue;
                 try conversations.put(gpa, try model.number(submission, "conversationId"), {});
             }
             const next = json.get(page.value, "next") orelse break;
@@ -547,13 +608,20 @@ pub const Scheduler = struct {
         for (conversations.keys()) |id| try self.loadChain(ownership.Node.conversation(id));
         return gpa.dupe(u64, conversations.keys());
     }
+    fn queuedInput(record: Value) bool {
+        const status = json.get(record, "status") orelse return false;
+        const kind = json.get(record, "type") orelse return false;
+        return status == .string and std.mem.eql(u8, status.string, "queued") and kind == .string and std.mem.eql(u8, kind.string, "input");
+    }
     fn reconcileLine(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         if (self.closing.load(.acquire)) return .null;
+        const cascade = self.cascade_pending;
+        self.cascade_pending = false;
         try self.loadScopes();
         if (self.options.poll_reads) |poll| try poll(self.options.callback_context, tx.session);
         const a = tx.owned.arena.allocator();
-        const queued = if (self.options.withdraw_inputs != null and self.ownership_index.intents.count() != 0) try self.queuedInputs(a) else &.{};
+        const queued = if (cascade) try self.queuedInputs(a) else &.{};
         // Collect every mark before staging any, so an explicit request wins
         // over restart propagation in the same pass. Cascades stop at another
         // intent, whose own walk supplies the nearest inherited reason.
@@ -644,21 +712,17 @@ pub const Scheduler = struct {
         reached_gpa: std.mem.Allocator = std.heap.page_allocator,
         fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
-            const view = try self.scheduler.session.storage.snapshot(self.scheduler.gpa);
-            defer view.destroy(self.scheduler.gpa);
-            const graph: model.Graph = .{ .state = view };
-            var rows = view.rows.iterator();
-            while (rows.next()) |item| {
-                const row = item.value_ptr.*;
-                if (row.table != .task or !try model.live(row.record) or (try model.flag(row.record, "background") and !self.cross_background)) continue;
-                if (!try graph.reaches(try model.parent(row.record), .{ .conversation = self.conversation }, self.cross_background)) continue;
-                if (self.reached) |reached| try reached.append(self.reached_gpa, item.key_ptr.*);
-                const marked = try model.abortMark(tx.owned.arena.allocator(), row.record, .request);
-                try tx.setTask(marked);
+            try self.scheduler.loadScopes();
+            const queued = if (self.scheduler.options.withdraw_inputs != null) try self.scheduler.queuedInputs(tx.owned.arena.allocator()) else &.{};
+            const ids = try self.scheduler.ownership_index.inConversation(self.scheduler.gpa, self.conversation, self.cross_background);
+            defer self.scheduler.gpa.free(ids);
+            for (ids) |id| {
+                const record = self.scheduler.live_records.get(id).?.value;
+                if (self.reached) |reached| try reached.append(self.reached_gpa, id);
+                if (!try model.flag(record, "abortRequested") or json.get(record, "abortReason") != null) try tx.setTask(try model.abortMark(tx.owned.arena.allocator(), record, .request));
             }
             if (self.scheduler.options.withdraw_inputs) |withdraw| {
-                const queued = try queuedConversations(view);
-                for (queued) |id| if (try graph.reaches(.{ .conversation = id }, .{ .conversation = self.conversation }, self.cross_background)) try withdraw(self.scheduler.options.callback_context, tx, id);
+                for (queued) |id| if (try self.scheduler.ownership_index.inScope(ownership.Node.conversation(id), self.conversation, self.cross_background) == true) try withdraw(self.scheduler.options.callback_context, tx, id);
             }
             return .null;
         }
@@ -756,9 +820,9 @@ pub const Scheduler = struct {
             };
             self.scheduler.mutex.unlock(self.scheduler.io);
             if (!active and try model.status(record) != .completing) {
-                const view = try overlay(self.scheduler.gpa, tx);
-                defer view.destroy(self.scheduler.gpa);
-                if (!try (model.Graph{ .state = view }).hasOwnedLive(self.id)) {
+                var candidate = try self.scheduler.candidateIndex(tx);
+                defer candidate.deinit();
+                if (!try candidate.hasOrdinaryBelow(self.scheduler.gpa, ownership.Node.task(self.id))) {
                     const node = self.scheduler.lookupDefinition(try model.text(record, "kind"));
                     var blocked: ?Blocked = null;
                     if (node == null) blocked = .missing_task else {
@@ -1109,13 +1173,18 @@ pub const Scheduler = struct {
                 return .null;
             }
             if (invocation.mode == .run and !try model.flag(record, "background")) {
-                const view = try scheduler.session.storage.snapshot(scheduler.gpa);
-                defer view.destroy(scheduler.gpa);
-                const canceled = (model.Graph{ .state = view }).belowCancelled(try model.parent(record)) catch |err| switch (err) {
-                    // Source's walk ends at an unknown owner edge. Loading
-                    // that chain remains the reconciliation pass's work.
-                    error.UnknownTask, error.UnknownConversation => false,
-                    else => return err,
+                const canceled = if (scheduler.subscription != null)
+                    try scheduler.ownership_index.cancellingOwner((try recordLink(record)).parent()) != null
+                else legacy: {
+                    // Standalone callers can exercise a Step before opening a
+                    // scheduler. Keep that native Storage-backed setup valid;
+                    // opened production schedulers use only the live index.
+                    const view = try scheduler.session.storage.snapshot(scheduler.gpa);
+                    defer view.destroy(scheduler.gpa);
+                    break :legacy (model.Graph{ .state = view }).belowCancelled(try model.parent(record)) catch |err| switch (err) {
+                        error.UnknownTask, error.UnknownConversation => false,
+                        else => return err,
+                    };
                 };
                 // ea gives inherited cancellation precedence over a phase
                 // failure or another phase, even before its cascade marks us.
@@ -1138,11 +1207,11 @@ pub const Scheduler = struct {
             }
             if (fault) |value| {
                 invocation.end();
-                const view = try overlay(scheduler.gpa, tx);
-                defer view.destroy(scheduler.gpa);
+                var candidate = try scheduler.candidateIndex(tx);
+                defer candidate.deinit();
                 var failure_object = model.object(tx.owned.arena.allocator());
                 try failure_object.object.put(tx.owned.arena.allocator(), "message", value);
-                const state = try model.outcomeState(tx.owned.arena.allocator(), if (try (model.Graph{ .state = view }).hasOwnedLive(invocation.task_id)) "completing" else "terminal", try model.makeOutcome(tx.owned.arena.allocator(), "faulted", failure_object));
+                const state = try model.outcomeState(tx.owned.arena.allocator(), if (try candidate.hasOrdinaryBelow(scheduler.gpa, ownership.Node.task(invocation.task_id))) "completing" else "terminal", try model.makeOutcome(tx.owned.arena.allocator(), "faulted", failure_object));
                 try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, state));
                 if (std.mem.eql(u8, try model.text(state, "status"), "terminal")) try scheduler.settle(tx, try model.withState(tx.owned.arena.allocator(), record, state));
                 return .null;
@@ -1330,6 +1399,27 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     var held_owner = (try session.storage.readTableRecord(gpa, .task, probe.parent)).?;
     defer held_owner.deinit();
     try std.testing.expectEqual(model.Status.terminal, try model.status(held_owner.value));
+}
+test "durable.scheduler ea opaque stored checkpoint survives recovery before definition resolution" {
+    const gpa = std.testing.allocator;
+    var seed = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":8,\"conversationId\":1,\"kind\":\"fixture.unavailable-stored-version\",\"version\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":null}}}]");
+    defer seed.deinit();
+    var memory = try backend.memory.Memory.init(gpa);
+    defer memory.deinit();
+    _ = try memory.commit(seed.value);
+    var session = session_mod.Session.init(gpa, std.testing.io, .{ .memory = &memory });
+    defer session.deinit();
+    var scheduler = try Scheduler.init(gpa, std.testing.io, &session, .{});
+    defer scheduler.deinit();
+    try scheduler.open();
+    scheduler.enable();
+    try std.testing.expectEqual(@as(usize, 0), try scheduler.drive());
+    var recovered = (try session.storage.readTableRecord(gpa, .task, 8)).?;
+    defer recovered.deinit();
+    try std.testing.expectEqual(model.Status.pending, try model.status(recovered.value));
+    try std.testing.expect(try model.field(try model.field(recovered.value, "state"), "checkpoint") == .null);
+    try std.testing.expect(try model.field(try model.field(scheduler.live_records.get(8).?.value, "state"), "checkpoint") == .null);
+    try std.testing.expect(session.failure() == null);
 }
 fn ordinaryInIdleScope(view: *const backend.memory.State, start: model.Up, conversation: ?u64) !bool {
     var at = start;

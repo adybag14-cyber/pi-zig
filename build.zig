@@ -574,6 +574,12 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, ea_retention_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ea_retention_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-ea-retention", "Replay actual ea retention and direct ownership while fencing partial owner publications").dependOn(&b.addRunArtifact(ea_retention_tests).step);
+    const ea_publication_failure_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"failed ownership observer"} });
+    b.step("test-native-durable-ea-publication-failure", "Preserve a native failed publication while closing without joining its unready queue").dependOn(&b.addRunArtifact(ea_publication_failure_tests).step);
+    const ea_runtime_overlay_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual ea runtime overlay"} });
+    b.step("test-native-durable-ea-runtime-overlay", "Replay actual ea runtime candidate work in an existing owned conversation").dependOn(&b.addRunArtifact(ea_runtime_overlay_tests).step);
+    const ea_partial_owner_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual ea partial owner Source"} });
+    b.step("test-native-durable-ea-partial-owner", "Replay actual ea missing scopes opaque checkpoint recovery and original Storage contexts").dependOn(&b.addRunArtifact(ea_partial_owner_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, ea_nested_tests.root_module, typescript_parser);
@@ -588,6 +594,8 @@ pub fn build(b: *std.Build) void {
     const ownership_line_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"scheduler ea actual Storage owner line"} });
     linkSqlite(ownership_line_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-durable-ownership-line", "Compare actual native Storage owner-line retention and rejected-read sweep with ea Source").dependOn(&b.addRunArtifact(ownership_line_tests).step);
+    const opaque_checkpoint_tests = b.addTest(.{ .root_module = ownership_line_tests.root_module, .use_llvm = use_llvm, .filters = &.{"scheduler ea opaque stored checkpoint"} });
+    b.step("test-durable-ea-opaque-checkpoint", "Preserve an actual ea opaque stored checkpoint through native recovery and missing definition admission").dependOn(&b.addRunArtifact(opaque_checkpoint_tests).step);
     const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
     linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);

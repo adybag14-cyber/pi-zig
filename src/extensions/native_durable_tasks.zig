@@ -544,6 +544,13 @@ pub const Manager = struct {
             self.mutex.unlock(self.lease.value.io);
         }
     }
+    fn recoveredContext(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        // The initial scans and recovery reads use Harness.open's original
+        // Context. Subsequent scheduler work keeps its keyed values while
+        // deliberately detaching the caller's abort signal, as actual Source.
+        if (self.lease.adapter) |adapter| adapter.setBackgroundContext(self.context);
+    }
     fn drainReads(self: *Manager) !void {
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
@@ -1171,8 +1178,12 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
+    var context_admitted = false;
+    errdefer if (!context_admitted) engine.freeValue(scheduler_context);
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
+    context_admitted = true;
     errdefer {
         self.closed = true;
         self.clearLiveTaskRecords();
@@ -1211,7 +1222,6 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     }
     if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(false);
     try self.scheduler.open();
-    if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(true);
     const initial = try self.lease.value.storage.snapshot(engine.gpa);
     defer initial.destroy(engine.gpa);
     if (self.published_index) |*index| index.deinit();
@@ -1734,6 +1744,32 @@ test "native durable VM actual ea retention uses real Harness index sizes and la
         return error.SourceRetentionMismatch;
     }
 }
+test "native durable VM actual ea runtime overlay holds an outcome for work created in its existing owned conversation" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-runtime-overlay-program.txt"), "actual-ea-runtime-overlay") catch |err| {
+        diagnoseSourceFailure(engine, "runtime-overlay", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "runtimeOverlayTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-runtime-overlay.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea runtime overlay trace: {s}\n", .{encoded});
+        return error.SourceRuntimeOverlayMismatch;
+    }
+}
 test "native durable VM ownership publication index readiness preserves committed live waiter barriers" {
     const gpa = std.testing.allocator;
     const engine = try Engine.init(gpa, .{});
@@ -1799,6 +1835,87 @@ test "native durable VM ownership publication index readiness preserves committe
     defer engine.freeValue(promise);
     try settleWaiters(manager);
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
+}
+test "native durable VM failed ownership observer keeps original Session failure and does not join an unready queue" {
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{ .host_await_timeout_ms = 1000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "failed-index-observer-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    const Failure = struct {
+        fn observe(_: ?*anyopaque, _: ?u64, _: *const owner_index.Index) !void {
+            return error.OriginalOwnershipObserverFailure;
+        }
+        fn root(_: ?*anyopaque, tx: *session_mod.Transaction, _: @import("../durable/types.zig").Context) !json.Value {
+            return tx.createRootConversation();
+        }
+    };
+    manager.scheduler.options.index_changed = Failure.observe;
+    // A real committed publication reaches foreign forwarding first, then the
+    // internal index observer fails. Its event must stay unready, never become
+    // a successful publication and never become a guest close dependency.
+    var committed = try manager.lease.value.commit(Failure.root, null, .{}, .{});
+    committed.deinit();
+    try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
+    try std.testing.expect(!manager.lease.value.fail(error.LaterFailureMustNotReplaceOriginal));
+    try std.testing.expectEqual(@as(usize, 1), manager.events.items.len);
+    try std.testing.expect(manager.publicationPending());
+    try Manager.deliver(manager);
+    try std.testing.expectEqual(@as(usize, 1), manager.events.items.len);
+    manager.retire();
+    const joined = try manager.joinPromise();
+    defer engine.freeValue(joined);
+    const settled = try engine.awaitValue(joined);
+    defer engine.freeValue(settled);
+    try std.testing.expect(c.JS_IsUndefined(settled));
+    try std.testing.expect(manager.closed and manager.thread == null and manager.active_dispatches == 0);
+    try std.testing.expect(manager.publicationPending());
+    try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
+}
+fn partialOwnerReplay(program: []const u8, golden: []const u8, name: [:0]const u8) !void {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(program, name) catch |err| {
+        diagnoseSourceFailure(engine, name, err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "ownershipStorageTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, golden);
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea partial owner {s}: {s}\n", .{ name, encoded });
+        return error.SourcePartialOwnerMismatch;
+    }
+}
+test "native durable VM actual ea partial owner Source23 missing owner keeps unknown scope and original keyed context" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source23-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source23.json"), "Source23-missing-owner");
+}
+test "native durable VM actual ea partial owner Source24 missing conversation ends chain without inventing a row" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source24-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source24.json"), "Source24-missing-conversation");
+}
+test "native durable VM actual ea partial owner Source25 loads terminal links with unabortable scheduler context" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source25-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source25.json"), "Source25-owned-context");
+}
+test "native durable VM actual ea partial owner Source26 recovers opaque null checkpoint before loading owner scopes" {
+    try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source26-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source26.json"), "Source26-opaque-checkpoint-recovery");
 }
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();

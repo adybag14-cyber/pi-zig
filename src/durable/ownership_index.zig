@@ -306,6 +306,25 @@ pub const Index = struct {
         }
         return error.TaskOwnershipCycle;
     }
+    pub fn reaches(self: *const Index, start: Node, wanted: Node, cross_background: bool) !bool {
+        try self.check();
+        var node = start;
+        var remaining = self.live.count() + self.settled.count() + self.edges.count() + 1;
+        while (remaining > 0) : (remaining -= 1) {
+            if (std.meta.eql(node, wanted)) return true;
+            if (node.kind == .conversation) {
+                node = switch (self.edge(node.id)) {
+                    .owned => |owner| Node.task(owner),
+                    .unknown, .root => return false,
+                };
+            } else {
+                const fields = self.link(node.id) orelse return false;
+                if (fields.background and !cross_background) return false;
+                node = fields.parent();
+            }
+        }
+        return error.TaskOwnershipCycle;
+    }
     /// Null means an owner edge is not loaded yet. A background owner stops
     /// ordinary traversal before an outer scope, but a conversation reached
     /// earlier in the walk is already inside its own scope.
@@ -385,12 +404,18 @@ pub const Index = struct {
         return self.walkOwned(gpa, owner, true);
     }
     fn walkOwned(self: *const Index, gpa: std.mem.Allocator, owner: u64, stop_at_intent: bool) ![]u64 {
+        return self.walkLive(gpa, Node.task(owner), false, stop_at_intent);
+    }
+    pub fn inConversation(self: *const Index, gpa: std.mem.Allocator, conversation: u64, cross_background: bool) ![]u64 {
+        return self.walkLive(gpa, Node.conversation(conversation), cross_background, false);
+    }
+    fn walkLive(self: *const Index, gpa: std.mem.Allocator, start: Node, cross_background: bool, stop_at_intent: bool) ![]u64 {
         try self.check();
         var pending: std.ArrayList(Node) = .empty;
         defer pending.deinit(gpa);
         var ids: std.ArrayList(u64) = .empty;
         errdefer ids.deinit(gpa);
-        try pending.append(gpa, Node.task(owner));
+        try pending.append(gpa, start);
         var remaining = self.live.count() + self.settled.count() + self.edges.count() + 1;
         while (pending.pop()) |at| {
             if (remaining == 0) return error.TaskOwnershipCycle;
@@ -402,8 +427,8 @@ pub const Index = struct {
                     continue;
                 }
                 const fields = self.link(node.id) orelse continue;
-                if (self.live.contains(node.id) and !fields.background) try ids.append(gpa, node.id);
-                if (!fields.background and !(stop_at_intent and self.intents.contains(node.id))) try pending.append(gpa, node);
+                if (self.live.contains(node.id) and (cross_background or !fields.background)) try ids.append(gpa, node.id);
+                if ((cross_background or !fields.background) and !(stop_at_intent and self.intents.contains(node.id))) try pending.append(gpa, node);
             }
         }
         return ids.toOwnedSlice(gpa);
@@ -480,6 +505,14 @@ fn boundaryExercise(gpa: std.mem.Allocator) !void {
     try std.testing.expectEqual(@as(?u64, null), try index.cancellingOwner(Node.task(13)));
     try std.testing.expect(!try index.idle(gpa, null));
     try std.testing.expectEqual(@as(?bool, false), try index.inScope(Node.task(13), null, false));
+    const scope = try index.inConversation(gpa, 1, false);
+    defer gpa.free(scope);
+    try std.testing.expectEqualSlices(u64, &.{ 7, 10, 11 }, scope);
+    const all_scope = try index.inConversation(gpa, 1, true);
+    defer gpa.free(all_scope);
+    try std.testing.expectEqualSlices(u64, &.{ 7, 10, 11, 13, 14 }, all_scope);
+    try std.testing.expect(!try index.reaches(Node.task(14), Node.conversation(1), false));
+    try std.testing.expect(try index.reaches(Node.task(14), Node.conversation(1), true));
     {
         var overlay = try index.duplicate(gpa);
         defer overlay.deinit();
