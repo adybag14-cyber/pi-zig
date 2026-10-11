@@ -61,9 +61,16 @@ jobs:
       - name: Compare upstream screen behavior and allocation ownership
         shell: pwsh
         timeout-minutes: 20
+        env:
+          UI_RUNNER_OS: ${{ runner.os }}
+          UI_MODE: ${{ matrix.shard.mode }}
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
+          if ($env:UI_RUNNER_OS -eq 'macOS' -and $env:UI_MODE -eq 'Debug') {
+            $env:PI_TUI_ALLOCATION_SHARD = '0'
+            $env:PI_TUI_ALLOCATION_SHARDS = '8'
+          }
           [string[]]$taskTargets = @(switch ('${{ matrix.shard.suite }}') {
             'all' { 'test-native-tui-base-source'; 'test-native-tui-main-source'; 'test-native-tui-alt-prerequisites-source'; 'test-native-tui-alt-source'; 'test-native-tui-public-source' }
             'base' { 'test-native-tui-base-source' }
@@ -100,3 +107,93 @@ jobs:
             verification/native-ui-source/**
             vendor/libfyaml/LICENSE
             vendor/libfyaml/UPSTREAM.json
+  macos-allocation:
+    name: macOS Debug alternate allocation (${{ matrix.index }}/8)
+    runs-on: macos-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Record exact source and complete tracked inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verification/tui-allocation
+          git rev-parse HEAD > verification/tui-allocation/source-${{ matrix.index }}.txt
+          git rev-parse 'HEAD^{tree}' >> verification/tui-allocation/source-${{ matrix.index }}.txt
+          test "$(zig version)" = 0.16.0
+          git ls-files -z | xargs -0 shasum -a 256 > verification/tui-allocation/inputs.sha256
+          zig fmt --check build.zig src tools
+      - name: Run complete assigned allocation range
+        shell: bash
+        timeout-minutes: 20
+        env:
+          PI_TUI_ALLOCATION_SHARD: ${{ matrix.index }}
+          PI_TUI_ALLOCATION_SHARDS: 8
+        run: |
+          set -euo pipefail
+          zig build test-native-tui-alt-allocation-source -Doptimize=Debug -j1 --test-timeout 120s --summary all 2>&1 | tee verification/tui-allocation/shard-${{ matrix.index }}.log
+      - name: Verify inputs after execution
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          shasum -a 256 -c verification/tui-allocation/inputs.sha256 > verification/tui-allocation/posthash.txt
+          git diff --exit-code
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: tui-allocation-${{ matrix.index }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/tui-allocation/**
+  allocation-coverage:
+    name: Complete macOS alternate-screen allocation coverage
+    needs: [ui, macos-allocation]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: native-ui-source-macOS-Debug-all-${{ github.sha }}
+          path: verification/tui-coverage/base
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: tui-allocation-*-${{ github.sha }}
+          path: verification/tui-coverage/ranges
+      - name: Require all eight complete ranges from this source
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Get-Content -Raw 'verification/tui-coverage/base/source.json' | ConvertFrom-Json
+          $tree = (git rev-parse 'HEAD^{tree}').Trim()
+          if ($source.head -cne $env:EXPECTED_HEAD -or $source.tree -cne $tree) { throw 'Shard zero source mismatch' }
+          [string[]]$logs = @('verification/tui-coverage/base/tests.log')
+          foreach ($index in 1..7) {
+            $dir = "verification/tui-coverage/ranges/tui-allocation-$index-$env:EXPECTED_HEAD"
+            $identity = @(Get-Content "$dir/source-$index.txt")
+            if ($identity.Count -ne 2 -or $identity[0] -cne $env:EXPECTED_HEAD -or $identity[1] -cne $tree) { throw "Shard $index source mismatch" }
+            $logs += "$dir/shard-$index.log"
+          }
+          & zig run tools/verify_tui_allocation_coverage.zig -- 8 @logs 2>&1 | Tee-Object 'verification/tui-coverage/coverage.log'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: complete-tui-allocation-${{ github.sha }}
+          retention-days: 14
+          path: verification/tui-coverage/**
