@@ -8,6 +8,7 @@ const owner_index = @import("../durable/ownership_index.zig");
 const session_mod = @import("../durable/session.zig");
 const backend = @import("../durable/backend/root.zig");
 const broker_mod = @import("native_durable_broker.zig");
+const settlement_mod = @import("../durable/owner_settlement.zig");
 const aborts = @import("abort_signal.zig");
 const json = backend.json;
 const c = engine_mod.c;
@@ -19,6 +20,10 @@ const Event = struct {
     seq: u64,
     changes: json.Owned,
     ready: bool = true,
+    cache_ready: bool = true,
+    cache_adopted: bool = false,
+    owner_public_commit: bool = false,
+    line_epoch: u32 = 0,
     index: ?owner_index.Index = null,
     fn deinit(self: *Event) void {
         self.changes.deinit();
@@ -93,6 +98,8 @@ pub const Manager = struct {
     snapshot: c.JSValue,
     scheduler: scheduling.Scheduler,
     broker: broker_mod.Broker,
+    settlement: ?settlement_mod.Channel = null,
+    native_owner: ?*durable.State = null,
     definitions: std.ArrayList(Definition) = .empty,
     ledger: std.ArrayList(*Entry) = .empty,
     events: std.ArrayList(Event) = .empty,
@@ -184,6 +191,10 @@ pub const Manager = struct {
     fn release(self: *Manager) void {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0 and self.first_phase == null and self.active_dispatches == 0);
+        if (self.native_owner) |native| if (native.session.?.owner_settlement) |hook| {
+            if (hook.context == @as(*anyopaque, @ptrCast(self))) native.session.?.owner_settlement = null;
+        };
+        if (self.settlement) |*channel| channel.deinit();
         self.task_aborts.deinit(self.engine);
         self.scheduler.deinit();
         self.abort_controls.deinit(self.engine);
@@ -326,6 +337,9 @@ pub const Manager = struct {
         var changes = try json.Owned.empty(std.heap.page_allocator);
         errdefer changes.deinit();
         changes.value = try json.clone(changes.arena.allocator(), event.changes);
+        const line_owner = self.lease.value.ownerThread.load(.acquire);
+        const epoch = self.lease.value.line_epoch.load(.acquire);
+        const owner_public = if (self.native_owner) |native| std.Thread.getCurrentId() == native.owner_thread and native.publication_context != null else false;
         self.mutex.lockUncancelable(self.lease.value.io);
         // Native Session runs internal observers before external subscribers.
         // Usually the scheduler has already prepared this exact sequence's
@@ -336,7 +350,7 @@ pub const Manager = struct {
             return error.PublicationOwnershipIndexSequenceMismatch;
         }
         const prepared = self.prepared_publication_index;
-        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
+        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or line_owner == 0, .cache_ready = line_owner == 0 or self.settlement == null, .owner_public_commit = owner_public, .line_epoch = epoch }) catch |err| {
             self.mutex.unlock(self.lease.value.io);
             return err;
         };
@@ -391,7 +405,7 @@ pub const Manager = struct {
     fn publicationPending(self: *Manager) bool {
         self.mutex.lockUncancelable(self.lease.value.io);
         defer self.mutex.unlock(self.lease.value.io);
-        return self.events.items.len != 0 and !self.events.items[0].ready;
+        return self.events.items.len != 0 and (!self.events.items[0].ready or !self.events.items[0].cache_ready);
     }
     pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
@@ -402,7 +416,7 @@ pub const Manager = struct {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
-            if (!self.events.items[0].ready) {
+            if (!self.events.items[0].ready or !self.events.items[0].cache_ready) {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
@@ -410,13 +424,16 @@ pub const Manager = struct {
             self.mutex.unlock(self.lease.value.io);
             defer event.deinit();
             self.adoptIndex(&event.index);
-            try self.cachePublication(event.changes.value);
+            if (!event.cache_adopted) try self.cachePublication(event.changes.value);
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
-        try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
+        return self.cachePublicationWithDocuments(changes, true);
+    }
+    fn cachePublicationWithDocuments(self: *Manager, changes: json.Value, adopt_documents: bool) !void {
+        if (adopt_documents) try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
         for (changes.array.items) |change| {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
@@ -477,6 +494,56 @@ pub const Manager = struct {
         // before finishing a phase aborts its invocation signal. A later poll
         // cannot decide which of those already-ordered events won.
         try settlePublishedWaiters(self, false);
+    }
+    fn afterOperation(raw: ?*anyopaque, success: bool) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        if (self.closed) return;
+        const native = self.native_owner.?;
+        const lease: settlement_mod.Lease = .{ .owner_generation = self.generation, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.lease.value.line_epoch.load(.acquire), .success = success };
+        if (lease.worker_thread == native.owner_thread) return self.settleReserved(lease);
+        try self.settlement.?.call(lease);
+    }
+    fn prepareOwnerCommit(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        const native = self.native_owner.?;
+        if (std.Thread.getCurrentId() != native.owner_thread or self.lease.value.ownerThread.load(.acquire) != native.owner_thread) return error.OwnerCommitPreparationOutsideLine;
+        const epoch = self.lease.value.line_epoch.load(.acquire);
+        for (self.events.items) |*event| if (event.line_epoch == epoch and !event.cache_adopted) {
+            self.adoptIndex(&event.index);
+            try self.cachePublicationWithDocuments(event.changes.value, false);
+            event.cache_adopted = true;
+        };
+    }
+    fn settleDispatch(raw: ?*anyopaque, lease: settlement_mod.Lease) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        try self.settleReserved(lease);
+    }
+    fn validateSettlement(self: *Manager, lease: settlement_mod.Lease) !void {
+        if (std.Thread.getCurrentId() != self.broker.owner or lease.owner_generation != self.generation or self.lease.value.ownerThread.load(.acquire) != lease.worker_thread or self.lease.value.line_epoch.load(.acquire) != lease.line_epoch) return error.StaleDocumentSettlementLease;
+    }
+    fn settleReserved(self: *Manager, lease: settlement_mod.Lease) !void {
+        try self.validateSettlement(lease);
+        const native = self.native_owner.?;
+        const owner_public = lease.worker_thread == native.owner_thread and native.publication_context != null;
+        // This original line prevents another publisher from relocating events.
+        // No OS mutex is held while actual VM cache work/getters run.
+        if (!native.closing) {
+            if (!owner_public) {
+                for (self.events.items) |*event| if (event.line_epoch == lease.line_epoch and !event.cache_adopted) {
+                    self.adoptIndex(&event.index);
+                    try self.cachePublication(event.changes.value);
+                    event.cache_adopted = true;
+                };
+                try @import("native_durable_document_retention.zig").sweepReserved(native);
+            }
+        }
+        try self.validateSettlement(lease);
+        self.mutex.lockUncancelable(self.lease.value.io);
+        for (self.events.items) |*event| if (event.line_epoch == lease.line_epoch) {
+            event.cache_adopted = true;
+            event.cache_ready = true;
+        };
+        self.mutex.unlock(self.lease.value.io);
     }
     fn clearLiveTaskRecords(self: *Manager) void {
         var records = self.live_task_records.valueIterator();
@@ -550,8 +617,6 @@ pub const Manager = struct {
         // Context. Subsequent scheduler work keeps its keyed values while
         // deliberately detaching the caller's abort signal, as actual Source.
         if (self.lease.adapter) |adapter| adapter.setBackgroundContext(self.context);
-        const native = try durable.state(self.engine, self.session);
-        if (!try @import("native_durable_document_retention.zig").sweepOwnerNow(native)) return error.DocumentRecoverySweepLineBusy;
     }
     fn drainReads(self: *Manager) !void {
         while (true) {
@@ -836,6 +901,7 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        if (self.settlement) |*channel| channel.close();
         self.clearLiveTaskRecords();
         if (durable.state(self.engine, self.session)) |native| {
             // Source's failed promise ends an already-observing abort join at
@@ -990,6 +1056,9 @@ const Hub = struct {
         for (self.managers.items) |manager| {
             if (!manager.closed) try manager.refreshRegistry();
             if (try manager.pollPhases()) worked = true;
+            if (manager.settlement) |*channel| if (try channel.drain(Manager.settleDispatch, manager)) {
+                worked = true;
+            };
             try Manager.deliver(manager);
             if (try manager.abort_controls.pump(manager)) worked = true;
             if (try manager.task_aborts.pump(manager)) worked = true;
@@ -1009,7 +1078,7 @@ const Hub = struct {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
-                if (!manager.events.items[0].ready) {
+                if (!manager.events.items[0].ready or !manager.events.items[0].cache_ready) {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
@@ -1017,7 +1086,7 @@ const Hub = struct {
                 manager.mutex.unlock(manager.lease.value.io);
                 defer event.deinit();
                 manager.adoptIndex(&event.index);
-                try manager.cachePublication(event.changes.value);
+                if (!event.cache_adopted) try manager.cachePublication(event.changes.value);
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
                 worked = true;

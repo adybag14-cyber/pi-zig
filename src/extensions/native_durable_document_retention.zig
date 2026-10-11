@@ -117,6 +117,12 @@ pub fn release(owner: *durable.State, record_id: u64) !void {
 /// No tracker held by a Transaction can leave before settlement releases it.
 pub fn sweepOnLine(owner: *durable.State) !void {
     if (std.Thread.getCurrentId() != owner.owner_thread or owner.session.?.ownerThread.load(.acquire) != std.Thread.getCurrentId()) return error.DocumentSweepOutsideSessionLine;
+    return sweepReserved(owner);
+}
+/// Only the generation/thread/epoch-validated owner settlement handler invokes
+/// this while its original worker remains blocked and retains the reserved line.
+pub fn sweepReserved(owner: *durable.State) !void {
+    if (std.Thread.getCurrentId() != owner.owner_thread or owner.session.?.ownerThread.load(.acquire) == 0) return error.DocumentSweepOutsideReservedLine;
     if (owner.closing) return;
     const stamp = now(owner);
     const duration_ms = milliseconds(owner);
@@ -135,7 +141,7 @@ pub fn sweepOwnerNow(owner: *durable.State) !bool {
             return .null;
         }
     };
-    var completed = (try owner.session.?.tryCommit(Call.run, owner, .{}, .{})) orelse return false;
+    var completed = (try owner.session.?.tryRead(Call.run, owner, .{}, .{})) orelse return false;
     completed.deinit();
     return true;
 }

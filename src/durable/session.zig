@@ -144,6 +144,9 @@ pub const Session = struct {
     report_context: ?*anyopaque = null,
     ownerThread: std.atomic.Value(std.Thread.Id) = .init(0),
     line_epoch: std.atomic.Value(u32) = .init(0),
+    /// Registered before worker admission and cleared only after workers join.
+    /// Its callback may broker owner work while this ORIGINAL line stays held.
+    owner_settlement: ?AfterOperation = null,
     closeListeners: std.ArrayList(CloseSubscription) = .empty,
     closeMutex: std.Io.Mutex = .init,
     closeOwnerThread: std.atomic.Value(std.Thread.Id) = .init(0),
@@ -277,9 +280,7 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        const result = self.commitOnLine(callback, callback_context, scope, context);
-        self.maintainLine();
-        return result;
+        return self.finishOperation(self.commitOnLine(callback, callback_context, scope, context), null, true);
     }
     /// Owner pumps must never wait for a worker which may itself await the VM.
     /// A busy line admits nothing; the caller retains its request for a later pump.
@@ -296,6 +297,14 @@ pub const Session = struct {
     /// evaluate owner-side user clock/settings getters. A rejected operation
     /// keeps its original error even if its cleanup callback also fails.
     pub fn tryCommitWithAfter(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context, after: ?AfterOperation) !?Result {
+        return self.tryCommitMode(callback, callback_context, scope, context, after, true);
+    }
+    /// Public read-line jobs and expiry jobs already own their exact operation;
+    /// they do not create another Source commit settlement notification.
+    pub fn tryRead(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !?Result {
+        return self.tryCommitMode(callback, callback_context, scope, context, null, false);
+    }
+    fn tryCommitMode(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context, after: ?AfterOperation, notify_settlement: bool) !?Result {
         try self.healthy();
         if (context.aborted()) return error.Canceled;
         const thread = std.Thread.getCurrentId();
@@ -305,13 +314,24 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        var result = self.commitOnLine(callback, callback_context, scope, context) catch |err| {
+        return self.finishOperation(self.commitOnLine(callback, callback_context, scope, context), after, notify_settlement);
+    }
+    fn finishOperation(self: *Session, operation: anyerror!Result, after: ?AfterOperation, notify_settlement: bool) !Result {
+        var result = operation catch |err| {
             if (after) |hook| hook.callback(hook.context, false) catch {};
+            if (notify_settlement) if (self.owner_settlement) |hook| hook.callback(hook.context, false) catch {};
             self.maintainLine();
             return err;
         };
         if (after) |hook| hook.callback(hook.context, true) catch |err| {
             result.deinit();
+            _ = self.fail(err);
+            self.maintainLine();
+            return err;
+        };
+        if (notify_settlement) if (self.owner_settlement) |hook| hook.callback(hook.context, true) catch |err| {
+            result.deinit();
+            _ = self.fail(err);
             self.maintainLine();
             return err;
         };

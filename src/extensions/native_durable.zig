@@ -39,6 +39,7 @@ pub const State = struct {
     foreign_publication: ?*const fn (?*anyopaque, *const session_module.Publication) anyerror!void = null,
     foreign_publication_context: ?*anyopaque = null,
     after_commit: ?*const fn (?*anyopaque) anyerror!void = null,
+    before_document_settlement: ?*const fn (?*anyopaque) anyerror!void = null,
     transaction: ?*session_module.Transaction = null,
     parent: c.JSValue,
     tail: c.JSValue,
@@ -568,6 +569,7 @@ const CommitCall = struct {
     fn after(raw: ?*anyopaque, success: bool) !void {
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const owner = try state(self.engine, self.receiver);
+        if (owner.before_document_settlement) |prepare| try prepare(owner.foreign_publication_context);
         if (success) if (self.drafts) |drafts| drafts.adopt(self.receiver) catch |err| {
             _ = owner.session.?.fail(err);
             return err;
@@ -664,7 +666,7 @@ fn queuedRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, 
     const scope = @import("native_durable_storage.zig").withContext(native, data[2]);
     defer scope.restore();
     var call: ReadCall = .{ .engine = engine, .callback = data[1], .returned = c.pi_js_undefined() };
-    var completed = (native.session.?.tryCommit(ReadCall.run, &call, .{}, .{}) catch |err| {
+    var completed = (native.session.?.tryRead(ReadCall.run, &call, .{}, .{}) catch |err| {
         engine.freeValue(call.returned);
         return reject(engine, err);
     }) orelse return @import("native_durable_storage.zig").deferRead(engine, data[0..5]) catch |err| reject(engine, err);
