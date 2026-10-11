@@ -304,8 +304,13 @@ pub const Hub = struct {
                     count = 1;
                 } else try self.backing.sleep(.fromMilliseconds(10), .awake);
             }
-            while (count < buffer.len and console_reader.interface.seek < console_reader.interface.end) : (count += 1)
-                buffer[count] = try console_reader.interface.takeByte();
+            // ReadConsoleW decodes an entire available burst into the shared
+            // physical console decoder, rather than File.Reader's byte buffer.
+            // Retain that burst before publishing one input turn to Main.
+            while (count < buffer.len and platform.inputBufferedPhysical(console_reader)) {
+                buffer[count] = (try platform.pollBytePhysical(console_reader)) orelse break;
+                count += 1;
+            }
             return count;
         };
         var vectors = [_][]u8{buffer};

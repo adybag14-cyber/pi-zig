@@ -77,6 +77,13 @@ var console_input: ConsoleInputState = .{};
 pub fn inputBuffered(reader: *Io.File.Reader) bool {
     if (reader.interface.seek < reader.interface.end) return true;
     if (reader.file.handle == Io.File.stdin().handle) if (input_bridge) |bridge| return bridge.buffered_fn(bridge.context);
+    return inputBufferedPhysical(reader);
+}
+
+/// Only the physical producer may inspect the console decoder's retained
+/// bytes. Main consumes the bridge queue instead of competing for those bytes.
+pub fn inputBufferedPhysical(reader: *Io.File.Reader) bool {
+    if (reader.interface.seek < reader.interface.end) return true;
     if (comptime builtin.os.tag == .windows) return console_input.index < console_input.length;
     return false;
 }
