@@ -153,7 +153,7 @@ fn processName(io: Io, pid: c_int) !?[]u8 {
     if (builtin.os.tag == .macos) {
         var buffer: [256]u8 = undefined;
         const count = pi_env_pty_process_name(pid, &buffer, buffer.len);
-        return if (count <= 0) null else try gpa.dupe(u8, buffer[0..@min(@as(usize, @intCast(count)), buffer.len)]);
+        return if (count <= 0) null else try @import("utf8_lossy.zig").convert(gpa, buffer[0..@min(@as(usize, @intCast(count)), buffer.len)]);
     }
     return null;
 }

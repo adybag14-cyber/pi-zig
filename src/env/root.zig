@@ -26,6 +26,7 @@ test {
     _ = terminal_request;
     _ = terminal;
     _ = @import("terminal_test.zig");
+    _ = @import("utf8_lossy.zig");
     _ = info;
     _ = daemon_output;
     _ = lazy_connection;
