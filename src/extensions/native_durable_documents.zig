@@ -37,6 +37,16 @@ pub const Cache = struct {
         for (self.items.items) |*item| if (json.equal(item.address.value, address_value) and item.version == version) return item;
         return null;
     }
+    fn dropOtherVersion(self: *Cache, address_value: json.Value, version: u64) void {
+        for (self.items.items, 0..) |item, index| if (json.equal(item.address.value, address_value) and item.version != version) {
+            var removed = self.items.orderedRemove(index);
+            @import("native_durable_document_retention.zig").drop(self.owner, removed.address.value);
+            removed.address.deinit();
+            removed.record.deinit();
+            self.engine.freeValue(removed.value);
+            return;
+        };
+    }
     fn put(self: *Cache, address_value: json.Value, record: json.Value, value: c.JSValue, version: u64) !void {
         for (self.items.items) |*item| if (json.equal(item.address.value, address_value)) {
             var record_copy = try json.Owned.empty(self.engine.gpa);
@@ -488,6 +498,7 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
         }
     }
     if (planned == null and !loaded_cached) {
+        if (!replacing) (try cache(engine, owner.parent)).dropOtherVersion(resolved.value.value, version);
         var found = if (replacing) null else try native.session.storage.findDocument(engine.gpa, resolved.value.value, .current);
         defer if (found) |*value| value.deinit();
         if (found) |value| {
@@ -500,11 +511,12 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
             defer materialized.deinit();
             baseline.value = try json.clone(baseline.arena.allocator(), materialized.value);
             const cached = try cache(engine, owner.parent);
-            if (try cached.get(resolved.value.value, version)) |cached_value| {
-                var existing = try durable.owned(engine, cached_value.value);
-                defer existing.deinit();
-                baseline.value = try json.clone(baseline.arena.allocator(), existing.value);
-            }
+            const loaded_value = try durable.jsValue(engine, baseline.value);
+            defer engine.freeValue(loaded_value);
+            try cached.put(resolved.value.value, record.value, loaded_value, version);
+            const loaded = cached.peek(resolved.value.value, version).?;
+            loaded.stored_version = stored_version;
+            loaded.deltas_since_base = deltas_since_base;
         } else {
             created = true;
             record.value = try json.clone(a, resolved.value.value);
@@ -688,7 +700,7 @@ pub fn unload(engine: *Engine, session: c.JSValue) !c.JSValue {
     var data = [_]c.JSValue{session};
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, unloadQueued, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, session, callback);
+    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
 fn unloadQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -740,7 +752,7 @@ pub fn snapshot(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c
     var data = [_]c.JSValue{ session, arguments };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, snapshotQueued, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, session, callback);
+    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
 pub fn snapshotAsOf(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const arguments = try sdk.array(engine);
@@ -749,7 +761,7 @@ pub fn snapshotAsOf(engine: *Engine, session: c.JSValue, args: []const c.JSValue
     var data = [_]c.JSValue{ session, arguments };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, snapshotQueued, 0, 1, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, session, callback);
+    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
 fn snapshotQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, historical: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -813,6 +825,7 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
         try checkSemantics(engine, definition_value, value.record.value);
         return sdk.promise(engine, value.value);
     }
+    values.dropOtherVersion(resolved.value.value, version);
     var found = (try native.session.?.storage.findDocument(engine.gpa, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
     defer found.deinit();
     var contents = (try native.session.?.storage.readDocument(engine.gpa, try json.asInteger(try json.required(found.value, "id")), .current)).?;

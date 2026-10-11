@@ -126,7 +126,7 @@ pub fn acquire(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c.
     var data = [_]c.JSValue{ session, array };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, queued, 0, 0, data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, session, callback);
+    return durable.enqueueRead(engine, session, callback, c.pi_js_undefined());
 }
 fn queued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

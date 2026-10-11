@@ -184,6 +184,9 @@ fn ready(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_
     const engine = Engine.fromContext(context.?);
     const owner = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
     owner.cache_policy.sweeps += 1;
+    // A microtask already queued before close still runs, but must not turn the
+    // normal close into an unhandled admission error or touch disposed trackers.
+    if (owner.closing) return c.pi_js_undefined();
     const callback = engine.checked(c.JS_NewCFunctionData(context, queuedSweep, 0, 0, 2, data)) catch |err| return durable.reject(engine, err);
     defer engine.freeValue(callback);
     const pending = durable.enqueueRead(engine, data[0], callback, c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
