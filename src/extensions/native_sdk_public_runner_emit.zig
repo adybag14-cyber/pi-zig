@@ -7,7 +7,7 @@ const js = @import("native_js_values.zig");
 const c = em.c;
 const reducers = @import("native_sdk_public_runner_reducers.zig");
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
-pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash, boundary };
+pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash, boundary, context };
 const Phase = enum { handler, boundary_initial, boundary_rebuild };
 pub const Root = enum { runner, event, context, extension, result, resolve, reject, parameter0, parameter1, parameter2, parameter3, current, aux, aux2 };
 pub const State = struct {
@@ -16,6 +16,8 @@ pub const State = struct {
     kind: Kind,
     phase: Phase = .handler,
     boundary_valid: bool = true,
+    context_system: bool = false,
+    context_had_leading: bool = false,
     modified: bool = false,
     early_return: bool = false,
     outer: ?js.Iterator = null,
@@ -209,6 +211,12 @@ fn advance(engine: *em.Engine, owner: c.JSValue) !void {
             defer engine.freeValue(symbol);
             retained.inner = try js.Iterator.init(engine, handlers, symbol);
         } else {
+            if (retained.kind == .context and !retained.context_system) {
+                retained.context_system = true;
+                retained.outer.?.deinit();
+                retained.outer = null;
+                return snapshotHandlers(engine, owner);
+            }
             try finish(engine, owner);
         }
     }

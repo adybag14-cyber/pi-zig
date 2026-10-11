@@ -93,7 +93,7 @@ fn cloneCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
             if (count != 0) return c.JS_ThrowTypeError(context, "Native structuredClone transferable objects are not implemented");
         }
     }
-    return clone(engine, argv[0]) catch |err| sdk.fail(engine, err);
+    return @import("native_structured_clone.zig").clone(engine, argv[0]) catch |err| sdk.fail(engine, err);
 }
 fn create(engine: *engine_mod.Engine, new_target: c.JSValue) !c.JSValue {
     const prototype = try sdk.get(engine, new_target, "prototype");

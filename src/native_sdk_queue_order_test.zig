@@ -16,7 +16,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
     try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
     const result = engine.evalModule(
         \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
-        \\const missing=['emitContext','emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
+        \\const missing=['emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
         \\if(sdkMethodSource.methods.length!==50)throw Error('Source method inventory');
         \\for(const expected of sdkMethodSource.methods){const descriptor=Object.getOwnPropertyDescriptor(ExtensionRunner.prototype,expected.name);
         \\ if(missing.includes(expected.name)){if(descriptor!==undefined)throw Error('unqualified method inventory changed');absent++;continue}
@@ -24,7 +24,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
         \\ const actual={name:fn.name,arity:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String),descriptor:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable}};
         \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));implemented++;
         \\}
-        \\if(implemented!==48||absent!==2)throw Error('partial native method inventory');
+        \\if(implemented!==49||absent!==1)throw Error('partial native method inventory');
     , "sdk-method-metadata-native") catch |err| {
         std.debug.print("SDK method metadata: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
@@ -953,6 +953,43 @@ test "native SDK queue order PUBLIC boundary twenty actual Source555 phase gette
         try std.testing.expect(json.equal(source, observed));
     }
     const cleared = try engine.eval("delete globalThis.sdkRunnerBoundaryPhaseRows", "sdk-public-boundary-phases-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC context two phases actual replay clone and ten original Source557 cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-context-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-context-558.input.txt"), "sdk-public-context.mjs") catch |err| {
+        std.debug.print("SDK Source557 PUBLIC context: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerContextClosureRows", "sdk-public-context-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-context-source-557.json"));
+    defer expected.deinit();
+    try std.testing.expectEqual(@as(usize, 2), actual.value.object.count());
+    inline for (.{ .{ "source536", 8 }, .{ "source535", 2 } }) |capture| {
+        const rows = expected.value.object.get(capture[0]).?.array.items;
+        const found = actual.value.object.get(capture[0]).?.array.items;
+        try std.testing.expectEqual(@as(usize, capture[1]), rows.len);
+        try std.testing.expectEqual(rows.len, found.len);
+        for (rows, found) |source, observed| {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source557 context complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerContextClosureRows", "sdk-public-context-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }

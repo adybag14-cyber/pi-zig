@@ -102,7 +102,7 @@ pub fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     try sdk.put(engine, result, "skills", try sdk.array(engine));
     return result;
 }
-const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts, emitCacheWarmingDecision, emitMessageEnd, emitToolResult, emitToolCall, emitBeforeProviderRequest, emitBeforeProviderHeaders, emitResourcesDiscover, emitInput, emitUserBash, emitBoundary };
+const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts, emitCacheWarmingDecision, emitMessageEnd, emitToolResult, emitToolCall, emitBeforeProviderRequest, emitBeforeProviderHeaders, emitResourcesDiscover, emitInput, emitUserBash, emitBoundary, emitContext };
 pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
     try @import("native_sdk_public_runner_shortcuts.zig").initialize(engine);
     inline for (std.meta.fields(Method)) |field| {
@@ -111,12 +111,12 @@ pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
             .emitInput => 4,
             .bindCore, .withUIPrompt => 3,
             .setFlagValue, .createToolContext, .resolveToolRenderers, .emitResourcesDiscover, .emitBoundary => 2,
-            .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitUserBash => 1,
+            .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitUserBash, .emitContext => 1,
             else => 0,
         };
         const function = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, arity, field.value));
         switch (kind) {
-            .emit, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitResourcesDiscover, .emitInput, .emitUserBash, .emitBoundary => {
+            .emit, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitResourcesDiscover, .emitInput, .emitUserBash, .emitBoundary, .emitContext => {
                 const async_prototype = engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)) catch |err| {
                     engine.freeValue(function);
                     return err;
@@ -144,6 +144,7 @@ fn assign(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.J
 fn methodValue(engine: *em.Engine, runner: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     switch (operation) {
+        .emitContext => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .context),
         .emitBoundary => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .boundary),
         .emitUserBash => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .user_bash),
         .emitCacheWarmingDecision => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .cache),
