@@ -5,6 +5,7 @@ extern "c" fn pi_env_pty_spawn(program: [*:0]const u8, argv: [*:null]const ?[*:0
 extern "c" fn pi_env_pty_resize(master: c_int, cols: u16, rows: u16) c_int;
 extern "c" fn pi_env_pty_read(master: c_int, bytes: [*]u8, length: usize) isize;
 extern "c" fn pi_env_pty_write(master: c_int, bytes: [*]const u8, length: usize) isize;
+extern "c" fn pi_env_pty_wait(master: c_int, writing: c_int, timeout_ms: c_int) c_int;
 extern "c" fn pi_env_pty_peek(pid: c_int, code: *i64) c_int;
 extern "c" fn pi_env_pty_foreground(master: c_int) c_int;
 extern "c" fn pi_env_pty_kill(pid: c_int) c_int;
@@ -107,4 +108,29 @@ test "POSIX terminal primitive spawn errors do not publish a child or descriptor
     try std.testing.expect(pi_env_pty_spawn(argv[0].?, &argv, &env, "/", 80, 24, &master, &pid) < 0);
     try std.testing.expectEqual(@as(c_int, -1), master);
     try std.testing.expectEqual(@as(c_int, -1), pid);
+}
+test "POSIX terminal primitive waits for real read and write readiness without a retry sleep" {
+    if (builtin.os.tag == .windows) return error.SkipZigTest;
+    const argv = [_:null]?[*:0]const u8{ "/bin/sh", "-c", "stty raw -echo; printf READY; dd bs=1 count=1 2>/dev/null; exec sleep 30" };
+    const env = [_:null]?[*:0]const u8{"PATH=/usr/bin:/bin"};
+    var terminal: Owned = .{ .master = -1, .pid = -1 };
+    try std.testing.expectEqual(@as(c_int, 0), pi_env_pty_spawn("/bin/sh", &argv, &env, "/", 80, 24, &terminal.master, &terminal.pid));
+    defer terminal.deinit();
+    var ready: [5]u8 = undefined;
+    var offset: usize = 0;
+    while (offset < ready.len) {
+        try std.testing.expectEqual(@as(c_int, 1), pi_env_pty_wait(terminal.master, 0, 5000));
+        const count = pi_env_pty_read(terminal.master, ready[offset..].ptr, ready.len - offset);
+        try std.testing.expect(count > 0);
+        offset += @intCast(count);
+    }
+    try std.testing.expectEqualStrings("READY", &ready);
+    // The child cannot emit its next byte before this test supplies input.
+    try std.testing.expectEqual(@as(c_int, 0), pi_env_pty_wait(terminal.master, 0, 10));
+    try std.testing.expectEqual(@as(c_int, 1), pi_env_pty_wait(terminal.master, 1, 5000));
+    try std.testing.expectEqual(@as(isize, 1), pi_env_pty_write(terminal.master, "X", 1));
+    try std.testing.expectEqual(@as(c_int, 1), pi_env_pty_wait(terminal.master, 0, 5000));
+    var byte: [1]u8 = undefined;
+    try std.testing.expectEqual(@as(isize, 1), pi_env_pty_read(terminal.master, &byte, 1));
+    try std.testing.expectEqualStrings("X", &byte);
 }

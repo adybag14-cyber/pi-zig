@@ -11,6 +11,7 @@ extern "c" fn pi_env_pty_spawn(program: [*:0]const u8, argv: [*:null]const ?[*:0
 extern "c" fn pi_env_pty_resize(master: c_int, cols: u16, rows: u16) c_int;
 extern "c" fn pi_env_pty_read(master: c_int, bytes: [*]u8, length: usize) isize;
 extern "c" fn pi_env_pty_write(master: c_int, bytes: [*]const u8, length: usize) isize;
+extern "c" fn pi_env_pty_wait(master: c_int, writing: c_int, timeout_ms: c_int) c_int;
 extern "c" fn pi_env_pty_peek(pid: c_int, code: *i64) c_int;
 extern "c" fn pi_env_pty_foreground(master: c_int) c_int;
 extern "c" fn pi_env_pty_process_name(pid: c_int, bytes: [*]u8, length: usize) c_int;
@@ -207,7 +208,9 @@ pub const Task = struct {
                 while (offset < chunk.len and !self.stopped.load(.acquire)) {
                     const count = pi_env_pty_write(self.master, chunk[offset..].ptr, chunk.len - offset);
                     if (count == 0 or count < -1) return;
-                    if (count > 0) offset += @intCast(count) else try io.sleep(.fromMilliseconds(1), .awake);
+                    if (count > 0) {
+                        offset += @intCast(count);
+                    } else if (pi_env_pty_wait(self.master, 1, 100) < 0) return;
                 }
             } else try self.wake.wait(io);
         }
@@ -328,7 +331,10 @@ pub const Task = struct {
             // Drain ready PTY bytes like Source's blocking reader. Sleeping
             // after every successful read throttles small macOS PTY chunks
             // and can stall a large write behind output backpressure.
-            if (count <= 0 and (!exited or !ended)) try io.sleep(.fromMilliseconds(1), .awake);
+            if (count <= 0 and !ended) {
+                const ready = pi_env_pty_wait(self.master, 0, 100);
+                if (ready < 0) return systemFailure(self.output, self.pending.frame.id, "spawn_error", -ready, "poll");
+            } else if (count <= 0 and !exited) try io.sleep(.fromMilliseconds(1), .awake);
         }
         // A reply can reach the client as soon as it is queued. Retire the
         // terminal before publishing its outcome, as upstream does.

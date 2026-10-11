@@ -4,6 +4,7 @@
 #define _GNU_SOURCE
 #include <errno.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -120,6 +121,13 @@ intptr_t pi_env_pty_write(int master, const void *bytes, size_t length) {
     if (count >= 0) return count;
     if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) return -1;
     return -(intptr_t)errno - 1;
+}
+int pi_env_pty_wait(int master, int writing, int timeout_ms) {
+    struct pollfd descriptor = { .fd = master, .events = writing ? POLLOUT : POLLIN };
+    int ready = poll(&descriptor, 1, timeout_ms);
+    if (ready < 0) return errno == EINTR ? 0 : -errno;
+    if (descriptor.revents & POLLNVAL) return -EBADF;
+    return ready > 0;
 }
 int pi_env_pty_peek(int pid, int64_t *exit_code) {
     siginfo_t info;
