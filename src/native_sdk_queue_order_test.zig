@@ -655,6 +655,7 @@ test "native SDK queue order PUBLIC shortcuts reserved precedence diagnostics ge
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     engine.native_io = std.testing.io;
+    try @import("extensions/console.zig").install(engine, std.testing.io);
     const group = try group_mod.Group.init(engine);
     defer group.deinit();
     const root = try group.add("sdk-public-shortcuts-root");
