@@ -1,0 +1,64 @@
+name: Native environment terminal contract
+
+on:
+  push:
+    branches: [work/native-env-terminal-20261011]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-env-terminal-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze native inputs and original terminal capture
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path verification/env-terminal -Force | Out-Null
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Toolchain drift' }
+          if ((git rev-parse HEAD).Trim() -cne '${{ github.sha }}') { throw 'Checkout head drift' }
+          $fixture = 'src/env/fixtures/terminal-971-windows-source.json'
+          if ((Get-FileHash -LiteralPath $fixture).Hash -cne 'AB0CF07267F30F447490D252EDE5B631C415C123E0F8EAB39D0EDACE502687AA') { throw 'Original capture drift' }
+          @(git ls-files | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json -Depth 4 | Set-Content verification/env-terminal/inputs.json
+          [ordered]@{ head = '${{ github.sha }}'; mode = '${{ matrix.mode }}'; zig_sha256 = (Get-FileHash -LiteralPath (Get-Command zig).Source).Hash; upstream = '97195ec3c4a40665a9008c3658e67b0782f33b18'; scope = 'Native environment and capability regressions. Actual Windows terminal error capture replay. POSIX PTY and public RemoteTerminal remain incomplete.' } | ConvertTo-Json | Set-Content verification/env-terminal/source.json
+      - name: Exercise native environment and shared capabilities
+        timeout-minutes: 12
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build test-env test-env-capability -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/env-terminal/tests.log
+          if ($LASTEXITCODE -ne 0) { throw 'Native environment regression failed' }
+      - name: Verify frozen inputs
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $inputs = @(Get-Content -Raw verification/env-terminal/inputs.json | ConvertFrom-Json)
+          $drift = @($inputs | Where-Object { (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 })
+          [ordered]@{ inputs = $inputs.Count; drift = $drift.Count } | ConvertTo-Json | Set-Content verification/env-terminal/posthash.json
+          if ($drift.Count -ne 0) { throw 'Source changed during qualification' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked changes during qualification' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-env-terminal-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/env-terminal/**
