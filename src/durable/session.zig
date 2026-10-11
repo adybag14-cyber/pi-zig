@@ -284,6 +284,18 @@ pub const Session = struct {
     /// Owner pumps must never wait for a worker which may itself await the VM.
     /// A busy line admits nothing; the caller retains its request for a later pump.
     pub fn tryCommit(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !?Result {
+        return self.tryCommitWithAfter(callback, callback_context, scope, context, null);
+    }
+    pub const AfterOperation = struct {
+        callback: *const fn (?*anyopaque, bool) anyerror!void,
+        context: ?*anyopaque,
+    };
+    /// Owner facades may finish adopting committed trackers and evict idle ones
+    /// after the Transaction releases, while this same mutation line is still
+    /// reserved. Unlike maintenance, this callback holds no OS mutex and may
+    /// evaluate owner-side user clock/settings getters. A rejected operation
+    /// keeps its original error even if its cleanup callback also fails.
+    pub fn tryCommitWithAfter(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context, after: ?AfterOperation) !?Result {
         try self.healthy();
         if (context.aborted()) return error.Canceled;
         const thread = std.Thread.getCurrentId();
@@ -293,9 +305,18 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        const result = self.commitOnLine(callback, callback_context, scope, context);
+        var result = self.commitOnLine(callback, callback_context, scope, context) catch |err| {
+            if (after) |hook| hook.callback(hook.context, false) catch {};
+            self.maintainLine();
+            return err;
+        };
+        if (after) |hook| hook.callback(hook.context, true) catch |err| {
+            result.deinit();
+            self.maintainLine();
+            return err;
+        };
         self.maintainLine();
-        return try result;
+        return result;
     }
     fn commitOnLine(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !Result {
         try self.healthy();
@@ -1076,6 +1097,68 @@ test "durable Session admission allocates before publish and survives callback f
             try std.testing.expect(session.failure() == null);
         }
     }.run, .{});
+}
+
+test "durable Session owner settlement runs after transaction release before line release without mutex" {
+    var store = try backend.memory.Memory.init(std.testing.allocator);
+    defer store.deinit();
+    var session = Session.init(std.testing.allocator, std.testing.io, .{ .memory = &store });
+    defer session.deinit();
+    const Probe = struct {
+        session: *Session,
+        transaction: ?*Transaction = null,
+        sequence: [8]u8 = @splat(0),
+        count: usize = 0,
+        reject: bool = false,
+        fn note(self: *@This(), value: u8) void {
+            self.sequence[self.count] = value;
+            self.count += 1;
+        }
+        fn run(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.note(1);
+            self.transaction = tx.retain();
+            if (self.reject) return error.OriginalOwnerOperation;
+            return tx.createRootConversation();
+        }
+        fn publish(raw: ?*anyopaque, _: *const Publication, _: types.Context) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.note(2);
+        }
+        fn after(raw: ?*anyopaque, success: bool) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.note(3);
+            try std.testing.expectEqual(!self.reject, success);
+            try std.testing.expect(!self.transaction.?.active);
+            try std.testing.expectEqual(std.Thread.getCurrentId(), self.session.ownerThread.load(.acquire));
+            try std.testing.expect(self.session.mutex.tryLock());
+            self.session.mutex.unlock(self.session.io);
+            try std.testing.expect((try self.session.tryCommit(run, raw, .{}, .{})) == null);
+            if (!success) return error.SecondaryOwnerCleanup;
+        }
+        fn maintenance(raw: ?*anyopaque) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.note(4);
+            try std.testing.expectEqual(std.Thread.getCurrentId(), self.session.ownerThread.load(.acquire));
+        }
+    };
+    var probe: Probe = .{ .session = &session };
+    _ = try session.subscribe(Probe.publish, &probe);
+    _ = try session.subscribeMaintenance(Probe.maintenance, &probe);
+    var result = (try session.tryCommitWithAfter(Probe.run, &probe, .{}, .{}, .{ .callback = Probe.after, .context = &probe })).?;
+    result.deinit();
+    probe.transaction.?.release();
+    probe.transaction = null;
+    try std.testing.expectEqualSlices(u8, &.{ 1, 2, 3, 4 }, probe.sequence[0..probe.count]);
+    try std.testing.expectEqual(@as(std.Thread.Id, 0), session.ownerThread.load(.acquire));
+    probe.count = 0;
+    probe.reject = true;
+    try std.testing.expectError(error.OriginalOwnerOperation, session.tryCommitWithAfter(Probe.run, &probe, .{}, .{}, .{ .callback = Probe.after, .context = &probe }));
+    probe.transaction.?.release();
+    probe.transaction = null;
+    try std.testing.expectEqualSlices(u8, &.{ 1, 3, 4 }, probe.sequence[0..probe.count]);
+    try std.testing.expectEqual(@as(std.Thread.Id, 0), session.ownerThread.load(.acquire));
+    try std.testing.expect(session.failure() == null);
 }
 
 test "durable Session committed records and publications match actual b7df callback execution" {

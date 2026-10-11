@@ -27,6 +27,7 @@ const State = struct {
     delivering: bool = false,
     disposed: bool = false,
     retired: bool = false,
+    pinned: bool = false,
     fn clear(self: *State, runtime: ?*c.JSRuntime) void {
         for (self.revisions.items) |frame| {
             c.JS_FreeValueRT(runtime, frame.value);
@@ -37,6 +38,9 @@ const State = struct {
     fn dispose(self: *State) !void {
         if (self.disposed) return;
         self.disposed = true;
+        const pinned = self.pinned;
+        self.pinned = false;
+        errdefer if (pinned) docs.releaseRecord(self.engine, self.parent, self.id) catch {};
         self.clear(self.engine.runtime);
         inline for (.{ "commit_detach", "close_detach" }) |name| {
             const callback = @field(self, name);
@@ -47,6 +51,7 @@ const State = struct {
                 self.engine.freeValue(returned);
             }
         }
+        if (pinned) try docs.releaseRecord(self.engine, self.parent, self.id);
     }
 };
 const Subscriber = struct {
@@ -187,6 +192,10 @@ fn create(engine: *Engine, parent: c.JSValue, observation: docs.Observation) !c.
     self.* = .{ .engine = engine, .parent = c.JS_DupValue(engine.context, parent), .value = c.JS_DupValue(engine.context, observation.value), .commit_detach = c.pi_js_undefined(), .close_detach = c.pi_js_undefined(), .id = try json.asInteger(try json.required(observation.record.value, "id")), .version = observation.version };
     _ = c.JS_SetOpaque(object, self);
     errdefer self.dispose() catch {};
+    if (observation.cached) {
+        try docs.pinRecord(engine, parent, self.id);
+        self.pinned = true;
+    }
     var data = [_]c.JSValue{object};
     const committed = try engine.checked(c.JS_NewCFunctionData(engine.context, publication, 2, 0, 1, &data));
     defer engine.freeValue(committed);
@@ -312,7 +321,13 @@ fn receive(engine: *Engine, object: c.JSValue, publication_value: c.JSValue, con
         var admitted = false;
         errdefer if (!admitted) engine.freeValue(value);
         var publish = c.JS_IsNull(value);
-        if (publish) self.retired = true else {
+        if (publish) {
+            self.retired = true;
+            if (self.pinned) {
+                self.pinned = false;
+                try docs.releaseRecord(engine, self.parent, self.id);
+            }
+        } else {
             const version_value = try sdk.get(engine, change, "version");
             defer engine.freeValue(version_value);
             const version = try durable.number(engine, version_value);

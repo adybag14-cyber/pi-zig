@@ -106,7 +106,11 @@ fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     // Source captures the safe reporter in its Harness constructor, before open awaits.
     const on_report = try sdk.get(engine, options, "onReport");
     defer engine.freeValue(on_report);
-    const session = try durable.sessionObject(engine, argument(args, 0));
+    const supplied_clock = try sdk.get(engine, options, "now");
+    defer engine.freeValue(supplied_clock);
+    const clock = try @import("native_durable_document_retention.zig").captureClock(engine, supplied_clock);
+    defer engine.freeValue(clock);
+    const session = try durable.sessionObjectWithClock(engine, argument(args, 0), clock, !c.JS_IsUndefined(supplied_clock));
     defer engine.freeValue(session);
     const result = try object(engine, session, options, null);
     errdefer engine.freeValue(result);
@@ -144,6 +148,11 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     if (conversation) |id| {
         if (c.JS_DefinePropertyValueStr(engine.context, result, "id", c.JS_NewInt64(engine.context, @intCast(id)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     } else {
+        const cache_atom = c.JS_NewAtom(engine.context, "documentCacheSizes");
+        defer c.JS_FreeAtom(engine.context, cache_atom);
+        if (cache_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+        const cache_getter = try engine.checked(c.JS_NewCFunction(engine.context, cacheSizes, "get documentCacheSizes", 0));
+        if (c.JS_DefinePropertyGetSet(engine.context, result, cache_atom, cache_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         const atom = c.JS_NewAtom(engine.context, "closed");
         defer c.JS_FreeAtom(engine.context, atom);
         if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
@@ -172,6 +181,11 @@ fn closed(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValu
     const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
     const native = durable.state(engine, self.session) catch |err| return durable.reject(engine, err);
     return c.JS_DupValue(context, native.closed_promise orelse return durable.reject(engine, error.SessionClosedPromiseUnavailable));
+}
+fn cacheSizes(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
+    return @import("native_durable_document_retention.zig").sizes(engine, self.session) catch |err| durable.reject(engine, err);
 }
 fn indexSizes(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

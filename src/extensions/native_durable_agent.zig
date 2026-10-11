@@ -6,7 +6,7 @@ const sdk = @import("native_sdk.zig");
 const Engine = engine_mod.Engine;
 const c = engine_mod.c;
 const defaults =
-    \\{"stream":{},"retry":{"enabled":true,"maxRetries":3,"baseDelayMs":2000,"maxAgentDelayMs":60000},"compaction":{"enabled":true,"reserveTokens":16384,"keepRecentTokens":20000,"backgroundTokens":32768},"progress":{"partialIntervalMs":100,"outputIntervalMs":100},"toolExecution":"parallel","steeringMode":"one-at-a-time","followUpMode":"one-at-a-time","contextRetentionMs":600000}
+    \\{"stream":{},"retry":{"enabled":true,"maxRetries":3,"baseDelayMs":2000,"maxAgentDelayMs":60000},"compaction":{"enabled":true,"reserveTokens":16384,"keepRecentTokens":20000,"backgroundTokens":32768},"progress":{"partialIntervalMs":100,"outputIntervalMs":100},"toolExecution":"parallel","steeringMode":"one-at-a-time","followUpMode":"one-at-a-time","contextRetentionMs":600000,"documentRetentionMs":600000}
 ;
 pub fn settings(engine: *Engine, input: c.JSValue) !c.JSValue {
     var data = try @import("../durable/backend/json.zig").Owned.parse(engine.gpa, defaults);
@@ -41,7 +41,7 @@ pub fn settings(engine: *Engine, input: c.JSValue) !c.JSValue {
         }
         try sdk.put(engine, result, name, target);
     }
-    inline for (.{ "toolExecution", "steeringMode", "followUpMode", "contextRetentionMs" }) |name| try sdk.put(engine, result, name, try sdk.get(engine, fallback, name));
+    inline for (.{ "toolExecution", "steeringMode", "followUpMode", "contextRetentionMs", "documentRetentionMs" }) |name| try sdk.put(engine, result, name, try sdk.get(engine, fallback, name));
     if (absent) return result;
     inline for (.{ "stream", "retry", "compaction" }) |name| {
         const selected = try sdk.get(engine, input, name);
@@ -69,6 +69,9 @@ pub fn settings(engine: *Engine, input: c.JSValue) !c.JSValue {
         defer engine.freeValue(value);
         if (!c.JS_IsUndefined(value) and !c.JS_IsNull(value)) try sdk.put(engine, result, name, c.JS_DupValue(engine.context, value));
     }
+    const document_retention = try sdk.get(engine, input, "documentRetentionMs");
+    defer engine.freeValue(document_retention);
+    try sdk.put(engine, result, "documentRetentionMs", c.JS_NewFloat64(engine.context, @import("native_durable_document_retention.zig").duration(engine, document_retention)));
     return result;
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {

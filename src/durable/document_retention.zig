@@ -38,6 +38,9 @@ pub const Index = struct {
         for (self.idle.items, 0..) |item, index| if (json.equal(item.address.value, address)) return index;
         return null;
     }
+    pub fn lastUse(self: *const Index, address: json.Value) ?f64 {
+        return if (self.position(address)) |index| self.idle.items[index].since else null;
+    }
     pub fn drop(self: *Index, address: json.Value) void {
         if (self.position(address)) |index| {
             var removed = self.idle.orderedRemove(index);
@@ -56,6 +59,10 @@ pub const Index = struct {
             const since = self.idle.items[index].since;
             if (now - since < @min(1_000, retention / 10)) return;
         }
+        try self.move(address, record_id, now);
+    }
+    pub fn move(self: *Index, address: json.Value, record_id: u64, now: f64) !void {
+        const prior = self.position(address);
         // Prepare all allocations before replacing an existing idle entry.
         var copy = try json.Owned.empty(self.gpa);
         errdefer copy.deinit();

@@ -550,6 +550,8 @@ pub const Manager = struct {
         // Context. Subsequent scheduler work keeps its keyed values while
         // deliberately detaching the caller's abort signal, as actual Source.
         if (self.lease.adapter) |adapter| adapter.setBackgroundContext(self.context);
+        const native = try durable.state(self.engine, self.session);
+        if (!try @import("native_durable_document_retention.zig").sweepOwnerNow(native)) return error.DocumentRecoverySweepLineBusy;
     }
     fn drainReads(self: *Manager) !void {
         while (true) {
@@ -1176,7 +1178,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(registry);
     const snapshot = try sdk.invoke(engine, registry, "snapshot", &.{});
     errdefer engine.freeValue(snapshot);
-    const clock_callback = try sdk.get(engine, options, "now");
+    const clock_callback = if (native.cache_policy.custom_clock) c.JS_DupValue(engine.context, native.cache_policy.clock.?) else c.pi_js_undefined();
     errdefer engine.freeValue(clock_callback);
     const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
     var context_admitted = false;

@@ -12,6 +12,7 @@ const Document = struct { address: json.Owned, record: json.Owned, baseline: jso
 const Cached = struct { address: json.Owned, record: json.Owned, value: c.JSValue, version: u64, stored_version: ?u64 = null, deltas_since_base: u64 = 0 };
 pub const Cache = struct {
     engine: *Engine,
+    owner: *durable.State,
     items: std.ArrayList(Cached) = .empty,
     pub fn deinit(self: *Cache, runtime: ?*c.JSRuntime) void {
         for (self.items.items) |*item| {
@@ -25,34 +26,89 @@ pub const Cache = struct {
     pub fn mark(self: *Cache, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
         for (self.items.items) |item| c.JS_MarkValue(runtime, item.value, marker);
     }
-    fn get(self: *Cache, address_value: json.Value, version: u64) ?*Cached {
+    fn get(self: *Cache, address_value: json.Value, version: u64) !?*Cached {
+        for (self.items.items) |*item| if (json.equal(item.address.value, address_value) and item.version == version) {
+            try @import("native_durable_document_retention.zig").touch(self.owner, item.address.value, try json.asInteger(try json.required(item.record.value, "id")));
+            return item;
+        };
+        return null;
+    }
+    fn peek(self: *Cache, address_value: json.Value, version: u64) ?*Cached {
         for (self.items.items) |*item| if (json.equal(item.address.value, address_value) and item.version == version) return item;
         return null;
     }
     fn put(self: *Cache, address_value: json.Value, record: json.Value, value: c.JSValue, version: u64) !void {
         for (self.items.items) |*item| if (json.equal(item.address.value, address_value)) {
+            var record_copy = try json.Owned.empty(self.engine.gpa);
+            var record_adopted = false;
+            errdefer if (!record_adopted) record_copy.deinit();
+            record_copy.value = try json.clone(record_copy.arena.allocator(), record);
+            item.record.deinit();
+            item.record = record_copy;
+            record_adopted = true;
             self.engine.freeValue(item.value);
             item.value = c.JS_DupValue(self.engine.context, value);
             item.version = version;
+            try @import("native_durable_document_retention.zig").touch(self.owner, item.address.value, try json.asInteger(try json.required(record, "id")));
             return;
         };
+        var copies_adopted = false;
         var address_copy = try json.Owned.empty(self.engine.gpa);
-        errdefer address_copy.deinit();
+        errdefer if (!copies_adopted) address_copy.deinit();
         address_copy.value = try json.clone(address_copy.arena.allocator(), address_value);
         var record_copy = try json.Owned.empty(self.engine.gpa);
-        errdefer record_copy.deinit();
+        errdefer if (!copies_adopted) record_copy.deinit();
         record_copy.value = try json.clone(record_copy.arena.allocator(), record);
         try self.items.ensureUnusedCapacity(self.engine.gpa, 1);
         self.items.appendAssumeCapacity(.{ .address = address_copy, .record = record_copy, .value = c.JS_DupValue(self.engine.context, value), .version = version });
+        copies_adopted = true;
+        try @import("native_durable_document_retention.zig").touch(self.owner, address_value, try json.asInteger(try json.required(record, "id")));
     }
 };
 fn cache(engine: *Engine, session: c.JSValue) !*Cache {
     const owner = try durable.state(engine, session);
     if (owner.document_cache) |value| return value;
     const value = try engine.gpa.create(Cache);
-    value.* = .{ .engine = engine };
+    value.* = .{ .engine = engine, .owner = owner };
     owner.document_cache = value;
     return value;
+}
+pub fn touchRecord(owner: *durable.State, record_id: u64) !void {
+    const values = owner.document_cache orelse return;
+    for (values.items.items) |item| if (try json.asInteger(try json.required(item.record.value, "id")) == record_id) {
+        try @import("native_durable_document_retention.zig").touch(owner, item.address.value, record_id);
+        return;
+    };
+}
+pub fn dropCached(owner: *durable.State, address_value: json.Value) void {
+    const values = owner.document_cache orelse return;
+    for (values.items.items, 0..) |item, index| if (json.equal(item.address.value, address_value)) {
+        var removed = values.items.orderedRemove(index);
+        removed.address.deinit();
+        removed.record.deinit();
+        owner.engine.freeValue(removed.value);
+        return;
+    };
+}
+pub fn pinRecord(engine: *Engine, session: c.JSValue, record_id: u64) !void {
+    const owner = try durable.state(engine, session);
+    const values = owner.document_cache orelse return error.DocumentPinWithoutCachedTracker;
+    for (values.items.items) |item| if (try json.asInteger(try json.required(item.record.value, "id")) == record_id) {
+        try @import("native_durable_document_retention.zig").pin(owner, item.address.value, record_id);
+        return;
+    };
+    return error.DocumentPinWithoutCachedIncarnation;
+}
+pub fn releaseRecord(engine: *Engine, session: c.JSValue, record_id: u64) !void {
+    try @import("native_durable_document_retention.zig").release(try durable.state(engine, session), record_id);
+}
+pub fn closeCache(owner: *durable.State) void {
+    if (owner.document_cache) |values| {
+        owner.document_cache = null;
+        values.deinit(owner.engine.runtime);
+    }
+    @import("native_durable_document_retention.zig").clearIdle(owner);
+    if (owner.cache_policy.index) |*values| values.attached.clearRetainingCapacity();
 }
 pub const Drafts = struct {
     engine: *Engine,
@@ -102,7 +158,7 @@ pub const Drafts = struct {
         try self.prepared_cache.ensureUnusedCapacity(self.engine.gpa, self.items.items.len);
         for (self.items.items) |doc| {
             if (doc.retired) continue;
-            if (values.get(doc.address.value, doc.version)) |existing| {
+            if (values.peek(doc.address.value, doc.version)) |existing| {
                 if (json.equal(json.get(existing.record.value, "id") orelse .null, json.get(doc.record.value, "id") orelse .null)) {
                     var current = try durable.owned(self.engine, doc.target);
                     defer current.deinit();
@@ -225,7 +281,8 @@ pub const Drafts = struct {
     pub fn adopt(self: *Drafts, session: c.JSValue) !void {
         if (self.adopted) return;
         const values = try cache(self.engine, session);
-        for (self.prepared_cache.items) |prepared| {
+        while (self.prepared_cache.items.len > 0) {
+            const prepared = self.prepared_cache.orderedRemove(0);
             var replaced = false;
             for (values.items.items) |*item| if (json.equal(item.address.value, prepared.address.value)) {
                 item.address.deinit();
@@ -236,8 +293,8 @@ pub const Drafts = struct {
                 break;
             };
             if (!replaced) values.items.appendAssumeCapacity(prepared);
+            try @import("native_durable_document_retention.zig").touch(values.owner, prepared.address.value, try json.asInteger(try json.required(prepared.record.value, "id")));
         }
-        self.prepared_cache.clearRetainingCapacity();
         for (self.items.items) |doc| if (doc.retired) {
             var index: usize = 0;
             while (index < values.items.items.len) {
@@ -254,6 +311,7 @@ pub const Drafts = struct {
                 };
                 if (replaced) break;
                 var removed = values.items.orderedRemove(index);
+                @import("native_durable_document_retention.zig").drop(values.owner, removed.address.value);
                 removed.address.deinit();
                 removed.record.deinit();
                 self.engine.freeValue(removed.value);
@@ -292,6 +350,7 @@ pub fn adoptNativePublication(owner: *durable.State, changes: json.Value) !void 
             const version = json.get(change, "version");
             if (value == .null or version == null or version.? == .null or try json.asInteger(version.?) != item.version) {
                 var retired = values.items.orderedRemove(index);
+                @import("native_durable_document_retention.zig").drop(owner, retired.address.value);
                 retired.address.deinit();
                 retired.record.deinit();
                 engine.freeValue(retired.value);
@@ -304,6 +363,7 @@ pub fn adoptNativePublication(owner: *durable.State, changes: json.Value) !void 
                 engine.freeValue(item.value);
                 item.value = adopted;
             }
+            try @import("native_durable_document_retention.zig").touch(owner, item.address.value, id);
             index += 1;
         }
     }
@@ -415,7 +475,7 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
     }
     var loaded_cached = false;
     if (!replacing and planned == null and (try durable.state(engine, owner.parent)).session_lease.?.adapter != null) {
-        if ((try cache(engine, owner.parent)).get(resolved.value.value, version)) |loaded| {
+        if (try (try cache(engine, owner.parent)).get(resolved.value.value, version)) |loaded| {
             record.value = try json.clone(a, loaded.record.value);
             stored_version = loaded.stored_version orelse version;
             deltas_since_base = loaded.deltas_since_base;
@@ -440,7 +500,7 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
             defer materialized.deinit();
             baseline.value = try json.clone(baseline.arena.allocator(), materialized.value);
             const cached = try cache(engine, owner.parent);
-            if (cached.get(resolved.value.value, version)) |cached_value| {
+            if (try cached.get(resolved.value.value, version)) |cached_value| {
                 var existing = try durable.owned(engine, cached_value.value);
                 defer existing.deinit();
                 baseline.value = try json.clone(baseline.arena.allocator(), existing.value);
@@ -633,6 +693,7 @@ pub fn unload(engine: *Engine, session: c.JSValue) !c.JSValue {
 fn unloadQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const owner = durable.state(engine, data[0]) catch |err| return durable.reject(engine, err);
+    @import("native_durable_document_retention.zig").clearIdle(owner);
     if (owner.document_cache) |values| {
         owner.document_cache = null;
         values.deinit(engine.runtime);
@@ -669,7 +730,7 @@ pub fn snapshot(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !c
     defer resolved.value.deinit();
     const version_value = try sdk.get(engine, definition_value, "version");
     defer engine.freeValue(version_value);
-    if ((try cache(engine, session)).get(resolved.value.value, try durable.number(engine, version_value))) |value| {
+    if (try (try cache(engine, session)).get(resolved.value.value, try durable.number(engine, version_value))) |value| {
         try checkSemantics(engine, definition_value, value.record.value);
         return sdk.promise(engine, value.value);
     }
@@ -748,7 +809,7 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
     const version_value = try sdk.get(engine, definition_value, "version");
     defer engine.freeValue(version_value);
     const version = try durable.number(engine, version_value);
-    if (values.get(resolved.value.value, version)) |value| {
+    if (try values.get(resolved.value.value, version)) |value| {
         try checkSemantics(engine, definition_value, value.record.value);
         return sdk.promise(engine, value.value);
     }
@@ -761,12 +822,12 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
     const value = try durable.jsValue(engine, materialized.value);
     defer engine.freeValue(value);
     try values.put(resolved.value.value, found.value, value, version);
-    const adopted = values.get(resolved.value.value, version).?;
+    const adopted = values.peek(resolved.value.value, version).?;
     adopted.stored_version = try json.asInteger(try json.required(contents.value, "version"));
     adopted.deltas_since_base = try json.asInteger(try json.required(contents.value, "deltasSinceBase"));
     return sdk.promise(engine, value);
 }
-pub const Observation = struct { value: c.JSValue, record: json.Owned, version: u64, context: c.JSValue };
+pub const Observation = struct { value: c.JSValue, record: json.Owned, version: u64, context: c.JSValue, cached: bool = false };
 pub fn observe(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !?Observation {
     return observeDirect(engine, session, args, true);
 }
@@ -800,11 +861,11 @@ fn observeDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue, g
     const version_value = try sdk.get(engine, definition_value, "version");
     defer engine.freeValue(version_value);
     const version = try durable.number(engine, version_value);
-    const item = (try cache(engine, session)).get(resolved.value.value, version).?;
+    const item = (try cache(engine, session)).peek(resolved.value.value, version).?;
     var record = try json.Owned.empty(engine.gpa);
     errdefer record.deinit();
     record.value = try json.clone(record.arena.allocator(), item.record.value);
-    return .{ .value = value, .record = record, .version = version, .context = c.JS_DupValue(engine.context, context) };
+    return .{ .value = value, .record = record, .version = version, .context = c.JS_DupValue(engine.context, context), .cached = true };
 }
 fn checkSemantics(engine: *Engine, definition_value: c.JSValue, record: json.Value) !void {
     const scope = try field(engine, definition_value, "scope");
