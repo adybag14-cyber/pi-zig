@@ -388,6 +388,13 @@ pub const Manager = struct {
         const index = if (self.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
         return index.idle(self.engine.gpa, conversation);
     }
+    fn syncPublishedIndex(self: *Manager) void {
+        self.mutex.lockUncancelable(self.lease.value.io);
+        defer self.mutex.unlock(self.lease.value.io);
+        // A load-only snapshot may be admitted without executing any guest
+        // callbacks. Queued publications still keep their own ordering fence.
+        if (self.events.items.len == 0) self.adoptIndex(&self.pending_index);
+    }
     fn publicationPending(self: *Manager) bool {
         self.mutex.lockUncancelable(self.lease.value.io);
         defer self.mutex.unlock(self.lease.value.io);
@@ -2313,6 +2320,7 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
 /// counts historical Storage rows or invents values for an absent scheduler.
 pub fn indexSizes(engine: *Engine, session: c.JSValue) !c.JSValue {
     const manager = try getManager(engine, session);
+    manager.syncPublishedIndex();
     const index = if (manager.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
     const sizes = index.sizes();
     const result = try sdk.object(engine);
@@ -3590,4 +3598,30 @@ fn definitionAllocationExercise(gpa: std.mem.Allocator) !void {
 }
 test "native durable VM task definitions scheduler subscriptions and Session leases roll back every GPA failure" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, definitionAllocationExercise, .{});
+}
+
+test "native durable VM actual ea inflight index follows real Storage gate and serialized read completion" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-inflight-index-program.txt"), "actual-ea-inflight-index") catch |err| {
+        diagnoseSourceFailure(engine, "inflight-index", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "inflightIndexTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-inflight-index.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea inflight index trace: {s}\n", .{encoded});
+        return error.SourceInflightIndexMismatch;
+    }
 }

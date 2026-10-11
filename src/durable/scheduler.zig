@@ -425,6 +425,7 @@ pub const Scheduler = struct {
                 var fields = self.ownership_index.link(at.id);
                 if (fields != null and !self.ownership_index.unloaded.contains(at.id)) break;
                 if (fields == null) {
+                    try self.publishLoadProgress();
                     var fetched = (try self.session.storage.readTableRecord(self.gpa, .task, at.id)) orelse return;
                     defer fetched.deinit();
                     fields = try recordLink(fetched.value);
@@ -438,6 +439,7 @@ pub const Scheduler = struct {
             } else {
                 var edge = self.ownership_index.edge(at.id);
                 if (edge == .unknown) {
+                    try self.publishLoadProgress();
                     var fetched = try self.session.storage.readTableRecord(self.gpa, .conversation, at.id);
                     defer if (fetched) |*record| record.deinit();
                     const owner = if (fetched) |record| if (json.get(record.value, "owner")) |fields| try model.number(fields, "taskId") else null else null;
@@ -454,6 +456,13 @@ pub const Scheduler = struct {
         }
         try self.ownership_index.markChainLoaded(passed.items);
         if (passed.items.len != 0) self.index_dirty = true;
+        try self.publishLoadProgress();
+    }
+    /// Source exposes its real structures between guest Storage awaits. Copy
+    /// only at those yield boundaries and after a completed chain, never in
+    /// the middle of a synchronous mutation sequence and never sweep early.
+    fn publishLoadProgress(self: *Scheduler) !void {
+        if (self.index_dirty) if (self.options.index_changed) |changed| try changed(self.options.callback_context, null, &self.ownership_index);
     }
     fn loadScopes(self: *Scheduler) !void {
         const unloaded = try self.gpa.dupe(u64, self.ownership_index.unloaded.keys());

@@ -624,6 +624,13 @@ fn queuedRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, 
         return reject(engine, err);
     }) orelse return @import("native_durable_storage.zig").deferRead(engine, data[0..5]) catch |err| reject(engine, err);
     completed.deinit();
+    // The serialized read may have followed native ownership maintenance.
+    // Admit its completed owned snapshots before the public read Promise can
+    // resume guest code, just as the commit path admits publications.
+    if (native.after_commit) |flush| flush(native.foreign_publication_context) catch |err| {
+        engine.freeValue(call.returned);
+        return reject(engine, err);
+    };
     return call.returned;
 }
 pub fn retryQueuedRead(engine: *Engine, data: []const c.JSValue) c.JSValue {
