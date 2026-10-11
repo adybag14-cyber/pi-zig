@@ -141,6 +141,15 @@ pub const Parent = struct {
         try out.writer.print(",\"columns\":{d},\"rows\":{d}}}", .{ columns, rows });
         try send(context, out.written());
     }
+    pub fn raw(self: *Parent, lease: protocol.Lease, enabled: bool, context: ?*anyopaque, send: SendFn) !void {
+        if (!self.live(lease)) return error.NativeProcessFrontendClosed;
+        var out: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer out.deinit();
+        try out.writer.writeAll("{\"kind\":\"native_process_raw\",");
+        try protocol.writeLease(&out.writer, lease);
+        try out.writer.print(",\"enabled\":{s}}}", .{if (enabled) "true" else "false"});
+        try send(context, out.written());
+    }
 };
 
 test "process stream parent preserves binary requests and rejects retired generations with joined detach" {

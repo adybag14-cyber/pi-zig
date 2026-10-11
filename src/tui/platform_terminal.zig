@@ -3,6 +3,19 @@ const std = @import("std");
 const builtin = @import("builtin");
 const Io = std.Io;
 pub const Ready = enum { input, timeout, dead };
+/// The process owner installs one bridge before any Main readers or native
+/// workers start. Physical producer paths explicitly bypass these callbacks.
+pub const InputBridge = struct {
+    context: ?*anyopaque,
+    buffered_fn: *const fn (?*anyopaque) bool,
+    poll_fn: *const fn (?*anyopaque) anyerror!?u8,
+    wait_fn: *const fn (?*anyopaque, u32) anyerror!Ready,
+    raw_fn: *const fn (?*anyopaque, bool) anyerror!void,
+};
+pub var input_bridge: ?InputBridge = null;
+pub fn notifyRaw(enabled: bool) !void {
+    if (input_bridge) |bridge| try bridge.raw_fn(bridge.context, enabled);
+}
 pub const win = struct {
     const w = std.os.windows;
     pub const Coord = extern struct { x: i16, y: i16 };
@@ -63,18 +76,24 @@ var console_input: ConsoleInputState = .{};
 
 pub fn inputBuffered(reader: *Io.File.Reader) bool {
     if (reader.interface.seek < reader.interface.end) return true;
+    if (reader.file.handle == Io.File.stdin().handle) if (input_bridge) |bridge| return bridge.buffered_fn(bridge.context);
     if (comptime builtin.os.tag == .windows) return console_input.index < console_input.length;
     return false;
 }
 
 pub fn pollByte(reader: *Io.File.Reader) !?u8 {
     if (reader.interface.seek < reader.interface.end) return try reader.interface.takeByte();
+    if (reader.file.handle == Io.File.stdin().handle) if (input_bridge) |bridge| return bridge.poll_fn(bridge.context);
+    return pollBytePhysical(reader);
+}
+pub fn pollBytePhysical(reader: *Io.File.Reader) !?u8 {
+    if (reader.interface.seek < reader.interface.end) return try reader.interface.takeByte();
     if (comptime builtin.os.tag == .windows) {
         const handle = reader.file.handle;
         var mode: u32 = 0;
         if (handle == Io.File.stdin().handle and win.GetConsoleMode(handle, &mode).toBool() and mode & 2 == 0) {
             if (console_input.take()) |byte| return byte;
-            switch (try waitInput(0)) {
+            switch (try waitInputPhysical(0)) {
                 .timeout => return null,
                 .dead => return error.DeadTerminal,
                 .input => {},
@@ -117,6 +136,10 @@ test "native console decoder preserves split surrogate pairs across stdin owner 
     try std.testing.expectEqualStrings("Ω🦊x�", bytes.items);
 }
 pub fn waitInput(timeout_ms: u32) !Ready {
+    if (input_bridge) |bridge| return bridge.wait_fn(bridge.context, timeout_ms);
+    return waitInputPhysical(timeout_ms);
+}
+pub fn waitInputPhysical(timeout_ms: u32) !Ready {
     if (comptime builtin.os.tag == .windows) {
         // Console handles also signal for resize, mouse, modifier and key-up
         // records. ReadFile consumes translated VT characters and would block

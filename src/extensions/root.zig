@@ -5,6 +5,7 @@ pub const host = @import("host.zig");
 pub const integration = @import("integration.zig");
 pub const js_runtime = @import("js_runtime.zig");
 pub const native_worker = @import("native_worker.zig");
+pub const native_physical_stdio = @import("native_physical_stdio.zig");
 pub const ui = @import("ui.zig");
 pub const terminal_theme_producer = @import("terminal_theme_producer.zig");
 pub const main_theme_producer = @import("main_theme_producer.zig");

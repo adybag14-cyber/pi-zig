@@ -9,15 +9,15 @@ const timers = @import("timers.zig");
 const platform = @import("../tui/platform_terminal.zig");
 const Io = std.Io;
 
-const Size = struct { columns: ?u32 = null, rows: ?u32 = null };
-const Console = struct {
+pub const Size = struct { columns: ?u32 = null, rows: ?u32 = null };
+pub const Console = struct {
     const Input = if (builtin.os.tag == .windows) struct { mode: u32, cp: u32 } else std.posix.termios;
     input: ?Input = null,
     output_mode: ?u32 = null,
     error_mode: ?u32 = null,
     output_cp: ?u32 = null,
     raw: bool = false,
-    fn init(self: *Console, input_tty: bool, output_tty: bool, error_tty: bool) !void {
+    pub fn init(self: *Console, input_tty: bool, output_tty: bool, error_tty: bool) !void {
         errdefer self.close();
         if (comptime builtin.os.tag == .windows) {
             if (input_tty) {
@@ -55,7 +55,7 @@ const Console = struct {
             }
         }
     }
-    fn setRaw(self: *Console, raw: bool) !void {
+    pub fn setRaw(self: *Console, raw: bool) !void {
         const original = self.input orelse return error.NotATerminal;
         if (raw == self.raw) return;
         if (comptime builtin.os.tag == .windows) {
@@ -94,7 +94,7 @@ const Console = struct {
         } else return error.UnsupportedTerminal;
         self.raw = raw;
     }
-    fn close(self: *Console) void {
+    pub fn close(self: *Console) void {
         if (self.input != null) self.setRaw(false) catch {};
         if (comptime builtin.os.tag == .windows) {
             if (self.input) |original| {
@@ -109,7 +109,7 @@ const Console = struct {
     }
 };
 
-fn dimensions(output_tty: bool) Size {
+pub fn dimensions(output_tty: bool) Size {
     if (!output_tty) return .{};
     if (comptime builtin.os.tag == .windows) {
         var info: platform.win.BufferInfo = undefined;

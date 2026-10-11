@@ -170,6 +170,8 @@ pub const RawMode = struct {
             if (!platform.win.SetConsoleCP(65001).toBool()) return error.TerminalCodePageFailed;
             errdefer _ = platform.win.SetConsoleCP(original.input_cp);
             if (!platform.win.SetConsoleOutputCP(65001).toBool()) return error.TerminalCodePageFailed;
+            errdefer _ = platform.win.SetConsoleOutputCP(original.output_cp);
+            try platform.notifyRaw(true);
             return .{ .original = original };
         }
         if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
@@ -186,6 +188,8 @@ pub const RawMode = struct {
         raw.cc[@intFromEnum(std.posix.V.MIN)] = 1;
         raw.cc[@intFromEnum(std.posix.V.TIME)] = 0;
         try setTerminalAttributes(fd, raw);
+        errdefer setTerminalAttributes(fd, original) catch {};
+        try platform.notifyRaw(true);
         return .{ .original = original };
     }
 
@@ -199,6 +203,9 @@ pub const RawMode = struct {
             _ = platform.win.SetConsoleCP(self.original.input_cp);
             _ = platform.win.SetConsoleOutputCP(self.original.output_cp);
         }
+        // Publish the restored physical state to every native process stream.
+        const restored_raw = if (comptime builtin.os.tag == .windows) self.original.input & 2 == 0 else !self.original.lflag.ICANON;
+        platform.notifyRaw(restored_raw) catch {};
     }
 };
 

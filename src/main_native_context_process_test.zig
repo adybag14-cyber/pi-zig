@@ -1,5 +1,62 @@
 //! The CLI must admit its validator before extension module/factory evaluation.
 const std = @import("std");
+
+test "native main physical stdio replays EOF and serializes actual framed extension terminal writes" {
+    const allocator = std.testing.allocator;
+    const io = std.testing.io;
+    var inherited = try std.testing.environ.createMap(allocator);
+    defer inherited.deinit();
+    const binary = inherited.get("PI_MAIN_CONTEXT_BINARY") orelse return error.MissingMainContextBinary;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.createDir(io, "agent", .default_dir);
+    try scratch.dir.createDir(io, "home", .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"stdio\",\"name\":\"stdio\",\"arguments\":\"{}\"}]},{\"content\":\"done\"}]" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data =
+        \\import {ProcessTerminal} from 'pi-tui';
+        \\export default pi=>{
+        \\ const terminal=new ProcessTerminal(),keys=[];
+        \\ let resolveEnd;const ended=new Promise(resolve=>resolveEnd=resolve);
+        \\ process.stdin.once('end',()=>resolveEnd());
+        \\ terminal.start(data=>keys.push(data),()=>{});
+        \\ process.stdout.write('MAIN_PHYSICAL_FACTORY\n');
+        \\ pi.registerTool({name:'stdio',description:'Inspect actual Main process streams',parameters:{type:'object',properties:{}},async execute(){
+        \\  await ended;if(keys.length!==0)throw Error('Historical input replayed to replacement');
+        \\  if(process.stdin.isTTY||process.stdout.isTTY||process.stderr.isTTY)throw Error('Pipe advertised as terminal');
+        \\  terminal.stop();process.stdout.write('MAIN_PHYSICAL_WORKER\n');
+        \\  return{content:[{type:'text',text:'MAIN_PHYSICAL_EOF_OK'}]};
+        \\ }});
+        \\};
+    });
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(io, &buffer);
+    const directory = buffer[0..length];
+    var environment: std.process.Environ.Map = .init(allocator);
+    defer environment.deinit();
+    try environment.put("PATH", std.fs.path.dirname(binary).?);
+    try environment.put("SystemRoot", "C:/Windows");
+    try environment.put("WINDIR", "C:/Windows");
+    try environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try environment.put("PI_TELEMETRY", "0");
+    try environment.put("PI_EXTENSION_BACKEND", "native");
+    const home = try std.fs.path.join(allocator, &.{ directory, "home" });
+    defer allocator.free(home);
+    const agent = try std.fs.path.join(allocator, &.{ directory, "agent" });
+    defer allocator.free(agent);
+    try environment.put("HOME", home);
+    try environment.put("USERPROFILE", home);
+    try environment.put("PI_AGENT_DIR", agent);
+    const result = try std.process.run(allocator, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--extension", "extension.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "stdio" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    defer allocator.free(result.stdout);
+    defer allocator.free(result.stderr);
+    if (result.term != .exited or result.term.exited != 0 or std.mem.indexOf(u8, result.stdout, "MAIN_PHYSICAL_EOF_OK") == null) std.debug.print("Main physical stdio stdout:\n{s}\nstderr:\n{s}\n", .{ result.stdout, result.stderr });
+    try std.testing.expect(result.term == .exited and result.term.exited == 0);
+    const factory = std.mem.indexOf(u8, result.stdout, "MAIN_PHYSICAL_FACTORY\n") orelse return error.MissingPhysicalFactoryWrite;
+    const worker = std.mem.indexOf(u8, result.stdout, "MAIN_PHYSICAL_WORKER\n") orelse return error.MissingPhysicalWorkerWrite;
+    const end = std.mem.indexOf(u8, result.stdout, "MAIN_PHYSICAL_EOF_OK") orelse return error.MissingPhysicalEnd;
+    try std.testing.expect(factory < worker and worker < end);
+}
+
 test "native main context actual CLI applies strict theme admission before extension factory without Node" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

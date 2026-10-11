@@ -1041,7 +1041,7 @@ pub const Runtime = struct {
             return err;
         }
         if (runtime.process_io.lease) |lease| {
-            runtime.process_io.attach(.{ .context = runtime, .lease = lease, .input_fn = processInput, .resize_fn = processResize, .end_fn = processEnd }) catch |err| {
+            runtime.process_io.attach(.{ .context = runtime, .lease = lease, .input_fn = processInput, .resize_fn = processResize, .end_fn = processEnd, .raw_fn = processRaw }) catch |err| {
                 runtime.deinit();
                 return err;
             };
@@ -3025,6 +3025,10 @@ pub const Runtime = struct {
     fn processEnd(context: ?*anyopaque, lease: process_protocol.Lease) !void {
         const self: *Runtime = @ptrCast(@alignCast(context.?));
         try self.process_io.end(lease, self, processSend);
+    }
+    fn processRaw(context: ?*anyopaque, lease: process_protocol.Lease, enabled: bool) !void {
+        const self: *Runtime = @ptrCast(@alignCast(context.?));
+        try self.process_io.raw(lease, enabled, self, processSend);
     }
     fn dispatchProcessRecord(self: *Runtime, bytes: []const u8) !bool {
         return self.process_io.dispatch(bytes, self, processSend);

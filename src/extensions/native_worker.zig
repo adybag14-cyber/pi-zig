@@ -28,7 +28,7 @@ const process_transport = @import("native_process_transport.zig");
 const process_streams = @import("native_process_streams.zig");
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, native_process_response, native_process_input, native_process_resize, native_process_end, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
+    const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, native_process_response, native_process_input, native_process_resize, native_process_end, native_process_raw, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -105,6 +105,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "native_process_input")) return .native_process_input;
         if (std.mem.eql(u8, kind.string, "native_process_resize")) return .native_process_resize;
         if (std.mem.eql(u8, kind.string, "native_process_end")) return .native_process_end;
+        if (std.mem.eql(u8, kind.string, "native_process_raw")) return .native_process_raw;
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
@@ -284,7 +285,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            const process_io = record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end;
+            const process_io = record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end or record.kind == .native_process_raw;
             if (process_io and c.JS_IsJobPending(self.engine.runtime)) continue;
             if (record.kind == .abort or record.kind == .ui_response or record.kind == .native_ui_service_response or record.kind == .native_ui_service_epoch or record.kind == .native_process_response or process_io or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
@@ -318,7 +319,7 @@ const Transport = struct {
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
             if (record.kind == .native_process_response) continue;
-            if (record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end) {
+            if (record.kind == .native_process_input or record.kind == .native_process_resize or record.kind == .native_process_end or record.kind == .native_process_raw) {
                 try self.processData(request, record.kind);
                 // One physical IO turn, followed by its complete microtask
                 // checkpoint before another data/EOF record can be admitted.
@@ -469,7 +470,7 @@ const Transport = struct {
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
             .native_process_response => {},
-            .native_process_input, .native_process_resize, .native_process_end => try self.processData(request, kind),
+            .native_process_input, .native_process_resize, .native_process_end, .native_process_raw => try self.processData(request, kind),
             .native_ui_service_epoch => try self.uiServiceEpoch(request),
             .native_ui_service_response => if (request == .object) try self.group.uiServiceResponse(request.object),
             .context_invalidate => try self.contextInvalidate(request),
@@ -489,7 +490,11 @@ const Transport = struct {
         if (!process_streams.ownsLease(self.engine, worker.stream_lease orelse return)) return;
         const neutral = @import("native_async_scope.zig").enter(self.engine, c.pi_js_undefined());
         defer neutral.restore();
-        if (kind == .native_process_end) {
+        if (kind == .native_process_raw) {
+            const enabled = request.object.get("enabled") orelse return;
+            if (enabled != .bool) return;
+            try process_streams.hydrateInput(self.engine, enabled.bool, true);
+        } else if (kind == .native_process_end) {
             try process_streams.deliverEnd(self.engine);
         } else if (kind == .native_process_resize) {
             const columns = request.object.get("columns") orelse return;

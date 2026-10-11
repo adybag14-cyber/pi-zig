@@ -3319,7 +3319,7 @@ test "production extension backend selector defaults legacy and rejects unknown 
 fn runMain(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const gpa = init.gpa;
-    const io = init.io;
+    var io = init.io;
     const environ: *const std.process.Environ.Map = init.environ_map;
     const extension_backend = parseExtensionBackend(environ.get("PI_EXTENSION_BACKEND")) catch |err| {
         try Io.File.stderr().writeStreamingAll(io, "PI_EXTENSION_BACKEND must be native or legacy.\n");
@@ -3333,6 +3333,16 @@ fn runMain(init: std.process.Init) !void {
     if (raw_args.len == 2 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-group-worker")) {
         return extensions.native_worker.runGroupWithEnvironment(gpa, io, environ, raw_args);
     }
+    // Internal workers keep their private framing descriptors. Only the
+    // process frontend owns and fans out the physical stdin/stdout handles.
+    var physical_stdio_storage: extensions.native_physical_stdio.Hub = undefined;
+    var physical_stdio: ?*extensions.native_physical_stdio.Hub = null;
+    if (extension_backend == .native) {
+        try physical_stdio_storage.init(gpa, io);
+        physical_stdio = &physical_stdio_storage;
+        io = physical_stdio_storage.io();
+    }
+    defer if (physical_stdio) |hub| hub.deinit();
     var cli = coding.args.parseArgs(arena, raw_args) catch |err| {
         const message = switch (err) {
             error.MissingArg => "error: an option is missing its required value",
@@ -3993,7 +4003,7 @@ fn runMain(init: std.process.Init) !void {
         .js_runtime_program = environ.get("PI_JS_RUNTIME") orelse "node",
         .script_ui_bridge = extension_ui.bridge(),
         .script_backend = extension_backend,
-        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
+        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ, .process_bridge = if (physical_stdio) |hub| hub.bridge() else null },
         .native_catalog_source = main_catalog_source.source(),
         .settings_snapshot_json = try gpa.dupe(u8, settings.source_json orelse "{}"),
     };

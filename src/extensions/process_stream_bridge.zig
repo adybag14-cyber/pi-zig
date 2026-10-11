@@ -7,6 +7,7 @@ pub const Sink = struct {
     input_fn: *const fn (?*anyopaque, protocol.Lease, []const u8) anyerror!void,
     resize_fn: *const fn (?*anyopaque, protocol.Lease, u32, u32) anyerror!void,
     end_fn: *const fn (?*anyopaque, protocol.Lease) anyerror!void,
+    raw_fn: ?*const fn (?*anyopaque, protocol.Lease, bool) anyerror!void = null,
     pub fn matches(self: Sink, other: Sink) bool {
         return self.context == other.context and self.lease.matches(other.lease);
     }
@@ -18,6 +19,9 @@ pub const Sink = struct {
     }
     pub fn end(self: Sink) !void {
         return self.end_fn(self.context, self.lease);
+    }
+    pub fn raw(self: Sink, enabled: bool) !void {
+        if (self.raw_fn) |notify| try notify(self.context, self.lease, enabled);
     }
 };
 pub const Bridge = struct {
