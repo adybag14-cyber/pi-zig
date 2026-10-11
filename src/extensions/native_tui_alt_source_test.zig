@@ -119,7 +119,7 @@ test "Sourceea native TuiAltScreen original Node global clock ordinary accessors
     engine.freeValue(missing);
 }
 test "Sourceea native TuiAltScreen constructor layout renderer selection and disposal release every induced allocation failure" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{});
+    try @import("../test_support/tui_allocation_shards.zig").checkNamed("tui-alt", allocationProbe);
 }
 test "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
