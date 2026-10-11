@@ -31,7 +31,7 @@ pub fn forbiddenImplementation(path: []const u8) bool {
 fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bool {
     var failures: usize = 0;
     var files: usize = 0;
-    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser", "vendor/sqlite", "vendor/libfyaml" }) |root| {
+    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser", "vendor/sqlite", "vendor/libfyaml", "vendor/icu78" }) |root| {
         const manifest_path = try std.fs.path.join(gpa, &.{ root, "UPSTREAM.json" });
         defer gpa.free(manifest_path);
         const bytes = try std.Io.Dir.cwd().readFileAlloc(io, manifest_path, gpa, .limited(1024 * 1024));
@@ -51,6 +51,26 @@ fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bo
             if (kind != .string or !std.mem.eql(u8, kind.string, "Fossil SHA3-256") or commit.string.len != 64) return error.InvalidVendorManifest;
         } else if (commit.string.len != 40) return error.InvalidVendorManifest;
         for (commit.string) |byte| if (!std.ascii.isHex(byte)) return error.InvalidVendorManifest;
+        if (std.mem.eql(u8, root, "vendor/icu78")) {
+            // The Node data is compiled into the native adapter, outside the
+            // vendor directory. Verify that input as well as the C API source.
+            const pinned = parsed.value.object.get("data") orelse return error.InvalidVendorManifest;
+            if (pinned != .object) return error.InvalidVendorManifest;
+            const path = pinned.object.get("path") orelse return error.InvalidVendorManifest;
+            const hash = pinned.object.get("sha256") orelse return error.InvalidVendorManifest;
+            if (path != .string or !std.mem.eql(u8, path.string, "src/extensions/icu/node-data/icudt78l.dat") or hash != .string or hash.string.len != 64) return error.InvalidVendorManifest;
+            for (hash.string) |byte| if (!std.ascii.isHex(byte)) return error.InvalidVendorManifest;
+            const data = try std.Io.Dir.cwd().readFileAlloc(io, path.string, gpa, .limited(64 * 1024 * 1024));
+            defer gpa.free(data);
+            var digest: [32]u8 = undefined;
+            std.crypto.hash.sha2.Sha256.hash(data, &digest, .{});
+            const actual = std.fmt.bytesToHex(digest, .lower);
+            files += 1;
+            if (!std.mem.eql(u8, &actual, hash.string)) {
+                failures += 1;
+                try writer.print("vendor data digest mismatch: {s}\n", .{path.string});
+            }
+        }
         const dir = try std.Io.Dir.cwd().openDir(io, root, .{ .iterate = true });
         defer dir.close(io);
         var walker = try dir.walk(gpa);
