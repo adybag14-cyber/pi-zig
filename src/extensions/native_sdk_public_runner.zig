@@ -118,6 +118,8 @@ pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
 }
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     return methodValue(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
 }
 fn assign(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
