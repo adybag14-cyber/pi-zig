@@ -8,7 +8,7 @@ const scans = @import("../durable/backend/source_scan.zig");
 const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
+pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null, on_report: ?c.JSValue = null };
 const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch, taskGraph, watchTaskGraph };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
@@ -18,6 +18,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_harness_class) orelse return));
     c.JS_FreeValueRT(runtime, self.session);
     c.JS_FreeValueRT(runtime, self.options);
+    if (self.on_report) |callback| c.JS_FreeValueRT(runtime, callback);
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -25,6 +26,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_harness_class) orelse return));
     c.JS_MarkValue(runtime, self.session, marker);
     c.JS_MarkValue(runtime, self.options, marker);
+    if (self.on_report) |callback| c.JS_MarkValue(runtime, callback, marker);
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     if (engine.native_durable_harness_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_harness_class);
@@ -58,8 +60,34 @@ fn queueOpen(engine: *Engine, result: c.JSValue, context: c.JSValue) !c.JSValue 
 }
 fn finishOpen(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    completeOpen(engine, data[0], data[1]) catch |err| return durable.rejectedPromise(engine, err);
+    completeOpen(engine, data[0], data[1]) catch |err| return failedOpen(engine, data[0], data[1], err);
     return c.JS_DupValue(engine.context, data[0]);
+}
+fn failedOpen(engine: *Engine, harness: c.JSValue, context: c.JSValue, err: anyerror) c.JSValue {
+    _ = durable.reject(engine, err);
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    return closeFailedOpen(engine, harness, context, reason) catch {
+        engine.freeValue(c.JS_GetException(engine.context));
+        return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+    };
+}
+fn closeFailedOpen(engine: *Engine, harness: c.JSValue, context: c.JSValue, reason: c.JSValue) !c.JSValue {
+    const cleanup = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
+    defer engine.freeValue(cleanup);
+    const closing = try sdk.invoke(engine, harness, "close", &.{cleanup});
+    defer engine.freeValue(closing);
+    var data = [_]c.JSValue{reason};
+    const rethrow = try engine.checked(c.JS_NewCFunctionData(engine.context, rethrowOpenFailure, 1, 0, data.len, &data));
+    defer engine.freeValue(rethrow);
+    return sdk.invoke(engine, closing, "then", &.{ rethrow, rethrow });
+}
+fn rethrowOpenFailure(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.JS_Throw(context, c.JS_DupValue(context, data[0]));
+}
+pub fn reportFailure(engine: *Engine, harness: c.JSValue, reason: c.JSValue) void {
+    const self = state(engine, harness) catch return;
+    if (self.on_report) |callback| if (!c.JS_IsUndefined(callback) and !c.JS_IsNull(callback)) durable.contained(engine, callback, &.{reason});
 }
 fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     try durable.checkCancellation(engine, argument(args, 2));
@@ -75,10 +103,14 @@ fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
         defer engine.freeValue(task);
         if (c.JS_IsUndefined(task)) return error.RegistryLacksBuiltinTasks;
     }
+    // Source captures the safe reporter in its Harness constructor, before open awaits.
+    const on_report = try sdk.get(engine, options, "onReport");
+    defer engine.freeValue(on_report);
     const session = try durable.sessionObject(engine, argument(args, 0));
     defer engine.freeValue(session);
     const result = try object(engine, session, options, null);
     errdefer engine.freeValue(result);
+    (try state(engine, result)).on_report = c.JS_DupValue(engine.context, on_report);
     const owner = try durable.state(engine, session);
     owner.creation_owner = c.JS_DupValue(engine.context, result);
     owner.creation_hook = created;

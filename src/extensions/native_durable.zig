@@ -665,6 +665,7 @@ fn closeFailure(self: *State, err: anyerror) c.JSValue {
 fn recordFailure(self: *State, reason: c.JSValue) void {
     if (self.failure_reason == null) {
         self.failure_reason = c.JS_DupValue(self.engine.context, reason);
+        if (self.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(self.engine, harness, reason);
         _ = self.session.?.fail(error.JavaScriptException);
     }
 }
@@ -674,6 +675,7 @@ pub fn captureStorageFailure(self: *State, receiver: c.JSValue, reason: c.JSValu
     if (self.failure_reason != null) return;
     const engine = self.engine;
     self.failure_reason = c.JS_DupValue(engine.context, reason);
+    if (self.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(engine, harness, reason);
     const closing = sessionDispatchScoped(self, receiver, .close, &.{c.pi_js_undefined()}, null) catch return;
     defer engine.freeValue(closing);
     const ignored = engine.checked(c.JS_NewCFunction(engine.context, ignore, "durable-storage-failed-close", 0)) catch return;
