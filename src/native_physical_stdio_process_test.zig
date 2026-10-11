@@ -58,17 +58,19 @@ fn physicalPipe(cancel: bool) !void {
     const arguments: []const []const u8 = if (cancel) &.{ binary, "cancel" } else &.{binary};
     var child = try std.process.spawn(io, .{ .argv = arguments, .environ_map = &environment, .stdin = .pipe, .stdout = .pipe, .stderr = .pipe, .create_no_window = true });
     var waited = false;
-    defer if (!waited) {
-        child.kill(io);
-        _ = child.wait(io) catch {};
-    };
+    defer if (!waited) child.kill(io);
     const input = child.stdin.?;
+    child.stdin = null;
     var input_open = true;
     defer if (input_open) input.close(io);
     const output = child.stdout.?;
+    child.stdout = null;
     defer output.close(io);
     const errors = child.stderr.?;
+    child.stderr = null;
     defer errors.close(io);
+    // These streams now belong to this scope. Child.wait/kill also clean up
+    // any attached streams, so retaining them there would close each twice.
     var stdout: Capture = .{ .file = output };
     defer stdout.bytes.deinit(allocator);
     var stderr: Capture = .{ .file = errors };
