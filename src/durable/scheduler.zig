@@ -38,6 +38,7 @@ pub const Options = struct {
     withdraw_inputs: ?*const fn (?*anyopaque, *Transaction, u64) anyerror!void = null,
     poll_reads: ?*const fn (?*anyopaque, *session_mod.Session) anyerror!void = null,
     index_changed: ?*const fn (?*anyopaque, ?u64, *const ownership.Index) anyerror!void = null,
+    after_recover: ?*const fn (?*anyopaque) anyerror!void = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -198,6 +199,7 @@ pub const Scheduler = struct {
     maintenance_subscription: ?u64 = null,
     fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
     index_dirty: bool = false,
+    cascade_pending: bool = true,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, session: *session_mod.Session, options: Options) !Scheduler {
         if (options.max_workers == 0 or options.max_workers > 64 or options.max_phase_steps == 0) return error.InvalidSchedulerBounds;
         return .{ .gpa = gpa, .io = io, .session = session, .options = options, .migration_failures = .init(gpa), .ownership_index = .init(gpa) };
@@ -285,6 +287,7 @@ pub const Scheduler = struct {
         }
         var result = try self.session.commit(recover, self, .{}, .{});
         result.deinit();
+        if (self.options.after_recover) |after| try after(self.options.callback_context);
         try self.reconcile();
     }
     pub fn removeDefinition(self: *Scheduler, name: []const u8) void {
@@ -326,6 +329,18 @@ pub const Scheduler = struct {
             if (!std.mem.eql(u8, try model.text(change, "type"), "task")) continue;
             try self.trackRecord(try model.field(change, "value"));
         }
+        for (event.changes.array.items) |change| {
+            const kind = try model.text(change, "type");
+            if (std.mem.eql(u8, kind, "submission")) {
+                if (queuedInput(try model.field(change, "value"))) self.cascade_pending = true;
+            } else if (std.mem.eql(u8, kind, "task")) {
+                const record = try model.field(change, "value");
+                if (try model.live(record) and !try model.flag(record, "background") and !try model.flag(record, "abortRequested")) {
+                    const parent = (try recordLink(record)).parent();
+                    if (!self.ownership_index.known(parent) or try self.ownership_index.cancellingOwner(parent) != null) self.cascade_pending = true;
+                }
+            }
+        }
         try self.ownership_index.sweep();
         if (self.options.index_changed) |changed| try changed(self.options.callback_context, event.seq, &self.ownership_index);
         self.index_dirty = false;
@@ -358,6 +373,9 @@ pub const Scheduler = struct {
         const id = try model.number(record, "id");
         const status = try model.status(record);
         const prior_record = self.live_records.get(id);
+        if ((try model.flag(record, "abortRequested") and (prior_record == null or !try model.flag(prior_record.?.value, "abortRequested"))) or
+            (prior_record != null and json.get(prior_record.?.value, "abortReason") != null and json.get(record, "abortReason") == null) or
+            (status == .completing and (prior_record == null or try model.status(prior_record.?.value) != .completing) and try model.cancellation(record))) self.cascade_pending = true;
         if (try model.failed(record) and (prior_record == null or !try model.failed(prior_record.?.value))) {
             if (self.ownership_index.waiters.get(id)) |waiters| for (waiters.keys()) |waiter| try self.fail_fast_checks.put(self.gpa, waiter, {});
         }
@@ -516,13 +534,24 @@ pub const Scheduler = struct {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         const view = try self.session.storage.snapshot(self.gpa);
         defer view.destroy(self.gpa);
+        const Recovery = struct { record: Value, status: model.Status, id: u64 };
+        var recovered: std.ArrayList(Recovery) = .empty;
+        defer recovered.deinit(self.gpa);
         var rows = view.rows.iterator();
-        while (rows.next()) |item| {
-            if (item.value_ptr.table != .task) continue;
-            const record = item.value_ptr.record;
+        while (rows.next()) |item| if (item.value_ptr.table == .task and try model.live(item.value_ptr.record)) try recovered.append(self.gpa, .{ .record = item.value_ptr.record, .status = try model.status(item.value_ptr.record), .id = item.key_ptr.* });
+        // Source scans each live status in this order and each page by id.
+        // Preserve that order in live/downward sets and original Storage reads.
+        std.mem.sort(Recovery, recovered.items, {}, struct {
+            fn less(_: void, left: Recovery, right: Recovery) bool {
+                if (left.status != right.status) return @intFromEnum(left.status) < @intFromEnum(right.status);
+                return left.id < right.id;
+            }
+        }.less);
+        for (recovered.items) |item| {
+            const record = item.record;
             if (try model.live(record)) try self.trackRecord(record);
             if (try model.live(record)) if (json.get(record, "abandonOnRestart")) |flag| {
-                if (flag == .bool and flag.bool) try self.abandoned.put(self.gpa, item.key_ptr.*, {});
+                if (flag == .bool and flag.bool) try self.abandoned.put(self.gpa, item.id, {});
             };
             if (try model.status(record) == .running) try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", try model.field(try model.field(record, "state"), "checkpoint"))));
         }
@@ -563,10 +592,10 @@ pub const Scheduler = struct {
         var cursor: ?json.Owned = null;
         defer if (cursor) |*value| value.deinit();
         while (true) {
-            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 100, if (cursor) |value| value.value else null);
+            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 256, if (cursor) |value| value.value else null);
             defer page.deinit();
             for ((try model.field(page.value, "items")).array.items) |submission| {
-                if (!std.mem.eql(u8, try model.text(submission, "type"), "input")) continue;
+                if (!queuedInput(submission)) continue;
                 try conversations.put(gpa, try model.number(submission, "conversationId"), {});
             }
             const next = json.get(page.value, "next") orelse break;
@@ -579,13 +608,20 @@ pub const Scheduler = struct {
         for (conversations.keys()) |id| try self.loadChain(ownership.Node.conversation(id));
         return gpa.dupe(u64, conversations.keys());
     }
+    fn queuedInput(record: Value) bool {
+        const status = json.get(record, "status") orelse return false;
+        const kind = json.get(record, "type") orelse return false;
+        return status == .string and std.mem.eql(u8, status.string, "queued") and kind == .string and std.mem.eql(u8, kind.string, "input");
+    }
     fn reconcileLine(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         if (self.closing.load(.acquire)) return .null;
+        const cascade = self.cascade_pending;
+        self.cascade_pending = false;
         try self.loadScopes();
         if (self.options.poll_reads) |poll| try poll(self.options.callback_context, tx.session);
         const a = tx.owned.arena.allocator();
-        const queued = if (self.options.withdraw_inputs != null and self.ownership_index.intents.count() != 0) try self.queuedInputs(a) else &.{};
+        const queued = if (cascade) try self.queuedInputs(a) else &.{};
         // Collect every mark before staging any, so an explicit request wins
         // over restart propagation in the same pass. Cascades stop at another
         // intent, whose own walk supplies the nearest inherited reason.

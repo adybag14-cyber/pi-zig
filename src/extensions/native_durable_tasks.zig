@@ -544,6 +544,13 @@ pub const Manager = struct {
             self.mutex.unlock(self.lease.value.io);
         }
     }
+    fn recoveredContext(raw: ?*anyopaque) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        // The initial scans and recovery reads use Harness.open's original
+        // Context. Subsequent scheduler work keeps its keyed values while
+        // deliberately detaching the caller's abort signal, as actual Source.
+        if (self.lease.adapter) |adapter| adapter.setBackgroundContext(self.context);
+    }
     fn drainReads(self: *Manager) !void {
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
@@ -1171,8 +1178,12 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
+    var context_admitted = false;
+    errdefer if (!context_admitted) engine.freeValue(scheduler_context);
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
+    context_admitted = true;
     errdefer {
         self.closed = true;
         self.clearLiveTaskRecords();
@@ -1211,7 +1222,6 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     }
     if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(false);
     try self.scheduler.open();
-    if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(true);
     const initial = try self.lease.value.storage.snapshot(engine.gpa);
     defer initial.destroy(engine.gpa);
     if (self.published_index) |*index| index.deinit();
