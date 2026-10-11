@@ -1994,6 +1994,31 @@ test "native durable VM actual cdaf public document retention settings observer 
         return error.SourceCdafPublicRetentionMismatch;
     }
 }
+test "native durable VM actual cdaf retention pins survive unload retirement and real timer line ownership" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-cdaf-retention-pins-program.txt"), "actual-cdaf-retention-pins") catch |err| {
+        diagnoseSourceFailure(engine, "cdaf-public-retention", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "retentionPinsTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-cdaf-retention-pins.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual cdaf retention pins trace: {s}\n", .{encoded});
+        return error.SourceCdafRetentionPinsMismatch;
+    }
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
