@@ -64,7 +64,7 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
-          $taskTargets = switch ('${{ matrix.shard.suite }}') {
+          [string[]]$taskTargets = @(switch ('${{ matrix.shard.suite }}') {
             'all' { 'test-native-tui-base-source'; 'test-native-tui-main-source'; 'test-native-tui-alt-prerequisites-source'; 'test-native-tui-alt-source'; 'test-native-tui-public-source' }
             'base' { 'test-native-tui-base-source' }
             'main' { 'test-native-tui-main-source' }
@@ -72,7 +72,7 @@ jobs:
             'alt' { 'test-native-tui-alt-source' }
             'public' { 'test-native-tui-public-source' }
             default { throw 'Unknown native UI suite partition' }
-          }
+          })
           [ordered]@{ targets = @($taskTargets); started_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-ui-source/target-start.json'
           & zig build @taskTargets -Doptimize=${{ matrix.shard.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-ui-source/tests.log'
           $taskExit = $LASTEXITCODE
