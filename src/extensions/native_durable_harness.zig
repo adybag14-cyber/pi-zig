@@ -86,6 +86,7 @@ fn prepareOpen(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     return result;
 }
 fn completeOpen(engine: *Engine, harness: c.JSValue, context: c.JSValue) !void {
+    try durable.checkCancellation(engine, context);
     const self = try state(engine, harness);
     const owner = try durable.state(engine, self.session);
     try @import("native_durable_tasks.zig").attach(engine, self.session, self.options, context);
