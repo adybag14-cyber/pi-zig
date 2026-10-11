@@ -57,7 +57,7 @@ fn builtinBindings(engine: *em.Engine, config: c.JSValue, symbol: c.JSValue) !c.
             defer engine.freeValue(value);
             try sdk.put(engine, value, "keybinding", c.JS_DupValue(engine.context, pair[0]));
             try sdk.put(engine, value, "restrictOverride", c.JS_DupValue(engine.context, restrict));
-            try js.setKey(engine, result, normalized, c.JS_DupValue(engine.context, value));
+            try js.setKey(engine, result, normalized, value);
         }
     }
     return result;
