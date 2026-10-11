@@ -1,0 +1,29 @@
+const interactiveCompositionCases=[];
+const term=()=>({columns:40,rows:10,write(){},hideCursor(){},showCursor(){}});
+for(const mode of[undefined,null,'regular','fullscreen','FULLSCREEN','other',false]){
+ const terminal=term(),screen=createInteractiveTui({terminal,tuiMode:mode,showHardwareCursor:false,logDirectory:'composition/logs'});
+ interactiveCompositionCases.push({name:'exact renderer selection '+String(mode),main:screen instanceof tui.TuiMainScreen,alt:screen instanceof tui.TuiAltScreen,mode:screen.mode,terminalSame:screen.terminal===terminal,hardware:screen.getShowHardwareCursor(),logDirectory:screen.logDirectory,copy:screen instanceof tui.TuiAltScreen?screen.getCopyOnSelect():undefined,wheel:screen instanceof tui.TuiAltScreen?screen.wheelScroll.lines:undefined});
+}
+for(const mode of['regular','fullscreen']){
+ const trace=[],values={terminal:term(),tuiMode:mode,showHardwareCursor:true,logDirectory:'ordered',onRightClickPaste(){},fullscreenCopyOnSelect:false,fullscreenWheelScrollLines:null},options=new Proxy(values,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}}),screen=createInteractiveTui(options);
+ interactiveCompositionCases.push({name:'composition ordered reads '+mode,trace,mode:screen.mode,copy:screen instanceof tui.TuiAltScreen?screen.copyOnSelect:undefined,wheel:screen instanceof tui.TuiAltScreen?screen.wheelScroll.lines:undefined,pasteSame:screen instanceof tui.TuiAltScreen?screen.onRightClickPaste===values.onRightClickPaste:undefined});
+}
+for(const mode of['regular','fullscreen']){
+ const screen=createInteractiveTui({tuiMode:mode,showHardwareCursor:false});interactiveCompositionCases.push({name:'genuine default ProcessTerminal '+mode,terminal:screen.terminal instanceof tui.ProcessTerminal,mode:screen.mode});
+}
+{
+ const first=new tui.TuiMainScreen(term()),second=new tui.TuiAltScreen(term()),trace=[];let current=first,gets=0;
+ first.probe=function(...args){trace.push(['first',this===first,args]);return 'first'};second.probe=function(...args){trace.push(['second',this===second,args]);return 'second'};
+ const ref=createInteractiveTuiReference(()=>{gets++;return current});const method=ref.probe;const before=method.call({wrong:true},1,'x');first.probe=function(){trace.push('same-instance-replacement');return 'replaced'};const cached=method();current=second;const after=method(2);second.probe=42;const sameInstanceCached=method(3);current={probe:7};let error;try{method()}catch(reason){error={type:reason.constructor.name,message:reason.message}};
+ interactiveCompositionCases.push({name:'retained genuine Proxy method follows renderer identity and caches within same renderer',before,cached,after,sameInstanceCached,error,trace,gets});
+}
+{
+ const trace=[],symbol=Symbol('state'),first=Object.create({inherited:true}),second=Object.create({next:true});let current=first;
+ Object.defineProperty(first,'value',{get(){trace.push(['get',this===first]);return 7},set(value){trace.push(['set',this===first,value])},configurable:true});first[symbol]=4;
+ const ref=createInteractiveTuiReference(()=>current);const value=ref.value;ref.value=9;const has='inherited'in ref,proto=Object.getPrototypeOf(ref)===Object.getPrototypeOf(first),sym=ref[symbol];current=second;ref.extra=11;
+ interactiveCompositionCases.push({name:'Proxy real receiver getters setters has prototype and symbols',value,has,proto,sym,extra:second.extra,ownKeys:Reflect.ownKeys(ref),next:'next'in ref,trace});
+}
+{
+ const reason={original:true},ref=createInteractiveTuiReference(()=>{throw reason});let same=false;try{ref.value}catch(error){same=error===reason}interactiveCompositionCases.push({name:'Proxy original getTui exception',same});
+}
+globalThis.tuiInteractiveCompositionCases=JSON.parse(JSON.stringify(interactiveCompositionCases));

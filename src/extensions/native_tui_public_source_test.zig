@@ -1,6 +1,49 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+test "Source6fb public TUI slice interactive reference genuine Proxy retained renderer transitions and original receivers" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"tui-interactive-reference-source"});
+    try @import("native_process_clock.zig").installDefaultGlobal(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "createInteractiveTuiReference", try @import("native_interactive_tui_reference.zig").create(engine));
+    const expected = @embedFile("fixtures/tui-interactive-composition-original-ea.json");
+    try js.define(engine, root, "interactiveCompositionSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "tui-interactive-composition-original-ea.json")));
+    const result = engine.evalModule("import * as tui from 'pi-tui';\n" ++ @embedFile("fixtures/tui-interactive-reference-original-ea.input.txt") ++
+        "\nif(tuiInteractiveCompositionCases.length!==3)throw Error('interactive reference Source case count');for(let index=0;index<tuiInteractiveCompositionCases.length;index++){const actual=tuiInteractiveCompositionCases[index],expected=interactiveCompositionSource.referenceCases[index];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index,actual,expected}));}", "tui-interactive-reference-source.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native interactive renderer reference Source mismatch: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
+test "Source6fb public TUI slice genuine shared Main Alt declarations defaults options and terminal environment selection" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"tui-public-screens-source"});
+    try @import("native_process_clock.zig").installDefaultGlobal(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const expected = @embedFile("fixtures/tui-public-screens-original-ea.json");
+    try js.define(engine, root, "publicScreenSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "tui-public-screens-original-ea.json")));
+    const result = engine.evalModule("import * as tui from 'pi-tui';\n" ++ @embedFile("fixtures/tui-public-screens-original-ea.input.txt") ++
+        "\nif(tuiPublicScreenCases.length!==39)throw Error('public screen Source case count');for(let index=0;index<tuiPublicScreenCases.length;index++){const actual=tuiPublicScreenCases[index],expected=publicScreenSource.cases[index];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index,actual,expected}));}", "tui-public-screens-source.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native public renderer declarations Source mismatch: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
 test "Source6fb public TUI slice ordinary public function construction and class constructor metadata" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
@@ -21,9 +64,9 @@ test "Source6fb public TUI slice ordinary public function construction and class
     const result = engine.evalModule(
         \\import*as tui from'pi-tui';
         \\for(const expected of ordinaryFunctionSource.functions){const f=tui[expected.exportName];if(expected.exportName==='getNativeClipboard'&&f===undefined)continue;if(typeof f!=='function')throw Error('ordinary function missing '+expected.exportName);const actual={exportName:expected.exportName,functionName:f.name,length:f.length,keys:Object.getOwnPropertyNames(f),prototypeDescriptor:Object.getOwnPropertyDescriptor(f,'prototype')?.writable,prototypeConstructorOwn:Object.hasOwn(f.prototype,'constructor'),prototypeConstructorSame:f.prototype.constructor===f};if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));const value=Reflect.construct(function(){},[],f);if(Object.getPrototypeOf(value)!==f.prototype||Object.prototype.toString.call(f)!=='[object Function]')throw Error('genuine ordinary function '+expected.exportName);}
-        \\for(const expected of classConstructorSource.classes){const f=tui[expected.exportName];if(['CombinedAutocompleteProvider','Marked','TuiAltScreen','TuiMainScreen'].includes(expected.exportName)&&f===undefined)continue;if(typeof f!=='function')throw Error('class missing '+expected.exportName);const d=Object.getOwnPropertyDescriptor(f.prototype,'constructor');const actual={exportName:expected.exportName,name:f.name,length:f.length,keys:Object.getOwnPropertyNames(f),prototype:Object.getOwnPropertyNames(f.prototype),prototypeWritable:Object.getOwnPropertyDescriptor(f,'prototype')?.writable,constructorDescriptor:{own:!!d,same:d?.value===f,writable:d?.writable,configurable:d?.configurable,enumerable:d?.enumerable}};if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));}
+        \\for(const expected of classConstructorSource.classes){const f=tui[expected.exportName];if(['CombinedAutocompleteProvider','Marked'].includes(expected.exportName)&&f===undefined)continue;if(typeof f!=='function')throw Error('class missing '+expected.exportName);const d=Object.getOwnPropertyDescriptor(f.prototype,'constructor');const actual={exportName:expected.exportName,name:f.name,length:f.length,keys:Object.getOwnPropertyNames(f),prototype:Object.getOwnPropertyNames(f.prototype),prototypeWritable:Object.getOwnPropertyDescriptor(f,'prototype')?.writable,constructorDescriptor:{own:!!d,same:d?.value===f,writable:d?.writable,configurable:d?.configurable,enumerable:d?.enumerable}};if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));}
         \\function callableDescriptors(object){return Reflect.ownKeys(object).map(key=>{const value=Object.getOwnPropertyDescriptor(object,key),entry={key:typeof key==='symbol'?'Symbol('+key.description+')':key,enumerable:value.enumerable,configurable:value.configurable};if('value'in value){entry.writable=value.writable;entry.type=typeof value.value;if(typeof value.value==='function'){entry.name=value.value.name;entry.length=value.value.length;entry.constructible=(()=>{try{Reflect.construct(function(){},[],value.value);return true;}catch{return false;}})();}}else for(const name of['get','set'])entry[name]=value[name]?{name:value[name].name,length:value[name].length}:null;return entry;});}
-        \\for(const expected of callableDescriptorSource.exports){const value=tui[expected.name];if(['CombinedAutocompleteProvider','Marked','TuiAltScreen','TuiMainScreen','getNativeClipboard'].includes(expected.name)&&value===undefined)continue;const actual={name:expected.name,functionName:value.name,length:value.length,own:callableDescriptors(value),prototype:value.prototype?callableDescriptors(value.prototype):null};if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));}
+        \\for(const expected of callableDescriptorSource.exports){const value=tui[expected.name];if(['CombinedAutocompleteProvider','Marked','getNativeClipboard'].includes(expected.name)&&value===undefined)continue;const actual={name:expected.name,functionName:value.name,length:value.length,own:callableDescriptors(value),prototype:value.prototype?callableDescriptors(value.prototype):null};if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));}
     ++ @embedFile("fixtures/tui-ordinary-construction-original-6fb.input.txt") ++
         \\if(JSON.stringify(ordinaryConstruction)!==JSON.stringify(ordinaryConstructionSource.cases))throw Error(JSON.stringify({actual:ordinaryConstruction,expected:ordinaryConstructionSource.cases}));
     , "tui-ordinary-construction.mjs") catch |err| {

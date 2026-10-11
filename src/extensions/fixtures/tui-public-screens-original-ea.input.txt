@@ -1,0 +1,32 @@
+const publicScreenCases=[];
+const terminal=()=>({columns:40,rows:12,write(){},hideCursor(){},showCursor(){}});
+const {TuiMainScreen:Main,TuiAltScreen:Alt,Container}=tui;
+const base=Object.getPrototypeOf(Main);
+publicScreenCases.push({name:'genuine shared declaration identity',sameBase:base===Object.getPrototypeOf(Alt),baseName:base.name,baseContainer:Object.getPrototypeOf(base)===Container,mainPrototypeBase:Object.getPrototypeOf(Main.prototype)===base.prototype,altPrototypeBase:Object.getPrototypeOf(Alt.prototype)===base.prototype,distinct:Main!==Alt,mainOwnMode:Object.hasOwn(Main.prototype,'mode'),altOwnMode:Object.hasOwn(Alt.prototype,'mode')});
+for(const [name,Class]of[['Main',Main],['Alt',Alt]])for(const value of[undefined,false,true,null,0,'visible']){
+ const term=terminal(),screen=new Class(term,value,'public/logs');
+ publicScreenCases.push({name:name+' explicit hardware '+String(value),className:screen.constructor.name,main:screen instanceof Main,alt:screen instanceof Alt,base:screen instanceof base,container:screen instanceof Container,terminalSame:screen.terminal===term,mode:screen.mode,hardware:screen.getShowHardwareCursor(),logDirectory:screen.logDirectory,viewport:tui.isViewportTUI(screen),copyOnSelect:name==='Alt'?screen.getCopyOnSelect():undefined});
+}
+for(const[name,options]of[['omitted',undefined],['empty',{}],['null defaults',{mouse:null,copyOnSelect:null,wheelScrollLines:null}],['disabled',{mouse:false,copyOnSelect:false,wheelScrollLines:3}],['auto',{wheelScrollLines:'auto'}],['truthy values',{mouse:'mouse',copyOnSelect:0,wheelScrollLines:1}]]){
+ const screen=new Alt(terminal(),undefined,undefined,options);
+ publicScreenCases.push({name:'Alt options '+name,mode:screen.mode,mouse:screen.mouseEnabled,copy:screen.getCopyOnSelect(),wheelKeys:Object.keys(screen.wheelScroll),wheelLines:screen.wheelScroll.lines,searchStyle:screen.searchMatchStyle('x'),currentStyle:screen.searchCurrentMatchStyle('x'),navigationNormal:screen.searchNavigationButtonStyle('x',false),navigationHover:screen.searchNavigationButtonStyle('x',true),inputs:screen.inputListeners.size});
+}
+{
+ const trace=[],values={wheelScrollLines:2,mouse:false,searchMatchStyle:text=>'m:'+text,searchCurrentMatchStyle:text=>'c:'+text,searchNavigationButtonStyle:(text,hovered)=>String(hovered)+text,scrollToEndIndicator:()=>'',openUrl(){},onRightClickPaste(){},copyOnSelect:false,copySelection(){}};
+ const options=new Proxy(values,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}}),screen=new Alt(terminal(),true,'logs',options);
+ publicScreenCases.push({name:'Alt options real ordered property reads and callback identity',trace,callbacks:Object.keys(values).filter(key=>typeof values[key]==='function').map(key=>[key,screen[key]===values[key]]),search:screen.searchMatchStyle('界'),current:screen.searchCurrentMatchStyle('😀'),navigation:screen.searchNavigationButtonStyle('x',true)});
+}
+for(const[name,Class]of[['Main',Main],['Alt',Alt]]){
+ class Derived extends Class{}const screen=new Derived(terminal());
+ let callTypeError=false;try{Class(terminal())}catch(error){callTypeError=error instanceof TypeError}
+ publicScreenCases.push({name:name+' subclass and class call',derived:screen instanceof Derived,parent:screen instanceof Class,base:screen instanceof base,container:screen instanceof Container,constructor:screen.constructor===Derived,callTypeError});
+}
+{
+ const options={get mouse(){throw options}},term=terminal();let same=false;try{new Alt(term,false,undefined,options)}catch(error){same=error===options}publicScreenCases.push({name:'Alt original option getter exception',same});
+}
+{
+ const keys=['TERM','TMUX','ZELLIJ','STY'],saved=Object.fromEntries(keys.map(key=>[key,Object.getOwnPropertyDescriptor(process.env,key)]));
+ const environments=[['clean',{}],['TERM tmux',{TERM:'TmUx-256color'}],['TERM screen',{TERM:'SCREEN-256color'}],['TERM xterm',{TERM:'xterm-256color'}],['TERM prefix is exact',{TERM:'not-tmux'}],['empty TMUX',{TMUX:''}],['ZELLIJ',{ZELLIJ:'1'}],['STY',{STY:'screen.session'}]];
+ const caps=tui.getCapabilities();try{tui.setCapabilities({images:null,trueColor:false,hyperlinks:false});for(const[name,environment]of environments)for(const mouse of[false,true]){for(const key of keys)delete process.env[key];Object.assign(process.env,environment);const output=[],term=terminal();term.write=data=>output.push(data);const screen=new Alt(term,false,undefined,{mouse});screen.beforeTerminalStart();publicScreenCases.push({name:'Alt actual terminal environment '+name,mouse,mode:screen.mode,output});screen.beforeTerminalStop({});screen.afterTerminalStop({preserveScreen:true});}}finally{for(const key of keys){if(saved[key])Object.defineProperty(process.env,key,saved[key]);else delete process.env[key]}tui.setCapabilities(caps);}
+}
+globalThis.tuiPublicScreenCases=JSON.parse(JSON.stringify(publicScreenCases));

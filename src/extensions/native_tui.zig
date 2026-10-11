@@ -520,7 +520,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_spacer_component.zig").install(engine, exports);
     try @import("native_markdown_component.zig").install(engine, exports);
     try @import("native_editor.zig").install(engine, exports);
-    try @import("native_tui_main_screen.zig").install(engine, exports);
+    try @import("native_tui_screens.zig").install(engine, exports);
     try @import("native_tui_function_metadata.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
