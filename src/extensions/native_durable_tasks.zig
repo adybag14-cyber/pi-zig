@@ -1917,6 +1917,31 @@ test "native durable VM actual ea partial owner Source25 loads terminal links wi
 test "native durable VM actual ea partial owner Source26 recovers opaque null checkpoint before loading owner scopes" {
     try partialOwnerReplay(@embedFile("../durable/fixtures/durable-ea-partial-owner-source26-program.txt"), @embedFile("../durable/fixtures/durable-ea-partial-owner-source26.json"), "Source26-opaque-checkpoint-recovery");
 }
+test "native durable VM actual ea open returns Promise before held owner scope Storage completion" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-open-scope-promise-program.txt"), "actual-ea-open-scope-promise") catch |err| {
+        diagnoseSourceFailure(engine, "open-scope-promise", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "openScopePromiseTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-open-scope-promise.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea open scope Promise trace: {s}\n", .{encoded});
+        return error.SourceOpenScopePromiseMismatch;
+    }
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
