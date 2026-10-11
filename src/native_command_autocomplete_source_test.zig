@@ -95,29 +95,16 @@ test "Command Source original33 pure completion quotes UTF16 cursors callback ch
         "\nif(tuiCombinedCompletionCases.length!==33)throw Error('completion Source count');for(let index=0;index<tuiCombinedCompletionCases.length;index++)if(JSON.stringify(tuiCombinedCompletionCases[index])!==JSON.stringify(pureOriginal.cases[index]))throw Error(JSON.stringify({index,actual:tuiCombinedCompletionCases[index],expected:pureOriginal.cases[index]}));", "command-original33-completion.mjs");
 }
 fn allocationProbe(gpa: std.mem.Allocator) !void {
-    // Keep the exhaustive std.testing probe intact. Paired records identify the
-    // exact allocation at which a hosted run stalls, including setup failures.
     var known_failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
     const known = known_failing.allocator();
     const failing: ?*std.testing.FailingAllocator = if (gpa.vtable.alloc == known.vtable.alloc and gpa.vtable.free == known.vtable.free)
         @ptrCast(@alignCast(gpa.ptr))
     else
         null;
-    const started = std.Io.Clock.awake.now(std.testing.io).nanoseconds;
-    if (failing) |allocator| std.debug.print("COMMAND_GPA_BEGIN fail_index={d} resize_fail_index={d}\n", .{ allocator.fail_index, allocator.resize_fail_index });
-    defer if (failing) |allocator| std.debug.print("COMMAND_GPA_END fail_index={d} alloc_index={d} induced={} elapsed_ns={d}\n", .{ allocator.fail_index, allocator.alloc_index, allocator.has_induced_failure, std.Io.Clock.awake.now(std.testing.io).nanoseconds - started });
-    const trace = failing != null and failing.?.fail_index == 716;
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE setup\n", .{});
     const engine = try setup(gpa);
-    defer {
-        if (trace) std.debug.print("COMMAND_GPA_716_PHASE deinit\n", .{});
-        engine.deinit();
-        if (trace) std.debug.print("COMMAND_GPA_716_PHASE deinit_done\n", .{});
-    }
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE expected\n", .{});
+    defer engine.deinit();
     try expected(engine, "commandOriginal", @embedFile("extensions/fixtures/main-command-autocomplete-source.json"));
     const generation = engine.native_allocation_generation;
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE eval\n", .{});
     const result = engine.evalModule("const provider=createCommandProvider(commandOriginal.rootCoreMetadataNames.map(name=>({name})));for(const query of [\"/hel\",\"/model\"]){const original=commandOriginal.cases.find(row=>row.lines?.[0]===query);const result=await provider.getSuggestions(original.lines,original.row,original.col,{force:false});if(JSON.stringify(result)!==JSON.stringify(original.value))throw Error(JSON.stringify({query,result,expected:original.value}));}const original=commandOriginal.cases.find(row=>row.args?.[4]===\"/he\"),value=provider.applyCompletion(...original.args);if(JSON.stringify(value)!==JSON.stringify(original.value))throw Error(JSON.stringify({value,expected:original.value}));", "command-allocation-source.mjs") catch |err| {
         const actual = engine.nativeAllocationError(err, generation);
         if (actual != error.OutOfMemory) {
@@ -130,14 +117,62 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
         }
         return actual;
     };
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE eval_done\n", .{});
     engine.freeValue(result);
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE gc\n", .{});
     c.JS_RunGC(engine.runtime);
-    if (trace) std.debug.print("COMMAND_GPA_716_PHASE gc_done\n", .{});
 }
-test "Command Source exhaustive host allocation cleanup in native command mapping await fuzzy and application" {
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{});
+fn allocationShard(comptime shard: usize) !void {
+    const shards = 8;
+    comptime std.debug.assert(shard < shards);
+    // Preserve std.testing.checkAllAllocationFailures' unlimited baseline,
+    // complete failure universe, swallowed-OOM, determinism and leak checks.
+    // macOS needs separate bounded tests for its slower stack unwinding.
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try allocationProbe(baseline.allocator());
+    const total = baseline.alloc_index;
+    if (total == 0) return error.EmptyAllocationFailureUniverse;
+    const begin = total / shards * shard + total % shards * shard / shards;
+    const end = total / shards * (shard + 1) + total % shards * (shard + 1) / shards;
+    for (begin..end) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        if (allocationProbe(failing.allocator())) |_| {
+            return if (failing.has_induced_failure) error.SwallowedOutOfMemoryError else error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.print("Command allocation leak index={d}/{d} allocated={d} freed={d} allocations={d} deallocations={d}\n{f}\n", .{ index, total, failing.allocated_bytes, failing.freed_bytes, failing.allocations, failing.deallocations, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => return err,
+        }
+    }
+    // Emitted only after this complete range passes. The independent coverage
+    // gate requires eight disjoint ranges covering exactly [0,total).
+    std.debug.print("COMMAND_GPA_SHARD={{\"index\":{d},\"shards\":8,\"begin\":{d},\"end\":{d},\"total\":{d}}}\n", .{ shard, begin, end, total });
+}
+test "Command Source exhaustive host allocation cleanup shard 1 of 8" {
+    try allocationShard(0);
+}
+test "Command Source exhaustive host allocation cleanup shard 2 of 8" {
+    try allocationShard(1);
+}
+test "Command Source exhaustive host allocation cleanup shard 3 of 8" {
+    try allocationShard(2);
+}
+test "Command Source exhaustive host allocation cleanup shard 4 of 8" {
+    try allocationShard(3);
+}
+test "Command Source exhaustive host allocation cleanup shard 5 of 8" {
+    try allocationShard(4);
+}
+test "Command Source exhaustive host allocation cleanup shard 6 of 8" {
+    try allocationShard(5);
+}
+test "Command Source exhaustive host allocation cleanup shard 7 of 8" {
+    try allocationShard(6);
+}
+test "Command Source exhaustive host allocation cleanup shard 8 of 8" {
+    try allocationShard(7);
 }
 test "Command Source dynamic Main metadata holder retained across GC and fenced retirement" {
     const engine = try setup(std.testing.allocator);
