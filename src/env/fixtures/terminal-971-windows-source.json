@@ -1,0 +1,258 @@
+[
+  {
+    "name": "missing-cwd",
+    "op": "pty",
+    "input": {},
+    "failure": {
+      "code": "EINVAL",
+      "message": "pty needs cwd"
+    }
+  },
+  {
+    "name": "argv-before-cwd",
+    "op": "pty",
+    "input": {
+      "argv": []
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "argv must be a non-empty array of strings"
+    }
+  },
+  {
+    "name": "nonstring-argv",
+    "op": "pty",
+    "input": {
+      "argv": [
+        1
+      ]
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "argv must be a non-empty array of strings"
+    }
+  },
+  {
+    "name": "null-argv-missing-size",
+    "op": "pty",
+    "input": {
+      "argv": null,
+      "cwd": ""
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-0",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": 0,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-1",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": -1,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-2",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": 4097,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-3",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": 1.5,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-4",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": "1",
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-5",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": null,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-cols-6",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": false,
+      "rows": 1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "cols must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "bad-rows",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": 1,
+      "rows": 4097
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "rows must be between 1 and 4096"
+    }
+  },
+  {
+    "name": "valid-limits",
+    "op": "pty",
+    "input": {
+      "cwd": ".",
+      "cols": 4096,
+      "rows": 1
+    },
+    "failure": {
+      "code": "ENOTSUP",
+      "message": "Terminals are not supported on this system yet"
+    }
+  },
+  {
+    "name": "permissive-environment",
+    "op": "pty",
+    "input": {
+      "cwd": "",
+      "argv": [
+        ""
+      ],
+      "cols": 1,
+      "rows": 4096,
+      "env": false,
+      "inheritEnv": 0
+    },
+    "failure": {
+      "code": "ENOTSUP",
+      "message": "Terminals are not supported on this system yet"
+    }
+  },
+  {
+    "name": "write-missing-target",
+    "op": "ptyWrite",
+    "input": {},
+    "failure": {
+      "code": "EINVAL",
+      "message": "missing field target"
+    }
+  },
+  {
+    "name": "resize-missing-target",
+    "op": "ptyResize",
+    "input": {
+      "cols": 0
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "missing field target"
+    }
+  },
+  {
+    "name": "resize-lookup-before-size",
+    "op": "ptyResize",
+    "input": {
+      "target": 0,
+      "cols": 0
+    },
+    "failure": {
+      "code": "EBADF",
+      "message": "no running terminal with this id"
+    }
+  },
+  {
+    "name": "foreground-negative",
+    "op": "ptyForeground",
+    "input": {
+      "target": -1
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "missing field target"
+    }
+  },
+  {
+    "name": "foreground-fraction",
+    "op": "ptyForeground",
+    "input": {
+      "target": 1.5
+    },
+    "failure": {
+      "code": "EINVAL",
+      "message": "missing field target"
+    }
+  },
+  {
+    "name": "foreground-inactive",
+    "op": "ptyForeground",
+    "input": {
+      "target": 4294967297
+    },
+    "failure": {
+      "code": "EBADF",
+      "message": "no running terminal with this id"
+    }
+  },
+  {
+    "name": "write-inactive",
+    "op": "ptyWrite",
+    "input": {
+      "target": 1
+    },
+    "failure": {
+      "code": "EBADF",
+      "message": "no running terminal with this id"
+    }
+  }
+]

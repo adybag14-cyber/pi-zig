@@ -3,6 +3,14 @@
 This is an in-progress port of Pi protocol v1 and its local daemon/client. It
 does not certify complete ExecutionEnv, SSH, watch or release parity.
 
+The 97195ec3 upstream terminal addition is tracked separately. Windows now
+validates terminal requests in upstream order and returns its exact ENOTSUP,
+EINVAL and EBADF replies, including target lookup before resize validation.
+An immutable 21-case capture from the actual upstream Windows daemon and its
+original Connection is replayed through the native framed daemon. POSIX PTY
+creation, raw ordered output, queued input, resizing, foreground job reporting,
+exit grace and the public RemoteTerminal client still require implementation.
+
 Implemented native surfaces include bounded big-endian framing and fragmented
 sync, owned JSON/payload records, connection-local retained file/directory and
 write handles, scanLines, regular and whole-file reads, sequential/platform

@@ -57,6 +57,10 @@ pub fn main(init: std.process.Init) !void {
         var delegated = false;
         defer if (!delegated) input.complete(pending);
         const request = pending.frame;
+        if (builtin.os.tag == .windows) if (@import("env/terminal_request.zig").windowsFailure(request.json.value)) |failure| {
+            try output.send(.remote_error, request.id, failure, "");
+            continue;
+        };
         if (request.json.value == .object) {
             if (request.json.value.object.get("op")) |op| if (op == .string and std.mem.eql(u8, op.string, "hello")) {
                 const protocol = request.json.value.object.get("protocol") orelse std.json.Value.null;

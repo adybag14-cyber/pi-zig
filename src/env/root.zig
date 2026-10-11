@@ -5,6 +5,7 @@ pub const ssh_process = @import("ssh_process.zig");
 pub const metadata = @import("metadata.zig");
 pub const files = @import("files.zig");
 pub const connection = @import("connection.zig");
+pub const terminal_request = @import("terminal_request.zig");
 pub const info = @import("info.zig");
 pub const daemon_output = @import("daemon_output.zig");
 pub const lazy_connection = @import("lazy_connection.zig");
@@ -21,6 +22,7 @@ test {
     _ = metadata;
     _ = files;
     _ = connection;
+    _ = terminal_request;
     _ = info;
     _ = daemon_output;
     _ = lazy_connection;
