@@ -528,6 +528,11 @@ pub fn sessionObjectWithClock(engine: *Engine, storage: c.JSValue, clock: c.JSVa
     errdefer native.deinit();
     self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail, .task_creator = @import("native_durable_tasks.zig").createTask, .closed_promise = closed_promise, .closed_resolve = closed_functions[0] };
     errdefer engine.freeValue(self.parent);
+    // Reserve the close queue slot before any operation is admitted. A later
+    // raw Storage failure must still close exactly once when its cleanup
+    // encounters a failing host allocator; closing only replaces its context.
+    try @import("native_durable_storage.zig").prepareDrain(self, c.pi_js_undefined());
+    errdefer if (self.storage_drain) |drain| drain.destroy(engine.runtime);
     _ = try native.subscribe(publication, self);
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
     if (c.JS_DefinePropertyValueStr(engine.context, result_object, "closed", c.JS_DupValue(engine.context, closed_promise), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
