@@ -1,0 +1,10 @@
+const combinedPrefixCases=[],provider=new Combined([],'.');
+for(const text of['','plain',' ','\t','\n','\u3000','/cmd','src/file','./file','../','~/','~','@','@file','hello @file','你好，@文件','你好。@文件','한국어。파일','日本語「@file','😀 @file','😀@file','(@file','[[@file','{<`@file','app/[slug]/pa','(group)/pa','@"my file','"my file','hello "my file','x"not start','x@"not start','(@"my file','`"my file','"closed" tail','@"closed" tail','@"closed" @"open','界@"no boundary','界，@"boundary','end。','end，','end—','emoji😀/path','\ud800/path','foo=src/file','foo\u00a0src/file'])for(const force of[false,true])combinedPrefixCases.push({name:'prefix '+JSON.stringify(text)+' '+force,text,force,at:provider.extractAtPrefix(text),path:provider.extractPathPrefix(text,force)});
+for(const[base,relative]of[['/','foo\\bar'],['./','file'],['src\\','folder\\file'],['~/','😀/界'],['','file']])combinedPrefixCases.push({name:'scoped display',base,relative,result:provider.scopedPathForDisplay(base,relative)});
+{
+ const trace=[],text=new String('plain @file');text[Symbol.iterator]=function*(){trace.push('start');yield 'plain';trace.push('middle');yield ' ';yield '@file';trace.push('done')};const at=provider.extractAtPrefix(text);combinedPrefixCases.push({name:'actual string iterator controls delimiter UTF16 offsets',trace,at});
+}
+{
+ const reason={original:true},text=new String('@file');text[Symbol.iterator]=function(){throw reason};let same=false;try{provider.extractAtPrefix(text)}catch(error){same=error===reason}combinedPrefixCases.push({name:'original string iterator exception',same});
+}
+globalThis.tuiCombinedPrefixCases=JSON.parse(JSON.stringify(combinedPrefixCases));

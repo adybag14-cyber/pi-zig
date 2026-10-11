@@ -1,0 +1,47 @@
+const commandCases=[];
+const snapshot=value=>value===undefined?{undefined:true}:JSON.parse(JSON.stringify(value));
+async function observe(name,provider,lines,row,col,options,trace=[]){
+  let value,error;
+  try{value=await provider.getSuggestions(lines,row,col,options)}catch(reason){error={name:reason.name,message:reason.message,original:reason===globalThis.commandOriginalReason}}
+  commandCases.push({name,lines,row,col,options:{force:options.force},value:snapshot(value),error,trace:snapshot(trace)});
+}
+const core=createCommandProvider(rootCommands);
+for(const command of rootCommands)for(const query of ['/'+command.name,'/'+command.name.slice(0,Math.max(1,Math.ceil(command.name.length/2))),'\u3000/'+command.name.slice(0,2),'/'+command.name.toUpperCase()])await observe('Root core '+JSON.stringify(query),core,[query],0,query.length,{force:false});
+for(const query of ['/','/hel','/missing~','/  ',' /help','\t/HEL','/model tail','/help/path'])await observe('Root boundary '+JSON.stringify(query),core,[query],0,query.length,{force:false});
+const extended=[{name:'plain',description:'description'},{name:'skill:hello',description:'skill description',argumentHint:'<topic>'},{name:'skill:world',argumentHint:'<x>'},{name:'skill:hello',description:'duplicate'},{value:'legacy',description:'legacy field'},{name:'界名',description:'Han'},{name:'𐐀name'},{name:'ΟΣname'}];
+const extra=createCommandProvider(extended);
+for(const query of ['/','/h','/HEL','/skill:','/skill:he','/world','/legacy','/界','/𐐨','/ος','/p n','/absent!'])await observe('extended '+JSON.stringify(query),extra,[query],0,query.length,{force:false});
+for(const kind of ['sync','promise','thenable','empty','null','object','throw']){
+  const trace=[],reason={tag:'original argument reason '+kind};globalThis.commandOriginalReason=reason;
+  const command={name:'set',getArgumentCompletions(prefix){trace.push({event:'argument',same:this===command,prefix});if(kind==='throw')throw reason;if(kind==='empty')return [];if(kind==='null')return null;if(kind==='object')return {};const values=[{value:'light',label:'Light'},{value:'dark',label:'Dark'}];if(kind==='promise')return Promise.resolve(values);if(kind==='thenable')return{get then(){trace.push({event:'then-get'});return resolve=>{trace.push({event:'then-call'});resolve(values)}}};return values;}};
+  await observe('argument '+kind,createCommandProvider([command]),['/set l'],0,6,{force:false},trace);
+}
+for(const field of ['name','argumentHint','description']){
+  const trace=[],reason={tag:'original metadata reason '+field};globalThis.commandOriginalReason=reason;
+  const command={name:'test',argumentHint:'<x>',description:'description'};
+  Object.defineProperty(command,field,{get(){trace.push(field);throw reason}});
+  await observe('metadata throw '+field,createCommandProvider([command]),['/t'],0,2,{force:false},trace);
+}
+{
+ const trace=[],command={get name(){trace.push('name');return 'test'},get argumentHint(){trace.push('argumentHint');return '<x>'},get description(){trace.push('description');return 'detail'}};
+ await observe('metadata ordinary getter order',createCommandProvider([command]),['/t'],0,2,{force:false},trace);
+}
+{
+ const trace=[],commands=[{name:'test'}],reason={tag:'original map reason'};globalThis.commandOriginalReason=reason;
+ Object.defineProperty(commands,'map',{get(){trace.push('map');throw reason}});
+ await observe('ordinary array map getter identity',createCommandProvider(commands),['/t'],0,2,{force:false},trace);
+}
+const applications=[
+ [['/he'],0,3,{value:'help',label:'help'},'/he'],
+ [['  /he tail'],0,5,{value:'help',label:'help'},'/he'],
+ [['\u3000/he'],0,4,{value:'help',label:'help'},'/he'],
+ [['%'],0,1,{value:'two',label:'Plugin Two'},'%'],
+ [['😀%x tail'],0,4,{value:'界',label:'Han'},'%x'],
+ [['\ud800%'],0,2,{value:'𐐀',label:'Deseret'},'%'],
+ [['/set l after'],0,6,{value:'light',label:'Light'},'l'],
+ [['"x"tail'],0,2,{value:'"two"',label:'Two'},'"x'],
+ [['@sr'],0,3,{value:'@src/',label:'src/'},'@sr'],
+ [['one','界/fi','three'],1,4,{value:'界/😀.ts',label:'😀.ts'},'界/fi']
+];
+for(const args of applications){let value,error;try{value=core.applyCompletion(...args)}catch(reason){error={name:reason.name,message:reason.message}}commandCases.push({name:'pure apply '+JSON.stringify(args),args,value:snapshot(value),error})}
+const commandMethodMetadata={getSuggestions:{name:core.getSuggestions.name,length:core.getSuggestions.length,tag:Object.prototype.toString.call(core.getSuggestions)},applyCompletion:{name:core.applyCompletion.name,length:core.applyCompletion.length,tag:Object.prototype.toString.call(core.applyCompletion)}};

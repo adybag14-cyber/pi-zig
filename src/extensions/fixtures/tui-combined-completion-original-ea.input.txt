@@ -1,0 +1,37 @@
+const combinedCompletionCases=[];
+const provider=new Combined([],'.');
+for(const args of[
+ [['/he'],0,3,{value:'help',label:'help'},'/he'],
+ [['  /he tail'],0,5,{value:'help',label:'help'},'/he'],
+ [['\u3000/he'],0,4,{value:'help',label:'help'},'/he'],
+ [['@sr'],0,3,{value:'@src/',label:'src/'},'@sr'],
+ [['@sr tail'],0,3,{value:'@src/file.ts',label:'file.ts'},'@sr'],
+ [['@"my d" trailing'],0,6,{value:'@"my dir/"',label:'my dir/'},'@"my d'],
+ [['"my d" trailing'],0,5,{value:'"my dir/"',label:'my dir/'},'"my d'],
+ [['/read my d'],0,10,{value:'"my dir/"',label:'my dir/'},'my d'],
+ [['src/fi'],0,6,{value:'src/file.ts',label:'file.ts'},'src/fi'],
+ [['one','界/fi','three'],1,4,{value:'界/😀.ts',label:'😀.ts'},'界/fi'],
+ [['😀/fi'],0,5,{value:'😀/界/',label:'界/'},'😀/fi'],
+ [['/cmd 😀fi'],0,9,{value:'😀file',label:'😀file'},'😀fi'],
+ [['\ud800fi'],0,3,{value:'\ud800file',label:'file'},'\ud800fi'],
+ [['x'],0,0,{value:'file',label:'file'},''],
+ [[],0,0,{value:'file',label:'file'},''],
+ [['/path/sub'],0,9,{value:'/path/subdir/',label:'subdir/'},'/path/sub'],
+ [['/cmd arg'],0,8,{value:'new',label:'new'},'arg'],
+ [['x'],0,-1,{value:'new',label:'new'},'x'],
+ [['x'],0,99,{value:'new',label:'new'},'x'],
+]){const before=JSON.stringify(args[0]),result=provider.applyCompletion(...args);combinedCompletionCases.push({name:'completion '+combinedCompletionCases.length,args,result,fresh:result.lines!==args[0],inputUnchanged:JSON.stringify(args[0])===before});}
+for(const line of['','/','/help',' /help','\u3000/help','/help arg','/help\targ','hello','./path','@file','界。/help'])combinedCompletionCases.push({name:'trigger '+JSON.stringify(line),result:provider.shouldTriggerFileCompletion([line],0,line.length)});
+{
+ const trace=[],item=new Proxy({value:'@"my dir/"',label:'my dir/'},{get(target,key,receiver){trace.push('item.'+String(key));return Reflect.get(target,key,receiver)}}),lines=['@"my d" tail'];lines[Symbol.iterator]=function*(){trace.push('iterator:start');yield lines[0];trace.push('iterator:done')};const result=provider.applyCompletion(lines,0,6,item,'@"my d');combinedCompletionCases.push({name:'actual completion item getter and iterator evaluation order',trace,result});
+}
+{
+ const trace=[],prefix=new String('fi');Object.defineProperty(prefix,'length',{value:2});const col={valueOf(){trace.push('col.valueOf');return 2}},lines=[new String('fi')],original=String.prototype.slice;lines[0].slice=function(...args){trace.push(['slice',this===lines[0],args]);return Reflect.apply(original,this,args)};const item={get value(){trace.push('value');return 'file'},get label(){trace.push('label');return 'file'}};const result=provider.applyCompletion(lines,0,col,item,prefix);combinedCompletionCases.push({name:'actual completion ordinary slice receiver and numeric cursor conversion',trace,result});
+}
+{
+ const reason={original:true},item={value:'file',get label(){throw reason}};let same=false;try{provider.applyCompletion(['fi'],0,2,item,'fi')}catch(error){same=error===reason}combinedCompletionCases.push({name:'original item getter exception',same});
+}
+{
+ const a=new Combined(),b=new Combined(),commands=[];const supplied=new Combined(commands,'base',false);combinedCompletionCases.push({name:'genuine constructor defaults and ordinary fields',own:Object.keys(a),commandsDefault:Array.isArray(a.commands),commandsFresh:a.commands!==b.commands,basePath:a.basePath,fdPath:a.fdPath,commandsSame:supplied.commands===commands,baseSupplied:supplied.basePath,fdSupplied:supplied.fdPath,name:Combined.name,length:Combined.length});
+}
+globalThis.tuiCombinedCompletionCases=JSON.parse(JSON.stringify(combinedCompletionCases));

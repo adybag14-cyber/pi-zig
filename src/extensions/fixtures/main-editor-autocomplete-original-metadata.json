@@ -1,0 +1,121 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "prePostDrift": 0,
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/parity-audit-20261007/capture-main-editor-autocomplete-metadata-20261011-b.mjs",
+      "sha256": "082692be27906b62f5b55ac224d77107868f1b1b74b961ba646558f334984228"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/dist/core/slash-commands.js",
+      "sha256": "3c4b7576c59d81e39e7dff4a847fdb51021fbea544a7880746018866a599f1e6"
+    }
+  ],
+  "upstreamCommands": [
+    {
+      "name": "settings",
+      "description": "Open settings menu"
+    },
+    {
+      "name": "model",
+      "description": "Select model (opens selector UI)",
+      "argumentHint": "<provider/model>"
+    },
+    {
+      "name": "tree",
+      "description": "Navigate session tree (switch branches)"
+    },
+    {
+      "name": "thinking",
+      "description": "Set thinking level",
+      "argumentHint": "<level>"
+    },
+    {
+      "name": "scoped-models",
+      "description": "Enable/disable models for Ctrl+P cycling"
+    },
+    {
+      "name": "export",
+      "description": "Export session (HTML default, or specify path: .html/.jsonl)"
+    },
+    {
+      "name": "import",
+      "description": "Import and resume a session from a JSONL file"
+    },
+    {
+      "name": "share",
+      "description": "Share session as a secret GitHub gist"
+    },
+    {
+      "name": "bug",
+      "description": "Report a bug to the Pi developers",
+      "argumentHint": "<description>"
+    },
+    {
+      "name": "copy",
+      "description": "Copy last agent message to clipboard"
+    },
+    {
+      "name": "name",
+      "description": "Set session display name"
+    },
+    {
+      "name": "session",
+      "description": "Show session info and stats"
+    },
+    {
+      "name": "changelog",
+      "description": "Show changelog entries"
+    },
+    {
+      "name": "hotkeys",
+      "description": "Show all keyboard shortcuts"
+    },
+    {
+      "name": "fork",
+      "description": "Create a new fork from a previous user message"
+    },
+    {
+      "name": "clone",
+      "description": "Duplicate the current session at the current position"
+    },
+    {
+      "name": "trust",
+      "description": "Save project trust decision for future sessions"
+    },
+    {
+      "name": "login",
+      "description": "Configure provider authentication",
+      "argumentHint": "<provider>"
+    },
+    {
+      "name": "logout",
+      "description": "Remove provider authentication"
+    },
+    {
+      "name": "new",
+      "description": "Start a new session"
+    },
+    {
+      "name": "compact",
+      "description": "Manually compact the session context"
+    },
+    {
+      "name": "resume",
+      "description": "Resume a different session"
+    },
+    {
+      "name": "reload",
+      "description": "Reload keybindings, extensions, skills, prompts, themes, and context files"
+    },
+    {
+      "name": "quit",
+      "description": "Quit pi"
+    }
+  ]
+}

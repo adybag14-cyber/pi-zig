@@ -1,0 +1,56 @@
+const turnCases=[];
+const identity=text=>text;
+const theme={borderColor:identity,selectList:{selectedPrefix:identity,selectedText:identity,description:identity,scrollInfo:identity,noMatch:identity}};
+async function settled(editor){
+  for(let index=0;index<64;index++){
+    if(editor.autocompleteDebounceTimer){await new Promise(resolve=>setTimeout(resolve,1));continue;}
+    const task=editor.autocompleteRequestTask;
+    await task;
+    await Promise.resolve();
+    if(editor.autocompleteRequestTask===task&&!editor.autocompleteDebounceTimer)return;
+  }
+  throw Error('Original Source autocomplete did not reach a stable task');
+}
+for(const providerKind of ['upstream_builtin_metadata','root_core_metadata','root_wrapper_core_metadata','root_wrapper_missing_metadata']){
+  for(const schedule of ['cold_burst','word_then_tab_checkpoint','characters_same_turn','characters_separate_turn','selected_plugin_then_cold_burst']){
+    const trace=[],states=[],changes=[];
+    const tui={terminal:{columns:100,rows:40},requestRender(){}};
+    const editor=new Editor(tui,theme),stdin=new StdinBuffer();
+    const commands=providerKind==='upstream_builtin_metadata'?upstreamCommands:providerKind==='root_wrapper_missing_metadata'?[]:rootCommands;
+    const base=new CombinedAutocompleteProvider(commands,sourceFixtureDirectory);
+    let provider=base;
+    if(providerKind.startsWith('root_wrapper'))provider={
+      triggerCharacters:['%'],
+      async getSuggestions(lines,row,col,options){
+        const value=lines[row];trace.push({event:'provider',value,force:options.force});
+        if(!value.startsWith('%'))return await base.getSuggestions(lines,row,col,options);
+        await new Promise(resolve=>setTimeout(resolve,250));
+        if(options.signal.aborted)return null;
+        return{prefix:value,items:[{value:'one',label:'Plugin One'},{value:'two',label:'Plugin Two',description:'selected second'}]};
+      },
+      applyCompletion(...args){trace.push({event:'apply',value:args[3].value,prefix:args[4]});return base.applyCompletion(...args)}
+    };
+    editor.setAutocompleteProvider(provider);
+    editor.onChange=text=>changes.push(text);
+    stdin.on('data',data=>{trace.push({event:'stdin',data});editor.handleInput(data)});
+    stdin.on('paste',data=>{trace.push({event:'paste',data});editor.handleInput('\x1b[200~'+data+'\x1b[201~')});
+    const snapshot=phase=>states.push({phase,text:editor.getText(),showing:editor.isShowingAutocomplete(),state:editor.autocompleteState,prefix:editor.autocompletePrefix,selected:editor.autocompleteList?.getSelectedItem(),rows:editor.render(100)});
+    try{
+      if(schedule==='selected_plugin_then_cold_burst'&&providerKind.startsWith('root_wrapper')){
+        stdin.process('%');await settled(editor);if(!editor.isShowingAutocomplete())throw Error('Source plugin menu barrier failed');snapshot('plugin_ready');
+        stdin.process('\x1b[B');stdin.process('\t');await settled(editor);snapshot('plugin_selected');
+      }
+      if(schedule==='word_then_tab_checkpoint'){
+        stdin.process('\x15/hel');await settled(editor);snapshot('before_tab');
+        stdin.process('\t');
+      }else if(schedule==='characters_same_turn'){
+        for(const character of '\x15/hel\t')stdin.process(character);
+      }else if(schedule==='characters_separate_turn'){
+        for(const character of '\x15/hel\t'){stdin.process(character);await settled(editor)}
+      }else stdin.process('\x15/hel\t');
+      snapshot('immediate');await settled(editor);snapshot('settled');
+      stdin.process('\t');await settled(editor);snapshot('second_tab');
+      turnCases.push({providerKind,schedule,metadataNames:commands.map(command=>command.name),states,changes,trace});
+    }finally{editor.cancelAutocomplete();stdin.destroy()}
+  }
+}

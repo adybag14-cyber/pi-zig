@@ -129,6 +129,13 @@ pub fn build(b: *std.Build) void {
     }
     linkQuickJs(b, mod, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, mod, typescript_parser);
+    // Private command-only Source gate. It does not activate a Main provider
+    // or install/export the complete Combined class or any fd implementation.
+    const command_source_module = b.createModule(.{ .root_source_file = b.path("src/native_command_autocomplete_source_test.zig"), .target = target, .optimize = optimize });
+    command_source_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, command_source_module, quickjs, sqlite_lib_dir);
+    const command_source_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source"}, .use_llvm = use_llvm });
+    b.step("test-native-command-autocomplete-source", "Replay original142 command records,20 Editor/StdinBuffer turns,97 pure prefixes,34 completions,holder lifecycle and exhaustive host GPA").dependOn(&b.addRunArtifact(command_source_tests).step);
     const sqlite_persistence_mod = b.createModule(.{
         .root_source_file = b.path("src/sqlite_server_persistence.zig"),
         .target = target,
