@@ -51,12 +51,25 @@ fn wait(engine: *Engine, state: c.JSValue, pending: c.JSValue, stage: c_int) !c.
 pub fn admit(engine: *Engine, captured: *awaiting.Intrinsics, tokens: Tokens, tx: c.JSValue, conversation: c.JSValue, draft: c.JSValue, now: c.JSValue, modes: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    if (try equals(engine, try scope.get(draft, "type"), "input") and !c.JS_IsUndefined(try scope.get(draft, "entry"))) {
+        try @import("native_durable_input_entry.zig").check(engine, try scope.get(draft, "entry"));
+    }
     const state = try scope.own(try vm.object(engine));
     inline for (.{ .{ "promiseConstructor", captured.constructor }, .{ "promiseResolve", captured.resolve }, .{ "promiseThen", captured.then_function }, .{ "liveToken", tokens.live }, .{ "inboxToken", tokens.inbox }, .{ "userToken", tokens.user }, .{ "generationToken", tokens.generation }, .{ "tx", tx }, .{ "conversation", conversation }, .{ "draft", draft }, .{ "now", now }, .{ "modes", modes } }) |field| try put(engine, state, field[0], field[1]);
     const request = try scope.get(draft, "requestId");
     if (!c.JS_IsUndefined(request)) {
         const pending = try scope.invoke(tx, "submissionByRequest", &.{ conversation, request });
         return wait(engine, state, pending, 1);
+    }
+    return readAdmission(engine, state);
+}
+fn readAdmission(engine: *Engine, state: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const draft = try scope.get(state, "draft");
+    if (try equals(engine, try scope.get(draft, "type"), "write") and try @import("native_durable_input_entry.zig").displayOnly(engine, try scope.get(draft, "entry"))) {
+        const pending = try scope.invoke(try scope.get(state, "tx"), "doc", &.{ try scope.get(state, "inboxToken"), try scope.get(state, "conversation") });
+        return wait(engine, state, pending, 12);
     }
     return readLive(engine, state);
 }
@@ -82,7 +95,12 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
             }
             return vm.get(engine, value, "id");
         }
-        return readLive(engine, state);
+        return readAdmission(engine, state);
+    }
+    if (stage == 12) {
+        if (try @import("native_durable_input_entry.zig").queuedReset(engine, try scope.get(value, "items"))) return readLive(engine, state);
+        const pending = try scope.invoke(try scope.get(state, "tx"), "appendEntry", &.{ try scope.get(state, "conversation"), try scope.get(try scope.get(state, "draft"), "entry") });
+        return wait(engine, state, pending, 7);
     }
     if (stage == 2) {
         try put(engine, state, "live", value);
@@ -184,15 +202,7 @@ fn placeIdle(engine: *Engine, state: c.JSValue) !c.JSValue {
         const pending = try scope.invoke(tx, "appendEntry", &.{ conversation, entry });
         return wait(engine, state, pending, 7);
     }
-    const message = try scope.own(try vm.object(engine));
-    try put(engine, message, "role", try scope.text("user"));
-    try put(engine, message, "content", try scope.get(draft, "content"));
-    try put(engine, message, "timestamp", try scope.get(state, "now"));
-    const model = try scope.own(try vm.array(engine));
-    try js.push(engine, model, message);
-    const entry = try scope.own(try vm.object(engine));
-    try put(engine, entry, "model", model);
-    const pending = try scope.invoke(tx, "appendEntry", &.{ try scope.get(state, "userToken"), conversation, entry });
+    const pending = try scope.own(try @import("native_durable_input_entry.zig").append(engine, tx, conversation, try scope.get(draft, "content"), try scope.get(draft, "entry"), try scope.get(state, "now"), try scope.get(state, "userToken")));
     return wait(engine, state, pending, 9);
 }
 fn appendQueued(engine: *Engine, state: c.JSValue, inbox: c.JSValue) !c.JSValue {
@@ -207,6 +217,10 @@ fn appendQueued(engine: *Engine, state: c.JSValue, inbox: c.JSValue) !c.JSValue 
     try put(engine, item, "id", try scope.get(state, "id"));
     try put(engine, item, "mode", try scope.text(if (write) "write" else if (try equals(engine, try scope.get(draft, "whenBusy"), "steer")) "steer" else "followUp"));
     try put(engine, item, if (write) "entry" else "content", value);
+    if (!write and !c.JS_IsUndefined(try scope.get(draft, "entry"))) {
+        const entry = try scope.own(try @import("native_durable_input_entry.zig").pick(engine, try scope.get(draft, "entry")));
+        try put(engine, item, "entry", entry);
+    }
     try js.push(engine, try scope.get(inbox, "items"), item);
     const boundary = try scope.get(state, "boundary");
     if (c.JS_IsUndefined(boundary)) return vm.get(engine, state, "id");

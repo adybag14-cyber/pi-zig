@@ -164,15 +164,7 @@ fn processNext(engine: *Engine, state: c.JSValue) !c.JSValue {
         const item = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, items, try indexNumber(engine, position))));
         try put(engine, state, "currentItem", item);
         try put(engine, state, "userIndex", c.JS_NewUint32(engine.context, user_index + 1));
-        const message = try scope.own(try vm.object(engine));
-        try put(engine, message, "role", try scope.text("user"));
-        try put(engine, message, "content", try scope.get(item, "content"));
-        try put(engine, message, "timestamp", try scope.get(state, "now"));
-        const model = try scope.own(try vm.array(engine));
-        try js.push(engine, model, message);
-        const entry = try scope.own(try vm.object(engine));
-        try put(engine, entry, "model", model);
-        const pending = try scope.invoke(tx, "appendEntry", &.{ try scope.get(state, "userToken"), conversation, entry });
+        const pending = try scope.own(try @import("native_durable_input_entry.zig").append(engine, tx, conversation, try scope.get(item, "content"), try scope.get(item, "entry"), try scope.get(state, "now"), try scope.get(state, "userToken")));
         return wait(engine, state, pending, 2);
     }
     var removed: std.ArrayList(usize) = .empty;

@@ -1,0 +1,33 @@
+import {Harness,MemoryStorage,createRegistry} from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+let enter;const reached=new Promise(resolve=>enter=resolve);let providerCalls=0;
+const models={getModel:()=>({id:'held',maxTokens:100,contextWindow:10000}),streamSimple:(_model,_request,options)=>{
+ providerCalls++;enter();const signal=options.signal;
+ const pending=new Promise((_resolve,reject)=>{if(signal.aborted)reject(signal.reason);else signal.addEventListener('abort',()=>reject(signal.reason),{once:true})});
+ return {async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}};await pending},result:async()=>{await pending}};
+}};
+const harness=await Harness.open(new MemoryStorage(),{models,registry:createRegistry()},context),rows=[];
+try{
+ const root=await harness.root(context,{agent:{model:{provider:'held',modelId:'held'}}});
+ const entries=async()=>[...(await root.entries({},1000,undefined,context)).items].reverse();
+ const OriginalTypeError=globalThis.TypeError,OriginalString=globalThis.String;
+ const typeDescriptor=Object.getOwnPropertyDescriptor(globalThis,'TypeError'),stringDescriptor=Object.getOwnPropertyDescriptor(globalThis,'String');
+ for(const symbolic of[false,true]){
+  const order=[];let error;
+  Object.defineProperty(globalThis,'TypeError',{configurable:true,get(){order.push('TypeError');return function(message){order.push('construct');return new OriginalTypeError(message)}}});
+  Object.defineProperty(globalThis,'String',{configurable:true,get(){order.push('String');return value=>{order.push('stringify');return symbolic?Symbol('result'):OriginalString(value)}}});
+  try{await root.submit({type:'input',content:'invalid',entry:{kind:123}},context)}catch(caught){error=caught}
+  finally{Object.defineProperty(globalThis,'TypeError',typeDescriptor);Object.defineProperty(globalThis,'String',stringDescriptor)}
+  rows.push({name:symbolic?'symbol-return-before-construction':'constructor-reference-before-arguments',order,genuineTypeError:error instanceof OriginalTypeError,nameOfError:error?.name,message:error?.message});
+ }
+ const cause={originalKindGetter:true};let preserved=false;
+ try{await root.submit({type:'input',content:'invalid',entry:{get kind(){throw cause}}},context)}catch(error){preserved=error===cause}
+ rows.push({name:'original-kind-getter-error',preserved});
+ const accesses=[],metadata={'\0key':'data\0😀'},entry={get kind(){accesses.push('kind');return'application.\0😀'},get data(){accesses.push('data');return metadata}};
+ for(const key of['model','head','edits','extra'])Object.defineProperty(entry,key,{enumerable:true,get(){throw Error(`pick read excluded ${key}`)}});
+ const input=await root.submit({type:'input',content:'content\0😀',entry},context);await reached;metadata['\0key']='changed';
+ const status=await input.status(context),placed=(await entries()).find(row=>row.id===status.entry);
+ rows.push({name:'pick-only-kind-data-and-lossless-nul',accesses,providerCalls,status:status.status,entry:{kind:placed.kind,data:placed.data,model:placed.model.map(({role,content,timestamp})=>({role,content,timestampIsNumber:typeof timestamp==='number'})),headPresent:Object.hasOwn(placed,'head'),editsPresent:Object.hasOwn(placed,'edits'),extraPresent:Object.hasOwn(placed,'extra')}});
+ if(!rows[0].genuineTypeError||!rows[1].genuineTypeError||!preserved||providerCalls!==1||placed.kind!=='application.\0😀'||placed.data['\0key']!=='data\0😀')throw Error(JSON.stringify({coverageFailure:true,rows}));
+}finally{await harness.close(context)}
+globalThis.e6InputEntryFrameTrace={source:'e6b9a6af5d45fd191f8e90b56176a0c41aab3199',rows};export const proof=true;

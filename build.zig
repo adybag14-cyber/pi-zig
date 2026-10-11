@@ -668,6 +668,10 @@ pub fn build(b: *std.Build) void {
     const owner_settlement_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_owner_settlement_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "owner settlement", "document retention" } });
     linkSqlite(owner_settlement_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-owner-settlement", "Verify original worker line ownership, reentrant close, operation order and document retention index").dependOn(&b.addRunArtifact(owner_settlement_tests).step);
+    const e6_input_entry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_e6_input_entry_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable actual e6 input entry public contract"} });
+    linkQuickJs(b, e6_input_entry_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(e6_input_entry_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-e6-input-entry", "Replay actual upstream input entries with a held public user provider and queued reset fence").dependOn(&b.addRunArtifact(e6_input_entry_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, ea_nested_tests.root_module, typescript_parser);
