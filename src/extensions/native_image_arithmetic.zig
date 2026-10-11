@@ -19,11 +19,15 @@ pub fn math(engine: *js.Engine, name: [*:0]const u8, input: c.JSValue) !c.JSValu
 }
 /// Preserve Source left-to-right multiplication/division and mutable Math.round.
 pub fn scaleDimension(engine: *js.Engine, dimension: c.JSValue, limit: c.JSValue, divisor: c.JSValue) !c.JSValue {
+    const object = try js.global(engine, "Math");
+    defer engine.freeValue(object);
+    const round = try js.get(engine, object, "round");
+    defer engine.freeValue(round);
     const product = try binary(engine, .multiply, dimension, limit);
     defer engine.freeValue(product);
     const quotient = try binary(engine, .divide, product, divisor);
     defer engine.freeValue(quotient);
-    return math(engine, "round", quotient);
+    return js.call(engine, round, object, &.{quotient});
 }
 pub const Dimensions = struct {
     width: c.JSValue,
