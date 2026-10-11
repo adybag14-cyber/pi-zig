@@ -1,7 +1,8 @@
 //! Shared selection for the composed artifact and its independent coverage gate.
-pub const filters: []const []const u8 = &.{ "composed native coverage inventory", "native SDK queue order", "Native localeCompare Source", "Native localeCompare Coercion Source", "Native localeCompare Lifecycle Source", "native allocation original identity", "native durable public open lifecycle", "physical stdio", "native image worker option", "native image JavaScript-valued strategy", "Command Source", "actual cdaf public document retention", "actual cdaf settings phase", "actual cdaf retention pins", "owner settlement", "document retention", "actual ea inflight index" };
+pub const filters: []const []const u8 = &.{ "composed native coverage inventory", "native SDK queue order", "Native localeCompare Source", "Native localeCompare Coercion Source", "Native localeCompare Lifecycle Source", "native allocation original identity", "native durable public open lifecycle", "physical stdio", "native image worker option", "native image JavaScript-valued strategy", "Command Source", "actual cdaf public document retention", "actual cdaf settings phase", "actual cdaf retention pins", "owner settlement", "document retention", "actual ea inflight index", "native durable actual e6 input entry" };
 pub const source_files: []const []const u8 = &.{
     "src/native_composed_vm_test.zig",
+    "src/native_durable_e6_input_entry_test.zig",
     "src/native_sdk_queue_order_test.zig",
     "src/native_localecompare_binding_source_test.zig",
     "src/native_localecompare_coercion_edge_source_test.zig",

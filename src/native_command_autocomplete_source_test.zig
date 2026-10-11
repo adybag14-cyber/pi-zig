@@ -95,6 +95,16 @@ test "Command Source original33 pure completion quotes UTF16 cursors callback ch
         "\nif(tuiCombinedCompletionCases.length!==33)throw Error('completion Source count');for(let index=0;index<tuiCombinedCompletionCases.length;index++)if(JSON.stringify(tuiCombinedCompletionCases[index])!==JSON.stringify(pureOriginal.cases[index]))throw Error(JSON.stringify({index,actual:tuiCombinedCompletionCases[index],expected:pureOriginal.cases[index]}));", "command-original33-completion.mjs");
 }
 fn allocationProbe(gpa: std.mem.Allocator) !void {
+    // Keep the exhaustive std.testing probe intact. Paired records identify the
+    // exact allocation at which a hosted run stalls, including setup failures.
+    var known_failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const known = known_failing.allocator();
+    const failing: ?*std.testing.FailingAllocator = if (gpa.vtable.alloc == known.vtable.alloc and gpa.vtable.free == known.vtable.free)
+        @ptrCast(@alignCast(gpa.ptr))
+    else
+        null;
+    if (failing) |allocator| std.debug.print("COMMAND_GPA_BEGIN fail_index={d} resize_fail_index={d}\n", .{ allocator.fail_index, allocator.resize_fail_index });
+    defer if (failing) |allocator| std.debug.print("COMMAND_GPA_END fail_index={d} alloc_index={d} induced={}\n", .{ allocator.fail_index, allocator.alloc_index, allocator.has_induced_failure });
     const engine = try setup(gpa);
     defer engine.deinit();
     try expected(engine, "commandOriginal", @embedFile("extensions/fixtures/main-command-autocomplete-source.json"));
@@ -104,12 +114,9 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
         if (actual != error.OutOfMemory) {
             std.debug.print("Command GPA unexpected {s} generation={d}->{d}\n", .{ @errorName(actual), generation, engine.native_allocation_generation });
             if (engine.last_error) |message| std.debug.print("Original exception: {s}\n", .{message});
-            var known_failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
-            const known = known_failing.allocator();
-            if (gpa.vtable.alloc == known.vtable.alloc and gpa.vtable.free == known.vtable.free) {
-                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
-                std.debug.print("Command GPA fail_index={d} current={d} induced={}\n", .{ failing.fail_index, failing.alloc_index, failing.has_induced_failure });
-                if (failing.has_induced_failure) std.debug.print("Command original induced allocation stack:\n{f}\n", .{std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() }});
+            if (failing) |allocator| {
+                std.debug.print("Command GPA fail_index={d} current={d} induced={}\n", .{ allocator.fail_index, allocator.alloc_index, allocator.has_induced_failure });
+                if (allocator.has_induced_failure) std.debug.print("Command original induced allocation stack:\n{f}\n", .{std.debug.FormatStackTrace{ .stack_trace = allocator.getStackTrace() }});
             }
         }
         return actual;

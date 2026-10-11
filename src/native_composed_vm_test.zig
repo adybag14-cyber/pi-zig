@@ -17,6 +17,7 @@ comptime {
     _ = @import("native_localecompare_lifecycle_source_test.zig");
     _ = @import("extension_engine_test.zig");
     _ = @import("native_durable_ea_retention_test.zig");
+    _ = @import("native_durable_e6_input_entry_test.zig");
     _ = @import("native_physical_stdio_test.zig");
     _ = @import("native_image_resize_options_test.zig");
     _ = @import("native_image_resize_strategy_test.zig");
