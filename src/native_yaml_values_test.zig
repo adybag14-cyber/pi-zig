@@ -134,7 +134,9 @@ fn exerciseSource(gpa: std.mem.Allocator, comptime capture: []const u8, fixture:
                 var graph: Graph = .{ .gpa = gpa, .nodes = nodes, .matched = matched };
                 defer graph.seen.deinit(gpa);
                 matches = try graph.match(parsed.frontmatter.root.?, field(expected, "root"));
-                for (matched) |value| if (value == null) { matches = false; };
+                for (matched) |value| if (value == null) {
+                    matches = false;
+                };
                 matches = matches and std.mem.eql(u8, parsed.body, string(row, "body"));
             }
         } else if (parsed.frontmatter.diagnostic) |diagnostic| {
