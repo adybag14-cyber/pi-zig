@@ -11,7 +11,9 @@ test "native image JavaScript-valued strategy closes an unawaited worker promise
     errdefer engine.deinit();
     try @import("extensions/timers.zig").install(engine, std.testing.io);
     const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
+    errdefer engine.freeValue(mime);
     const options = try engine.eval("({maxWidth:4})", "unawaited-image-options", c.JS_EVAL_TYPE_GLOBAL);
+    errdefer engine.freeValue(options);
     var encoded_mime = try option_graph.serializeForWorker(engine, mime);
     defer encoded_mime.deinit(std.testing.allocator);
     var encoded_options = try option_graph.serializeForWorker(engine, options);
