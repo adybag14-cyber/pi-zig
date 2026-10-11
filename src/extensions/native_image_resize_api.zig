@@ -43,6 +43,9 @@ fn fallback(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, retained: []
     return strategy.resize(engine, input.bytes, retained[1], retained[2]);
 }
 fn invoke(engine: *js.Engine, _: c.JSValue, arguments: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return invokeAsync(engine, arguments) catch |err| rejected(engine, err);
+}
+fn invokeAsync(engine: *js.Engine, arguments: []const c.JSValue) !c.JSValue {
     const input = if (arguments.len > 0) arguments[0] else c.pi_js_undefined();
     const mime = if (arguments.len > 1) arguments[1] else c.pi_js_undefined();
     const options = if (arguments.len > 2) arguments[2] else c.pi_js_undefined();
