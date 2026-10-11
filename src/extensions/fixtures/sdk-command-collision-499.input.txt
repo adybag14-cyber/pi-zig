@@ -1,0 +1,20 @@
+import {ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession} from '@earendil-works/pi-coding-agent';
+const cases=[
+ {id:'duplicate',extensions:[[['foo','first']],[['foo','second']]],probes:['foo','foo:1','foo:2','foo:3','missing']},
+ {id:'literal-before',extensions:[[['foo:1','literal']],[['foo','first']],[['foo','second']]],probes:['foo','foo:1','foo:2','foo:3','foo:1:2']},
+ {id:'literal-after',extensions:[[['foo','first']],[['foo','second']],[['foo:1','literal']]],probes:['foo','foo:1','foo:2','foo:3','foo:1:2']},
+ {id:'replacement-order',extensions:[[['foo','old'],['tail','tail'],['foo','new']],[['foo','other']]],probes:['foo','foo:1','foo:2','tail','foo:3']}
+];
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+globalThis.sdkCommandCollisionSessions=[];
+globalThis.sdkCommandCollisionRows=[];
+for(const fixture of cases){
+ const cwd='/sdk-command-collisions/'+fixture.id;
+ const loader=new DefaultResourceLoader({cwd,agentDir:cwd+'/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:fixture.extensions.map((commands,index)=>({name:String(index+1),factory(pi){for(const[name,description]of commands)pi.registerCommand(name,{description,handler(){}})}}))});
+ await loader.reload();
+ const {session}=await createAgentSession({cwd,modelRuntime:runtime,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),tools:[]});
+ const probes=[];
+ for(const name of fixture.probes){let result;try{result={disposition:await session.steer('/'+name)}}catch(error){result={error:{name:error.name,message:error.message}}}probes.push({name,...result});}
+ sdkCommandCollisionRows.push({id:fixture.id,probes,steering:session.getSteeringMessages()});
+ sdkCommandCollisionSessions.push(session);
+}

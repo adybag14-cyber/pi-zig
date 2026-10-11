@@ -244,25 +244,8 @@ fn rejectExtensionCommand(owner: *sdk.State, input: c.JSValue) !void {
     else
         try sdk.invoke(engine, input, "slice", &.{ one, index });
     defer engine.freeValue(selected);
-    const commands = try sdk.array(engine);
+    const commands = try @import("native_sdk_commands.zig").resolve(owner);
     defer engine.freeValue(commands);
-    const group: *@import("native_group.zig").Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKGroupUnavailable));
-    const ids = try @import("native_sdk_resource_owners.zig").sessionOwnerIds(engine, owner.data);
-    defer engine.freeValue(ids);
-    if (c.JS_IsArray(ids)) for (0..try sdk.length(engine, ids)) |extension_index| {
-        const id = try engine.checked(c.JS_GetPropertyUint32(engine.context, ids, @intCast(extension_index)));
-        defer engine.freeValue(id);
-        var number: i64 = 0;
-        if (c.JS_ToInt64(engine.context, &number, id) < 0) return error.JavaScriptException;
-        const binding = try group.selected(@intCast(number));
-        var registered = binding.commands.iterator();
-        while (registered.next()) |entry| {
-            const row = try sdk.object(engine);
-            defer engine.freeValue(row);
-            try sdk.put(engine, row, "invocationName", try sdk.text(engine, entry.key_ptr.*));
-            try sdk.append(engine, commands, c.JS_DupValue(engine.context, row));
-        }
-    };
     // ExtensionRunner.getCommand calls the mutable Array.find even when the
     // resolved command list is empty. Its predicate compares without coercion.
     const find = try sdk.get(engine, commands, "find");

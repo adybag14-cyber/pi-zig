@@ -71,3 +71,52 @@ test "native SDK queue order reads ordinary writable AgentSession fields from th
     defer expected.deinit();
     inline for (.{ "descriptors", "trace" }) |field| try std.testing.expect(json.equal(expected.value.object.get(field).?, actual.value.object.get(field).?));
 }
+
+test "native SDK queue rejects Source499 ordered duplicate command aliases and literal collisions" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-collision-root");
+    try root.installSchemas();
+    const loaded = try engine.evalModule(@embedFile("extensions/fixtures/sdk-command-collision-499.input.txt"), "sdk-command-collision.mjs");
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandCollisionRows", "sdk-command-collision-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-collision-source-499.json"));
+    defer expected.deinit();
+    const expected_rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(expected_rows.len, actual.value.array.items.len);
+    const sessions = try engine.eval("sdkCommandCollisionSessions", "sdk-command-collision-sessions.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(sessions);
+    for (expected_rows, actual.value.array.items, 0..) |expected_row, actual_row, index| {
+        inline for (.{ "id", "probes", "steering" }) |field| {
+            if (!json.equal(expected_row.object.get(field).?, actual_row.object.get(field).?)) std.debug.print("SDK Source499 row{d} field{s} actual={s}\n", .{ index, field, raw });
+            try std.testing.expect(json.equal(expected_row.object.get(field).?, actual_row.object.get(field).?));
+        }
+        const session = try engine.checked(em.c.JS_GetPropertyUint32(engine.context, sessions, @intCast(index)));
+        defer engine.freeValue(session);
+        const owner = try @import("extensions/native_sdk.zig").state(engine, session);
+        const commands = try @import("extensions/native_sdk_commands.zig").resolve(owner);
+        defer engine.freeValue(commands);
+        const expected_commands = expected_row.object.get("commands").?.array.items;
+        try std.testing.expectEqual(expected_commands.len, try @import("extensions/native_sdk.zig").length(engine, commands));
+        for (expected_commands, 0..) |command, command_index| {
+            const row = try engine.checked(em.c.JS_GetPropertyUint32(engine.context, commands, @intCast(command_index)));
+            defer engine.freeValue(row);
+            const name = try @import("extensions/native_sdk.zig").get(engine, row, "invocationName");
+            defer engine.freeValue(name);
+            const text = try engine.toString(name);
+            defer std.testing.allocator.free(text);
+            try std.testing.expectEqualStrings(command.object.get("invocationName").?.string, text);
+        }
+    }
+    const disposed = try engine.eval("for(const session of sdkCommandCollisionSessions)session.dispose();delete globalThis.sdkCommandCollisionSessions;delete globalThis.sdkCommandCollisionRows", "sdk-command-collision-dispose.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(disposed);
+    em.c.JS_RunGC(engine.runtime);
+}

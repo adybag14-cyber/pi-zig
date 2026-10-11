@@ -1,0 +1,340 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "id": "duplicate",
+      "extensions": [
+        [
+          [
+            "foo",
+            "first"
+          ]
+        ],
+        [
+          [
+            "foo",
+            "second"
+          ]
+        ]
+      ],
+      "probes": [
+        "foo",
+        "foo:1",
+        "foo:2",
+        "foo:3",
+        "missing"
+      ]
+    },
+    {
+      "id": "literal-before",
+      "extensions": [
+        [
+          [
+            "foo:1",
+            "literal"
+          ]
+        ],
+        [
+          [
+            "foo",
+            "first"
+          ]
+        ],
+        [
+          [
+            "foo",
+            "second"
+          ]
+        ]
+      ],
+      "probes": [
+        "foo",
+        "foo:1",
+        "foo:2",
+        "foo:3",
+        "foo:1:2"
+      ]
+    },
+    {
+      "id": "literal-after",
+      "extensions": [
+        [
+          [
+            "foo",
+            "first"
+          ]
+        ],
+        [
+          [
+            "foo",
+            "second"
+          ]
+        ],
+        [
+          [
+            "foo:1",
+            "literal"
+          ]
+        ]
+      ],
+      "probes": [
+        "foo",
+        "foo:1",
+        "foo:2",
+        "foo:3",
+        "foo:1:2"
+      ]
+    },
+    {
+      "id": "replacement-order",
+      "extensions": [
+        [
+          [
+            "foo",
+            "old"
+          ],
+          [
+            "tail",
+            "tail"
+          ],
+          [
+            "foo",
+            "new"
+          ]
+        ],
+        [
+          [
+            "foo",
+            "other"
+          ]
+        ]
+      ],
+      "probes": [
+        "foo",
+        "foo:1",
+        "foo:2",
+        "tail",
+        "foo:3"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "id": "duplicate",
+      "commands": [
+        {
+          "name": "foo",
+          "description": "first",
+          "invocationName": "foo:1"
+        },
+        {
+          "name": "foo",
+          "description": "second",
+          "invocationName": "foo:2"
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "foo:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:3",
+          "disposition": "queued"
+        },
+        {
+          "name": "missing",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/foo:3",
+        "/missing"
+      ]
+    },
+    {
+      "id": "literal-before",
+      "commands": [
+        {
+          "name": "foo:1",
+          "description": "literal",
+          "invocationName": "foo:1"
+        },
+        {
+          "name": "foo",
+          "description": "first",
+          "invocationName": "foo:2"
+        },
+        {
+          "name": "foo",
+          "description": "second",
+          "invocationName": "foo:3"
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "foo:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:3",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:3\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:1:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/foo:1:2"
+      ]
+    },
+    {
+      "id": "literal-after",
+      "commands": [
+        {
+          "name": "foo",
+          "description": "first",
+          "invocationName": "foo:1"
+        },
+        {
+          "name": "foo",
+          "description": "second",
+          "invocationName": "foo:2"
+        },
+        {
+          "name": "foo:1",
+          "description": "literal",
+          "invocationName": "foo:1:2"
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "foo:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:3",
+          "disposition": "queued"
+        },
+        {
+          "name": "foo:1:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:1:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/foo:3"
+      ]
+    },
+    {
+      "id": "replacement-order",
+      "commands": [
+        {
+          "name": "foo",
+          "description": "new",
+          "invocationName": "foo:1"
+        },
+        {
+          "name": "tail",
+          "description": "tail",
+          "invocationName": "tail"
+        },
+        {
+          "name": "foo",
+          "description": "other",
+          "invocationName": "foo:2"
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "foo:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "tail",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/tail\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "foo:3",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/foo:3"
+      ]
+    }
+  ]
+}
