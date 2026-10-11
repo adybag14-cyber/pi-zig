@@ -573,6 +573,8 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-ea-open-scope-promise", "Compare public open Promise readiness with a real held owner-scope Storage operation").dependOn(&b.addRunArtifact(ea_open_scope_promise_tests).step);
     const ea_open_failure_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual ea open failure cleanup"} });
     b.step("test-native-durable-ea-open-failure", "Replay actual Source failed-open cleanup and original cancellation identity").dependOn(&b.addRunArtifact(ea_open_failure_tests).step);
+    const cdaf_retention_tests = b.addTest(.{ .root_module = ea_retention_tests.root_module, .use_llvm = use_llvm, .filters = &.{"actual cdaf public document retention"} });
+    b.step("test-native-durable-cdaf-retention", "Replay latest Source public document retention and observer reload behavior").dependOn(&b.addRunArtifact(cdaf_retention_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, ea_nested_tests.root_module);
