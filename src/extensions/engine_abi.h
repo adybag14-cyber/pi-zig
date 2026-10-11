@@ -17,6 +17,9 @@ JSValue pi_js_function_magic(JSContext *context, JSCFunctionMagic *function, con
 JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner);
 void pi_js_release_memory_owner(void *memory_owner);
 size_t pi_js_shared_buffer_allocations(void);
+/* Only for trusted same-process serializer tables from pi_js_new_runtime. */
+void pi_js_retain_shared_buffer(void *buffer);
+void pi_js_release_shared_buffer(void *buffer);
 size_t pi_js_native_memory_owners(void);
 size_t pi_js_native_memory_used(void *memory_owner);
 #endif

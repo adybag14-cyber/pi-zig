@@ -117,6 +117,8 @@ static void pi_shared_free(void *opaque, void *ptr) {
         pi_js_release_memory_owner(owner);
     }
 }
+void pi_js_retain_shared_buffer(void *buffer) { pi_shared_dup(NULL, buffer); }
+void pi_js_release_shared_buffer(void *buffer) { pi_shared_free(NULL, buffer); }
 JSRuntime *pi_js_new_runtime(size_t memory_limit, void **memory_owner) {
     PiMemoryOwner *owner = malloc(sizeof(*owner));
     if (!owner) return NULL;

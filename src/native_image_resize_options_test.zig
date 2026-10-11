@@ -2,6 +2,50 @@ const std = @import("std");
 const js = @import("extensions/native_js_values.zig");
 const c = js.c;
 const options = @import("extensions/native_image_resize_options.zig");
+fn sharedTransport(gpa: std.mem.Allocator) !void {
+    const source = try js.Engine.init(std.testing.allocator, .{});
+    var source_open = true;
+    defer if (source_open) source.deinit();
+    var serialized = blk: {
+        const value = try source.eval("(()=>{const sab=new SharedArrayBuffer(8),value={sab,again:sab,view:new Uint8Array(sab,2,3)};value.self=value;value.view[0]=7;return value})()", "image-shared-options-source", c.JS_EVAL_TYPE_GLOBAL);
+        defer source.freeValue(value);
+        break :blk try options.serializeForWorker(source, value);
+    };
+    var serialized_open = true;
+    defer if (serialized_open) serialized.deinit(std.testing.allocator);
+    var copied = try serialized.dupe(gpa);
+    defer copied.deinit(gpa);
+    serialized.deinit(std.testing.allocator);
+    serialized_open = false;
+    source.deinit();
+    source_open = false;
+    const target = try js.Engine.init(std.testing.allocator, .{});
+    defer target.deinit();
+    const global = c.JS_GetGlobalObject(target.context);
+    defer target.freeValue(global);
+    try js.define(target, global, "firstSharedOptions", try copied.read(target));
+    try js.define(target, global, "secondSharedOptions", try copied.read(target));
+    const check = try target.eval(
+        \\const first=firstSharedOptions,second=secondSharedOptions;
+        \\if(first===second||first.self!==first||second.self!==second||first.sab!==first.again||first.view.buffer!==first.sab||first.view.byteOffset!==2||first.view.length!==3||first.view[0]!==7)throw Error('shared transport graph or retired owner');
+        \\first.view[0]=13;if(second.view[0]!==13)throw Error('shared backing copied instead of shared');
+    , "image-shared-options-target", c.JS_EVAL_TYPE_GLOBAL);
+    target.freeValue(check);
+}
+test "native image serialized shared options own backing across duplicate transport and source VM retirement" {
+    const buffers = c.pi_js_shared_buffer_allocations();
+    const owners = c.pi_js_native_memory_owners();
+    try sharedTransport(std.testing.allocator);
+    try std.testing.expectEqual(buffers, c.pi_js_shared_buffer_allocations());
+    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+}
+test "native image shared transport duplication releases every failed host allocation and backing owner" {
+    const buffers = c.pi_js_shared_buffer_allocations();
+    const owners = c.pi_js_native_memory_owners();
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, sharedTransport, .{});
+    try std.testing.expectEqual(buffers, c.pi_js_shared_buffer_allocations());
+    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+}
 test "native image worker option serialization retains independent cycles and undefined values" {
     const source = try js.Engine.init(std.testing.allocator, .{});
     defer source.deinit();

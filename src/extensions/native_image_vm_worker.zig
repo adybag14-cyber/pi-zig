@@ -19,11 +19,11 @@ pub const Worker = struct {
         errdefer allocator.destroy(self);
         const bytes = try allocator.dupe(u8, input);
         errdefer allocator.free(bytes);
-        const mime_copy = try allocator.dupe(u8, mime.bytes);
-        errdefer allocator.free(mime_copy);
-        const option_copy = try allocator.dupe(u8, request_options.bytes);
-        errdefer allocator.free(option_copy);
-        self.* = .{ .allocator = allocator, .input = bytes, .mime = .{ .bytes = mime_copy }, .options = .{ .bytes = option_copy } };
+        var mime_copy = try mime.dupe(allocator);
+        errdefer mime_copy.deinit(allocator);
+        var option_copy = try request_options.dupe(allocator);
+        errdefer option_copy.deinit(allocator);
+        self.* = .{ .allocator = allocator, .input = bytes, .mime = mime_copy, .options = option_copy };
         self.thread = try std.Thread.spawn(.{}, run, .{self});
         return self;
     }
