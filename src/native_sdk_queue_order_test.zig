@@ -16,7 +16,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
     try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
     const result = engine.evalModule(
         \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
-        \\const missing=['emitBeforeAgentStart'],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
+        \\const missing=[],asyncPrototype=Object.getPrototypeOf(async()=>{});let implemented=0,absent=0;
         \\if(sdkMethodSource.methods.length!==50)throw Error('Source method inventory');
         \\for(const expected of sdkMethodSource.methods){const descriptor=Object.getOwnPropertyDescriptor(ExtensionRunner.prototype,expected.name);
         \\ if(missing.includes(expected.name)){if(descriptor!==undefined)throw Error('unqualified method inventory changed');absent++;continue}
@@ -24,7 +24,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
         \\ const actual={name:fn.name,arity:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String),descriptor:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable}};
         \\ if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));implemented++;
         \\}
-        \\if(implemented!==49||absent!==1)throw Error('partial native method inventory');
+        \\if(implemented!==50||absent!==0)throw Error('partial native method inventory');
     , "sdk-method-metadata-native") catch |err| {
         std.debug.print("SDK method metadata: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
@@ -439,22 +439,6 @@ test "native SDK queue order PUBLIC runner constructor refs fields and implement
         }
         var fields = source.object.iterator();
         while (fields.next()) |entry| {
-            if (index == 0 and std.mem.eql(u8, entry.key_ptr.*, "methods")) {
-                // Compare every real installed body against the actual Source
-                // descriptor. Missing methods remain absent, inventoried work;
-                // no name-only placeholders or full class claim are allowed.
-                const available = observed.object.get("methods").?.array.items;
-                for (available) |method| {
-                    var found = false;
-                    for (entry.value_ptr.array.items) |definition| if (json.equal(method.object.get("name").?, definition.object.get("name").?)) {
-                        try std.testing.expect(json.equal(method, definition));
-                        found = true;
-                        break;
-                    };
-                    try std.testing.expect(found);
-                }
-                continue;
-            }
             const field = observed.object.get(entry.key_ptr.*) orelse return error.MissingSource516FoundationField;
             if (!json.equal(entry.value_ptr.*, field)) std.debug.print("SDK Source516 row{d} field{s} actual={s}\n", .{ index, entry.key_ptr.*, raw });
             try std.testing.expect(json.equal(entry.value_ptr.*, field));
@@ -990,6 +974,79 @@ test "native SDK queue order PUBLIC context two phases actual replay clone and t
         }
     }
     const cleared = try engine.eval("delete globalThis.sdkRunnerContextClosureRows", "sdk-public-context-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC before agent start full normalization lazy renderer and nineteen actual Source cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment = try std.process.Environ.createMap(std.testing.environ, std.testing.allocator);
+    defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-sdk"});
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-agent-start-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-agent-start-561.input.txt"), "sdk-public-agent-start.mjs") catch |err| {
+        std.debug.print("SDK Source560 PUBLIC before agent start: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerAgentStartRows", "sdk-public-agent-start-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-agent-start-source-560.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 18), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (!std.mem.eql(u8, source.object.get("id").?.string, "invalid-section")) {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source560 agent start complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+            continue;
+        }
+        try std.testing.expectEqual(@as(usize, 4), source.object.count());
+        try std.testing.expectEqual(source.object.count(), observed.object.count());
+        inline for (.{ "id", "outcome", "events" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+        const wanted_errors = source.object.get("errors").?.array.items;
+        const found_errors = observed.object.get("errors").?.array.items;
+        try std.testing.expectEqual(@as(usize, 2), wanted_errors.len);
+        try std.testing.expectEqual(wanted_errors.len, found_errors.len);
+        for (wanted_errors, found_errors) |wanted, found| {
+            try std.testing.expectEqual(@as(usize, 5), wanted.object.count());
+            try std.testing.expectEqual(wanted.object.count(), found.object.count());
+            inline for (.{ "extensionPath", "event", "error", "ownKeys" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+            // The original generated frame strings remain byte-unchanged in
+            // Source. Both engines must retain nonempty stack strings here.
+            const wanted_stack = wanted.object.get("stack").?;
+            const found_stack = found.object.get("stack").?;
+            try std.testing.expect(wanted_stack == .string and wanted_stack.string.len > 0);
+            try std.testing.expect(found_stack == .string and found_stack.string.len > 0);
+        }
+    }
+    const foundation_result = try engine.eval("sdkRunnerAgentFoundationRows", "sdk-public-agent-foundation-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(foundation_result);
+    const foundation_raw = try engine.stringify(foundation_result);
+    defer std.testing.allocator.free(foundation_raw);
+    var foundation = try json.Owned.parse(std.testing.allocator, foundation_raw);
+    defer foundation.deinit();
+    var original = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-535.json"));
+    defer original.deinit();
+    try std.testing.expectEqual(@as(usize, 1), foundation.value.array.items.len);
+    var matched: usize = 0;
+    for (original.value.object.get("rows").?.array.items) |source| {
+        if (!std.mem.eql(u8, source.object.get("method").?.string, "emitBeforeAgentStart")) continue;
+        if (!json.equal(source, foundation.value.array.items[0])) std.debug.print("SDK Source535 agent foundation actual={s}\n", .{foundation_raw});
+        try std.testing.expect(json.equal(source, foundation.value.array.items[0]));
+        matched += 1;
+    }
+    try std.testing.expectEqual(@as(usize, 1), matched);
+    const cleared = try engine.eval("delete globalThis.sdkRunnerAgentStartRows;delete globalThis.sdkRunnerAgentFoundationRows", "sdk-public-agent-start-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
