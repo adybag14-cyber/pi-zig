@@ -2,6 +2,7 @@ const std = @import("std");
 const js = @import("extensions/native_js_values.zig");
 const c = js.c;
 const image_math = @import("extensions/native_image_arithmetic.zig");
+const image_result = @import("extensions/native_image_codec_result.zig");
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     if (argc != 3) return c.JS_ThrowTypeError(context, "Expected operation and two operands");
     var operation: i32 = 0;
@@ -57,4 +58,11 @@ test "native binary operators preserve guest coercion BigInt exception and borro
     defer engine.freeValue(next);
     if (c.JS_ToFloat64(engine.context, &numeric, next) < 0) return js.capture(engine);
     try std.testing.expectEqual(@as(f64, 3), numeric);
+    const mime = try engine.checked(c.JS_NewString(engine.context, "image/png"));
+    defer engine.freeValue(mime);
+    const constructed = try image_result.create(engine, &.{ 1, 2, 3 }, mime, dimension, dimension, dimensions.width, dimensions.height, true);
+    defer engine.freeValue(constructed);
+    const constructed_width = try js.get(engine, constructed, "width");
+    defer engine.freeValue(constructed_width);
+    try std.testing.expect(c.JS_IsString(constructed_width));
 }
