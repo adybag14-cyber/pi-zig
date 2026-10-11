@@ -650,3 +650,45 @@ test "native SDK queue order PUBLIC emit custom iterator close precedence latest
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order PUBLIC shortcuts reserved precedence diagnostics getters and raw warnings match Source534" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-shortcuts-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-shortcuts-534.input.txt"), "sdk-public-shortcuts.mjs") catch |err| {
+        std.debug.print("SDK Source534 PUBLIC shortcuts setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerShortcutRows", "sdk-public-shortcuts-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-shortcuts-source-534.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 8), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (std.mem.eql(u8, source.object.get("id").?.string, "invalid-key")) {
+            inline for (.{ "id", "events", "diagnostics" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+            const wanted = source.object.get("outcome").?;
+            const found = observed.object.get("outcome").?;
+            inline for (.{ "identity", "name" }) |field| try std.testing.expect(json.equal(wanted.object.get(field).?, found.object.get(field).?));
+            // Original Node builtin wording remains immutable; only its
+            // class and the complete surrounding behavior are compared.
+        } else {
+            if (!json.equal(source, observed)) std.debug.print("SDK Source534 complete actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(source, observed));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerShortcutRows", "sdk-public-shortcuts-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

@@ -1,0 +1,16 @@
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+const rows=[];
+for(const id of ['reserved-first','reserved-last','extension-conflict','warnings-throw','normalized-object','diagnostic-accessors','pair-iterator','invalid-key']){
+ const events=[],marker={toString(){events.push('marker.toString');return'forbidden marker'}},normalized={[Symbol.toPrimitive](hint){events.push(['normalized.coerce',hint]);return'custom'}},key={get toLowerCase(){events.push('key.lower.get');return function(){events.push(['key.lower.call',this===key,arguments.length]);return normalized}}};
+ const shortcut=(path,tag)=>({tag,get extensionPath(){events.push(['path.get',tag]);return path}}),a=shortcut('first.ext','a'),b=shortcut('second.ext','b'),reserved=shortcut('reserved.ext','r');
+ let config=id==='reserved-last'?{'app.unreserved':'CTRL+C','app.interrupt':['ctrl+c']}:{'app.interrupt':['CTRL+C'],'app.unreserved':'ctrl+c'};
+ if(id==='normalized-object')config={custom:key};
+ const pair={*[Symbol.iterator](){try{events.push('pair.start');yield'Custom';yield a;events.push('pair.third');yield marker}finally{events.push('pair.close')}}};
+ const extensions=[{shortcuts:id==='pair-iterator'?[pair]:new Map(id==='normalized-object'?[[key,a]]:id==='invalid-key'?[[Symbol('invalid'),a]]:[['Ctrl+C',reserved],['Custom',a]])},{shortcuts:new Map(id==='normalized-object'||id==='invalid-key'||id==='pair-iterator'?[]:[['CUSTOM',b]])}];
+ const runner=new ExtensionRunner(extensions,{},'/shortcuts',{},{});let diagnostics=runner.shortcutDiagnostics;
+ if(id==='diagnostic-accessors')Object.defineProperty(runner,'shortcutDiagnostics',{get(){events.push('diagnostics.get');return diagnostics},set(value){events.push(['diagnostics.set',Array.isArray(value),value.length]);diagnostics=value}});
+ runner.hasUI=function(){events.push(['hasUI',this===runner]);return false};const oldWarn=console.warn;console.warn=function(message){events.push(['warn',this===console,message]);if(id==='warnings-throw')throw marker};let outcome;
+ try{const map=ExtensionRunner.prototype.getShortcuts.call(runner,config);outcome={map:map instanceof Map,entries:[...map].map(([key,value])=>({key:key===normalized?{normalized:true}:key,tag:value.tag,sameA:value===a,sameB:value===b,sameReserved:value===reserved}))}}catch(error){outcome={identity:error===marker,name:error?.name,message:error?.message}}finally{console.warn=oldWarn}
+ rows.push({id,outcome,events,diagnostics:id==='diagnostic-accessors'?diagnostics:runner.shortcutDiagnostics});
+}
+globalThis.sdkRunnerShortcutRows=rows;
