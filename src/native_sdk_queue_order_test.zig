@@ -330,3 +330,46 @@ test "native SDK queue order actual runner borrowed receiver descriptors diagnos
     defer engine.freeValue(cleared);
     em.c.JS_RunGC(engine.runtime);
 }
+
+test "native SDK queue order actual resolver operator BigInt Symbol coercion and suffix traces match Source513" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-command-operator-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-command-operators-513.input.txt"), "sdk-command-operators.mjs") catch |err| {
+        std.debug.print("SDK Source513 actual operators setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkCommandOperatorRows", "sdk-command-operators-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-operators-source-513.json"));
+    defer expected.deinit();
+    const expected_rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(expected_rows.len, actual.value.array.items.len);
+    for (expected_rows, actual.value.array.items) |source, observed| {
+        inline for (.{ "id", "trace", "constructed" }) |field| try std.testing.expect(json.equal(source.object.get(field).?, observed.object.get(field).?));
+        const outcome = source.object.get("outcome").?;
+        const native = observed.object.get("outcome").?;
+        if (outcome.object.get("error")) |failure| {
+            // ECMAScript exception class and original coercion/order are the
+            // operator contract. Preserve the captured Node wording unchanged;
+            // exact Node/QuickJS builtin error-message parity remains open.
+            const actual_failure = native.object.get("error") orelse return error.MissingSource513Exception;
+            try std.testing.expect(json.equal(failure.object.get("name").?, actual_failure.object.get("name").?));
+        } else {
+            if (!json.equal(outcome, native)) std.debug.print("SDK Source513 outcome actual={s}\n", .{raw});
+            try std.testing.expect(json.equal(outcome, native));
+        }
+    }
+    const cleared = try engine.eval("delete globalThis.sdkCommandOperatorRows", "sdk-command-operators-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}

@@ -16160,6 +16160,36 @@ static no_inline int js_relational_slow(JSContext *ctx, JSValue *sp,
     return -1;
 }
 
+/* Native host algorithms use the same operators as executed guest code.
+   Borrowed operands are duplicated; the slow paths consume both copies. */
+JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
+                           JSValueConst left, JSValueConst right)
+{
+    JSValue stack[2] = { JS_DupValue(ctx, left), JS_DupValue(ctx, right) };
+    int status;
+    switch (operation) {
+    case 0: status = js_add_slow(ctx, stack + 2); break;
+    case 1: status = js_binary_arith_slow(ctx, stack + 2, OP_sub); break;
+    case 2: status = js_binary_arith_slow(ctx, stack + 2, OP_mul); break;
+    case 3: status = js_binary_arith_slow(ctx, stack + 2, OP_div); break;
+    case 4: status = js_relational_slow(ctx, stack + 2, OP_lt); break;
+    case 5: status = js_relational_slow(ctx, stack + 2, OP_lte); break;
+    case 6: status = js_relational_slow(ctx, stack + 2, OP_gt); break;
+    case 7: status = js_relational_slow(ctx, stack + 2, OP_gte); break;
+    default:
+        JS_FreeValue(ctx, stack[0]);
+        JS_FreeValue(ctx, stack[1]);
+        return JS_ThrowTypeError(ctx, "Invalid native binary operator");
+    }
+    return status < 0 ? JS_EXCEPTION : stack[0];
+}
+JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value)
+{
+    JSValue stack[1] = { JS_DupValue(ctx, value) };
+    return js_unary_arith_slow(ctx, stack + 1, OP_inc) < 0
+        ? JS_EXCEPTION : stack[0];
+}
+
 static bool tag_is_number(uint32_t tag)
 {
     return (tag == JS_TAG_INT ||

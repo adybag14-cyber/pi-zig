@@ -1,0 +1,874 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "counts-bigint-add",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot mix BigInt and other types, use explicit conversions"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 1
+    },
+    {
+      "id": "counts-symbol-add",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a number"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 1
+    },
+    {
+      "id": "counts-object-bigint-add",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot mix BigInt and other types, use explicit conversions"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "count.primitive",
+          "default"
+        ]
+      ],
+      "constructed": 1
+    },
+    {
+      "id": "counts-string-add",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:3"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "counts-relational-bigint",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:1"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:2"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "counts-relational-object-bigint",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:1"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:2"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "relational.primitive",
+          "number"
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "relational.primitive",
+          "number"
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "counts-relational-symbol",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a number"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "seen-bigint-add",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot mix BigInt and other types, use explicit conversions"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "seen-string-add",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:11"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "string",
+              "value": "foo"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "foo:12"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "string",
+            "value": "foo"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "name-bigint",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "bigint",
+              "value": "1"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "1:1"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "bigint",
+              "value": "1"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "1:2"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "bigint",
+            "value": "1"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "name-symbol-single",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "symbol",
+              "description": "name"
+            },
+            "invocationName": {
+              "type": "symbol",
+              "description": "name"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "name-symbol-duplicate",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a string"
+        }
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "symbol",
+            "description": "name"
+          }
+        ]
+      ],
+      "constructed": 2
+    },
+    {
+      "id": "name-object-bigint",
+      "outcome": {
+        "commands": [
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "object"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "1:1"
+            },
+            "description": "first",
+            "handlerIdentity": true
+          },
+          {
+            "keys": [
+              "name",
+              "handler",
+              "description",
+              "invocationName"
+            ],
+            "name": {
+              "type": "object"
+            },
+            "invocationName": {
+              "type": "string",
+              "value": "1:2"
+            },
+            "description": "second",
+            "handlerIdentity": true
+          }
+        ]
+      },
+      "trace": [
+        [
+          "get",
+          0,
+          1,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "get",
+          0,
+          2,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "get",
+          1,
+          1,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "get",
+          0,
+          3,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "name.primitive",
+          "string"
+        ],
+        [
+          "get",
+          1,
+          2,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "get",
+          0,
+          4,
+          {
+            "type": "object"
+          }
+        ],
+        [
+          "name.primitive",
+          "string"
+        ]
+      ],
+      "constructed": 2
+    }
+  ]
+}
