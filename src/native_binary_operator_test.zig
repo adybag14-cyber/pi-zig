@@ -1,6 +1,7 @@
 const std = @import("std");
 const js = @import("extensions/native_js_values.zig");
 const c = js.c;
+const image_math = @import("extensions/native_image_arithmetic.zig");
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     if (argc != 3) return c.JS_ThrowTypeError(context, "Expected operation and two operands");
     var operation: i32 = 0;
@@ -21,4 +22,12 @@ test "native binary operators preserve guest coercion BigInt exception and borro
         \\const cause={original:true};try{nativeBinary(2,{valueOf(){throw cause}},2);throw Error('missing original exception')}catch(error){if(error!==cause)throw error}
     , "native-binary-operators", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(result);
+    const dimension = c.JS_NewInt32(engine.context, 5);
+    const limit = c.JS_NewInt32(engine.context, 4);
+    const divisor = c.JS_NewInt32(engine.context, 8);
+    const scaled = try image_math.scaleDimension(engine, dimension, limit, divisor);
+    defer engine.freeValue(scaled);
+    var numeric: f64 = 0;
+    if (c.JS_ToFloat64(engine.context, &numeric, scaled) < 0) return js.capture(engine);
+    try std.testing.expectEqual(@as(f64, 3), numeric);
 }
