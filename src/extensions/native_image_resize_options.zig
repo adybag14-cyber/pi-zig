@@ -35,12 +35,12 @@ pub fn serializeForWorker(engine: *js.Engine, options: c.JSValue) !Serialized {
     const bytes = c.JS_WriteObject2(engine.context, &size, cloned, c.JS_WRITE_OBJ_REFERENCE | c.JS_WRITE_OBJ_SAB, &table);
     if (bytes == null) return js.capture(engine);
     defer c.js_free(engine.context, bytes);
-    defer c.js_free(engine.context, table.tab);
+    defer c.js_free(engine.context, @ptrCast(table.tab));
     const encoded = try engine.gpa.dupe(u8, bytes[0..size]);
     errdefer engine.gpa.free(encoded);
     const shared = try engine.gpa.alloc(?*anyopaque, table.len);
     for (shared, 0..) |*buffer, index| {
-        buffer.* = table.tab[index];
+        buffer.* = @ptrCast(table.tab[index]);
         c.pi_js_retain_shared_buffer(buffer.*);
     }
     return .{ .bytes = encoded, .shared = shared };

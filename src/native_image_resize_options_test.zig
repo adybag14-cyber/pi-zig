@@ -32,14 +32,14 @@ fn sharedTransport(gpa: std.mem.Allocator) !void {
     , "image-shared-options-target", c.JS_EVAL_TYPE_GLOBAL);
     target.freeValue(check);
 }
-test "native image serialized shared options own backing across duplicate transport and source VM retirement" {
+test "native image worker option shared backing survives duplicate transport and source VM retirement" {
     const buffers = c.pi_js_shared_buffer_allocations();
     const owners = c.pi_js_native_memory_owners();
     try sharedTransport(std.testing.allocator);
     try std.testing.expectEqual(buffers, c.pi_js_shared_buffer_allocations());
     try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
 }
-test "native image shared transport duplication releases every failed host allocation and backing owner" {
+test "native image worker option shared duplication releases every failed host allocation and backing owner" {
     const buffers = c.pi_js_shared_buffer_allocations();
     const owners = c.pi_js_native_memory_owners();
     try std.testing.checkAllAllocationFailures(std.testing.allocator, sharedTransport, .{});
