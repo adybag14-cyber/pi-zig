@@ -579,7 +579,19 @@ fn publicOpenLifecycleExercise(gpa: std.mem.Allocator) !void {
         \\const controller=new AbortController(),cancelled=Harness.open(storage(),options,{abortSignal:controller.signal});controller.abort(reason);try{await cancelled;throw Error('cancelled open succeeded')}catch(error){if(error!==reason)throw error}
         \\const broken=storage();broken.scanTasks=async()=>{throw failure};try{await Harness.open(broken,options,context);throw Error('failed open succeeded')}catch(error){if(error!==failure)throw error}
         \\if(closes!==3||reports!==1)throw Error('public open lifecycle '+closes+'/'+reports);
-    , "public-open-lifecycle-allocation-fixture") catch |err| return engine.nativeAllocationError(err, generation);
+    , "public-open-lifecycle-allocation-fixture") catch |err| {
+        const classified = engine.nativeAllocationError(err, generation);
+        if (classified != error.OutOfMemory) {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            const captured = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else c.pi_js_undefined();
+            defer engine.freeValue(captured);
+            const same_native = if (engine.native_allocation_exception) |value| c.JS_IsStrictEqual(engine.context, captured, value) else false;
+            const raw = c.JS_ToCString(engine.context, captured);
+            defer if (raw != null) c.JS_FreeCString(engine.context, raw);
+            std.debug.print("Public-open GPA cause fail_index={d} alloc_index={d} err={s} native_generation={d}->{d} same_native={} owner_thread={d} exception={s}\n", .{ failing.fail_index, failing.alloc_index, @errorName(classified), generation, engine.native_allocation_generation, same_native, std.Thread.getCurrentId(), if (raw) |bytes| std.mem.span(bytes) else "<conversion failed>" });
+        }
+        return classified;
+    };
     engine.freeValue(result);
 }
 
