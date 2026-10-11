@@ -689,6 +689,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, e6_input_entry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(e6_input_entry_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-e6-input-entry", "Replay actual upstream input entries with a held public user provider and queued reset fence").dependOn(&b.addRunArtifact(e6_input_entry_tests).step);
+    const latest_compaction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_89_compaction_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable actual 89 compaction failure public contract"} });
+    linkQuickJs(b, latest_compaction_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(latest_compaction_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-89-compaction", "Replay actual latest blocking compaction failure, persistent live state and produced-summary cleanup").dependOn(&b.addRunArtifact(latest_compaction_tests).step);
+    const inspection_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_inspection_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable inspection timestamp comparison"} });
+    b.step("test-native-durable-inspection-comparison", "Reject missing malformed out-of-bounds or unstable actual inspection timestamps").dependOn(&b.addRunArtifact(inspection_comparison_tests).step);
+    const summary_transcript_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_summary_transcript_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"latest89 serializer"} });
+    b.step("test-native-summary-transcript-source", "Compare both native agent summary callers with actual latest canonical message captures").dependOn(&b.addRunArtifact(summary_transcript_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, ea_nested_tests.root_module, typescript_parser);

@@ -9,7 +9,7 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null, on_report: ?c.JSValue = null };
-const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch, taskGraph, watchTaskGraph };
+const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context, submit, submission, compact, reset, viewState, watch, taskGraph, watchTaskGraph, inspect };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
 }
@@ -139,7 +139,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     errdefer engine.freeValue(result);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle, .agent, .configure, .context, .submit, .compact, .reset, .viewState, .watch } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState, .resolveAgent, .submission, .taskGraph, .watchTaskGraph };
+    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle, .agent, .configure, .context, .submit, .compact, .reset, .viewState, .watch } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState, .resolveAgent, .submission, .taskGraph, .watchTaskGraph, .inspect };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
@@ -148,6 +148,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     if (conversation) |id| {
         if (c.JS_DefinePropertyValueStr(engine.context, result, "id", c.JS_NewInt64(engine.context, @intCast(id)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     } else {
+        try sdk.put(engine, result, "storage", c.JS_DupValue(engine.context, (try durable.state(engine, session)).parent));
         const cache_atom = c.JS_NewAtom(engine.context, "documentCacheSizes");
         defer c.JS_FreeAtom(engine.context, cache_atom);
         if (cache_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
@@ -251,6 +252,7 @@ fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []con
         return @import("native_durable_submission_handle.zig").submit(engine, self.session, self.options, id, argument(args, 0), argument(args, 1));
     }
     if (operation == .submission) return @import("native_durable_submission_handle.zig").get(engine, self.session, self.options, argument(args, 0), argument(args, 1));
+    if (operation == .inspect) return @import("native_durable_inspection.zig").inspect(engine, receiver, self.session, self.options, argument(args, 0));
     if (operation == .compact or operation == .reset) {
         const id = c.JS_NewInt64(engine.context, @intCast(self.conversation.?));
         defer engine.freeValue(id);

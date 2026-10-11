@@ -9,7 +9,7 @@ const broker_mod = @import("native_durable_broker.zig");
 const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-const Op = enum { mintId, commit, conversation, task, submission, entry, document, findDocument, findLatestHeadMarker, submissionByRequest, scanConversations, scanTasks, scanSubmissions, scanEntries, scanDocuments };
+const Op = enum { mintId, commit, conversation, task, submission, entry, document, findDocument, findLatestHeadMarker, submissionByRequest, scanConversations, scanTasks, scanSubmissions, scanEntries, scanDocuments, queuedConversationIds };
 pub const Adapter = struct {
     engine: *Engine,
     owner: std.Thread.Id,
@@ -90,7 +90,7 @@ pub const Adapter = struct {
     fn from(raw: ?*anyopaque) *Adapter {
         return @ptrCast(@alignCast(raw.?));
     }
-    const vtable: backend.Custom.VTable = .{ .mintId = mintId, .commitAt = commitAt, .snapshot = snapshot, .readRecord = readRecord, .readTableRecord = readTableRecord, .readEntry = readEntry, .readDocument = readDocument, .scan = scan, .findDocument = findDocument, .sourceScan = sourceScan, .latestHeadMarker = latestHeadMarker, .submissionByRequest = submissionByRequest };
+    const vtable: backend.Custom.VTable = .{ .mintId = mintId, .commitAt = commitAt, .snapshot = snapshot, .readRecord = readRecord, .readTableRecord = readTableRecord, .readEntry = readEntry, .readDocument = readDocument, .scan = scan, .findDocument = findDocument, .sourceScan = sourceScan, .latestHeadMarker = latestHeadMarker, .submissionByRequest = submissionByRequest, .queuedConversationIds = queuedConversationIds };
     fn request(self: *Adapter, gpa: std.mem.Allocator, op: Op, args: []const json.Value) !json.Owned {
         var payload = try json.Owned.empty(gpa);
         defer payload.deinit();
@@ -110,6 +110,7 @@ pub const Adapter = struct {
     fn dispatch(self: *Adapter, payload: json.Value, context: c.JSValue) !json.Owned {
         std.debug.assert(std.Thread.getCurrentId() == self.owner);
         const op = std.meta.stringToEnum(Op, try json.asString(try json.required(payload, "op"))) orelse return error.InvalidStorageOperation;
+        if (op == .queuedConversationIds) return self.queuedConversationIdsOnOwner(context) catch |err| return self.storageError(op, context, err);
         const encoded = try json.required(payload, "args");
         const args = try self.engine.gpa.alloc(c.JSValue, encoded.array.items.len + 1);
         defer self.engine.gpa.free(args);
@@ -157,6 +158,67 @@ pub const Adapter = struct {
                 try self.adoptRecord(table, record, 0);
             };
         }
+        return result;
+    }
+    fn queuedConversationIds(raw: ?*anyopaque, gpa: std.mem.Allocator) !json.Owned {
+        return from(raw).request(gpa, .queuedConversationIds, &.{});
+    }
+    fn queuedConversationIdsOnOwner(self: *Adapter, context: c.JSValue) !json.Owned {
+        const engine = self.engine;
+        var result = try json.Owned.empty(engine.gpa);
+        errdefer result.deinit();
+        result.value = .{ .array = .init(result.arena.allocator()) };
+        var seen: std.AutoArrayHashMapUnmanaged(u64, void) = .empty;
+        defer seen.deinit(engine.gpa);
+        var cursor = c.pi_js_undefined();
+        defer engine.freeValue(cursor);
+        while (true) {
+            if (self.session) |native| {
+                try durable.assertVMHealthy(native);
+                if (native.session.?.storage.closing.load(.acquire)) return error.SessionClosed;
+            }
+            // Source creates this query anew for each page. Keep only the
+            // current raw cursor rooted on its VM owner, including at close.
+            const filters = try sdk.object(engine);
+            defer engine.freeValue(filters);
+            try sdk.put(engine, filters, "status", try sdk.text(engine, "queued"));
+            const page = try self.invokeGuardedRead(.scanSubmissions, &.{ filters, c.JS_NewInt32(engine.context, 256), cursor, context }, context);
+            defer engine.freeValue(page);
+            if (self.session) |native| try durable.assertVMHealthy(native);
+            const items = try sdk.get(engine, page, "items");
+            defer engine.freeValue(items);
+            var values = try durable.owned(engine, items);
+            defer values.deinit();
+            for (values.value.array.items) |submission| {
+                if (!std.mem.eql(u8, try json.asString(try json.required(submission, "type")), "input")) continue;
+                try seen.put(engine.gpa, try json.asInteger(try json.required(submission, "conversationId")), {});
+            }
+            const next = try sdk.get(engine, page, "next");
+            engine.freeValue(cursor);
+            cursor = next;
+            if (c.JS_IsUndefined(cursor)) break;
+        }
+        for (seen.keys()) |id| try result.value.array.append(.{ .integer = @intCast(id) });
+        return result;
+    }
+    fn invokeGuardedRead(self: *Adapter, op: Op, args: []const c.JSValue, context: c.JSValue) !c.JSValue {
+        const native = self.session orelse return self.invoke(op, args);
+        const storage = &native.session.?.storage;
+        try durable.assertVMHealthy(native);
+        if (storage.closing.load(.acquire)) return error.SessionClosed;
+        _ = storage.underway.fetchAdd(1, .acq_rel);
+        defer {
+            _ = storage.underway.fetchSub(1, .acq_rel);
+            native.session.?.io.futexWake(u32, &storage.underway.raw, std.math.maxInt(u32));
+        }
+        try durable.assertVMHealthy(native);
+        if (storage.closing.load(.acquire)) return error.SessionClosed;
+        const result = self.invoke(op, args) catch |err| {
+            try durable.assertVMHealthy(native);
+            return self.storageError(op, context, err);
+        };
+        errdefer self.engine.freeValue(result);
+        try durable.assertVMHealthy(native);
         return result;
     }
     fn invoke(self: *Adapter, op: Op, args: []const c.JSValue) !c.JSValue {

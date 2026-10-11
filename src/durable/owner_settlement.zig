@@ -1,9 +1,22 @@
 //! A worker retains its ORIGINAL Session line until the owner acknowledges its
-//! post-Transaction cache settlement. No JS values cross this channel. Closing
+//! owner settlement. A dedicated caller may instead retain its still-active
+//! Transaction for pre-Storage cleanup. No JS values cross this channel. Closing
 //! queued requests releases their workers; an admitted owner callback keeps its
 //! lease until it returns, even when close reenters that callback.
 const std = @import("std");
-pub const Lease = struct { owner_generation: u64, worker_thread: std.Thread.Id, line_epoch: u32, success: bool };
+pub const Cleanup = struct {
+    transaction: *@import("session.zig").Transaction,
+    record: @import("backend/json.zig").Value,
+    outcome: @import("backend/json.zig").Value,
+};
+pub const FaultMessage = struct {
+    transaction: *@import("session.zig").Transaction,
+    invocation_key: usize,
+    task_id: u64,
+    phase_generation: u64,
+    message: ?@import("backend/json.zig").Owned = null,
+};
+pub const Lease = struct { owner_generation: u64, worker_thread: std.Thread.Id, line_epoch: u32, success: bool, cleanup: ?*const Cleanup = null, fault_message: ?*FaultMessage = null };
 pub const Dispatch = *const fn (?*anyopaque, Lease) anyerror!void;
 pub const Notify = struct { context: ?*anyopaque = null, call: ?*const fn (?*anyopaque) void = null };
 const Request = struct {
@@ -120,6 +133,83 @@ pub const Channel = struct {
         }
     }
 };
+
+test "owner settlement cleanup retains an active original Transaction until owner mutation and reentrant close finish" {
+    try cleanupExecutionExercise(false);
+    try cleanupExecutionExercise(true);
+}
+fn cleanupExecutionExercise(reject: bool) !void {
+    const backend = @import("backend/root.zig");
+    const session_mod = @import("session.zig");
+    var store = try backend.memory.Memory.init(std.testing.allocator);
+    defer store.deinit();
+    var session = session_mod.Session.init(std.testing.allocator, std.testing.io, .{ .memory = &store });
+    defer session.deinit();
+    var channel = Channel.init(std.testing.io, 77, .{});
+    defer channel.deinit();
+    const Probe = struct {
+        session: *session_mod.Session,
+        channel: *Channel,
+        returned: std.atomic.Value(bool) = .init(false),
+        failure: ?anyerror = null,
+        reject: bool,
+        restored: bool = false,
+        fn operation(raw: ?*anyopaque, tx: *session_mod.Transaction, _: @import("types.zig").Context) !backend.json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            var frame: Cleanup = .{ .transaction = tx.retain(), .record = .null, .outcome = .null };
+            defer frame.transaction.release();
+            self.channel.call(.{ .owner_generation = 77, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.session.line_epoch.load(.acquire), .success = true, .cleanup = &frame }) catch |err| {
+                self.restored = tx.active and tx.ownerThread == std.Thread.getCurrentId() and self.session.ownerThread.load(.acquire) == std.Thread.getCurrentId();
+                return err;
+            };
+            self.restored = tx.active and tx.ownerThread == std.Thread.getCurrentId() and self.session.ownerThread.load(.acquire) == std.Thread.getCurrentId();
+            return .null;
+        }
+        fn run(self: *@This()) void {
+            var result = self.session.commit(operation, self, .{}, .{}) catch |err| {
+                self.failure = err;
+                self.returned.store(true, .release);
+                return;
+            };
+            result.deinit();
+            self.returned.store(true, .release);
+        }
+        fn owner(raw: ?*anyopaque, lease: Lease) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const tx = lease.cleanup.?.transaction;
+            try std.testing.expect(tx.active and tx.session == self.session);
+            try std.testing.expectEqual(lease.worker_thread, self.session.ownerThread.load(.acquire));
+            try std.testing.expectEqual(lease.line_epoch, self.session.line_epoch.load(.acquire));
+            try std.testing.expect(self.session.mutex.tryLock());
+            self.session.mutex.unlock(self.session.io);
+            try std.testing.expect(self.session.storage.backend_mutex.tryLock());
+            self.session.storage.backend_mutex.unlock(self.session.io);
+            try std.testing.expectError(error.WrongDelegatedTransactionOwner, tx.delegateOwner(lease.worker_thread, lease.worker_thread, lease.line_epoch));
+            try std.testing.expectError(error.StaleTransactionOwnerLine, tx.delegateOwner(std.Thread.getCurrentId(), lease.worker_thread, lease.line_epoch +% 1));
+            const execution = try tx.delegateOwner(std.Thread.getCurrentId(), lease.worker_thread, lease.line_epoch);
+            defer execution.restore();
+            _ = try tx.createRootConversation();
+            self.channel.close();
+            try std.testing.expect(tx.active);
+            try std.testing.expect(!self.returned.load(.acquire));
+            if (self.reject) return error.OriginalCleanupFailure;
+        }
+    };
+    var probe: Probe = .{ .session = &session, .channel = &channel, .reject = reject };
+    const worker = try std.Thread.spawn(.{}, Probe.run, .{&probe});
+    defer worker.join();
+    while (channel.pending() == 0 and !probe.returned.load(.acquire)) std.atomic.spinLoopHint();
+    try std.testing.expect(try channel.drain(Probe.owner, &probe));
+    while (!probe.returned.load(.acquire)) std.atomic.spinLoopHint();
+    try std.testing.expect(probe.restored);
+    if (reject) {
+        try std.testing.expectEqual(error.OriginalCleanupFailure, probe.failure.?);
+    } else {
+        if (probe.failure) |err| std.debug.print("Actual active cleanup worker error: {s}\n", .{@errorName(err)});
+        try std.testing.expect(probe.failure == null);
+    }
+    try std.testing.expectEqual(@as(usize, if (reject) 0 else 1), store.state.rows.count());
+}
 
 test "owner settlement keeps admitted worker lease through reentrant close and rejects stale owners" {
     const io = std.testing.io;

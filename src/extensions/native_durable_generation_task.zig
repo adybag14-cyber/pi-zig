@@ -160,8 +160,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
             const pending = try scope.invoke(runtime, "outcomes", &.{ ids, try scope.get(state, "context") });
             return wait(engine, state, pending, 14);
         }
-        const pending = try scope.invoke(runtime, "context", &.{ try scope.get(runtime, "conversationId"), try scope.get(state, "context") });
-        return wait(engine, state, pending, 6);
+        return contextAfterCompaction(engine, state);
     }
     if (stage == 6) {
         try put(engine, state, "view", value);
@@ -208,6 +207,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         try put(engine, checkpoint, "phase", try scope.text("prepare"));
         try put(engine, checkpoint, "attempt", try scope.get(try scope.get(state, "checkpoint"), "attempt"));
         try put(engine, checkpoint, "compacted", value);
+        try put(engine, checkpoint, "threshold", c.pi_js_bool(engine.context, 1));
         const on = try scope.own(try vm.array(engine));
         try js.push(engine, on, value);
         const next = try vm.object(engine);
@@ -239,6 +239,15 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         }
         if (!succeeded) {
             try put(engine, state, "failureMessage", try scope.get(try scope.get(state, "checkpoint"), "overflow"));
+            try put(engine, state, "failureReason", try scope.text("model_error"));
+            return fail(engine, state);
+        }
+        return contextAfterCompaction(engine, state);
+    }
+    if (stage == 31) {
+        const outcome = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, value, 0)));
+        if (!c.JS_IsUndefined(outcome) and !c.JS_IsStrictEqual(engine.context, try scope.get(outcome, "status"), try scope.text("completed"))) {
+            try put(engine, state, "failureMessage", try scope.own(try compactionFailure(engine, outcome)));
             try put(engine, state, "failureReason", try scope.text("model_error"));
             return fail(engine, state);
         }
@@ -405,6 +414,29 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         return classify(engine, &intrinsics, try scope.get(state, "runtime"), try scope.get(state, "context"), try scope.get(state, "liveToken"), request_value, value);
     }
     return error.InvalidGenerationContinuation;
+}
+fn contextAfterCompaction(engine: *Engine, state: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const runtime = try scope.get(state, "runtime");
+    const checkpoint = try scope.get(state, "checkpoint");
+    const compacted = try scope.get(checkpoint, "compacted");
+    if (!c.JS_IsUndefined(compacted) and c.JS_IsStrictEqual(engine.context, try scope.get(checkpoint, "threshold"), c.pi_js_bool(engine.context, 1))) {
+        const ids = try scope.own(try vm.array(engine));
+        try js.push(engine, ids, compacted);
+        const pending = try scope.invoke(runtime, "outcomes", &.{ ids, try scope.get(state, "context") });
+        return wait(engine, state, pending, 31);
+    }
+    const pending = try scope.invoke(runtime, "context", &.{ try scope.get(runtime, "conversationId"), try scope.get(state, "context") });
+    return wait(engine, state, pending, 6);
+}
+fn compactionFailure(engine: *Engine, outcome: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const status = try scope.get(outcome, "status");
+    if (c.JS_IsStrictEqual(engine.context, status, try scope.text("aborted"))) return engine.checked(c.JS_NewString(engine.context, "Compaction was aborted"));
+    const message = if (c.JS_IsStrictEqual(engine.context, status, try scope.text("failed")) or c.JS_IsStrictEqual(engine.context, status, try scope.text("faulted"))) try scope.get(try scope.get(outcome, "error"), "message") else if (c.JS_IsStrictEqual(engine.context, status, try scope.text("orphaned"))) try scope.get(outcome, "reason") else return c.pi_js_undefined();
+    return @import("native_utf16.zig").concat(engine, &.{ try scope.text("Compaction failed: "), message });
 }
 pub fn failNoModel(engine: *Engine, intrinsics: *awaiting.Intrinsics, runtime: c.JSValue, context: c.JSValue, live_token: c.JSValue, ref: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

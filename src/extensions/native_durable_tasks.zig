@@ -14,6 +14,8 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Migration = struct { key: []u8, value: ?json.Owned };
+const MigrationFailure = struct { token: c.JSValue, reason: c.JSValue };
+const PhaseFailure = struct { runtime: scheduling.Runtime, generation: u64, reason: c.JSValue };
 const NativeDefinition = struct { manager: *Manager, id: usize, migrations: std.ArrayList(Migration) = .empty };
 const Definition = struct { native: *NativeDefinition, token: c.JSValue };
 const Event = struct {
@@ -99,6 +101,7 @@ pub const Manager = struct {
     scheduler: scheduling.Scheduler,
     broker: broker_mod.Broker,
     settlement: ?settlement_mod.Channel = null,
+    outcome_settlement: ?settlement_mod.Channel = null,
     native_owner: ?*durable.State = null,
     settling_cache: bool = false,
     settling_contexts: bool = false,
@@ -106,6 +109,9 @@ pub const Manager = struct {
     context_expiry: ?struct { at: f64, timer: c.JSValue, generation: u64 } = null,
     next_context_expiry: u64 = 1,
     definitions: std.ArrayList(Definition) = .empty,
+    migration_errors: std.AutoHashMapUnmanaged(u64, MigrationFailure) = .{},
+    phase_failures: std.AutoHashMapUnmanaged(usize, PhaseFailure) = .{},
+    preparing_migrations: bool = false,
     ledger: std.ArrayList(*Entry) = .empty,
     events: std.ArrayList(Event) = .empty,
     mutex: std.Io.Mutex = .init,
@@ -198,17 +204,20 @@ pub const Manager = struct {
         }
         self.native_owner = null;
     }
-    fn retain(self: *Manager) *Manager {
+    pub fn retain(self: *Manager) *Manager {
         _ = self.refs.fetchAdd(1, .monotonic);
         return self;
     }
-    fn release(self: *Manager) void {
+    pub fn release(self: *Manager) void {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0 and self.first_phase == null and self.active_dispatches == 0);
         self.detachSettlement();
         if (self.settlement) |*channel| channel.deinit();
+        if (self.outcome_settlement) |*channel| channel.deinit();
         if (self.context_broker) |*owner| owner.deinit();
         self.task_aborts.deinit(self.engine);
+        self.clearPhaseFailures();
+        self.phase_failures.deinit(self.engine.gpa);
         self.scheduler.deinit();
         self.abort_controls.deinit(self.engine);
         for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
@@ -226,6 +235,12 @@ pub const Manager = struct {
             self.engine.gpa.destroy(definition.native);
         }
         self.definitions.deinit(self.engine.gpa);
+        var migration_errors = self.migration_errors.valueIterator();
+        while (migration_errors.next()) |failure| {
+            self.engine.freeValue(failure.token);
+            self.engine.freeValue(failure.reason);
+        }
+        self.migration_errors.deinit(self.engine.gpa);
         for (self.events.items) |*event| event.deinit();
         self.events.deinit(std.heap.page_allocator);
         self.ledger.deinit(std.heap.page_allocator);
@@ -258,9 +273,16 @@ pub const Manager = struct {
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
     }
     fn start(self: *Manager) !void {
-        if (self.closed or !self.enabled or self.thread != null) return;
+        if (self.closed or !self.enabled or self.thread != null or self.preparing_migrations) return;
+        // Migration/report callbacks may close the public Harness. Retain the
+        // Manager until those callbacks unwind and recheck admission before
+        // creating a worker for that same incarnation.
+        _ = self.retain();
+        defer self.release();
         try self.updateClock();
+        if (self.closed) return;
         try self.prepareMigrations();
+        if (self.closed) return;
         const requested = self.drive_requested;
         self.drive_requested = false;
         errdefer self.drive_requested = requested;
@@ -273,18 +295,21 @@ pub const Manager = struct {
         };
     }
     fn prepareMigrations(self: *Manager) !void {
-        var snapshot = try self.lease.value.storage.snapshot(self.engine.gpa);
-        defer snapshot.destroy(self.engine.gpa);
-        var rows = snapshot.rows.iterator();
-        while (rows.next()) |row| {
-            if (row.value_ptr.table != .task) continue;
-            const record = row.value_ptr.record;
+        self.preparing_migrations = true;
+        defer self.preparing_migrations = false;
+        const snapshot = c.JS_DupValue(self.engine.context, self.snapshot);
+        defer self.engine.freeValue(snapshot);
+        const ids = try self.engine.gpa.dupe(u64, self.scheduler.live_order.items);
+        defer self.engine.gpa.free(ids);
+        for (ids) |id| {
+            if (self.closed) return;
+            const record = (self.scheduler.live_records.get(id) orelse continue).value;
             const status = try json.asString(try json.required(try json.required(record, "state"), "status"));
             if (std.mem.eql(u8, status, "terminal") or std.mem.eql(u8, status, "completing")) continue;
             const name = try json.asString(try json.required(record, "kind"));
             const current = try sdk.text(self.engine, name);
             defer self.engine.freeValue(current);
-            const token = try sdk.invoke(self.engine, self.snapshot, "task", &.{current});
+            const token = try sdk.invoke(self.engine, snapshot, "task", &.{current});
             defer self.engine.freeValue(token);
             if (c.JS_IsUndefined(token)) continue;
             for (self.definitions.items) |definition| {
@@ -297,10 +322,9 @@ pub const Manager = struct {
                 if (try durable.number(self.engine, version) <= from) continue;
                 const callback = try sdk.get(self.engine, object, "migrate");
                 defer self.engine.freeValue(callback);
-                if (!c.JS_IsFunction(self.engine.context, callback)) continue;
                 const input = try json.required(record, "input");
                 const checkpoint = try json.required(try json.required(record, "state"), "checkpoint");
-                const key = try migrationKey(self.engine.gpa, input, checkpoint, from);
+                const key = try migrationKey(self.engine.gpa, id, input, checkpoint, from);
                 var known = false;
                 for (definition.native.migrations.items) |migration| if (std.mem.eql(u8, migration.key, key)) {
                     known = true;
@@ -312,27 +336,61 @@ pub const Manager = struct {
                 }
                 errdefer self.engine.gpa.free(key);
                 try definition.native.migrations.ensureUnusedCapacity(self.engine.gpa, 1);
+                try self.migration_errors.ensureUnusedCapacity(self.engine.gpa, 1);
                 const input_value = try durable.jsValue(self.engine, input);
                 defer self.engine.freeValue(input_value);
                 const checkpoint_value = try durable.jsValue(self.engine, checkpoint);
                 defer self.engine.freeValue(checkpoint_value);
                 var args = [_]c.JSValue{ input_value, checkpoint_value, c.JS_NewInt64(self.engine.context, @intCast(from)) };
-                const result = c.JS_Call(self.engine.context, callback, object, args.len, &args);
                 var prepared: ?json.Owned = null;
-                if (c.JS_IsException(result)) {
-                    const exception = c.JS_GetException(self.engine.context);
-                    self.engine.freeValue(exception);
+                if (c.JS_IsUndefined(callback)) {
+                    const exception = try @import("native_durable_inspection.zig").missingMigration(self.engine, current, version, c.JS_NewInt64(self.engine.context, @intCast(from)));
+                    defer self.engine.freeValue(exception);
+                    try self.rememberMigrationFailure(id, token, exception);
                 } else {
-                    defer self.engine.freeValue(result);
-                    prepared = try durable.owned(self.engine, result);
+                    const result = c.JS_Call(self.engine.context, callback, object, args.len, &args);
+                    if (c.JS_IsException(result)) {
+                        const exception = c.JS_GetException(self.engine.context);
+                        defer self.engine.freeValue(exception);
+                        try self.rememberMigrationFailure(id, token, exception);
+                    } else {
+                        defer self.engine.freeValue(result);
+                        prepared = prepareMigrationResult(self.engine, result) catch |err| failed: {
+                            const reason = if (err == error.JavaScriptException) c.JS_DupValue(self.engine.context, self.engine.captured_exception orelse return err) else native: {
+                                _ = durable.reject(self.engine, err);
+                                break :native c.JS_GetException(self.engine.context);
+                            };
+                            defer self.engine.freeValue(reason);
+                            try self.rememberMigrationFailure(id, token, reason);
+                            break :failed null;
+                        };
+                    }
                 }
                 definition.native.migrations.appendAssumeCapacity(.{ .key = key, .value = prepared });
             }
         }
     }
-    fn migrate(raw: ?*anyopaque, allocator: std.mem.Allocator, input: json.Value, checkpoint: json.Value, from: u64) !scheduling.Migrated {
+    fn rememberMigrationFailure(self: *Manager, id: u64, token: c.JSValue, reason: c.JSValue) !void {
+        const slot = try self.migration_errors.getOrPut(self.engine.gpa, id);
+        if (slot.found_existing) {
+            self.engine.freeValue(slot.value_ptr.token);
+            self.engine.freeValue(slot.value_ptr.reason);
+        }
+        slot.value_ptr.* = .{ .token = c.JS_DupValue(self.engine.context, token), .reason = c.JS_DupValue(self.engine.context, reason) };
+        if (self.native_owner) |native| if (native.creation_owner) |harness| @import("native_durable_harness.zig").reportFailure(self.engine, harness, reason);
+    }
+    pub fn inspectionMigrationError(self: *Manager, id: u64, token: c.JSValue) ?c.JSValue {
+        const failure = self.migration_errors.get(id) orelse return null;
+        return if (c.JS_IsStrictEqual(self.engine.context, failure.token, token)) failure.reason else null;
+    }
+    pub fn inspectionSnapshot(self: *Manager) !json.Owned {
+        const storage_context = @import("native_durable_storage.zig").withContext(self.native_owner.?, self.context);
+        defer storage_context.restore();
+        return self.scheduler.inspectionSnapshot(self.engine.gpa);
+    }
+    fn migrate(raw: ?*anyopaque, allocator: std.mem.Allocator, id: u64, input: json.Value, checkpoint: json.Value, from: u64) !scheduling.Migrated {
         const self: *NativeDefinition = @ptrCast(@alignCast(raw.?));
-        const key = try migrationKey(std.heap.page_allocator, input, checkpoint, from);
+        const key = try migrationKey(std.heap.page_allocator, id, input, checkpoint, from);
         defer std.heap.page_allocator.free(key);
         for (self.migrations.items) |migration| if (std.mem.eql(u8, migration.key, key)) {
             const value = migration.value orelse return error.TaskMigrationFailed;
@@ -555,6 +613,113 @@ pub const Manager = struct {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         try self.settleReserved(lease);
     }
+    fn settleSchedulerOutcome(raw: ?*anyopaque, tx: *session_mod.Transaction, record: json.Value, outcome: json.Value) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        // The new latest compaction fault/orphan contract is admitted inside
+        // this original active Transaction, before Storage or publication.
+        if (!std.mem.eql(u8, try json.asString(try json.required(record, "kind")), "pi.compaction")) return;
+        if (std.Thread.getCurrentId() == self.broker.owner) return self.cleanupOutcome(tx, record, outcome);
+        var payload = try json.Owned.empty(std.heap.page_allocator);
+        defer payload.deinit();
+        const a = payload.arena.allocator();
+        const copied_record = try json.clone(a, record);
+        const copied_outcome = try json.clone(a, outcome);
+        var frame: settlement_mod.Cleanup = .{ .transaction = tx.retain(), .record = copied_record, .outcome = copied_outcome };
+        defer frame.transaction.release();
+        try self.outcome_settlement.?.call(.{ .owner_generation = self.generation, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.lease.value.line_epoch.load(.acquire), .success = true, .cleanup = &frame });
+    }
+    fn cleanupDispatch(raw: ?*anyopaque, lease: settlement_mod.Lease) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        try self.validateSettlement(lease);
+        const tx = if (lease.cleanup) |frame| frame.transaction else if (lease.fault_message) |frame| frame.transaction else return error.MissingOutcomeCleanupFrame;
+        if (tx.session != &self.lease.value or !tx.active) return error.OutcomeCleanupOutsideOriginalTransaction;
+        const execution = try tx.delegateOwner(self.broker.owner, lease.worker_thread, lease.line_epoch);
+        defer execution.restore();
+        if (lease.cleanup) |frame| try self.cleanupOutcome(tx, frame.record, frame.outcome) else try self.formatPhaseFailure(lease.fault_message.?);
+        try self.validateSettlement(lease);
+        if (!tx.active) return error.OutcomeCleanupTransactionReleased;
+    }
+    fn faultMessage(raw: ?*anyopaque, tx: *session_mod.Transaction, runtime: scheduling.Runtime, _: anyerror) !json.Value {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        var frame: settlement_mod.FaultMessage = .{ .transaction = tx.retain(), .invocation_key = @intFromPtr(runtime.invocation), .task_id = runtime.taskId(), .phase_generation = runtime.failureGeneration() };
+        defer frame.transaction.release();
+        defer if (frame.message) |*message| message.deinit();
+        if (std.Thread.getCurrentId() == self.broker.owner) {
+            try self.formatPhaseFailure(&frame);
+        } else {
+            try self.outcome_settlement.?.call(.{ .owner_generation = self.generation, .worker_thread = std.Thread.getCurrentId(), .line_epoch = self.lease.value.line_epoch.load(.acquire), .success = true, .fault_message = &frame });
+        }
+        return json.clone(tx.owned.arena.allocator(), (frame.message orelse return error.MissingSourceFaultMessage).value);
+    }
+    fn formatPhaseFailure(self: *Manager, frame: *settlement_mod.FaultMessage) !void {
+        errdefer |err| if (err == error.JavaScriptException) {
+            if (self.engine.captured_exception) |reason| if (self.native_owner) |native| durable.captureStorageFailure(native, self.session, reason);
+        };
+        if (self.settling_cache) return error.ReentrantOutcomeCleanup;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
+        const failure = self.phase_failures.get(frame.invocation_key) orelse return error.MissingSourceFaultReason;
+        if (failure.runtime.taskId() != frame.task_id or failure.generation != frame.phase_generation or failure.runtime.failureGeneration() != frame.phase_generation) return error.StaleSourceFaultReason;
+        // Source formats only after Step's terminal/close/cancellation gates.
+        // The actual original reason stays rooted until the worker's decision
+        // and owner callback have both settled; no JS value crosses the line.
+        const message = try @import("native_durable_errors.zig").errorMessage(self.engine, failure.reason);
+        defer self.engine.freeValue(message);
+        var converted = try durable.owned(self.engine, message);
+        defer converted.deinit();
+        var detached = try json.Owned.empty(std.heap.page_allocator);
+        errdefer detached.deinit();
+        detached.value = try json.clone(detached.arena.allocator(), converted.value);
+        frame.message = detached;
+    }
+    fn rememberPhaseFailure(self: *Manager, entry: *Entry, reason: c.JSValue) void {
+        const slot = self.phase_failures.getOrPutAssumeCapacity(@intFromPtr(entry.runtime.invocation));
+        if (slot.found_existing) {
+            self.engine.freeValue(slot.value_ptr.reason);
+            slot.value_ptr.runtime.release();
+        }
+        slot.value_ptr.* = .{ .runtime = entry.runtime.retain(), .generation = entry.generation, .reason = c.JS_DupValue(self.engine.context, reason) };
+        entry.runtime.setFailureGeneration(entry.generation);
+    }
+    fn retirePhaseFailures(self: *Manager) void {
+        var values = self.phase_failures.iterator();
+        while (values.next()) |item| if (item.value_ptr.runtime.isFinished()) {
+            const removed = self.phase_failures.fetchRemove(item.key_ptr.*).?;
+            self.engine.freeValue(removed.value.reason);
+            removed.value.runtime.release();
+        };
+    }
+    fn clearPhaseFailures(self: *Manager) void {
+        var values = self.phase_failures.valueIterator();
+        while (values.next()) |failure| {
+            self.engine.freeValue(failure.reason);
+            failure.runtime.release();
+        }
+        self.phase_failures.clearRetainingCapacity();
+    }
+    fn cleanupOutcome(self: *Manager, tx: *session_mod.Transaction, record: json.Value, outcome: json.Value) !void {
+        errdefer |err| if (err == error.JavaScriptException) {
+            if (self.engine.captured_exception) |reason| durable.captureStorageFailure(self.native_owner.?, self.session, reason);
+        };
+        if (self.settling_cache) return error.ReentrantOutcomeCleanup;
+        self.settling_cache = true;
+        defer self.settling_cache = false;
+        const facade = try durable.transactionObject(self.engine, tx, self.session);
+        defer self.engine.freeValue(facade);
+        const exports = self.engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableModuleUnavailable;
+        const token = try sdk.get(self.engine, exports, "LiveDoc");
+        defer self.engine.freeValue(token);
+        const conversation = c.JS_NewInt64(self.engine.context, @intCast(try json.asInteger(try json.required(record, "conversationId"))));
+        const pending = try sdk.invoke(self.engine, facade, "doc", &.{ token, conversation });
+        defer self.engine.freeValue(pending);
+        const live = try self.engine.awaitValue(pending);
+        defer self.engine.freeValue(live);
+        const message = if (std.mem.eql(u8, try json.asString(try json.required(outcome, "status")), "faulted")) try json.required(try json.required(outcome, "error"), "message") else try json.required(outcome, "reason");
+        const failure = try durable.jsValue(self.engine, message);
+        defer self.engine.freeValue(failure);
+        try @import("native_durable_compaction_status.zig").fail(self.engine, live, c.JS_NewInt64(self.engine.context, @intCast(try json.asInteger(try json.required(record, "id")))), failure);
+        if ((try durable.state(self.engine, facade)).documents) |drafts| try drafts.finish();
+    }
     fn validateSettlement(self: *Manager, lease: settlement_mod.Lease) !void {
         if (std.Thread.getCurrentId() != self.broker.owner or lease.owner_generation != self.generation or self.lease.value.ownerThread.load(.acquire) != lease.worker_thread or self.lease.value.line_epoch.load(.acquire) != lease.line_epoch) return error.StaleDocumentSettlementLease;
     }
@@ -594,6 +759,10 @@ pub const Manager = struct {
         if (self.closed) return;
         const id = try json.asInteger(try json.required(record, "id"));
         if (!try @import("../durable/task_state.zig").live(record)) {
+            if (self.migration_errors.fetchRemove(id)) |removed| {
+                self.engine.freeValue(removed.value.token);
+                self.engine.freeValue(removed.value.reason);
+            }
             if (self.live_task_records.fetchRemove(id)) |removed| {
                 var previous = removed.value;
                 previous.deinit();
@@ -975,6 +1144,12 @@ pub const Manager = struct {
             entry.finishReply(null);
         };
         if (identity.owner_generation != self.generation or self.closed) return error.StaleTaskOwner;
+        // Reserve before guest execution, so retaining a rejected reason never
+        // needs another allocation while a genuine GPA failure is propagating.
+        try self.phase_failures.ensureTotalCapacity(self.engine.gpa, @intCast(self.phase_failures.count() + self.active_dispatches));
+        errdefer |err| if (err == error.JavaScriptException) {
+            if (self.engine.captured_exception) |reason| self.rememberPhaseFailure(entry, reason);
+        };
         // One broker drain can serve consecutive phases before the outer pump
         // runs again. Refresh at this boundary before admitting an old token.
         try self.refreshRegistry();
@@ -1059,6 +1234,7 @@ pub const Manager = struct {
                 defer self.engine.freeValue(reason);
                 _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, reason))) catch {};
                 failure = self.engine.nativeAllocationError(error.JavaScriptException, phase.allocation_generation);
+                if (failure.? == error.JavaScriptException) self.rememberPhaseFailure(phase.entry, reason);
             }
             self.finishPhase(phase, failure);
             worked = true;
@@ -1080,6 +1256,7 @@ pub const Manager = struct {
         if (self.closed) return;
         self.closed = true;
         if (self.settlement) |*channel| channel.close();
+        if (self.outcome_settlement) |*channel| channel.close();
         if (self.context_broker) |*owner| owner.close();
         self.stopContextExpiry();
         self.clearLiveTaskRecords();
@@ -1316,6 +1493,9 @@ const Hub = struct {
             if (manager.settlement) |*channel| if (try channel.drain(Manager.settleDispatch, manager)) {
                 worked = true;
             };
+            if (manager.outcome_settlement) |*channel| if (try channel.drain(Manager.cleanupDispatch, manager)) {
+                worked = true;
+            };
             try Manager.deliver(manager);
             if (try manager.abort_controls.pump(manager)) worked = true;
             if (try manager.task_aborts.pump(manager)) worked = true;
@@ -1331,6 +1511,7 @@ const Hub = struct {
                 manager.thread = null;
                 worked = true;
             }
+            manager.retirePhaseFailures();
             while (true) {
                 manager.mutex.lockUncancelable(manager.lease.value.io);
                 if (manager.events.items.len == 0) {
@@ -1376,6 +1557,7 @@ const Hub = struct {
         const self: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
         for (self.managers.items) |manager| {
             manager.close();
+            manager.clearPhaseFailures();
             manager.mutex.lockUncancelable(manager.lease.value.io);
             for (manager.ledger.items) |entry| entry.release();
             manager.ledger.clearRetainingCapacity();
@@ -1516,16 +1698,18 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
     var context_admitted = false;
     errdefer if (!context_admitted) engine.freeValue(scheduler_context);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .defer_initial_reconcile = true, .after_scope_reads = Manager.awaitScopeReads, .after_reconcile = Manager.reconciledContexts, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .defer_initial_reconcile = true, .after_scope_reads = Manager.awaitScopeReads, .after_reconcile = Manager.reconciledContexts, .fault_message = Manager.faultMessage, .settle_outcome = if (native.creation_owner != null) Manager.settleSchedulerOutcome else null, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
     self.native_owner = native;
     self.settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
+    self.outcome_settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
     self.context_broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
     context_admitted = true;
     errdefer {
         self.closed = true;
         self.detachSettlement();
         self.settlement.?.deinit();
+        self.outcome_settlement.?.deinit();
         self.context_broker.?.deinit();
         self.stopContextExpiry();
         self.clearLiveTaskRecords();
@@ -1639,7 +1823,7 @@ fn loadDefinitions(self: *Manager) !void {
         try self.definitions.ensureUnusedCapacity(engine.gpa, 1);
         const migration = try sdk.get(engine, definition, "migrate");
         defer engine.freeValue(migration);
-        try self.scheduler.register(.{ .name = name, .version = version, .phases = native_phases.items, .abort = Manager.abort, .migrate = if (c.JS_IsFunction(engine.context, migration)) Manager.migrate else null, .context = context });
+        try self.scheduler.register(.{ .name = name, .version = version, .phases = native_phases.items, .abort = Manager.abort, .migrate_task = if (!c.JS_IsUndefined(migration)) Manager.migrate else null, .context = context });
         self.definitions.appendAssumeCapacity(.{ .native = context, .token = token });
     }
 }
@@ -3999,8 +4183,23 @@ test "native durable VM runtime methods retain original invocation through extra
     };
     engine.freeValue(compared);
 }
-fn migrationKey(allocator: std.mem.Allocator, input: json.Value, checkpoint: json.Value, from: u64) ![]u8 {
-    var values = [_]json.Value{ input, checkpoint, .{ .integer = @intCast(from) } };
+fn prepareMigrationResult(engine: *Engine, result: c.JSValue) !json.Owned {
+    const checkpoint = try sdk.get(engine, result, "checkpoint");
+    defer engine.freeValue(checkpoint);
+    const copied_checkpoint = try @import("native_chord_json.zig").copyJson(engine, checkpoint, c.pi_js_undefined());
+    defer engine.freeValue(copied_checkpoint);
+    const input = try sdk.get(engine, result, "input");
+    defer engine.freeValue(input);
+    const copied_input = try @import("native_chord_json.zig").copyJson(engine, input, c.pi_js_undefined());
+    defer engine.freeValue(copied_input);
+    const selected = try sdk.object(engine);
+    defer engine.freeValue(selected);
+    try sdk.put(engine, selected, "input", c.JS_DupValue(engine.context, copied_input));
+    try sdk.put(engine, selected, "checkpoint", c.JS_DupValue(engine.context, copied_checkpoint));
+    return durable.owned(engine, selected);
+}
+fn migrationKey(allocator: std.mem.Allocator, id: u64, input: json.Value, checkpoint: json.Value, from: u64) ![]u8 {
+    var values = [_]json.Value{ .{ .integer = @intCast(id) }, input, checkpoint, .{ .integer = @intCast(from) } };
     return json.stringify(allocator, .{ .array = std.array_list.Managed(json.Value).fromOwnedSlice(allocator, &values) });
 }
 fn define(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {

@@ -1,0 +1,47 @@
+import * as M from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+const usage={input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+const text=(label,tokens)=>`${label} ${'x'.repeat(Math.max(0,tokens*4-label.length-1))}`;
+const answer=(value,stopReason='stop',errorMessage)=>({role:'assistant',provider:'held',model:'held',content:[{type:'thinking',thinking:'PRIVATE_COMPACTION_THINKING'},{type:'text',text:value}],stopReason,usage,timestamp:Date.now(),...(errorMessage===undefined?{}:{errorMessage})});
+const waitFor=async check=>{const deadline=Date.now()+5000;while(!await check()){if(Date.now()>deadline)throw Error('Actual compaction event was not reached');await new Promise(resolve=>setTimeout(resolve,5))}};
+const rows=[];
+for(const mode of['failed','aborted','faulted','declined','background-failed']){
+ let agentCalls=0,summaryCalls=0,reach;const reached=new Promise(resolve=>reach=resolve),replies=[],summaries=[];
+ let behavior=mode;const settings={compaction:{enabled:false,reserveTokens:1000,keepRecentTokens:150,backgroundTokens:0},retry:{enabled:false}};
+ const models={getModel:()=>({id:'held',maxTokens:100,contextWindow:mode==='background-failed'?2000:1000}),streamSimple:(_model,request)=>{
+  agentCalls++;const response=answer(replies.shift()??'answer');
+  return {async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>response};
+ },completeSimple:async(_model,request,options)=>{
+  summaryCalls++;summaries.push({thinkingIncluded:request.messages.some(message=>typeof message.content==='string'?message.content.includes('PRIVATE_COMPACTION_THINKING'):message.content.some(block=>block.type==='text'&&block.text.includes('PRIVATE_COMPACTION_THINKING')))});
+  if(behavior==='faulted')throw Error('no credentials');
+  if(behavior==='aborted'){reach();const signal=options.signal;await new Promise((_resolve,reject)=>{if(signal.aborted)reject(signal.reason);else signal.addEventListener('abort',()=>reject(signal.reason),{once:true})})}
+  return behavior==='summary'?answer('SUMMARY'):answer('','error','bad request');
+ }};
+ const registry=M.createRegistry(),harness=await M.Harness.open(new M.MemoryStorage(),{models,registry,settings},context);
+ const root=await harness.root(context,{agent:{model:{provider:'held',modelId:'held'}}});harness.resume();
+ let stream;
+ try{
+  for(let turn=1;turn<=3;turn++){replies.push(text(`a${turn}`,100));const input=await root.submit({type:'input',content:text(`u${turn}`,100)},context);if((await input.wait(context)).status!=='done')throw Error('Actual history turn did not finish')}
+  if(mode==='declined')registry.install(M.defineExtension({name:'latest-compaction-decline',hooks:[M.hook(M.CompactionTask,{beforeCompact:()=>({decline:true})})]}));
+  settings.compaction=mode==='background-failed'?{enabled:true,reserveTokens:500,keepRecentTokens:150,backgroundTokens:1000}:{enabled:true,reserveTokens:300,keepRecentTokens:150,backgroundTokens:0};
+  const events=[];stream=await M.watchEvents(harness,root.id,context);stream.start(async batch=>{events.push(...batch)});
+  const before=agentCalls;replies.push('a4');const input=await root.submit({type:'input',content:text('u4',mode==='background-failed'?100:200)},context);
+  if(mode==='aborted'){await reached;const child=(await harness.inspect(context)).tasks.map(task=>task.record).find(record=>record.kind==='pi.compaction'&&record.state.status!=='terminal');if(!child)throw Error('Actual held compaction absent');await harness.abortTask(child.id,context)}
+  const receipt=await input.wait(context);await waitFor(()=>events.some(event=>event.type==='compaction_end'));
+  const live=await harness.snapshot(M.LiveDoc,root.id,context),snapshot=await M.watchEvents(harness,root.id,context);const snapshotFailure=snapshot.snapshot.compactionFailure;await snapshot.stop();
+  const ends=events.filter(event=>event.type==='compaction_end');
+  const row={mode,agentRequests:agentCalls-before,summaryRequests:summaryCalls,submission:{status:receipt.status,...(receipt.reason===undefined?{}:{reason:receipt.reason}),...(receipt.detail===undefined?{}:{detail:receipt.detail})},compactionsPresent:Object.hasOwn(live,'compactions'),failure:live.compactionFailure,snapshotFailure,ends,summaries};
+  if(['failed','faulted','aborted'].includes(mode)){if(row.agentRequests!==0||receipt.status!=='unanswered'||receipt.reason!=='model_error')throw Error(JSON.stringify({blockingCoverageFailure:true,row}))}
+  else if(row.agentRequests!==1||receipt.status!=='done')throw Error(JSON.stringify({nonblockingCoverageFailure:true,row}));
+  if(mode==='aborted'&&live.compactionFailure!==undefined)throw Error('An abort was recorded as a compaction failure');
+  if(['failed','faulted','background-failed'].includes(mode)&&live.compactionFailure===undefined)throw Error('Actual compaction failure absent');
+  if(mode==='failed'||mode==='background-failed'){
+   behavior='summary';settings.compaction={enabled:false,reserveTokens:1000,keepRecentTokens:150,backgroundTokens:0};const task=await root.compact(undefined,context);const completed=await harness.waitForTask(task,context);await waitFor(()=>events.some(event=>event.type==='compaction_end'&&event.taskId===task));
+   const cleared=await harness.snapshot(M.LiveDoc,root.id,context);row.summary={status:completed.state.outcome.status,failurePresent:Object.hasOwn(cleared,'compactionFailure'),end:events.find(event=>event.type==='compaction_end'&&event.taskId===task)};
+   if(row.summary.status!=='completed'||row.summary.failurePresent)throw Error('A produced summary did not clear the actual failure');
+  }
+  if(summaries.some(request=>request.thinkingIncluded))throw Error('Latest summary request replayed omitted thinking');
+  rows.push(row);
+ }finally{if(stream)await stream.stop();await harness.close(context)}
+}
+globalThis.latestCompactionFailureTrace={source:'89e5c2c075535e2f427c30fc74720d65b2944ff9',rows};export const proof=true;

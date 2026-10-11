@@ -36,15 +36,18 @@ fn equals(engine: *Engine, value: c.JSValue, text: [:0]const u8) !bool {
     return c.JS_IsStrictEqual(engine.context, value, expected);
 }
 fn selectedText(scope: *Scope, content: c.JSValue, kind: [:0]const u8, field: [:0]const u8, separator: []const u8) !c.JSValue {
+    return scope.invoke(try selectedParts(scope, content, kind, field), "join", &.{try scope.text(separator)});
+}
+fn selectedParts(scope: *Scope, content: c.JSValue, kind: [:0]const u8, field: [:0]const u8) !c.JSValue {
     const values = try scope.own(try vm.array(scope.engine));
     for (0..try vm.length(scope.engine, content)) |index| {
         const item = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, content, @intCast(index))));
         if (try equals(scope.engine, try scope.get(item, "type"), kind)) {
             const value = try scope.get(item, field);
-            if (!c.JS_IsUndefined(value)) try js.push(scope.engine, values, value);
+            try js.push(scope.engine, values, value);
         }
     }
-    return scope.invoke(values, "join", &.{try scope.text(separator)});
+    return values;
 }
 fn hasCall(scope: *Scope, content: c.JSValue) !bool {
     for (0..try vm.length(scope.engine, content)) |index| {
@@ -87,6 +90,14 @@ fn appendLabeled(scope: *Scope, parts: c.JSValue, label: []const u8, text: c.JSV
     try js.push(scope.engine, parts, part);
 }
 pub fn serializeConversation(engine: *Engine, messages: c.JSValue) !c.JSValue {
+    return serializeConversationVersion(engine, messages, false);
+}
+/// Historical actual-EA capture authority. Production callers use the latest path.
+pub fn serializeConversationCaptureEA(engine: *Engine, messages: c.JSValue) !c.JSValue {
+    if (!@import("builtin").is_test) @compileError("Historical EA serialization is test authority only");
+    return serializeConversationVersion(engine, messages, true);
+}
+fn serializeConversationVersion(engine: *Engine, messages: c.JSValue, comptime thinking: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const parts = try scope.own(try vm.array(engine));
@@ -97,8 +108,13 @@ pub fn serializeConversation(engine: *Engine, messages: c.JSValue) !c.JSValue {
         if (try equals(engine, role, "user")) {
             try appendLabeled(&scope, parts, "[User]: ", try scope.own(try contentText(&scope, content)));
         } else if (try equals(engine, role, "assistant")) {
-            try appendLabeled(&scope, parts, "[Assistant thinking]: ", try selectedText(&scope, content, "thinking", "thinking", "\n"));
-            try appendLabeled(&scope, parts, "[Assistant]: ", try selectedText(&scope, content, "text", "text", "\n"));
+            if (thinking) try appendLabeled(&scope, parts, "[Assistant thinking]: ", try selectedText(&scope, content, "thinking", "thinking", "\n"));
+            const texts = try selectedParts(&scope, content, "text", "text");
+            if (try vm.length(engine, texts) != 0) {
+                const text = try scope.invoke(texts, "join", &.{try scope.text("\n")});
+                const labeled = try scope.own(try utf16.concat(engine, &.{ try scope.text("[Assistant]: "), text }));
+                try js.push(engine, parts, labeled);
+            }
             const calls = try scope.own(try vm.array(engine));
             for (0..try vm.length(engine, content)) |position| {
                 const block = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, content, @intCast(position))));
@@ -136,9 +152,16 @@ pub fn serializeConversation(engine: *Engine, messages: c.JSValue) !c.JSValue {
     return c.JS_DupValue(engine.context, try scope.invoke(parts, "join", &.{try scope.text("\n\n")}));
 }
 pub fn summaryPrompt(engine: *Engine, messages: c.JSValue, instructions: c.JSValue) !c.JSValue {
+    return summaryPromptVersion(engine, messages, instructions, false);
+}
+pub fn summaryPromptCaptureEA(engine: *Engine, messages: c.JSValue, instructions: c.JSValue) !c.JSValue {
+    if (!@import("builtin").is_test) @compileError("Historical EA prompt is test authority only");
+    return summaryPromptVersion(engine, messages, instructions, true);
+}
+fn summaryPromptVersion(engine: *Engine, messages: c.JSValue, instructions: c.JSValue, comptime thinking: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const transcript = try scope.own(try serializeConversation(engine, messages));
+    const transcript = try scope.own(try serializeConversationVersion(engine, messages, thinking));
     const focus = if (c.JS_IsUndefined(instructions)) try scope.text("") else try scope.own(try utf16.concat(engine, &.{ try scope.text("\n\nAdditional focus: "), instructions }));
     return utf16.concat(engine, &.{ try scope.text("<conversation>\n"), transcript, try scope.text("\n</conversation>\n\n"), try scope.text(@embedFile("compaction_summary_prompt.txt")), focus });
 }

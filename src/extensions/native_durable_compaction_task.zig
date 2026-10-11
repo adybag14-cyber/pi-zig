@@ -76,7 +76,10 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     defer scope.deinit();
     if (stage == 1) {
         const runtime = try scope.get(state, "runtime");
-        try @import("native_durable_compaction_status.zig").remove(engine, value, try scope.get(runtime, "taskId"));
+        const outcome = try scope.get(state, "outcome");
+        if (c.JS_IsStrictEqual(engine.context, try scope.get(outcome, "status"), try scope.text("failed"))) {
+            try @import("native_durable_compaction_status.zig").fail(engine, value, try scope.get(runtime, "taskId"), try scope.get(try scope.get(outcome, "error"), "message"));
+        } else try @import("native_durable_compaction_status.zig").remove(engine, value, try scope.get(runtime, "taskId"));
         const next = try vm.object(engine);
         errdefer engine.freeValue(next);
         try put(engine, next, "status", try scope.text("terminal"));
@@ -383,6 +386,7 @@ fn placeDraftReady(engine: *Engine, state: c.JSValue, live: c.JSValue) !c.JSValu
     const current = try scope.get(state, "current");
     const tx = try scope.get(state, "tx");
     try @import("native_durable_compaction_status.zig").remove(engine, live, try scope.get(runtime, "taskId"));
+    try @import("native_durable_compaction_status.zig").clearFailure(engine, live);
     const text = try scope.own(try @import("native_utf16.zig").concat(engine, &.{ try scope.text("The conversation history before this point was compacted into the following summary:\n\n<summary>\n"), try scope.get(state, "summary"), try scope.text("\n</summary>") }));
     const model = try scope.own(try vm.array(engine));
     const message = try scope.own(try vm.object(engine));
@@ -569,11 +573,12 @@ fn finishSummary(engine: *Engine, state: c.JSValue, live: c.JSValue) !c.JSValue 
         try put(engine, next, "checkpoint", checkpoint);
         return next;
     }
-    try @import("native_durable_compaction_status.zig").remove(engine, live, task_id);
+    const message = try scope.own(try @import("native_durable_compaction_text.zig").summaryFailure(engine, try scope.get(state, "message")));
+    try @import("native_durable_compaction_status.zig").fail(engine, live, task_id, message);
     const detail = try scope.own(try vm.object(engine));
     try put(engine, detail, "reason", try scope.text("model_error"));
     const failure = try scope.own(try vm.object(engine));
-    try @import("native_tool_info.zig").putData(engine, failure, "message", try @import("native_durable_compaction_text.zig").summaryFailure(engine, try scope.get(state, "message")));
+    try put(engine, failure, "message", message);
     try put(engine, failure, "detail", detail);
     const outcome = try scope.own(try vm.object(engine));
     try put(engine, outcome, "status", try scope.text("failed"));

@@ -38,6 +38,28 @@ pub fn remove(engine: *Engine, live: c.JSValue, task_id: c.JSValue) !void {
         if (c.JS_DeleteProperty(engine.context, live, key, c.JS_PROP_THROW) < 0) return @import("native_js_values.zig").capture(engine);
     }
 }
+pub fn fail(engine: *Engine, live: c.JSValue, task_id: c.JSValue, failure: c.JSValue) !void {
+    const status = try find(engine, live, task_id);
+    defer engine.freeValue(status);
+    if (!c.JS_IsUndefined(status)) {
+        const record = try vm.object(engine);
+        defer engine.freeValue(record);
+        inline for (.{ "taskId", "reason" }) |key| {
+            const value = try vm.get(engine, status, key);
+            defer engine.freeValue(value);
+            try @import("native_tool_info.zig").putData(engine, record, key, c.JS_DupValue(engine.context, value));
+        }
+        try @import("native_tool_info.zig").putData(engine, record, "error", c.JS_DupValue(engine.context, failure));
+        try @import("native_tool_info.zig").putData(engine, live, "compactionFailure", c.JS_DupValue(engine.context, record));
+    }
+    try remove(engine, live, task_id);
+}
+pub fn clearFailure(engine: *Engine, live: c.JSValue) !void {
+    const key = c.JS_NewAtom(engine.context, "compactionFailure");
+    defer c.JS_FreeAtom(engine.context, key);
+    if (key == c.JS_ATOM_NULL) return error.OutOfMemory;
+    if (c.JS_DeleteProperty(engine.context, live, key, c.JS_PROP_THROW) < 0) return @import("native_js_values.zig").capture(engine);
+}
 pub fn add(engine: *Engine, live: c.JSValue, status: c.JSValue) !void {
     var statuses = try vm.get(engine, live, "compactions");
     defer engine.freeValue(statuses);

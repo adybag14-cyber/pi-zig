@@ -114,6 +114,9 @@ pub const GuardedStorage = struct {
     pub fn sourceScan(self: *GuardedStorage, gpa: std.mem.Allocator, table: backend.memory.Table, filters: Value, limit: u64, cursor: ?Value) !json.Owned {
         return self.call("sourceScan", .{ gpa, table, filters, limit, cursor }, types.Context{});
     }
+    pub fn queuedConversationIds(self: *GuardedStorage, gpa: std.mem.Allocator) !json.Owned {
+        return self.call("queuedConversationIds", .{gpa}, types.Context{});
+    }
     pub fn latestHeadMarker(self: *GuardedStorage, gpa: std.mem.Allocator, conversation: u64, before: ?u64) !?json.Owned {
         return self.call("latestHeadMarker", .{ gpa, conversation, before }, types.Context{});
     }
@@ -483,6 +486,28 @@ pub const Transaction = struct {
     fn ensureActive(self: *Transaction) !void {
         if (self.ownerThread != std.Thread.getCurrentId()) return error.WrongTransactionThread;
         if (!self.active) return error.TransactionClosed;
+    }
+    pub const OwnerExecution = struct {
+        transaction: *Transaction,
+        original: std.Thread.Id,
+        delegate: std.Thread.Id,
+        epoch: u32,
+        pub fn restore(self: OwnerExecution) void {
+            std.debug.assert(std.Thread.getCurrentId() == self.delegate and self.transaction.ownerThread == self.delegate);
+            std.debug.assert(self.transaction.session.ownerThread.load(.acquire) == self.original and self.transaction.session.line_epoch.load(.acquire) == self.epoch);
+            self.transaction.ownerThread = self.original;
+        }
+    };
+    /// The authenticated VM owner may assist a blocked worker's active frame.
+    /// Session line ownership never moves, and the caller restores this scope
+    /// before acknowledging the waiting worker, including errors and close.
+    pub fn delegateOwner(self: *Transaction, authorized_owner: std.Thread.Id, original_worker: std.Thread.Id, epoch: u32) !OwnerExecution {
+        const current = std.Thread.getCurrentId();
+        if (current != authorized_owner or current == original_worker) return error.WrongDelegatedTransactionOwner;
+        if (!self.active) return error.TransactionClosed;
+        if (self.ownerThread != original_worker or self.session.ownerThread.load(.acquire) != original_worker or self.session.line_epoch.load(.acquire) != epoch) return error.StaleTransactionOwnerLine;
+        self.ownerThread = current;
+        return .{ .transaction = self, .original = original_worker, .delegate = current, .epoch = epoch };
     }
     fn reading(self: *Transaction) !void {
         try self.ensureActive();

@@ -17,6 +17,7 @@ pub const Handler = *const fn (?*anyopaque, *Runtime, Value, types.Context) anye
 pub const Initial = *const fn (?*anyopaque, std.mem.Allocator, Value) anyerror!Value;
 pub const Migrated = struct { input: Value, checkpoint: Value };
 pub const Migration = *const fn (?*anyopaque, std.mem.Allocator, Value, Value, u64) anyerror!Migrated;
+pub const TaskMigration = *const fn (?*anyopaque, std.mem.Allocator, u64, Value, Value, u64) anyerror!Migrated;
 pub const Phase = struct { name: []const u8, run: Handler };
 pub const Definition = struct {
     name: []const u8,
@@ -25,6 +26,7 @@ pub const Definition = struct {
     abort: Handler,
     initial: ?Initial = null,
     migrate: ?Migration = null,
+    migrate_task: ?TaskMigration = null,
     context: ?*anyopaque = null,
     retain: ?*const fn (?*anyopaque) void = null,
     release: ?*const fn (?*anyopaque) void = null,
@@ -42,6 +44,7 @@ pub const Options = struct {
     defer_initial_reconcile: bool = false,
     after_scope_reads: ?*const fn (?*anyopaque) anyerror!void = null,
     after_reconcile: ?*const fn (?*anyopaque) anyerror!void = null,
+    fault_message: ?*const fn (?*anyopaque, *Transaction, Runtime, anyerror) anyerror!Value = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -62,6 +65,7 @@ const Invocation = struct {
     diagnostic_cause: ?anyerror = null,
     diagnostic: [512]u8 = undefined,
     diagnostic_len: usize = 0,
+    source_failure_generation: std.atomic.Value(u64) = .init(0),
     fn diagnose(self: *Invocation, cause: anyerror, comptime format: []const u8, args: anytype) anyerror {
         self.diagnostic_cause = cause;
         const message = std.fmt.bufPrint(&self.diagnostic, format, args) catch {
@@ -93,6 +97,12 @@ pub const Runtime = struct {
     }
     pub fn taskId(self: Runtime) u64 {
         return self.invocation.task_id;
+    }
+    pub fn setFailureGeneration(self: Runtime, generation: u64) void {
+        self.invocation.source_failure_generation.store(generation, .release);
+    }
+    pub fn failureGeneration(self: Runtime) u64 {
+        return self.invocation.source_failure_generation.load(.acquire);
     }
     /// Public facades retain one invocation across all its running phases.
     pub fn isActive(self: Runtime) bool {
@@ -199,6 +209,7 @@ pub const Scheduler = struct {
     generation: u64 = 1,
     ownership_index: ownership.Index,
     live_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .{},
+    live_order: std.ArrayList(u64) = .empty,
     maintenance_subscription: ?u64 = null,
     fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
     index_dirty: bool = false,
@@ -217,6 +228,7 @@ pub const Scheduler = struct {
         var records = self.live_records.valueIterator();
         while (records.next()) |record| record.deinit();
         self.live_records.deinit(self.gpa);
+        self.live_order.deinit(self.gpa);
         self.ownership_index.deinit();
         self.fail_fast_checks.deinit(self.gpa);
         for (self.invocations.items) |invocation| {
@@ -335,7 +347,13 @@ pub const Scheduler = struct {
         for (event.changes.array.items) |change| {
             const kind = try model.text(change, "type");
             if (std.mem.eql(u8, kind, "submission")) {
-                if (queuedInput(try model.field(change, "value"))) self.cascade_pending = true;
+                const submission = try model.field(change, "value");
+                // Source only revisits queued inputs when an actual owner has
+                // cancellation intent. Ordinary admission creates no scan.
+                if (queuedInput(submission) and self.ownership_index.intents.count() != 0) {
+                    const parent = ownership.Node.conversation(try model.number(submission, "conversationId"));
+                    if (!self.ownership_index.known(parent) or try self.ownership_index.cancellingOwner(parent) != null) self.cascade_pending = true;
+                }
             } else if (std.mem.eql(u8, kind, "task")) {
                 const record = try model.field(change, "value");
                 if (try model.live(record) and !try model.flag(record, "background") and !try model.flag(record, "abortRequested")) {
@@ -392,14 +410,20 @@ pub const Scheduler = struct {
                 var previous = removed.value;
                 previous.deinit();
             }
+            for (self.live_order.items, 0..) |current, index| if (current == id) {
+                _ = self.live_order.orderedRemove(index);
+                break;
+            };
             return;
         }
         var copied = try json.Owned.empty(self.gpa);
         errdefer copied.deinit();
         copied.value = try json.clone(copied.arena.allocator(), record);
+        if (!self.live_records.contains(id)) try self.live_order.ensureUnusedCapacity(self.gpa, 1);
         const slot = try self.live_records.getOrPut(self.gpa, id);
         if (slot.found_existing) slot.value_ptr.deinit();
         slot.value_ptr.* = copied;
+        if (!slot.found_existing) self.live_order.appendAssumeCapacity(id);
     }
     fn indexRecord(gpa: std.mem.Allocator, index: *ownership.Index, record: Value) !void {
         const status = try model.status(record);
@@ -471,6 +495,58 @@ pub const Scheduler = struct {
         const unloaded = try self.gpa.dupe(u64, self.ownership_index.unloaded.keys());
         defer self.gpa.free(unloaded);
         for (unloaded) |id| if (self.ownership_index.unloaded.contains(id)) try self.loadChain(ownership.Node.task(id));
+    }
+    /// Actual inspection is a read on the reserved Session line. It loads the
+    /// same ancestor scopes as Source, without running definitions/migrations.
+    /// Registry fit is completed by the owner using its captured JS snapshot.
+    pub fn inspectionSnapshot(self: *Scheduler, gpa: std.mem.Allocator) !json.Owned {
+        if (self.session.ownerThread.load(.acquire) != std.Thread.getCurrentId()) return error.InspectionOutsideSessionLine;
+        try self.loadScopes();
+        if (self.options.after_scope_reads) |after| try after(self.options.callback_context);
+        var output = try json.Owned.empty(gpa);
+        errdefer output.deinit();
+        const a = output.arena.allocator();
+        output.value = .{ .object = .empty };
+        try output.value.object.put(a, "scheduling", .{ .string = if (self.closing.load(.acquire)) "closing" else if (self.enabled.load(.acquire)) "running" else "paused" });
+        var tasks: Value = .{ .array = .init(a) };
+        for (self.live_order.items) |id| {
+            const record = (self.live_records.get(id) orelse continue).value;
+            const running = active: {
+                self.mutex.lockUncancelable(self.io);
+                defer self.mutex.unlock(self.io);
+                for (self.invocations.items) |invocation| if (invocation.task_id == id and (!invocation.finished.load(.acquire) or invocation.owner_dispatches.load(.acquire) != 0)) break :active true;
+                break :active false;
+            };
+            var state: Value = .{ .object = .empty };
+            if (running) {
+                try state.object.put(a, "kind", .{ .string = "running" });
+            } else if (try model.status(record) == .completing) {
+                try state.object.put(a, "kind", .{ .string = "completing" });
+            } else {
+                var on: Value = .{ .array = .init(a) };
+                if (try model.flag(record, "abortRequested")) {
+                    const owned = try self.ownership_index.ordinaryOwned(gpa, id);
+                    defer gpa.free(owned);
+                    for (owned) |member| try on.array.append(.{ .integer = @intCast(member) });
+                } else if (try model.status(record) == .waiting) {
+                    for ((try model.field(try model.field(record, "state"), "on")).array.items) |member| if (self.live_records.contains(try json.asInteger(member))) try on.array.append(try json.clone(a, member));
+                }
+                try state.object.put(a, "kind", .{ .string = if (on.array.items.len != 0) "waiting" else "_fit" });
+                if (on.array.items.len != 0) try state.object.put(a, "on", on);
+            }
+            var item: Value = .{ .object = .empty };
+            try item.object.put(a, "record", try json.clone(a, record));
+            try item.object.put(a, "state", state);
+            try tasks.array.append(item);
+        }
+        try output.value.object.put(a, "tasks", tasks);
+        return output;
+    }
+    fn migrateRecord(node: *DefinitionNode, allocator: std.mem.Allocator, id: u64, record: Value, version: u64) !Migrated {
+        const input = try model.field(record, "input");
+        const checkpoint = try model.field(try model.field(record, "state"), "checkpoint");
+        if (node.definition.migrate_task) |migration| return migration(node.definition.context, allocator, id, input, checkpoint, version);
+        return node.definition.migrate.?(node.definition.context, allocator, input, checkpoint, version);
     }
     fn candidateRecord(tx: *Transaction, table: backend.memory.Table, id: u64) !?Value {
         var position = tx.writes.array.items.len;
@@ -608,29 +684,15 @@ pub const Scheduler = struct {
         try marks.put(self.gpa, id, reason);
     }
     fn queuedInputs(self: *Scheduler, gpa: std.mem.Allocator) ![]u64 {
-        var filters: Value = .{ .object = .empty };
-        try filters.object.put(gpa, "status", .{ .string = "queued" });
-        defer filters.object.deinit(gpa);
-        var conversations: std.AutoArrayHashMapUnmanaged(u64, void) = .empty;
-        defer conversations.deinit(gpa);
-        var cursor: ?json.Owned = null;
-        defer if (cursor) |*value| value.deinit();
-        while (true) {
-            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 256, if (cursor) |value| value.value else null);
-            defer page.deinit();
-            for ((try model.field(page.value, "items")).array.items) |submission| {
-                if (!queuedInput(submission)) continue;
-                try conversations.put(gpa, try model.number(submission, "conversationId"), {});
-            }
-            const next = json.get(page.value, "next") orelse break;
-            var owned = try json.Owned.empty(self.gpa);
-            errdefer owned.deinit();
-            owned.value = try json.clone(owned.arena.allocator(), next);
-            if (cursor) |*value| value.deinit();
-            cursor = owned;
+        var listed = try self.session.storage.queuedConversationIds(self.gpa);
+        defer listed.deinit();
+        const ids = try gpa.alloc(u64, listed.value.array.items.len);
+        errdefer gpa.free(ids);
+        for (listed.value.array.items, ids) |value, *id| {
+            id.* = try json.asInteger(value);
+            try self.loadChain(ownership.Node.conversation(id.*));
         }
-        for (conversations.keys()) |id| try self.loadChain(ownership.Node.conversation(id));
-        return gpa.dupe(u64, conversations.keys());
+        return ids;
     }
     fn queuedInput(record: Value) bool {
         const status = json.get(record, "status") orelse return false;
@@ -857,9 +919,9 @@ pub const Scheduler = struct {
                         const version = try model.number(record, "version");
                         if (node.?.definition.version < version) blocked = .task_too_old;
                         if (node.?.definition.version > version) {
-                            if (node.?.definition.migrate) |migration| {
+                            if (node.?.definition.migrate != null or node.?.definition.migrate_task != null) {
                                 if (self.scheduler.migration_failures.get(self.id) == node.?.generation) blocked = .migration_failed else {
-                                    _ = migration(node.?.definition.context, tx.owned.arena.allocator(), try model.field(record, "input"), try model.field(try model.field(record, "state"), "checkpoint"), version) catch {
+                                    _ = migrateRecord(node.?, tx.owned.arena.allocator(), self.id, record, version) catch {
                                         try self.scheduler.migration_failures.put(self.id, node.?.generation);
                                         blocked = .migration_failed;
                                     };
@@ -1110,8 +1172,8 @@ pub const Scheduler = struct {
                     const version = try model.number(record, "version");
                     if (node.?.definition.version < version) blocked = .task_too_old;
                     if (node.?.definition.version > version) {
-                        if (scheduler.migration_failures.get(id) == node.?.generation) blocked = .migration_failed else if (node.?.definition.migrate) |migration| {
-                            const migrated = migration(node.?.definition.context, tx.owned.arena.allocator(), try model.field(record, "input"), try model.field(try model.field(record, "state"), "checkpoint"), version) catch {
+                        if (scheduler.migration_failures.get(id) == node.?.generation) blocked = .migration_failed else if (node.?.definition.migrate != null or node.?.definition.migrate_task != null) {
+                            const migrated = migrateRecord(node.?, tx.owned.arena.allocator(), id, record, version) catch {
                                 try scheduler.migration_failures.put(id, node.?.generation);
                                 blocked = .migration_failed;
                                 continue;
@@ -1233,10 +1295,15 @@ pub const Scheduler = struct {
             }
             const checkpoint = try model.field(try model.field(record, "state"), "checkpoint");
             var fault: ?Value = null;
-            if (self.failure) |err| fault = .{ .string = if (invocation.diagnostic_cause != null and invocation.diagnostic_cause.? == err and invocation.diagnostic_len > 0) invocation.diagnostic[0..invocation.diagnostic_len] else @errorName(err) } else if (self.abort_returned) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Abort handler of task {d} returned without a terminal outcome", .{invocation.task_id}) } else if (self.previous) |previous| {
+            if (self.failure) |err| {
+                fault = if (err == error.JavaScriptException and scheduler.options.fault_message != null)
+                    try scheduler.options.fault_message.?(scheduler.options.callback_context, tx, .{ .invocation = invocation }, err)
+                else
+                    .{ .string = if (invocation.diagnostic_cause != null and invocation.diagnostic_cause.? == err and invocation.diagnostic_len > 0) invocation.diagnostic[0..invocation.diagnostic_len] else @errorName(err) };
+            } else if (self.abort_returned) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Abort handler of task {d} returned without a terminal outcome", .{invocation.task_id}) } else if (self.previous) |previous| {
                 if (json.equal(previous, checkpoint)) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Task {s} phase {s} returned without durable progress", .{ try model.text(record, "kind"), try model.text(previous, "phase") }) } else {
                     const replacement = scheduler.lookupDefinition(try model.text(record, "kind"));
-                    if (replacement == null or (replacement.? != invocation.definition and (replacement.?.definition.version == invocation.definition.definition.version or (replacement.?.definition.version > invocation.definition.definition.version and replacement.?.definition.migrate != null)))) {
+                    if (replacement == null or (replacement.? != invocation.definition and (replacement.?.definition.version == invocation.definition.definition.version or (replacement.?.definition.version > invocation.definition.definition.version and (replacement.?.definition.migrate != null or replacement.?.definition.migrate_task != null))))) {
                         invocation.end();
                         try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", checkpoint)));
                         return .null;

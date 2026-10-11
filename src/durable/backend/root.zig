@@ -26,6 +26,7 @@ pub const Custom = struct {
         sourceScan: ?*const fn (?*anyopaque, std.mem.Allocator, memory.Table, json.Value, u64, ?json.Value) anyerror!json.Owned = null,
         latestHeadMarker: ?*const fn (?*anyopaque, std.mem.Allocator, u64, ?u64) anyerror!?json.Owned = null,
         submissionByRequest: ?*const fn (?*anyopaque, std.mem.Allocator, u64, []const u8) anyerror!?json.Owned = null,
+        queuedConversationIds: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror!json.Owned = null,
     };
 };
 pub const Backend = union(enum) {
@@ -125,6 +126,37 @@ pub const Backend = union(enum) {
         var view: memory.Memory = .{ .gpa = gpa, .state = try self.snapshot(gpa) };
         defer view.deinit();
         return @import("source_scan.zig").scan(gpa, &view, table, filters, limit, cursor);
+    }
+    /// Source's complete queued-input enumeration is one owner operation for
+    /// a VM backend. Its opaque JS cursors never cross the detached JSON ABI.
+    pub fn queuedConversationIds(self: Backend, gpa: std.mem.Allocator) !json.Owned {
+        if (self == .custom) if (self.custom.vtable.queuedConversationIds) |read| return read(self.custom.context, gpa);
+        var result = try json.Owned.empty(gpa);
+        errdefer result.deinit();
+        const a = result.arena.allocator();
+        result.value = .{ .array = .init(a) };
+        var filters: json.Value = .{ .object = .empty };
+        try filters.object.put(a, "status", .{ .string = "queued" });
+        var seen: std.AutoArrayHashMapUnmanaged(u64, void) = .empty;
+        defer seen.deinit(gpa);
+        var cursor: ?json.Owned = null;
+        defer if (cursor) |*value| value.deinit();
+        while (true) {
+            var page = try self.sourceScan(gpa, .submission, filters, 256, if (cursor) |value| value.value else null);
+            defer page.deinit();
+            for ((try json.required(page.value, "items")).array.items) |submission| {
+                if (!std.mem.eql(u8, try json.asString(try json.required(submission, "type")), "input")) continue;
+                try seen.put(gpa, try json.asInteger(try json.required(submission, "conversationId")), {});
+            }
+            const next = json.get(page.value, "next") orelse break;
+            var copied = try json.Owned.empty(gpa);
+            errdefer copied.deinit();
+            copied.value = try json.clone(copied.arena.allocator(), next);
+            if (cursor) |*value| value.deinit();
+            cursor = copied;
+        }
+        for (seen.keys()) |id| try result.value.array.append(.{ .integer = @intCast(id) });
+        return result;
     }
     pub fn latestHeadMarker(self: Backend, gpa: std.mem.Allocator, conversation: u64, before: ?u64) !?json.Owned {
         if (self == .custom) if (self.custom.vtable.latestHeadMarker) |read| return read(self.custom.context, gpa, conversation, before);

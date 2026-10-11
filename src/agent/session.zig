@@ -7,6 +7,8 @@ const ai = @import("../ai/root.zig");
 
 /// Optional assistant metadata (upstream AgentMessage fields).
 pub const AssistantMeta = struct {
+    /// Preserve a present empty text block separately from thinking-only content.
+    has_text_content: ?bool = null,
     /// Provider-returned thinking/reasoning text retained for later replay.
     thinking: []const u8 = "",
     thinking_signature: []const u8 = "",
@@ -52,6 +54,7 @@ pub const AssistantMeta = struct {
 
     pub fn dupe(self: AssistantMeta, gpa: std.mem.Allocator) !AssistantMeta {
         return .{
+            .has_text_content = self.has_text_content,
             .thinking = if (self.thinking.len > 0) try gpa.dupe(u8, self.thinking) else "",
             .thinking_signature = if (self.thinking_signature.len > 0) try gpa.dupe(u8, self.thinking_signature) else "",
             .thinking_redacted = self.thinking_redacted,
@@ -1079,7 +1082,7 @@ pub const Session = struct {
                     try line.writer.writeAll("}");
                     first_content = false;
                 }
-                if (e.content.len > 0 or first_content) {
+                if (e.meta.has_text_content orelse (e.content.len > 0 or first_content)) {
                     if (!first_content) try line.writer.writeAll(",");
                     try line.writer.writeAll("{\"type\":\"text\",\"text\":");
                     try std.json.Stringify.value(e.content, .{}, &line.writer);
@@ -1731,6 +1734,18 @@ pub const Session = struct {
                 defer if (bash_full_output_path_owned) |value| gpa.free(value);
 
                 var meta: AssistantMeta = .{};
+                if (parsed.value.object.get("message")) |message| if (message == .object) {
+                    if (message.object.get("content")) |content| {
+                        if (content == .array) {
+                            meta.has_text_content = false;
+                            for (content.array.items) |block| {
+                                if (block != .object) continue;
+                                const kind = block.object.get("type") orelse continue;
+                                if (kind == .string and std.mem.eql(u8, kind.string, "text")) meta.has_text_content = true;
+                            }
+                        } else if (content == .string) meta.has_text_content = true;
+                    }
+                };
                 if (meta_thinking) |t| meta.thinking = try gpa.dupe(u8, t);
                 if (meta_thinking_signature) |t| meta.thinking_signature = try gpa.dupe(u8, t);
                 meta.thinking_redacted = meta_thinking_redacted;

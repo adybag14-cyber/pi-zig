@@ -1,0 +1,45 @@
+import * as M from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}},completed=()=>({status:'terminal',outcome:{status:'completed',result:null}});
+const waitFor=async check=>{const deadline=Date.now()+5000;while(!await check()){if(Date.now()>deadline)throw Error('Actual inspector state not reached');await new Promise(r=>setTimeout(r,5))}};
+const rows=[];
+let migrations=0;const failures=[],gate=deferred();
+const task=(name,version,options={})=>M.defineTask({name,version,initial:()=>({phase:'run'}),phases:{run:async(_task,runtime,ctx)=>{await options.gate;await runtime.commit(completed,ctx)}},abort:async()=>{},...(options.migrate===undefined?{}:{migrate:()=>{options.migrate();return{input:null,checkpoint:{phase:'run'}}}})});
+const Gate=task('inspect.gate',1,{gate:gate.promise});let gateId;
+const Dependent=M.defineTask({name:'inspect.dependent',version:1,initial:()=>({phase:'wait'}),phases:{wait:async(_task,runtime,ctx)=>runtime.commit(()=>({status:'waiting',checkpoint:{phase:'done'},on:[gateId],policy:'allSettled'}),ctx),done:async(_task,runtime,ctx)=>runtime.commit(completed,ctx)},abort:async()=>{}});
+const registered=[Gate,Dependent,task('inspect.migrating',2,{migrate:()=>migrations++}),task('inspect.no-migration',2),task('inspect.failing',2,{migrate:()=>{const error=Error('cannot migrate');failures.push(error);throw error}}),task('inspect.too-old',1)];
+const registry=M.createRegistry();registry.install(M.defineExtension({name:'inspection-source',tasks:registered}));
+const harness=await M.Harness.open(new M.MemoryStorage(),{models:{},registry},context);
+const normalize=inspection=>({scheduling:inspection.scheduling,tasks:inspection.tasks.map(({record,state})=>({record,state:{...state,...(state.error===undefined?{}:{error:{name:state.error?.name,message:state.error?.message}})}})),submissions:inspection.submissions});
+try{
+ const root=await harness.root(context),ids=await root.commit(async tx=>{
+  gateId=await tx.createTask(Gate,null,{ownership:{kind:'conversation'}});
+  const make=(name,version)=>tx.createTask(task(name,version),null,{ownership:{kind:'conversation'}});
+  return{gate:gateId,dependent:await tx.createTask(Dependent,null,{ownership:{kind:'conversation'}}),migrating:await make('inspect.migrating',1),noMigration:await make('inspect.no-migration',1),failing:await make('inspect.failing',1),failingTwin:await make('inspect.failing',1),tooOld:await make('inspect.too-old',2),missing:await make('inspect.missing',1)};
+ },context);
+ const paused=await harness.inspect(context),again=await harness.inspect(context),find=(view,id)=>view.tasks.find(task=>task.record.id===id)?.state;
+ if(migrations!==0||failures.length!==0||paused.tasks.map(task=>task.record.id).join()!==Object.values(ids).join())throw Error('Inspection ran task code or changed live insertion order');
+ rows.push({name:'paused-all-fits',inspection:normalize(paused),migrations,failedCalls:failures.length,missingMigrationFresh:find(paused,ids.noMigration).error!==find(again,ids.noMigration).error});
+ harness.resume();await harness.waitForTask(ids.migrating,context);let running;
+ await waitFor(async()=>{running=await harness.inspect(context);return find(running,ids.gate)?.kind==='running'&&find(running,ids.dependent)?.kind==='waiting'&&find(running,ids.failing)?.reason==='migration_failed'&&find(running,ids.failingTwin)?.reason==='migration_failed'});
+ if(migrations!==1||failures.length!==2)throw Error('Actual per-task migration calls not observed');
+ const first=find(running,ids.failing).error,second=find(running,ids.failingTwin).error;
+ rows.push({name:'running-waiting-and-failed-migrations',inspection:normalize(running),migrations,failedCalls:failures.length,distinctFailureObjects:first!==second,eachFailureOriginal:failures.includes(first)&&failures.includes(second),sameFailureOnRead:find(await harness.inspect(context),ids.failing).error===first});
+ gate.resolve();await harness.waitForTask(ids.dependent,context);rows.push({name:'terminal-tasks-leave-live-order',inspection:normalize(await harness.inspect(context))});
+}finally{gate.resolve();await harness.close(context)}
+let enter;const reached=new Promise(r=>enter=r),models={getModel:()=>({id:'held',maxTokens:100,contextWindow:10000}),streamSimple:(_model,_request,options)=>{enter();const pending=new Promise((_resolve,reject)=>{const signal=options.signal;if(signal.aborted)reject(signal.reason);else signal.addEventListener('abort',()=>reject(signal.reason),{once:true})});return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}};await pending},result:async()=>{await pending}}}};
+const childGate=deferred(),childReached=deferred(),parentPhase=deferred();let childId;
+const Child=task('inspect.owned-child',1,{gate:childGate.promise}),Parent=M.defineTask({name:'inspect.completing-parent',version:1,initial:()=>({phase:'run'}),phases:{run:async(task,runtime,ctx)=>{await runtime.commit(async tx=>{childId=await tx.createTask(Child,null,{ownership:{kind:'task',taskId:task.id}});return undefined},ctx);await runtime.commit(completed,ctx);childReached.resolve();await parentPhase.promise}},abort:async()=>{}});
+const completingRegistry=M.createRegistry();completingRegistry.install(M.defineExtension({name:'inspection-completing-source',tasks:[Child,Parent]}));
+const completing=await M.Harness.open(new M.MemoryStorage(),{models:{},registry:completingRegistry},context);
+try{const root=await completing.root(context),parentId=await root.commit(tx=>tx.createTask(Parent,null,{ownership:{kind:'conversation'}}),context);completing.resume();await childReached.promise;let inspected;await waitFor(async()=>{inspected=await completing.inspect(context);return inspected.tasks.find(task=>task.record.id===parentId)?.record.state.status==='completing'&&inspected.tasks.find(task=>task.record.id===parentId)?.state.kind==='running'&&inspected.tasks.find(task=>task.record.id===childId)?.state.kind==='running'});const invocation=normalize(inspected);parentPhase.resolve();await waitFor(async()=>{inspected=await completing.inspect(context);return inspected.tasks.find(task=>task.record.id===parentId)?.record.state.status==='completing'&&inspected.tasks.find(task=>task.record.id===parentId)?.state.kind==='completing'&&inspected.tasks.find(task=>task.record.id===childId)?.state.kind==='running'});rows.push({name:'active-invocation-then-completing-record',invocation,inspection:normalize(inspected)});childGate.resolve();await completing.waitForTask(parentId,context)}finally{parentPhase.resolve();childGate.resolve();await completing.close(context)}
+const backing=new M.MemoryStorage(),raw={},calls=[],cursors=new WeakMap();let cursorId=0;
+for(const name of['mintId','commit','conversation','task','submission','entry','findDocument','document','scanDocuments','scanConversations','scanTasks','scanEntries','scanSubmissions','submissionByRequest','findLatestHeadMarker','close'])raw[name]=async function(...args){if(this!==raw)throw Error('Wrong inspector Storage receiver');if(name!=='scanSubmissions')return backing[name](...args);const[filter,limit,cursor,ctx]=args;if(cursor!==undefined&&!cursors.has(cursor))throw Error('Opaque inspection cursor identity lost');calls.push({status:filter.status,limit,opaque:cursor!==undefined,contextSame:ctx===context});const page=await backing.scanSubmissions(filter,Math.min(limit,1),cursor===undefined?undefined:cursors.get(cursor),ctx);if(page.next===undefined)return page;const token=Object.freeze({opaque:++cursorId});cursors.set(token,page.next);return{items:page.items,next:token}};
+const busy=await M.Harness.open(raw,{models,registry:M.createRegistry()},context);
+try{
+ const root=await busy.root(context,{agent:{model:{provider:'held',modelId:'held'}}}),input=await root.submit({type:'input',content:'first'},context);await reached;
+ const queued=await root.submit({type:'input',content:'queued'},context),queuedAgain=await root.submit({type:'input',content:'queued again'},context);await root.submit({type:'write',entry:{kind:'display.note',data:'done'}},context);
+ calls.length=0;const inspected=await busy.inspect(context);if(inspected.submissions.length!==3||inspected.tasks.length!==1||inspected.tasks[0].state.kind!=='running')throw Error('Actual placed/queued inspector coverage absent');
+ rows.push({name:'actual-unsettled-submissions',inspection:normalize(inspected),placed:input.id,queued:[queued.id,queuedAgain.id],calls});
+}finally{await busy.close(context)}
+globalThis.latestInspectionTrace={source:'89e5c2c075535e2f427c30fc74720d65b2944ff9',rows};export const proof=true;

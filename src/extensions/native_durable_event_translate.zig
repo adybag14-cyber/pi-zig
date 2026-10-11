@@ -86,6 +86,8 @@ pub fn snapshotOf(engine: *Engine, view: c.JSValue) !c.JSValue {
     const generation = try get(&scope, live, "generation");
     if (!c.JS_IsUndefined(generation)) try put(&scope, result, "generation", generation);
     inline for (.{ "tools", "nestedTools", "compactions" }) |key| try put(&scope, result, key, try array(&scope, try get(&scope, live, key)));
+    const compaction_failure = try get(&scope, live, "compactionFailure");
+    if (!c.JS_IsUndefined(compaction_failure)) try put(&scope, result, "compactionFailure", compaction_failure);
     try put(&scope, result, "inbox", try queued(&scope, try get(&scope, docs, "pi.inbox")));
     try put(&scope, result, "agent", try objectOrDefault(&scope, try get(&scope, docs, "pi.agent")));
     try put(&scope, result, "usage", try initialUsage(&scope, try get(&scope, docs, "pi.usage")));
@@ -285,6 +287,7 @@ pub fn translate(engine: *Engine, conversation: c.JSValue, before: c.JSValue, af
     }
     const old_compactions = try array(&scope, try get(&scope, was, "compactions"));
     const compactions = try array(&scope, try get(&scope, now, "compactions"));
+    const compaction_failure = try get(&scope, now, "compactionFailure");
     for (0..try vm.length(engine, old_compactions)) |index| {
         const previous = try scope.item(old_compactions, index);
         const id = try get(&scope, previous, "taskId");
@@ -292,6 +295,10 @@ pub fn translate(engine: *Engine, conversation: c.JSValue, before: c.JSValue, af
         const next = try add(&scope, events, "compaction_end");
         try put(&scope, next, "taskId", id);
         try put(&scope, next, "reason", try get(&scope, previous, "reason"));
+        if (!c.JS_IsUndefined(compaction_failure) and !c.JS_IsNull(compaction_failure) and c.JS_IsStrictEqual(engine.context, try get(&scope, compaction_failure, "taskId"), id)) {
+            const failure = try get(&scope, compaction_failure, "error");
+            if (!c.JS_IsUndefined(failure)) try put(&scope, next, "error", failure);
+        }
     }
     var turn_ended = false;
     const task_values = try mapValues(&scope, tasks);

@@ -461,47 +461,11 @@ fn appendToolCalls(gpa: std.mem.Allocator, writer: *std.Io.Writer, raw: []const 
     if (first) try writer.writeAll(raw);
 }
 
-fn serializeConversationMaterial(
-    gpa: std.mem.Allocator,
-    entries: []const *const session_mod.SessionEntry,
-) ![]u8 {
-    var out: std.Io.Writer.Allocating = .init(gpa);
-    errdefer out.deinit();
-    var first = true;
-    for (entries) |entry| {
-        if (!first) try out.writer.writeAll("\n\n");
-        first = false;
-        if (entry.entry_type == .compaction) {
-            try out.writer.print("[Compaction summary]: {s}", .{entry.content});
-        } else if (entry.entry_type == .branch_summary) {
-            try out.writer.print("[Branch summary]: {s}", .{entry.content});
-        } else if (entry.entry_type == .custom_message or std.mem.eql(u8, entry.role, "user") or std.mem.eql(u8, entry.role, "system")) {
-            try out.writer.print("[User]: {s}", .{entry.content});
-        } else if (std.mem.eql(u8, entry.role, "assistant")) {
-            var wrote = false;
-            if (entry.meta.thinking.len > 0) {
-                try out.writer.print("[Assistant thinking]: {s}", .{entry.meta.thinking});
-                wrote = true;
-            }
-            if (entry.content.len > 0) {
-                if (wrote) try out.writer.writeAll("\n\n");
-                try out.writer.print("[Assistant]: {s}", .{entry.content});
-                wrote = true;
-            }
-            if (entry.tool_calls_json) |calls| {
-                if (wrote) try out.writer.writeAll("\n\n");
-                try out.writer.writeAll("[Assistant tool calls]: ");
-                try appendToolCalls(gpa, &out.writer, calls);
-            }
-        } else if (std.mem.eql(u8, entry.role, "bashExecution")) {
-            try out.writer.writeAll("[Bash execution]: ");
-            if (entry.bash_command) |command| try out.writer.print("$ {s}\n", .{command});
-            if (entry.bash_output) |output| try out.writer.writeAll(output) else try out.writer.writeAll(entry.content);
-        } else {
-            try out.writer.print("[{s}]: {s}", .{ entry.role, entry.content });
-        }
-    }
-    return try out.toOwnedSlice();
+fn serializeConversationMaterial(gpa: std.mem.Allocator, entries: []const *const session_mod.SessionEntry) ![]u8 {
+    return @import("summary_transcript.zig").serialize(gpa, entries);
+}
+test "branch latest89 serializer maps actual raw messages and omits thinking" {
+    try @import("summary_transcript.zig").testSourceCases(serializeConversationMaterial);
 }
 
 fn detailsJson(gpa: std.mem.Allocator, read_files: []const []const u8, modified_files: []const []const u8) ![]u8 {

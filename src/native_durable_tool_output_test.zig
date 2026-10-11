@@ -1360,14 +1360,14 @@ test "native durable v2 compaction text matches actual Source response and trans
         defer engine.freeValue(row);
         const messages = try vm.get(engine, row, "messages");
         defer engine.freeValue(messages);
-        const text = try text_module.serializeConversation(engine, messages);
+        const text = try text_module.serializeConversationCaptureEA(engine, messages);
         defer engine.freeValue(text);
         const expected = try vm.get(engine, row, "text");
         defer engine.freeValue(expected);
         try std.testing.expect(c.JS_IsStrictEqual(engine.context, text, expected));
         const focus = try engine.checked(c.JS_NewString(engine.context, "focus"));
         defer engine.freeValue(focus);
-        const prompt = try text_module.summaryPrompt(engine, messages, focus);
+        const prompt = try text_module.summaryPromptCaptureEA(engine, messages, focus);
         defer engine.freeValue(prompt);
         const expected_prompt = try vm.get(engine, row, "prompt");
         defer engine.freeValue(expected_prompt);
