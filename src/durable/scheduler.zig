@@ -373,9 +373,9 @@ pub const Scheduler = struct {
         const id = try model.number(record, "id");
         const status = try model.status(record);
         const prior_record = self.live_records.get(id);
-        if ((try model.flag(record, "abortRequested") and (prior_record == null or !try model.flag(prior_record.?.value, "abortRequested"))) or
+        if (status != .terminal and ((try model.flag(record, "abortRequested") and (prior_record == null or !try model.flag(prior_record.?.value, "abortRequested"))) or
             (prior_record != null and json.get(prior_record.?.value, "abortReason") != null and json.get(record, "abortReason") == null) or
-            (status == .completing and (prior_record == null or try model.status(prior_record.?.value) != .completing) and try model.cancellation(record))) self.cascade_pending = true;
+            (status == .completing and (prior_record == null or try model.status(prior_record.?.value) != .completing) and try model.cancellation(record)))) self.cascade_pending = true;
         if (try model.failed(record) and (prior_record == null or !try model.failed(prior_record.?.value))) {
             if (self.ownership_index.waiters.get(id)) |waiters| for (waiters.keys()) |waiter| try self.fail_fast_checks.put(self.gpa, waiter, {});
         }
