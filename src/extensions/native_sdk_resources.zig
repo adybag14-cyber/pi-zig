@@ -124,6 +124,12 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
         const path = try std.fmt.allocPrint(engine.gpa, "<inline:{s}>", .{name});
         defer engine.gpa.free(path);
         const binding = try group.addSdk(path, private_scope);
+        const row = try sdk.object(engine);
+        defer engine.freeValue(row);
+        try sdk.put(engine, row, "path", try sdk.text(engine, path));
+        try sdk.put(engine, row, "sourceInfo", c.JS_DupValue(engine.context, try binding.sourceInfoValue()));
+        try sdk.put(engine, row, "commands", try map(engine));
+        binding.sdk_command_row = c.JS_DupValue(engine.context, row);
         binding.loadFactoryValue(factory) catch |err| {
             const diagnostic = try sdk.object(engine);
             defer engine.freeValue(diagnostic);
@@ -136,9 +142,6 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
             continue;
         };
         try sdk.append(engine, ids, c.JS_NewInt64(engine.context, @intCast(binding.owner_id)));
-        const row = try sdk.object(engine);
-        defer engine.freeValue(row);
-        try sdk.put(engine, row, "path", try sdk.text(engine, path));
         const tools = try map(engine);
         defer engine.freeValue(tools);
         for (binding.tool_order.items) |tool_name| {
@@ -149,11 +152,11 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
             engine.freeValue(ignored);
         }
         try sdk.put(engine, row, "tools", c.JS_DupValue(engine.context, tools));
-        try sdk.put(engine, row, "commands", try tableMap(engine, binding.commands));
         try sdk.put(engine, row, "flags", try tableMap(engine, binding.flags));
         try sdk.append(engine, rows, c.JS_DupValue(engine.context, row));
     }
     try sdk.put(engine, private_scope, "_extensionOwnerIds", c.JS_DupValue(engine.context, ids));
+    try sdk.put(engine, private_scope, "_extensionRows", c.JS_DupValue(engine.context, rows));
     try sdk.put(engine, data, "_sdkExtensionOwnerScope", c.JS_DupValue(engine.context, private_scope));
     try sdk.put(engine, data, "extensionOwnerIds", c.JS_DupValue(engine.context, ids));
     const result = try sdk.object(engine);

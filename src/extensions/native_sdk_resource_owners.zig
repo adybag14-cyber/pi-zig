@@ -167,6 +167,19 @@ pub fn sessionOwnerIds(engine: *Engine, session_data: c.JSValue) !c.JSValue {
     _ = try fromValue(group, value);
     return vm.get(engine, value, "_extensionOwnerIds");
 }
+/// The actual loaded extension array is captured by the same runtime
+/// incarnation as owner IDs. Reload cannot swap an existing runner's Maps.
+pub fn sessionExtensionRows(engine: *Engine, session_data: c.JSValue) !c.JSValue {
+    const scope_value = try sessionScopeValue(engine, session_data);
+    defer engine.freeValue(scope_value);
+    if (c.JS_IsUndefined(scope_value)) return sdk.array(engine);
+    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
+    _ = try fromValue(group, scope_value);
+    const rows = try vm.get(engine, scope_value, "_extensionRows");
+    if (!c.JS_IsUndefined(rows)) return rows;
+    engine.freeValue(rows);
+    return sdk.array(engine);
+}
 pub fn sessionScopeRetired(owner: *sdk.State) !bool {
     const scope = (try sessionScope(owner)) orelse return false;
     return scope.retired or owner.engine.native_sdk_extension_group != @as(?*anyopaque, @ptrCast(scope.group));

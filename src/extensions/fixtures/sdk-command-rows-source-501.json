@@ -1,0 +1,727 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "registration-snapshot",
+      "registryIdentity": true,
+      "resolutionTrace": [
+        "options.handler",
+        "options.handler",
+        "options.description"
+      ],
+      "commands": [
+        {
+          "name": "renamed",
+          "description": "original",
+          "invocationName": "renamed",
+          "keys": [
+            "name",
+            "sourceInfo",
+            "nested",
+            "handler",
+            "description",
+            "invocationName",
+            "symbol:fixture"
+          ],
+          "nestedIdentity": true,
+          "symbolValue": "symbol-value",
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "renamed",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/renamed\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:2",
+          "disposition": "queued"
+        },
+        {
+          "name": "tail",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/value-name",
+        "/value-name:1",
+        "/value-name:2",
+        "/tail",
+        "/iterated",
+        "/iterated:1",
+        "/iterated:2"
+      ]
+    },
+    {
+      "id": "map-value-name",
+      "registryIdentity": true,
+      "resolutionTrace": [],
+      "commands": [
+        {
+          "name": "value-name",
+          "description": "mapped",
+          "invocationName": "value-name:1",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "tail",
+          "description": "tail",
+          "invocationName": "tail",
+          "keys": [
+            "name",
+            "sourceInfo",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "value-name",
+          "description": "second",
+          "invocationName": "value-name:2",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "renamed",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/value-name:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "value-name:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/value-name:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "tail",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/tail\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/renamed",
+        "/value-name",
+        "/iterated",
+        "/iterated:1",
+        "/iterated:2"
+      ]
+    },
+    {
+      "id": "map-delete-replace-order",
+      "registryIdentity": true,
+      "resolutionTrace": [],
+      "commands": [
+        {
+          "name": "tail",
+          "description": "replaced",
+          "invocationName": "tail",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "foo",
+          "description": "last",
+          "invocationName": "foo",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "renamed",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:2",
+          "disposition": "queued"
+        },
+        {
+          "name": "tail",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/tail\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/renamed",
+        "/value-name",
+        "/value-name:1",
+        "/value-name:2",
+        "/iterated",
+        "/iterated:1",
+        "/iterated:2"
+      ]
+    },
+    {
+      "id": "resolved-row-spread",
+      "registryIdentity": true,
+      "resolutionTrace": [
+        "row.name",
+        "row.name",
+        "row.name",
+        "row.name",
+        "row.name",
+        "row.name",
+        "row.name",
+        "row.description"
+      ],
+      "commands": [
+        {
+          "name": "foo",
+          "description": "accessor",
+          "invocationName": "foo",
+          "keys": [
+            "name",
+            "description",
+            "nested",
+            "handler",
+            "invocationName",
+            "symbol:fixture"
+          ],
+          "nestedIdentity": true,
+          "symbolValue": "symbol-value",
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "tail",
+          "description": "tail",
+          "invocationName": "tail",
+          "keys": [
+            "name",
+            "sourceInfo",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "renamed",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:2",
+          "disposition": "queued"
+        },
+        {
+          "name": "tail",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/tail\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/renamed",
+        "/value-name",
+        "/value-name:1",
+        "/value-name:2",
+        "/iterated",
+        "/iterated:1",
+        "/iterated:2"
+      ]
+    },
+    {
+      "id": "map-values-iterator",
+      "registryIdentity": true,
+      "resolutionTrace": [
+        [
+          "values.receiver",
+          true
+        ],
+        "iterator",
+        [
+          "next",
+          0
+        ],
+        [
+          "next",
+          1
+        ],
+        [
+          "next",
+          2
+        ]
+      ],
+      "commands": [
+        {
+          "name": "iterated",
+          "description": "one",
+          "invocationName": "iterated:1",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "iterated",
+          "description": "two",
+          "invocationName": "iterated:2",
+          "keys": [
+            "name",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "disposition": "queued"
+        },
+        {
+          "name": "renamed",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:2",
+          "disposition": "queued"
+        },
+        {
+          "name": "tail",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/iterated:1\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "iterated:2",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/iterated:2\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        }
+      ],
+      "steering": [
+        "/foo",
+        "/renamed",
+        "/value-name",
+        "/value-name:1",
+        "/value-name:2",
+        "/tail",
+        "/iterated"
+      ]
+    },
+    {
+      "id": "mutable-constructors-methods",
+      "registryIdentity": true,
+      "resolutionTrace": [
+        "Map.constructor",
+        [
+          "Array.push",
+          0,
+          1
+        ],
+        [
+          "Map.get",
+          "foo"
+        ],
+        [
+          "Map.set",
+          "foo",
+          1
+        ],
+        [
+          "Array.push",
+          1,
+          1
+        ],
+        [
+          "Map.get",
+          "tail"
+        ],
+        [
+          "Map.set",
+          "tail",
+          1
+        ],
+        "Map.constructor",
+        "Set.constructor",
+        [
+          "Array.map",
+          2
+        ],
+        [
+          "Map.get",
+          "foo"
+        ],
+        [
+          "Map.set",
+          "foo",
+          1
+        ],
+        [
+          "Map.get",
+          "foo"
+        ],
+        [
+          "Set.has",
+          "foo"
+        ],
+        [
+          "Set.add",
+          "foo"
+        ],
+        [
+          "Map.get",
+          "tail"
+        ],
+        [
+          "Map.set",
+          "tail",
+          1
+        ],
+        [
+          "Map.get",
+          "tail"
+        ],
+        [
+          "Set.has",
+          "tail"
+        ],
+        [
+          "Set.add",
+          "tail"
+        ]
+      ],
+      "commands": [
+        {
+          "name": "foo",
+          "description": "first",
+          "invocationName": "foo",
+          "keys": [
+            "name",
+            "sourceInfo",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "tail",
+          "description": "tail",
+          "invocationName": "tail",
+          "keys": [
+            "name",
+            "sourceInfo",
+            "description",
+            "handler",
+            "invocationName"
+          ],
+          "nestedIdentity": false,
+          "symbolValue": null,
+          "handlerIdentity": true,
+          "descriptionDescriptor": {
+            "data": true,
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ],
+      "probes": [
+        {
+          "name": "foo",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/foo\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "renamed",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "value-name:2",
+          "disposition": "queued"
+        },
+        {
+          "name": "tail",
+          "error": {
+            "name": "Error",
+            "message": "Extension command \"/tail\" cannot be queued. Use prompt() or execute the command when not streaming."
+          }
+        },
+        {
+          "name": "iterated",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:1",
+          "disposition": "queued"
+        },
+        {
+          "name": "iterated:2",
+          "disposition": "queued"
+        }
+      ],
+      "steering": [
+        "/renamed",
+        "/value-name",
+        "/value-name:1",
+        "/value-name:2",
+        "/iterated",
+        "/iterated:1",
+        "/iterated:2"
+      ]
+    }
+  ]
+}
