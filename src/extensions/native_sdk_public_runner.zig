@@ -14,6 +14,7 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "ExtensionRunner", 5, c.JS_CFUNC_constructor, 0));
     defer engine.freeValue(constructor);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
+    try orderPrototype(engine, prototype);
     engine.native_sdk_command_runner_constructor = c.JS_DupValue(engine.context, constructor);
     try sdk.put(engine, exports, "ExtensionRunner", c.JS_DupValue(engine.context, constructor));
 }
@@ -102,21 +103,37 @@ pub fn defaultOptions(engine: *em.Engine, runner: c.JSValue) !c.JSValue {
     try sdk.put(engine, result, "skills", try sdk.array(engine));
     return result;
 }
-const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts, emitCacheWarmingDecision, emitMessageEnd, emitToolResult, emitToolCall, emitBeforeProviderRequest, emitBeforeProviderHeaders, emitResourcesDiscover, emitInput, emitUserBash, emitBoundary, emitContext };
+fn orderPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
+    var functions: [prototype_order.len]c.JSValue = undefined;
+    for (&functions) |*value| value.* = c.pi_js_undefined();
+    defer for (functions) |value| engine.freeValue(value);
+    inline for (prototype_order, 0..) |name, index| functions[index] = try sdk.get(engine, prototype, name);
+    inline for (prototype_order) |name| {
+        const atom = c.JS_NewAtom(engine.context, name);
+        if (atom == c.JS_ATOM_NULL) return js.capture(engine);
+        defer c.JS_FreeAtom(engine.context, atom);
+        if (c.JS_DeleteProperty(engine.context, prototype, atom, c.JS_PROP_THROW) < 0) return js.capture(engine);
+    }
+    inline for (prototype_order, functions) |name, function| {
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    }
+}
+const Method = enum(c_int) { bindCore, bindCommandContext, setUIContext, wrapUIPromptContext, getUIContext, hasUI, getExtensionPaths, getAllRegisteredTools, getToolDefinition, getFlags, setFlagValue, getFlagValues, getShortcutDiagnostics, invalidate, assertActive, onError, emitError, reportUnhandledMcpServers, hasHandlers, getMessageRenderer, getMarkdownTransformers, resolveToolRenderers, getEntryRenderer, getModelRegistry, shutdown, getActiveTools, createContext, createToolContext, createCommandContext, withUIPrompt, emitUIPromptEvent, isSessionBeforeEvent, emit, getShortcuts, emitCacheWarmingDecision, emitMessageEnd, emitToolResult, emitToolCall, emitBeforeProviderRequest, emitBeforeProviderHeaders, emitResourcesDiscover, emitInput, emitUserBash, emitBoundary, emitContext, emitBeforeAgentStart };
 pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
     try @import("native_sdk_public_runner_shortcuts.zig").initialize(engine);
+    try @import("native_sdk_prompt_render.zig").initialize(engine);
     inline for (std.meta.fields(Method)) |field| {
         const kind: Method = @enumFromInt(field.value);
         const arity: c_int = switch (kind) {
             .emitInput => 4,
-            .bindCore, .withUIPrompt => 3,
+            .bindCore, .withUIPrompt, .emitBeforeAgentStart => 3,
             .setFlagValue, .createToolContext, .resolveToolRenderers, .emitResourcesDiscover, .emitBoundary => 2,
             .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitUserBash, .emitContext => 1,
             else => 0,
         };
         const function = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, arity, field.value));
         switch (kind) {
-            .emit, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitResourcesDiscover, .emitInput, .emitUserBash, .emitBoundary, .emitContext => {
+            .emit, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitResourcesDiscover, .emitInput, .emitUserBash, .emitBoundary, .emitContext, .emitBeforeAgentStart => {
                 const async_prototype = engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)) catch |err| {
                     engine.freeValue(function);
                     return err;
@@ -144,6 +161,7 @@ fn assign(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.J
 fn methodValue(engine: *em.Engine, runner: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     switch (operation) {
+        .emitBeforeAgentStart => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .agent_start),
         .emitContext => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .context),
         .emitBoundary => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .boundary),
         .emitUserBash => return @import("native_sdk_public_runner_emit.zig").run(engine, runner, args, .user_bash),
@@ -290,3 +308,58 @@ fn runUI(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic
     defer engine.freeValue(reflect);
     return js.invoke(engine, reflect, "apply", &.{ function, roots[0], roots[1] }) catch |err| sdk.fail(engine, err);
 }
+
+// Source class declarations define these genuine bodies in this exact order.
+const prototype_order = [_][*:0]const u8{
+    "constructor",
+    "bindCore",
+    "bindCommandContext",
+    "setUIContext",
+    "wrapUIPromptContext",
+    "withUIPrompt",
+    "emitUIPromptEvent",
+    "getUIContext",
+    "hasUI",
+    "getExtensionPaths",
+    "getAllRegisteredTools",
+    "getToolDefinition",
+    "getFlags",
+    "setFlagValue",
+    "getFlagValues",
+    "getShortcuts",
+    "getShortcutDiagnostics",
+    "invalidate",
+    "assertActive",
+    "onError",
+    "emitError",
+    "reportUnhandledMcpServers",
+    "hasHandlers",
+    "getMessageRenderer",
+    "getMarkdownTransformers",
+    "resolveToolRenderers",
+    "getEntryRenderer",
+    "resolveRegisteredCommands",
+    "getModelRegistry",
+    "getRegisteredCommands",
+    "getCommandDiagnostics",
+    "getCommand",
+    "shutdown",
+    "getActiveTools",
+    "createContext",
+    "createToolContext",
+    "createCommandContext",
+    "emitBoundary",
+    "isSessionBeforeEvent",
+    "emit",
+    "emitCacheWarmingDecision",
+    "emitMessageEnd",
+    "emitToolResult",
+    "emitToolCall",
+    "emitUserBash",
+    "emitContext",
+    "emitBeforeProviderRequest",
+    "emitBeforeProviderHeaders",
+    "emitBeforeAgentStart",
+    "emitResourcesDiscover",
+    "emitInput",
+};

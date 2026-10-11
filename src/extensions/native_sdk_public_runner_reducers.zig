@@ -32,7 +32,7 @@ pub fn initialize(engine: *em.Engine, retained: *State) !void {
             retained.replace(engine, .aux, c.pi_js_bool(engine.context, 0));
         },
         .tool_call, .user_bash => {},
-        .generic => unreachable,
+        .generic, .agent_start => unreachable,
     }
     if (retained.kind == .input) retained.replace(engine, .aux, c.JS_DupValue(engine.context, retained.get(.parameter1)));
     if (retained.kind == .resources) {
@@ -49,6 +49,7 @@ pub fn typeName(kind: dispatch.Kind) [*:0]const u8 {
         .headers => "before_provider_headers",
         .resources => "resources_discover",
         .input => "input",
+        .agent_start => "before_agent_start",
         .user_bash => "user_bash",
         .cache, .boundary, .context, .generic => unreachable,
     };
@@ -58,6 +59,7 @@ pub fn eventType(engine: *em.Engine, retained: *State) !c.JSValue {
     return if (retained.kind == .cache or retained.kind == .boundary) sdk.get(engine, retained.get(.parameter0), "type") else sdk.text(engine, std.mem.span(typeName(retained.kind)));
 }
 pub fn prepare(engine: *em.Engine, retained: *State) !void {
+    if (retained.kind == .agent_start) return @import("native_sdk_public_runner_agent_start.zig").prepare(engine, retained);
     if (retained.kind == .context) return @import("native_sdk_public_runner_context_reducer.zig").prepare(engine, retained);
     if (retained.kind == .boundary) {
         const event = try js.spread(engine, retained.get(.parameter0));
@@ -99,6 +101,7 @@ pub fn prepare(engine: *em.Engine, retained: *State) !void {
 }
 pub fn accept(engine: *em.Engine, retained: *State, result: c.JSValue) !bool {
     switch (retained.kind) {
+        .agent_start => try @import("native_sdk_public_runner_agent_start.zig").accept(engine, retained, result),
         .context => try @import("native_sdk_public_runner_context_reducer.zig").accept(engine, retained, result),
         .boundary => {
             const entries = try optional(engine, result, "entries");
@@ -267,6 +270,7 @@ fn collectPaths(engine: *em.Engine, retained: *State, result: c.JSValue, name: [
 }
 pub fn output(engine: *em.Engine, retained: *State) !c.JSValue {
     switch (retained.kind) {
+        .agent_start => return @import("native_sdk_public_runner_agent_start.zig").output(engine, retained),
         .context => return c.JS_DupValue(engine.context, retained.get(.current)),
         .boundary => {
             const result = try sdk.object(engine);

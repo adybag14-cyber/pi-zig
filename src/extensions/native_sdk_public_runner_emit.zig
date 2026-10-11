@@ -7,7 +7,7 @@ const js = @import("native_js_values.zig");
 const c = em.c;
 const reducers = @import("native_sdk_public_runner_reducers.zig");
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
-pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash, boundary, context };
+pub const Kind = enum { generic, cache, message, tool_result, tool_call, request, headers, resources, input, user_bash, boundary, context, agent_start };
 const Phase = enum { handler, boundary_initial, boundary_rebuild };
 pub const Root = enum { runner, event, context, extension, result, resolve, reject, parameter0, parameter1, parameter2, parameter3, current, aux, aux2 };
 pub const State = struct {
@@ -116,8 +116,12 @@ pub fn run(engine: *em.Engine, runner: c.JSValue, args: []const c.JSValue, kind:
 }
 fn start(engine: *em.Engine, owner: c.JSValue) !void {
     const retained = state(owner);
-    retained.replace(engine, .context, try js.invoke(engine, retained.get(.runner), "createContext", &.{}));
-    if (retained.kind != .generic) try reducers.initialize(engine, retained);
+    if (retained.kind == .agent_start) {
+        try @import("native_sdk_public_runner_agent_start.zig").initialize(engine, retained);
+    } else {
+        retained.replace(engine, .context, try js.invoke(engine, retained.get(.runner), "createContext", &.{}));
+        if (retained.kind != .generic) try reducers.initialize(engine, retained);
+    }
     if (retained.kind == .boundary) {
         retained.phase = .boundary_initial;
         return buildBoundary(engine, owner);
