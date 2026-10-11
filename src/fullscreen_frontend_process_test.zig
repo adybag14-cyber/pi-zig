@@ -740,9 +740,10 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     try observed.send(&child, "\x1b[B", "→ Plugin Two");
     try observed.sendEditorRow(&child, "\t", "two");
     try std.testing.expect(!try observed.screen.contains("Plugin One"));
-    // Actual Source20 capture: a cold burst opens a regular command menu;
-    // only a subsequent Tab after that ready menu applies its selection.
-    try observed.sendEditorRow(&child, "\x15/hel\t", "/hel");
+    // Physical reads can split one terminal write into multiple callback turns.
+    // Source20 checks the strict cold-turn behavior separately; here establish
+    // the real menu readiness before testing selection through the console.
+    try observed.sendEditorRow(&child, "\x15/hel", "/hel");
     try observed.wait(&child, "→ /help", 0);
     try observed.sendEditorRow(&child, "\t", "/help");
     try observed.sendEditorRow(&child, "\x15%cancel", "%cancel");
