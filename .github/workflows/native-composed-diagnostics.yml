@@ -2,7 +2,7 @@ name: Native composed SDK locale and lifecycle qualification
 
 on:
   push:
-    branches: [work/native-composed-20261011, work/native-windows-main-rs-20261011]
+    branches: [work/native-composed-20261011, work/native-windows-main-rs-20261011, work/native-ui8a-20261011]
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
   platform:
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(github.ref_name == 'work/native-windows-main-rs-20261011' && '{"include":[{"os":"windows-latest","mode":"ReleaseSafe","family":"processes"}]}' || '{"os":["windows-latest","ubuntu-latest","macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["vm","processes"]}') }}
+      matrix: ${{ fromJSON(github.ref_name == 'work/native-windows-main-rs-20261011' && '{"include":[{"os":"windows-latest","mode":"ReleaseSafe","family":"processes"}]}' || github.ref_name == 'work/native-ui8a-20261011' && '{"os":["windows-latest","ubuntu-latest","macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["ui"]}' || '{"os":["windows-latest","ubuntu-latest","macos-latest"],"mode":["Debug","ReleaseSafe"],"family":["vm","processes"]}') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.os == 'windows-latest' && matrix.mode == 'ReleaseSafe' && matrix.family == 'processes' && 35 || 25 }}
     steps:
@@ -314,6 +314,19 @@ jobs:
           if ($result -ne 0) { exit $result }
           & zig build test-native-composed-coverage maintenance -j1 --summary all -- verify-composed-coverage . verification/native-composed/tests.log 2>&1 | Tee-Object verification/native-composed/coverage.log
           if ($LASTEXITCODE -ne 0) { throw 'Missing or incomplete named native coverage' }
+      - name: Exercise latest input reply framing and retained public UI slices
+        if: matrix.family == 'ui'
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig fmt --check build.zig src tools
+          if ($LASTEXITCODE -ne 0) { throw 'Native source formatting failed' }
+          & zig build test-ui8a9-source test-native-tui-public-source test-ui8a9-pure test-codemode-run-host -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/native-composed/tests.log
+          $result = $LASTEXITCODE
+          [ordered]@{ exit_code = $result; family = 'ui'; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content verification/native-composed/result.json
+          if ($result -ne 0) { exit $result }
       - name: Exercise actual Main and native process streams
         if: matrix.family == 'processes'
         shell: pwsh
