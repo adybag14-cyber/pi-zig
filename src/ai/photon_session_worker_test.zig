@@ -1,5 +1,22 @@
 const std = @import("std");
 const worker = @import("photon_session_worker.zig");
+fn allocationCase(allocator: std.mem.Allocator) !void {
+    const task = try worker.Worker.start(allocator, @embedFile("fixtures/photon-source-8x5.png"), "image/png", .{ .max_width = 4 });
+    defer task.deinit();
+    var result = try task.take();
+    switch (result) {
+        .image => |*image| image.deinit(allocator),
+        .failure => |*failure| {
+            failure.deinit(allocator);
+            return error.UnexpectedCodecFailure;
+        },
+        .none => return error.ExpectedImage,
+    }
+}
+test "native image worker joins and frees every allocator failure before recovery" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationCase, .{});
+    try allocationCase(std.testing.allocator);
+}
 test "native resize worker owns copied input and transfers its result exactly once" {
     const original = @embedFile("fixtures/photon-source-8x5.png");
     const input = try std.testing.allocator.dupe(u8, original);
