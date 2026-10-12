@@ -1,0 +1,112 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "c22c59c3e39617be6952e5e3ee0e157f8554bbbdc0a070f4b12a8314deef12d2",
+  "originalBodySha256": "2c5cba1c8a92a8d6bb4b90601e246449c25b593c011fd95082acebd48257ad10",
+  "originalBody": "const cases=['cancel-before-mutation','cancel-after-mutation','logout-held'],rows=[],raw=[];const assert=(value,label)=>{if(!value)throw Error(label)};\r\nfor(const name of cases){const events=[],controller=new AbortController(),signal=controller.signal,reason={fixture:'cancel-'+name},credential={type:'api_key',key:'fixture-owned'},gate=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}},entered=gate(),started=gate(),begin=gate(),commit=gate(),finished=gate();let stored=name==='logout-held'?credential:undefined,callbackCalls=0;\r\nconst credentials={async read(){return stored},async list(){return[]},async modify(id,fn,options){events.push('modify-enter');entered.resolve();try{await begin.promise;options.signal.throwIfAborted();callbackCalls++;events.push('mutation-start');const next=await fn(stored);started.resolve();await commit.promise;if(next!==undefined)stored=next;events.push('mutation-commit');return stored}finally{finished.resolve()}},async delete(id,options){options.signal.throwIfAborted();events.push('delete-enter');entered.resolve();await commit.promise;stored=undefined;events.push('delete-commit');finished.resolve()}};\r\nconst models=A.createModels({credentials});models.setProvider(A.createProvider({id:'fixture',models:[],auth:{apiKey:{name:'Fixture',resolve:async()=>undefined,login:async()=>{events.push('login');return credential}}},api:{stream(){throw Error('unused')},streamSimple(){throw Error('unused')}}}));let settled=false;const pending=name==='logout-held'?models.logout('fixture',{signal}):models.login('fixture','api_key',{signal});void pending.then(()=>{settled=true},()=>{settled=true});await entered.promise;\r\nif(name==='cancel-after-mutation'){begin.resolve();await started.promise}controller.abort(reason);events.push('abort');for(let i=0;i<5;i++)await Promise.resolve();const settledBeforeRelease=settled;let value,rejectedSame=false;if(name==='cancel-before-mutation'){try{await pending;throw Error('missing cancel')}catch(error){rejectedSame=error===reason;if(!rejectedSame)throw error}begin.resolve();commit.resolve();await finished.promise}else{assert(!settledBeforeRelease,'eager termination after mutation');commit.resolve();value=await pending;await finished.promise}\r\nif(name==='cancel-before-mutation')assert(rejectedSame&&callbackCalls===0&&stored===undefined,'queued cancellation');else if(name==='cancel-after-mutation')assert(value===credential&&stored===credential&&callbackCalls===1,'committed mutation lost');else assert(value===undefined&&stored===undefined,'logout not committed');rows.push({name,events,settledBeforeRelease,rejectedSame,callbackCalls,valueType:typeof value,returnedIdentity:value===credential,storedType:typeof stored,storedIdentity:stored===credential});raw.push({...rows.at(-1),value,stored})}\r\n",
+  "rows": [
+    {
+      "name": "cancel-before-mutation",
+      "events": [
+        "login",
+        "modify-enter",
+        "abort"
+      ],
+      "settledBeforeRelease": true,
+      "rejectedSame": true,
+      "callbackCalls": 0,
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedType": "undefined",
+      "storedIdentity": false
+    },
+    {
+      "name": "cancel-after-mutation",
+      "events": [
+        "login",
+        "modify-enter",
+        "mutation-start",
+        "abort",
+        "mutation-commit"
+      ],
+      "settledBeforeRelease": false,
+      "rejectedSame": false,
+      "callbackCalls": 1,
+      "valueType": "object",
+      "returnedIdentity": true,
+      "storedType": "object",
+      "storedIdentity": true
+    },
+    {
+      "name": "logout-held",
+      "events": [
+        "delete-enter",
+        "abort",
+        "delete-commit"
+      ],
+      "settledBeforeRelease": false,
+      "rejectedSame": false,
+      "callbackCalls": 0,
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedType": "undefined",
+      "storedIdentity": false
+    }
+  ],
+  "raw": [
+    {
+      "name": "cancel-before-mutation",
+      "events": [
+        "login",
+        "modify-enter",
+        "abort"
+      ],
+      "settledBeforeRelease": true,
+      "rejectedSame": true,
+      "callbackCalls": 0,
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedType": "undefined",
+      "storedIdentity": false
+    },
+    {
+      "name": "cancel-after-mutation",
+      "events": [
+        "login",
+        "modify-enter",
+        "mutation-start",
+        "abort",
+        "mutation-commit"
+      ],
+      "settledBeforeRelease": false,
+      "rejectedSame": false,
+      "callbackCalls": 1,
+      "valueType": "object",
+      "returnedIdentity": true,
+      "storedType": "object",
+      "storedIdentity": true,
+      "value": {
+        "type": "api_key",
+        "key": "fixture-owned"
+      },
+      "stored": {
+        "type": "api_key",
+        "key": "fixture-owned"
+      }
+    },
+    {
+      "name": "logout-held",
+      "events": [
+        "delete-enter",
+        "abort",
+        "delete-commit"
+      ],
+      "settledBeforeRelease": false,
+      "rejectedSame": false,
+      "callbackCalls": 0,
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedType": "undefined",
+      "storedIdentity": false
+    }
+  ]
+}

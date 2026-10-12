@@ -1,0 +1,50 @@
+{
+  "status": "qualified_Debug_and_ReleaseSafe",
+  "base": "88931c2215e0a48a5dda0b540b7cb667ad1a7111",
+  "qualified_body24_checkpoint": "f7880549023dfd47bc3deb061bac75d883794eb7",
+  "target": "b4236443828ff46218385a69cbbc1c7cd376e4bb",
+  "patch_sha256": "D57C2A56A53342388991D735A6CE499BCA738B7081B1C9120AF262CD4BF3FAAF",
+  "paths": 8,
+  "tests": "25/25 actual,162/162steps: typed10+consumer8+sharedstream7",
+  "direct_api_cases": 46,
+  "additional_timing_controls": 3,
+  "native_job": "durable-model-services-login-source49-debug-first-20261012",
+  "pid": 3492,
+  "source": 4129,
+  "source_membership_drift": 0,
+  "source_hash_drift": 0,
+  "tools": 19546,
+  "tools_drift": 0,
+  "root_readonly_applycheck_exit": 0,
+  "final_samebytes_utc": "2026-10-12T21:30:36.8639845+01:00",
+  "source_auth_authority": [
+    "Original19cb login/logout8 PID52684/698modules/16links/31064+1774post0",
+    "Original19cb held app-owned CredentialStore mutation3 PID51840/698modules/16links/31064+1774post0"
+  ],
+  "auth_scope": "Actual native Models login/logout over actual registered Provider.auth and CredentialStore. Fixture-owned credentials only; no host auth file read/write or remote request.",
+  "cancellation": "Exact Source3 rows and raw: before mutation callback begins caller cancels with original reason and callback0; after callback begins caller waits underlying mutation then returns same committed credential despite abort; logout waits actual deletion. Underlying mutation promise remains observed; no eager termination after actual start.",
+  "gpa": "Three exhaustive std.testing.checkAllAllocationFailures probes (typed auth+credential queues, streaming, login mutation/logout), engine GC and owned teardown. Original allocator/stack/host10s unchanged.",
+  "causal_negative": "First actuallogin gate PID53632 23/24, login GPA JavaScriptPromiseUnsettled fail24 at credentials options.signal root allocation followed by mutation error-formatting OOM. Retained full4127+19546post0; allocation-free captured-reason capability retirement fixed, assertions unchanged; warm24passed before Source3 expansion.",
+  "source_bytes": "Original source loop CRLF retained in text-unset input fixtures; no statement/value normalization. Only original login8 start/end intervals vary; held3 row+raw exact.",
+  "open": [
+    "createProvider factory/dynamic provider ABI",
+    "persistent credential store",
+    "full class prototype/borrowedmethod/hostile iterator/coercion matrix",
+    "fullpackage activation",
+    "residual originalMacDebug timeout"
+  ],
+  "ReleaseSafe": {
+    "job": "durable-model-services-login-source49-releasesafe-first-20261012",
+    "pid": 50088,
+    "terminal": "passed",
+    "tests": "25/25",
+    "steps": "162/162",
+    "completed_utc": "2026-10-12T20:33:55.3838406+00:00",
+    "post_completed_utc": "2026-10-12T20:34:02.3931760+00:00",
+    "source": 4129,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "process_gone": true
+  }
+}

@@ -775,10 +775,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_journal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_journal_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-journal-core", "Exercise actual durable tool API document transactions and atomic CodeMode outcome store decisions").dependOn(&b.addRunArtifact(codemode_journal_tests).step);
-    const typed_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_typed_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Models actual Source9", "native Models actual Source10", "native Models actual Source6", "native Models actual typed services credential queues" } });
+    const typed_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_typed_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Models actual Source9", "native Models actual Source10", "native Models actual Source6", "native Models actual typed services credential queues", "native Models actual Source streams10", "native Models actual streaming auth continuations", "native Models actual Source login8", "native Models actual login credential mutation", "native Models actual Source auth mutation3" } });
     linkQuickJs(b, typed_models_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(typed_models_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-models-typed-services", "Replay actual Source typed Models auth and service operations over native instance and credential store").dependOn(&b.addRunArtifact(typed_models_tests).step);
+    const models_stream_regressions = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_stream_regression_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native pi-ai EventStream", "native EventStream", "native AssistantMessageEventStream producer queue overflow", "native terminal admission", "native provider validation", "native provider cancellation" } });
+    linkQuickJs(b, models_stream_regressions.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(models_stream_regressions.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-models-stream-regressions", "Retain shared native stream identity terminal admission queue overflow allocation and cancellation controls").dependOn(&b.addRunArtifact(models_stream_regressions).step);
     const codemode_models_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_codemode_models_catalog_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native durable default CodeMode model catalog actual Source program", "native durable default CodeMode model calls Source", "native durable default CodeMode model images Source" } });
     linkQuickJs(b, codemode_models_catalog_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_models_catalog_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -1380,6 +1384,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, sdk_session_queries_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_session_queries_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-queries", "Compare callable tool loadouts and user-message fork queries with actual latest Source").dependOn(&b.addRunArtifact(sdk_session_queries_tests).step);
+    const sdk_query_consumer_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_query_consumers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "ToolInfo cached SDK AgentTool", "ToolInfo actual SDK default selection", "ToolInfo actual SDK explicit loadout" }, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_query_consumer_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_query_consumer_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-query-consumers", "Retain original executable AgentTool context and SDK tool-loadout identity regressions").dependOn(&b.addRunArtifact(sdk_query_consumer_tests).step);
     linkQuickJs(b, sdk_skill_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_skill_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_skill_run = b.addRunArtifact(sdk_skill_tests);
@@ -2298,10 +2306,10 @@ pub fn build(b: *std.Build) void {
     // the nested fatal-application checks and process-fixture dependencies.
     addCompileOnlyGroup(b, "build-hosted-core-components", &.{ "test-native-codemode-sandbox", "test-native-codemode-run", "test-native-codemode-vm-worker", "test-native-codemode-controlled-binding", "test-native-durable-148622-wait-cycle", "test-native-durable-json-dto", "test-native-physical-stdio", "test-codemode-inline", "test-codemode-allocation", "test-durable-scheduler", "test-durable-json-clone" });
     addCompileOnlyGroup(b, "build-hosted-latest-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-custom-editor-frontend", "test-extension-filesystem", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured", "test-native-tui-alt-source", "test-native-tui-base-source" });
-    addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services" });
+    addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services", "test-native-models-stream-regressions" });
     addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance" });
-    addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source" });
-    addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{"test-native-sdk-send-user"});
+    addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source", "test-native-chord-contract-source", "test-native-chord-clone-source" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers" });
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

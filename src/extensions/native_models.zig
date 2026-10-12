@@ -253,6 +253,8 @@ pub fn create(engine: *engine_mod.Engine, cache: c.JSValue, options: c.JSValue) 
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Method)) |field| try put(engine, result, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCallback, field.name, 0, field.value, data.len, &data)));
     try @import("native_models_typed.zig").install(engine, result, store);
+    try @import("native_models_streaming.zig").install(engine, result, store);
+    try @import("native_models_authentication.zig").install(engine, result, store);
     return result;
 }
 fn createCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {

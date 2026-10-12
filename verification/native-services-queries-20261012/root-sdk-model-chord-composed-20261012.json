@@ -1,0 +1,13 @@
+{
+  "name": "root-sdk-model-chord-composed-20261012",
+  "pid": 45436,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-session-queries test-native-sdk-query-consumers test-native-sdk-send-user test-native-models-typed-services test-native-models-stream-regressions test-native-durable-codemode-model-catalog test-native-chord-contract-source test-native-chord-clone-source test-native-chord-context-source test-native-chord-resource-source test-agent-allocation-coverage test-maintenance -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T20:33:15.3881490Z",
+  "launched_utc": "2026-10-12T20:33:15.3846591+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T20:35:40.4161991+00:00"
+}

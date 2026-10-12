@@ -108,7 +108,7 @@ fn requestContext(scope: *Scope, state: c.JSValue) !c.JSValue {
     inline for (.{ "env", "fileExists" }, 0..) |key, i| try scope.put(result, key, try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, overlay, key, 1, @intCast(i), captures.len, &captures))));
     return result;
 }
-fn getAuth(engine: *em.Engine, store: c.JSValue, selected: c.JSValue, overrides: c.JSValue) !c.JSValue {
+pub fn getAuth(engine: *em.Engine, store: c.JSValue, selected: c.JSValue, overrides: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const signal_arg = try optional(&scope, overrides, "signal");
@@ -170,6 +170,7 @@ fn authValue(scope: *Scope, state: c.JSValue, value: c.JSValue) !c.JSValue {
     return c.JS_DupValue(scope.engine.context, result);
 }
 fn errorResult(scope: *Scope, state: c.JSValue, reason: c.JSValue) !c.JSValue {
+    if (scope.truthy(try scope.get(state, "requestOnly"))) return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, reason)));
     const model = try scope.get(state, "model");
     const result = try scope.object();
     inline for (.{ "api", "provider" }) |key| try scope.put(result, key, try scope.get(model, key));
@@ -262,6 +263,12 @@ fn request(scope: *Scope, state: c.JSValue, headers: c.JSValue) !c.JSValue {
         try js.spreadInto(scope.engine, env, caller_env);
     }
     try scope.put(outgoing, "env", env);
+    if (scope.truthy(try scope.get(state, "requestOnly"))) {
+        const result = try scope.object();
+        try scope.put(result, "requestModel", selected);
+        try scope.put(result, "requestOptions", outgoing);
+        return c.JS_DupValue(scope.engine.context, result);
+    }
     const pending = try scope.invoke(try scope.get(state, "provider"), if (scope.truthy(try scope.get(state, "images"))) "generateImages" else "classify", &.{ selected, try scope.get(state, "context"), outgoing });
     return c.JS_DupValue(scope.engine.context, try wait(scope, state, pending, .finished));
 }
@@ -356,4 +363,20 @@ fn advanceInner(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected
         },
         .finished => return c.JS_DupValue(engine.context, value),
     }
+}
+
+/// Shared auth application for native chat/deferred service dispatch. Returns a
+/// Promise for the exact request model/options pair; failures remain rejections.
+pub fn applyAuth(engine: *em.Engine, store: c.JSValue, model: c.JSValue, options: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const state = try scope.object();
+    try scope.put(state, "store", store);
+    try scope.put(state, "model", model);
+    try scope.put(state, "options", options);
+    try scope.put(state, "requestOnly", c.pi_js_bool(engine.context, 1));
+    const overrides = try scope.object();
+    inline for (.{ "apiKey", "env", "signal" }) |key| try scope.put(overrides, key, try optional(&scope, options, key));
+    const pending = try scope.own(try getAuth(engine, store, model, overrides));
+    return c.JS_DupValue(engine.context, try wait(&scope, state, pending, .auth_ready));
 }

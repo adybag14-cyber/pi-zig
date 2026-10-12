@@ -1,0 +1,53 @@
+{
+  "status": "qualified_Debug_and_ReleaseSafe",
+  "logical_base": "ee326642fb05aaa05f52fea1abdd569f7a7e8091",
+  "virtual_base": "c6492e0d087b1df4cd9402d06bfb64b8037ce238",
+  "virtual_base_difference": "ONLY exact qualified Root a3b96ad native_stream.zig baseline (generic raw values/noJSON/unbounded generic queue/extractor ordering and NativeOOM marking/renamed original overflow test)",
+  "target": "88931c2215e0a48a5dda0b540b7cb667ad1a7111",
+  "patch_sha256": "69C96C4814A32E15F3E1ED178D6464F7D532BC5DE14D3478801BF1FC84D5FDBF",
+  "paths": 10,
+  "tests": "22/22 actual,162/162steps: typed7+consumer8+sharedstream7",
+  "source_cases": 35,
+  "additional_timing_controls": 3,
+  "native_job": "durable-model-services-source35-debug-Root-stream-phase-authority-20261012",
+  "pid": 49740,
+  "source": 4124,
+  "source_membership_drift": 0,
+  "source_hash_drift": 0,
+  "tools": 19546,
+  "tools_drift": 0,
+  "root_readonly_applycheck_exit": 0,
+  "final_samebytes_utc": "2026-10-12T21:09:44.6532529+01:00",
+  "source_clock_authority": "Original19cb actualSourcePID53956/698modules/16links/31064+1774post0, forward-only originalDate.now and ownedrows.push; directSourcepredating/existing37/future controls",
+  "measurement_policy": "Only marked row/raw intervals, lazy/outer constructor phases, three error value+received.error timestamp/duration paths and direct future control timestamps/duration. Exact conditional duration presence iff message.timestamp>=actual outerStartedAt, finite/integer/nonnegative/elapsed bounds, expected also valid, negative controls reject missing-required/present-for-predating/invalid scalar/bounds; every other API/result/event field exact. Raw diagnostic provider-layer clock-call counts recorded separately (native valid Provider ingress excludes Source createProvider extra lazy wrapper), no factory parity claim.",
+  "source_bytes": "Original observed body retained exactly, including CRLF in -text native.input.txt; git diff whitespace CR warnings are original input bytes and are not trimmed.",
+  "gpa": "Two exhaustive std.testing.checkAllAllocationFailures probes: native typed auth/credential queue and native streaming/auth/event+result identity; existing shared stream allocation/admission/ownership controls also run; originalallocator/host10s/stack",
+  "causal_negatives": [
+    "compiler local failed-shadow PID53404",
+    "streamGPA SwallowedOOM fail93 postterminal root allocation PID22124/29908",
+    "streamGPA unsettled fail63 terminal formatting fallback PID36260/44108",
+    "overrequired duration presence across real constructor millisecond PID22500",
+    "Source clock fixed-count observer missed extra provider deferred layer PID48004"
+  ],
+  "open": [
+    "createProvider factory and dynamic provider ABI",
+    "login/logout body/persistent credential store",
+    "full class prototype/borrowedmethod/hostile iterator/coercion matrix",
+    "fullpackage activation",
+    "residual originalMacDebug timeout"
+  ],
+  "ReleaseSafe": {
+    "job": "durable-model-services-source35-releasesafe-Root-stream-phase-authority-20261012",
+    "pid": 19452,
+    "terminal": "passed",
+    "tests": "22/22",
+    "steps": "162/162",
+    "completed_utc": "2026-10-12T20:12:30.0069932+00:00",
+    "post_completed_utc": "2026-10-12T20:12:36.4282231+00:00",
+    "source": 4124,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "process_gone": true
+  }
+}

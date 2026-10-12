@@ -25,6 +25,8 @@ pub fn reject(engine: *engine_mod.Engine, value: c.JSValue, failure: c.JSValue) 
 const Stream = struct {
     engine: *engine_mod.Engine,
     assistant: bool,
+    started_wall: f64 = 0,
+    started_monotonic: f64 = 0,
     complete: c.JSValue,
     extract: c.JSValue,
     result: c.JSValue,
@@ -114,10 +116,35 @@ fn constructValue(engine: *engine_mod.Engine, target: c.JSValue, assistant: bool
     defer engine.freeValue(prototype);
     const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, prototype, engine.event_stream_class));
     errdefer engine.freeValue(object);
+    const started_wall = if (assistant) try clockNumber(engine, "Date") else 0;
+    const started_monotonic = if (assistant) try clockNumber(engine, "performance") else 0;
     const self = try engine.gpa.create(Stream);
-    self.* = .{ .engine = engine, .assistant = assistant, .complete = c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()), .extract = c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()), .result = result, .result_resolve = capabilities[0], .result_reject = capabilities[1] };
+    self.* = .{ .engine = engine, .assistant = assistant, .started_wall = started_wall, .started_monotonic = started_monotonic, .complete = c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()), .extract = c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()), .result = result, .result_resolve = capabilities[0], .result_reject = capabilities[1] };
     _ = c.JS_SetOpaque(object, self);
     return object;
+}
+
+fn clockNumber(engine: *engine_mod.Engine, name: [*:0]const u8) !f64 {
+    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const value = try scope.invoke(try scope.global(name), "now", &.{});
+    var number: f64 = 0;
+    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return @import("native_js_values.zig").capture(engine);
+    return number;
+}
+fn timeMessage(self: *Stream, message: c.JSValue) !void {
+    if (self.done) return;
+    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = self.engine };
+    defer scope.deinit();
+    if (!c.JS_IsUndefined(try scope.get(message, "durationMs"))) return;
+    const timestamp = try scope.get(message, "timestamp");
+    // Source's relational comparison coerces the message timestamp.
+    var number: f64 = 0;
+    if (c.JS_ToFloat64(self.engine.context, &number, timestamp) < 0) return @import("native_js_values.zig").capture(self.engine);
+    if (number < self.started_wall) return;
+    const elapsed = try clockNumber(self.engine, "performance") - self.started_monotonic;
+    const rounded = if (std.math.isNan(elapsed)) elapsed else @max(0, @floor(elapsed + 0.5));
+    try scope.set(message, "durationMs", c.JS_NewFloat64(self.engine.context, rounded));
 }
 
 fn streamCall(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
@@ -138,6 +165,7 @@ fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.J
         return iterator;
     }
     if (method == 1) {
+        if (self.assistant and !c.JS_IsUndefined(value)) try timeMessage(self, value);
         self.done = true;
         if (!c.JS_IsUndefined(value)) try callOne(engine, self.result_resolve, value);
         while (self.waiting.items.len > 0) {
@@ -150,6 +178,12 @@ fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.J
         return c.pi_js_undefined();
     }
     if (self.done) return c.pi_js_undefined();
+    if (self.assistant) {
+        var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+        defer scope.deinit();
+        const kind = try scope.get(value, "type");
+        if (scope.equal(kind, try scope.text("done"))) try timeMessage(self, try scope.get(value, "message")) else if (scope.equal(kind, try scope.text("error"))) try timeMessage(self, try scope.get(value, "error"));
+    }
     // A generic Source EventStream queues arbitrary raw JS values. Inspecting
     // them through JSON would invoke caller toJSON/getters and reject cycles
     // before the actual completion predicate ever sees the event.

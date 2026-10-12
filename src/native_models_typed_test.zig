@@ -36,9 +36,16 @@ fn sourceProof(comptime fixture_path: []const u8, comptime input_path: []const u
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try @import("extensions/timers.zig").install(engine, std.testing.io);
-    const exports = try sdk.object(engine);
+    const exports = if (comptime std.mem.eql(u8, label, "native-model-streams-source10")) stream_exports: {
+        try @import("extensions/native_stream.zig").install(engine);
+        break :stream_exports c.JS_DupValue(engine.context, engine.native_module_values.get("@earendil-works/pi-ai").?);
+    } else plain_exports: {
+        const value = try sdk.object(engine);
+        errdefer engine.freeValue(value);
+        try @import("extensions/native_models.zig").populateExports(engine, value);
+        break :plain_exports value;
+    };
     defer engine.freeValue(exports);
-    try @import("extensions/native_models.zig").populateExports(engine, exports);
     try engine.registerValueModule("native-typed-models", exports);
     var fixture = try json.Owned.parse(std.testing.allocator, @embedFile(fixture_path));
     defer fixture.deinit();
@@ -88,4 +95,71 @@ test "native Models actual typed services credential queues release every failed
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+
+test "native Models actual Source streams10 synchronous outer auth transcript and deferred services" {
+    try sourceProof("durable/fixtures/durable-19cb534-model-streams-source.json", "durable/fixtures/durable-19cb534-model-streams-native.input.txt", "native-model-streams-source10");
+}
+
+test "native Models actual streaming auth continuations release every failed host allocation" {
+    const Probe = struct {
+        fn exercise(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            engine.native_io = std.testing.io;
+            try @import("extensions/native_stream.zig").install(engine);
+            const module = try engine.evalModule(
+                \\import{createModels,AssistantMessageEventStream}from'@earendil-works/pi-ai';const models=createModels(),model={id:'chat',provider:'fixture',api:'fixture-api',input:['text']},message={role:'assistant',api:'fixture-api',provider:'fixture',model:'chat',content:[],stopReason:'stop',timestamp:0};models.setProvider({id:'fixture',auth:{apiKey:{async resolve(){return{auth:{apiKey:'fixture'},source:'fixture'}}}},streamSimple(selected,context,options){if(options.apiKey!=='fixture'||context.messages.length!==1)throw Error('request');const stream=new AssistantMessageEventStream();stream.push({type:'done',reason:'stop',message});return stream}});const stream=models.streamSimple(model,{systemPrompt:'System',messages:[]});if(await stream.result()!==message)throw Error('result identity');let count=0;for await(const event of stream){if(event.message!==message)throw Error('event identity');count++}if(count!==1)throw Error('event count');export const proof=true;
+            , "native-model-streams-allocation");
+            defer engine.freeValue(module);
+            c.JS_RunGC(engine.runtime);
+        }
+        fn run(gpa: std.mem.Allocator) !void {
+            exercise(gpa) catch |err| {
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                if (failing.has_induced_failure and (err == error.JavaScriptException or err == error.OutOfMemory)) return error.OutOfMemory;
+                std.debug.print("stream GPA unexpected {s} fail_index={d} alloc_index={d} induced={} stack={f}\n", .{ @errorName(err), failing.fail_index, failing.alloc_index, failing.has_induced_failure, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                return err;
+            };
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            if (failing.has_induced_failure) std.debug.print("stream GPA swallowed fail_index={d} alloc_index={d} stack={f}\n", .{ failing.fail_index, failing.alloc_index, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+
+test "native Models actual Source login8 credential persistence causes and preabort identity" {
+    try sourceProof("durable/fixtures/durable-19cb534-model-login-source.json", "durable/fixtures/durable-19cb534-model-login-native.input.txt", "native-model-login-source8");
+}
+
+test "native Models actual login credential mutation release every failed host allocation" {
+    const Probe = struct {
+        fn exercise(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            engine.native_io = std.testing.io;
+            const exports = try sdk.object(engine);
+            defer engine.freeValue(exports);
+            try @import("extensions/native_models.zig").populateExports(engine, exports);
+            try engine.registerValueModule("native-typed-models", exports);
+            const module = try engine.evalModule(
+                \\import{createModels,InMemoryCredentialStore}from'native-typed-models';const credentials=new InMemoryCredentialStore(),models=createModels({credentials}),credential={type:'api_key',key:'fixture-key'},signal=new AbortController().signal;models.setProvider({id:'fixture',name:'Fixture',auth:{apiKey:{async login(interaction){if(interaction.signal!==signal)throw Error('signal identity');return credential}}}});if(await models.login('fixture','api_key',{signal})!==credential||await credentials.read('fixture')!==credential)throw Error('login identity');await models.logout('fixture',{signal});if(await credentials.read('fixture')!==undefined)throw Error('logout');export const proof=true;
+            , "native-model-login-allocation");
+            defer engine.freeValue(module);
+            c.JS_RunGC(engine.runtime);
+        }
+        fn run(gpa: std.mem.Allocator) !void {
+            exercise(gpa) catch |err| {
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                if (failing.has_induced_failure and (err == error.JavaScriptException or err == error.OutOfMemory)) return error.OutOfMemory;
+                std.debug.print("login GPA unexpected {s} fail_index={d} induced={} stack={f}\n", .{ @errorName(err), failing.fail_index, failing.has_induced_failure, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                return err;
+            };
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+
+test "native Models actual Source auth mutation3 no eager termination after mutation start" {
+    try sourceProof("durable/fixtures/durable-19cb534-model-auth-mutation-boundaries-source.json", "durable/fixtures/durable-19cb534-model-auth-mutation-boundaries-native.input.txt", "native-model-auth-mutation-source3");
 }

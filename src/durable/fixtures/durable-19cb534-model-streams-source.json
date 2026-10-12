@@ -1,0 +1,2341 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "a6f06c99eee7e863e18aa0b89e500928bc9799d10787173a35b9232904f39247",
+  "originalBodySha256": "fd67d78c4b1804ca843be075c72412d792871907f5389c68605d930c9a2d1d2b",
+  "originalBody": "const originalDateNow=Date.now,clockCalls=[],clockSlices=[];let clockOffset=0;Date.now=function(...args){const value=Reflect.apply(originalDateNow,this,args);clockCalls.push(value);return value};\r\nconst cases=['stream','complete','streamSimple','completeSimple','streamDeferred','fetchDeferred','cancelDeferred','wrong-type-stream','missing-auth-stream','setup-plain-throw'],rows=[],raw=[];\r\nconst originalRowsPush=rows.push;rows.push=function(...args){clockSlices.push(clockCalls.slice(clockOffset));clockOffset=clockCalls.length;return Reflect.apply(originalRowsPush,this,args)};\r\nfor(const name of cases){const events=[],signal=new AbortController().signal,model={id:'chat',name:'Chat',provider:'fixture',api:'fixture-chat',baseUrl:'https://original.invalid',input:['text'],contextWindow:1000,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}},context={systemPrompt:'System',messages:[{role:'user',content:'Hi',timestamp:0}],tools:[{name:'fixture-tool',description:'Local fixture',parameters:{type:'object',properties:{}}}]},models=A.createModels({authContext:{env:async()=>undefined,fileExists:async()=>false}}),message={role:'assistant',content:[{type:'text',text:'done'}],api:model.api,provider:model.provider,model:model.id,usage:{input:1,output:1,cacheRead:0,cacheWrite:0,totalTokens:2,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},stopReason:'stop',timestamp:0};\r\nconst dispatch=(method,selected,input,options)=>{events.push({type:method,model:selected,input,options:{...options,signal:undefined},keys:Object.keys(options),signalSame:options.signal===signal});if(name==='setup-plain-throw')throw{message:'not-an-Error'};const stream=new A.AssistantMessageEventStream();queueMicrotask(()=>{stream.push({type:'start',partial:message});stream.push({type:'done',reason:'stop',message});stream.end(message)});return stream};\r\nmodels.setProvider(A.createProvider({id:'fixture',models:[model],auth:{apiKey:{name:'Fixture',resolve:async()=>{events.push({type:'auth'});return name==='missing-auth-stream'?undefined:{auth:{apiKey:'fixture-key',baseUrl:'https://resolved.invalid',headers:{AUTH:'provider'}},source:'fixture'}}}},api:{stream:(...args)=>dispatch('stream',...args),streamSimple:(...args)=>dispatch('streamSimple',...args),fetchDeferred:(...args)=>dispatch('fetchDeferred',...args),cancelDeferred:async(selected,handle,options)=>{events.push({type:'cancelDeferred',model:selected,handle,options:{...options,signal:undefined},keys:Object.keys(options),signalSame:options.signal===signal})}}}));\r\nconst selected=name==='wrong-type-stream'?{...model,type:'classifier'}:model,options={signal,headers:{auth:'request'}},handle={id:'fixture-deferred'};let value,stream,received=[],brand;const start=Date.now();\r\nif(name==='complete')value=await models.complete(selected,context,options);else if(name==='completeSimple')value=await models.completeSimple(selected,context,options);else if(name==='fetchDeferred')value=await models.fetchDeferred(selected,handle,options);else if(name==='cancelDeferred')value=await models.cancelDeferred(selected,handle,options);else{stream=name==='streamSimple'?models.streamSimple(selected,context,options):name==='streamDeferred'?models.streamDeferred(selected,handle,options):models.stream(selected,context,options);brand=stream instanceof A.AssistantMessageEventStream;events.push({type:'returned-stream'});for await(const event of stream)received.push(event);value=await stream.result()}\r\nconst end=Date.now();if(value?.stopReason==='error'&&(!Number.isSafeInteger(value.timestamp)||value.timestamp<start||value.timestamp>end))throw Error('setup error timestamp');rows.push({name,value,valueType:typeof value,received,brand,events,start,end});raw.push({name,value,received,events,start,end})}\r\nDate.now=originalDateNow;rows.push=originalRowsPush;\r\nfor(let i=0;i<rows.length;i++){const row=rows[i],calls=clockSlices[i];if(calls[0]!==row.start||calls.at(-1)!==row.end||row.name!=='cancelDeferred'&&calls.length<4)throw Error(JSON.stringify({clockCount:row.name,calls,row}));const phase=row.name==='cancelDeferred'?{}:{lazyStartedAt:calls[1],outerStartedAt:calls[2]};row.clockPhase=phase;raw[i].clockPhase=phase;if(row.value?.stopReason==='error'){const expectedPresence=row.value.timestamp>=phase.outerStartedAt;if(row.value.timestamp!==phase.lazyStartedAt||Object.hasOwn(row.value,'durationMs')!==expectedPresence||row.received[0].error!==row.value)throw Error('Source timing guard mismatch')}}if(clockOffset!==clockCalls.length)throw Error('unexpected original clock call');\r\nconst timingControls=[];for(const name of['predating','existing','future']){const start=Date.now(),stream=new A.AssistantMessageEventStream(),message={role:'assistant',content:[],timestamp:name==='predating'?0:Date.now()+10000,...name==='existing'?{durationMs:37}:{}};stream.push({type:'done',reason:'stop',message});const value=await stream.result(),end=Date.now();if(value!==message||name==='predating'&&Object.hasOwn(value,'durationMs')||name==='existing'&&value.durationMs!==37||name==='future'&&(!Object.hasOwn(value,'durationMs')||!Number.isSafeInteger(value.durationMs)||value.durationMs<0||value.durationMs>end-start+1))throw Error('Source timing control');timingControls.push({name,value,start,end})}\r\n",
+  "rows": [
+    {
+      "name": "stream",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434668,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434668,
+        "outerStartedAt": 1791835434669
+      }
+    },
+    {
+      "name": "complete",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "streamSimple",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "streamSimple",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "completeSimple",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "streamSimple",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "streamDeferred",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "fetchDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "fetchDeferred",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "fetchDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "cancelDeferred",
+      "valueType": "undefined",
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "cancelDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "handle": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {}
+    },
+    {
+      "name": "wrong-type-stream",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "Model fixture/chat is not a chat model",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "Model fixture/chat is not a chat model",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    },
+    {
+      "name": "missing-auth-stream",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "Provider is not configured: fixture",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "Provider is not configured: fixture",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        }
+      ],
+      "start": 1791835434671,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    },
+    {
+      "name": "setup-plain-throw",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "[object Object]",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "valueType": "object",
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "[object Object]",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "brand": true,
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434671,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    }
+  ],
+  "raw": [
+    {
+      "name": "stream",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434668,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434668,
+        "outerStartedAt": 1791835434669
+      }
+    },
+    {
+      "name": "complete",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "streamSimple",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "streamSimple",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "completeSimple",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "streamSimple",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "streamDeferred",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 1,
+              "output": 1,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 2,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "fetchDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "fetchDeferred",
+      "value": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 1,
+          "output": 1,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 2,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "fetchDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434670,
+        "outerStartedAt": 1791835434670
+      }
+    },
+    {
+      "name": "cancelDeferred",
+      "received": [],
+      "events": [
+        {
+          "type": "auth"
+        },
+        {
+          "type": "cancelDeferred",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "handle": {
+            "id": "fixture-deferred"
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434670,
+      "clockPhase": {}
+    },
+    {
+      "name": "wrong-type-stream",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "Model fixture/chat is not a chat model",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "Model fixture/chat is not a chat model",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        }
+      ],
+      "start": 1791835434670,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    },
+    {
+      "name": "missing-auth-stream",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "Provider is not configured: fixture",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "Provider is not configured: fixture",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        }
+      ],
+      "start": 1791835434671,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    },
+    {
+      "name": "setup-plain-throw",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "api": "fixture-chat",
+        "provider": "fixture",
+        "model": "chat",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "errorMessage": "[object Object]",
+        "timestamp": 1791835434671,
+        "durationMs": 0
+      },
+      "received": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "fixture-chat",
+            "provider": "fixture",
+            "model": "chat",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "[object Object]",
+            "timestamp": 1791835434671,
+            "durationMs": 0
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "returned-stream"
+        },
+        {
+          "type": "auth"
+        },
+        {
+          "type": "stream",
+          "model": {
+            "id": "chat",
+            "name": "Chat",
+            "provider": "fixture",
+            "api": "fixture-chat",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "input": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "System",
+                "toolsAdded": [
+                  {
+                    "name": "fixture-tool",
+                    "description": "Local fixture",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                ],
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": "Hi",
+                "timestamp": 0
+              }
+            ]
+          },
+          "options": {
+            "headers": {
+              "auth": "request"
+            },
+            "apiKey": "fixture-key"
+          },
+          "keys": [
+            "signal",
+            "headers",
+            "apiKey",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "start": 1791835434671,
+      "end": 1791835434671,
+      "clockPhase": {
+        "lazyStartedAt": 1791835434671,
+        "outerStartedAt": 1791835434671
+      }
+    }
+  ],
+  "clockCalls": [
+    1791835434668,
+    1791835434668,
+    1791835434669,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434670,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671,
+    1791835434671
+  ],
+  "clockSlices": [
+    [
+      1791835434668,
+      1791835434668,
+      1791835434669,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434670
+    ],
+    [
+      1791835434670,
+      1791835434671,
+      1791835434671,
+      1791835434671
+    ],
+    [
+      1791835434671,
+      1791835434671,
+      1791835434671,
+      1791835434671
+    ],
+    [
+      1791835434671,
+      1791835434671,
+      1791835434671,
+      1791835434671
+    ]
+  ],
+  "timingControls": [
+    {
+      "name": "predating",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "timestamp": 0
+      },
+      "start": 1791835434671,
+      "end": 1791835434671
+    },
+    {
+      "name": "existing",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "timestamp": 1791835444671,
+        "durationMs": 37
+      },
+      "start": 1791835434671,
+      "end": 1791835434671
+    },
+    {
+      "name": "future",
+      "value": {
+        "role": "assistant",
+        "content": [],
+        "timestamp": 1791835444671,
+        "durationMs": 0
+      },
+      "start": 1791835434671,
+      "end": 1791835434671
+    }
+  ],
+  "clockScope": "Forward-only actual Date.now and owned rows.push observation. Core Models lazy/outer phases qualified; provider factory layer count is separately recorded, not equated across caller-supplied Provider ingress."
+}

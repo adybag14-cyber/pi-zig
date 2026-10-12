@@ -1,0 +1,378 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "ecfccbd4112539bc16a4609e6c09892b4eeab72ca372958a9b726aea82705a4a",
+  "originalBodySha256": "7262d14da0b0ffd6c10bc06e52859da048f139022e4d6f56f88736e5f38471d2",
+  "originalBody": "const cases=['login-api-key','login-oauth','logout','login-missing','login-store-reject','logout-store-reject','login-preabort','logout-preabort'],rows=[],raw=[];\r\nfor(const name of cases){const events=[],credentials=new InMemoryCredentialStore(),controller=new AbortController(),signal=controller.signal,cause=new Error('fixture-'+name),credential={type:name==='login-oauth'?'oauth':'api_key',key:'fixture-key',access:'fixture-access',refresh:'fixture-refresh',expires:123},interaction={signal,onProgress:async()=>{},fixture:'interaction'},options={fixture:'options'},originalModify=credentials.modify.bind(credentials),originalDelete=credentials.delete.bind(credentials);credentials.modify=(id,fn,options)=>{events.push({type:'modify',id,signalSame:options.signal===signal});return name==='login-store-reject'?Promise.reject(cause):originalModify(id,fn,options)};credentials.delete=(id,options)=>{events.push({type:'delete',id,signalSame:options.signal===signal});return name==='logout-store-reject'?Promise.reject(cause):originalDelete(id,options)};\r\nconst login=async(got,received)=>{events.push({type:'login',keys:Object.keys(got),signalSame:got.signal===signal,progressSame:got.onProgress===interaction.onProgress,optionsSame:received===options});return credential},models=A.createModels({credentials});models.setProvider(A.createProvider({id:'fixture',name:'Fixture',models:[],auth:{apiKey:{name:'Fixture',resolve:async()=>undefined,...name==='login-missing'?{}:{login}},oauth:{login,toAuth:()=>({apiKey:'fixture'}),refresh:async current=>current}},api:{stream(){throw Error('unused')},streamSimple(){throw Error('unused')}}}));if(name==='logout')await originalModify('fixture',async()=>credential);if(name.endsWith('preabort'))controller.abort(cause);let value,error,same=false;const start=Date.now();try{value=name.startsWith('logout')?await models.logout('fixture',{signal}):await models.login('fixture',name==='login-oauth'?'oauth':'api_key',interaction,options)}catch(thrown){same=thrown===cause;error={name:thrown.name,code:thrown.code,message:thrown.message,causeSame:thrown.cause===cause,reasonSame:same}}\r\nconst stored=await credentials.read('fixture'),end=Date.now();rows.push({name,value,valueType:typeof value,stored,returnedIdentity:value===credential,storedIdentity:stored===credential,error,events,start,end});raw.push({name,value,stored,error,events,start,end})}\r\n",
+  "rows": [
+    {
+      "name": "login-api-key",
+      "value": {
+        "type": "api_key",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "valueType": "object",
+      "stored": {
+        "type": "api_key",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "returnedIdentity": true,
+      "storedIdentity": true,
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709156,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-oauth",
+      "value": {
+        "type": "oauth",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "valueType": "object",
+      "stored": {
+        "type": "oauth",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "returnedIdentity": true,
+      "storedIdentity": true,
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "logout",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "events": [
+        {
+          "type": "delete",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-missing",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Fixture does not support api_key login",
+        "causeSame": false,
+        "reasonSame": false
+      },
+      "events": [],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-store-reject",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store modify failed for fixture: fixture-login-store-reject",
+        "causeSame": true,
+        "reasonSame": false
+      },
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "logout-store-reject",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store delete failed for fixture: fixture-logout-store-reject",
+        "causeSame": true,
+        "reasonSame": false
+      },
+      "events": [
+        {
+          "type": "delete",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-preabort",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "error": {
+        "name": "Error",
+        "message": "fixture-login-preabort",
+        "causeSame": false,
+        "reasonSame": true
+      },
+      "events": [],
+      "start": 1791834709157,
+      "end": 1791834709158
+    },
+    {
+      "name": "logout-preabort",
+      "valueType": "undefined",
+      "returnedIdentity": false,
+      "storedIdentity": false,
+      "error": {
+        "name": "Error",
+        "message": "fixture-logout-preabort",
+        "causeSame": false,
+        "reasonSame": true
+      },
+      "events": [],
+      "start": 1791834709158,
+      "end": 1791834709158
+    }
+  ],
+  "raw": [
+    {
+      "name": "login-api-key",
+      "value": {
+        "type": "api_key",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "stored": {
+        "type": "api_key",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709156,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-oauth",
+      "value": {
+        "type": "oauth",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "stored": {
+        "type": "oauth",
+        "key": "fixture-key",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 123
+      },
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "logout",
+      "events": [
+        {
+          "type": "delete",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-missing",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Fixture does not support api_key login",
+        "causeSame": false,
+        "reasonSame": false
+      },
+      "events": [],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-store-reject",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store modify failed for fixture: fixture-login-store-reject",
+        "causeSame": true,
+        "reasonSame": false
+      },
+      "events": [
+        {
+          "type": "login",
+          "keys": [
+            "signal",
+            "onProgress",
+            "fixture"
+          ],
+          "signalSame": true,
+          "progressSame": true,
+          "optionsSame": true
+        },
+        {
+          "type": "modify",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "logout-store-reject",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store delete failed for fixture: fixture-logout-store-reject",
+        "causeSame": true,
+        "reasonSame": false
+      },
+      "events": [
+        {
+          "type": "delete",
+          "id": "fixture",
+          "signalSame": true
+        }
+      ],
+      "start": 1791834709157,
+      "end": 1791834709157
+    },
+    {
+      "name": "login-preabort",
+      "error": {
+        "name": "Error",
+        "message": "fixture-login-preabort",
+        "causeSame": false,
+        "reasonSame": true
+      },
+      "events": [],
+      "start": 1791834709157,
+      "end": 1791834709158
+    },
+    {
+      "name": "logout-preabort",
+      "error": {
+        "name": "Error",
+        "message": "fixture-logout-preabort",
+        "causeSame": false,
+        "reasonSame": true
+      },
+      "events": [],
+      "start": 1791834709158,
+      "end": 1791834709158
+    }
+  ]
+}
