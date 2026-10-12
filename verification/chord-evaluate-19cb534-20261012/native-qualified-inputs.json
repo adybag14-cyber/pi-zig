@@ -1,0 +1,70 @@
+[
+  {
+    "path": ".gitattributes",
+    "sha256": "EC1BB1A7531A2DB9A4E9D387127266801BB8497EA987CD40F22CC5628B5ADD43"
+  },
+  {
+    "path": "build.zig",
+    "sha256": "B9388DB753B9613AE78F7638D9BC931C57D3E0E3D02B97E7A132E11DF7BAD8ED"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-evaluate-original-19cb.input.txt",
+    "sha256": "6660BE9AA9B1FE9C6AD7D16D5C73AC5F735076FB6B60D9E8BC7B9EB0BC518A78"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-evaluate-original-19cb.json",
+    "sha256": "2065B8A66707044EB3D31B81962ECD3E96A6B079F59EF0DDCD81553D773B5E1D"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-normalization-evaluator-original-19cb.input.txt",
+    "sha256": "1B57BB19B0EA255983A48EA50C9530FD78BF904FE862B368D796C7CC04997ED7"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-normalization-workers-original-19cb.input.txt",
+    "sha256": "80760F1C45909FA02F140D2C3E3C5B37770A6E10B4AC0D5A74726DAA5E99A314"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-normalization-workers-original-19cb.json",
+    "sha256": "F51E73E4C66EB2554BA5809D0B7838C3C1A1574B02038B130CAFBF6EF3692002"
+  },
+  {
+    "path": "src/extensions/native_chord_normalization.zig",
+    "sha256": "E7D09588F0B7866E57C7C7331B6777A527DF19ADB3A54425689D5DAAE34D24C1"
+  },
+  {
+    "path": "src/extensions/native_chord_normalization_workers.zig",
+    "sha256": "6581973A73CD149562400907AE6B52752CBC125A52646897D17206F9C5F5BE50"
+  },
+  {
+    "path": "src/extensions/native_chord_type_evaluate.zig",
+    "sha256": "23CD16A8A8FEE22D8274E5A41633C6E81B3970EA993BF308BAF6C08DB764D90B"
+  },
+  {
+    "path": "src/extensions/native_chord_type_extends.zig",
+    "sha256": "6E4214A9A5BA2952EE66A1F6010CEC9837EC8A0462576179F0C94FCAC44F74E4"
+  },
+  {
+    "path": "src/extensions/native_chord_type_instantiate.zig",
+    "sha256": "346492E842137112F1547C271F26CD3BD111137A5442B2E55A2E1BF02A97A1FE"
+  },
+  {
+    "path": "src/extensions/native_chord_type_priority.zig",
+    "sha256": "EC63B736977D7861291B11608B90F371EFE2D8DC4C13127DFF40871B950332DE"
+  },
+  {
+    "path": "src/extensions/native_chord_type_values.zig",
+    "sha256": "935FF91C2F4650703F78388A9BCA914371C9CA4BF7DEBF53ED8E73D61493B653"
+  },
+  {
+    "path": "src/extensions/native_typebox_pattern.zig",
+    "sha256": "6011573BDAF8C8B126A40D348B5A27434FDC69D3312140E5589E2C24360C6BAA"
+  },
+  {
+    "path": "src/native_chord_normalization_source_test.zig",
+    "sha256": "647E04F5B06840E285A4CB4033609CC9CE76FCE7DFF4320B7516B3378776A515"
+  },
+  {
+    "path": "src/native_chord_type_evaluator_source_test.zig",
+    "sha256": "AA6A3112D27F87DBFDB0B43D9884BD830B433A4F1828CDA784A25C2AA8331FDF"
+  }
+]

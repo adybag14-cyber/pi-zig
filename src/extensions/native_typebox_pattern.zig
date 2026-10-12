@@ -8,6 +8,23 @@ const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Node = struct { finite: bool, values: []const []const u8 };
 const sentinels = [_][]const u8{ "-?(?:0|[1-9][0-9]*)n", ".*", "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?", "-?(?:0|[1-9][0-9]*)", "(?!)", "(", ")", "$", "|" };
+pub const PatternKind = enum { invalid, finite, infinite };
+/// The unsafe decoder must distinguish a failed parse (String fallback) from
+/// a valid infinite template (retain TemplateLiteral). The existing literal
+/// conversion intentionally folds both outcomes to null.
+pub fn patternKind(engine: *Engine, pattern: c.JSValue) !PatternKind {
+    if (!c.JS_IsString(pattern)) return error.NativeTypeBoxPatternStringRequired;
+    const input = try engine.toString(pattern);
+    defer engine.gpa.free(input);
+    var arena = std.heap.ArenaAllocator.init(engine.gpa);
+    defer arena.deinit();
+    var parser: Parser = .{ .a = arena.allocator(), .input = input };
+    if (!parser.take("^")) return .invalid;
+    const nodes = try parser.body();
+    if (!parser.take("$") or nodes.len == 0) return .invalid;
+    for (nodes) |node| if (!node.finite) return .infinite;
+    return .finite;
+}
 pub fn literals(engine: *Engine, pattern: c.JSValue) !?c.JSValue {
     if (!c.JS_IsString(pattern)) {
         const ignored = try vm.invoke(engine, pattern, "trimStart", &.{});
