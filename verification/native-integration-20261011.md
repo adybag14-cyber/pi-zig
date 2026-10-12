@@ -240,3 +240,21 @@ JSON DTO construction are integrated. The complete physical Main error lifecycle
 has not passed its process tests. Hosted results above still concern9699132;
 they do not qualify this newer source. This branch remains an implementation
 checkpoint rather than a completed Pi release.
+
+The subsequent scheduler repair resolves all four earlier pure failures under
+their original assertions. Main-worktree Debug and ReleaseSafe each pass37/37;
+the native latest-wait-cycle integration still passes6/6. Actual allocation
+failures retain OutOfMemory through sealed-session admission. Idle calls load
+their scope. Raw native Memory generations trigger corruption validation, while
+sixteen ordinary publications perform zero scans and valid foreign records are
+not admitted into the live view. Every4083 source and19546 tool input remained
+unchanged through the two pure runs.
+
+The maintained standalone native-json-pool build derives its allocator and VM
+instrumentation from current production C inputs. It passes3/3 tests and every
+failure index in universes25,29,44, retaining strict exceptions and zero live
+native bytes after runtime destruction. Its main-worktree postcheck verifies
+all4085 source and19546 tool inputs unchanged. The generated test copies preserve
+the pool; this closes the earlier two-backing-allocation coverage gap for these
+three selected serializer paths. It does not qualify every other VM allocation
+path or complete the sandbox-class API/allocation gates.

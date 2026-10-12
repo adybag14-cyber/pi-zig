@@ -222,6 +222,8 @@ pub const Scheduler = struct {
     fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
     index_dirty: bool = false,
     cascade_pending: bool = true,
+    memory_generation: ?u64 = null,
+    memory_validation_scans: usize = 0,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, session: *session_mod.Session, options: Options) !Scheduler {
         if (options.max_workers == 0 or options.max_workers > 64 or options.max_phase_steps == 0) return error.InvalidSchedulerBounds;
         return .{ .gpa = gpa, .io = io, .session = session, .options = options, .migration_failures = .init(gpa), .ownership_index = .init(gpa) };
@@ -340,6 +342,7 @@ pub const Scheduler = struct {
     }
     fn observe(raw: ?*anyopaque, event: *const session_mod.Publication, _: types.Context) !void {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
+        const memory_generation = if (self.session.storage.raw == .memory) self.session.storage.raw.memory.generation else null;
         // Conversation edges are observed before task links from the same
         // publication; no sweep may drop a chain halfway through admission.
         for (event.changes.array.items) |change| {
@@ -373,6 +376,7 @@ pub const Scheduler = struct {
         try self.ownership_index.sweep();
         if (self.options.index_changed) |changed| try changed(self.options.callback_context, event.seq, &self.ownership_index);
         self.index_dirty = false;
+        self.memory_generation = memory_generation;
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (event.changes.array.items) |change| {
@@ -667,11 +671,54 @@ pub const Scheduler = struct {
             };
             if (try model.status(record) == .running) try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", try model.field(try model.field(record, "state"), "checkpoint"))));
         }
+        if (self.session.storage.raw == .memory) self.memory_generation = self.session.storage.raw.memory.generation;
         return .null;
+    }
+    /// Raw native Memory writes bypass Session publications. Validate a changed
+    /// generation without admitting its records into the live ownership index.
+    /// Normal commits update the marker in observe and take only this O(1) test.
+    fn validateMemoryOwnership(self: *Scheduler) !void {
+        const memory = switch (self.session.storage.raw) {
+            .memory => |store| store,
+            else => return,
+        };
+        const seen = self.memory_generation orelse {
+            self.memory_generation = memory.generation;
+            return;
+        };
+        if (seen == memory.generation) return;
+        self.memory_validation_scans += 1;
+        var rows = memory.state.rows.iterator();
+        while (rows.next()) |entry| {
+            if (entry.value_ptr.table != .task or !try model.live(entry.value_ptr.record)) continue;
+            var at = try model.parent(entry.value_ptr.record);
+            var remaining = memory.state.rows.count() + 1;
+            while (remaining > 0) : (remaining -= 1) switch (at) {
+                .task => |id| {
+                    const row = memory.state.rows.get(id) orelse break;
+                    if (row.table != .task) break;
+                    at = try model.parent(row.record);
+                },
+                .conversation => |id| {
+                    const row = memory.state.rows.get(id) orelse break;
+                    if (row.table != .conversation) break;
+                    const owner = json.get(row.record, "owner") orelse break;
+                    at = .{ .task = try model.number(owner, "taskId") };
+                },
+            };
+            if (remaining == 0) return error.TaskOwnershipCycle;
+        }
+        self.memory_generation = memory.generation;
     }
     pub fn reconcile(self: *Scheduler) !void {
         var result = self.session.commit(reconcileLine, self, .{}, .{}) catch |err| {
             if (err != error.SessionClosed) _ = self.session.fail(err);
+            // A fallible native ownership observer can seal the Session after
+            // its commit landed. Preserve its allocator failure at this host
+            // boundary instead of replacing the original cause on admission.
+            if (err == error.SessionFailed) if (self.session.failure()) |cause| {
+                if (cause == error.OutOfMemory) return error.OutOfMemory;
+            };
             return err;
         };
         result.deinit();
@@ -682,6 +729,9 @@ pub const Scheduler = struct {
     pub fn tryReconcile(self: *Scheduler) !bool {
         var result = (self.session.tryCommit(reconcileLine, self, .{}, .{}) catch |err| {
             if (err != error.SessionClosed) _ = self.session.fail(err);
+            if (err == error.SessionFailed) if (self.session.failure()) |cause| {
+                if (cause == error.OutOfMemory) return error.OutOfMemory;
+            };
             return err;
         }) orelse return false;
         result.deinit();
@@ -726,6 +776,7 @@ pub const Scheduler = struct {
     fn reconcileLine(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         if (self.closing.load(.acquire)) return .null;
+        try self.validateMemoryOwnership();
         const cascade = self.cascade_pending;
         self.cascade_pending = false;
         try self.loadScopes();
@@ -852,6 +903,10 @@ pub const Scheduler = struct {
         conversation: ?u64,
         fn apply(raw: ?*anyopaque, _: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
+            // This explicit native read returns the resolved scope result.
+            // Source waitForIdle schedules reconciliation when a new task's
+            // owner chain is unknown; its initial fast check is conservative.
+            try self.scheduler.loadScopes();
             return .{ .bool = try self.scheduler.ownership_index.idle(self.scheduler.gpa, self.conversation) };
         }
     };

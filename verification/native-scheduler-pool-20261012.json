@@ -1,0 +1,28 @@
+{
+  "status": "qualified-component-followup-goal-incomplete",
+  "base_head": "7752b03e3a898672c5d33b54a017b6e7a5c86a05",
+  "pure_scheduler": {
+    "Debug": "37/37",
+    "ReleaseSafe": "37/37",
+    "source_count": 4083,
+    "tool_count": 19546,
+    "post_drift": 0
+  },
+  "native_upstream_wait_cycles": "6/6",
+  "pool_serializer": {
+    "compiled_tests": 3,
+    "allocation_universes": [
+      25,
+      29,
+      44
+    ],
+    "failure_indices": 98,
+    "zero_live_bytes": true,
+    "source_count": 4085,
+    "tool_count": 19546,
+    "post_drift": 0
+  },
+  "native_default": false,
+  "node_bridge_retained": true,
+  "hosted_scope": "New checkpoint not hosted-qualified; full goal incomplete"
+}

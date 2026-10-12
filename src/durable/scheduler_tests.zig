@@ -1022,8 +1022,35 @@ test "durable.scheduler terminal records cannot be replaced and corrupt ownershi
     try std.testing.expectEqual(generation, fixture.store.generation);
     var corrupt = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":10,\"conversationId\":1,\"kind\":\"job\",\"version\":1,\"input\":null,\"owner\":10,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"pending\",\"checkpoint\":{\"phase\":\"start\"}}}}]");
     defer corrupt.deinit();
+    try std.testing.expectEqual(@as(usize, 0), fixture.scheduler.memory_validation_scans);
     _ = try fixture.store.commit(corrupt.value);
     const corrupt_generation = fixture.store.generation;
     try std.testing.expectError(error.TaskOwnershipCycle, fixture.scheduler.reconcile());
     try std.testing.expectEqual(corrupt_generation, fixture.store.generation);
+    try std.testing.expectEqual(@as(usize, 1), fixture.scheduler.memory_validation_scans);
+}
+
+test "durable.scheduler raw Memory ownership validation does not admit records or scan ordinary publications" {
+    var fixture: Fixture = undefined;
+    try fixture.init();
+    defer fixture.deinit();
+    try fixture.scheduler.open();
+    for (0..16) |_| {
+        _ = try fixture.add("missing", "{\"phase\":\"start\"}", .{ .conversationId = 1 });
+        try fixture.scheduler.reconcile();
+    }
+    try std.testing.expectEqual(@as(usize, 0), fixture.scheduler.memory_validation_scans);
+    var external = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":100,\"conversationId\":1,\"kind\":\"missing\",\"version\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"pending\",\"checkpoint\":{\"phase\":\"start\"}}}}]");
+    defer external.deinit();
+    _ = try fixture.store.commit(external.value);
+    const generation = fixture.store.generation;
+    try fixture.scheduler.reconcile();
+    try std.testing.expectEqual(generation, fixture.store.generation);
+    try std.testing.expectEqual(@as(usize, 1), fixture.scheduler.memory_validation_scans);
+    try std.testing.expect(!fixture.scheduler.live_records.contains(100));
+    try std.testing.expect(!fixture.scheduler.ownership_index.live.contains(100));
+    try fixture.scheduler.reconcile();
+    _ = try fixture.add("missing", "{\"phase\":\"start\"}", .{ .conversationId = 1 });
+    try fixture.scheduler.reconcile();
+    try std.testing.expectEqual(@as(usize, 1), fixture.scheduler.memory_validation_scans);
 }
