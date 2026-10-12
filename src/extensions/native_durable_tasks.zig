@@ -1701,6 +1701,41 @@ const Hub = struct {
         engine.gpa.destroy(self);
     }
 };
+/// Failure-only owner snapshot. Read native DTOs and intrinsic Promise state;
+/// never run guest getters, pump work, or replace the retained rejection.
+pub fn printFailureDiagnostics(engine: *Engine) void {
+    const raw = engine.native_durable_control_context orelse return;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    for (owner.managers.items, 0..) |manager, manager_index| {
+        std.debug.print("Durable failure manager={d} generation={d} closed={} enabled={} workerFinished={} joined={} guestDispatches={d} lineOwner={d} lineEpoch={d} waiters={d} signals={d} sleepers={d} reads={d} joins={d}\n", .{ manager_index, manager.generation, manager.closed, manager.enabled, manager.finished.load(.acquire), manager.thread == null, manager.active_dispatches, manager.lease.value.ownerThread.load(.acquire), manager.lease.value.line_epoch.load(.acquire), manager.waiters.items.len, manager.signals.items.len, manager.sleepers.items.len, manager.pending_reads.count(), manager.join_waiters.items.len });
+        std.debug.print("Durable failure manager settlingCache={} settlingContexts={} driveRequested={} lastCount={d} failure={s}\n", .{ manager.settling_cache, manager.settling_contexts, manager.drive_requested, manager.last_count, if (manager.driver_failure) |failure| @errorName(failure) else "none" });
+        var pending = manager.first_phase;
+        while (pending) |phase| : (pending = phase.next) {
+            const invocation = phase.entry.runtime.invocation;
+            std.debug.print("Durable failure phase kind={s} mode={s}\n", .{ invocation.definition.definition.name, @tagName(invocation.mode) });
+            std.debug.print("Durable failure phase task={d} generation={d} promise={d} entryActive={} dispatch={s} invocationActive={} canceled={} workerFinished={} ownerDispatches={d} suspendedWaits={d}\n", .{ phase.entry.runtime.taskId(), phase.entry.generation, c.JS_PromiseState(engine.context, phase.promise), phase.entry.active.load(.acquire), @tagName(phase.entry.dispatch_phase.load(.acquire)), invocation.active.load(.acquire), invocation.canceled.load(.acquire), invocation.finished.load(.acquire), invocation.owner_dispatches.load(.acquire), invocation.suspended_waits.load(.acquire) });
+        }
+        var records = manager.live_task_records.valueIterator();
+        while (records.next()) |record| {
+            const value = record.value;
+            const id = json.get(value, "id") orelse .null;
+            const kind = json.get(value, "kind") orelse .null;
+            const state = json.get(value, "state") orelse .null;
+            const status = json.get(state, "status") orelse .null;
+            const checkpoint = json.get(state, "checkpoint") orelse .null;
+            const phase = json.get(checkpoint, "phase") orelse .null;
+            std.debug.print("Durable failure live task={d} kind={s} status={s} phase={s}\n", .{ if (id == .integer) id.integer else -1, if (kind == .string) kind.string else "?", if (status == .string) status.string else "?", if (phase == .string) phase.string else "?" });
+        }
+        if (manager.mutex.tryLock()) {
+            for (manager.events.items) |event| std.debug.print("Durable failure publication seq={d} ready={} cacheReady={} cacheAdopted={} ownerCommit={} lineEpoch={d}\n", .{ event.seq, event.ready, event.cache_ready, event.cache_adopted, event.owner_public_commit, event.line_epoch });
+            manager.mutex.unlock(manager.lease.value.io);
+        } else std.debug.print("Durable failure publication mutex busy\n", .{});
+        if (durable.state(engine, manager.session)) |native| {
+            std.debug.print("Durable failure session closing={} storageClosed={} storageTail={d} closePending={} storageFailure={}\n", .{ native.closing, native.storage_closed, c.JS_PromiseState(engine.context, native.tail), native.close_pending != null, native.failure_reason != null });
+        } else |_| {}
+    }
+    @import("native_durable_storage.zig").printFailureDiagnostics(engine);
+}
 test "native durable VM observed guest dispatch remains joined after native workers exit on close" {
     const Fixture = struct {
         fn workerExited(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -1793,12 +1828,12 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     const scheduler_context = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
     var context_admitted = false;
     errdefer if (!context_admitted) engine.freeValue(scheduler_context);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .defer_initial_reconcile = true, .after_scope_reads = Manager.awaitScopeReads, .after_reconcile = Manager.reconciledContexts, .fault_message = Manager.faultMessage, .settle_outcome = if (native.creation_owner != null) Manager.settleSchedulerOutcome else null, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = scheduler_context, .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .after_recover = Manager.recoveredContext, .defer_initial_reconcile = true, .after_scope_reads = Manager.awaitScopeReads, .after_reconcile = Manager.reconciledContexts, .fault_message = Manager.faultMessage, .settle_outcome = if (native.creation_owner != null) Manager.settleSchedulerOutcome else null, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine, .call = Engine.notifyOwner }) };
     owner.next_generation += 1;
     self.native_owner = native;
-    self.settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
-    self.outcome_settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
-    self.context_broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, self.generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify });
+    self.settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine, .call = Engine.notifyOwner });
+    self.outcome_settlement = settlement_mod.Channel.init(native.session.?.io, self.generation, .{ .context = engine, .call = Engine.notifyOwner });
+    self.context_broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, self.generation, .{ .context = engine, .call = Engine.notifyOwner });
     context_admitted = true;
     errdefer {
         self.closed = true;

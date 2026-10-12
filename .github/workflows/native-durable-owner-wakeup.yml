@@ -1,0 +1,69 @@
+name: Native durable owner wakeup and original macOS compaction
+on:
+  push:
+    branches: [work/native-durable-owner-wakeup-20261012]
+permissions:
+  contents: read
+concurrency:
+  group: native-durable-owner-wakeup-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  mac:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source fixture and tool inputs
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout identity mismatch' }
+          if ((zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig toolchain' }
+          New-Item -ItemType Directory -Path verification/owner-wakeup -Force | Out-Null
+          $fixture = 'src/durable/fixtures/durable-89-compaction-failure-program.txt'
+          if ((Get-FileHash -LiteralPath $fixture).Hash -cne '1C554750CA63BA66A301063B25A612B856DCBF70EA2B0C306B0AC9C65BDC26BC') { throw 'Original program changed' }
+          if (!(Select-String -LiteralPath 'src/native_durable_89_compaction_test.zig' -SimpleMatch 'host_await_timeout_ms = 10000' -Quiet)) { throw 'Original host deadline missing' }
+          @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } }) | ConvertTo-Json -Depth 4 | Set-Content verification/owner-wakeup/source-before.json
+          $zig = (Get-Command zig).Source
+          $toolRoot = Split-Path -Parent $zig
+          @(Get-ChildItem -LiteralPath $toolRoot -File -Recurse | ForEach-Object { [ordered]@{ path = $_.FullName; sha256 = (Get-FileHash -LiteralPath $_.FullName).Hash } }) | ConvertTo-Json -Depth 4 | Set-Content verification/owner-wakeup/tool-before.json
+          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; scope = 'Original eight compaction/inspection cases plus seven owner wakeup regressions; no full Pi or SDK qualification'; original_host_deadline_ms = 10000; per_test_deadline = '120s' } | ConvertTo-Json | Set-Content verification/owner-wakeup/identity.json
+      - name: Run unchanged original compaction and owner wakeup regressions
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build test-native-durable-89-compaction test-native-owner-wakeup -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/owner-wakeup/tests.log
+          $testExit = $LASTEXITCODE
+          if ($testExit -ne 0) { throw "Native original/wakeup tests failed: $testExit" }
+          $log = Get-Content -LiteralPath verification/owner-wakeup/tests.log -Raw
+          if ($log -notmatch '15/15 tests passed' -or $log -notmatch 'run test 8 pass \(8 total\)' -or $log -notmatch 'run test 7 pass \(7 total\)') { throw 'Missing complete execution counts' }
+      - name: Verify every frozen source and tool input
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($manifest in @('source-before.json', 'tool-before.json')) {
+            $path = Join-Path verification/owner-wakeup $manifest
+            if (!(Test-Path -LiteralPath $path)) { throw "Missing input freeze: $manifest" }
+            $inputs = Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
+            $changed = @(foreach ($inputRow in $inputs) {
+              if (!(Test-Path -LiteralPath $inputRow.path -PathType Leaf) -or (Get-FileHash -LiteralPath $inputRow.path).Hash -cne $inputRow.sha256) { $inputRow.path }
+            })
+            [ordered]@{ manifest = $manifest; count = $inputs.Count; changed = $changed } | ConvertTo-Json -Depth 4 | Set-Content (Join-Path verification/owner-wakeup "$manifest.post.json")
+            if ($changed.Count -ne 0) { throw "Input drift: $manifest" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-durable-owner-wakeup-${{ matrix.mode }}
+          path: verification/owner-wakeup

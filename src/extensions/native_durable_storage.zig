@@ -29,7 +29,7 @@ pub const Adapter = struct {
         const background = try sdk.get(engine, context_exports, "BACKGROUND_CONTEXT");
         errdefer engine.freeValue(background);
         const mirror = try backend.memory.Memory.init(engine.gpa);
-        self.* = .{ .engine = engine, .owner = std.Thread.getCurrentId(), .raw = c.JS_DupValue(engine.context, raw), .background_context = background, .broker = broker_mod.Broker.init(engine.gpa, io, 1, .{}), .mirror = mirror };
+        self.* = .{ .engine = engine, .owner = std.Thread.getCurrentId(), .raw = c.JS_DupValue(engine.context, raw), .background_context = background, .broker = broker_mod.Broker.init(engine.gpa, io, 1, .{ .context = engine, .call = Engine.notifyOwner }), .mirror = mirror };
         errdefer {
             self.mirror.deinit();
             self.broker.deinit();
@@ -527,6 +527,19 @@ const PendingCommit = struct {
         engine.freeValue(self.reject);
     }
 };
+pub fn printFailureDiagnostics(engine: *Engine) void {
+    const raw = engine.native_durable_storage_context orelse return;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    std.debug.print("Durable failure storage adapters={d} deferred={d}\n", .{ owner.adapters.items.len, owner.commits.items.len });
+    for (owner.commits.items) |request| {
+        const parent = request.captures[if (request.kind == .runtime_commit or request.kind == .runtime_memo) 3 else 0];
+        if (durable.state(engine, parent)) |native| {
+            std.debug.print("Durable failure storage deferred kind={s} lineOwner={d} lineEpoch={d} closing={} tail={d}\n", .{ @tagName(request.kind), native.session.?.ownerThread.load(.acquire), native.session.?.line_epoch.load(.acquire), native.closing, c.JS_PromiseState(engine.context, native.tail) });
+        } else |_| {}
+    }
+    var close = owner.first_close;
+    while (close) |pending| : (close = pending.next) std.debug.print("Durable failure storage close active={} promise={d} lineOwner={d}\n", .{ pending.active, c.JS_PromiseState(engine.context, pending.promise), pending.owner.session.?.ownerThread.load(.acquire) });
+}
 pub fn deferCommit(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
     return admitPending(engine, captures, .commit);
 }

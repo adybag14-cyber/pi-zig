@@ -131,6 +131,7 @@ pub const Engine = struct {
     // Its owner keeps the context alive until every leased worker has joined.
     host_owner_notify_context: ?*anyopaque = null,
     host_owner_notify: ?*const fn (?*anyopaque) void = null,
+    native_owner_signal: @import("native_owner_signal.zig").Signal = .{},
     native_durable_control_context: ?*anyopaque = null,
     native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_control_deinit: ?*const fn (*Engine) void = null,
@@ -706,6 +707,13 @@ pub const Engine = struct {
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
         return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked;
     }
+    /// Native leases notify through this Engine-owned signal. External worker
+    /// transports keep their existing wakeup while standalone VMs wake too.
+    pub fn notifyOwner(raw: ?*anyopaque) void {
+        const self: *Engine = @ptrCast(@alignCast(raw.?));
+        if (self.native_io) |io| self.native_owner_signal.notify(io);
+        if (self.host_owner_notify) |notify| notify(self.host_owner_notify_context);
+    }
     pub fn closeDurableOwner(self: *Engine) void {
         if (self.native_durable_storage_close) |cleanup| cleanup(self);
         if (self.native_durable_control_deinit) |cleanup| cleanup(self);
@@ -762,6 +770,7 @@ pub const Engine = struct {
         }
         var jobs: usize = 0;
         while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or (drain_ready_jobs and c.JS_IsJobPending(self.runtime))) {
+            const owner_epoch = self.native_owner_signal.observe();
             self.refreshUiDeadline();
             if (self.native_io) |io| if (self.host_await_deadline_ms) |limit| {
                 if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.NativeHostPromiseTimeout;
@@ -787,7 +796,7 @@ pub const Engine = struct {
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
                 if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
-                    try self.native_io.?.sleep(.fromMilliseconds(5), .awake);
+                    _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
                     continue;
                 }
                 return error.JavaScriptPromiseUnsettled;

@@ -415,6 +415,7 @@ fn pump(engine: *engine_mod.Engine) !bool {
     };
     const deadline = state.timers.items[index].deadline_ms;
     while (true) {
+        const owner_epoch = engine.native_owner_signal.observe();
         // Abort listeners run on this owner thread and may clear or schedule
         // timers. Yield after any dispatched control so awaitValue drains jobs
         // and the next pump selects a fresh queue entry and deadline.
@@ -422,9 +423,13 @@ fn pump(engine: *engine_mod.Engine) !bool {
         if (engine.cancelled.load(.acquire)) return error.JavaScriptInterrupted;
         const now = std.Io.Clock.awake.now(state.io).toMilliseconds();
         if (engine.host_await_deadline_ms) |limit| if (now >= limit) return error.NativeHostPromiseTimeout;
+        // Native signal/join settlement can queue Promise reactions even when
+        // no channel reports a dispatched record. Keep cancellation/deadline
+        // precedence, then run those jobs before waiting for a future timer.
+        if (c.JS_IsJobPending(engine.runtime)) return true;
         const remaining = deadline - now;
         if (remaining <= 0) break;
-        try state.io.sleep(.fromMilliseconds(@min(remaining, 10)), .awake);
+        _ = try engine.native_owner_signal.waitAfter(state.io, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(@min(remaining, 5)), .clock = .awake } });
     }
     return fire(state, index);
 }
@@ -810,4 +815,47 @@ test "native timer waits dispatch owner controls and reselect after queue mutati
     try std.testing.expect(try pump(engine));
     try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
     try std.testing.expect(!try pump(engine));
+}
+
+test "native timer owner control promise jobs run before an unrelated future timer" {
+    const Fixture = struct {
+        polls: usize = 0,
+        mode: enum { settle, cancel, deadline },
+        fn pump(engine: *engine_mod.Engine) !bool {
+            const self: *@This() = @ptrCast(@alignCast(engine.host_data.?));
+            self.polls += 1;
+            // The first poll is awaitValue's outer check. Publish during the
+            // timer pump's own poll, like durable signal/join settlement does.
+            if (self.polls != 2) return false;
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            const resolve = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "ownerQueuedResolve"));
+            defer engine.freeValue(resolve);
+            var args = [_]c.JSValue{c.JS_NewInt32(engine.context, 42)};
+            const settled = try engine.checked(c.JS_Call(engine.context, resolve, c.pi_js_undefined(), 1, &args));
+            engine.freeValue(settled);
+            switch (self.mode) {
+                .settle => {},
+                .cancel => engine.cancelled.store(true, .release),
+                .deadline => engine.host_await_deadline_ms = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() - 1,
+            }
+            return false;
+        }
+    };
+    for ([_]@FieldType(Fixture, "mode"){ .settle, .cancel, .deadline }) |mode| {
+        var fixture: Fixture = .{ .mode = mode };
+        const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 100 });
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        engine.host_data = &fixture;
+        try install(engine, std.testing.io);
+        engine.host_control_pump = Fixture.pump;
+        const result = engine.evalModule("const guard=setTimeout(()=>{throw Error('future timer ran before ready owner job')},60000);const answer=await new Promise(resolve=>globalThis.ownerQueuedResolve=resolve);clearTimeout(guard);if(answer!==42)throw Error('owner result lost');export const proof=true;", "owner-ready-job-before-future-timer");
+        switch (mode) {
+            .settle => engine.freeValue(try result),
+            .cancel => try std.testing.expectError(error.JavaScriptInterrupted, result),
+            .deadline => try std.testing.expectError(error.NativeHostPromiseTimeout, result),
+        }
+        try std.testing.expect(fixture.polls >= 2);
+    }
 }
