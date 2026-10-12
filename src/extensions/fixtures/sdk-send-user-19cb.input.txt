@@ -1,0 +1,57 @@
+const sdkSendUserRows=[];
+const send=AgentSession.prototype.sendUserMessage;
+sdkSendUserRows.push({case:'shape',name:send.name,length:send.length});
+async function normalize(name,content,options){
+  let observed;
+  const receiver={prompt(text,opts){observed={text,options:opts,receiver:this===receiver};return 91;}};
+  const result=send.call(receiver,content,options);
+  sdkSendUserRows.push({case:name,promise:result instanceof Promise,result:await result,observed});
+}
+await normalize('text','hello');
+await normalize('empty','');
+await normalize('null-options','hello',null);
+await normalize('options','hello',{deliverAs:'followUp',expandPromptTemplates:0});
+await normalize('null-expand','hello',{expandPromptTemplates:null});
+await normalize('parts',[{type:'text',text:'one'},{type:'image',data:'AA',mimeType:'image/png'},{type:'text',text:'two'}],{deliverAs:'steer',expandPromptTemplates:true});
+await normalize('empty-parts',[]);
+await normalize('non-text-parts',[{type:'other',payload:7}]);
+await normalize('join-values',[{type:'text',text:undefined},{type:'text',text:null},{type:'text',text:42}]);
+await normalize('iterable',{*[Symbol.iterator](){yield {type:'text',text:'iterator'};yield {type:'image',data:'B'};}});
+{
+  const trace=[];
+  const image={type:'image',data:'retained'};
+  let retained;
+  const receiver={get prompt(){trace.push('prompt');return function(text,options){trace.push('called');retained=options.images[0];return Promise.resolve('discarded');};}};
+  const options={get expandPromptTemplates(){trace.push('expand');return undefined;},get deliverAs(){trace.push('deliver');return 'steer';}};
+  const content=[{get type(){trace.push('type-text');return 'text';},get text(){trace.push('text');return 'trace';}},image];
+  const result=await send.call(receiver,content,options);
+  sdkSendUserRows.push({case:'order-and-image-identity',trace,identity:retained===image,result});
+}
+{
+  const marker={raw:'getter'};let closes=0,calls=0;
+  const iterable={[Symbol.iterator](){let sent=false;return {next(){if(sent)return {done:true};sent=true;return {done:false,value:{get type(){throw marker;}}};},return(){closes++;throw {other:'close'};}};}};
+  let sync=false,pending,caught;
+  try{pending=send.call({prompt(){calls++;}},iterable);}catch(e){sync=true;caught=e;}
+  if(pending)try{await pending;}catch(e){caught=e;}
+  sdkSendUserRows.push({case:'iteration-error',sync,promise:pending instanceof Promise,identity:caught===marker,closes,calls});
+}
+for(const mode of ['sync','reject','getter','thenable']){
+  const marker={raw:mode};const trace=[];let pending,caught,sync=false;
+  const receiver= mode==='getter'?{get prompt(){trace.push('getter');throw marker;}}:{prompt(){trace.push('called');if(mode==='sync')throw marker;if(mode==='reject')return Promise.reject(marker);return {then(resolve,reject){trace.push('then');reject(marker);}};}};
+  try{pending=send.call(receiver,'hello');trace.push('returned');}catch(e){sync=true;caught=e;}
+  if(pending)try{await pending;}catch(e){caught=e;}
+  sdkSendUserRows.push({case:'failure-'+mode,sync,promise:pending instanceof Promise,identity:caught===marker,trace});
+}
+{
+  let finish,settled=false;const held=new Promise(resolve=>finish=resolve);
+  const pending=send.call({prompt(){return held;}},'held').then(value=>{settled=true;return value;});
+  await Promise.resolve();const before=settled;finish(55);const result=await pending;
+  sdkSendUserRows.push({case:'held-prompt',before,after:settled,result});
+}
+for(const content of [null,undefined,17]){
+  let pending,sync=false,caught;
+  try{pending=send.call({prompt(){}},content);}catch(e){sync=true;caught=e;}
+  if(pending)try{await pending;}catch(e){caught=e;}
+  sdkSendUserRows.push({case:'invalid-'+String(content),sync,promise:pending instanceof Promise,error:caught?.name});
+}
+globalThis.sdkSendUserRows=sdkSendUserRows;

@@ -163,6 +163,7 @@ fn agentArity(operation: Method) c_int {
     };
 }
 fn installAgentPrototype(engine: *engine_mod.Engine, prototype: c.JSValue) !void {
+    try @import("native_sdk_send_user.zig").install(engine, prototype);
     for (agent_methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);

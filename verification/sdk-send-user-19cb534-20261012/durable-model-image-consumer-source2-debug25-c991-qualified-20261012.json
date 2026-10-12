@@ -1,0 +1,21 @@
+{
+  "base": "c9919a4",
+  "patch": "durable-model-image-consumer-source2-debug25-c991-qualified-20261012.patch",
+  "sha256": "5006D44D01DD017A8699A7D4BE40C418F36AAE0A59CD8FDDA787B8C318E3FAC7",
+  "qualified_pid": 29756,
+  "tests": "25/25Debug",
+  "source": 4110,
+  "membership_drift": 0,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "final_samebytes_utc": "2026-10-12T19:05:01.3501798+00:00",
+  "authority": "durable-19cb534-model-images-original-qualified-20261012.json",
+  "scope": "Image-tool consumer over actual native query registry/local controlled Models-service callback; Source PNG actual filesystem readback and exact generated-but-unshown warning; productionbody unchanged",
+  "open": [
+    "ReleaseSafe model/image deltas",
+    "wholetypedModelsinstance/service/auth ABI",
+    "fullpublicextension activation",
+    "originalMacDebug10s failure"
+  ]
+}

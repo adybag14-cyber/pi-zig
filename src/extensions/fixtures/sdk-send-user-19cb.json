@@ -1,0 +1,236 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified original public sendUserMessage method with caller-provided prompt receiver; no Source classes or prototype methods replaced",
+  "rows": [
+    {
+      "case": "shape",
+      "name": "sendUserMessage",
+      "length": 2
+    },
+    {
+      "case": "text",
+      "promise": true,
+      "observed": {
+        "text": "hello",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "empty",
+      "promise": true,
+      "observed": {
+        "text": "",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "null-options",
+      "promise": true,
+      "observed": {
+        "text": "hello",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "options",
+      "promise": true,
+      "observed": {
+        "text": "hello",
+        "options": {
+          "expandPromptTemplates": 0,
+          "streamingBehavior": "followUp",
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "null-expand",
+      "promise": true,
+      "observed": {
+        "text": "hello",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "parts",
+      "promise": true,
+      "observed": {
+        "text": "one\ntwo",
+        "options": {
+          "expandPromptTemplates": true,
+          "streamingBehavior": "steer",
+          "images": [
+            {
+              "type": "image",
+              "data": "AA",
+              "mimeType": "image/png"
+            }
+          ],
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "empty-parts",
+      "promise": true,
+      "observed": {
+        "text": "",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "non-text-parts",
+      "promise": true,
+      "observed": {
+        "text": "",
+        "options": {
+          "expandPromptTemplates": false,
+          "images": [
+            {
+              "type": "other",
+              "payload": 7
+            }
+          ],
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "join-values",
+      "promise": true,
+      "observed": {
+        "text": "\n\n42",
+        "options": {
+          "expandPromptTemplates": false,
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "iterable",
+      "promise": true,
+      "observed": {
+        "text": "iterator",
+        "options": {
+          "expandPromptTemplates": false,
+          "images": [
+            {
+              "type": "image",
+              "data": "B"
+            }
+          ],
+          "source": "extension"
+        },
+        "receiver": true
+      }
+    },
+    {
+      "case": "order-and-image-identity",
+      "trace": [
+        "type-text",
+        "text",
+        "prompt",
+        "expand",
+        "deliver",
+        "called"
+      ],
+      "identity": true
+    },
+    {
+      "case": "iteration-error",
+      "sync": false,
+      "promise": true,
+      "identity": true,
+      "closes": 1,
+      "calls": 0
+    },
+    {
+      "case": "failure-sync",
+      "sync": false,
+      "promise": true,
+      "identity": true,
+      "trace": [
+        "called",
+        "returned"
+      ]
+    },
+    {
+      "case": "failure-reject",
+      "sync": false,
+      "promise": true,
+      "identity": true,
+      "trace": [
+        "called",
+        "returned"
+      ]
+    },
+    {
+      "case": "failure-getter",
+      "sync": false,
+      "promise": true,
+      "identity": true,
+      "trace": [
+        "getter",
+        "returned"
+      ]
+    },
+    {
+      "case": "failure-thenable",
+      "sync": false,
+      "promise": true,
+      "identity": true,
+      "trace": [
+        "called",
+        "returned",
+        "then"
+      ]
+    },
+    {
+      "case": "held-prompt",
+      "before": false,
+      "after": true
+    },
+    {
+      "case": "invalid-null",
+      "sync": false,
+      "promise": true,
+      "error": "TypeError"
+    },
+    {
+      "case": "invalid-undefined",
+      "sync": false,
+      "promise": true,
+      "error": "TypeError"
+    },
+    {
+      "case": "invalid-17",
+      "sync": false,
+      "promise": true,
+      "error": "TypeError"
+    }
+  ]
+}

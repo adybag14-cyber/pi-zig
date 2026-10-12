@@ -1,0 +1,141 @@
+{"source":"19cb534c3b6e3871458a8fa59e98f0312c50e995","rows":[{"input":{
+        "name": "generated-image-shown",
+        "show": true,
+        "code": "const model=await models.getModelOfType(\"image\",\"test\",\"painter\");const result=await models.generateImages(model,{input:[{type:\"text\",text:\"hi\"}]});for(const block of result.output)image(block);return \"done\";"
+      },"imageWrites":[
+        {
+          "path": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-mRoFxP/image-1.png",
+          "bytes": [
+            137,
+            80,
+            78,
+            71,
+            13,
+            10,
+            26,
+            10,
+            0,
+            0,
+            0,
+            13,
+            73,
+            72,
+            68,
+            82,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            8,
+            6,
+            0,
+            0,
+            0,
+            31,
+            21,
+            196,
+            137,
+            0,
+            0,
+            0,
+            13,
+            73,
+            68,
+            65,
+            84,
+            120,
+            218,
+            99,
+            100,
+            96,
+            248,
+            95,
+            15,
+            0,
+            2,
+            135,
+            1,
+            128,
+            235,
+            71,
+            186,
+            146,
+            0,
+            0,
+            0,
+            0,
+            73,
+            69,
+            78,
+            68,
+            174,
+            66,
+            96,
+            130
+          ],
+          "sha256": "497790947d4666760ce38f3c00e852c71fdb66cae849bae8e9ede352719e1581"
+        }
+      ],"result":{
+            "output": [
+              {
+                "type": "text",
+                "text": "Script completed\nWall time 0.1 seconds\nOutput:\n"
+              },
+              {
+                "type": "text",
+                "text": "[Image saved to C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-mRoFxP/image-1.png (image/png, 70 bytes)]"
+              },
+              {
+                "type": "image",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "isError": false,
+            "details": {
+              "calls": [
+                {
+                  "id": 2,
+                  "name": "models.generateImages",
+                  "args": "{\"model\":{\"id\":\"painter\",\"name\":\"Painter\",\"api\":\"test-images\",\"provider\":\"test\",\"baseUrl\":\"https://example.invalid\",\"input\":[\"text\"],\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0},\"type...",
+                  "status": "ok",
+                  "durationMs": 0
+                }
+              ]
+            }
+          }},{"input":{
+        "name": "generated-image-unshown-warning",
+        "noShow": true,
+        "code": "const model=await models.getModelOfType(\"image\",\"test\",\"painter\");await models.generateImages(model,{input:[{type:\"text\",text:\"hi\"}]});return \"done\";"
+      },"imageWrites":[],"result":{
+            "output": [
+              {
+                "type": "text",
+                "text": "Script completed\nWall time 0.1 seconds\nOutput:\n"
+              },
+              {
+                "type": "text",
+                "text": "done\nNote: models.generateImages() returned 1 image that the script did not show. Show each image block of result.output with image(block)."
+              }
+            ],
+            "isError": false,
+            "details": {
+              "calls": [
+                {
+                  "id": 2,
+                  "name": "models.generateImages",
+                  "args": "{\"model\":{\"id\":\"painter\",\"name\":\"Painter\",\"api\":\"test-images\",\"provider\":\"test\",\"baseUrl\":\"https://example.invalid\",\"input\":[\"text\"],\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0},\"type...",
+                  "status": "ok",
+                  "durationMs": 0
+                }
+              ]
+            }
+          }}]}

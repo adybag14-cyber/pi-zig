@@ -1,0 +1,254 @@
+test-native-sdk-send-user
++- run test 8 pass, 1 fail (9 total)
+error: 'native_sdk_send_user_test.test.native SDK sendUserMessage replays actual latest Source normalization and async errors' failed:
+       sendUserMessage Source replay: TypeError: cannot read property 'name' of undefined
+       C:\Users\adyba\pi-zig-composition241-20261010\src\extensions\engine.zig:831:9: 0x7ff776551d0c in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-composition241-20261010\src\extensions\engine.zig:780:9: 0x7ff776551da9 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-composition241-20261010\src\extensions\engine.zig:522:25: 0x7ff7765522cd in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-composition241-20261010\src\native_sdk_send_user_test.zig:21:9: 0x7ff776552951 in test.native SDK sendUserMessage replays actual latest Source normalization and async errors (test_zcu.obj)
+               return err;
+               ^
+failed command: ".\\.zig-cache\\o\\1be6044f942bcd18af0cdd7bd311c722\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x70c6e408 --listen=-
+
+Build Summary: 154/156 steps succeeded (1 failed); 8/9 tests passed (1 failed)
+test-native-sdk-send-user transitive failure
++- run test 8 pass, 1 fail (9 total)
+   +- compile test Debug native success 29s MaxRSS:2G
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 30ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 67ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 78ms MaxRSS:34M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 36ms MaxRSS:34M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 36ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 29ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 41ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 41ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 37ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 38ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 40ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 39ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 36ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 30ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 39ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 41ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 38ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 40ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 38ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 38ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 41ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 36ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 28ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 27ms MaxRSS:34M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 29ms MaxRSS:33M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 28ms MaxRSS:33M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 37ms MaxRSS:33M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 30ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 27ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 37ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 40ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 27ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 38ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 43ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 29ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 26ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 28ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 39ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 27ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 38ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 40ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 37ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 39ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 39ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 26ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 28ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 38ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 41ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 40ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 38ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 28ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 38ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 39ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 38ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 39ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 42ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 27ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 39ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 43ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 37ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 40ms MaxRSS:34M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 38ms MaxRSS:33M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 39ms MaxRSS:33M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options success
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\b7f1dcddbb6cb88fc88d1ee6b62b8e9d\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-composition241-20261010 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0x70c6e408 -Zadf2e11c0066c04b test-native-sdk-send-user -Doptimize=Debug -j1 --test-timeout 120s --summary all

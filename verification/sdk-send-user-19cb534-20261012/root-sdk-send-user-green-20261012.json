@@ -1,0 +1,13 @@
+{
+  "name": "root-sdk-send-user-green-20261012",
+  "pid": 36696,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-send-user -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T19:10:13.4024840Z",
+  "launched_utc": "2026-10-12T19:10:13.3990915+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T19:10:49.6694946+00:00"
+}

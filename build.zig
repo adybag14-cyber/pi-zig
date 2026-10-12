@@ -763,7 +763,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_journal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_journal_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-journal-core", "Exercise actual durable tool API document transactions and atomic CodeMode outcome store decisions").dependOn(&b.addRunArtifact(codemode_journal_tests).step);
-    const codemode_models_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_codemode_models_catalog_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native durable default CodeMode model catalog actual Source program", "native durable default CodeMode model calls Source" } });
+    const codemode_models_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_codemode_models_catalog_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native durable default CodeMode model catalog actual Source program", "native durable default CodeMode model calls Source", "native durable default CodeMode model images Source" } });
     linkQuickJs(b, codemode_models_catalog_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_models_catalog_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-model-catalog", "Exercise the original default model catalog script over the actual native Models query registry").dependOn(&b.addRunArtifact(codemode_models_catalog_tests).step);
@@ -1354,6 +1354,10 @@ pub fn build(b: *std.Build) void {
     sdk_await_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-await-primitives", "Compare intrinsic await resolution and old ToNumeric with guest semantics").dependOn(&b.addRunArtifact(sdk_await_tests).step);
     const sdk_skill_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_skill_expansion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK skill expansion"}, .use_llvm = use_llvm });
+    const sdk_send_user_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_send_user_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK sendUserMessage"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_send_user_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_send_user_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-send-user", "Replay latest Source user-message normalization and asynchronous prompt delegation").dependOn(&b.addRunArtifact(sdk_send_user_tests).step);
     linkQuickJs(b, sdk_skill_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_skill_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_skill_run = b.addRunArtifact(sdk_skill_tests);
