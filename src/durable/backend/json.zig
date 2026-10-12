@@ -241,6 +241,13 @@ fn quote(gpa: std.mem.Allocator, output: *std.ArrayList(u8), string: []const u8)
     }
     try output.append(gpa, '"');
 }
+fn encodeFloat(gpa: std.mem.Allocator, output: *std.ArrayList(u8), number: f64) !void {
+    // A leaf buffer avoids an allocation/free for every parsed JSON number.
+    // Use the formatter's full f64 decimal bound and retain its exact format.
+    var bytes: [std.fmt.float.bufferSize(.decimal, f64)]u8 = undefined;
+    const text = try std.fmt.bufPrint(&bytes, "{d}", .{if (number == 0) @as(f64, 0) else number});
+    try output.appendSlice(gpa, text);
+}
 fn encode(gpa: std.mem.Allocator, output: *std.ArrayList(u8), value: Value) anyerror!void {
     switch (value) {
         .null => try output.appendSlice(gpa, "null"),
@@ -251,9 +258,7 @@ fn encode(gpa: std.mem.Allocator, output: *std.ArrayList(u8), value: Value) anye
         },
         .float => |number| {
             if (!std.math.isFinite(number)) return error.NonfiniteJSONNumber;
-            const text = try std.fmt.allocPrint(gpa, "{d}", .{if (number == 0) @as(f64, 0) else number});
-            defer gpa.free(text);
-            try output.appendSlice(gpa, text);
+            try encodeFloat(gpa, output, number);
         },
         .number_string => |number| try output.appendSlice(gpa, number),
         .string => |string| try quote(gpa, output, string),
@@ -346,4 +351,33 @@ test "durable JSON owns escaped lone surrogate values keys and numeric rounding"
     try std.testing.expect(equal(owned.value, again.value));
     try std.testing.expect(std.mem.indexOf(u8, encoded, "\\ud800") != null);
     try std.testing.expect(std.mem.indexOf(u8, encoded, "\\udfff") != null);
+}
+
+test "durable JSON numeric scalars use existing output capacity without a temporary heap allocation" {
+    var bytes: [512]u8 = undefined;
+    var output = std.ArrayList(u8).initBuffer(&bytes);
+    const values = [_]f64{ 0, -0.0, 1, -1, 0.1, 1.2345678901234567, @bitCast(@as(u64, 1)), @bitCast(@as(u64, 0x8000000000000001)), @bitCast(@as(u64, 0x0010000000000000)), std.math.floatMax(f64), -std.math.floatMax(f64) };
+    for (values) |value| {
+        output.clearRetainingCapacity();
+        try encode(std.testing.failing_allocator, &output, .{ .float = value });
+        const expected = try std.fmt.allocPrint(std.testing.allocator, "{d}", .{if (value == 0) @as(f64, 0) else value});
+        defer std.testing.allocator.free(expected);
+        try std.testing.expectEqualStrings(expected, output.items);
+    }
+    try std.testing.expectError(error.NonfiniteJSONNumber, encode(std.testing.failing_allocator, &output, .{ .float = std.math.inf(f64) }));
+    try std.testing.expectError(error.NonfiniteJSONNumber, encode(std.testing.failing_allocator, &output, .{ .float = std.math.nan(f64) }));
+}
+
+test "durable JSON finite numeric serialization retains exact prior formatter bytes across exponent range" {
+    var bits: u64 = 0x0123456789abcdef;
+    for (0..256) |_| {
+        bits = bits *% 6364136223846793005 +% 1442695040888963407;
+        const value: f64 = @bitCast(bits);
+        if (!std.math.isFinite(value)) continue;
+        const actual = try stringify(std.testing.allocator, .{ .float = value });
+        defer std.testing.allocator.free(actual);
+        const expected = try std.fmt.allocPrint(std.testing.allocator, "{d}", .{if (value == 0) @as(f64, 0) else value});
+        defer std.testing.allocator.free(expected);
+        try std.testing.expectEqualStrings(expected, actual);
+    }
 }
