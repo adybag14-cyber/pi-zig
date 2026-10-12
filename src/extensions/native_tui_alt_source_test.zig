@@ -22,6 +22,24 @@ fn setup(gpa: std.mem.Allocator) !*js.Engine {
     try js.define(engine, root, "nativeTuiExports", c.JS_DupValue(engine.context, exports));
     return engine;
 }
+test "Sourceea native TuiAltScreen latest19cb unhandled overlay wheel and keyboard focus replay actual source" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const expected = @embedFile("fixtures/tui-overlay-wheel-original-19cb.json");
+    try js.define(engine, root, "overlayWheelSource", try engine.checked(c.JS_ParseJSON(engine.context, expected.ptr, expected.len, "tui-overlay-wheel-original-19cb.json")));
+    // The identical observer exercises the actual terminal.start input callback,
+    // public renderNow, mounted Text, overlay mouse dispatch and focus recovery.
+    // No Source or native screen method is replaced by the observer.
+    const result = engine.evalModule("const TuiAltScreen=nativeTuiAltScreen,tui=nativeTuiExports;\n" ++ @embedFile("fixtures/tui-overlay-wheel-original-19cb.input.txt") ++
+        "\nif(tuiOverlayWheelCases.length!==overlayWheelSource.cases.length)throw Error('overlay wheel source case count');for(let i=0;i<tuiOverlayWheelCases.length;i++)if(JSON.stringify(tuiOverlayWheelCases[i])!==JSON.stringify(overlayWheelSource.cases[i]))throw Error(JSON.stringify({case:i,actual:tuiOverlayWheelCases[i],expected:overlayWheelSource.cases[i]}));", "tui-overlay-wheel19cb-source.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native latest19cb overlay wheel Source mismatch: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
+
 test "Sourceea native TuiAltScreen complete ordinary fields metadata lifecycle renderer mouse search Unicode and timers" {
     const engine = try setup(std.testing.allocator);
     defer engine.deinit();

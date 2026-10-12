@@ -1,0 +1,32 @@
+const wheelCases=[];
+for(const config of [
+ {name:'focused ordinary overlay wheel inside',mouse:null,wheel:'\x1b[<64;3;1M'},
+ {name:'focused ordinary overlay wheel outside',mouse:null,wheel:'\x1b[<64;19;5M'},
+ {name:'focused mouse overlay declines wheel',mouse:'decline',wheel:'\x1b[<64;3;1M'},
+ {name:'focused mouse overlay explicitly unhandled wheel',mouse:'unhandled',wheel:'\x1b[<64;3;1M'},
+ {name:'focused mouse overlay handles wheel',mouse:'handle',wheel:'\x1b[<64;3;1M'},
+ {name:'focused overlay retains viewport and ordinary keyboard input',mouse:null,keys:['\x1b[5~','\x1b[6~','\x1bOH','\x1bOF','a']},
+ {name:'focused overlay focus notifications remain consumed',mouse:null,keys:['\x1b[O','\x1b[I']},
+ {name:'noncapturing overlay wheel reaches transcript',mouse:null,wheel:'\x1b[<64;3;1M',nonCapturing:true},
+ {name:'no overlay wheel reaches transcript',wheel:'\x1b[<64;3;1M',noOverlay:true}
+]){
+ const writes=[];let onInput;
+ const terminal={columns:20,rows:6,kittyProtocolActive:true,start(input){onInput=input},stop(){onInput=undefined},write(value){writes.push(value)},hideCursor(){},showCursor(){},moveBy(){},clearLine(){},clearFromCursor(){},clearScreen(){},setTitle(){}};
+ const screen=new TuiAltScreen(terminal,false,undefined,{mouse:true,copyOnSelect:false});
+ screen.setWheelScrollLines(2);
+ screen.addChild(new tui.Text(Array.from({length:12},(_,index)=>`line ${index+1}`).join('\n'),0,0));
+ const overlay={focused:false,inputs:[],render(){return ['overlay']},invalidate(){},handleInput(data){this.inputs.push(data)}};
+ const mouse=[];
+ if(config.mouse)overlay.handleMouse=event=>{mouse.push({type:event.type,wheelDelta:event.wheelDelta,x:event.x,y:event.y,screenX:event.screenX,screenY:event.screenY});return config.mouse==='handle'?{handled:true}:config.mouse==='unhandled'?{handled:false}:undefined};
+ try{
+  screen.start();screen.renderNow();
+  const beforeOverlay=screen.viewportTop;
+  if(!config.noOverlay)screen.showOverlay(overlay,{anchor:'top-left',width:10,nonCapturing:!!config.nonCapturing});
+  screen.renderNow();
+  const before=screen.viewportTop;
+  const focusedBefore=screen.getFocusedComponent()===overlay;
+  for(const input of config.keys??[config.wheel]){onInput(input);screen.renderNow()}
+  wheelCases.push({name:config.name,beforeOverlay,before,after:screen.viewportTop,following:screen.isFollowingOutput,focusedBefore,focusedAfter:screen.getFocusedComponent()===overlay,overlayFocused:overlay.focused,inputs:overlay.inputs,mouse,lines:screen.getScreenLines()});
+ }finally{screen.stop({preserveScreen:true})}
+}
+globalThis.tuiOverlayWheelCases=wheelCases;

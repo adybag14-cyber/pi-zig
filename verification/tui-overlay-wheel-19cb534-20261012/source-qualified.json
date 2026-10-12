@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "14c5fd221f123b28e17283446cfe372c581c1a6d",
+  "cases": 9,
+  "original": "Genuine unmodified TuiAltScreen/TuiBase/Text via user terminal input callback and public renderNow; no Source method or class replacements.",
+  "runtime_count": 31064,
+  "tooling_count": 1774,
+  "inventory_pre_post_mismatches": 0,
+  "observed_inputs_and_modules": 53,
+  "observed_post_mismatches": 0,
+  "junctions": 16,
+  "junction_post_mismatches": 0,
+  "input_sha256": "DE24E3E9129761B65BF459F974689CD54A2A414FE4540808E67DC99FAFB9AE52",
+  "fixture_sha256": "FB6E95FDA2EDCC47FBA84AE66C6DBBEB3D12F52B30EB3CF2B946142A3888C0E9",
+  "manifests": [
+    {
+      "file": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "file": "root-current8a-npm-tools-before.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    }
+  ],
+  "completed_utc": "2026-10-12T17:35:38.1422179+00:00"
+}

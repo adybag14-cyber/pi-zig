@@ -1,0 +1,22 @@
+[
+  {
+    "path": ".gitattributes",
+    "sha256": "C87AB2FCBC776DD1E85BB64C91F3766A98B9A5CE4E01E1F07D12CDF1EE25BB7C"
+  },
+  {
+    "path": "src/extensions/native_tui_alt_input.zig",
+    "sha256": "DDA9F57E05CAD71952C8CB1402886F4B7E49E4205B33C4E032645BF4A1203F09"
+  },
+  {
+    "path": "src/extensions/native_tui_alt_source_test.zig",
+    "sha256": "55B0823910BD4980695C3E70DAA706E87D65C16A0688E4B9EFD22611DEB34F68"
+  },
+  {
+    "path": "src/extensions/fixtures/tui-overlay-wheel-original-19cb.input.txt",
+    "sha256": "DE24E3E9129761B65BF459F974689CD54A2A414FE4540808E67DC99FAFB9AE52"
+  },
+  {
+    "path": "src/extensions/fixtures/tui-overlay-wheel-original-19cb.json",
+    "sha256": "FB6E95FDA2EDCC47FBA84AE66C6DBBEB3D12F52B30EB3CF2B946142A3888C0E9"
+  }
+]

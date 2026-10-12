@@ -1,0 +1,8 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+const runtime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012';
+const tui=await import(pathToFileURL(runtime+'/packages/tui/dist/index.js'));
+const {TuiAltScreen}=await import(pathToFileURL(runtime+'/packages/tui/dist/tui-alt-screen.js'));
+const input=readFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/tui-wheel19cb-input-20261012.txt','utf8');
+new Function('TuiAltScreen','tui',input)(TuiAltScreen,tui);
+writeFileSync(process.argv[2],JSON.stringify({source:'19cb534c3b6e3871458a8fa59e98f0312c50e995',cases:globalThis.tuiOverlayWheelCases},null,2)+'\n');

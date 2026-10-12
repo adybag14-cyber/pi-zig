@@ -1,0 +1,267 @@
+[
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tui-wheel19cb-final-observe-modules-20261012.mjs",
+    "sha256": "09e1f08c30f04f174defb069b4fc8d139746c639adc81c3c21545f8e983beff7"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tui-wheel19cb-input-20261012.txt",
+    "sha256": "de24e3e9129761b65bf459f974689cd54a2a414fe4540808e67dc99fafb9ae52"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\tui-wheel19cb-original-source-20261012.mjs",
+    "sha256": "380aebba98f76787aca7ff3b5d754c8df9a2a84f551343f467b09bda451bb764"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\index.js",
+    "sha256": "6068ae4207de753d9ec00dbe14aee199e6160d1dea0db9c8a92f65d08ffc6e80"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\marked\\lib\\marked.esm.js",
+    "sha256": "05e41134d075ad3a009a748d6c779c3d83cea9b942be911c2d9abade36d1dd31"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\autocomplete.js",
+    "sha256": "ae2966443cdea6f65445f181f5ef159abb362388afed69afd344b728b5dafb55"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\fuzzy.js",
+    "sha256": "f873c8e2d808d215e57942ac325b9e635bde9632526d25b56b4eef253362b91b"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\utils.js",
+    "sha256": "275c8400c37c09a7cc106445e27f676aa320c6a024dc89b540b97e1357e90e55"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\index.js",
+    "sha256": "d7b1ba05914c0fc311c20e5618bf8d0893c9c74078a07975e2df981445e64887"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\lookup.js",
+    "sha256": "c80ecc22b120b27ef5ea9facb7000b8fd4ec037a84d9231d215f1c44bc9c21d0"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\lookup-data.js",
+    "sha256": "f6b40f86c9a2a6808ec808fa8ddcb8da261254cc6121d37ffaeb2bf35dad1d5b"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\get-east-asian-width\\utilities.js",
+    "sha256": "4b08a7e9e3ffacbcf198a6abceb2338d52ac671899e52ccc2851c898bfccac42"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\colors.js",
+    "sha256": "330cc45db7f9d6f2987ec939075f9142fdad58bc77989e2d0b2204389c5e0370"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\oklab.js",
+    "sha256": "9aa1e62e9770e7f6f81b204c9d0f039d5f0b5cef017920f6d3e5368520428bfe"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\box.js",
+    "sha256": "a9a91d74c6109f455f3a709ab509ccdeef5855760e544eef2bfffea18740e3b8"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\tui.js",
+    "sha256": "4f25f4366fb6bdb6f7f3f0d30a69fd3cd52f35a388e601f232deb14d43cb1fa2"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\keys.js",
+    "sha256": "7adb7a7a316004d64e8a2afd943cf785959af2bff2b16570f45255378be1e0b9"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\terminal-colors.js",
+    "sha256": "ea51c6eb2eb2101b7f57895936e22b72b6caa8e86125dfa024c0312c285faeaa"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\terminal-image.js",
+    "sha256": "690297c33a620665da3b88c1e9aafe550183e0987dcb02120c07f7eb1dfb5134"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\cancellable-loader.js",
+    "sha256": "9fcffa6a7faeafe4686d1b78f375d3b03c465552faaf308ee9a44169580b3467"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\keybindings.js",
+    "sha256": "651b2366750b9149a0841c2dc9d84f5c854bae53a82b8e98eba07c0e662086a8"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\loader.js",
+    "sha256": "3bafc056e7161caa1a6ba684116345fdd8ba276a4f3774146642442b65dd49d6"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\text.js",
+    "sha256": "89adac5c6e2be6afcdf99ca015943901bc676938fd0115326da5af78c930803c"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\editor.js",
+    "sha256": "838ebf6af4d1b0161959a0914c59aa65b0537b099fb358402356a51894db8075"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\kill-ring.js",
+    "sha256": "52212d532f2c5b85ed8977b0f4431f43998c6dc7746d26efc81eb7975b119122"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\undo-stack.js",
+    "sha256": "7fbb318db3521aa1fa6804ffe50245c18d9e9f210a85a48e175fae6a629259cb"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\word-navigation.js",
+    "sha256": "72618be2d05d6c20d9987d0d74de487335056fa0a00a145687f6106a6ae6b9d0"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\select-list.js",
+    "sha256": "4c8fe79d053ce465454c55bbeb7e61d84ea875f0b9bce8c6e238f3d7721c7f42"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\h-stack.js",
+    "sha256": "b4cf1819879bcbbf20f2cfd3a5d5960b92c7f69308310d2ad44f0dbae4ed9c0f"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\stack.js",
+    "sha256": "02b4dafebc728f1c0e8d01b5cc330f82eb760c58bc71c5cc9bff6d98bf34dbf3"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\layout-node.js",
+    "sha256": "73c3942b68d52ed29072f1f78184c99d405f9259bb4e24a1b6b0e3688381f7f5"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\image.js",
+    "sha256": "918d93b63767fd67543dc23c20709da6a621cd627b52f43e2f87d3b73ab0a9f2"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\input.js",
+    "sha256": "2962cbaae94876aee9d838a5eb28287323c06ac7d47277c801500a660eb738b9"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\markdown.js",
+    "sha256": "43185f806cc13c2adbe7f30b30be35bba4fce7a5ead4da81f53fe62b9bbbdc3d"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\latex.js",
+    "sha256": "9a2055efaee483b038b2f0f663588eb4128153bedaa3c8c314248da00807c5bf"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\mouse-region.js",
+    "sha256": "944855dfb436b93905056157deb5c056e25a838529cc60d4987654aefa47cd26"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\scroll-view.js",
+    "sha256": "601b994d4700c9825b178bbdbc32344dc090be01e2f372282d0e4b67e8aa87cf"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\settings-list.js",
+    "sha256": "ef0ba838df7a8ad0c6f833e9263fe6ac03033008f2283e6106033a8cf5f3af30"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\spacer.js",
+    "sha256": "72b1bc30e7f2b34ca548b0e5f3a4b596d47538d53be02877fb1686595a107bc3"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\truncated-text.js",
+    "sha256": "32c182d7faf44306d4e6937a0324a1f88b1acabbbe3fa8f385ef99ed9d9e090d"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\v-stack.js",
+    "sha256": "7b6e6f6e1fbb037f33a8238ab02ec9e6e5f65fe49029bb430acd59c40148bfa4"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\native-platform.js",
+    "sha256": "bd3deaa60d547941511128f7bcf40083cff0130a836bd3baf168baee370ccdf2"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\native-module-path.js",
+    "sha256": "3f7c149d50329f897f5c84326e3054a0d5df4c9444250a6839ebe1a4b19db056"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\program-status.js",
+    "sha256": "e38a5f11b3cbfc3bcd66a56252f9ab3fcfdd1fac5d997cbd2db2393ce4d85acf"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\stdin-buffer.js",
+    "sha256": "c0f3bbe4432ea639989691b4be4663e7e9c3f86dc383556b4ea4b5a64bec8b92"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\terminal.js",
+    "sha256": "50ed9f28b030b3ccd65a69c6a3ab83b207027ec57cd24dfd91117e7eec645c1a"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\native-modifiers.js",
+    "sha256": "8ec9b2e44a2fb2f7f020f5a72be195742da2da148c91d93d359d829e6c0e07a4"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\tui-alt-screen.js",
+    "sha256": "aa0b953c0158357d20a1d6f868cd4d7b667fd6646848a788ffded9808c9ef720"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\alt-screen-search.js",
+    "sha256": "4ad2383b4a7480584d22ffcd6b472a7556fa54fd4516d9ab8ba16a846fe16cd0"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\components\\alt-screen-flash.js",
+    "sha256": "6ca2016101ca570a94fdaa18bfe8edbc6734243cb5363d21110e809fcd47db12"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\layout.js",
+    "sha256": "b20cb0b156e506b4639b789be8688fe9dd38d42d15746ae82e69fcd250e42147"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\wheel-scroll.js",
+    "sha256": "8d4eb2d65ec42e97399ff827246bc938cf1c49d887d05a8fa47852ca958dfdeb"
+  },
+  {
+    "thread": 0,
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui\\dist\\tui-main-screen.js",
+    "sha256": "d993e3b50da2b10c1ca8774c75e8f678dba861e4ba870b9e67b34bbb23739f92"
+  }
+]

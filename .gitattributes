@@ -33,3 +33,7 @@ src/extensions/fixtures/node-fs-append-source-20261012.json whitespace=cr-at-eol
 # Exact MCP observer inputs and terminal output retain their EOF boundaries.
 verification/mcp-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/mcp/result_schema.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Latest TUI wheel observers retain exact source-input and terminal EOF bytes.
+src/extensions/fixtures/tui-overlay-wheel-original-19cb.input.txt whitespace=cr-at-eol
+verification/tui-overlay-wheel-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

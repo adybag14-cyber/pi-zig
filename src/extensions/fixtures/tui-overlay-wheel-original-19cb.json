@@ -1,0 +1,218 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "focused ordinary overlay wheel inside",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused ordinary overlay wheel outside",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused mouse overlay declines wheel",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [
+        {
+          "type": "wheel",
+          "wheelDelta": -2,
+          "x": 2,
+          "y": 0,
+          "screenX": 2,
+          "screenY": 0
+        }
+      ],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused mouse overlay explicitly unhandled wheel",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [
+        {
+          "type": "wheel",
+          "wheelDelta": -2,
+          "x": 2,
+          "y": 0,
+          "screenX": 2,
+          "screenY": 0
+        }
+      ],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused mouse overlay handles wheel",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 6,
+      "following": true,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [
+        {
+          "type": "wheel",
+          "wheelDelta": -2,
+          "x": 2,
+          "y": 0,
+          "screenX": 2,
+          "screenY": 0
+        }
+      ],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007",
+        "line 11             \u001b[0m\u001b]8;;\u0007",
+        "line 12             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused overlay retains viewport and ordinary keyboard input",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 6,
+      "following": true,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [
+        "\u001b[5~",
+        "\u001b[6~",
+        "\u001bOH",
+        "\u001bOF",
+        "a"
+      ],
+      "mouse": [],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007",
+        "line 11             \u001b[0m\u001b]8;;\u0007",
+        "line 12             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "focused overlay focus notifications remain consumed",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 6,
+      "following": true,
+      "focusedBefore": true,
+      "focusedAfter": true,
+      "overlayFocused": true,
+      "inputs": [],
+      "mouse": [],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007",
+        "line 11             \u001b[0m\u001b]8;;\u0007",
+        "line 12             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "noncapturing overlay wheel reaches transcript",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": false,
+      "focusedAfter": false,
+      "overlayFocused": false,
+      "inputs": [],
+      "mouse": [],
+      "lines": [
+        "\u001b[0m\u001b]8;;\u0007overlay   \u001b[0m\u001b]8;;\u0007          \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    },
+    {
+      "name": "no overlay wheel reaches transcript",
+      "beforeOverlay": 6,
+      "before": 6,
+      "after": 4,
+      "following": false,
+      "focusedBefore": false,
+      "focusedAfter": false,
+      "overlayFocused": false,
+      "inputs": [],
+      "mouse": [],
+      "lines": [
+        "line 5              \u001b[0m\u001b]8;;\u0007",
+        "line 6              \u001b[0m\u001b]8;;\u0007",
+        "line 7              \u001b[0m\u001b]8;;\u0007",
+        "line 8              \u001b[0m\u001b]8;;\u0007",
+        "line 9              \u001b[0m\u001b]8;;\u0007",
+        "line 10             \u001b[0m\u001b]8;;\u0007"
+      ]
+    }
+  ]
+}

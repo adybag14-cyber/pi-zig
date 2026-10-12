@@ -51,7 +51,6 @@ pub fn invoke(f: *Frame, data: c.JSValue) anyerror!c.JSValue {
             if (f.truth(try f.invoke("applyMouseDispatchResult", &.{ event, result }))) _ = try f.invoke("requestRender", &.{});
             return consume(f);
         }
-        if (f.truth(try f.invoke("shouldDeferViewportInputToOverlay", &.{}))) return c.pi_js_undefined();
         _ = try f.invoke("routeWheel", &.{ wheel, f.num(delta) });
         return consume(f);
     }

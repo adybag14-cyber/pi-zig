@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "14c5fd221f123b28e17283446cfe372c581c1a6d",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "alt_source_tests": 17,
+  "base_source_tests": 13,
+  "source_regression_cases": 9,
+  "total_tests": 30,
+  "build_steps": 159,
+  "record": "tui-overlay-wheel19cb-debug-warm-20261012.json",
+  "first_attempt": "Cold first outer300 deadline expired while Source test compilation was running; no assertion classification was claimed. Identical frozen warm retry completed compilation and all tests.",
+  "first_record": "tui-overlay-wheel19cb-debug-first-20261012.json",
+  "source_post_files": 4173,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 5,
+  "source_input_binding": "Both native Zig files have working/index LF bytes; original observer inputs preserved exactly.",
+  "processes_retired": [
+    50580,
+    2824
+  ],
+  "limitations": [
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "No physical terminal screenshot or terminal-emulator integration is claimed; genuine Source and native classes run through the same user terminal callback.",
+    "Global native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T17:45:40.0047625+00:00"
+}
