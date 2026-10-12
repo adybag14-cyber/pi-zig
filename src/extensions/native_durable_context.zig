@@ -47,7 +47,11 @@ pub fn install(engine: *Engine) !void {
         try sdk.put(engine, exports, name, try objects.create(engine, bindings, "EmptyContext", &.{label}));
     }
     inline for (.{ "createContextKey", "withContextValue", "withAbortSignal", "withoutAbortSignal", "withCancel", "awaitWithContext" }, 0..) |name, operation| {
-        const length: c_int = switch (operation) { 0, 3, 4 => 1, 1 => 3, else => 2 };
+        const length: c_int = switch (operation) {
+            0, 3, 4 => 1,
+            1 => 3,
+            else => 2,
+        };
         try sdk.put(engine, exports, name, try @import("native_node_function.zig").create(engine, name, length, exported, &.{ bindings, c.JS_NewInt32(engine.context, @intCast(operation)) }));
     }
     try engine.registerValueModule("@earendil-works/chord/context", exports);

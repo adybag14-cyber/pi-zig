@@ -1,0 +1,13 @@
+{
+  "name": "root-chord-format-final-20261012",
+  "pid": 36260,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-context-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T19:40:09.0629750Z",
+  "launched_utc": "2026-10-12T19:40:09.0600843+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T19:40:25.2045210+00:00"
+}

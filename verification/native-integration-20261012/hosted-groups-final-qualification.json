@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "head": "4f051081d47f348341d331e77ab8e9273726c132",
+  "root_equivalent_parent": "abae8960bfd9d21256c2b8d02e61d57a04796df9",
+  "local_parent": "4e416b9",
+  "clean": true,
+  "native_checker": "3/3 tests passed including all eight group partitions and genuine hosted group3/range24",
+  "maintenance": "7/7 tests passed",
+  "native_owner": {
+    "name": "hosted-groups-checker-final",
+    "pid": 7164,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-agent-allocation-coverage test-maintenance -j1 --test-timeout 120s --summary all",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-12T19:22:00.9587474Z",
+    "launched_utc": "2026-10-12T20:22:00.9556139+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:\\Users\\adyba\\pi-zig-hosted-groups-20261012",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-12T20:22:09.8172489+01:00"
+  },
+  "full_source_post_before_metadata": "hosted-groups-checker-final-posthash.json",
+  "source_files": 4267,
+  "tool_files": 19546,
+  "post_test_metadata_changes": [
+    "C:\\Users\\adyba\\pi-zig-hosted-groups-20261012\\.gitattributes",
+    "C:\\Users\\adyba\\pi-zig-hosted-groups-20261012\\.github\\workflows\\native-agent-contract.yml"
+  ],
+  "post_test_metadata_reason": "Root requested overalljob budget120; Git whitespace allowance preserves exact EOF of copied actual Core93 stderr. Compiled Zig sources, tests, actual hosted fixture and build script are unchanged from passing final gate.",
+  "core93_source_receipt": "verification/hosted-group-repair-20261012/root-core93-20261012.stderr.log",
+  "latest207_authority": "Successful actual old-head070367 LinuxDebug job114954978217; no new-head hosted pass claimed",
+  "additional_inventory": "Independently observed model8/catalog60/maintenance7/Chord11/SDK11; workflow now executes and checks them separately",
+  "job_budget_minutes": 120,
+  "independent_compile_guards": 8,
+  "compile_guard_minutes": 22,
+  "independent_runtime_phase_guards_minutes": [
+    28,
+    12,
+    15,
+    15
+  ],
+  "sum_independent_phase_ceilings_minutes": 246,
+  "budget_review": "120m is an aggregate job cap with shared-cache warm compilation phases, below the sum of independent guard maxima. No promise of worst-case all-ceilings completion; exact new-head hosted qualification remains necessary, particularly Windows ReleaseSafe cold compilation and Windows custom-editor failure.",
+  "actual_failed_mac_fixture_sha256": "38C75A080E4FF9A3B1EA6C63A70CD25A1EEC1DFD608785A7E4DF1599D6579AFA",
+  "captured_utc": "2026-10-12T19:29:07.1661767+00:00"
+}

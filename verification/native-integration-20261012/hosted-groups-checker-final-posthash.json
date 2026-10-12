@@ -1,0 +1,14 @@
+[
+  {
+    "manifest": "hosted-groups-checker-final-source-before.json",
+    "files": 4267,
+    "mismatches": 0,
+    "paths": []
+  },
+  {
+    "manifest": "catalog19cb-zig-tools-before.json",
+    "files": 19546,
+    "mismatches": 0,
+    "paths": []
+  }
+]

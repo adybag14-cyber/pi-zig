@@ -1,0 +1,13 @@
+{
+  "name": "root-models-sdk-chord-checker-final-20261012",
+  "pid": 48396,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-models-typed-services test-native-durable-codemode-model-catalog test-native-sdk-send-user test-native-sdk-input test-native-sdk-queue-order test-native-chord-context-source test-native-chord-resource-source test-latest-catalog test-agent-allocation-coverage test-maintenance -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T19:31:01.4937610Z",
+  "launched_utc": "2026-10-12T19:31:01.4903359+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T19:34:04.7320302+00:00"
+}

@@ -1,0 +1,48 @@
+{
+  "status": "qualified_Debug_and_ReleaseSafe",
+  "base": "bfd9d43d431f9572026a597b5652e526f08f4d01",
+  "target": "ee326642fb05aaa05f52fea1abdd569f7a7e8091",
+  "patch_sha256": "0809FE0F4FD46A668A8626338A630155A1BF2A84F54076081CCE1E9478E30960",
+  "paths": 7,
+  "paths_explanation": "six new lifecycle/filter paths plus Source9 fixture raw-byte-hash metadata correction",
+  "tests": "13/13 actual,159/159steps,typed target5 +consumer8",
+  "source_cases": 25,
+  "native_job": "durable-model-services-source25-debug-filter-metadata-repair-20261012",
+  "pid": 50296,
+  "source": 4119,
+  "source_membership_drift": 0,
+  "source_hash_drift": 0,
+  "tools": 19546,
+  "tools_drift": 0,
+  "root_readonly_applycheck_exit": 0,
+  "final_samebytes_utc": "2026-10-12T20:30:10.0904453+01:00",
+  "source_authority": [
+    "Source9 PID52520",
+    "Source10 PID49272",
+    "Source6 PID15512"
+  ],
+  "source_hash_note": "originalDriverSha256 now hashes exact raw original driver bytes; originalDriverNormalizedTextSha256 retains previous newline-normalized text hash. Original full driver/observed modules unchanged and retained. Extracted loop text uses LF normalization; no statements/values/cases changed.",
+  "coverage_negative": "Prior Source25-named PID32444 actually ran only original10 tests because build filter did not change. Terminal0 retained, no expanded coverage attributed.",
+  "gpa": "std.testing.checkAllAllocationFailures on actual typed Models/auth and serialized native credential store modify/read/delete; engine GC and owned teardown each run; original host10s/allocator/stack",
+  "open": [
+    "createProvider factory/class ABI",
+    "chat stream/completion/deferred ABI",
+    "login/logout persistent auth store",
+    "fullpackage activation",
+    "residual original Mac Debug timeout"
+  ],
+  "ReleaseSafe": {
+    "job": "durable-model-services-source25-releasesafe-first-20261012",
+    "pid": 53840,
+    "terminal": "passed",
+    "tests": "13/13",
+    "steps": "159/159",
+    "completed_utc": "2026-10-12T19:31:54.0224771+00:00",
+    "post_completed_utc": "2026-10-12T19:32:00.6217498+00:00",
+    "source": 4119,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "process_gone": true
+  }
+}

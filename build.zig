@@ -2286,9 +2286,9 @@ pub fn build(b: *std.Build) void {
     // the nested fatal-application checks and process-fixture dependencies.
     addCompileOnlyGroup(b, "build-hosted-core-components", &.{ "test-native-codemode-sandbox", "test-native-codemode-run", "test-native-codemode-vm-worker", "test-native-codemode-controlled-binding", "test-native-durable-148622-wait-cycle", "test-native-durable-json-dto", "test-native-physical-stdio", "test-codemode-inline", "test-codemode-allocation", "test-durable-scheduler", "test-durable-json-clone" });
     addCompileOnlyGroup(b, "build-hosted-latest-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-custom-editor-frontend", "test-extension-filesystem", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured", "test-native-tui-alt-source", "test-native-tui-base-source" });
-    addCompileOnlyGroup(b, "build-hosted-model-components", &.{"test-native-durable-codemode-model-catalog"});
+    addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services" });
     addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance" });
-    addCompileOnlyGroup(b, "build-hosted-chord-components", &.{"test-native-chord-context-source"});
+    addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source" });
     addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{"test-native-sdk-send-user"});
 }
 

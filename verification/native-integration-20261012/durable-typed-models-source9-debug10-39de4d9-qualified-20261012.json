@@ -1,0 +1,30 @@
+{
+  "status": "qualified",
+  "base": "39de4d9cde769338ec2af793a2b2e7881778284b",
+  "target": "bfd9d43d431f9572026a597b5652e526f08f4d01",
+  "patch_sha256": "1A8F6DC803F5164B3CDF8F8E7E6DF9EFBED8DFB88BDE17646509D102AABDAEB4",
+  "paths": 7,
+  "tests": "10/10 actual, 159/159 steps",
+  "source_cases": 9,
+  "native_job": "durable-model-services-source9-debug-cwd-repair-20261012",
+  "pid": 25180,
+  "source": 4115,
+  "source_membership_drift": 0,
+  "source_hash_drift": 0,
+  "tools": 19546,
+  "tools_drift": 0,
+  "root_readonly_applycheck_exit": 0,
+  "final_samebytes_utc": "2026-10-12T19:25:23.9980136+00:00",
+  "scope": "Actual native Models instance getAuth/classify/generateImages, native default InMemoryCredentialStore; valid caller-supplied Provider ingress. Native C continuation state is GC-visible and stays on owner realm.",
+  "source_authority": "19cb534 original Source9,698 observed modules,16junctions,31064runtime+1774tools post0",
+  "open": [
+    "createProvider factory ABI",
+    "chat streaming/completion/deferred services",
+    "login/logout and persistent credential store",
+    "full typed Models service/allocation failure matrix",
+    "new Source10/Source6 qualification",
+    "ReleaseSafe delta",
+    "fullpackage public activation",
+    "residual original Mac Debug timeout"
+  ]
+}

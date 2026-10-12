@@ -212,6 +212,8 @@ jobs:
             @{target='test-latest-catalog'; tests=60},
             @{target='test-maintenance'; tests=7},
             @{target='test-native-chord-context-source'; tests=11},
+            @{target='test-native-chord-resource-source'; tests=4},
+            @{target='test-native-models-typed-services'; tests=5},
             @{target='test-native-sdk-send-user'; tests=11}
           )
           $taskProof = @()
@@ -287,7 +289,7 @@ jobs:
                   $taskLatest = Get-Content "$taskRoot/latest-result.json" -Raw | ConvertFrom-Json
                   if ($taskComponents.status -cne 'passed' -or $taskComponents.component_tests -ne 93 -or $taskLatest.status -cne 'passed' -or $taskLatest.tests -ne 207) { throw 'Platform component qualification is incomplete' }
                   $taskAdditional = Get-Content "$taskRoot/additional-result.json" -Raw | ConvertFrom-Json
-                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-native-chord-context-source'=11; 'test-native-sdk-send-user'=11}
+                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=5; 'test-native-sdk-send-user'=11}
                   if ($taskAdditional.status -cne 'passed' -or $taskAdditional.slices.Count -ne $taskExpectedSlices.Count) { throw 'Current component slice qualification missing' }
                   foreach ($taskTarget in $taskExpectedSlices.Keys) {
                     $taskSlice = @($taskAdditional.slices | Where-Object target -CEQ $taskTarget)
