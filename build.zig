@@ -715,6 +715,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, owner_wakeup_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(owner_wakeup_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-owner-wakeup", "Wake native owners without losing publications or starving ready Promise jobs behind timers").dependOn(&b.addRunArtifact(owner_wakeup_tests).step);
+    const durable_json_dto_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_json_dto_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable JSON DTO"} });
+    linkQuickJs(b, durable_json_dto_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(durable_json_dto_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-json-dto", "Preserve JSON.parse semantics while avoiding native DTO format/reparse allocations").dependOn(&b.addRunArtifact(durable_json_dto_tests).step);
     const inspection_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_inspection_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable inspection timestamp comparison"} });
     b.step("test-native-durable-inspection-comparison", "Reject missing malformed out-of-bounds or unstable actual inspection timestamps").dependOn(&b.addRunArtifact(inspection_comparison_tests).step);
     const summary_transcript_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_summary_transcript_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"latest89 serializer"} });

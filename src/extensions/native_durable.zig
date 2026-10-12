@@ -181,6 +181,8 @@ pub fn owned(engine: *Engine, value: c.JSValue) !json.Owned {
     return json.Owned.parse(engine.gpa, encoded);
 }
 pub fn jsValue(engine: *Engine, source: json.Value) !c.JSValue {
+    const direct = @import("native_durable_json_value.zig");
+    if (direct.eligible(source, 0)) return direct.build(engine, source);
     const encoded = try json.stringify(engine.gpa, source);
     defer engine.gpa.free(encoded);
     const terminated = try engine.gpa.dupeZ(u8, encoded);
