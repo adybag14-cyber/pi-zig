@@ -1,0 +1,13 @@
+{
+  "name": "root-sdk-callable-red-20261012",
+  "pid": 53948,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-session-queries -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T19:50:29.9818210Z",
+  "launched_utc": "2026-10-12T19:50:29.9788920+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-12T19:51:08.7845523+00:00"
+}

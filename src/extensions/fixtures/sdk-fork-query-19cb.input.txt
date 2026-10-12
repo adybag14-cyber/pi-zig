@@ -1,0 +1,55 @@
+const fork=AgentSession.prototype.getUserMessagesForForking;
+const forkRows=[{case:'shape',name:fork.name,length:fork.length,enumerable:Object.getOwnPropertyDescriptor(AgentSession.prototype,'getUserMessagesForForking').enumerable}];
+function observe(name,entries){
+  const manager={getEntries(){return entries;}};
+  const result=fork.call({sessionManager:manager});
+  forkRows.push({case:name,promise:result instanceof Promise,result});
+}
+observe('normal',[
+  {type:'custom',id:'skip'},
+  {type:'message',id:'assistant',message:{role:'assistant',content:'ignored'}},
+  {type:'message',id:'string',message:{role:'user',content:' hello '}},
+  {type:'message',id:'parts',message:{role:'user',content:[{type:'text',text:'one'},{type:'image',data:'A'},{type:'text',text:'two'}]}},
+  {type:'message',id:'empty',message:{role:'user',content:''}},
+  {type:'message',id:'image',message:{role:'user',content:[{type:'image',data:'B'}]}},
+  {type:'message',id:'space',message:{role:'user',content:'   '}}
+]);
+observe('join-coercions',[
+  {type:'message',id:'nulls',message:{role:'user',content:[{type:'text',text:null},{type:'text',text:undefined}]}},
+  {type:'message',id:'numbers',message:{role:'user',content:[{type:'text',text:0},{type:'text',text:false},{type:'text',text:42}]}}
+]);
+observe('iterable',{*[Symbol.iterator](){yield {type:'message',id:'iter',message:{role:'user',content:'iterator'}};}});
+{
+  const trace=[];
+  const entry={get type(){trace.push('type');return 'message';},get message(){trace.push('message');return {get role(){trace.push('role');return 'user';},get content(){trace.push('content');return 'text';}};},get id(){trace.push('id');return 'ordered';}};
+  const manager={get getEntries(){trace.push('getEntries');return function(){trace.push(this===manager?'manager':'wrong-manager');return [entry];};}};
+  const result=fork.call({get sessionManager(){trace.push('sessionManager');return manager;}});
+  forkRows.push({case:'order',trace,result});
+}
+{
+  const trace=[],marker={raw:'content'};let closes=0,caught;
+  const entries={[Symbol.iterator](){return {next(){return {done:false,value:{type:'message',message:{role:'user',get content(){trace.push('content');throw marker;}}}};},return(){closes++;throw {other:'close'};}};}};
+  try{fork.call({sessionManager:{getEntries(){return entries;}}});}catch(e){caught=e;}
+  forkRows.push({case:'iteration-error',identity:caught===marker,closes,trace});
+}
+for(const where of ['manager','method','call','filter','map','join']){
+  const marker={raw:where};let caught;
+  const receiver={sessionManager:{getEntries(){
+    if(where==='call')throw marker;
+    const content={filter(){if(where==='filter')throw marker;return {map(){if(where==='map')throw marker;return {join(separator){if(separator!=='')throw Error('separator');if(where==='join')throw marker;return 'ok';}};}};}};
+    return [{type:'message',id:'custom',message:{role:'user',content}}];
+  }}};
+  if(where==='manager')Object.defineProperty(receiver,'sessionManager',{get(){throw marker;}});
+  if(where==='method')Object.defineProperty(receiver.sessionManager,'getEntries',{get(){throw marker;}});
+  try{fork.call(receiver);}catch(e){caught=e;}
+  forkRows.push({case:'error-'+where,identity:caught===marker});
+}
+{
+  const manager=SessionManager.inMemory('/sdk-fork');
+  manager.appendMessage({role:'user',content:[{type:'text',text:'one'},{type:'text',text:'two'}],timestamp:1});
+  manager.appendMessage({role:'assistant',content:[],timestamp:2});
+  manager.appendMessage({role:'user',content:'last',timestamp:3});
+  const entries=manager.getEntries(),result=fork.call({sessionManager:manager});
+  forkRows.push({case:'real-manager',result:result.map(row=>({entryIndex:entries.findIndex(entry=>entry.id===row.entryId),text:row.text}))});
+}
+globalThis.sdkForkRows=forkRows;

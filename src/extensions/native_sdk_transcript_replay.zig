@@ -62,6 +62,11 @@ pub fn conversation(engine: *em.Engine, messages: c.JSValue) !c.JSValue {
     return js.call(engine, filter, messages, &.{predicate});
 }
 pub fn contentText(engine: *em.Engine, content: c.JSValue) !c.JSValue {
+    const separator = try sdk.text(engine, "\n");
+    defer engine.freeValue(separator);
+    return contentTextWithSeparator(engine, content, separator);
+}
+pub fn contentTextWithSeparator(engine: *em.Engine, content: c.JSValue, separator: c.JSValue) !c.JSValue {
     if (c.JS_IsString(content)) return c.JS_DupValue(engine.context, content);
     const filter = try sdk.get(engine, content, "filter");
     defer engine.freeValue(filter);
@@ -75,8 +80,6 @@ pub fn contentText(engine: *em.Engine, content: c.JSValue) !c.JSValue {
     defer engine.freeValue(mapper);
     const parts = try js.call(engine, map, selected, &.{mapper});
     defer engine.freeValue(parts);
-    const separator = try sdk.text(engine, "\n");
-    defer engine.freeValue(separator);
     return js.invoke(engine, parts, "join", &.{separator});
 }
 fn toolsDelta(engine: *em.Engine, message: c.JSValue, name: [*:0]const u8, tools: c.JSValue, remove: bool, symbol: c.JSValue) !void {

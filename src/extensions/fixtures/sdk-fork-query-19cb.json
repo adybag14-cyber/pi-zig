@@ -1,0 +1,115 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified original public AgentSession fork query with supplied manager boundaries plus genuine original in-memory SessionManager; no Source classes or prototypes replaced",
+  "rows": [
+    {
+      "case": "shape",
+      "name": "getUserMessagesForForking",
+      "length": 0,
+      "enumerable": false
+    },
+    {
+      "case": "normal",
+      "promise": false,
+      "result": [
+        {
+          "entryId": "string",
+          "text": " hello "
+        },
+        {
+          "entryId": "parts",
+          "text": "onetwo"
+        },
+        {
+          "entryId": "space",
+          "text": "   "
+        }
+      ]
+    },
+    {
+      "case": "join-coercions",
+      "promise": false,
+      "result": [
+        {
+          "entryId": "numbers",
+          "text": "0false42"
+        }
+      ]
+    },
+    {
+      "case": "iterable",
+      "promise": false,
+      "result": [
+        {
+          "entryId": "iter",
+          "text": "iterator"
+        }
+      ]
+    },
+    {
+      "case": "order",
+      "trace": [
+        "sessionManager",
+        "getEntries",
+        "manager",
+        "type",
+        "message",
+        "role",
+        "message",
+        "content",
+        "id"
+      ],
+      "result": [
+        {
+          "entryId": "ordered",
+          "text": "text"
+        }
+      ]
+    },
+    {
+      "case": "iteration-error",
+      "identity": true,
+      "closes": 1,
+      "trace": [
+        "content"
+      ]
+    },
+    {
+      "case": "error-manager",
+      "identity": true
+    },
+    {
+      "case": "error-method",
+      "identity": true
+    },
+    {
+      "case": "error-call",
+      "identity": true
+    },
+    {
+      "case": "error-filter",
+      "identity": true
+    },
+    {
+      "case": "error-map",
+      "identity": true
+    },
+    {
+      "case": "error-join",
+      "identity": true
+    },
+    {
+      "case": "real-manager",
+      "result": [
+        {
+          "entryIndex": 0,
+          "text": "onetwo"
+        },
+        {
+          "entryIndex": 2,
+          "text": "last"
+        }
+      ]
+    }
+  ]
+}

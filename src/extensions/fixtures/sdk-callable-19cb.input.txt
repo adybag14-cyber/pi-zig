@@ -1,0 +1,19 @@
+const cwd='/sdk-callable';
+const model={id:'m',name:'m',provider:'fixture',api:'fixture',type:'chat',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:512};
+const runtime=await ModelRuntime.create({authPath:ownedAuthPath,modelsPath:ownedModelsPath,refreshOnCreate:false});
+const make=(name,exposure,defaultActive)=>({name,label:name,description:name,parameters:{type:'object'},exposure,defaultActive,execute:async()=>({content:[]})});
+const tools=[make('first','direct',true),make('inactive','direct',false),make('code','codemode',false),make('deferred','deferred',false),make('hidden','hidden',true),make('model_only','model-only',true),make('mcp__fixture__tool','deferred',false)];
+const callableRows=[];
+for(const options of [{},{tools:['first']},{tools:[]},{excludeTools:['code','mcp__*']}]){
+  const settings=SettingsManager.inMemory();
+  const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true});
+  await loader.reload();
+  const {session}=await createAgentSession({cwd,agentDir:cwd,model,modelRuntime:runtime,sessionManager:SessionManager.inMemory(cwd),settingsManager:settings,resourceLoader:loader,tools:['*'],customTools:tools,...options});
+  const row={options,initial:{active:session.getActiveToolNames(),callable:session.getCallableToolNames()}};
+  session.setActiveToolsByName(['inactive','code','hidden','deferred','model_only','mcp__fixture__tool']);
+  row.selected={active:session.getActiveToolNames(),callable:session.getCallableToolNames()};
+  session.setActiveToolsByName([]);
+  row.empty={active:session.getActiveToolNames(),callable:session.getCallableToolNames()};
+  callableRows.push(row);session.dispose();
+}
+globalThis.sdkCallableRows=callableRows;

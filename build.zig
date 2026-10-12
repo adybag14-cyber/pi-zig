@@ -1368,6 +1368,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, sdk_send_user_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_send_user_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-send-user", "Replay latest Source user-message normalization and asynchronous prompt delegation").dependOn(&b.addRunArtifact(sdk_send_user_tests).step);
+    const sdk_session_queries_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_queries_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session queries"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_session_queries_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_session_queries_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-queries", "Compare callable tool loadouts and user-message fork queries with actual latest Source").dependOn(&b.addRunArtifact(sdk_session_queries_tests).step);
     linkQuickJs(b, sdk_skill_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_skill_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_skill_run = b.addRunArtifact(sdk_skill_tests);

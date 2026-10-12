@@ -1,0 +1,160 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified original SDK factory, actual sessions, caller-authored tool definitions and owned empty credential paths; no Source class or method replacement",
+  "rows": [
+    {
+      "options": {},
+      "initial": {
+        "active": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "model_only"
+        ],
+        "callable": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      },
+      "selected": {
+        "active": [
+          "inactive",
+          "code",
+          "deferred",
+          "model_only",
+          "mcp__fixture__tool"
+        ],
+        "callable": [
+          "inactive",
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      }
+    },
+    {
+      "options": {
+        "tools": [
+          "first"
+        ]
+      },
+      "initial": {
+        "active": [
+          "first"
+        ],
+        "callable": [
+          "first",
+          "mcp__fixture__tool"
+        ]
+      },
+      "selected": {
+        "active": [],
+        "callable": [
+          "mcp__fixture__tool"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "mcp__fixture__tool"
+        ]
+      }
+    },
+    {
+      "options": {
+        "tools": []
+      },
+      "initial": {
+        "active": [],
+        "callable": []
+      },
+      "selected": {
+        "active": [],
+        "callable": []
+      },
+      "empty": {
+        "active": [],
+        "callable": []
+      }
+    },
+    {
+      "options": {
+        "excludeTools": [
+          "code",
+          "mcp__*"
+        ]
+      },
+      "initial": {
+        "active": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "model_only"
+        ],
+        "callable": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "deferred"
+        ]
+      },
+      "selected": {
+        "active": [
+          "inactive",
+          "deferred",
+          "model_only"
+        ],
+        "callable": [
+          "inactive",
+          "deferred"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "deferred"
+        ]
+      }
+    }
+  ]
+}

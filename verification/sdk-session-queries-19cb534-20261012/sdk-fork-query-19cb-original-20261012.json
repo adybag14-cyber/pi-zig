@@ -1,0 +1,13 @@
+{
+  "name": "sdk-fork-query-19cb-original-20261012",
+  "pid": 54240,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=64 C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-query-19cb-source.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-query-19cb-output.json",
+  "created_utc": "2026-10-12T19:52:01.0142680Z",
+  "launched_utc": "2026-10-12T19:52:01.0113878+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T19:52:01.9073385+00:00"
+}

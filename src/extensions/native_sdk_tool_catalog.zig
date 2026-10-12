@@ -292,9 +292,28 @@ fn activatable(self: *State, record: Record) !bool {
 }
 fn agentTool(owner: *sdk.State, record: *Record) !c.JSValue {
     if (record.agent_tool) |tool| return c.JS_DupValue(owner.engine.context, tool);
-    const tool = try @import("native_sdk_agent_tool.zig").wrap(owner, record.definition);
-    record.agent_tool = tool;
-    return c.JS_DupValue(owner.engine.context, tool);
+    // Wrapping reads guest definition getters. Retain the key/definition before
+    // that boundary and never dereference a possibly replaced record afterward.
+    const engine = owner.engine;
+    const name = try engine.gpa.dupe(u8, record.name);
+    defer engine.gpa.free(name);
+    const definition = c.JS_DupValue(engine.context, record.definition);
+    defer engine.freeValue(definition);
+    return wrapRetainedTool(owner, name, definition);
+}
+fn wrapRetainedTool(owner: *sdk.State, name: []const u8, definition: c.JSValue) !c.JSValue {
+    const engine = owner.engine;
+    const tool = try @import("native_sdk_agent_tool.zig").wrap(owner, definition);
+    if (owner.tool_catalog) |self| for (self.records.items) |*record| {
+        if (!std.mem.eql(u8, record.name, name) or !c.JS_IsStrictEqual(engine.context, record.definition, definition)) continue;
+        if (record.agent_tool) |existing| {
+            engine.freeValue(tool);
+            return c.JS_DupValue(engine.context, existing);
+        }
+        record.agent_tool = c.JS_DupValue(engine.context, tool);
+        break;
+    };
+    return tool;
 }
 pub fn setActive(owner: *sdk.State, requested: c.JSValue) !void {
     const self = try current(owner);
@@ -368,31 +387,94 @@ pub fn activeDefinitions(owner: *sdk.State) !c.JSValue {
     return sdk.agentField(owner, "tools");
 }
 pub fn callableDefinitions(owner: *sdk.State) !c.JSValue {
-    const self = try current(owner);
     const engine = owner.engine;
+    const receiver = try sdk.get(engine, owner.data, "_sdkSessionValue");
+    defer engine.freeValue(receiver);
+    if (c.JS_IsObject(receiver)) return sdk.invoke(engine, receiver, "_getCallableTools", &.{});
     const active = try activeNames(owner);
     defer engine.freeValue(active);
+    const selected = try @import("native_js_values.zig").builtin(engine, "Set", &.{active});
+    defer engine.freeValue(selected);
+    return callableDefinitionsWithActive(owner, c.pi_js_undefined(), selected);
+}
+pub fn callableDefinitionsWithActive(owner: *sdk.State, receiver: c.JSValue, active: c.JSValue) !c.JSValue {
+    const self = try current(owner);
+    const engine = owner.engine;
+    const Captured = struct { name: []u8, definition: c.JSValue, tool: ?c.JSValue };
+    var captured: std.ArrayList(Captured) = .empty;
+    defer {
+        for (captured.items) |entry| {
+            engine.gpa.free(entry.name);
+            engine.freeValue(entry.definition);
+            if (entry.tool) |tool| engine.freeValue(tool);
+        }
+        captured.deinit(engine.gpa);
+    }
+    try captured.ensureTotalCapacity(engine.gpa, self.records.items.len);
+    for (self.records.items) |record| {
+        const name = try engine.gpa.dupe(u8, record.name);
+        captured.appendAssumeCapacity(.{ .name = name, .definition = c.JS_DupValue(engine.context, record.definition), .tool = if (record.agent_tool) |tool| c.JS_DupValue(engine.context, tool) else null });
+    }
+    const tools = try vm.array(engine);
+    defer engine.freeValue(tools);
+    for (captured.items, 0..) |entry, index| {
+        const tool = if (entry.tool) |tool| c.JS_DupValue(engine.context, tool) else try wrapRetainedTool(owner, entry.name, entry.definition);
+        if (c.JS_SetPropertyUint32(engine.context, tools, @intCast(index), tool) < 0) return error.JavaScriptException;
+    }
+    if (c.JS_IsObject(receiver)) {
+        const filter = try sdk.get(engine, tools, "filter");
+        defer engine.freeValue(filter);
+        var roots = [_]c.JSValue{ receiver, active };
+        const predicate = try engine.checked(c.JS_NewCFunctionData2(engine.context, callablePredicate, "", 1, 0, roots.len, &roots));
+        defer engine.freeValue(predicate);
+        return @import("native_js_values.zig").call(engine, filter, tools, &.{predicate});
+    }
     const result = try vm.array(engine);
     errdefer engine.freeValue(result);
-    for (self.records.items) |*record| {
-        const exposure_value = try vm.get(engine, record.definition, "exposure");
+    const direct = try sdk.text(engine, "direct");
+    defer engine.freeValue(direct);
+    const codemode = try sdk.text(engine, "codemode");
+    defer engine.freeValue(codemode);
+    const deferred = try sdk.text(engine, "deferred");
+    defer engine.freeValue(deferred);
+    for (captured.items, 0..) |entry, index| {
+        const tool = try engine.checked(c.JS_GetPropertyUint32(engine.context, tools, @intCast(index)));
+        defer engine.freeValue(tool);
+        const name = try vm.get(engine, tool, "name");
+        defer engine.freeValue(name);
+        const exposure_value = try vm.get(engine, entry.definition, "exposure");
         defer engine.freeValue(exposure_value);
-        const exposure_text = if (c.JS_IsUndefined(exposure_value) or c.JS_IsNull(exposure_value)) try engine.gpa.dupe(u8, "direct") else try engine.toString(exposure_value);
-        defer engine.gpa.free(exposure_text);
-        var callable = std.mem.eql(u8, exposure_text, "codemode") or std.mem.eql(u8, exposure_text, "deferred");
-        if (std.mem.eql(u8, exposure_text, "direct")) for (0..try vm.length(engine, active)) |index| {
-            const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, active, @intCast(index)));
-            defer engine.freeValue(value);
-            const name = try engine.toString(value);
-            defer engine.gpa.free(name);
-            if (std.mem.eql(u8, record.name, name)) {
-                callable = true;
-                break;
-            }
-        };
-        if (callable and c.JS_SetPropertyUint32(engine.context, result, @intCast(try vm.length(engine, result)), try agentTool(owner, record)) < 0) return error.JavaScriptException;
+        const exposure_kind = if (!c.JS_IsObject(receiver) and (c.JS_IsUndefined(exposure_value) or c.JS_IsNull(exposure_value))) direct else exposure_value;
+        var callable = c.JS_IsStrictEqual(engine.context, exposure_kind, codemode) or c.JS_IsStrictEqual(engine.context, exposure_kind, deferred);
+        if (c.JS_IsStrictEqual(engine.context, exposure_kind, direct)) {
+            const selected = try sdk.invoke(engine, active, "has", &.{name});
+            defer engine.freeValue(selected);
+            callable = c.JS_ToBool(engine.context, selected) == 1;
+        }
+        if (callable and c.JS_SetPropertyUint32(engine.context, result, @intCast(try vm.length(engine, result)), c.JS_DupValue(engine.context, tool)) < 0) return error.JavaScriptException;
     }
     return result;
+}
+fn callablePredicate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return callablePredicateValue(engine, roots[0], roots[1], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+}
+fn callablePredicateValue(engine: *Engine, receiver: c.JSValue, active: c.JSValue, tool: c.JSValue) !c.JSValue {
+    const exposure_method = try sdk.get(engine, receiver, "_getToolExposure");
+    defer engine.freeValue(exposure_method);
+    const name = try sdk.get(engine, tool, "name");
+    defer engine.freeValue(name);
+    const exposure_value = try @import("native_js_values.zig").call(engine, exposure_method, receiver, &.{name});
+    defer engine.freeValue(exposure_value);
+    const codemode = try sdk.text(engine, "codemode");
+    defer engine.freeValue(codemode);
+    const deferred = try sdk.text(engine, "deferred");
+    defer engine.freeValue(deferred);
+    if (c.JS_IsStrictEqual(engine.context, exposure_value, codemode) or c.JS_IsStrictEqual(engine.context, exposure_value, deferred)) return c.pi_js_bool(engine.context, 1);
+    const direct = try sdk.text(engine, "direct");
+    defer engine.freeValue(direct);
+    if (c.JS_IsStrictEqual(engine.context, exposure_value, direct)) return sdk.invoke(engine, active, "has", &.{name});
+    return c.pi_js_bool(engine.context, 0);
 }
 pub fn activeNames(owner: *sdk.State) !c.JSValue {
     const engine = owner.engine;

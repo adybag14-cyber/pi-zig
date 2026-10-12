@@ -1,0 +1,272 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Actual upstream sessions and original public/private callable methods; caller-provided public overrides, raw values and temporary Array.filter forwarding hook; no Source class/prototype implementation replacement",
+  "baseRows": [
+    {
+      "options": {},
+      "initial": {
+        "active": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "model_only"
+        ],
+        "callable": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      },
+      "selected": {
+        "active": [
+          "inactive",
+          "code",
+          "deferred",
+          "model_only",
+          "mcp__fixture__tool"
+        ],
+        "callable": [
+          "inactive",
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "code",
+          "deferred",
+          "mcp__fixture__tool"
+        ]
+      }
+    },
+    {
+      "options": {
+        "tools": [
+          "first"
+        ]
+      },
+      "initial": {
+        "active": [
+          "first"
+        ],
+        "callable": [
+          "first",
+          "mcp__fixture__tool"
+        ]
+      },
+      "selected": {
+        "active": [],
+        "callable": [
+          "mcp__fixture__tool"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "mcp__fixture__tool"
+        ]
+      }
+    },
+    {
+      "options": {
+        "tools": []
+      },
+      "initial": {
+        "active": [],
+        "callable": []
+      },
+      "selected": {
+        "active": [],
+        "callable": []
+      },
+      "empty": {
+        "active": [],
+        "callable": []
+      }
+    },
+    {
+      "options": {
+        "excludeTools": [
+          "code",
+          "mcp__*"
+        ]
+      },
+      "initial": {
+        "active": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "model_only"
+        ],
+        "callable": [
+          "read",
+          "bash",
+          "powershell",
+          "edit",
+          "write",
+          "grep",
+          "find",
+          "ls",
+          "first",
+          "inactive",
+          "deferred"
+        ]
+      },
+      "selected": {
+        "active": [
+          "inactive",
+          "deferred",
+          "model_only"
+        ],
+        "callable": [
+          "inactive",
+          "deferred"
+        ]
+      },
+      "empty": {
+        "active": [],
+        "callable": [
+          "deferred"
+        ]
+      }
+    }
+  ],
+  "rows": [
+    {
+      "case": "shape",
+      "name": "getCallableToolNames",
+      "length": 0,
+      "enumerable": false
+    },
+    {
+      "case": "borrowed-live-helper",
+      "receiver": true,
+      "symbol": true,
+      "object": true
+    },
+    {
+      "case": "helper-get",
+      "identity": true
+    },
+    {
+      "case": "helper-call",
+      "identity": true
+    },
+    {
+      "case": "map-get",
+      "identity": true
+    },
+    {
+      "case": "map-call",
+      "identity": true
+    },
+    {
+      "case": "name-get",
+      "identity": true
+    },
+    {
+      "case": "map-return-value",
+      "identity": true
+    },
+    {
+      "case": "strict-exposure-object",
+      "result": [],
+      "coercions": 0
+    },
+    {
+      "case": "strict-exposure-symbol",
+      "result": [],
+      "coercions": 0
+    },
+    {
+      "case": "strict-exposure-null",
+      "result": [],
+      "coercions": 0
+    },
+    {
+      "case": "strict-exposure-undefined",
+      "result": [],
+      "coercions": 0
+    },
+    {
+      "case": "strict-exposure-number",
+      "result": [],
+      "coercions": 0
+    },
+    {
+      "case": "live-active-method",
+      "result": [
+        "inactive",
+        "code",
+        "deferred",
+        "mcp__fixture__tool"
+      ]
+    },
+    {
+      "case": "explicit-structural-set",
+      "seen": [
+        "read",
+        "bash",
+        "powershell",
+        "edit",
+        "write",
+        "grep",
+        "find",
+        "ls",
+        "first",
+        "inactive"
+      ],
+      "names": [
+        "first",
+        "code",
+        "deferred",
+        "mcp__fixture__tool"
+      ]
+    },
+    {
+      "case": "live-array-filter",
+      "calls": 1,
+      "result": [
+        "inactive",
+        "code",
+        "deferred",
+        "mcp__fixture__tool"
+      ]
+    },
+    {
+      "case": "retained-after-dispose",
+      "result": [
+        "inactive",
+        "code",
+        "deferred",
+        "mcp__fixture__tool"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+const callable=AgentSession.prototype.getCallableToolNames;
+const callableHookRows=[{case:'shape',name:callable.name,length:callable.length,enumerable:Object.getOwnPropertyDescriptor(AgentSession.prototype,'getCallableToolNames').enumerable}];
+{
+  const symbol=Symbol('name'),object={name:'raw'};let received;
+  const receiver={_getCallableTools(){received=this;return [{name:symbol},{name:object}];}};
+  const result=callable.call(receiver);
+  callableHookRows.push({case:'borrowed-live-helper',receiver:received===receiver,symbol:result[0]===symbol,object:result[1]===object});
+}
+for(const where of ['helper-get','helper-call','map-get','map-call','name-get']){
+  const marker={raw:where};let caught;
+  const receiver={_getCallableTools(){
+    if(where==='helper-call')throw marker;
+    if(where==='map-get')return {get map(){throw marker;}};
+    if(where==='map-call')return {map(){throw marker;}};
+    return [{get name(){throw marker;}}];
+  }};
+  if(where==='helper-get')Object.defineProperty(receiver,'_getCallableTools',{get(){throw marker;}});
+  try{callable.call(receiver);}catch(e){caught=e;}
+  callableHookRows.push({case:where,identity:caught===marker});
+}
+{
+  const marker={raw:'map-return'};
+  const result=callable.call({_getCallableTools(){return {map(){return marker;}};}});
+  callableHookRows.push({case:'map-return-value',identity:result===marker});
+}
+const hookLoader=new DefaultResourceLoader({cwd,agentDir:cwd,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true});
+await hookLoader.reload();
+const {session:hookSession}=await createAgentSession({cwd,agentDir:cwd,model,modelRuntime:runtime,sessionManager:SessionManager.inMemory(cwd),settingsManager:SettingsManager.inMemory(),resourceLoader:hookLoader,tools:['*'],customTools:tools});
+const inheritedExposure=hookSession._getToolExposure;
+let coercions=0;
+const hostile={[Symbol.toPrimitive](){coercions++;throw Error('exposure coerced');},toString(){coercions++;throw Error('exposure coerced');}};
+for(const [name,exposure] of [['object',hostile],['symbol',Symbol('direct')],['null',null],['undefined',undefined],['number',0]]){
+  hookSession._getToolExposure=()=>exposure;
+  callableHookRows.push({case:'strict-exposure-'+name,result:hookSession.getCallableToolNames(),coercions});
+}
+hookSession._getToolExposure=inheritedExposure;
+hookSession.getActiveToolNames=()=>['inactive'];
+callableHookRows.push({case:'live-active-method',result:hookSession.getCallableToolNames()});
+const seen=[];
+const selected=hookSession._getCallableTools({has(name){seen.push(name);return name==='first'?{truthy:true}:0;}});
+callableHookRows.push({case:'explicit-structural-set',seen,names:selected.map(tool=>tool.name)});
+{
+  const original=Array.prototype.filter;
+  let calls=0;
+  Array.prototype.filter=function(predicate){calls++;return original.call(this,predicate);};
+  let result;
+  try{result=hookSession.getCallableToolNames();}finally{Array.prototype.filter=original;}
+  callableHookRows.push({case:'live-array-filter',calls,result});
+}
+hookSession.dispose();
+callableHookRows.push({case:'retained-after-dispose',result:hookSession.getCallableToolNames()});
+globalThis.sdkCallableHookRows=callableHookRows;

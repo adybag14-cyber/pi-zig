@@ -1,0 +1,101 @@
+{
+  "status": "passed",
+  "source_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "driver_and_input_count": 6,
+  "driver_and_input_hashes": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-19cb-source.mjs",
+      "sha256": "FAAA0580EF359A4193AB6048A6140B0967BA3DC7012D3BF35A16D1B79E1483F8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-hooks-19cb-source.mjs",
+      "sha256": "CBE78BDE8151C75076E7FBD0853D24F484B1A7996FACFE321518D1480A2BDCF8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-query-19cb-source.mjs",
+      "sha256": "8CB9B553B16B3AA2131801BC1112BE4B38EE8E061F91BBA5D5EBBD4BD82A5855"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-19cb-input.txt",
+      "sha256": "046B1C0A68E1BB85BB254B6EED7E1853E103024F6B5B44ECC5C7AD2080769BE9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-hooks-19cb-input.txt",
+      "sha256": "4706D97BCA24E44E9F7CCBFB68615A1828181F7289C832240CEB8225A6316CF3"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-query-19cb-input.txt",
+      "sha256": "09F80507F05A8FA5334AAD82A91A382D3ED9B8ADE1AEE1CFE7FE7E965B66FCAB"
+    }
+  ],
+  "driver_and_input_post_drift": [],
+  "reference_post": [
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": []
+    }
+  ],
+  "fresh_results": [
+    {
+      "name": "sdk-callable-bound-inputs-20261012",
+      "fixture": "src/extensions/fixtures/sdk-callable-19cb.json",
+      "sha256": "D9A201EA605B6811A1E8A36368508C6CA3F0C83896EE7AB04E3B5AC20273EB6A",
+      "process_record": {
+        "name": "sdk-callable-bound-inputs-20261012",
+        "pid": 53604,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=64 C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-19cb-source.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-bound-inputs-output-20261012.json",
+        "created_utc": "2026-10-12T20:21:55.095227Z",
+        "launched_utc": "2026-10-12T21:21:55.0918714+01:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-12T21:21:56.10936+01:00"
+      }
+    },
+    {
+      "name": "sdk-callable-hooks-bound-inputs-20261012",
+      "fixture": "src/extensions/fixtures/sdk-callable-hooks-19cb.json",
+      "sha256": "ACABDD4FB2AAFC705A15F24A1F83B3CBD9B84A51CDAD005016FCF11193F10997",
+      "process_record": {
+        "name": "sdk-callable-hooks-bound-inputs-20261012",
+        "pid": 51984,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=64 C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-hooks-19cb-source.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-callable-hooks-bound-inputs-output-20261012.json",
+        "created_utc": "2026-10-12T20:21:56.120945Z",
+        "launched_utc": "2026-10-12T21:21:56.1199634+01:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-12T21:21:57.1081782+01:00"
+      }
+    },
+    {
+      "name": "sdk-fork-bound-inputs-20261012",
+      "fixture": "src/extensions/fixtures/sdk-fork-query-19cb.json",
+      "sha256": "3882737280AE16CED96BF588B351F2A39A87D3548F75F426962C08FA4615CEA2",
+      "process_record": {
+        "name": "sdk-fork-bound-inputs-20261012",
+        "pid": 54164,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=64 C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-query-19cb-source.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-fork-bound-inputs-output-20261012.json",
+        "created_utc": "2026-10-12T20:21:57.117099Z",
+        "launched_utc": "2026-10-12T21:21:57.116255+01:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-12T21:21:57.9745563+01:00"
+      }
+    }
+  ],
+  "checked_utc": "2026-10-12T20:22:05.8283582+00:00"
+}
