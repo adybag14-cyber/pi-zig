@@ -138,8 +138,8 @@ pub fn installPrototype(engine: *em.Engine, prototype: c.JSValue) !void {
         const kind: Method = @enumFromInt(field.value);
         const arity: c_int = switch (kind) {
             .emitInput => 4,
-            .bindCore, .withUIPrompt, .emitBeforeAgentStart => 3,
-            .setFlagValue, .createToolContext, .resolveToolRenderers, .emitResourcesDiscover, .emitBoundary => 2,
+            .bindCore, .withUIPrompt => 3,
+            .setFlagValue, .createToolContext, .resolveToolRenderers, .emitResourcesDiscover, .emitBoundary, .emitBeforeAgentStart => 2,
             .bindCommandContext, .setUIContext, .wrapUIPromptContext, .getToolDefinition, .onError, .emitError, .hasHandlers, .getMessageRenderer, .getEntryRenderer, .emitUIPromptEvent, .isSessionBeforeEvent, .emit, .getShortcuts, .emitCacheWarmingDecision, .emitMessageEnd, .emitToolResult, .emitToolCall, .emitBeforeProviderRequest, .emitBeforeProviderHeaders, .emitUserBash, .emitContext => 1,
             else => 0,
         };

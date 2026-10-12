@@ -135,6 +135,9 @@ pub const Engine = struct {
     host_owner_notify_context: ?*anyopaque = null,
     host_owner_notify: ?*const fn (?*anyopaque) void = null,
     native_owner_signal: @import("native_owner_signal.zig").Signal = .{},
+    native_codemode_owner: ?*anyopaque = null,
+    native_codemode_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_codemode_deinit: ?*const fn (*Engine) void = null,
     native_durable_control_context: ?*anyopaque = null,
     native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_control_deinit: ?*const fn (*Engine) void = null,
@@ -231,6 +234,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_codemode_deinit) |cleanup| cleanup(self);
         if (self.native_command_metadata_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
         if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
@@ -709,7 +713,8 @@ pub const Engine = struct {
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked;
+        const codemode_worked = if (self.native_codemode_pump) |pump| try pump(self) else false;
+        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked or codemode_worked;
     }
     /// Native leases notify through this Engine-owned signal. External worker
     /// transports keep their existing wakeup while standalone VMs wake too.
@@ -799,7 +804,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     _ = try self.native_owner_signal.waitAfter(self.native_io.?, owner_epoch, .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } });
                     continue;
                 }

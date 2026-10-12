@@ -1,0 +1,1096 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actualoriginalcompiledclass; exact original516 caller corpus; no Source class or prototype mutation",
+  "rows": [
+    {
+      "id": "constructor",
+      "name": "ExtensionRunner",
+      "length": 5,
+      "instance": true,
+      "prototype": true,
+      "constructorIdentity": true,
+      "own": {
+        "extensions": {
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "runtime": {
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "uiContext": {
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "mode": {
+          "value": {
+            "type": "string",
+            "value": "print"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "cwd": {
+          "value": {
+            "type": "string",
+            "value": "/controlled-runner"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "sessionManager": {
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "modelRegistry": {
+          "value": {
+            "type": "object"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "errorListeners": {
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getModel": {
+          "value": {
+            "type": "function",
+            "name": "getModel",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getScopedModels": {
+          "value": {
+            "type": "function",
+            "name": "getScopedModels",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "isIdleFn": {
+          "value": {
+            "type": "function",
+            "name": "isIdleFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "isProjectTrustedFn": {
+          "value": {
+            "type": "function",
+            "name": "isProjectTrustedFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getSignalFn": {
+          "value": {
+            "type": "function",
+            "name": "getSignalFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "waitForIdleFn": {
+          "value": {
+            "type": "function",
+            "name": "waitForIdleFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "abortFn": {
+          "value": {
+            "type": "function",
+            "name": "abortFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "hasPendingMessagesFn": {
+          "value": {
+            "type": "function",
+            "name": "hasPendingMessagesFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getContextUsageFn": {
+          "value": {
+            "type": "function",
+            "name": "getContextUsageFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "compactFn": {
+          "value": {
+            "type": "function",
+            "name": "compactFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getSystemPromptFn": {
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getSystemPromptOptionsFn": {
+          "value": {
+            "type": "function",
+            "name": "getSystemPromptOptionsFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "executeToolFn": {
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "getCallableToolsFn": {
+          "value": {
+            "type": "function",
+            "name": "getCallableToolsFn",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "reportedMcpServers": {
+          "value": {
+            "type": "Set"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "newSessionHandler": {
+          "value": {
+            "type": "function",
+            "name": "newSessionHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "forkHandler": {
+          "value": {
+            "type": "function",
+            "name": "forkHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "navigateTreeHandler": {
+          "value": {
+            "type": "function",
+            "name": "navigateTreeHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "switchSessionHandler": {
+          "value": {
+            "type": "function",
+            "name": "switchSessionHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "reloadHandler": {
+          "value": {
+            "type": "function",
+            "name": "reloadHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "shutdownHandler": {
+          "value": {
+            "type": "function",
+            "name": "shutdownHandler",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "shortcutDiagnostics": {
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "commandDiagnostics": {
+          "value": {
+            "type": "array"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "staleMessage": {
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "uiPromptDepth": {
+          "value": {
+            "type": "number",
+            "value": 0
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "activeUIPrompt": {
+          "value": {
+            "type": "undefined"
+          },
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      },
+      "references": {
+        "extensions": true,
+        "runtime": true,
+        "manager": true,
+        "registry": true
+      },
+      "methods": [
+        {
+          "name": "constructor",
+          "value": {
+            "type": "function",
+            "name": "ExtensionRunner",
+            "length": 5
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "bindCore",
+          "value": {
+            "type": "function",
+            "name": "bindCore",
+            "length": 3
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "bindCommandContext",
+          "value": {
+            "type": "function",
+            "name": "bindCommandContext",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "setUIContext",
+          "value": {
+            "type": "function",
+            "name": "setUIContext",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "wrapUIPromptContext",
+          "value": {
+            "type": "function",
+            "name": "wrapUIPromptContext",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "withUIPrompt",
+          "value": {
+            "type": "function",
+            "name": "withUIPrompt",
+            "length": 3
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitUIPromptEvent",
+          "value": {
+            "type": "function",
+            "name": "emitUIPromptEvent",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getUIContext",
+          "value": {
+            "type": "function",
+            "name": "getUIContext",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "hasUI",
+          "value": {
+            "type": "function",
+            "name": "hasUI",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getExtensionPaths",
+          "value": {
+            "type": "function",
+            "name": "getExtensionPaths",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getAllRegisteredTools",
+          "value": {
+            "type": "function",
+            "name": "getAllRegisteredTools",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getToolDefinition",
+          "value": {
+            "type": "function",
+            "name": "getToolDefinition",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getFlags",
+          "value": {
+            "type": "function",
+            "name": "getFlags",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "setFlagValue",
+          "value": {
+            "type": "function",
+            "name": "setFlagValue",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getFlagValues",
+          "value": {
+            "type": "function",
+            "name": "getFlagValues",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getShortcuts",
+          "value": {
+            "type": "function",
+            "name": "getShortcuts",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getShortcutDiagnostics",
+          "value": {
+            "type": "function",
+            "name": "getShortcutDiagnostics",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "invalidate",
+          "value": {
+            "type": "function",
+            "name": "invalidate",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "assertActive",
+          "value": {
+            "type": "function",
+            "name": "assertActive",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "onError",
+          "value": {
+            "type": "function",
+            "name": "onError",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitError",
+          "value": {
+            "type": "function",
+            "name": "emitError",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "reportUnhandledMcpServers",
+          "value": {
+            "type": "function",
+            "name": "reportUnhandledMcpServers",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "hasHandlers",
+          "value": {
+            "type": "function",
+            "name": "hasHandlers",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getMessageRenderer",
+          "value": {
+            "type": "function",
+            "name": "getMessageRenderer",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getMarkdownTransformers",
+          "value": {
+            "type": "function",
+            "name": "getMarkdownTransformers",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "resolveToolRenderers",
+          "value": {
+            "type": "function",
+            "name": "resolveToolRenderers",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getEntryRenderer",
+          "value": {
+            "type": "function",
+            "name": "getEntryRenderer",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "resolveRegisteredCommands",
+          "value": {
+            "type": "function",
+            "name": "resolveRegisteredCommands",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getModelRegistry",
+          "value": {
+            "type": "function",
+            "name": "getModelRegistry",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getRegisteredCommands",
+          "value": {
+            "type": "function",
+            "name": "getRegisteredCommands",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getCommandDiagnostics",
+          "value": {
+            "type": "function",
+            "name": "getCommandDiagnostics",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getCommand",
+          "value": {
+            "type": "function",
+            "name": "getCommand",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "shutdown",
+          "value": {
+            "type": "function",
+            "name": "shutdown",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "getActiveTools",
+          "value": {
+            "type": "function",
+            "name": "getActiveTools",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "createContext",
+          "value": {
+            "type": "function",
+            "name": "createContext",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "createToolContext",
+          "value": {
+            "type": "function",
+            "name": "createToolContext",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "createCommandContext",
+          "value": {
+            "type": "function",
+            "name": "createCommandContext",
+            "length": 0
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitBoundary",
+          "value": {
+            "type": "function",
+            "name": "emitBoundary",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "isSessionBeforeEvent",
+          "value": {
+            "type": "function",
+            "name": "isSessionBeforeEvent",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emit",
+          "value": {
+            "type": "function",
+            "name": "emit",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitCacheWarmingDecision",
+          "value": {
+            "type": "function",
+            "name": "emitCacheWarmingDecision",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitMessageEnd",
+          "value": {
+            "type": "function",
+            "name": "emitMessageEnd",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitToolResult",
+          "value": {
+            "type": "function",
+            "name": "emitToolResult",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitToolCall",
+          "value": {
+            "type": "function",
+            "name": "emitToolCall",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitUserBash",
+          "value": {
+            "type": "function",
+            "name": "emitUserBash",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitContext",
+          "value": {
+            "type": "function",
+            "name": "emitContext",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitBeforeProviderRequest",
+          "value": {
+            "type": "function",
+            "name": "emitBeforeProviderRequest",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitBeforeProviderHeaders",
+          "value": {
+            "type": "function",
+            "name": "emitBeforeProviderHeaders",
+            "length": 1
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitBeforeAgentStart",
+          "value": {
+            "type": "function",
+            "name": "emitBeforeAgentStart",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitResourcesDiscover",
+          "value": {
+            "type": "function",
+            "name": "emitResourcesDiscover",
+            "length": 2
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "emitInput",
+          "value": {
+            "type": "function",
+            "name": "emitInput",
+            "length": 4
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "id": "default-context",
+      "keys": [
+        "ui",
+        "mode",
+        "hasUI",
+        "cwd",
+        "sessionManager",
+        "modelRegistry",
+        "model",
+        "scopedModels",
+        "thinkingLevel",
+        "isIdle",
+        "isProjectTrusted",
+        "signal",
+        "abort",
+        "hasPendingMessages",
+        "shutdown",
+        "getContextUsage",
+        "compact",
+        "getSystemPrompt"
+      ],
+      "references": {
+        "manager": true,
+        "registry": true,
+        "ui": true
+      },
+      "values": {
+        "mode": "print",
+        "cwd": "/controlled-runner",
+        "hasUI": false,
+        "model": {
+          "type": "undefined"
+        },
+        "scopedModels": [],
+        "thinkingLevel": "medium",
+        "signal": {
+          "type": "undefined"
+        },
+        "idle": true,
+        "trusted": true,
+        "pending": false,
+        "usage": {
+          "type": "undefined"
+        },
+        "systemPrompt": ""
+      },
+      "baseOptions": {
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write"
+        ],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "",
+        "sections": {},
+        "cwd": "/controlled-runner",
+        "contextFiles": [],
+        "skills": []
+      },
+      "baseOptionsDistinct": true,
+      "trace": [
+        [
+          "runtime.getThinkingLevel",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "default-runner-methods",
+      "commandResults": [
+        {
+          "name": "waitForIdle",
+          "promise": true,
+          "value": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "newSession",
+          "promise": true,
+          "value": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "fork",
+          "promise": true,
+          "value": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "navigateTree",
+          "promise": true,
+          "value": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "switchSession",
+          "promise": true,
+          "value": {
+            "type": "object"
+          }
+        },
+        {
+          "name": "reload",
+          "promise": true,
+          "value": {
+            "type": "undefined"
+          }
+        }
+      ],
+      "paths": [],
+      "tools": [],
+      "commands": [],
+      "modelRegistry": true,
+      "handlers": false,
+      "flags": [],
+      "flagValues": [
+        [
+          "initial",
+          true
+        ]
+      ],
+      "hasUI": false
+    },
+    {
+      "id": "error-listeners",
+      "errors": [
+        {
+          "same": true,
+          "receiverUndefined": true
+        }
+      ],
+      "unsubscribe": {
+        "type": "function",
+        "name": "",
+        "length": 0
+      }
+    },
+    {
+      "id": "ui-binding",
+      "sameUI": false,
+      "contextSame": false,
+      "mode": "rpc",
+      "hasUI": true
+    },
+    {
+      "id": "invalidate",
+      "stale": [
+        {
+          "operation": "mode",
+          "error": {
+            "name": "Error",
+            "message": "controlled stale"
+          }
+        },
+        {
+          "operation": "cwd",
+          "error": {
+            "name": "Error",
+            "message": "controlled stale"
+          }
+        },
+        {
+          "operation": "getSystemPromptOptions",
+          "error": {
+            "name": "Error",
+            "message": "controlled stale"
+          }
+        },
+        {
+          "operation": "isIdle",
+          "error": {
+            "name": "Error",
+            "message": "controlled stale"
+          }
+        }
+      ],
+      "trace": [
+        [
+          "runtime.getThinkingLevel",
+          true
+        ],
+        [
+          "runtime.invalidate",
+          true,
+          "controlled stale"
+        ]
+      ],
+      "retainedCommands": []
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+import {atob as importedAtob,btoa as importedBtoa} from 'node:buffer';
+const cases=[];
+const strings=['','YQ==','YQ','YWI=','YWI','YWJj','Y','!','Y===','YQ=','YQ===','====','YQ==x',' Y\tQ\n=\r= ','Y\vQ==','YR==','YQ-_','é','😀','\ud800','abc\0def'];
+function record(name,label,args){const fn=name==='atob'?importedAtob:importedBtoa;let result;try{const value=fn(...args);result={ok:true,value}}catch(error){result={ok:false,name:error.name,message:error.message,code:error.code,dom:error instanceof DOMException}}cases.push({name,label,result})}
+for(const name of['atob','btoa']){for(const [index,value] of strings.entries())record(name,`string-${index}`,[value]);record(name,'missing',[]);record(name,'undefined',[undefined]);record(name,'null',[null]);record(name,'true',[true]);record(name,'number',[123]);record(name,'bigint',[123n]);record(name,'symbol',[Symbol('x')]);record(name,'latin1',['\xff\x80\0']);
+ for(const mode of['exotic','ordinary','fallback','symbol-result','object-result','noncallable','thrown']){
+  const trace=[],cause=Object.freeze({name:'InvalidCharacterError',message:'Invalid character',original:true});let input;
+  if(mode==='exotic')input={[Symbol.toPrimitive](hint){trace.push(hint);return name==='atob'?'YQ==':'a'}};
+  if(mode==='ordinary')input={toString(){trace.push('toString');return name==='atob'?'YQ==':'a'},valueOf(){trace.push('valueOf');return 123}};
+  if(mode==='fallback')input={toString(){trace.push('toString');return{}},valueOf(){trace.push('valueOf');return name==='atob'?'YQ==':'a'}};
+  if(mode==='symbol-result')input={[Symbol.toPrimitive](hint){trace.push(hint);return Symbol('x')}};
+  if(mode==='object-result')input={[Symbol.toPrimitive](hint){trace.push(hint);return{}}};
+  if(mode==='noncallable')input={[Symbol.toPrimitive]:3};
+  if(mode==='thrown')input={[Symbol.toPrimitive](hint){trace.push(hint);throw cause}};
+  let result;try{result={ok:true,value:(name==='atob'?importedAtob:importedBtoa)(input)}}catch(error){result={ok:false,name:error.name,message:error.message,code:error.code,dom:error instanceof DOMException,original:error===cause}}cases.push({name,label:mode,trace,result});
+ }
+}
+const descriptors=fn=>({name:fn.name,length:fn.length,prototype:Object.getOwnPropertyDescriptor(fn,'prototype')&&{writable:Object.getOwnPropertyDescriptor(fn,'prototype').writable,enumerable:Object.getOwnPropertyDescriptor(fn,'prototype').enumerable,configurable:Object.getOwnPropertyDescriptor(fn,'prototype').configurable,constructor:fn.prototype.constructor===fn},functionPrototype:Object.getPrototypeOf(fn)===Function.prototype});
+const metadata={atob:descriptors(importedAtob),btoa:descriptors(importedBtoa),globalAliases:globalThis.atob===importedAtob&&globalThis.btoa===importedBtoa};
+const constructions=[];for(const [name,fn,arg]of[['atob',importedAtob,'YQ=='],['btoa',importedBtoa,'a']]){const value=new fn(arg);constructions.push({name,empty:Object.keys(value).length===0,instance:value instanceof fn,prototype:Object.getPrototypeOf(value)===fn.prototype})}
+globalThis.nodeBase64Trace={source:'node-v24.14.0',cases,metadata,constructions};export const proof=true;

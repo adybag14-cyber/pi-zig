@@ -15,6 +15,7 @@ pub const Observer = struct {
     started: ?*const fn (?*anyopaque, *Run, []const u8) anyerror!void = null,
     call: *const fn (?*anyopaque, *Run, Call) anyerror!void,
     idle: ?*const fn (?*anyopaque, *Run, f64, f64) anyerror!void = null,
+    output: ?*const fn (?*anyopaque, json.Value) anyerror!void = null,
 };
 pub const Options = struct {
     started_at: f64,
@@ -27,6 +28,7 @@ pub const Options = struct {
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 256 * 1024,
     interrupt_budget: ?f64 = 100_000,
+    abort_flag: ?*bool = null,
 };
 const Pending = struct { resolve: c.JSValue, reject: c.JSValue, started: i64, record: ?usize };
 pub const Run = struct {
@@ -49,6 +51,7 @@ pub const Run = struct {
     script_failure: ?anyerror = null,
     sandbox_failure: ?[]const u8 = null,
     abort_message: ?[]const u8 = null,
+    last_idle: ?struct { seq: f64, issued: f64 } = null,
 
     /// Creation performs validation and ownership admission. begin() is a
     /// separate owner turn, so callbacks cannot precede publication of this Run.
@@ -67,6 +70,7 @@ pub const Run = struct {
         self.* = .{ .gpa = gpa, .core = .{ .gpa = gpa, .io = io, .engine = engine, .tools = &.{}, .options = .{ .timeout_ms = options.timeout_ms, .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = options.interrupt_budget, .store = options.store }, .result = result, .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |limit| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(limit, std.math.maxInt(i64)))) else null }, .host = host, .clock = clock, .observer = options.observer, .globals = &.{}, .source = "", .fingerprint = "", .promise = c.pi_js_undefined() };
         transferred = true;
         errdefer self.deinit();
+        self.core.options.abort_flag = options.abort_flag;
         const arena = self.core.result.arena.allocator();
         self.source = try arena.dupe(u8, source);
         const tools = try arena.alloc(vm.Tool, options.tools.len);
@@ -84,6 +88,7 @@ pub const Run = struct {
         self.core.discovery_tools = metadata;
         self.core.control_context = self;
         self.core.control_call = toolCall;
+        self.core.control_output = output;
         engine.host_data = &self.core;
         engine.native_exception_diagnostics_suppressed += 1;
         self.suppressing_diagnostics = true;
@@ -146,7 +151,12 @@ pub const Run = struct {
                 const console = try self.core.engine.checked(c.JS_GetPropertyStr(self.core.engine.context, global, "console"));
                 defer self.core.engine.freeValue(console);
                 var args = [_]c.JSValue{ tools, console };
-                self.promise = try self.core.engine.checked(c.JS_Call(self.core.engine.context, function, c.pi_js_undefined(), args.len, &args));
+                self.promise = self.core.engine.checked(c.JS_Call(self.core.engine.context, function, c.pi_js_undefined(), args.len, &args)) catch |err| failed: {
+                    if (err == error.OutOfMemory) return err;
+                    self.script_failure = err;
+                    if (!self.core.aborted and !self.core.timed_out) if (self.core.engine.captured_exception) |reason| try self.core.captureTerminalError(reason);
+                    break :failed c.pi_js_undefined();
+                };
             }
             if (self.script_failure == null) try self.core.observeTerminal(self.promise);
         }
@@ -228,7 +238,11 @@ pub const Run = struct {
             self.script_failure = error.CodemodeStalledPromise;
             return self.finish();
         }
-        if (self.observer.idle) |notify| try notify(self.observer.context, self, self.host.current, self.host.issued);
+        if (self.observer.idle) |notify| {
+            if (self.last_idle) |last| if (last.seq == self.host.current and last.issued == self.host.issued) return;
+            self.last_idle = .{ .seq = self.host.current, .issued = self.host.issued };
+            try notify(self.observer.context, self, self.host.current, self.host.issued);
+        }
     }
     fn finish(self: *Run) !void {
         if (self.finished) return;
@@ -276,6 +290,10 @@ pub const Run = struct {
         const self: *Run = @ptrCast(@alignCast(raw.?));
         return self.enqueue(.tool, name, args);
     }
+    fn output(raw: ?*anyopaque, item: json.Value) !void {
+        const self: *Run = @ptrCast(@alignCast(raw.?));
+        if (self.observer.output) |notify| try notify(self.observer.context, item);
+    }
     fn enqueue(self: *Run, target: @FieldType(Call, "target"), name: []const u8, args: ?json.Owned) !c.JSValue {
         var owned_args = args;
         defer if (owned_args) |*value| value.deinit();
@@ -308,7 +326,9 @@ pub const Run = struct {
         const engine = self.core.engine;
         if (reply.ok) {
             if (reply.payload) |bytes| {
-                return engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "host-result.json"));
+                const terminated = try self.gpa.dupeZ(u8, bytes);
+                defer self.gpa.free(terminated);
+                return engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, terminated.len, "host-result.json"));
             }
             return c.pi_js_undefined();
         }
@@ -317,7 +337,9 @@ pub const Run = struct {
         const message = reply.payload orelse "";
         if (c.JS_DefinePropertyValueStr(engine.context, value, "message", c.JS_NewStringLen(engine.context, message.ptr, message.len), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         if (reply.properties) |bytes| {
-            const parsed = try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "host-properties.json"));
+            const terminated = try self.gpa.dupeZ(u8, bytes);
+            defer self.gpa.free(terminated);
+            const parsed = try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, terminated.len, "host-properties.json"));
             defer engine.freeValue(parsed);
             const properties = try engine.checked(c.JS_ToObject(engine.context, parsed));
             defer engine.freeValue(properties);
@@ -397,7 +419,7 @@ fn identifier(value: []const u8) bool {
     for (value, 0..) |byte, index| if (!(std.ascii.isAlphabetic(byte) or byte == '_' or byte == '$' or (index != 0 and std.ascii.isDigit(byte)))) return false;
     return true;
 }
-fn validateDeclarations(gpa: std.mem.Allocator, tools: []const Tool, globals: []const Global) !void {
+pub fn validateDeclarations(gpa: std.mem.Allocator, tools: []const Tool, globals: []const Global) !void {
     var raw_names: std.StringHashMapUnmanaged(void) = .empty;
     defer raw_names.deinit(gpa);
     for (tools) |tool| {

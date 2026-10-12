@@ -1,0 +1,30 @@
+// Caller trigger objects exercise original ee409 runner. No Source class/prototype changes.
+import {ExtensionRunner} from '@earendil-works/pi-coding-agent';
+
+const rows=[],asyncPrototype=Object.getPrototypeOf(async()=>{});
+for(const id of ['user-basic','custom-basic','getters-live','override-fields','throw-spread-getter','trigger-null','trigger-string','mutate-trigger','handler-reject','no-handlers']){
+ const events=[],errors=[],image={type:'image',data:'image'},images=[image],symbol=Symbol('trigger'),messageA={role:'custom',customType:'app',content:[],display:true,details:{tag:'a'},timestamp:7},messageB={...messageA,details:{tag:'b'}},marker={toString(){events.push('marker.toString');return'raw trigger marker';}};
+ let phase=0,trigger=id==='custom-basic'?{messageType:'custom',message:messageA}:{messageType:'user',prompt:'hello',images};
+ if(id==='getters-live'){
+  const target={};for(const name of ['messageType','prompt','images','message'])Object.defineProperty(target,name,{enumerable:true,configurable:true,get(){events.push(['trigger.value.get',name,phase]);return name==='messageType'?(phase?'custom':'user'):name==='prompt'?'prompt'+phase:name==='images'?images:phase?messageB:messageA;}});
+  Object.defineProperty(target,symbol,{enumerable:true,configurable:true,get(){events.push(['trigger.symbol.get',phase]);return phase;}});
+  trigger=new Proxy(target,{ownKeys(target){events.push(['trigger.ownKeys',phase]);return Reflect.ownKeys(target)},getOwnPropertyDescriptor(target,key){events.push(['trigger.descriptor',String(key),phase]);return Reflect.getOwnPropertyDescriptor(target,key)},get(target,key,receiver){events.push(['trigger.proxy.get',String(key),phase]);return Reflect.get(target,key,receiver)}});
+ }
+ if(id==='override-fields')trigger={messageType:'custom',message:messageA,type:'wrong',systemPrompt:'shadow',systemPromptOptions:{shadow:true},[symbol]:messageB};
+ if(id==='throw-spread-getter'||id==='no-handlers')trigger={messageType:'custom',get message(){events.push('trigger.message.throw');throw marker;}};
+ if(id==='trigger-null')trigger=null;if(id==='trigger-string')trigger='😀';
+ const context={getSystemPrompt(){return'original'},tag:'caller-context'};let runner,firstOptions,firstContext;
+ function inspect(label,event,ctx){
+  firstOptions??=event.systemPromptOptions;firstContext??=ctx;
+  const descriptor=Object.getOwnPropertyDescriptor(event,'systemPrompt');
+  events.push([label,this===undefined,Reflect.ownKeys(event).map(String),event.type,Object.hasOwn(event,'messageType'),event.messageType,Object.hasOwn(event,'prompt'),event.prompt,Object.hasOwn(event,'images'),event.images===images,Object.hasOwn(event,'message'),event.message===messageA,event.message===messageB,event[symbol]===messageB,event[symbol],event.systemPromptOptions===firstOptions,ctx===firstContext,ctx!==context,event.systemPrompt,ctx.getSystemPrompt(),descriptor.get.name,descriptor.get.length,descriptor.enumerable,descriptor.configurable]);
+ }
+ function one(event,ctx){inspect.call(this,'one',event,ctx);phase=1;if(id==='mutate-trigger'){delete trigger.prompt;trigger.messageType='custom';trigger.message=messageB;}if(id==='handler-reject')return Promise.reject(marker);return{message:{customType:'injected',content:[],display:false},systemPrompt:'changed'};}
+ function two(event,ctx){inspect.call(this,'two',event,ctx);return{message:{customType:'second',content:[]}};}
+ const handlers=id==='no-handlers'?[]:[one,two];const extensions=[{path:'trigger.ext',handlers:new Map([['before_agent_start',handlers]])}];
+ runner=new ExtensionRunner(extensions,{invalidate(){}},'/trigger-owned',{},{});runner.createContext=function(){events.push(['context.create',this===runner]);return context;};runner.onError(error=>{events.push('error.listener');errors.push({extensionPath:error.extensionPath,event:error.event,error:error.error,hasStack:Object.hasOwn(error,'stack'),stackType:typeof error.stack,keys:Object.keys(error)});});
+ const input={forceSystemPrompt:'base',selectedTools:[]};Object.defineProperty(input,'hiddenTools',{enumerable:true,get(){events.push('options.hiddenTools.get');return[];}});
+ let outcome;try{const pending=runner.emitBeforeAgentStart(trigger,input);events.push(['returnedPromise',pending instanceof Promise]);const result=await pending;outcome={keys:Object.keys(result),messages:result.messages,force:result.systemPromptOptions.forceSystemPrompt,selected:result.systemPromptOptions.selectedTools,sameOptions:result.systemPromptOptions===firstOptions};}catch(error){outcome={raw:error===marker,name:error?.name,message:error?.message};}
+ rows.push({id,events,errors,outcome});
+}
+globalThis.sdkRunnerTriggerRows=rows;

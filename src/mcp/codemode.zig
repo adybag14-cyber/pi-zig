@@ -108,6 +108,7 @@ pub const Execution = struct {
     model_call_count: usize = 0,
     control_context: ?*anyopaque = null,
     control_call: ?*const fn (?*anyopaque, []const u8, ?json.Owned) anyerror!c.JSValue = null,
+    control_output: ?*const fn (?*anyopaque, Value) anyerror!void = null,
 
     fn from(context: ?*c.JSContext) *Execution {
         const engine = engine_mod.Engine.fromContext(context.?);
@@ -739,6 +740,7 @@ pub const Execution = struct {
         if (console) try item.object.put(a, "console", .{ .bool = true });
         try array.append(item);
         self.output_chars += count;
+        if (self.control_output) |emit| try emit(self.control_context, item);
     }
     fn emitText(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
@@ -834,6 +836,7 @@ pub const Execution = struct {
         try item.object.put(a, "mimeType", .{ .string = mime });
         try array.append(item);
         self.output_chars += data.items.len;
+        if (self.control_output) |emit| try emit(self.control_context, item);
     }
     fn storeKey(self: *Execution, argc: c_int, argv: [*c]c.JSValue) ![]u8 {
         if (argc == 0 or !c.JS_IsString(argv[0])) return error.CodemodeStoreKeyMustBeString;

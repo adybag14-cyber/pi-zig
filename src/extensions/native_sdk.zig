@@ -566,7 +566,12 @@ fn beforeAgentPrompt(engine: *engine_mod.Engine, args: [*c]c.JSValue) !void {
     defer engine.freeValue(callback);
     const options = try get(engine, args[0], "_baseSystemPromptOptions");
     defer engine.freeValue(options);
-    const pending = try @import("native_js_values.zig").call(engine, callback, runner, &.{ args[1], args[5], options });
+    const trigger = try object(engine);
+    defer engine.freeValue(trigger);
+    try put(engine, trigger, "messageType", try text(engine, "user"));
+    try put(engine, trigger, "prompt", c.JS_DupValue(engine.context, args[1]));
+    try put(engine, trigger, "images", c.JS_DupValue(engine.context, args[5]));
+    const pending = try @import("native_js_values.zig").call(engine, callback, runner, &.{ trigger, options });
     defer engine.freeValue(pending);
     const awaited_before = try engine.checked(c.JS_PiPromiseResolve(engine.context, pending));
     defer engine.freeValue(awaited_before);

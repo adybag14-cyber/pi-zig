@@ -1,0 +1,745 @@
+{
+    "source": "node-v24.14.0",
+    "cases": [
+      {
+        "name": "atob",
+        "label": "string-0",
+        "result": {
+          "ok": true,
+          "value": ""
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-1",
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-2",
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-3",
+        "result": {
+          "ok": true,
+          "value": "ab"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-4",
+        "result": {
+          "ok": true,
+          "value": "ab"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-5",
+        "result": {
+          "ok": true,
+          "value": "abc"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-6",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "The string to be decoded is not correctly encoded.",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-7",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-8",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-9",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-10",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-11",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-12",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-13",
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-14",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-15",
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-16",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-17",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-18",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-19",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "string-20",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "missing",
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "The \"input\" argument must be specified",
+          "code": "ERR_MISSING_ARGS",
+          "dom": false
+        }
+      },
+      {
+        "name": "atob",
+        "label": "undefined",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "The string to be decoded is not correctly encoded.",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "null",
+        "result": {
+          "ok": true,
+          "value": "ée"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "true",
+        "result": {
+          "ok": true,
+          "value": "¶»"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "number",
+        "result": {
+          "ok": true,
+          "value": "×m"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "bigint",
+        "result": {
+          "ok": true,
+          "value": "×m"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "symbol",
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a string",
+          "dom": false
+        }
+      },
+      {
+        "name": "atob",
+        "label": "latin1",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "atob",
+        "label": "exotic",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "ordinary",
+        "trace": [
+          "toString"
+        ],
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "fallback",
+        "trace": [
+          "toString",
+          "valueOf"
+        ],
+        "result": {
+          "ok": true,
+          "value": "a"
+        }
+      },
+      {
+        "name": "atob",
+        "label": "symbol-result",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a string",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "atob",
+        "label": "object-result",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert object to primitive value",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "atob",
+        "label": "noncallable",
+        "trace": [],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "number 3 is not a function",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "atob",
+        "label": "thrown",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "dom": false,
+          "original": true
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-0",
+        "result": {
+          "ok": true,
+          "value": ""
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-1",
+        "result": {
+          "ok": true,
+          "value": "WVE9PQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-2",
+        "result": {
+          "ok": true,
+          "value": "WVE="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-3",
+        "result": {
+          "ok": true,
+          "value": "WVdJPQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-4",
+        "result": {
+          "ok": true,
+          "value": "WVdJ"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-5",
+        "result": {
+          "ok": true,
+          "value": "WVdKag=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-6",
+        "result": {
+          "ok": true,
+          "value": "WQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-7",
+        "result": {
+          "ok": true,
+          "value": "IQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-8",
+        "result": {
+          "ok": true,
+          "value": "WT09PQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-9",
+        "result": {
+          "ok": true,
+          "value": "WVE9"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-10",
+        "result": {
+          "ok": true,
+          "value": "WVE9PT0="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-11",
+        "result": {
+          "ok": true,
+          "value": "PT09PQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-12",
+        "result": {
+          "ok": true,
+          "value": "WVE9PXg="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-13",
+        "result": {
+          "ok": true,
+          "value": "IFkJUQo9DT0g"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-14",
+        "result": {
+          "ok": true,
+          "value": "WQtRPT0="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-15",
+        "result": {
+          "ok": true,
+          "value": "WVI9PQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-16",
+        "result": {
+          "ok": true,
+          "value": "WVEtXw=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-17",
+        "result": {
+          "ok": true,
+          "value": "6Q=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-18",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-19",
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "code": 5,
+          "dom": true
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "string-20",
+        "result": {
+          "ok": true,
+          "value": "YWJjAGRlZg=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "missing",
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "The \"input\" argument must be specified",
+          "code": "ERR_MISSING_ARGS",
+          "dom": false
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "undefined",
+        "result": {
+          "ok": true,
+          "value": "dW5kZWZpbmVk"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "null",
+        "result": {
+          "ok": true,
+          "value": "bnVsbA=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "true",
+        "result": {
+          "ok": true,
+          "value": "dHJ1ZQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "number",
+        "result": {
+          "ok": true,
+          "value": "MTIz"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "bigint",
+        "result": {
+          "ok": true,
+          "value": "MTIz"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "symbol",
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a string",
+          "dom": false
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "latin1",
+        "result": {
+          "ok": true,
+          "value": "/4AA"
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "exotic",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": true,
+          "value": "YQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "ordinary",
+        "trace": [
+          "toString"
+        ],
+        "result": {
+          "ok": true,
+          "value": "YQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "fallback",
+        "trace": [
+          "toString",
+          "valueOf"
+        ],
+        "result": {
+          "ok": true,
+          "value": "YQ=="
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "symbol-result",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert a Symbol value to a string",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "object-result",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "Cannot convert object to primitive value",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "noncallable",
+        "trace": [],
+        "result": {
+          "ok": false,
+          "name": "TypeError",
+          "message": "number 3 is not a function",
+          "dom": false,
+          "original": false
+        }
+      },
+      {
+        "name": "btoa",
+        "label": "thrown",
+        "trace": [
+          "string"
+        ],
+        "result": {
+          "ok": false,
+          "name": "InvalidCharacterError",
+          "message": "Invalid character",
+          "dom": false,
+          "original": true
+        }
+      }
+    ],
+    "metadata": {
+      "atob": {
+        "name": "atob",
+        "length": 1,
+        "prototype": {
+          "writable": true,
+          "enumerable": false,
+          "configurable": false,
+          "constructor": true
+        },
+        "functionPrototype": true
+      },
+      "btoa": {
+        "name": "btoa",
+        "length": 1,
+        "prototype": {
+          "writable": true,
+          "enumerable": false,
+          "configurable": false,
+          "constructor": true
+        },
+        "functionPrototype": true
+      },
+      "globalAliases": true
+    },
+    "constructions": [
+      {
+        "name": "atob",
+        "empty": true,
+        "instance": true,
+        "prototype": true
+      },
+      {
+        "name": "btoa",
+        "empty": true,
+        "instance": true,
+        "prototype": true
+      }
+    ]
+  }

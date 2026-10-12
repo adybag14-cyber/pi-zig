@@ -1,0 +1,1081 @@
+{
+  "schema": "sdk-source615-ee409-trigger-copy-v1",
+  "method": {
+    "name": "emitBeforeAgentStart",
+    "length": 2,
+    "async": true
+  },
+  "scope": "Actual original runner; caller-owned user/custom/null/string/Proxy/symbol triggers; original normalization and async handlers; no Agent/provider execution",
+  "rows": [
+    {
+      "id": "user-basic",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "hello",
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "hello",
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "custom-basic",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "message",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          false,
+          null,
+          false,
+          false,
+          true,
+          true,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "message",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          false,
+          null,
+          false,
+          false,
+          true,
+          true,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "getters-live",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "trigger.ownKeys",
+          0
+        ],
+        [
+          "trigger.descriptor",
+          "messageType",
+          0
+        ],
+        [
+          "trigger.proxy.get",
+          "messageType",
+          0
+        ],
+        [
+          "trigger.value.get",
+          "messageType",
+          0
+        ],
+        [
+          "trigger.descriptor",
+          "prompt",
+          0
+        ],
+        [
+          "trigger.proxy.get",
+          "prompt",
+          0
+        ],
+        [
+          "trigger.value.get",
+          "prompt",
+          0
+        ],
+        [
+          "trigger.descriptor",
+          "images",
+          0
+        ],
+        [
+          "trigger.proxy.get",
+          "images",
+          0
+        ],
+        [
+          "trigger.value.get",
+          "images",
+          0
+        ],
+        [
+          "trigger.descriptor",
+          "message",
+          0
+        ],
+        [
+          "trigger.proxy.get",
+          "message",
+          0
+        ],
+        [
+          "trigger.value.get",
+          "message",
+          0
+        ],
+        [
+          "trigger.descriptor",
+          "Symbol(trigger)",
+          0
+        ],
+        [
+          "trigger.proxy.get",
+          "Symbol(trigger)",
+          0
+        ],
+        [
+          "trigger.symbol.get",
+          0
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "message",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt",
+            "Symbol(trigger)"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "prompt0",
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          0,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "trigger.ownKeys",
+          1
+        ],
+        [
+          "trigger.descriptor",
+          "messageType",
+          1
+        ],
+        [
+          "trigger.proxy.get",
+          "messageType",
+          1
+        ],
+        [
+          "trigger.value.get",
+          "messageType",
+          1
+        ],
+        [
+          "trigger.descriptor",
+          "prompt",
+          1
+        ],
+        [
+          "trigger.proxy.get",
+          "prompt",
+          1
+        ],
+        [
+          "trigger.value.get",
+          "prompt",
+          1
+        ],
+        [
+          "trigger.descriptor",
+          "images",
+          1
+        ],
+        [
+          "trigger.proxy.get",
+          "images",
+          1
+        ],
+        [
+          "trigger.value.get",
+          "images",
+          1
+        ],
+        [
+          "trigger.descriptor",
+          "message",
+          1
+        ],
+        [
+          "trigger.proxy.get",
+          "message",
+          1
+        ],
+        [
+          "trigger.value.get",
+          "message",
+          1
+        ],
+        [
+          "trigger.descriptor",
+          "Symbol(trigger)",
+          1
+        ],
+        [
+          "trigger.proxy.get",
+          "Symbol(trigger)",
+          1
+        ],
+        [
+          "trigger.symbol.get",
+          1
+        ],
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "message",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt",
+            "Symbol(trigger)"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          true,
+          "prompt1",
+          true,
+          true,
+          true,
+          false,
+          true,
+          false,
+          1,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "override-fields",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "message",
+            "type",
+            "systemPrompt",
+            "systemPromptOptions",
+            "Symbol(trigger)"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          false,
+          null,
+          false,
+          false,
+          true,
+          true,
+          false,
+          true,
+          {
+            "role": "custom",
+            "customType": "app",
+            "content": [],
+            "display": true,
+            "details": {
+              "tag": "b"
+            },
+            "timestamp": 7
+          },
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "message",
+            "type",
+            "systemPrompt",
+            "systemPromptOptions",
+            "Symbol(trigger)"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          false,
+          null,
+          false,
+          false,
+          true,
+          true,
+          false,
+          true,
+          {
+            "role": "custom",
+            "customType": "app",
+            "content": [],
+            "display": true,
+            "details": {
+              "tag": "b"
+            },
+            "timestamp": 7
+          },
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "throw-spread-getter",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        "trigger.message.throw",
+        "marker.toString",
+        "error.listener",
+        "trigger.message.throw",
+        "marker.toString",
+        "error.listener",
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "trigger.ext",
+          "event": "before_agent_start",
+          "error": "raw trigger marker",
+          "hasStack": true,
+          "stackType": "undefined",
+          "keys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        },
+        {
+          "extensionPath": "trigger.ext",
+          "event": "before_agent_start",
+          "error": "raw trigger marker",
+          "hasStack": true,
+          "stackType": "undefined",
+          "keys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [],
+        "force": "base",
+        "selected": [],
+        "sameOptions": false
+      }
+    },
+    {
+      "id": "trigger-null",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          false,
+          null,
+          false,
+          null,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          false,
+          null,
+          false,
+          null,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "trigger-string",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "0",
+            "1",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          false,
+          null,
+          false,
+          null,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "0",
+            "1",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          false,
+          null,
+          false,
+          null,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "mutate-trigger",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "hello",
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "images",
+            "message",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "custom",
+          false,
+          null,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "changed",
+          "changed",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "injected",
+            "content": [],
+            "display": false
+          },
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "changed",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "handler-reject",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "one",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "hello",
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "marker.toString",
+        "error.listener",
+        [
+          "two",
+          true,
+          [
+            "messageType",
+            "prompt",
+            "images",
+            "type",
+            "systemPromptOptions",
+            "systemPrompt"
+          ],
+          "before_agent_start",
+          true,
+          "user",
+          true,
+          "hello",
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          null,
+          true,
+          true,
+          true,
+          "base",
+          "base",
+          "get systemPrompt",
+          0,
+          true,
+          true
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "trigger.ext",
+          "event": "before_agent_start",
+          "error": "raw trigger marker",
+          "hasStack": true,
+          "stackType": "undefined",
+          "keys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "customType": "second",
+            "content": []
+          }
+        ],
+        "force": "base",
+        "selected": [],
+        "sameOptions": true
+      }
+    },
+    {
+      "id": "no-handlers",
+      "events": [
+        "options.hiddenTools.get",
+        [
+          "context.create",
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "errors": [],
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [],
+        "force": "base",
+        "selected": [],
+        "sameOptions": false
+      }
+    }
+  ]
+}

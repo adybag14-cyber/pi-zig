@@ -242,7 +242,7 @@ test "native SDK queue order PUBLIC implemented method metadata matches complete
     try root.installSchemas();
     const global = em.c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    const source = @embedFile("extensions/fixtures/sdk-runner-method-metadata-89e5-source.json");
+    const source = @embedFile("extensions/fixtures/sdk-runner-method-metadata-ee409-source-617.json");
     try @import("extensions/native_js_values.zig").define(engine, global, "sdkMethodSource", try engine.checked(em.c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-sdk-method-metadata-89e5")));
     const result = engine.evalModule(
         \\import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
@@ -660,7 +660,7 @@ test "native SDK queue order PUBLIC runner constructor refs fields and implement
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-constructor-source-516.json"));
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-constructor-ee409-source-621.json"));
     defer expected.deinit();
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(rows.len, actual.value.array.items.len);
@@ -1212,7 +1212,40 @@ test "native SDK queue order PUBLIC context two phases actual replay clone and t
     em.c.JS_RunGC(engine.runtime);
 }
 
-test "native SDK queue order PUBLIC before agent start full normalization lazy renderer and nineteen actual Source cases" {
+test "native SDK queue order PUBLIC latest two argument user custom trigger copies match all ten actual Source615 cases" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const root = try group.add("sdk-public-trigger-root");
+    try root.installSchemas();
+    const loaded = engine.evalModule(@embedFile("extensions/fixtures/sdk-runner-trigger-615.input.txt"), "sdk-public-trigger.mjs") catch |err| {
+        std.debug.print("SDK actual Source615 trigger: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(loaded);
+    const result = try engine.eval("sdkRunnerTriggerRows", "sdk-public-trigger-result.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const raw = try engine.stringify(result);
+    defer std.testing.allocator.free(raw);
+    var actual = try json.Owned.parse(std.testing.allocator, raw);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-trigger-source-615.json"));
+    defer expected.deinit();
+    const rows = expected.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 10), rows.len);
+    try std.testing.expectEqual(rows.len, actual.value.array.items.len);
+    for (rows, actual.value.array.items) |source, observed| {
+        if (!json.equal(source, observed)) std.debug.print("SDK Source615 trigger complete actual={s}\n", .{raw});
+        try std.testing.expect(json.equal(source, observed));
+    }
+    const cleared = try engine.eval("delete globalThis.sdkRunnerTriggerRows", "sdk-public-trigger-clear.js", em.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(cleared);
+    em.c.JS_RunGC(engine.runtime);
+}
+
+test "native SDK queue order PUBLIC latest before agent start full normalization lazy renderer and nineteen actual Source614 and Source618 cases" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     var environment = try std.process.Environ.createMap(std.testing.environ, std.testing.allocator);
@@ -1233,10 +1266,10 @@ test "native SDK queue order PUBLIC before agent start full normalization lazy r
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    // Actual current045 Source605 repeats every row with the caller's absolute
-    // POSIX package directory. Keep original Windows rows and all descriptor,
-    // identity, getter, error and retained-callback checks unchanged.
-    var expected = try json.Owned.parse(std.testing.allocator, if (host.os.tag == .windows) @embedFile("extensions/fixtures/sdk-runner-agent-start-source-560.json") else @embedFile("extensions/fixtures/sdk-runner-agent-start-source-605-posix.json"));
+    // Actual current ee409 Source625 repeats all eighteen latest user-trigger
+    // rows with the caller's absolute POSIX package directory. Preserve the
+    // whole Windows/POSIX records and every descriptor and raw error check.
+    var expected = try json.Owned.parse(std.testing.allocator, if (host.os.tag == .windows) @embedFile("extensions/fixtures/sdk-runner-agent-start-source-614.json") else @embedFile("extensions/fixtures/sdk-runner-agent-start-source-625-posix.json"));
     defer expected.deinit();
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 18), rows.len);
@@ -1272,7 +1305,7 @@ test "native SDK queue order PUBLIC before agent start full normalization lazy r
     defer std.testing.allocator.free(foundation_raw);
     var foundation = try json.Owned.parse(std.testing.allocator, foundation_raw);
     defer foundation.deinit();
-    var original = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-535.json"));
+    var original = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-reducers-source-618.json"));
     defer original.deinit();
     try std.testing.expectEqual(@as(usize, 1), foundation.value.array.items.len);
     var matched: usize = 0;

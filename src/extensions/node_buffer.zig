@@ -818,6 +818,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const module = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(module);
     try property(engine, module, "Buffer", c.JS_DupValue(engine.context, constructor));
+    try @import("node_base64.zig").install(engine, module);
     try engine.registerDefaultModule("node:buffer", module);
     try engine.registerDefaultModule("buffer", module);
     engine.buffer_ready = true;

@@ -140,3 +140,50 @@ repeat the same 13 cases, not 104 distinct tests. Public pi-agent-core activatio
 remains disabled until native AgentLoop and the default stream are complete.
 The immutable whole-tree ee409 contract contains all 2,034 original paths and
 passed its native capture/verify gate. This is drift detection, not parity proof.
+The next integrated Windows Debug graph passed 329 of 334 tests, with five
+unchanged backend platform skips, across 203 successful build steps. All 4,065
+source and 19,546 tool inputs remained unchanged. Independent composed coverage
+passed with 127 named / 136 compiled shared cases and complete original command
+allocation ranges. The latest session trigger uses the original two-argument
+API and CopyDataProperties event ordering; its isolated Windows C, same binary
+D, and Linux gates each passed all 41 SDK queue tests with genuine platform
+captures, not native-generated expectations.
+
+A fresh native thread now owns each controlled CodeMode VM from creation through
+teardown. Owned JSON event/reply queues and atomic cancellation keep all C values
+on that thread. The sixteen original deterministic runs, computing-script abort,
+abandoned pending-call shutdown and every owner allocation failure passed. The
+JavaScript-facing controlled-run owner preserves all eleven actual latest reply,
+callback and abort traces, including output fencing, original callback errors,
+accepted-reply status and result settlement after worker teardown. Its own full
+allocation sweep also passed. Incremental output events preserve message order.
+The new C JSON parsing boundaries now satisfy QuickJS's explicit zero-terminated
+buffer precondition; the first parser failure is retained as evidence.
+
+These are real worker and run-handle components, not a completed public sandbox
+package. The sandbox constructor/ordinary execute/portable/remote exports, all
+store/deadline edge behavior, source-complete replay fingerprint and durable
+CodeMode journal integration remain open. This checkpoint does not install a
+partial public package or change the native-default certification boundary.
+
+The latest formatter matches all 46 actual output cases, including 4,096 adjacent
+parts, and uses linear part accumulation. Native Node base64 preserves 72 actual
+scalar/coercion cases plus metadata and constructors. The JSON finite-float leaf
+uses the official bounded stack buffer and identical formatting, eliminating a
+temporary allocation per value. All eight private Agent allocation ranges passed
+on this same source with a measured universe of 1,205 rather than the earlier
+1,230; every index was explicitly begun/completed once, with balanced allocations.
+The repeated 104 executions are 13 distinct compiled tests and 44 Source rows.
+
+Hosted qualification at preceding exact head9699132 is terminal: eleven of twelve
+matrix jobs passed. macOS Debug passed 134/135 VM cases; the sole failure remains
+the original ten-second compaction scenario. Its process checks, ReleaseSafe VM,
+and both Windows/Linux modes passed. The separate Main/editor run failed two
+assertions and remains open; no hosted pass is inferred for this newer checkpoint.
+
+Fresh upstream HEAD observed at10:52UTC is148622bc6f8d0ffd64e33cbc0e1e66754f45d32c.
+Its 2,034-path native whole-tree capture/verify passed. Compared with ee409 it adds
+wait-cycle rejection in durable scheduling and clarifies MCP login timeout text.
+The latest immutable reference build and native wait-cycle port remain pending.
+The original certified baseline fields in config.zig do not certify these newer
+features; the target API version and structural captures are separate evidence.

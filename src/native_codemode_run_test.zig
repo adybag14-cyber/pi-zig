@@ -60,7 +60,7 @@ const Probe = struct {
     }
 };
 const random_clock = "const values = [Date.now(), performance.now(), Math.random(), Math.random(), new Date().toISOString()]; const first = await tools.echo(values); text(JSON.stringify([Date.now(), performance.now(), Math.random()])); return await tools.echo(first.concat(Math.random()));";
-const programs = [_][]const u8{
+pub const programs = [_][]const u8{
     random_clock,
     random_clock,
     random_clock,

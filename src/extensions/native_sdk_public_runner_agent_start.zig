@@ -21,7 +21,7 @@ fn renderValue(engine: *em.Engine, options: c.JSValue, runner: c.JSValue, guarde
     return prompt.render(engine, options);
 }
 pub fn initialize(engine: *em.Engine, retained: *dispatch.State) !void {
-    retained.replace(engine, .current, try @import("native_sdk_prompt_normalize.zig").normalize(engine, retained.get(.parameter2)));
+    retained.replace(engine, .current, try @import("native_sdk_prompt_normalize.zig").normalize(engine, retained.get(.parameter1)));
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const outer_object = try scope.global("Object");
@@ -42,15 +42,18 @@ pub fn prepare(engine: *em.Engine, retained: *dispatch.State) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const event = try scope.object();
+    // Current Source copies each live trigger independently for every handler,
+    // including enumerable symbols, primitive boxing and raw Proxy failures.
+    // Fixed event fields then replace same-named caller properties in place.
+    try js.spreadInto(engine, event, retained.get(.parameter0));
     try scope.put(event, "type", try scope.text("before_agent_start"));
-    try scope.put(event, "prompt", retained.get(.parameter0));
-    try scope.put(event, "images", retained.get(.parameter1));
+    // Match actual pinned Node Source own-key order after the spread literal.
+    try scope.put(event, "systemPromptOptions", retained.get(.current));
     var values = [_]c.JSValue{retained.get(.current)};
     const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, renderCall, "get systemPrompt", 0, 0, values.len, &values));
     const atom = c.JS_NewAtom(engine.context, "systemPrompt");
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DefinePropertyGetSet(engine.context, event, atom, getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
-    try scope.put(event, "systemPromptOptions", retained.get(.current));
     retained.replace(engine, .event, c.JS_DupValue(engine.context, event));
 }
 pub fn accept(engine: *em.Engine, retained: *dispatch.State, result: c.JSValue) !void {
