@@ -1,0 +1,20 @@
+const emitSettled=AgentSession.prototype._emitAgentSettled;
+const settledRows=[{case:'shape',name:emitSettled.name,length:emitSettled.length}];
+for(const name of ['normal','extension-reject','public-throw','deferred-actions','deferred-reject','idle-throw','deferred-idle-throw']){
+  const trace=[],primary={raw:name},cleanup={raw:'idle'},deferred=[];
+  const receiver={_isAgentRunActive:true,_isEmittingAgentSettled:false,_agentRunAbortRequested:name==='normal',_deferredSettledActions:deferred,
+    _cacheWarmer:{onAgentSettled(){trace.push('warm');}},
+    _extensionRunner:{emit(event){trace.push('extension:'+event.type+':'+event.aborted);if(!receiver._isEmittingAgentSettled||receiver._isAgentRunActive)throw Error('settled state');return name==='extension-reject'?Promise.reject(primary):Promise.resolve();}},
+    _emit(event){trace.push('public:'+event.type+':'+event.aborted);if(name==='public-throw')throw primary;},
+    _resolveIdleWaitIfIdle(){trace.push('idle');if(name==='idle-throw'||name==='deferred-idle-throw')throw cleanup;}};
+  if(name.startsWith('deferred')){
+    deferred.push(async()=>{trace.push('action-one:'+receiver._isEmittingAgentSettled);await Promise.resolve();trace.push('action-one-end');});
+    deferred.push(async()=>{trace.push('action-two');if(name==='deferred-reject')throw primary;});
+    deferred.push(async()=>trace.push('action-three'));
+  }
+  let caught,pending,sync=false;
+  try{pending=emitSettled.call(receiver);}catch(error){sync=true;caught=error;}
+  if(pending)try{await pending;}catch(error){caught=error;}
+  settledRows.push({case:name,promise:pending instanceof Promise,sync,trace,error:caught===primary?'primary':caught===cleanup?'idle':caught?String(caught):undefined,active:receiver._isAgentRunActive,emitting:receiver._isEmittingAgentSettled,deferred:deferred.length});
+}
+globalThis.sdkSessionSettledRows=settledRows;

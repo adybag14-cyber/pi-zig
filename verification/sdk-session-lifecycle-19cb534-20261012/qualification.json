@@ -1,0 +1,18 @@
+{
+  "scope": "Private native bodies for upstream AgentSession custom messages, run, settlement, and transcript helpers",
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "source_cases": {
+    "custom": 26,
+    "run": 19,
+    "settled": 8,
+    "transcript": 10
+  },
+  "native_tests": 9,
+  "native_steps": 156,
+  "production_activated": false,
+  "limitations": [
+    "Production factory still uses previous run owner; complete native Agent and session dependencies must be connected before activation.",
+    "Receiver dependency replay does not certify complete AgentSession constructor, prototype descriptors, persistence, retry, compaction or platform parity.",
+    "Allocation-failure qualification for the new lifecycle bodies remains pending."
+  ]
+}

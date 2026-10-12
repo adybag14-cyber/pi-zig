@@ -1,0 +1,47 @@
+const customRows=[];
+const send=AgentSession.prototype.sendCustomMessage;
+customRows.push({case:'shape',name:send.name,length:send.length});
+for(const [name,streaming,options] of [
+  ['idle',false,undefined],['idle-null',false,null],['idle-no-trigger',false,{triggerTurn:false}],
+  ['idle-trigger',false,{triggerTurn:true}],['idle-followup-trigger',false,{triggerTurn:true,deliverAs:'followUp'}],
+  ['stream-default',true,undefined],['stream-steer',true,{deliverAs:'steer'}],['stream-followup',true,{deliverAs:'followUp'}],
+  ['stream-no-trigger',true,{triggerTurn:false}],['stream-zero-trigger',true,{triggerTurn:0}],
+  ['idle-next',false,{deliverAs:'nextTurn',triggerTurn:true}],['stream-next',true,{deliverAs:'nextTurn',triggerTurn:false}]
+]){
+  const calls=[],next=[],pending=[],deferred=[],details={raw:name},content=[{type:'text',text:name}];
+  const clean=message=>({role:message.role,customType:message.customType,content:message.content,display:message.display,detailsSame:message.details===details,contentSame:message.content===content,timeWithin:message.timestamp>=before&&message.timestamp<=Date.now()});
+  const receiver={isStreaming:streaming,_pendingNextTurnMessages:next,_pendingCustomMessages:pending,_deferredSettledActions:deferred,_isEmittingAgentSettled:false,
+    agent:{steer(message){calls.push({kind:'steer',receiver:this===receiver.agent,message:clean(message)});},followUp(message){calls.push({kind:'followUp',receiver:this===receiver.agent,message:clean(message)});}},
+    _appendCustomMessage(message){calls.push({kind:'append',receiver:this===receiver,message:clean(message)});},
+    _startRun(trigger){calls.push({kind:'run',receiver:this===receiver,messageType:trigger.messageType,message:clean(trigger.message)});return Promise.resolve('discarded');}};
+  const before=Date.now(),result=send.call(receiver,{customType:name,content,display:true,details},options);
+  const promise=result instanceof Promise,value=await result;
+  customRows.push({case:name,promise,value,calls,next:next.map(clean),pending:pending.map(clean),deferred:deferred.length});
+}
+for(const content of [undefined,null,'',0,false]){
+  let received;
+  await send.call({isStreaming:false,_appendCustomMessage(message){received=message;}},{customType:'normalize',content,display:false});
+  customRows.push({case:'normalize-'+String(content),content:received.content});
+}
+{
+  const trace=[],message={get customType(){trace.push('customType');return 'ordered';},get content(){trace.push('content');return null;},get display(){trace.push('display');return true;},get details(){trace.push('details');return {raw:1};}};
+  const options={get deliverAs(){trace.push('deliverAs');return 'followUp';},get triggerTurn(){trace.push('triggerTurn');return true;}};
+  const receiver={get isStreaming(){trace.push('streaming');return true;},get agent(){trace.push('agent');return {get followUp(){trace.push('followUp');return ()=>trace.push('called');}};}};
+  await send.call(receiver,message,options);customRows.push({case:'order',trace});
+}
+for(const where of ['message','option','streaming','queue','append','run-reject']){
+  const marker={raw:where};let pending,caught,sync=false;
+  const message=where==='message'?{get customType(){throw marker;}}:{customType:'error',content:'data'};
+  const options=where==='option'?{get deliverAs(){throw marker;}}:where==='run-reject'?{triggerTurn:true}:undefined;
+  const receiver={get isStreaming(){if(where==='streaming')throw marker;return where==='queue';},agent:{steer(){throw marker;}},_appendCustomMessage(){throw marker;},_startRun(){return Promise.reject(marker);}};
+  try{pending=send.call(receiver,message,options);}catch(e){caught=e;sync=true;}
+  if(pending)try{await pending;}catch(e){caught=e;}
+  customRows.push({case:'error-'+where,promise:pending instanceof Promise,sync,identity:caught===marker});
+}
+{
+  const message={customType:'deferred',content:'first'},options={triggerTurn:true},actions=[],calls=[];
+  const receiver={isStreaming:false,_isEmittingAgentSettled:true,_deferredSettledActions:actions,sendCustomMessage:send,_startRun(trigger){calls.push(trigger.message.content);return Promise.resolve();}};
+  await send.call(receiver,message,options);const before=calls.length;message.content='changed';receiver._isEmittingAgentSettled=false;
+  const result=actions[0]();await result;customRows.push({case:'deferred-live-message',actions:actions.length,before,promise:result instanceof Promise,calls});
+}
+globalThis.sdkCustomRows=customRows;

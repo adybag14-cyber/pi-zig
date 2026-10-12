@@ -1,0 +1,984 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified original custom-message/start-run/settlement bodies with caller-supplied receiver dependencies; component ordering/error evidence, not complete AgentSession integration",
+  "custom": [
+    {
+      "case": "shape",
+      "name": "sendCustomMessage",
+      "length": 2
+    },
+    {
+      "case": "idle",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "append",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "idle",
+            "content": [
+              {
+                "type": "text",
+                "text": "idle"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "idle-null",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "append",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "idle-null",
+            "content": [
+              {
+                "type": "text",
+                "text": "idle-null"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "idle-no-trigger",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "append",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "idle-no-trigger",
+            "content": [
+              {
+                "type": "text",
+                "text": "idle-no-trigger"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "idle-trigger",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "run",
+          "receiver": true,
+          "messageType": "custom",
+          "message": {
+            "role": "custom",
+            "customType": "idle-trigger",
+            "content": [
+              {
+                "type": "text",
+                "text": "idle-trigger"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "idle-followup-trigger",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "run",
+          "receiver": true,
+          "messageType": "custom",
+          "message": {
+            "role": "custom",
+            "customType": "idle-followup-trigger",
+            "content": [
+              {
+                "type": "text",
+                "text": "idle-followup-trigger"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "stream-default",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "steer",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "stream-default",
+            "content": [
+              {
+                "type": "text",
+                "text": "stream-default"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "stream-steer",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "steer",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "stream-steer",
+            "content": [
+              {
+                "type": "text",
+                "text": "stream-steer"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "stream-followup",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "followUp",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "stream-followup",
+            "content": [
+              {
+                "type": "text",
+                "text": "stream-followup"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "stream-no-trigger",
+      "promise": true,
+      "calls": [],
+      "next": [],
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "stream-no-trigger",
+          "content": [
+            {
+              "type": "text",
+              "text": "stream-no-trigger"
+            }
+          ],
+          "display": true,
+          "detailsSame": true,
+          "contentSame": true,
+          "timeWithin": true
+        }
+      ],
+      "deferred": 0
+    },
+    {
+      "case": "stream-zero-trigger",
+      "promise": true,
+      "calls": [
+        {
+          "kind": "steer",
+          "receiver": true,
+          "message": {
+            "role": "custom",
+            "customType": "stream-zero-trigger",
+            "content": [
+              {
+                "type": "text",
+                "text": "stream-zero-trigger"
+              }
+            ],
+            "display": true,
+            "detailsSame": true,
+            "contentSame": true,
+            "timeWithin": true
+          }
+        }
+      ],
+      "next": [],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "idle-next",
+      "promise": true,
+      "calls": [],
+      "next": [
+        {
+          "role": "custom",
+          "customType": "idle-next",
+          "content": [
+            {
+              "type": "text",
+              "text": "idle-next"
+            }
+          ],
+          "display": true,
+          "detailsSame": true,
+          "contentSame": true,
+          "timeWithin": true
+        }
+      ],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "stream-next",
+      "promise": true,
+      "calls": [],
+      "next": [
+        {
+          "role": "custom",
+          "customType": "stream-next",
+          "content": [
+            {
+              "type": "text",
+              "text": "stream-next"
+            }
+          ],
+          "display": true,
+          "detailsSame": true,
+          "contentSame": true,
+          "timeWithin": true
+        }
+      ],
+      "pending": [],
+      "deferred": 0
+    },
+    {
+      "case": "normalize-undefined",
+      "content": []
+    },
+    {
+      "case": "normalize-null",
+      "content": []
+    },
+    {
+      "case": "normalize-",
+      "content": ""
+    },
+    {
+      "case": "normalize-0",
+      "content": 0
+    },
+    {
+      "case": "normalize-false",
+      "content": false
+    },
+    {
+      "case": "order",
+      "trace": [
+        "customType",
+        "content",
+        "display",
+        "details",
+        "deliverAs",
+        "streaming",
+        "triggerTurn",
+        "deliverAs",
+        "agent",
+        "followUp",
+        "called"
+      ]
+    },
+    {
+      "case": "error-message",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "error-option",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "error-streaming",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "error-queue",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "error-append",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "error-run-reject",
+      "promise": true,
+      "sync": false,
+      "identity": true
+    },
+    {
+      "case": "deferred-live-message",
+      "actions": 1,
+      "before": 0,
+      "promise": true,
+      "calls": [
+        "changed"
+      ]
+    }
+  ],
+  "run": [
+    {
+      "case": "shape",
+      "name": "_startRun",
+      "length": 2
+    },
+    {
+      "case": "normal",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "boundary",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "prepare-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "idle"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false,
+      "failedResponse": "old",
+      "promptOptions": "old"
+    },
+    {
+      "case": "prepare-cleanup-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom"
+      ],
+      "error": "cleanup",
+      "active": false,
+      "aborted": false,
+      "failedResponse": "old",
+      "promptOptions": "old"
+    },
+    {
+      "case": "preflush-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom"
+      ],
+      "error": "primary",
+      "active": true,
+      "aborted": false,
+      "failedResponse": "old",
+      "promptOptions": "old"
+    },
+    {
+      "case": "started-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started"
+      ],
+      "error": "primary",
+      "active": true,
+      "aborted": false,
+      "failedResponse": "old",
+      "promptOptions": "old"
+    },
+    {
+      "case": "record-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record"
+      ],
+      "error": "primary",
+      "active": true,
+      "aborted": false,
+      "promptOptions": "old"
+    },
+    {
+      "case": "clear-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear"
+      ],
+      "error": "primary",
+      "active": true,
+      "aborted": false,
+      "promptOptions": "old"
+    },
+    {
+      "case": "prompt-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "prompt-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "abort-after-prompt",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "finish-cancelled",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": true
+    },
+    {
+      "case": "post-continue",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "continue",
+        "post",
+        "boundary",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "post-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "abort-after-post",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "finish-cancelled",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": true
+    },
+    {
+      "case": "boundary-continue",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "boundary",
+        "continue",
+        "post",
+        "boundary",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "boundary-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "boundary",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "abort-after-boundary",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "boundary",
+        "finish-cancelled",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "active": false,
+      "aborted": true
+    },
+    {
+      "case": "continue-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "continue",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "primary",
+      "active": false,
+      "aborted": false
+    },
+    {
+      "case": "settled-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "prepare",
+        "flush-bash",
+        "flush-custom",
+        "started",
+        "record",
+        "clear",
+        "prompt",
+        "post",
+        "boundary",
+        "flush-bash",
+        "flush-custom",
+        "settled"
+      ],
+      "error": "cleanup",
+      "active": false,
+      "aborted": false
+    }
+  ],
+  "settled": [
+    {
+      "case": "shape",
+      "name": "_emitAgentSettled",
+      "length": 0
+    },
+    {
+      "case": "normal",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:true",
+        "public:agent_settled:true",
+        "idle"
+      ],
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "extension-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false"
+      ],
+      "error": "primary",
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "public-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false",
+        "public:agent_settled:false"
+      ],
+      "error": "primary",
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "deferred-actions",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false",
+        "public:agent_settled:false",
+        "action-one:false",
+        "action-one-end",
+        "action-two",
+        "action-three",
+        "idle"
+      ],
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "deferred-reject",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false",
+        "public:agent_settled:false",
+        "action-one:false",
+        "action-one-end",
+        "action-two",
+        "idle"
+      ],
+      "error": "primary",
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "idle-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false",
+        "public:agent_settled:false",
+        "idle"
+      ],
+      "error": "idle",
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    },
+    {
+      "case": "deferred-idle-throw",
+      "promise": true,
+      "sync": false,
+      "trace": [
+        "warm",
+        "extension:agent_settled:false",
+        "public:agent_settled:false",
+        "action-one:false",
+        "action-one-end",
+        "action-two",
+        "action-three",
+        "idle"
+      ],
+      "error": "idle",
+      "active": false,
+      "emitting": false,
+      "deferred": 0
+    }
+  ],
+  "transcript": [
+    {
+      "case": "append-normal",
+      "trace": [
+        "append:custom:true",
+        "refresh",
+        "message_start",
+        "message_end"
+      ],
+      "errorSame": false
+    },
+    {
+      "case": "append-manager-throw",
+      "trace": [
+        "append:custom:true"
+      ],
+      "errorSame": true
+    },
+    {
+      "case": "append-refresh-throw",
+      "trace": [
+        "append:custom:true",
+        "refresh"
+      ],
+      "errorSame": true
+    },
+    {
+      "case": "append-start-throw",
+      "trace": [
+        "append:custom:true",
+        "refresh",
+        "message_start"
+      ],
+      "errorSame": true
+    },
+    {
+      "case": "append-end-throw",
+      "trace": [
+        "append:custom:true",
+        "refresh",
+        "message_start",
+        "message_end"
+      ],
+      "errorSame": true
+    },
+    {
+      "case": "flush-reentrant",
+      "seen": [
+        1,
+        2
+      ],
+      "pending": [
+        3
+      ]
+    },
+    {
+      "case": "flush-error",
+      "seen": [
+        "entry"
+      ],
+      "closes": 1,
+      "identity": true,
+      "pending": []
+    },
+    {
+      "case": "flush-empty",
+      "reads": 1
+    },
+    {
+      "case": "refresh",
+      "trace": [
+        "project"
+      ],
+      "messagesSame": true,
+      "ids": [
+        "one",
+        "two"
+      ]
+    },
+    {
+      "case": "actual-manager",
+      "events": [
+        "message_start:custom",
+        "message_end:custom"
+      ],
+      "entryType": "custom_message",
+      "customType": "custom",
+      "content": [
+        {
+          "type": "text",
+          "text": "first"
+        },
+        {
+          "type": "text",
+          "text": "second"
+        }
+      ],
+      "idMapped": true
+    }
+  ]
+}

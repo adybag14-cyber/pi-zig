@@ -1,0 +1,23 @@
+const run=AgentSession.prototype._startRun;
+const runRows=[{case:'shape',name:run.name,length:run.length}];
+for(const name of ['normal','prepare-reject','prepare-cleanup-throw','preflush-throw','started-throw','record-throw','clear-throw','prompt-throw','prompt-reject','abort-after-prompt','post-continue','post-reject','abort-after-post','boundary-continue','boundary-reject','abort-after-boundary','continue-reject','settled-reject']){
+  const trace=[],primary={raw:name},cleanup={raw:'cleanup'},messages=[{role:'custom',content:name}],trigger={messageType:'custom',message:messages[0]};let post=0,boundary=0,customFlush=0;
+  const receiver={_isAgentRunActive:false,_agentRunAbortRequested:true,_failedResponse:'old',_runSystemPromptOptions:'old',
+    _prepareRun(value){trace.push('prepare');if(value!==trigger)throw Error('trigger identity');return name==='prepare-reject'||name==='prepare-cleanup-throw'?Promise.reject(primary):Promise.resolve(messages);},
+    _flushPendingBashMessages(){trace.push('flush-bash');},
+    _flushPendingCustomMessages(){trace.push('flush-custom');customFlush++;if(name==='prepare-cleanup-throw')throw cleanup;if(name==='preflush-throw'&&customFlush===1)throw primary;},
+    _resolveIdleWaitIfIdle(){trace.push('idle');},
+    _recordSelection(){trace.push('record');if(name==='record-throw')throw primary;},
+    _pendingToolNames:{clear(){trace.push('clear');if(name==='clear-throw')throw primary;}},
+    _finishCancelledRetry(){trace.push('finish-cancelled');},
+    _handlePostAgentRun(){trace.push('post');post++;if(name==='post-reject')return Promise.reject(primary);if(name==='abort-after-post'){this._agentRunAbortRequested=true;return true;}return name==='post-continue'&&post===1;},
+    _runBeforeSettleBoundary(){trace.push('boundary');boundary++;if(name==='boundary-reject')return Promise.reject(primary);if(name==='abort-after-boundary')this._agentRunAbortRequested=true;return name==='boundary-continue'&&boundary===1||name==='abort-after-boundary';},
+    _emitAgentSettled(){trace.push('settled');this._isAgentRunActive=false;return name==='settled-reject'?Promise.reject(cleanup):Promise.resolve();}};
+  receiver.agent={prompt(value){trace.push('prompt');if(this!==receiver.agent||value!==messages)throw Error('prompt identity');if(name==='prompt-throw')throw primary;if(name==='prompt-reject')return Promise.reject(primary);if(name==='abort-after-prompt')receiver._agentRunAbortRequested=true;return Promise.resolve();},continue(){trace.push('continue');return name==='continue-reject'?Promise.reject(primary):Promise.resolve();}};
+  if(name==='continue-reject')receiver._handlePostAgentRun=function(){trace.push('post');return true;};
+  let pending,caught,sync=false;
+  try{pending=run.call(receiver,trigger,function(){trace.push('started');if(name==='started-throw')throw primary;});}catch(error){sync=true;caught=error;}
+  if(pending)try{await pending;}catch(error){caught=error;}
+  runRows.push({case:name,promise:pending instanceof Promise,sync,trace,error:caught===primary?'primary':caught===cleanup?'cleanup':caught?String(caught):undefined,active:receiver._isAgentRunActive,aborted:receiver._agentRunAbortRequested,failedResponse:receiver._failedResponse,promptOptions:receiver._runSystemPromptOptions});
+}
+globalThis.sdkSessionRunRows=runRows;

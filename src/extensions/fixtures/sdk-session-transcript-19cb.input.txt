@@ -1,0 +1,40 @@
+const transcriptRows=[];
+const appendCustom=AgentSession.prototype._appendCustomMessage,flushCustom=AgentSession.prototype._flushPendingCustomMessages,refreshFinal=AgentSession.prototype._refreshFinalizedContext;
+for(const name of ['normal','manager-throw','refresh-throw','start-throw','end-throw']){
+  const trace=[],marker={raw:name},content=[{type:'text',text:'raw'}],details={raw:7},message={customType:'custom',content,display:true,details};
+  const manager={appendCustomMessageEntry(type,body,display,extra){trace.push('append:'+type+':'+display);if(this!==manager||body!==content||extra!==details)throw Error('append identity');if(name==='manager-throw')throw marker;return 'entry';}};
+  const receiver={sessionManager:manager,_refreshFinalizedContext(){trace.push('refresh');if(name==='refresh-throw')throw marker;},_emit(event){trace.push(event.type);if(event.message!==message)throw Error('event identity');if(name==='start-throw'&&event.type==='message_start'||name==='end-throw'&&event.type==='message_end')throw marker;}};
+  let caught;try{appendCustom.call(receiver,message);}catch(error){caught=error;}
+  transcriptRows.push({case:'append-'+name,trace,errorSame:caught===marker});
+}
+{
+  const first={n:1},second={n:2},late={n:3},seen=[];
+  const receiver={_pendingCustomMessages:[first,second],_appendCustomMessage(message){seen.push(message.n);if(message===first)this._pendingCustomMessages.push(late);}};
+  flushCustom.call(receiver);transcriptRows.push({case:'flush-reentrant',seen,pending:receiver._pendingCustomMessages.map(message=>message.n)});
+}
+{
+  const marker={raw:'append'},seen=[];let closes=0,caught;
+  const pending={length:1,[Symbol.iterator](){return {next(){return {done:false,value:'entry'};},return(){closes++;throw {other:'close'};}};}};
+  const receiver={_pendingCustomMessages:pending,_appendCustomMessage(message){seen.push(message);throw marker;}};
+  try{flushCustom.call(receiver);}catch(error){caught=error;}
+  transcriptRows.push({case:'flush-error',seen,closes,identity:caught===marker,pending:receiver._pendingCustomMessages});
+}
+{
+  let reads=0;
+  const receiver={get _pendingCustomMessages(){reads++;return {length:0};},_appendCustomMessage(){throw Error('empty');}};
+  flushCustom.call(receiver);transcriptRows.push({case:'flush-empty',reads});
+}
+{
+  const first={id:'first'},second={id:'second'},messages=[first,second],trace=[],map=new WeakMap();
+  const projection={entries:[{messages:[first],sourceEntry:{id:'one'}},{messages:[second],sourceEntry:{id:'two'}}],messages};
+  const state={};const receiver={sessionManager:{buildSessionProjection(){trace.push('project');return projection;}},_entryIdsByMessage:map,agent:{state}};
+  refreshFinal.call(receiver);transcriptRows.push({case:'refresh',trace,messagesSame:state.messages===messages,ids:messages.map(message=>map.get(message))});
+}
+{
+  const manager=SessionManager.inMemory('/sdk-custom'),message={customType:'custom',content:[{type:'text',text:'first'},{type:'text',text:'second'}],display:true,details:{raw:1}},events=[],state={};
+  const receiver={sessionManager:manager,_entryIdsByMessage:new WeakMap(),agent:{state},_refreshFinalizedContext:refreshFinal,_emit(event){events.push(event.type+':'+event.message.customType);}};
+  appendCustom.call(receiver,message);
+  const entries=manager.getEntries(),projected=state.messages.find(row=>row.role==='custom');
+  transcriptRows.push({case:'actual-manager',events,entryType:entries[0].type,customType:entries[0].customType,content:projected.content,idMapped:receiver._entryIdsByMessage.get(projected)===entries[0].id});
+}
+globalThis.sdkSessionTranscriptRows=transcriptRows;
