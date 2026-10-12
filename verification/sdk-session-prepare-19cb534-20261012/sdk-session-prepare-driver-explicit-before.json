@@ -1,0 +1,10 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-prepare-run-20261012\\src\\extensions\\fixtures\\sdk-session-prepare-19cb.input.txt",
+    "sha256": "01DEBE2FE33B54188D8953BD39F9AD1B0E9447A80EB61A9EA8A3911E7964FC51"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-session-prepare-19cb-source.mjs",
+    "sha256": "FED56D0B160673A97C6B8F7E0DAD99CC50B38ACFEB685AA53B5596EDE5B69470"
+  }
+]

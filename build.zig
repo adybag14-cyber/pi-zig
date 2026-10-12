@@ -1406,6 +1406,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-message-conversion", "Replay original public message conversion and exhaust operation allocation failures").dependOn(&b.addRunArtifact(sdk_message_tests).step);
+    const sdk_prepare_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_prepare_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK private prepareRun"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_prepare_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_prepare_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-prepare", "Compare actual Source run preparation ordering without activating absent session dependencies").dependOn(&b.addRunArtifact(sdk_prepare_tests).step);
     const sdk_query_consumer_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_query_consumers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "ToolInfo cached SDK AgentTool", "ToolInfo actual SDK default selection", "ToolInfo actual SDK explicit loadout" }, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_query_consumer_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_query_consumer_tests.root_module.addImport("catalog_tool", catalog_tool);

@@ -1,0 +1,42 @@
+{
+  "source_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "93ce4551786730f2edbf3aa0a677e2243e910a35",
+  "source_file": "C:\\Users\\adyba\\pi-upstream-contract-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+  "source_file_sha256": "E2BBF746779FBED5A8C36F023842BF271252D1FD6F17F5A32F70A0D1C63F0B65",
+  "original_dist_sha256": "A5C9FF22E42215405804DC0C850E98AFF424A1262829161155132A3DA020B693",
+  "source_cases": 44,
+  "source_runtime_files": 31064,
+  "source_node_files": 1774,
+  "source_workspace_links": 16,
+  "source_drift": 0,
+  "native_target": "test-native-sdk-session-prepare",
+  "native_target_actual_tests": 11,
+  "native_target_cases": "Source44 + stagedGC + full28 Zig allocation indices + eight imported controls",
+  "separate_prior_lifecycle_tests": 9,
+  "combined_tests": 20,
+  "combined_steps": 159,
+  "native_log_sha256": "F4D6676AACBEF44F7D49B1ECCA6AD03B66F72748260E33D70EED9C090DA2BEC5",
+  "native_source_files": 4506,
+  "zig_toolchain_files": 19546,
+  "native_post_drift": 0,
+  "runtime": "Pinned Zig0.16.0 Windows default Debug backend",
+  "bounds": "fresh16GiB/j1/test120s/host10s/outer300s",
+  "production_activation": false,
+  "implemented_bodies": [
+    "_prepareRun",
+    "_findLastAssistantMessage",
+    "getActiveToolNames"
+  ],
+  "required_receiver_dependencies": [
+    "_checkCompaction",
+    "_extensionRunner.emitBeforeAgentStart",
+    "_normalizePromptImages",
+    "_preparePromptAndToolLoadout"
+  ],
+  "full_class_gap": "Inherited original image normalizer Source success versus native absence retained in inherited-helper-actual-negative.json. Explicitundefined final cases qualify absent callback dependencies only; image and structured system/loadout helper implementations remain unported.",
+  "negative_runs": {
+    "first": "Source AsyncFunction sloppy assignment to inherited readonly model getter vs native strict module; fixed explicit writable own input and genuine recapture",
+    "expanded": "Source inherited normalizer revealed by delete; retained actual negative and exact old input hash149E2BDA2C38FF44A1245AC67C645FCA4CA829FD4CF62058F969233ECE76F2ED"
+  },
+  "limitations": "No complete AgentSession/factory activation, actual image processing, structured prompt rendering, hosted platform or QuickJS C allocation fault-injection qualification claimed. Documentation and receipts added after frozen native source gate."
+}

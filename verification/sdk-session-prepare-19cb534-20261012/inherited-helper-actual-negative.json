@@ -1,0 +1,81 @@
+{
+  "index": 37,
+  "actual": {
+    "scenario": "missing-normalizer",
+    "trace": [
+      [
+        "before",
+        true,
+        "user",
+        true
+      ]
+    ],
+    "error": "TypeError",
+    "messages": null,
+    "pending": [
+      {
+        "role": "custom",
+        "customType": "pending",
+        "content": "queued",
+        "display": true,
+        "timestamp": "clock"
+      }
+    ],
+    "runOptions": "old",
+    "customIdentity": false,
+    "pendingIdentity": false,
+    "patchIdentity": false
+  },
+  "expected": {
+    "scenario": "missing-normalizer",
+    "trace": [
+      [
+        "before",
+        true,
+        "user",
+        true
+      ],
+      [
+        "loadout",
+        true,
+        true,
+        [
+          "read",
+          "bash"
+        ],
+        0,
+        true
+      ]
+    ],
+    "error": null,
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "hello"
+          }
+        ],
+        "timestamp": "clock"
+      },
+      {
+        "role": "custom",
+        "customType": "pending",
+        "content": "queued",
+        "display": true,
+        "timestamp": "clock"
+      }
+    ],
+    "pending": [],
+    "runOptions": {
+      "selectedTools": [
+        "read",
+        "bash"
+      ]
+    },
+    "customIdentity": false,
+    "pendingIdentity": true,
+    "patchIdentity": false
+  }
+}

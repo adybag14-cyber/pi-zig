@@ -1,0 +1,2198 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified AgentSession.prototype._prepareRun and immediate last-assistant/active-tool helpers with test-only receiver callbacks. Image processor, compaction, extension runner and system-prompt/loadout renderer callback outputs are explicit inputs, not qualified integrations.",
+  "rows": [
+    {
+      "scenario": "plain",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "assistant",
+      "trace": [
+        [
+          "compact",
+          "old",
+          false
+        ],
+        [
+          "compacted"
+        ],
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "last-assistant",
+      "trace": [
+        [
+          "compact",
+          "last",
+          false
+        ],
+        [
+          "compacted"
+        ],
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "custom",
+      "trace": [
+        [
+          "before",
+          true,
+          "custom",
+          true
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "custom",
+          "customType": "trigger",
+          "content": "custom",
+          "display": false,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": true,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "custom-null",
+      "trace": [
+        [
+          "before",
+          true,
+          "custom",
+          true
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        null,
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "hints",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello\n\nfirst\nsecond"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "images",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          1
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            },
+            {
+              "type": "image",
+              "data": "normalized",
+              "mimeType": "image/png"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "empty-hints",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "live-tools",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "live"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "live"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "explicit-tools",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "edited"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "edited"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "reordered-tools",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "bash",
+            "read"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "bash",
+          "read"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "same-tools",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "live"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "live"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "aliased-mutation",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "live"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "live"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "late-pending",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "late",
+          "content": []
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "handler-messages",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "handler",
+          "content": [
+            {
+              "type": "text",
+              "text": "extension"
+            }
+          ],
+          "display": false,
+          "details": {
+            "k": 1
+          },
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "null-content",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "handler",
+          "content": [],
+          "display": false,
+          "details": {
+            "k": 1
+          },
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "missing-content",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "handler",
+          "content": [],
+          "display": false,
+          "details": {
+            "k": 1
+          },
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "false-content",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "handler",
+          "content": false,
+          "display": false,
+          "details": {
+            "k": 1
+          },
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "system-patch",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "identity": "changed"
+          },
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": true
+    },
+    {
+      "scenario": "false-patch",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "compaction-throw",
+      "trace": [
+        [
+          "compact",
+          "old",
+          false
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "compaction-reject",
+      "trace": [
+        [
+          "compact",
+          "old",
+          false
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "handler-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "handler-reject",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "image-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "image-reject",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "loadout-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "selected-getter-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "selected-get"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "content-getter-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "content-get",
+          0
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "pending-iterator-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": "custom iterable",
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "handler-iterator-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "handler-body-iterator-close",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "content-get",
+          0
+        ],
+        [
+          "iterator-closed"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "some-override",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "some",
+          false,
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "some-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "run-options-setter-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ],
+        [
+          "run-options-set"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "pending-setter-throw",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "pending-set"
+        ]
+      ],
+      "error": "sentinel",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "undefined-normalized",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ]
+      ],
+      "error": "TypeError",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "missing-normalizer",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ]
+      ],
+      "error": "TypeError",
+      "messages": null,
+      "pending": [
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "missing-loadout",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ]
+      ],
+      "error": "TypeError",
+      "messages": null,
+      "pending": [],
+      "runOptions": "old",
+      "customIdentity": false,
+      "pendingIdentity": false,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "thenable-handlers",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "handler-then"
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "thenable-images",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "image-then"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "normalized-iterator",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "image-iterator"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            },
+            {
+              "type": "image",
+              "data": "iterator",
+              "mimeType": "image/webp"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "before-await-queue",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "handler-microtask"
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "during-handler",
+          "content": []
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "read",
+          "bash"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    },
+    {
+      "scenario": "loadout-mutation",
+      "trace": [
+        [
+          "before",
+          true,
+          "user",
+          true
+        ],
+        [
+          "images",
+          true,
+          "after",
+          "undefined"
+        ],
+        [
+          "images-ready"
+        ],
+        [
+          "loadout",
+          true,
+          true,
+          [
+            "read",
+            "bash"
+          ],
+          0,
+          true
+        ]
+      ],
+      "error": null,
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "hello"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "custom",
+          "customType": "pending",
+          "content": "queued",
+          "display": true,
+          "timestamp": "clock"
+        }
+      ],
+      "pending": [],
+      "runOptions": {
+        "selectedTools": [
+          "filtered"
+        ]
+      },
+      "customIdentity": false,
+      "pendingIdentity": true,
+      "patchIdentity": false
+    }
+  ]
+}

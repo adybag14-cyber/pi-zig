@@ -1,0 +1,79 @@
+// Test-only receiver callbacks are inputs. No original Source method is replaced.
+const sdkPrepareRows=[];
+for(const scenario of ['plain','assistant','last-assistant','custom','custom-null','hints','images','empty-hints','live-tools','explicit-tools','reordered-tools','same-tools','aliased-mutation','late-pending','handler-messages','null-content','missing-content','false-content','system-patch','false-patch','compaction-throw','compaction-reject','handler-throw','handler-reject','image-throw','image-reject','loadout-throw','selected-getter-throw','content-getter-throw','pending-iterator-throw','handler-iterator-throw','handler-body-iterator-close','some-override','some-throw','run-options-setter-throw','pending-setter-throw','undefined-normalized','missing-normalizer','missing-loadout','thenable-handlers','thenable-images','normalized-iterator','before-await-queue','loadout-mutation']) {
+  const trace=[];
+  const oldRun={old:true};
+  const pending={role:'custom',customType:'pending',content:'queued',display:true,timestamp:5};
+  const custom={role:'custom',customType:'trigger',content:'custom',display:false,timestamp:7};
+  const patch={role:'system',content:'',sections:{identity:'changed'},timestamp:11};
+  const sentinel={sentinel:scenario};
+  const receiver=Object.create(AgentSession.prototype);
+  const base={selectedTools:['read','bash'],forceSystemPrompt:undefined};
+  const assistant={role:'assistant',id:'old',stopReason:'aborted'};
+  receiver.agent={state:{messages:scenario==='assistant'?[assistant]:scenario==='last-assistant'?[assistant,{role:'user'},{role:'assistant',id:'last'}, {role:'custom'}]:[],tools:[{name:'read'},{name:'bash'}]}};
+  receiver._baseSystemPromptOptions=base;
+  receiver._pendingNextTurnMessages=[pending];
+  receiver._runSystemPromptOptions=oldRun;
+  Object.defineProperty(receiver,'model',{value:'before',writable:true,configurable:true});
+  receiver._checkCompaction=function(message,continued){trace.push(['compact',message.id,continued]);if(scenario==='compaction-throw')throw sentinel;if(scenario==='compaction-reject')return Promise.reject(sentinel);return Promise.resolve().then(()=>trace.push(['compacted']));};
+  if(scenario.startsWith('compaction-'))receiver.agent.state.messages=[assistant];
+  let result;
+  receiver._extensionRunner={emitBeforeAgentStart:function(trigger,options){
+    trace.push(['before',this===receiver._extensionRunner,trigger.messageType,options===base]);
+    if(scenario==='handler-throw')throw sentinel;
+    if(scenario==='handler-reject')return Promise.reject(sentinel);
+    receiver.model='after';
+    const selectedTools=[...options.selectedTools];
+    result={systemPromptOptions:{...options,selectedTools},messages:[]};
+    if(['live-tools','explicit-tools','same-tools','aliased-mutation'].includes(scenario))receiver.agent.state.tools=[{name:'live'}];
+    if(scenario==='explicit-tools')result.systemPromptOptions.selectedTools=['edited'];
+    if(scenario==='reordered-tools')result.systemPromptOptions.selectedTools=['bash','read'];
+    if(scenario==='aliased-mutation'){result.systemPromptOptions.selectedTools=options.selectedTools;options.selectedTools[0]='mutated';}
+    if(scenario==='selected-getter-throw')Object.defineProperty(result.systemPromptOptions,'selectedTools',{get(){trace.push(['selected-get']);throw sentinel;}});
+    if(scenario==='some-override')result.systemPromptOptions.selectedTools.some=function(callback){trace.push(['some',callback('read',0),callback('other',1)]);return true;};
+    if(scenario==='some-throw')result.systemPromptOptions.selectedTools.some=function(){throw sentinel;};
+    if(['handler-messages','null-content','missing-content','false-content','content-getter-throw','handler-body-iterator-close'].includes(scenario)){
+      const entry={customType:'handler',content:[{type:'text',text:'extension'}],display:false,details:{k:1}};
+      if(scenario==='null-content')entry.content=null;
+      if(scenario==='missing-content')delete entry.content;
+      if(scenario==='false-content')entry.content=false;
+      if(['content-getter-throw','handler-body-iterator-close'].includes(scenario))Object.defineProperty(entry,'content',{get(){trace.push(['content-get',receiver._pendingNextTurnMessages.length]);throw sentinel;}});
+      result.messages=[entry];
+      if(scenario==='handler-body-iterator-close')result.messages={*[Symbol.iterator](){try{yield entry;}finally{trace.push(['iterator-closed']);}}};
+    }
+    if(scenario==='handler-iterator-throw')result.messages={[Symbol.iterator](){throw sentinel;}};
+    if(scenario==='pending-iterator-throw')receiver._pendingNextTurnMessages={[Symbol.iterator](){throw sentinel;}};
+    if(scenario==='pending-setter-throw'){const held=receiver._pendingNextTurnMessages;Object.defineProperty(receiver,'_pendingNextTurnMessages',{get(){return held;},set(){trace.push(['pending-set']);throw sentinel;}});}
+    if(scenario==='run-options-setter-throw')Object.defineProperty(receiver,'_runSystemPromptOptions',{get(){return oldRun;},set(){trace.push(['run-options-set']);throw sentinel;}});
+    if(scenario==='before-await-queue')return Promise.resolve().then(()=>{receiver._pendingNextTurnMessages.push({role:'custom',customType:'during-handler',content:[]});trace.push(['handler-microtask']);return result;});
+    if(scenario==='thenable-handlers')return{then(resolve){trace.push(['handler-then']);resolve(result);}};
+    return result;
+  }};
+  receiver._normalizePromptImages=function(images){
+    trace.push(['images',this===receiver,receiver.model,images===undefined?'undefined':images.length]);
+    if(scenario==='image-throw')throw sentinel;
+    if(scenario==='image-reject')return Promise.reject(sentinel);
+    if(scenario==='late-pending')receiver._pendingNextTurnMessages.push({role:'custom',customType:'late',content:[]});
+    const normalized={images:scenario==='images'?[{type:'image',data:'normalized',mimeType:'image/png'}]:[],hints:scenario==='hints'?['first','second']:[]};
+    if(scenario==='normalized-iterator')normalized.images={*[Symbol.iterator](){trace.push(['image-iterator']);yield{type:'image',data:'iterator',mimeType:'image/webp'};}};
+    if(scenario==='undefined-normalized')return undefined;
+    if(scenario==='thenable-images')return{then(resolve){trace.push(['image-then']);resolve(normalized);}};
+    return Promise.resolve().then(()=>{trace.push(['images-ready']);return normalized;});
+  };
+  // Shadow inherited helpers deliberately: this case tests an unavailable
+  // receiver dependency, not the original class's inherited implementation.
+  if(scenario==='missing-normalizer')receiver._normalizePromptImages=undefined;
+  receiver._preparePromptAndToolLoadout=function(options){
+    trace.push(['loadout',this===receiver,options===result.systemPromptOptions,[...options.selectedTools],receiver._pendingNextTurnMessages.length,receiver._runSystemPromptOptions===oldRun]);
+    if(scenario==='loadout-throw')throw sentinel;
+    if(scenario==='loadout-mutation')options.selectedTools=['filtered'];
+    return scenario==='system-patch'?patch:scenario==='false-patch'?false:undefined;
+  };
+  if(scenario==='missing-loadout')receiver._preparePromptAndToolLoadout=undefined;
+  const trigger=scenario.startsWith('custom')?{messageType:'custom',message:scenario==='custom-null'?null:custom}:{messageType:'user',prompt:'hello',images:scenario==='images'?[{type:'image',data:'source',mimeType:'image/png'}]:undefined};
+  let messages,error;
+  try{messages=await AgentSession.prototype._prepareRun.call(receiver,trigger);}catch(cause){error=cause===sentinel?'sentinel':cause instanceof TypeError?'TypeError':String(cause);}
+  const plain=value=>JSON.parse(JSON.stringify(value,(key,item)=>key==='timestamp'?'clock':item));
+  sdkPrepareRows.push({scenario,trace,error:error??null,messages:messages?plain(messages):null,pending:Array.isArray(receiver._pendingNextTurnMessages)?plain(receiver._pendingNextTurnMessages):'custom iterable',runOptions:receiver._runSystemPromptOptions===oldRun?'old':plain(receiver._runSystemPromptOptions),customIdentity:messages?messages.includes(custom):false,pendingIdentity:messages?messages.includes(pending):false,patchIdentity:messages?messages[0]===patch:false});
+}
+globalThis.sdkPrepareRows=sdkPrepareRows;

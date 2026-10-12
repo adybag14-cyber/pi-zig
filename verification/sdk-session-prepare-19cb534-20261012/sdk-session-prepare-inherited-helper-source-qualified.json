@@ -1,0 +1,26 @@
+{
+  "source_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "post": [
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": []
+    },
+    {
+      "manifest": "sdk-session-prepare-driver-corrected-before.json",
+      "count": 2,
+      "drift": []
+    }
+  ],
+  "links": 16,
+  "topology_same": true,
+  "cases": 44,
+  "fixture_correction": "Explicit writable own model field prevents sloppy/strict inherited accessor assignment difference and observes after-handler model value",
+  "original_body": "AgentSession.prototype._prepareRun.call(receiver,trigger); original helpers inherited",
+  "output_sha256": "95389304C93B5FAC55632AFA08DCADF29B08F90FE0266A862A9008E542AF5B3C"
+}

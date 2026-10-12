@@ -1,0 +1,27 @@
+{
+  "source_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "post": [
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": []
+    },
+    {
+      "manifest": "sdk-session-prepare-driver-explicit-before.json",
+      "count": 2,
+      "drift": []
+    }
+  ],
+  "links": 16,
+  "topology_same": true,
+  "cases": 44,
+  "fixture_scope": "Own writable model input; unavailable dependencies deliberately shadow inherited original methods with undefined",
+  "real_full_class_gap": "Native private component lacks inherited _normalizePromptImages and _preparePromptAndToolLoadout bodies. Prior delete-normalizer Source success/native failure retained separately; explicit undefined cases qualify caller dependency absence only.",
+  "original_body": "AgentSession.prototype._prepareRun.call(receiver,trigger); original last-assistant/active-tool helpers inherited",
+  "output_sha256": "3608A2074D874FE29F8E0DF41E34D05D1E10868D22A0F4E10B93A11EED012944"
+}

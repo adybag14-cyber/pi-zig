@@ -1,0 +1,14 @@
+[
+  {
+    "manifest": "sdk-session-prepare-native-expanded-source-before.json",
+    "files": 4506,
+    "mismatches": 0,
+    "paths": []
+  },
+  {
+    "manifest": "catalog19cb-zig-tools-before.json",
+    "files": 19546,
+    "mismatches": 0,
+    "paths": []
+  }
+]
