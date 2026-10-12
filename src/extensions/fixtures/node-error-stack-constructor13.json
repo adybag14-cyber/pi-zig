@@ -1,0 +1,226 @@
+{
+  "authority": "Actual pinned Node24.14.0 constructor lexical locations at caller-controlled limit1, exact shared script and logical filename",
+  "inputSha256": "1ab343e4a18671600391302b4c7f6a400ac9c0df46a3ed0f5bcdd126eb2ab811",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-constructor-source-20261012-b\\capture-constructor.mjs",
+      "sha256": "e1ff72cdc4d11157ebe7ad06600449602b4965a7155311fcc0c7e93ae78994f8"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-constructor-source-20261012-b\\error-stack-constructor-location.input.js",
+      "sha256": "1ab343e4a18671600391302b4c7f6a400ac9c0df46a3ed0f5bcdd126eb2ab811"
+    }
+  ],
+  "prePostDrift": 0,
+  "value": [
+    {
+      "id": "named",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "named",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 9,
+          "column": 25,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "spaced",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "spaced",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 10,
+          "column": 26,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "noArguments",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "noArguments",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 11,
+          "column": 31,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "noParentheses",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "noParentheses",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 12,
+          "column": 33,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "property",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "property",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 14,
+          "column": 28,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "computed",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "computed",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 15,
+          "column": 28,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "multiline",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "multiline",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 16,
+          "column": 29,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "argument",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "argument",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 18,
+          "column": 28,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "spread",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "spread",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 19,
+          "column": 26,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "target",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "target",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 20,
+          "column": 26,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "parenthesized",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "parenthesized",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 21,
+          "column": 33,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "newTarget",
+      "stack": "constructor-location",
+      "frames": [
+        {
+          "name": "NewTarget",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 35,
+          "column": 70,
+          "native": false,
+          "constructor": true,
+          "originalFunction": true
+        },
+        {
+          "name": "newTargetCaller",
+          "file": "error-stack-constructor-location.input.js",
+          "line": 36,
+          "column": 35,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ],
+      "second": "constructor-location"
+    },
+    {
+      "id": "newTargetIdentity",
+      "value": true
+    }
+  ]
+}

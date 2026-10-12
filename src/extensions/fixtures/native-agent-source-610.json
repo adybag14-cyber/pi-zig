@@ -1,0 +1,132 @@
+{
+  "schema": "sdk-source610-actual-default-converter-v1",
+  "scope": "Actual original Agent default function identity, metadata, regular-function constructibility and ordinary filter role lookups; no AgentLoop/provider/model execution",
+  "rows": [
+    {
+      "id": "shared-default-converter",
+      "refs": {
+        "converter": true,
+        "stream": true,
+        "model": true
+      },
+      "function": {
+        "name": "defaultConvertToLlm",
+        "length": 1,
+        "ownKeys": [
+          "length",
+          "name",
+          "prototype"
+        ],
+        "prototype": {
+          "writable": true,
+          "enumerable": false,
+          "configurable": false,
+          "constructor": true,
+          "ownKeys": [
+            "constructor"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ordinary-filter-and-role-reads",
+      "events": [
+        "filter.get",
+        [
+          "filter.call",
+          true,
+          1,
+          "",
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "selected": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "fresh": true,
+      "refs": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "id": "constructible-default-converter",
+      "array": true,
+      "sameMessage": true,
+      "value": [
+        {
+          "role": "user",
+          "tag": "same"
+        }
+      ]
+    },
+    {
+      "id": "nullish-and-supplied-converter",
+      "nullDefault": true,
+      "undefinedDefault": true,
+      "caller": true,
+      "falseRetained": true
+    }
+  ]
+}

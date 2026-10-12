@@ -114,3 +114,29 @@ driver_failure only after an acquire observation of completed worker state.
 Latest ee409 reference captures reproduced all eighteen prior243 schema records
 exactly; this does not imply full current upstream durable parity. Focused macOS
 Debug remains under diagnosis; Windows success is not macOS qualification.
+The canonical private Error-stack/rejection foundation, controlled-run edge fixes,
+and private Agent foundations now compose with the earlier native graph.
+Windows Debug passed 262/262 tests across 188 successful build steps, with
+4,047 source and 19,546 tool inputs unchanged. Independent composed coverage
+passed. The 30 Error-stack/rejection tests retain actual Node42 own-stack,
+constructor13, caller1, rejection19 and async-context8 observations plus GPA/GC
+checks. These hooks remain opt-in; the production fatal pipeline is still open.
+
+Controlled runs now preserve all eleven actual latest ee409 reply/abort/host
+callback observations and all ten actual alias/admission cases, alongside the
+original sixteen deterministic cases and full owner allocation failure sweep.
+Accepted host replies record status before sequence gaps drain; serialized error
+properties use actual VM boxing/enumeration and length-preserving atoms; null
+properties fail as a sandbox error. Declared script aliases remain stable,
+including empty, dotted and embedded-null names. The controlled default has no
+wall deadline, matching upstream start. These are private native owner APIs;
+public worker transport and source-complete persisted fingerprint remain open.
+
+The integrated private Agent foundations passed all eight allocation ranges on
+the same 4,047-file source, covering failure indices 0 through 1,229 exactly
+once with explicit BEGIN/COMPLETE and balanced allocations. Each range passed
+13 compiled tests and all 44 genuine Agent Source rows. The 104 executions
+repeat the same 13 cases, not 104 distinct tests. Public pi-agent-core activation
+remains disabled until native AgentLoop and the default stream are complete.
+The immutable whole-tree ee409 contract contains all 2,034 original paths and
+passed its native capture/verify gate. This is drift detection, not parity proof.

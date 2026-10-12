@@ -1,0 +1,25 @@
+import{ModelRuntime}from'@earendil-works/pi-coding-agent';const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});const{Agent}=sdkNativeAgentConfigure(runtime);
+const savedNow=Date.now;Date.now=()=>42;
+const rows=[];
+const ids=['prompt-array','prompt-object','prompt-string','prompt-images','prompt-empty','prompt-normalize-getthrow','prompt-run-getthrow','prompt-run-callthrow','prompt-run-reject','prompt-active','continue-empty','continue-system','continue-assistant-none','continue-assistant-steering','continue-assistant-followup','continue-user','continue-toolresult','continue-active','continue-run-reject','continue-steering-all'];
+try{for(const id of ids){
+ const events=[],marker={raw:true},image={type:'image',data:'image'},images=[image],message={role:'user',content:'owned',timestamp:1},batch=[message];
+ const last=id.includes('assistant')||id==='continue-steering-all'?{role:'assistant',content:[],timestamp:1}:id==='continue-system'?{role:'system',content:'base',timestamp:1}:id==='continue-toolresult'?{role:'toolResult',content:[],timestamp:1}:message;
+ const initialMessages=id==='continue-empty'?[]:id.startsWith('continue')?[last]:[];
+ const agent=new Agent({steeringMode:id==='continue-steering-all'?'all':undefined,initialState:{messages:initialMessages}});
+ if(id==='continue-assistant-steering'||id==='continue-steering-all'){agent.steer(message);agent.steer({role:'user',content:'second',timestamp:2});}
+ if(id==='continue-assistant-followup'){agent.followUp(message);agent.followUp({role:'user',content:'second',timestamp:2});}
+ if(id.endsWith('-active'))agent.activeRun={sentinel:true};
+ Object.defineProperty(agent,'normalizePromptInput',{configurable:true,get(){events.push('normalize.get');if(id==='prompt-normalize-getthrow')throw marker;return function(...args){events.push(['normalize.call',this===agent,args.length,args[1]===images]);return Agent.prototype.normalizePromptInput.call(this,...args);};}});
+ for(const name of ['runPromptMessages','runContinuation'])Object.defineProperty(agent,name,{configurable:true,get(){events.push([name+'.get']);if(id==='prompt-run-getthrow')throw marker;return function(...args){events.push([name+'.call',this===agent,args.length,args[0]===batch,args[0]?.[0]===message,args[1]===undefined?{type:'undefined'}:{type:'object',value:args[1]},args[0]===undefined?null:JSON.parse(JSON.stringify(args[0])),args[0]?.[0]?.content?.[1]===image]);if(id==='prompt-run-callthrow')throw marker;return id.endsWith('run-reject')?Promise.reject(marker):Promise.resolve({ignored:true});};}});
+ let outcome;
+ try{
+  const input=id==='prompt-array'?batch:id==='prompt-object'?message:id==='prompt-empty'?'':'hello';
+  const pending=id.startsWith('prompt')?Agent.prototype.prompt.call(agent,input,id==='prompt-images'?images:undefined):Agent.prototype.continue.call(agent);
+  events.push(['returnedPromise',pending instanceof Promise]);
+  const result=await pending;outcome={undefined:result===undefined};
+ }catch(error){outcome={raw:error===marker,name:error?.name,message:error?.message};}
+ rows.push({id,events,outcome,queued:agent.peekQueuedMessages(),stateMessages:agent.state.messages});
+}}finally{Date.now=savedNow;}
+
+globalThis.nativeAgentFoundationRows=rows;

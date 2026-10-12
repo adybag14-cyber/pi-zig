@@ -1,0 +1,67 @@
+import{ModelRuntime}from'@earendil-works/pi-coding-agent';const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});const{Agent}=sdkNativeAgentConfigure(runtime);
+const savedNow = Date.now; Date.now = () => 42;
+const rows = [], marker = { raw: true };
+const snapshot = agent => JSON.parse(JSON.stringify({ ...agent.state, pendingToolCalls: [...agent.state.pendingToolCalls] }));
+try {
+  {
+    const events = [], functions = {};
+    for (const key of ['convertToLlm', 'transformContext', 'streamFn', 'getApiKey', 'onPayload', 'onResponse', 'onProviderStreamEvent', 'beforeToolCall', 'afterToolCall', 'finishTurn', 'prepareRequest', 'prepareNextTurn', 'prepareNextTurnWithContext']) functions[key] = function() {};
+    const options = new Proxy({ ...functions, initialState: { thinkingLevel: 'high' }, steeringMode: 'all', followUpMode: 'all', sessionId: 'fixture', thinkingBudgets: { low: 2 }, transport: 'sse', maxRetryDelayMs: 7, toolExecution: 'sequential' }, { get(target, key, receiver) { events.push(String(key)); return Reflect.get(target, key, receiver); } });
+    const agent = new Agent(options);
+    rows.push({ id: 'constructor-getters', events, ownKeys: Reflect.ownKeys(agent), state: snapshot(agent), modes: [agent.steeringMode, agent.followUpMode], refs: Object.keys(functions).map(key => [key, agent[key === 'streamFn' ? 'streamFunction' : key] === functions[key]]) });
+  }
+  for (const id of ['queue-one', 'queue-all', 'queue-live-refs', 'queues-clear']) {
+    const agent = new Agent({ steeringMode: id === 'queue-all' ? 'all' : undefined }), first = { role: 'user', content: 'a', timestamp: 1 }, second = { role: 'user', content: 'b', timestamp: 2 };
+    agent.steer(first); agent.steer(second); agent.followUp({ role: 'user', content: 'c', timestamp: 3 });
+    const one = agent.peekQueuedMessages(), two = agent.peekQueuedMessages();
+    if (id === 'queue-live-refs') { first.content = 'mutated'; one.push(marker); }
+    const before = { queued: agent.hasQueuedMessages(), peek: agent.peekQueuedMessages(), freshArray: one !== two, firstIdentity: one[0] === first, modes: [agent.steeringMode, agent.followUpMode] };
+    if (id === 'queues-clear') { agent.clearSteeringQueue(); before.afterSteeringClear = agent.peekQueuedMessages(); agent.clearFollowUpQueue(); }
+    else agent.clearAllQueues();
+    rows.push({ id, before, after: { queued: agent.hasQueuedMessages(), peek: agent.peekQueuedMessages() } });
+  }
+  {
+    const calls = [], receiver = { steeringQueue: { enqueue(value) { calls.push(['enqueue', this === receiver.steeringQueue, value]); } } };
+    Agent.prototype.steer.call(receiver, marker);
+    const stateGetter = Object.getOwnPropertyDescriptor(Agent.prototype, 'state').get;
+    rows.push({ id: 'ordinary-borrowed-receivers', calls, stateIdentity: stateGetter.call({ _state: marker }) === marker });
+  }
+  {
+    const tools = [{ name: 'a', description: 'A', parameters: { type: 'object' }, execute: async () => ({ content: [] }) }], messages = [{ role: 'user', content: 'a', timestamp: 1 }], agent = new Agent({ initialState: { tools, messages } });
+    const initial = { toolsArrayCopy: agent.state.tools !== tools, messagesArrayCopy: agent.state.messages !== messages, toolIdentity: agent.state.tools[0] === tools[0], messageIdentity: agent.state.messages[0] === messages[0] };
+    agent.state.tools = tools; agent.state.messages = messages; tools.push({ name: 'b' }); messages.push({ role: 'user', content: 'b', timestamp: 2 });
+    rows.push({ id: 'state-shallow-copy', initial, state: snapshot(agent) });
+  }
+  {
+    const agent = new Agent({ initialState: { messages: [{ role: 'system', content: '', sections: { preamble: 'baseline' }, timestamp: 1 }, { role: 'user', content: 'a', timestamp: 2 }] } });
+    agent.steer(marker); agent.followUp(marker); agent.state.pendingToolCalls.add('tool'); agent.state.errorMessage = 'old'; agent.reset();
+    rows.push({ id: 'reset-baseline', state: snapshot(agent), queued: agent.hasQueuedMessages() });
+  }
+  {
+    const agent = new Agent({}); agent.activeRun = { sentinel: true };
+    let outcome; try { agent.reset(); outcome = { accepted: true }; } catch(error) { outcome = { name: error.name, message: error.message }; }
+    rows.push({ id: 'reset-active-error', outcome });
+  }
+  {
+    const agent = new Agent({}), events = []; let release;
+    const pending = agent.runWithLifecycle(async signal => { events.push(['executor', signal === agent.signal, signal.aborted, agent.state.isStreaming]); await new Promise(resolve => release = resolve); events.push(['executor-resume', signal.aborted]); });
+    const idle = agent.waitForIdle(); idle.then(() => events.push('idle'));
+    events.push(['returned', pending instanceof Promise, idle === agent.waitForIdle(), agent.state.isStreaming]); agent.abort(); release(); await pending; await idle;
+    rows.push({ id: 'lifecycle-wait-abort', events, state: snapshot(agent), signal: agent.signal, activeRun: agent.activeRun });
+  }
+  {
+    const agent = new Agent({}), events = []; let offSecond;
+    agent.subscribe(async function(event, signal) { events.push(['first', this === undefined, signal === agent.signal, event.type, agent.state.messages.length]); offSecond(); agent.subscribe(() => events.push('late')); await Promise.resolve(); events.push('first-awaited'); });
+    offSecond = agent.subscribe(() => events.push('removed'));
+    await agent.runWithLifecycle(async () => { await agent.processEvents({ type: 'message_end', message: { role: 'user', content: 'event', timestamp: 1 } }); });
+    rows.push({ id: 'events-live-listener-set', events, state: snapshot(agent) });
+  }
+  {
+    const agent = new Agent({}), events = [];
+    agent.subscribe((event, signal) => events.push([event.type, signal === agent.signal, agent.state.isStreaming]));
+    await agent.runWithLifecycle(async () => { throw marker; });
+    rows.push({ id: 'lifecycle-raw-failure', events, state: snapshot(agent), idlePromise: agent.waitForIdle() instanceof Promise });
+  }
+} finally { Date.now = savedNow; }
+
+globalThis.nativeAgentFoundationRows=rows;

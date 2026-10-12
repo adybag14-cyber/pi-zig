@@ -1206,6 +1206,33 @@ typedef void JSHostPromiseRejectionTracker(JSContext *ctx, JSValueConst promise,
                                            bool is_handled, void *opaque);
 JS_EXTERN void JS_SetHostPromiseRejectionTracker(JSRuntime *rt, JSHostPromiseRejectionTracker *cb, void *opaque);
 
+/* Optional owner-thread native Error stack semantics. Null retains upstream
+   behavior. The host implements descriptor/lazy-format policy; this C seam only
+   exposes creation/capture timing and genuine current callsite metadata. */
+enum { JS_ERROR_STACK_PREPARE = 0, JS_ERROR_STACK_CAPTURE = 1,
+       JS_ERROR_STACK_RECAPTURE = 2 };
+enum { JS_ERROR_STACK_SKIP_FIRST = 1, JS_ERROR_STACK_SINGLE_LEVEL = 2,
+       JS_ERROR_STACK_FILTER_FUNCTION = 4 };
+typedef int JSNativeErrorStackHook(JSContext *ctx, JSValueConst error, int phase,
+                                   JSValueConst filter, const char *filename,
+                                   int line, int column, int flags, void *opaque);
+JS_EXTERN void JS_SetNativeErrorStackAccessors(JSContext *ctx, JSValueConst getter, JSValueConst setter);
+JS_EXTERN int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames);
+JS_EXTERN void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb,
+                                         void *opaque);
+JS_EXTERN bool JS_IsStackTraceFunction(JSContext *ctx, JSValueConst value);
+JS_EXTERN JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
+                                               JSValueConst filter,
+                                               const char *filename, int line,
+                                               int column, int flags);
+/* Private frame projection never reads guest fields or invokes traps. The
+   returned filename/function-name references belong to the caller. */
+JS_EXTERN JSValue JS_CloneCapturedStackFrame(JSContext *ctx, JSValueConst frame);
+JS_EXTERN JSValue JS_GetCapturedStackFramePrototype(JSContext *ctx);
+JS_EXTERN int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
+                                        JSValue *filename, JSValue *function_name,
+                                        int *line, int *column, int *is_native,
+                                        int *is_constructor);
 /* return != 0 if the JS code needs to be interrupted */
 typedef int JSInterruptHandler(JSRuntime *rt, void *opaque);
 JS_EXTERN void JS_SetInterruptHandler(JSRuntime *rt, JSInterruptHandler *cb, void *opaque);

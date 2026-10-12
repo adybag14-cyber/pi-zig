@@ -10,6 +10,7 @@ const models = @import("codemode_models.zig");
 
 pub const Tool = struct {
     name: []const u8,
+    js_name: ?[]const u8 = null,
     description: []const u8 = "",
     discovery_metadata: ?discovery.Tool = null,
     context: ?*anyopaque = null,
@@ -294,18 +295,17 @@ pub const Execution = struct {
         const metadata = try engine.checked(c.JS_NewArray(engine.context));
         defer engine.freeValue(metadata);
         for (tools, 0..) |tool, index| {
-            const js_name = try identifier(gpa, tool.name);
+            const js_name = if (tool.js_name) |declared| try gpa.dupe(u8, declared) else try identifier(gpa, tool.name);
             defer gpa.free(js_name);
             const name_z = try gpa.dupeZ(u8, tool.name);
             defer gpa.free(name_z);
-            const js_name_z = try gpa.dupeZ(u8, js_name);
-            defer gpa.free(js_name_z);
             const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callTool, name_z, 1, @intCast(index), 0, null));
             defer engine.freeValue(function);
-            const alias_atom = c.JS_NewAtom(engine.context, js_name_z);
+            const alias_atom = c.JS_NewAtomLen(engine.context, js_name.ptr, js_name.len);
+            if (alias_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
             defer c.JS_FreeAtom(engine.context, alias_atom);
             if (c.JS_HasProperty(engine.context, tool_object, alias_atom) == 0) {
-                try state.put(tool_object, js_name_z, c.JS_DupValue(engine.context, function));
+                if (c.JS_SetProperty(engine.context, tool_object, alias_atom, c.JS_DupValue(engine.context, function)) < 0) return error.JavaScriptException;
                 const owned_name = try gpa.dupe(u8, js_name);
                 state.tool_names.append(gpa, owned_name) catch |cause| {
                     gpa.free(owned_name);
@@ -319,9 +319,10 @@ pub const Execution = struct {
                 if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(state.tool_names.items.len - 1), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
             }
             if (!std.mem.eql(u8, js_name, tool.name)) {
-                const raw_atom = c.JS_NewAtom(engine.context, name_z);
+                const raw_atom = c.JS_NewAtomLen(engine.context, tool.name.ptr, tool.name.len);
+                if (raw_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
                 defer c.JS_FreeAtom(engine.context, raw_atom);
-                if (c.JS_HasProperty(engine.context, tool_object, raw_atom) == 0) try state.put(tool_object, name_z, c.JS_DupValue(engine.context, function));
+                if (c.JS_HasProperty(engine.context, tool_object, raw_atom) == 0 and c.JS_SetProperty(engine.context, tool_object, raw_atom, c.JS_DupValue(engine.context, function)) < 0) return error.JavaScriptException;
             }
         }
         const handler = try engine.checked(c.JS_NewObject(engine.context));

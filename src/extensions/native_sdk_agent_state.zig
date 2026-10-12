@@ -39,7 +39,7 @@ fn prompt(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c
     const engine = em.Engine.fromContext(context.?);
     return promptValue(engine, roots[0]) catch |err| sdk.fail(engine, err);
 }
-fn promptValue(engine: *em.Engine, state: c.JSValue) !c.JSValue {
+pub fn promptValue(engine: *em.Engine, state: c.JSValue) !c.JSValue {
     const messages = try sdk.get(engine, state, "messages");
     defer engine.freeValue(messages);
     const message = try replay.currentSystemMessage(engine, messages);

@@ -1,0 +1,361 @@
+{
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "packages/agent/src/agent.ts": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+    "packages/ai/src/utils/transcript.ts": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2"
+  },
+  "scope": "Actual public Agent constructor initial tools uses original transcript toToolDeclaration; caller JSON/global and tool getters restored; no AgentLoop/tool/provider execution",
+  "rows": [
+    {
+      "id": "plain-schema",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ],
+        [
+          "tool.sampling",
+          2
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "initial",
+              "parameters": {
+                "type": "object"
+              },
+              "constrainedSampling": true
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": false
+    },
+    {
+      "id": "sampling-two-reads",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ],
+        [
+          "tool.sampling",
+          2
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "initial",
+              "parameters": {
+                "type": "object"
+              },
+              "constrainedSampling": 2
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": false
+    },
+    {
+      "id": "sampling-undefined",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "initial",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": false
+    },
+    {
+      "id": "json-callee-order",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ],
+        [
+          "tool.sampling",
+          2
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "initial",
+              "parameters": {
+                "type": "object"
+              },
+              "constrainedSampling": true
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": false
+    },
+    {
+      "id": "parameters-throws",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters"
+      ],
+      "outcome": {
+        "constructed": false,
+        "raw": true
+      }
+    },
+    {
+      "id": "stringify-throws",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ]
+      ],
+      "outcome": {
+        "constructed": false,
+        "raw": true
+      }
+    },
+    {
+      "id": "parse-result-identity",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ],
+        [
+          "tool.sampling",
+          2
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "initial",
+              "parameters": {
+                "callerParsed": true
+              },
+              "constrainedSampling": true
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": true
+    },
+    {
+      "id": "name-mutates-description",
+      "events": [
+        "tool.name",
+        "tool.description",
+        "JSON.parse.get",
+        "JSON.stringify.get",
+        "tool.parameters",
+        [
+          "JSON.stringify.call",
+          true
+        ],
+        [
+          "parameters.toJSON",
+          true
+        ],
+        [
+          "JSON.parse.call",
+          true
+        ],
+        [
+          "tool.sampling",
+          1
+        ],
+        [
+          "tool.sampling",
+          2
+        ]
+      ],
+      "outcome": {
+        "constructed": true
+      },
+      "toolsArray": [
+        true
+      ],
+      "messages": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "fixture",
+              "description": "changed",
+              "parameters": {
+                "type": "object"
+              },
+              "constrainedSampling": true
+            }
+          ],
+          "timestamp": 0
+        }
+      ],
+      "parsedIdentity": false
+    }
+  ]
+}

@@ -150,3 +150,144 @@ test "native CodeMode controlled run releases every failed owner allocation thro
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Lifecycle.exercise, .{});
 }
+
+test "native CodeMode controlled run retains all eleven actual latest properties abort and callback outcomes" {
+    const Edge = struct {
+        row: json.Value,
+        events: json.Owned,
+        fn event(self: *@This(), value: json.Value) !void {
+            try self.events.value.array.append(try json.clone(self.events.arena.allocator(), value));
+        }
+        fn started(raw: ?*anyopaque, run: *runs.Run, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try self.event(.{ .string = "started" });
+            if (std.mem.eql(u8, self.row.object.get("mode").?.string, "throw-started")) try run.failHost("started original");
+        }
+        fn call(raw: ?*anyopaque, run: *runs.Run, value: runs.Call) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const a = self.events.arena.allocator();
+            try self.event(.{ .string = try std.fmt.allocPrint(a, "call {d}", .{value.id}) });
+            const mode = self.row.object.get("mode").?.string;
+            if (std.mem.eql(u8, mode, "throw-call")) return run.failHost("call original");
+            if (std.mem.eql(u8, mode, "throw-idle") or std.mem.eql(u8, mode, "abort-gap")) return;
+            const payload = self.row.object.get("serialized").?.string;
+            const success = std.mem.eql(u8, mode, "success");
+            try run.deliver(1, started_at + 1, value.id, if (success) .{ .success = payload } else .{ .failure = .{ .message = "actual failure", .properties = payload } });
+        }
+        fn idle(raw: ?*anyopaque, run: *runs.Run, seq: f64, issued: f64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            var row: json.Value = .{ .array = .init(self.events.arena.allocator()) };
+            try row.array.append(.{ .string = "idle" });
+            try row.array.append(.{ .float = seq });
+            try row.array.append(.{ .float = issued });
+            try self.event(row);
+            if (std.mem.eql(u8, self.row.object.get("mode").?.string, "throw-idle")) try run.failHost("idle original");
+        }
+    };
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("mcp/fixtures/codemode-run-ee409-edges-source.json"));
+    defer source.deinit();
+    const rows = source.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 11), rows.len);
+    for (rows) |row| {
+        var events = try json.Owned.empty(std.testing.allocator);
+        events.value = .{ .array = .init(events.arena.allocator()) };
+        var edge: Edge = .{ .row = row, .events = events };
+        defer edge.events.deinit();
+        const run = try runs.Run.create(std.testing.allocator, std.testing.io, row.object.get("code").?.string, .{ .started_at = started_at, .seed = 1, .tools = &.{ .{ .name = "echo" }, .{ .name = "wait" } }, .observer = .{ .context = &edge, .started = Edge.started, .call = Edge.call, .idle = Edge.idle } });
+        defer run.deinit();
+        const before = std.Io.Clock.awake.now(std.testing.io).toMilliseconds();
+        try run.begin();
+        if (std.mem.eql(u8, row.object.get("mode").?.string, "abort-gap")) {
+            try std.testing.expect(!run.finished);
+            try run.deliver(2, started_at + 2000, 2, .{ .success = "\"second\"" });
+            try run.abortWithMessage("actual gap abort");
+        }
+        try std.testing.expect(run.finished);
+        const elapsed = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() - before;
+        var expected = try json.Owned.empty(std.testing.allocator);
+        defer expected.deinit();
+        expected.value = try json.clone(expected.arena.allocator(), row.object.get("result").?);
+        var actual = try json.Owned.empty(std.testing.allocator);
+        defer actual.deinit();
+        actual.value = try json.clone(actual.arena.allocator(), run.core.result.value);
+        for (expected.value.object.getPtr("calls").?.array.items) |*call| {
+            const measured = try json.asNumber(call.object.get("durationMs").?);
+            try std.testing.expect(std.math.isFinite(measured) and measured >= 0 and measured <= try json.asNumber(row.object.get("elapsedMs").?));
+            _ = call.object.orderedRemove("durationMs");
+        }
+        for (actual.value.object.getPtr("calls").?.array.items) |*call| {
+            const measured = try json.asNumber(call.object.get("durationMs").?);
+            try std.testing.expect(std.math.isFinite(measured) and measured >= 0 and measured == @floor(measured) and measured <= @as(f64, @floatFromInt(elapsed + 1)));
+            _ = call.object.orderedRemove("durationMs");
+        }
+        if (!json.equal(expected.value, actual.value)) {
+            const bytes = try json.stringify(std.testing.allocator, actual.value);
+            defer std.testing.allocator.free(bytes);
+            std.debug.print("Latest controlled edge {s} actual={s}\n", .{ row.object.get("name").?.string, bytes });
+        }
+        try std.testing.expect(json.equal(expected.value, actual.value));
+        try std.testing.expect(json.equal(row.object.get("events").?, edge.events.value));
+    }
+}
+
+test "native CodeMode controlled run retains all ten actual latest declared aliases and admission failures" {
+    const Alias = struct {
+        fn idle(raw: ?*anyopaque, _: *runs.Run, seq: f64, issued: f64) !void {
+            const probe: *Probe = @ptrCast(@alignCast(raw.?));
+            const a = probe.data.arena.allocator();
+            var event: json.Value = .{ .array = .init(a) };
+            try event.array.append(.{ .string = "idle" });
+            try event.array.append(.{ .float = seq });
+            try event.array.append(.{ .float = issued });
+            try probe.data.value.object.getPtr("events").?.array.append(event);
+        }
+    };
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("mcp/fixtures/codemode-run-ee409-alias-source.json"));
+    defer source.deinit();
+    const rows = source.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 10), rows.len);
+    for (rows) |row| {
+        var probe = try Probe.init(std.testing.allocator);
+        defer probe.data.deinit();
+        const declared = row.object.get("tools").?.array.items;
+        const tools = try std.testing.allocator.alloc(runs.Tool, declared.len);
+        defer std.testing.allocator.free(tools);
+        for (declared, tools) |tool, *owned| owned.* = .{ .name = tool.object.get("name").?.string, .js_name = if (tool.object.get("jsName")) |name| name.string else null, .description = if (tool.object.get("description")) |description| description.string else "" };
+        const options: runs.Options = .{ .started_at = started_at, .seed = 1, .tools = tools, .observer = .{ .context = &probe, .started = Probe.started, .call = Probe.call, .idle = Alias.idle } };
+        if (row.object.get("admissionFailure")) |failure| {
+            const cause = if (std.mem.eql(u8, failure.object.get("message").?.string, "Tool names must be unique")) error.DuplicateToolName else error.DuplicateToolScriptName;
+            try std.testing.expectError(cause, runs.Run.create(std.testing.allocator, std.testing.io, row.object.get("code").?.string, options));
+            try std.testing.expectEqual(@as(usize, 0), probe.data.value.object.get("events").?.array.items.len);
+            continue;
+        }
+        const run = try runs.Run.create(std.testing.allocator, std.testing.io, row.object.get("code").?.string, options);
+        defer run.deinit();
+        const before = std.Io.Clock.awake.now(std.testing.io).toMilliseconds();
+        try run.begin();
+        try std.testing.expect(run.finished);
+        const elapsed = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() - before;
+        var expected = try json.Owned.empty(std.testing.allocator);
+        defer expected.deinit();
+        expected.value = try json.clone(expected.arena.allocator(), row.object.get("result").?);
+        var actual = try json.Owned.empty(std.testing.allocator);
+        defer actual.deinit();
+        actual.value = try json.clone(actual.arena.allocator(), run.core.result.value);
+        for (expected.value.object.getPtr("calls").?.array.items) |*call| {
+            const measured = try json.asNumber(call.object.get("durationMs").?);
+            try std.testing.expect(std.math.isFinite(measured) and measured >= 0 and measured <= try json.asNumber(row.object.get("elapsedMs").?));
+            _ = call.object.orderedRemove("durationMs");
+        }
+        for (actual.value.object.getPtr("calls").?.array.items) |*call| {
+            const measured = try json.asNumber(call.object.get("durationMs").?);
+            try std.testing.expect(std.math.isFinite(measured) and measured >= 0 and measured == @floor(measured) and measured <= @as(f64, @floatFromInt(elapsed + 1)));
+            _ = call.object.orderedRemove("durationMs");
+        }
+        if (!json.equal(expected.value, actual.value)) {
+            const bytes = try json.stringify(std.testing.allocator, actual.value);
+            defer std.testing.allocator.free(bytes);
+            std.debug.print("Latest declared alias {s} actual={s}\n", .{ row.object.get("name").?.string, bytes });
+        }
+        try std.testing.expect(json.equal(expected.value, actual.value));
+        inline for (.{ "calls", "events" }) |key| try std.testing.expect(json.equal(row.object.get(key).?, probe.data.value.object.get(key).?));
+    }
+}

@@ -1,0 +1,579 @@
+{
+  "upstream": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "actual upstream Inline WASM controlled run edge observations; unmodified raw durations retained",
+  "rows": [
+    {
+      "name": "properties-toJSON-array",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "[7,{\"x\":2}]",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual failure",
+          [
+            "0",
+            "1"
+          ],
+          [
+            "0",
+            "1",
+            "message"
+          ],
+          {
+            "0": 7,
+            "1": {
+              "x": 2
+            }
+          },
+          true
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.14339999999999975
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 24.623599999999996
+    },
+    {
+      "name": "properties-toJSON-string",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "\"A😀Z\"",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual failure",
+          [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          [
+            "0",
+            "1",
+            "2",
+            "3",
+            "message"
+          ],
+          {
+            "0": "A",
+            "1": "\ud83d",
+            "2": "\ude00",
+            "3": "Z"
+          },
+          true
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.037600000000011846
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 7.941900000000004
+    },
+    {
+      "name": "properties-toJSON-null",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "null",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "TypeError: Cannot convert undefined or null to object"
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.023200000000002774
+          }
+        ]
+      },
+      "finished": true,
+      "elapsedMs": 7.852800000000002
+    },
+    {
+      "name": "properties-toJSON-number",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "7",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual failure",
+          [],
+          [
+            "message"
+          ],
+          {},
+          true
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.021600000000006503
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 6.478099999999998
+    },
+    {
+      "name": "properties-toJSON-boolean",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "true",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual failure",
+          [],
+          [
+            "message"
+          ],
+          {},
+          true
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.018900000000002137
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.498900000000006
+    },
+    {
+      "name": "properties-toJSON-reserved",
+      "code": "try { await tools.echo(1); } catch (e) { return [e.name,e.message,Object.keys(e),Object.getOwnPropertyNames(e),Object.fromEntries(Object.keys(e).map(k=>[k,e[k]])),Object.getPrototypeOf(e)===Error.prototype]; }",
+      "mode": "properties",
+      "serialized": "{\"name\":\"skip\",\"message\":\"skip\",\"stack\":\"skip\",\"__proto__\":{\"x\":7},\"nul\\u0000key\":8,\"extra\":9}",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual failure",
+          [
+            "__proto__",
+            "nul\u0000key",
+            "extra"
+          ],
+          [
+            "message",
+            "__proto__",
+            "nul\u0000key",
+            "extra"
+          ],
+          {
+            "__proto__": {
+              "x": 7
+            },
+            "nul\u0000key": 8,
+            "extra": 9
+          },
+          true
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.02199999999999136
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.356499999999997
+    },
+    {
+      "name": "success-special-keys",
+      "code": "const x=await tools.echo(1); return [Object.keys(x),Object.getPrototypeOf(x)===Object.prototype,x[\"nul\\u0000key\"],x.__proto__];",
+      "mode": "success",
+      "serialized": "{\"__proto__\":{\"x\":7},\"nul\\u0000key\":8}",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [
+        1
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            "__proto__",
+            "nul\u0000key"
+          ],
+          true,
+          8,
+          {
+            "x": 7
+          }
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.017400000000009186
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.136600000000016
+    },
+    {
+      "name": "buffered-success-abort-gap",
+      "code": "await Promise.all([tools.wait(1),tools.wait(2)]); return 9",
+      "mode": "abort-gap",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "wait",
+          "args": 1
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "wait",
+          "args": 2
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "call 2",
+        [
+          "idle",
+          0,
+          2
+        ]
+      ],
+      "deliveries": [
+        2
+      ],
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "aborted",
+          "message": "actual gap abort"
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "wait",
+            "status": "cancelled",
+            "durationMs": 0.1634999999999991
+          },
+          {
+            "name": "wait",
+            "status": "ok",
+            "durationMs": 0.013399999999990087
+          }
+        ]
+      },
+      "finished": true,
+      "elapsedMs": 5.211199999999991
+    },
+    {
+      "name": "observer-throws-started",
+      "code": "return await tools.echo(1)",
+      "mode": "throw-started",
+      "calls": [],
+      "events": [
+        "started"
+      ],
+      "deliveries": [],
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Sandbox host failed: started original"
+        },
+        "output": [],
+        "calls": []
+      },
+      "finished": true,
+      "elapsedMs": 4.994799999999998
+    },
+    {
+      "name": "observer-throws-call",
+      "code": "return await tools.echo(1)",
+      "mode": "throw-call",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1"
+      ],
+      "deliveries": [],
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Sandbox host failed: call original"
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "cancelled",
+            "durationMs": 0.03909999999999059
+          }
+        ]
+      },
+      "finished": true,
+      "elapsedMs": 5.126199999999983
+    },
+    {
+      "name": "observer-throws-idle",
+      "code": "return await tools.echo(1)",
+      "mode": "throw-idle",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ]
+      ],
+      "deliveries": [],
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Sandbox host failed: idle original"
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "cancelled",
+            "durationMs": 0.024799999999999045
+          }
+        ]
+      },
+      "finished": true,
+      "elapsedMs": 4.989599999999996
+    }
+  ]
+}

@@ -58,6 +58,7 @@ pub const Engine = struct {
     native_sdk_command_runner_prototype: ?c.JSValue = null,
     native_sdk_mcp_registry_prototype: ?c.JSValue = null,
     native_sdk_agent_default_model: ?c.JSValue = null,
+    native_agent_core_cache: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -240,6 +241,7 @@ pub const Engine = struct {
         if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
         if (self.native_sdk_mcp_registry_prototype) |value| self.freeValue(value);
         if (self.native_sdk_agent_default_model) |value| self.freeValue(value);
+        if (self.native_agent_core_cache) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
         if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);

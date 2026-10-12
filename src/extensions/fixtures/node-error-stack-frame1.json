@@ -1,0 +1,38 @@
+{
+  "authority": "Actual pinned Node24.14.0 named caller frame at caller-controlled limit1, exact shared script and logical filename",
+  "inputSha256": "6300abd2d86e2264b79cfe15f48c2659c9a681abfe029859b535cc28f07bfad1",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-controlled-source-20261011-g\\capture-frame1.mjs",
+      "sha256": "bd16c20c0b0c6a94640571ade90b0b735550a7222a7c737dabc2589fee43b791"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-controlled-source-20261011-g\\owned-error-stack-frame.input.js",
+      "sha256": "6300abd2d86e2264b79cfe15f48c2659c9a681abfe029859b535cc28f07bfad1"
+    }
+  ],
+  "prePostDrift": 0,
+  "value": {
+    "stack": "prepared-source-frame",
+    "observed": {
+      "same": true,
+      "count": 1,
+      "frames": [
+        {
+          "name": "ownedFrame",
+          "file": "owned-error-stack-frame.input.js",
+          "line": 2,
+          "column": 30,
+          "native": false,
+          "constructor": false,
+          "originalFunction": true
+        }
+      ]
+    },
+    "second": "prepared-source-frame"
+  }
+}

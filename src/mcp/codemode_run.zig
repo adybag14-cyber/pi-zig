@@ -7,7 +7,7 @@ const c = em.c;
 const json = @import("protocol.zig").json;
 const host_mod = @import("codemode_run_host.zig");
 const clock_mod = @import("codemode_clock.zig");
-pub const Tool = struct { name: []const u8, description: []const u8 = "" };
+pub const Tool = struct { name: []const u8, js_name: ?[]const u8 = null, description: []const u8 = "" };
 pub const Global = struct { name: []const u8, spread: bool = false };
 pub const Call = struct { id: u64, target: enum { tool, global }, name: []const u8, args: ?json.Value };
 pub const Observer = struct {
@@ -23,7 +23,7 @@ pub const Options = struct {
     globals: []const Global = &.{},
     store: json.Value = .{ .object = .empty },
     observer: Observer,
-    timeout_ms: ?u64 = 300_000,
+    timeout_ms: ?u64 = null,
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 256 * 1024,
     interrupt_budget: ?f64 = 100_000,
@@ -47,6 +47,8 @@ pub const Run = struct {
     finished: bool = false,
     suppressing_diagnostics: bool = false,
     script_failure: ?anyerror = null,
+    sandbox_failure: ?[]const u8 = null,
+    abort_message: ?[]const u8 = null,
 
     /// Creation performs validation and ownership admission. begin() is a
     /// separate owner turn, so callbacks cannot precede publication of this Run.
@@ -68,7 +70,7 @@ pub const Run = struct {
         const arena = self.core.result.arena.allocator();
         self.source = try arena.dupe(u8, source);
         const tools = try arena.alloc(vm.Tool, options.tools.len);
-        for (options.tools, tools) |tool, *owned| owned.* = .{ .name = try arena.dupe(u8, tool.name), .description = try arena.dupe(u8, tool.description), .execute = forbiddenExecutor };
+        for (options.tools, tools) |tool, *owned| owned.* = .{ .name = try arena.dupe(u8, tool.name), .js_name = if (tool.js_name) |name| try arena.dupe(u8, name) else null, .description = try arena.dupe(u8, tool.description), .execute = forbiddenExecutor };
         self.core.tools = tools;
         const globals = try arena.alloc(Global, options.globals.len);
         for (options.globals, globals) |global, *owned| owned.* = .{ .name = try arena.dupe(u8, global.name), .spread = global.spread };
@@ -121,6 +123,7 @@ pub const Run = struct {
         if (self.begun or self.finished) return error.RunAlreadyStarted;
         self.begun = true;
         if (self.observer.started) |notify| try notify(self.observer.context, self, self.fingerprint);
+        if (self.finished) return;
         if (self.core.aborted) return self.finish();
         if (self.core.checkLimits(true)) return self.finish();
         const wrapped = try std.fmt.allocPrint(self.gpa, "(async (tools, console) => {{{s}\n}})", .{self.source});
@@ -153,10 +156,27 @@ pub const Run = struct {
     /// While the VM is executing, answers are buffered until its next drain.
     pub fn deliver(self: *Run, seq: f64, now: f64, id: u64, outcome: host_mod.Outcome) !void {
         try self.host.deliver(seq, now, id, outcome);
+        if (self.finished) return;
+        // Host acceptance finishes the call observation even if an earlier
+        // sequence gap prevents the VM from consuming this answer yet.
+        const pending = self.pending.getPtr(id) orelse return error.MissingPendingRunCall;
+        try self.core.completeCall(pending.record, if (outcome == .success) "ok" else "error", pending.started);
+        pending.record = null;
     }
     pub fn abort(self: *Run) !void {
+        return self.abortWithMessage("Execution aborted");
+    }
+    pub fn abortWithMessage(self: *Run, message: []const u8) !void {
         if (self.finished) return;
+        self.abort_message = try self.core.result.arena.allocator().dupe(u8, message);
         self.core.aborted = true;
+        if (!self.in_vm) try self.finish();
+    }
+    /// The owner bridge supplies the original callback failure text. Capture
+    /// it without unwinding through a VM call or re-entering an active VM.
+    pub fn failHost(self: *Run, message: []const u8) !void {
+        if (self.finished) return;
+        self.sandbox_failure = try std.fmt.allocPrint(self.core.result.arena.allocator(), "Sandbox host failed: {s}", .{message});
         if (!self.in_vm) try self.finish();
     }
     pub fn pump(self: *Run) !void {
@@ -172,7 +192,13 @@ pub const Run = struct {
             defer self.core.engine.freeValue(removed.value.reject);
             try self.clock.advance(self.host.clock);
             if (c.JS_PIAdvanceDeterministicTime(self.core.engine.runtime, self.clock.realtime(), self.clock.elapsed()) < 0) return error.InvalidDeterministicTime;
-            const value = try self.replyValue(reply);
+            const value = self.replyValue(reply) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                const text = if (self.core.engine.captured_exception) |exception| try self.core.engine.toString(exception) else try self.gpa.dupe(u8, @errorName(err));
+                defer self.gpa.free(text);
+                self.sandbox_failure = try self.core.result.arena.allocator().dupe(u8, text);
+                return self.finish();
+            };
             defer self.core.engine.freeValue(value);
             var args = [_]c.JSValue{value};
             self.in_vm = true;
@@ -197,7 +223,7 @@ pub const Run = struct {
         };
         self.in_vm = false;
         if (self.core.terminal_failure) |failure| if (failure == error.OutOfMemory) return error.OutOfMemory;
-        if (self.core.script_settled or self.core.exit_requested or self.script_failure != null or self.core.checkLimits(false)) return self.finish();
+        if (self.sandbox_failure != null or self.core.script_settled or self.core.exit_requested or self.script_failure != null or self.core.checkLimits(false)) return self.finish();
         if (self.pending.count() == 0) {
             self.script_failure = error.CodemodeStalledPromise;
             return self.finish();
@@ -207,14 +233,14 @@ pub const Run = struct {
     fn finish(self: *Run) !void {
         if (self.finished) return;
         const arena = self.core.result.arena.allocator();
-        const success = self.core.exit_requested or (self.core.script_settled and self.core.terminal_error == null and self.core.terminal_failure == null and !self.core.aborted and !self.core.timed_out and !self.core.output_overflow);
+        const success = self.sandbox_failure == null and (self.core.exit_requested or (self.core.script_settled and self.core.terminal_error == null and self.core.terminal_failure == null and !self.core.aborted and !self.core.timed_out and !self.core.output_overflow));
         var values = self.pending.valueIterator();
         while (values.next()) |pending| try self.core.completeCall(pending.record, "cancelled", pending.started);
         try self.core.result.value.object.put(arena, "ok", .{ .bool = success });
         var during: json.Value = .{ .object = .empty };
         try during.object.put(arena, "seq", .{ .float = self.host.current });
         try during.object.put(arena, "issued", .{ .float = self.host.issued });
-        try self.core.result.value.object.put(arena, "during", during);
+        if (self.sandbox_failure == null and !self.core.aborted and !self.core.timed_out) try self.core.result.value.object.put(arena, "during", during);
         if (success) {
             var set: json.Value = .{ .object = .empty };
             var deleted: json.Value = .{ .array = .init(arena) };
@@ -229,8 +255,12 @@ pub const Run = struct {
         } else {
             var failure: json.Value = .{ .object = .empty };
             const stalled = if (self.script_failure) |cause| cause == error.CodemodeStalledPromise else false;
-            try failure.object.put(arena, "kind", .{ .string = if (self.core.aborted) "aborted" else if (self.core.timed_out) "timeout" else "script" });
-            if (self.core.terminal_error) |description| {
+            try failure.object.put(arena, "kind", .{ .string = if (self.sandbox_failure != null) "sandbox" else if (self.core.aborted) "aborted" else if (self.core.timed_out) "timeout" else "script" });
+            if (self.sandbox_failure) |message| {
+                try failure.object.put(arena, "message", .{ .string = message });
+            } else if (self.core.aborted) {
+                try failure.object.put(arena, "message", .{ .string = self.abort_message orelse "Execution aborted" });
+            } else if (self.core.terminal_error) |description| {
                 var fields = description.object.iterator();
                 while (fields.next()) |field| try failure.object.put(arena, field.key_ptr.*, field.value_ptr.*);
             } else {
@@ -287,15 +317,25 @@ pub const Run = struct {
         const message = reply.payload orelse "";
         if (c.JS_DefinePropertyValueStr(engine.context, value, "message", c.JS_NewStringLen(engine.context, message.ptr, message.len), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         if (reply.properties) |bytes| {
-            var properties = try json.Owned.parse(self.gpa, bytes);
-            defer properties.deinit();
-            if (properties.value == .object) {
-                var fields = properties.value.object.iterator();
-                while (fields.next()) |field| {
-                    if (std.mem.eql(u8, field.key_ptr.*, "name") or std.mem.eql(u8, field.key_ptr.*, "message") or std.mem.eql(u8, field.key_ptr.*, "stack")) continue;
-                    const key = try self.gpa.dupeZ(u8, field.key_ptr.*);
-                    defer self.gpa.free(key);
-                    if (c.JS_DefinePropertyValueStr(engine.context, value, key, try engine.fromJsonValue(field.value_ptr.*), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            const parsed = try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "host-properties.json"));
+            defer engine.freeValue(parsed);
+            const properties = try engine.checked(c.JS_ToObject(engine.context, parsed));
+            defer engine.freeValue(properties);
+            var fields: [*c]c.JSPropertyEnum = null;
+            var count: u32 = 0;
+            if (c.JS_GetOwnPropertyNames(engine.context, &fields, &count, properties, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) {
+                return @import("../extensions/native_js_values.zig").capture(engine);
+            }
+            defer c.JS_FreePropertyEnum(engine.context, fields, count);
+            for (fields[0..count]) |field| {
+                const key_value = try engine.checked(c.JS_AtomToString(engine.context, field.atom));
+                defer engine.freeValue(key_value);
+                const key = try engine.toString(key_value);
+                defer self.gpa.free(key);
+                if (std.mem.eql(u8, key, "name") or std.mem.eql(u8, key, "message") or std.mem.eql(u8, key, "stack")) continue;
+                const property = try engine.checked(c.JS_GetProperty(engine.context, properties, field.atom));
+                if (c.JS_DefinePropertyValue(engine.context, value, field.atom, property, c.JS_PROP_C_W_E) < 0) {
+                    return @import("../extensions/native_js_values.zig").capture(engine);
                 }
             }
         }
@@ -358,6 +398,12 @@ fn identifier(value: []const u8) bool {
     return true;
 }
 fn validateDeclarations(gpa: std.mem.Allocator, tools: []const Tool, globals: []const Global) !void {
+    var raw_names: std.StringHashMapUnmanaged(void) = .empty;
+    defer raw_names.deinit(gpa);
+    for (tools) |tool| {
+        const item = try raw_names.getOrPut(gpa, tool.name);
+        if (item.found_existing) return error.DuplicateToolName;
+    }
     var names: std.StringHashMapUnmanaged(void) = .empty;
     defer {
         var keys = names.keyIterator();
@@ -365,10 +411,10 @@ fn validateDeclarations(gpa: std.mem.Allocator, tools: []const Tool, globals: []
         names.deinit(gpa);
     }
     for (tools) |tool| {
-        const name = try vm.identifier(gpa, tool.name);
+        const name = if (tool.js_name) |declared| try gpa.dupe(u8, declared) else try vm.identifier(gpa, tool.name);
         errdefer gpa.free(name);
         const item = try names.getOrPut(gpa, name);
-        if (item.found_existing) return error.DuplicateToolName;
+        if (item.found_existing) return error.DuplicateToolScriptName;
     }
     var globals_seen: std.StringHashMapUnmanaged(void) = .empty;
     defer globals_seen.deinit(gpa);

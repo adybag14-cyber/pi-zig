@@ -1,0 +1,790 @@
+{
+  "upstream": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "actual unchanged upstream declared script names, raw aliases and collision admission",
+  "rows": [
+    {
+      "name": "explicit",
+      "tools": [
+        {
+          "name": "host.tool/v1",
+          "jsName": "stable_call",
+          "description": "fixture"
+        }
+      ],
+      "keys": [
+        "stable_call",
+        "host.tool/v1"
+      ],
+      "code": "const keys=[\"stable_call\",\"host.tool/v1\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "host.tool/v1",
+          "args": "stable_call"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "host.tool/v1",
+          "args": "host.tool/v1"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "stable_call",
+              "description": "fixture"
+            }
+          ],
+          [
+            "stable_call",
+            "host.tool/v1"
+          ],
+          [
+            "stable_call",
+            "host.tool/v1"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "host.tool/v1",
+            "status": "ok",
+            "durationMs": 0.1103999999999985
+          },
+          {
+            "name": "host.tool/v1",
+            "status": "ok",
+            "durationMs": 0.011799999999993815
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "finished": true,
+      "elapsedMs": 22.839800000000004
+    },
+    {
+      "name": "empty",
+      "tools": [
+        {
+          "name": "echo",
+          "jsName": ""
+        }
+      ],
+      "keys": [
+        "",
+        "echo"
+      ],
+      "code": "const keys=[\"\",\"echo\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": ""
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": "echo"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "",
+              "description": ""
+            }
+          ],
+          [
+            "",
+            "echo"
+          ],
+          [
+            "",
+            "echo"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.019500000000007844
+          },
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.007099999999994111
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "finished": true,
+      "elapsedMs": 7.962500000000006
+    },
+    {
+      "name": "dotted",
+      "tools": [
+        {
+          "name": "echo",
+          "jsName": "x.y"
+        }
+      ],
+      "keys": [
+        "x.y",
+        "echo"
+      ],
+      "code": "const keys=[\"x.y\",\"echo\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": "x.y"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": "echo"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "x.y",
+              "description": ""
+            }
+          ],
+          [
+            "x.y",
+            "echo"
+          ],
+          [
+            "x.y",
+            "echo"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.014399999999994861
+          },
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.006399999999999295
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "finished": true,
+      "elapsedMs": 7.013199999999998
+    },
+    {
+      "name": "nul",
+      "tools": [
+        {
+          "name": "echo",
+          "jsName": "a\u0000b"
+        }
+      ],
+      "keys": [
+        "a\u0000b",
+        "echo"
+      ],
+      "code": "const keys=[\"a\\u0000b\",\"echo\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": "a\u0000b"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": "echo"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "a\u0000b",
+              "description": ""
+            }
+          ],
+          [
+            "a\u0000b",
+            "echo"
+          ],
+          [
+            "a\u0000b",
+            "echo"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.014000000000010004
+          },
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.00560000000000116
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "finished": true,
+      "elapsedMs": 7.136700000000005
+    },
+    {
+      "name": "raw-alias-overlap",
+      "tools": [
+        {
+          "name": "first",
+          "jsName": "second"
+        },
+        {
+          "name": "second",
+          "jsName": "third"
+        }
+      ],
+      "keys": [
+        "first",
+        "second",
+        "third"
+      ],
+      "code": "const keys=[\"first\",\"second\",\"third\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "first",
+          "args": "first"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "first",
+          "args": "second"
+        },
+        {
+          "id": 3,
+          "target": "tool",
+          "name": "second",
+          "args": "third"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ],
+        "call 3",
+        [
+          "idle",
+          2,
+          3
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "second",
+              "description": ""
+            },
+            {
+              "name": "third",
+              "description": ""
+            }
+          ],
+          [
+            "first",
+            "second",
+            "third"
+          ],
+          [
+            "second",
+            "first",
+            "third"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "first",
+            "status": "ok",
+            "durationMs": 0.011700000000004707
+          },
+          {
+            "name": "first",
+            "status": "ok",
+            "durationMs": 0.017699999999990723
+          },
+          {
+            "name": "second",
+            "status": "ok",
+            "durationMs": 0.003999999999990678
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 3,
+          "issued": 3
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.452399999999997
+    },
+    {
+      "name": "duplicate-raw",
+      "tools": [
+        {
+          "name": "echo",
+          "jsName": "one"
+        },
+        {
+          "name": "echo",
+          "jsName": "two"
+        }
+      ],
+      "keys": [],
+      "code": "const keys=[]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [],
+      "events": [],
+      "admissionFailure": {
+        "name": "Error",
+        "message": "Tool names must be unique"
+      },
+      "elapsedMs": 0.02960000000000207
+    },
+    {
+      "name": "duplicate-script",
+      "tools": [
+        {
+          "name": "one",
+          "jsName": "same"
+        },
+        {
+          "name": "two",
+          "jsName": "same"
+        }
+      ],
+      "keys": [],
+      "code": "const keys=[]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [],
+      "events": [],
+      "admissionFailure": {
+        "name": "Error",
+        "message": "Tool script names must be unique"
+      },
+      "elapsedMs": 0.007699999999999818
+    },
+    {
+      "name": "normalized-collision",
+      "tools": [
+        {
+          "name": "a-b"
+        },
+        {
+          "name": "a_b"
+        }
+      ],
+      "keys": [],
+      "code": "const keys=[]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [],
+      "events": [],
+      "admissionFailure": {
+        "name": "Error",
+        "message": "Tool script names must be unique"
+      },
+      "elapsedMs": 0.11440000000000339
+    },
+    {
+      "name": "explicit-disambiguation",
+      "tools": [
+        {
+          "name": "a-b",
+          "jsName": "one"
+        },
+        {
+          "name": "a_b",
+          "jsName": "two"
+        }
+      ],
+      "keys": [
+        "one",
+        "two",
+        "a-b",
+        "a_b"
+      ],
+      "code": "const keys=[\"one\",\"two\",\"a-b\",\"a_b\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "a-b",
+          "args": "one"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "a_b",
+          "args": "two"
+        },
+        {
+          "id": 3,
+          "target": "tool",
+          "name": "a-b",
+          "args": "a-b"
+        },
+        {
+          "id": 4,
+          "target": "tool",
+          "name": "a_b",
+          "args": "a_b"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ],
+        "call 3",
+        [
+          "idle",
+          2,
+          3
+        ],
+        "call 4",
+        [
+          "idle",
+          3,
+          4
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "one",
+              "description": ""
+            },
+            {
+              "name": "two",
+              "description": ""
+            }
+          ],
+          [
+            "one",
+            "two",
+            "a-b",
+            "a_b"
+          ],
+          [
+            "one",
+            "a-b",
+            "two",
+            "a_b"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "a-b",
+            "status": "ok",
+            "durationMs": 0.007199999999997431
+          },
+          {
+            "name": "a_b",
+            "status": "ok",
+            "durationMs": 0.002300000000005298
+          },
+          {
+            "name": "a-b",
+            "status": "ok",
+            "durationMs": 0.0014000000000038426
+          },
+          {
+            "name": "a_b",
+            "status": "ok",
+            "durationMs": 0.001300000000000523
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 4,
+          "issued": 4
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.277100000000004
+    },
+    {
+      "name": "prototype-keys",
+      "tools": [
+        {
+          "name": "__proto__",
+          "jsName": "constructor"
+        },
+        {
+          "name": "prototype",
+          "jsName": "toString"
+        }
+      ],
+      "keys": [
+        "constructor",
+        "__proto__",
+        "toString",
+        "prototype"
+      ],
+      "code": "const keys=[\"constructor\",\"__proto__\",\"toString\",\"prototype\"]; const values=[]; for (const key of keys) values.push(await tools[key](key)); return [ALL_TOOLS,values,Object.keys(tools)];",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "__proto__",
+          "args": "constructor"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "__proto__",
+          "args": "__proto__"
+        },
+        {
+          "id": 3,
+          "target": "tool",
+          "name": "prototype",
+          "args": "toString"
+        },
+        {
+          "id": 4,
+          "target": "tool",
+          "name": "prototype",
+          "args": "prototype"
+        }
+      ],
+      "events": [
+        "started",
+        "call 1",
+        [
+          "idle",
+          0,
+          1
+        ],
+        "call 2",
+        [
+          "idle",
+          1,
+          2
+        ],
+        "call 3",
+        [
+          "idle",
+          2,
+          3
+        ],
+        "call 4",
+        [
+          "idle",
+          3,
+          4
+        ]
+      ],
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            {
+              "name": "constructor",
+              "description": ""
+            },
+            {
+              "name": "toString",
+              "description": ""
+            }
+          ],
+          [
+            "constructor",
+            "__proto__",
+            "toString",
+            "prototype"
+          ],
+          [
+            "constructor",
+            "__proto__",
+            "toString",
+            "prototype"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "__proto__",
+            "status": "ok",
+            "durationMs": 0.006000000000000227
+          },
+          {
+            "name": "__proto__",
+            "status": "ok",
+            "durationMs": 0.002600000000001046
+          },
+          {
+            "name": "prototype",
+            "status": "ok",
+            "durationMs": 0.001599999999996271
+          },
+          {
+            "name": "prototype",
+            "status": "ok",
+            "durationMs": 0.001300000000000523
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 4,
+          "issued": 4
+        }
+      },
+      "finished": true,
+      "elapsedMs": 5.117199999999997
+    }
+  ]
+}

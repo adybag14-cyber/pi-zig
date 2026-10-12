@@ -398,6 +398,11 @@ struct JSRuntime {
     // to js_promise_constructor
     JSValueLink *parent_promise;
 
+    JSNativeErrorStackHook *native_error_stack_hook;
+    void *native_error_stack_opaque;
+    bool native_error_stack_hook_active;
+    bool native_error_stack_fallback_active;
+
     JSHostPromiseRejectionTracker *host_promise_rejection_tracker;
     void *host_promise_rejection_tracker_opaque;
 
@@ -594,6 +599,8 @@ struct JSContext {
     JSValue regexp_ctor;
     JSValue promise_ctor;
     JSValue native_error_proto[JS_NATIVE_ERROR_COUNT];
+    JSValue native_error_stack_getter;
+    JSValue native_error_stack_setter;
     JSValue error_ctor;
     JSValue error_back_trace;
     JSValue error_prepare_stack;
@@ -2943,6 +2950,8 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->iterator_ctor_getset = JS_NULL;
     ctx->regexp_ctor = JS_NULL;
     ctx->promise_ctor = JS_NULL;
+    ctx->native_error_stack_getter = JS_UNDEFINED;
+    ctx->native_error_stack_setter = JS_UNDEFINED;
     ctx->error_ctor = JS_NULL;
     ctx->error_back_trace = JS_UNDEFINED;
     ctx->error_prepare_stack = JS_UNDEFINED;
@@ -3095,6 +3104,8 @@ static void JS_MarkContext(JSRuntime *rt, JSContext *ctx,
     for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {
         JS_MarkValue(rt, ctx->native_error_proto[i], mark_func);
     }
+    JS_MarkValue(rt, ctx->native_error_stack_getter, mark_func);
+    JS_MarkValue(rt, ctx->native_error_stack_setter, mark_func);
     JS_MarkValue(rt, ctx->error_ctor, mark_func);
     JS_MarkValue(rt, ctx->error_back_trace, mark_func);
     JS_MarkValue(rt, ctx->error_prepare_stack, mark_func);
@@ -3177,6 +3188,8 @@ void JS_FreeContext(JSContext *ctx)
     for(i = 0; i < JS_NATIVE_ERROR_COUNT; i++) {
         JS_FreeValue(ctx, ctx->native_error_proto[i]);
     }
+    JS_FreeValue(ctx, ctx->native_error_stack_getter);
+    JS_FreeValue(ctx, ctx->native_error_stack_setter);
     JS_FreeValue(ctx, ctx->error_ctor);
     JS_FreeValue(ctx, ctx->error_back_trace);
     JS_FreeValue(ctx, ctx->error_prepare_stack);
@@ -8284,6 +8297,79 @@ static bool can_store_error_stack(JSValueConst obj)
 
 /* if filename != NULL, an additional level is added with the filename
    and line number information (used for parse error). */
+static int prepare_native_error_stack(JSContext *ctx, JSValueConst error)
+{
+    if (!JS_IsFunction(ctx, ctx->native_error_stack_getter) ||
+        !JS_IsFunction(ctx, ctx->native_error_stack_setter))
+        return 0;
+    /* Creation shape must remain genuine even for errors created by a hook's
+       semantic validation or allocator failure. No host allocation is needed. */
+    return JS_DefinePropertyGetSet(ctx, error, JS_ATOM_stack,
+                                   js_dup(ctx->native_error_stack_getter),
+                                   js_dup(ctx->native_error_stack_setter),
+                                   JS_PROP_CONFIGURABLE);
+}
+
+static uint32_t native_stack_limit(JSContext *ctx, bool *enabled)
+{
+    JSValue current = js_dup(ctx->error_ctor), value;
+    JSPropertyDescriptor desc;
+    JSAtom key = JS_NewAtom(ctx, "stackTraceLimit");
+    double number;
+    uint32_t limit = 0;
+    int present;
+    *enabled = false;
+    if (key == JS_ATOM_NULL) {
+        JS_FreeValue(ctx, current);
+        return 0;
+    }
+    while (JS_IsObject(current)) {
+        if (JS_IsProxy(current)) break;
+        present = JS_GetOwnProperty(ctx, &desc, current, key);
+        if (present < 0) break;
+        if (present) {
+            JS_FreeValue(ctx, desc.getter);
+            JS_FreeValue(ctx, desc.setter);
+            if (!(desc.flags & JS_PROP_GETSET) && JS_IsNumber(desc.value)) {
+                JS_ToFloat64(ctx, &number, desc.value);
+                *enabled = true;
+                if (!isnan(number) && number > 0)
+                    limit = isinf(number) || number >= UINT32_MAX ? UINT32_MAX : (uint32_t)number;
+            }
+            JS_FreeValue(ctx, desc.value);
+            break;
+        }
+        value = JS_GetPrototype(ctx, current);
+        JS_FreeValue(ctx, current);
+        current = value;
+    }
+    JS_FreeValue(ctx, current);
+    JS_FreeAtom(ctx, key);
+    return limit;
+}
+static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase,
+                                    JSValueConst filter, const char *filename,
+                                    int line, int column, int flags)
+{
+    JSRuntime *rt = ctx->rt;
+    JSValue saved;
+    int result;
+    if (!rt->native_error_stack_hook || rt->native_error_stack_hook_active)
+        return 0;
+    saved = JS_GetException(ctx);
+    rt->native_error_stack_hook_active = true;
+    result = rt->native_error_stack_hook(ctx, error, phase, filter, filename,
+                                       line, column, flags,
+                                       rt->native_error_stack_opaque);
+    rt->native_error_stack_hook_active = false;
+    if (result >= 0) {
+        JS_FreeValue(ctx, JS_GetException(ctx));
+        JS_Throw(ctx, saved);
+    } else {
+        JS_FreeValue(ctx, saved);
+    }
+    return result;
+}
 static void build_backtrace(JSContext *ctx, JSValueConst error_val,
                             JSValueConst filter_func, const char *filename,
                             int line_num, int col_num, int backtrace_flags)
@@ -8303,6 +8389,12 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
     int stack_trace_limit;
 
     rt = ctx->rt;
+    if (rt->native_error_stack_hook && !rt->native_error_stack_hook_active) {
+        native_error_stack_hook(ctx, error_val, JS_ERROR_STACK_CAPTURE,
+                                filter_func, filename, line_num, col_num,
+                                backtrace_flags);
+        return;
+    }
     if (rt->in_build_stack_trace)
         return;
     rt->in_build_stack_trace = true;
@@ -8493,12 +8585,46 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
     rt->in_build_stack_trace = false;
 }
 
+static int capture_error_stack(JSContext *ctx, JSValueConst error,
+                                JSValueConst filter, const char *filename,
+                                int line, int column, int flags)
+{
+    if (ctx->rt->native_error_stack_hook && !ctx->rt->native_error_stack_hook_active)
+        return native_error_stack_hook(ctx, error, JS_ERROR_STACK_CAPTURE, filter,
+                                       filename, line, column, flags);
+    if (ctx->rt->native_error_stack_hook && ctx->rt->native_error_stack_hook_active) {
+        JSValue frames = JS_UNDEFINED;
+        bool enabled;
+        uint32_t limit;
+        if (ctx->rt->native_error_stack_fallback_active) return 0;
+        ctx->rt->native_error_stack_fallback_active = true;
+        limit = native_stack_limit(ctx, &enabled);
+        if (enabled)
+            frames = JS_CaptureCurrentStackFrames(ctx, limit, filter, filename, line, column, flags);
+        ctx->rt->native_error_stack_fallback_active = false;
+        if (JS_IsException(frames) || JS_HasException(ctx)) {
+            JS_FreeValue(ctx, frames);
+            return -1;
+        }
+        JS_FreeValue(ctx, JS_VALUE_GET_OBJ(error)->u.object_data);
+        JS_VALUE_GET_OBJ(error)->u.object_data = frames;
+        return 0;
+    }
+    build_backtrace(ctx, error, filter, filename, line, column, flags);
+    return 0;
+}
 JSValue JS_NewError(JSContext *ctx)
 {
     JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
-    build_backtrace(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0);
+    if (prepare_native_error_stack(ctx, obj) < 0 ||
+        native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                NULL, 0, 0, 0) < 0 ||
+        capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {
+        JS_FreeValue(ctx, obj);
+        return JS_EXCEPTION;
+    }
     return obj;
 }
 
@@ -8515,6 +8641,12 @@ static JSValue JS_MakeError2(JSContext *ctx, JSErrorEnum error_num,
     }
     if (JS_IsException(obj))
         return JS_EXCEPTION;
+    if (prepare_native_error_stack(ctx, obj) < 0 ||
+        native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                NULL, 0, 0, 0) < 0) {
+        JS_FreeValue(ctx, obj);
+        return JS_EXCEPTION;
+    }
     msg = JS_NewString(ctx, message);
     if (JS_IsException(msg))
         msg = JS_NewString(ctx, "Invalid error message");
@@ -8522,8 +8654,12 @@ static JSValue JS_MakeError2(JSContext *ctx, JSErrorEnum error_num,
         JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
                                JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
     }
-    if (add_backtrace)
-        build_backtrace(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0);
+    if (add_backtrace || ctx->rt->native_error_stack_hook) {
+        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {
+            JS_FreeValue(ctx, obj);
+            return JS_EXCEPTION;
+        }
+    }
     return obj;
 }
 
@@ -27233,6 +27369,7 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
 {
     FuncCallType call_type;
     int optional_chaining_label;
+    int constructor_line_num = 0, constructor_col_num = 0;
     bool accept_lparen = (parse_flags & PF_POSTFIX_CALL) != 0;
 
     call_type = FUNC_CALL_NORMAL;
@@ -27422,6 +27559,8 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
         }
         break;
     case TOK_NEW:
+        constructor_line_num = s->token.line_num;
+        constructor_col_num = s->token.col_num;
         if (next_token(s))
             return -1;
         if (s->token.val == '.') {
@@ -27444,6 +27583,8 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
             if (s->token.val != '(') {
                 /* new operator on an object */
                 emit_op(s, OP_dup);
+                if (s->ctx->rt->native_error_stack_hook)
+                    emit_source_loc_at(s, constructor_line_num, constructor_col_num);
                 emit_op(s, OP_call_constructor);
                 emit_u16(s, 0);
             } else {
@@ -27724,6 +27865,8 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
                 emit_op(s, OP_drop);
 
                 /* apply function call */
+                if (call_type == FUNC_CALL_NEW && s->ctx->rt->native_error_stack_hook)
+                    emit_source_loc_at(s, constructor_line_num, constructor_col_num);
                 switch(opcode) {
                 case OP_get_field:
                 case OP_scope_get_private_field:
@@ -27768,6 +27911,11 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
                 if (next_token(s))
                     return -1;
             emit_func_call:
+                /* Native constructor CallSites begin at the original 'new'
+                   token, after any argument/target expressions have emitted
+                   their own locations. Default compilation is unchanged. */
+                if (call_type == FUNC_CALL_NEW && s->ctx->rt->native_error_stack_hook)
+                    emit_source_loc_at(s, constructor_line_num, constructor_col_num);
                 switch(opcode) {
                 case OP_get_field:
                 case OP_scope_get_private_field:
@@ -42941,6 +43089,10 @@ static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,
     JS_FreeValue(ctx, proto);
     if (JS_IsException(obj))
         return obj;
+    if (prepare_native_error_stack(ctx, obj) < 0 ||
+        native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                NULL, 0, 0, 0) < 0)
+        goto exception;
     switch (magic) {
     case JS_AGGREGATE_ERROR:
         message = argv[1];
@@ -42994,7 +43146,8 @@ static JSValue js_error_constructor(JSContext *ctx, JSValueConst new_target,
     }
 
     /* skip the Error() function in the backtrace */
-    build_backtrace(ctx, obj, JS_UNDEFINED, NULL, 0, 0, JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL);
+    if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL) < 0)
+        goto exception;
     return obj;
  exception:
     JS_FreeValue(ctx, obj);
@@ -43127,7 +43280,13 @@ static JSValue js_error_capture_stack_trace(JSContext *ctx, JSValueConst this_va
     JSValueConst v = argv[0];
     if (JS_VALUE_GET_TAG(v) != JS_TAG_OBJECT)
         return JS_ThrowTypeErrorNotAnObject(ctx);
+    if (ctx->rt->native_error_stack_hook && !ctx->rt->native_error_stack_hook_active) {
+        if (native_error_stack_hook(ctx, v, JS_ERROR_STACK_RECAPTURE, argv[1], NULL, 0, 0,
+                                    JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL|JS_BACKTRACE_FLAG_FILTER_FUNC) < 0)
+            return JS_EXCEPTION;
+    } else {
     build_backtrace(ctx, v, argv[1], NULL, 0, 0, JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL|JS_BACKTRACE_FLAG_FILTER_FUNC);
+    }
     return JS_UNDEFINED;
 }
 
@@ -55807,6 +55966,28 @@ void JS_SetPromiseHook(JSRuntime *rt, JSPromiseHook promise_hook, void *opaque)
     rt->promise_hook_opaque = opaque;
 }
 
+void JS_SetNativeErrorStackAccessors(JSContext *ctx, JSValueConst getter, JSValueConst setter)
+{
+    JS_FreeValue(ctx, ctx->native_error_stack_getter);
+    JS_FreeValue(ctx, ctx->native_error_stack_setter);
+    ctx->native_error_stack_getter = js_dup(getter);
+    ctx->native_error_stack_setter = js_dup(setter);
+}
+
+int JS_ReadPendingNativeErrorStack(JSContext *ctx, JSValueConst error, JSValue *frames)
+{
+    JSObject *object;
+    if (!JS_IsError(error)) return 0;
+    object = JS_VALUE_GET_OBJ(error);
+    if (!JS_IsArray(object->u.object_data) && !JS_IsUndefined(object->u.object_data)) return 0;
+    *frames = js_dup(object->u.object_data);
+    return 1;
+}
+void JS_SetNativeErrorStackHook(JSRuntime *rt, JSNativeErrorStackHook *cb, void *opaque)
+{
+    rt->native_error_stack_hook = cb;
+    rt->native_error_stack_opaque = opaque;
+}
 void JS_SetHostPromiseRejectionTracker(JSRuntime *rt,
                                        JSHostPromiseRejectionTracker *cb,
                                        void *opaque)
@@ -63806,6 +63987,130 @@ static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const cha
     }
 }
 
+bool JS_IsStackTraceFunction(JSContext *ctx, JSValueConst value)
+{
+    return JS_IsFunction(ctx, value) && !JS_IsProxy(value) &&
+           JS_VALUE_GET_OBJ(value)->class_id != JS_CLASS_BOUND_FUNCTION;
+}
+JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
+                                     JSValueConst filter, const char *filename,
+                                     int line, int column, int flags)
+{
+    JSValue result, frame;
+    JSCallSiteData data;
+    JSStackFrame *current;
+    uint32_t count = 0;
+    bool filtering;
+    result = JS_NewArray(ctx);
+    if (JS_IsException(result))
+        return result;
+    if (!limit)
+        return result;
+    if (filename) {
+        js_new_callsite_data2(ctx, &data, filename, line, column);
+        if (JS_IsException(data.filename) || JS_HasException(ctx)) {
+            JS_FreeValue(ctx, data.filename);
+            JS_FreeValue(ctx, data.func);
+            JS_FreeValue(ctx, data.func_name);
+            goto fail;
+        }
+        frame = js_new_callsite(ctx, &data);
+        JS_FreeValue(ctx, data.filename);
+        JS_FreeValue(ctx, data.func);
+        JS_FreeValue(ctx, data.func_name);
+        if (JS_IsException(frame) || JS_DefinePropertyValueUint32(ctx, result, count++, frame, JS_PROP_C_W_E) < 0)
+            goto fail;
+        if (flags & JS_ERROR_STACK_SINGLE_LEVEL)
+            return result;
+    }
+    current = ctx->rt->current_stack_frame;
+    filtering = (flags & JS_ERROR_STACK_FILTER_FUNCTION) &&
+                JS_IsStackTraceFunction(ctx, filter);
+    if (filtering) {
+        while (current && !js_same_value(ctx, current->cur_func, filter))
+            current = current->prev_frame;
+        /* A genuine filter absent from the stack produces zero caller frames. */
+    }
+    for (; current && count < limit; current = current->prev_frame) {
+        JSObject *function;
+        JSFunctionBytecode *bytecode = NULL;
+        if (flags & JS_ERROR_STACK_SKIP_FIRST) {
+            flags &= ~JS_ERROR_STACK_SKIP_FIRST;
+            continue;
+        }
+        function = JS_VALUE_GET_OBJ(current->cur_func);
+        if (js_class_has_bytecode(function->class_id))
+            bytecode = function->u.func.function_bytecode;
+        if (bytecode && !current->cur_pc) {
+            /* Preserve the frame without undefined pointer arithmetic. */
+            data.func = js_dup(current->cur_func);
+            data.func_name = JS_NULL;
+            data.filename = bytecode->filename ? JS_AtomToString(ctx, bytecode->filename) : JS_NULL;
+            data.line_num = -1;
+            data.col_num = -1;
+            data.constructor = current->is_constructor;
+            data.native = false;
+        } else {
+            js_new_callsite_data(ctx, &data, current);
+        }
+        if (JS_IsException(data.filename) || JS_HasException(ctx)) {
+            JS_FreeValue(ctx, data.filename);
+            JS_FreeValue(ctx, data.func);
+            JS_FreeValue(ctx, data.func_name);
+            goto fail;
+        }
+        frame = js_new_callsite(ctx, &data);
+        JS_FreeValue(ctx, data.filename);
+        JS_FreeValue(ctx, data.func);
+        JS_FreeValue(ctx, data.func_name);
+        if (JS_IsException(frame) || JS_DefinePropertyValueUint32(ctx, result, count++, frame, JS_PROP_C_W_E) < 0)
+            goto fail;
+        if (bytecode && bytecode->backtrace_barrier)
+            break;
+    }
+    return result;
+fail:
+    JS_FreeValue(ctx, result);
+    return JS_EXCEPTION;
+}
+
+JSValue JS_CloneCapturedStackFrame(JSContext *ctx, JSValueConst frame)
+{
+    JSCallSiteData *source = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);
+    JSCallSiteData copy;
+    JSValue result;
+    if (!source)
+        return JS_ThrowTypeError(ctx, "Invalid captured stack frame");
+    copy = *source;
+    copy.filename = js_dup(source->filename);
+    copy.func = js_dup(source->func);
+    copy.func_name = js_dup(source->func_name);
+    result = js_new_callsite(ctx, &copy);
+    JS_FreeValue(ctx, copy.filename);
+    JS_FreeValue(ctx, copy.func);
+    JS_FreeValue(ctx, copy.func_name);
+    return result;
+}
+JSValue JS_GetCapturedStackFramePrototype(JSContext *ctx)
+{
+    return js_dup(ctx->class_proto[JS_CLASS_CALL_SITE]);
+}
+int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
+                              JSValue *filename, JSValue *function_name,
+                              int *line, int *column, int *is_native,
+                              int *is_constructor)
+{
+    JSCallSiteData *data = JS_GetOpaque(frame, JS_CLASS_CALL_SITE);
+    if (!data)
+        return -1;
+    *filename = js_dup(data->filename);
+    *function_name = js_dup(data->func_name);
+    *line = data->line_num;
+    *column = data->col_num;
+    *is_native = data->native;
+    *is_constructor = data->constructor;
+    return 0;
+}
 static JSValue js_callsite_getfield(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, int magic)
 {
     JSCallSiteData *csd = JS_GetOpaque2(ctx, this_val, JS_CLASS_CALL_SITE);

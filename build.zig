@@ -184,6 +184,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, ui8a9_source_module, quickjs, sqlite_lib_dir);
     const ui8a9_source_tests = b.addTest(.{ .root_module = ui8a9_source_module, .filters = &.{"Source8a9 native"}, .use_llvm = use_llvm });
     b.step("test-ui8a9-source", "Replay actual8a9 native StdinBuffer14 real timer scenarios and ten Herdr capability profiles").dependOn(&b.addRunArtifact(ui8a9_source_tests).step);
+    const error_stack_step = b.step("test-native-error-stack-rejection-source", "Private genuine Error own-stack Node42 and caller frame1, original rejection19 and async-context8 boundaries; no Engine worker Main activation");
+    inline for (.{ .{ "src/native_promise_rejections_test.zig", "Promise rejection bookkeeping" }, .{ "src/native_promise_rejection_policy_test.zig", "Promise rejection policy" }, .{ "src/native_promise_rejection_source_test.zig", "Promise rejection Source original19" }, .{ "src/native_error_stack_source_test.zig", "Native Error stack Source" } }) |entry| {
+        const error_stack_module = b.createModule(.{ .root_source_file = b.path(entry[0]), .target = target, .optimize = optimize });
+        error_stack_module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, error_stack_module, quickjs, sqlite_lib_dir);
+        const error_stack_tests = b.addTest(.{ .root_module = error_stack_module, .filters = &.{entry[1]}, .use_llvm = use_llvm });
+        error_stack_step.dependOn(&b.addRunArtifact(error_stack_tests).step);
+    }
     const command_allocation_tests = b.addTest(.{ .root_module = command_source_module, .filters = &.{"Command Source exhaustive host allocation"}, .use_llvm = use_llvm });
     b.step("test-native-command-autocomplete-allocation", "Preserve genuine native fuzzy allocation failures through the complete command GPA sweep").dependOn(&b.addRunArtifact(command_allocation_tests).step);
     const sqlite_persistence_mod = b.createModule(.{
@@ -1257,6 +1265,11 @@ pub fn build(b: *std.Build) void {
     sdk_queue_order_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_queue_order_run = b.addRunArtifact(sdk_queue_order_tests);
     b.step("test-native-sdk-queue-order", "Replay genuine Source476/477 template iterator and callee ordering").dependOn(&sdk_queue_order_run.step);
+    const agent_foundation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_foundations_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Agent foundations"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_foundation_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_foundation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_foundation_run = b.addRunArtifact(agent_foundation_tests);
+    b.step("test-native-agent-foundations", "Compare private native Agent constructor and real method bodies with current Source observations").dependOn(&agent_foundation_run.step);
     const sdk_await_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_await_primitives_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK await primitives"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_await_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_await_tests.root_module.addImport("catalog_tool", catalog_tool);

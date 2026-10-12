@@ -1,0 +1,1381 @@
+{
+  "authority": "Actual pinned Node24.14.0, caller controls initial stackTraceLimit0; original unrestricted Source41 preserved separately",
+  "inputSha256": "e8a9fad3ae833278999ddb905d329028d4d129e0d1a35b95243019fb7f1384ec",
+  "pins": [
+    {
+      "path": "C:\\Program Files\\nodejs\\node.exe",
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-controlled-source-20261011-g\\capture-controlled.mjs",
+      "sha256": "5e4dce4917591cf008abbd4f039dc7067364b8c5db82a11c4289cb41a1b9223e"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\node-error-stack-controlled-source-20261011-g\\error-stack-original-controlled.input.mjs",
+      "sha256": "e8a9fad3ae833278999ddb905d329028d4d129e0d1a35b95243019fb7f1384ec"
+    }
+  ],
+  "prePostDrift": 0,
+  "cases": [
+    {
+      "id": "prototype",
+      "value": {
+        "names": [
+          "constructor",
+          "name",
+          "message",
+          "toString"
+        ],
+        "ownStack": false,
+        "capture": {
+          "name": "captureStackTrace",
+          "length": 2
+        }
+      }
+    },
+    {
+      "id": "constructor-metadata",
+      "value": {
+        "names": [
+          "length",
+          "name",
+          "prototype",
+          "captureStackTrace",
+          "prepareStackTrace",
+          "isError",
+          "stackTraceLimit"
+        ],
+        "stackTraceLimit": {
+          "kind": "data",
+          "writable": true,
+          "enumerable": true,
+          "configurable": true,
+          "value": 0
+        },
+        "prepareStackTrace": {
+          "kind": "data",
+          "writable": true,
+          "enumerable": false,
+          "configurable": true,
+          "valueType": "function",
+          "valueFunction": {
+            "name": "ErrorPrepareStackTrace",
+            "length": 2
+          }
+        }
+      }
+    },
+    {
+      "id": "constructor-Error",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-EvalError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "EvalError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-RangeError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "RangeError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-ReferenceError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "ReferenceError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-SyntaxError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "SyntaxError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-TypeError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "TypeError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-URIError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "URIError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "constructor-AggregateError",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message",
+            "errors"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "AggregateError: source-message"
+        },
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message",
+            "errors"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "id": "call-form",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error: call-form"
+        }
+      }
+    },
+    {
+      "id": "delete",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "deleted": true,
+        "after": {
+          "own": false,
+          "keys": [
+            "message"
+          ],
+          "descriptor": null
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "after-delete-assignment",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "message",
+            "stack"
+          ],
+          "descriptor": {
+            "kind": "data",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "valueType": "string"
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "replacement"
+        }
+      }
+    },
+    {
+      "id": "prototype-after-delete",
+      "value": {
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "after": {
+          "own": false,
+          "keys": [
+            "message"
+          ],
+          "descriptor": null
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "inherited-source-stack"
+        }
+      }
+    },
+    {
+      "id": "assignment-string",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "string",
+          "value": "replacement"
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "assignment-number",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "number",
+          "value": 42
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "assignment-null",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "object",
+          "value": null
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "assignment-undefined",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "undefined"
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "assignment-object",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "object",
+          "tag": "[object Object]"
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "assignment-symbol",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "symbol",
+          "tag": "[object Symbol]"
+        },
+        "same": true,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "borrow-get-plain",
+      "value": {
+        "ok": true,
+        "type": "undefined"
+      }
+    },
+    {
+      "id": "borrow-set-plain",
+      "value": {
+        "set": {
+          "ok": true,
+          "type": "undefined"
+        },
+        "shape": {
+          "own": false,
+          "keys": [],
+          "descriptor": null
+        },
+        "get": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "borrow-get-inherited",
+      "value": {
+        "ok": true,
+        "type": "string",
+        "value": "Error: borrow"
+      }
+    },
+    {
+      "id": "borrow-set-inherited",
+      "value": {
+        "set": {
+          "ok": true,
+          "type": "undefined"
+        },
+        "shape": {
+          "own": false,
+          "keys": [],
+          "descriptor": null
+        },
+        "get": {
+          "ok": true,
+          "type": "number",
+          "value": 42
+        }
+      }
+    },
+    {
+      "id": "borrow-get-proxy",
+      "value": {
+        "ok": true,
+        "type": "undefined"
+      }
+    },
+    {
+      "id": "borrow-set-proxy",
+      "value": {
+        "set": {
+          "ok": true,
+          "type": "undefined"
+        },
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "get": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "seal",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "number",
+          "value": 42
+        },
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": false,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "freeze",
+      "value": {
+        "assignment": {
+          "ok": true,
+          "type": "number",
+          "value": 42
+        },
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": false,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "capture-plain",
+      "value": {
+        "result": {
+          "ok": true,
+          "type": "undefined"
+        },
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error"
+        }
+      }
+    },
+    {
+      "id": "recapture-after-delete",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error"
+        }
+      }
+    },
+    {
+      "id": "capture-frozen",
+      "value": {
+        "ok": false,
+        "name": "TypeError",
+        "message": "Cannot define property stack, object is not extensible"
+      }
+    },
+    {
+      "id": "prepare-lazy",
+      "value": {
+        "creation": [],
+        "before": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "descriptorEvents": [],
+        "firstSame": true,
+        "afterFirst": [
+          {
+            "same": true,
+            "array": true,
+            "count": 0,
+            "firstFunction": null
+          }
+        ],
+        "secondSame": true,
+        "afterSecond": [
+          {
+            "same": true,
+            "array": true,
+            "count": 0,
+            "firstFunction": null
+          }
+        ],
+        "after": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "prepare-replaced",
+      "value": {
+        "first": "second",
+        "second": "second",
+        "events": [
+          "second"
+        ],
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "prepare-throw",
+      "value": {
+        "creationCalls": 0,
+        "first": {
+          "ok": false,
+          "same": true
+        },
+        "firstCalls": 1,
+        "second": {
+          "ok": false,
+          "same": true
+        },
+        "secondCalls": 2,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "limit-zero",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error: limit-zero"
+        }
+      }
+    },
+    {
+      "id": "limit-negative",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error: limit-negative"
+        }
+      }
+    },
+    {
+      "id": "limit-NaN",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "string",
+          "value": "Error: limit-NaN"
+        }
+      }
+    },
+    {
+      "id": "limit-undefined",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "limit-null",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "limit-string",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "limit-object",
+      "value": {
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "id": "limit-accessor",
+      "value": {
+        "calls": 0,
+        "shape": {
+          "own": true,
+          "keys": [
+            "stack",
+            "message"
+          ],
+          "descriptor": {
+            "kind": "accessor",
+            "enumerable": false,
+            "configurable": true,
+            "get": {
+              "name": "",
+              "length": 0
+            },
+            "set": {
+              "name": "",
+              "length": 1
+            }
+          }
+        },
+        "stack": {
+          "ok": true,
+          "type": "undefined"
+        }
+      }
+    }
+  ]
+}

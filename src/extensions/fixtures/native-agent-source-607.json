@@ -1,0 +1,717 @@
+{
+  "schema": "sdk-source607-actual-agent-routing-v1",
+  "scope": "Actual original Agent.prompt/continue/normalize; ordinary caller-owned downstream method bindings; no AgentLoop/provider/model execution; prototype untouched; caller Date.now42 restored",
+  "rows": [
+    {
+      "id": "prompt-array",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          true,
+          true,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": "owned",
+              "timestamp": 1
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-object",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          true,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": "owned",
+              "timestamp": 1
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-string",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "timestamp": 42
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-images",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          true
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                },
+                {
+                  "type": "image",
+                  "data": "image"
+                }
+              ],
+              "timestamp": 42
+            }
+          ],
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-empty",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": ""
+                }
+              ],
+              "timestamp": 42
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-normalize-getthrow",
+      "events": [
+        "normalize.get",
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-run-getthrow",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-run-callthrow",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "timestamp": 42
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-run-reject",
+      "events": [
+        "normalize.get",
+        [
+          "normalize.call",
+          true,
+          2,
+          false
+        ],
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "timestamp": 42
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "prompt-active",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "Agent is already processing a prompt. Use steer() or followUp() to queue messages, or wait for completion."
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "continue-empty",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "No messages to continue from"
+      },
+      "queued": [],
+      "stateMessages": []
+    },
+    {
+      "id": "continue-system",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "No messages to continue from"
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "system",
+          "content": "base",
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-assistant-none",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "Cannot continue from message role: assistant"
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "assistant",
+          "content": [],
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-assistant-steering",
+      "events": [
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          2,
+          false,
+          true,
+          {
+            "type": "object",
+            "value": {
+              "skipInitialSteeringPoll": true
+            }
+          },
+          [
+            {
+              "role": "user",
+              "content": "owned",
+              "timestamp": 1
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [
+        {
+          "role": "user",
+          "content": "second",
+          "timestamp": 2
+        }
+      ],
+      "stateMessages": [
+        {
+          "role": "assistant",
+          "content": [],
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-assistant-followup",
+      "events": [
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          1,
+          false,
+          true,
+          {
+            "type": "undefined"
+          },
+          [
+            {
+              "role": "user",
+              "content": "owned",
+              "timestamp": 1
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [
+        {
+          "role": "user",
+          "content": "second",
+          "timestamp": 2
+        }
+      ],
+      "stateMessages": [
+        {
+          "role": "assistant",
+          "content": [],
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-user",
+      "events": [
+        [
+          "runContinuation.get"
+        ],
+        [
+          "runContinuation.call",
+          true,
+          0,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          null,
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "user",
+          "content": "owned",
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-toolresult",
+      "events": [
+        [
+          "runContinuation.get"
+        ],
+        [
+          "runContinuation.call",
+          true,
+          0,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          null,
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "toolResult",
+          "content": [],
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-active",
+      "events": [
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "Agent is already processing. Wait for completion before continuing."
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "user",
+          "content": "owned",
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-run-reject",
+      "events": [
+        [
+          "runContinuation.get"
+        ],
+        [
+          "runContinuation.call",
+          true,
+          0,
+          false,
+          false,
+          {
+            "type": "undefined"
+          },
+          null,
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "raw": true
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "user",
+          "content": "owned",
+          "timestamp": 1
+        }
+      ]
+    },
+    {
+      "id": "continue-steering-all",
+      "events": [
+        [
+          "runPromptMessages.get"
+        ],
+        [
+          "runPromptMessages.call",
+          true,
+          2,
+          false,
+          true,
+          {
+            "type": "object",
+            "value": {
+              "skipInitialSteeringPoll": true
+            }
+          },
+          [
+            {
+              "role": "user",
+              "content": "owned",
+              "timestamp": 1
+            },
+            {
+              "role": "user",
+              "content": "second",
+              "timestamp": 2
+            }
+          ],
+          false
+        ],
+        [
+          "returnedPromise",
+          true
+        ]
+      ],
+      "outcome": {
+        "undefined": true
+      },
+      "queued": [],
+      "stateMessages": [
+        {
+          "role": "assistant",
+          "content": [],
+          "timestamp": 1
+        }
+      ]
+    }
+  ]
+}

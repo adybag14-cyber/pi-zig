@@ -1,0 +1,24 @@
+import{ModelRuntime}from'@earendil-works/pi-coding-agent';const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});const{Agent}=sdkNativeAgentConfigure(runtime);
+const rows = [], savedJson = globalThis.JSON;
+for (const id of ['plain-schema', 'sampling-two-reads', 'sampling-undefined', 'json-callee-order', 'parameters-throws', 'stringify-throws', 'parse-result-identity', 'name-mutates-description']) {
+  const events = [], marker = { raw: id }, parsed = { callerParsed: true }, parameters = { type: 'object', toJSON() { events.push(['parameters.toJSON', this === parameters]); return { type: 'object' }; } };
+  let description = 'initial', reads = 0;
+  const tool = {
+    get name() { events.push('tool.name'); if (id === 'name-mutates-description') description = 'changed'; return 'fixture'; },
+    get description() { events.push('tool.description'); return description; },
+    get parameters() { events.push('tool.parameters'); if (id === 'parameters-throws') throw marker; return parameters; },
+    get constrainedSampling() { events.push(['tool.sampling', ++reads]); return id === 'sampling-undefined' ? undefined : id === 'sampling-two-reads' ? reads : true; },
+    execute() { throw Error('Tool must never execute in constructor corpus'); },
+  };
+  const replacement = Object.create(savedJson);
+  Object.defineProperty(replacement, 'parse', { get() { events.push('JSON.parse.get'); return function(value) { events.push(['JSON.parse.call', this === replacement]); return id === 'parse-result-identity' ? parsed : Reflect.apply(savedJson.parse, savedJson, [value]); }; } });
+  Object.defineProperty(replacement, 'stringify', { get() { events.push('JSON.stringify.get'); return function(value) { events.push(['JSON.stringify.call', this === replacement]); if (id === 'stringify-throws') throw marker; return Reflect.apply(savedJson.stringify, savedJson, [value]); }; } });
+  globalThis.JSON = replacement;
+  let agent, outcome;
+  try { agent = new Agent({ initialState: { tools: [tool] } }); outcome = { constructed: true }; }
+  catch (error) { outcome = { constructed: false, raw: error === marker, name: error?.name, message: error?.message }; }
+  finally { globalThis.JSON = savedJson; }
+  rows.push({ id, events, outcome, ...(agent ? { toolsArray: agent.state.tools.map(item => item === tool), messages: agent.state.messages, parsedIdentity: agent.state.messages[0].toolsAdded[0].parameters === parsed } : {}) });
+}
+
+globalThis.nativeAgentFoundationRows=rows;

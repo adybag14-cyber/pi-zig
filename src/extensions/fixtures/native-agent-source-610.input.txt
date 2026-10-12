@@ -1,0 +1,17 @@
+import{ModelRuntime}from'@earendil-works/pi-coding-agent';const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});const{Agent}=sdkNativeAgentConfigure(runtime);
+const rows=[],first=new Agent({}),second=new Agent({}),fn=first.convertToLlm;
+const d=Object.getOwnPropertyDescriptor(fn,'prototype');
+rows.push({id:'shared-default-converter',refs:{converter:fn===second.convertToLlm,stream:first.streamFunction===second.streamFunction,model:first.state.model===second.state.model},function:{name:fn.name,length:fn.length,ownKeys:Reflect.ownKeys(fn).map(String),prototype:{writable:d.writable,enumerable:d.enumerable,configurable:d.configurable,constructor:d.value.constructor===fn,ownKeys:Reflect.ownKeys(d.value).map(String)}}});
+{
+ const events=[],inputs=[['system'],['other','user'],['other','other','assistant'],['other','other','other','toolResult'],['other','other','other','other']].map((sequence,index)=>{let reads=0;return{index,get role(){events.push([index,++reads]);return sequence[Math.min(reads-1,sequence.length-1)];}};});
+ Object.defineProperty(inputs,'filter',{get(){events.push('filter.get');return function(...args){events.push(['filter.call',this===inputs,args.length,args[0].name,args[0].length]);return Array.prototype.filter.call(this,...args);};}});
+ const result=fn.call({unrelated:true},inputs);rows.push({id:'ordinary-filter-and-role-reads',events,selected:result.map(value=>value.index),fresh:result!==inputs,refs:result.map(value=>inputs.includes(value))});
+}
+{
+ const inputs=[{role:'user',tag:'same'}];const result=new fn(inputs);rows.push({id:'constructible-default-converter',array:Array.isArray(result),sameMessage:result[0]===inputs[0],value:result});
+}
+{
+ const custom=function custom(){return'caller';};rows.push({id:'nullish-and-supplied-converter',nullDefault:new Agent({convertToLlm:null}).convertToLlm===fn,undefinedDefault:new Agent({convertToLlm:undefined}).convertToLlm===fn,caller:new Agent({convertToLlm:custom}).convertToLlm===custom,falseRetained:new Agent({convertToLlm:false}).convertToLlm===false});
+}
+
+globalThis.nativeAgentFoundationRows=rows;

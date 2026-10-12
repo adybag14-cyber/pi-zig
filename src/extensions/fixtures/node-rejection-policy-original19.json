@@ -1,0 +1,482 @@
+{
+  "authority": "Actual pinned Node24.14.0 default throw policy, shared original caller program; readiness observer only outside input",
+  "inputSha256": "B872A1DBAE7BE2CA69DDE638001C2092C14AE41FF58F82F1C7C73F20FB153FA4",
+  "cases": [
+    {
+      "id": "same-turn-catch",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "same-turn-catch",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "caught",
+          "original": true
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "microtask-catch",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "microtask-catch",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "caught",
+          "original": true
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "later-timer-catch",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "later-timer-catch",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "name": "Error",
+          "message": "original-rejection-later-timer-catch",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "same-reason-distinct-promises",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "same-reason-distinct-promises",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "name": "Error",
+          "message": "original-rejection-same-reason-distinct-promises",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "handled-parent-unhandled-child",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "handled-parent-unhandled-child",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "name": "Error",
+          "message": "original-rejection-handled-parent-unhandled-child",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "await-consumes-rejection",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "await-consumes-rejection",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "caught",
+          "original": true
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "raw-string",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "raw-string",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": false,
+          "other": false,
+          "name": "UnhandledPromiseRejection",
+          "code": "ERR_UNHANDLED_REJECTION",
+          "message": "This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason \"plain-original-rejection\".",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "raw-symbol",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "raw-symbol",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": false,
+          "other": false,
+          "name": "UnhandledPromiseRejection",
+          "code": "ERR_UNHANDLED_REJECTION",
+          "message": "This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason \"Symbol(original-symbol-rejection)\".",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "raw-object",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "raw-object",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": false,
+          "other": false,
+          "name": "UnhandledPromiseRejection",
+          "code": "ERR_UNHANDLED_REJECTION",
+          "message": "This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason \"#<Object>\".",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "listener-handles",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "listener-handles",
+          "unhandledListeners": 1,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "listener-late-catch",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "listener-late-catch",
+          "unhandledListeners": 1,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "catch"
+        },
+        {
+          "phase": "handled",
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "listener-microtask-catch",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "listener-microtask-catch",
+          "unhandledListeners": 1,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "catch"
+        },
+        {
+          "phase": "handled",
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "listener-throws",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "listener-throws",
+          "unhandledListeners": 1,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "fatal",
+          "origin": "uncaughtException",
+          "original": false,
+          "other": true,
+          "name": "Error",
+          "message": "listener-original-throw",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "listener-catches-sibling",
+      "exitCode": 0,
+      "events": [
+        {
+          "phase": "start",
+          "id": "listener-catches-sibling",
+          "unhandledListeners": 1,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": true,
+          "second": false
+        },
+        {
+          "phase": "unhandled",
+          "original": true,
+          "first": false,
+          "second": true
+        },
+        {
+          "phase": "second-catch"
+        },
+        {
+          "phase": "completed-turn",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "own-stack-object",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "own-stack-object",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "function-own-stack",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "function-own-stack",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": false,
+          "other": false,
+          "name": "UnhandledPromiseRejection",
+          "code": "ERR_UNHANDLED_REJECTION",
+          "message": "This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason \"function namedReason(){}\".",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "proxy-own-stack",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "proxy-own-stack",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 1
+        }
+      ]
+    },
+    {
+      "id": "object-no-coercion",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "object-no-coercion",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": false,
+          "other": false,
+          "name": "UnhandledPromiseRejection",
+          "code": "ERR_UNHANDLED_REJECTION",
+          "message": "This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason \"#<Object>\".",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    },
+    {
+      "id": "dynamic-emit",
+      "exitCode": 1,
+      "events": [
+        {
+          "phase": "start",
+          "id": "dynamic-emit",
+          "unhandledListeners": 0,
+          "uncaughtListeners": 0
+        },
+        {
+          "phase": "emit",
+          "receiver": true,
+          "original": true,
+          "promise": true
+        },
+        {
+          "phase": "fatal",
+          "origin": "unhandledRejection",
+          "original": true,
+          "other": false,
+          "name": "Error",
+          "message": "original-rejection-dynamic-emit",
+          "primitiveCalls": 0,
+          "stackReads": 0,
+          "ownChecks": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+  "clockInput": "caller Date.now returns42 then restored",
+  "scope": "Actual Agent constructor/pure queues/state/ordinary borrowed receiver/owned executor lifecycle; no prompt/AgentLoop/provider execution; SDK import establishes actual default stream registration",
+  "rows": [
+    {
+      "id": "constructor-getters",
+      "events": [
+        "initialState",
+        "convertToLlm",
+        "transformContext",
+        "streamFn",
+        "getApiKey",
+        "onPayload",
+        "onResponse",
+        "onProviderStreamEvent",
+        "beforeToolCall",
+        "afterToolCall",
+        "finishTurn",
+        "prepareRequest",
+        "prepareNextTurn",
+        "prepareNextTurnWithContext",
+        "steeringMode",
+        "followUpMode",
+        "sessionId",
+        "thinkingBudgets",
+        "transport",
+        "maxRetryDelayMs",
+        "toolExecution"
+      ],
+      "ownKeys": [
+        "_state",
+        "listeners",
+        "steeringQueue",
+        "followUpQueue",
+        "convertToLlm",
+        "transformContext",
+        "streamFunction",
+        "getApiKey",
+        "onPayload",
+        "onResponse",
+        "onProviderStreamEvent",
+        "beforeToolCall",
+        "afterToolCall",
+        "finishTurn",
+        "prepareRequest",
+        "prepareNextTurn",
+        "prepareNextTurnWithContext",
+        "activeRun",
+        "sessionId",
+        "thinkingBudgets",
+        "transport",
+        "maxRetryDelayMs",
+        "toolExecution"
+      ],
+      "state": {
+        "systemPrompt": "",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "high",
+        "tools": [],
+        "messages": [],
+        "isStreaming": false,
+        "pendingToolCalls": []
+      },
+      "modes": [
+        "all",
+        "all"
+      ],
+      "refs": [
+        [
+          "convertToLlm",
+          true
+        ],
+        [
+          "transformContext",
+          true
+        ],
+        [
+          "streamFn",
+          true
+        ],
+        [
+          "getApiKey",
+          true
+        ],
+        [
+          "onPayload",
+          true
+        ],
+        [
+          "onResponse",
+          true
+        ],
+        [
+          "onProviderStreamEvent",
+          true
+        ],
+        [
+          "beforeToolCall",
+          true
+        ],
+        [
+          "afterToolCall",
+          true
+        ],
+        [
+          "finishTurn",
+          true
+        ],
+        [
+          "prepareRequest",
+          true
+        ],
+        [
+          "prepareNextTurn",
+          true
+        ],
+        [
+          "prepareNextTurnWithContext",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "queue-one",
+      "before": {
+        "queued": true,
+        "peek": [
+          {
+            "role": "user",
+            "content": "a",
+            "timestamp": 1
+          }
+        ],
+        "freshArray": true,
+        "firstIdentity": true,
+        "modes": [
+          "one-at-a-time",
+          "one-at-a-time"
+        ]
+      },
+      "after": {
+        "queued": false,
+        "peek": []
+      }
+    },
+    {
+      "id": "queue-all",
+      "before": {
+        "queued": true,
+        "peek": [
+          {
+            "role": "user",
+            "content": "a",
+            "timestamp": 1
+          },
+          {
+            "role": "user",
+            "content": "b",
+            "timestamp": 2
+          }
+        ],
+        "freshArray": true,
+        "firstIdentity": true,
+        "modes": [
+          "all",
+          "one-at-a-time"
+        ]
+      },
+      "after": {
+        "queued": false,
+        "peek": []
+      }
+    },
+    {
+      "id": "queue-live-refs",
+      "before": {
+        "queued": true,
+        "peek": [
+          {
+            "role": "user",
+            "content": "mutated",
+            "timestamp": 1
+          }
+        ],
+        "freshArray": true,
+        "firstIdentity": true,
+        "modes": [
+          "one-at-a-time",
+          "one-at-a-time"
+        ]
+      },
+      "after": {
+        "queued": false,
+        "peek": []
+      }
+    },
+    {
+      "id": "queues-clear",
+      "before": {
+        "queued": true,
+        "peek": [
+          {
+            "role": "user",
+            "content": "a",
+            "timestamp": 1
+          }
+        ],
+        "freshArray": true,
+        "firstIdentity": true,
+        "modes": [
+          "one-at-a-time",
+          "one-at-a-time"
+        ],
+        "afterSteeringClear": [
+          {
+            "role": "user",
+            "content": "c",
+            "timestamp": 3
+          }
+        ]
+      },
+      "after": {
+        "queued": false,
+        "peek": []
+      }
+    },
+    {
+      "id": "ordinary-borrowed-receivers",
+      "calls": [
+        [
+          "enqueue",
+          true,
+          {
+            "raw": true
+          }
+        ]
+      ],
+      "stateIdentity": true
+    },
+    {
+      "id": "state-shallow-copy",
+      "initial": {
+        "toolsArrayCopy": true,
+        "messagesArrayCopy": true,
+        "toolIdentity": true,
+        "messageIdentity": false
+      },
+      "state": {
+        "systemPrompt": "",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "off",
+        "tools": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "a",
+            "timestamp": 1
+          }
+        ],
+        "isStreaming": false,
+        "pendingToolCalls": []
+      }
+    },
+    {
+      "id": "reset-baseline",
+      "state": {
+        "systemPrompt": "baseline",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "off",
+        "tools": [],
+        "messages": [
+          {
+            "role": "system",
+            "content": "",
+            "sections": {
+              "preamble": "baseline"
+            },
+            "timestamp": 1
+          }
+        ],
+        "isStreaming": false,
+        "pendingToolCalls": []
+      },
+      "queued": false
+    },
+    {
+      "id": "reset-active-error",
+      "outcome": {
+        "name": "Error",
+        "message": "Agent is already processing. Wait for completion before resetting."
+      }
+    },
+    {
+      "id": "lifecycle-wait-abort",
+      "events": [
+        [
+          "executor",
+          true,
+          false,
+          true
+        ],
+        [
+          "returned",
+          true,
+          true,
+          true
+        ],
+        [
+          "executor-resume",
+          true
+        ],
+        "idle"
+      ],
+      "state": {
+        "systemPrompt": "",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "off",
+        "tools": [],
+        "messages": [],
+        "isStreaming": false,
+        "pendingToolCalls": []
+      }
+    },
+    {
+      "id": "events-live-listener-set",
+      "events": [
+        [
+          "first",
+          true,
+          true,
+          "message_end",
+          1
+        ],
+        "first-awaited",
+        "late"
+      ],
+      "state": {
+        "systemPrompt": "",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "off",
+        "tools": [],
+        "messages": [
+          {
+            "role": "user",
+            "content": "event",
+            "timestamp": 1
+          }
+        ],
+        "isStreaming": false,
+        "pendingToolCalls": []
+      }
+    },
+    {
+      "id": "lifecycle-raw-failure",
+      "events": [
+        [
+          "message_start",
+          true,
+          true
+        ],
+        [
+          "message_end",
+          true,
+          true
+        ],
+        [
+          "turn_end",
+          true,
+          true
+        ],
+        [
+          "agent_end",
+          true,
+          true
+        ]
+      ],
+      "state": {
+        "systemPrompt": "",
+        "model": {
+          "id": "unknown",
+          "name": "unknown",
+          "api": "unknown",
+          "provider": "unknown",
+          "baseUrl": "",
+          "reasoning": false,
+          "input": [],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 0,
+          "maxTokens": 0
+        },
+        "thinkingLevel": "off",
+        "tools": [],
+        "messages": [
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": ""
+              }
+            ],
+            "api": "unknown",
+            "provider": "unknown",
+            "model": "unknown",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "errorMessage": "[object Object]",
+            "timestamp": 42
+          }
+        ],
+        "isStreaming": false,
+        "pendingToolCalls": [],
+        "errorMessage": "[object Object]"
+      },
+      "idlePromise": true
+    }
+  ]
+}
