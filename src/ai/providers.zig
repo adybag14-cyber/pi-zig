@@ -339,7 +339,7 @@ const qwen_effort_compat = metadata.Compat{
     .thinking_format = .qwen,
 };
 
-/// Exact built-in pi-ai 0.84.4 catalog plus native-only local/runtime entries.
+/// Pinned built-in Pi model data plus native-only local/runtime entries.
 /// The generated rows retain provider identity while selecting a native API transport per model.
 const native_extra_models = [_]ModelInfo{
     .{ .provider = .radius, .api = .pi_messages, .id = "auto", .display = "Radius Auto", .base_url = "https://radius.pi.dev", .context_window = 128_000, .max_tokens = 16_384 },
