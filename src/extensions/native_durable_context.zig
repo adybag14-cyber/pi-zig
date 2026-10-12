@@ -1,69 +1,55 @@
-//! Native Chord Context derivation; parent and keyed values are owner VM roots.
+//! Native Chord2 Context values preserve live prototype lookup and private identity.
 const engine_mod = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
+const objects = @import("native_chord_context_objects.zig");
 const durable = @import("native_durable.zig");
 const Engine = engine_mod.Engine;
 const c = engine_mod.c;
 pub fn withoutAbortSignal(engine: *Engine, parent: c.JSValue) !c.JSValue {
-    const label = try sdk.text(engine, "chord.abortSignal");
-    defer engine.freeValue(label);
-    return derive(engine, parent, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), label);
+    const exports = engine.native_module_values.get("@earendil-works/chord/context") orelse return error.NativeChordContextUnavailable;
+    return sdk.invoke(engine, exports, "withoutAbortSignal", &.{parent});
 }
 pub fn withAbortSignal(engine: *Engine, signal: c.JSValue, parent: c.JSValue) anyerror!c.JSValue {
-    return exportedOwned(engine, &.{ signal, parent }, 2);
+    const exports = engine.native_module_values.get("@earendil-works/chord/context") orelse return error.NativeChordContextUnavailable;
+    return sdk.invoke(engine, exports, "withAbortSignal", &.{ signal, parent });
 }
-fn derive(engine: *Engine, parent: c.JSValue, key: c.JSValue, value: c.JSValue, signal: c.JSValue, name: c.JSValue) !c.JSValue {
-    const object = try sdk.object(engine);
-    errdefer engine.freeValue(object);
-    var data = [_]c.JSValue{ parent, key, value, name };
-    inline for (.{ "value", "toString" }, 0..) |method_name, operation| {
-        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, contextMethod, 1, @intCast(operation), data.len, &data));
-        if (c.JS_DefinePropertyValueStr(engine.context, object, method_name, callback, 0) < 0) return error.JavaScriptException;
-    }
-    if (c.JS_DefinePropertyValueStr(engine.context, object, "abortSignal", c.JS_DupValue(engine.context, signal), 0) < 0) return error.JavaScriptException;
-    return object;
-}
-fn contextMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = Engine.fromContext(context.?);
-    return contextMethodOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), operation, data) catch |err| durable.reject(engine, err);
-}
-fn contextMethodOwned(engine: *Engine, key: c.JSValue, operation: c_int, data: [*c]c.JSValue) !c.JSValue {
-    if (operation == 0) {
-        if (!c.JS_IsUndefined(data[1])) {
-            const requested = try sdk.get(engine, key, "token");
-            defer engine.freeValue(requested);
-            const stored = try sdk.get(engine, data[1], "token");
-            defer engine.freeValue(stored);
-            if (c.JS_IsStrictEqual(engine.context, requested, stored)) return c.JS_DupValue(engine.context, data[2]);
-        }
-        if (c.JS_IsUndefined(data[0])) return c.pi_js_undefined();
-        return sdk.invoke(engine, data[0], "value", &.{key});
-    }
-    if (c.JS_IsUndefined(data[0])) return c.JS_DupValue(engine.context, data[3]);
-    const parent = try engine.toString(data[0]);
-    defer engine.gpa.free(parent);
-    const name = if (!c.JS_IsUndefined(data[1])) blk: {
-        const token = try sdk.get(engine, data[1], "token");
-        defer engine.freeValue(token);
-        const description = try sdk.get(engine, token, "description");
-        defer engine.freeValue(description);
-        break :blk if (c.JS_IsUndefined(description)) try engine.gpa.dupe(u8, "anonymous") else try engine.toString(description);
-    } else try engine.toString(data[3]);
-    defer engine.gpa.free(name);
-    const text = try @import("std").fmt.allocPrint(engine.gpa, "{s}.WithValue({s})", .{ parent, name });
-    defer engine.gpa.free(text);
-    return sdk.text(engine, text);
+fn createKey(engine: *Engine, description: c.JSValue) !c.JSValue {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const symbol = try sdk.get(engine, global, "Symbol");
+    defer engine.freeValue(symbol);
+    var args = [_]c.JSValue{description};
+    const token = try engine.checked(c.JS_Call(engine.context, symbol, c.pi_js_undefined(), 1, &args));
+    defer engine.freeValue(token);
+    const key = try sdk.object(engine);
+    errdefer engine.freeValue(key);
+    try sdk.put(engine, key, "token", c.JS_DupValue(engine.context, token));
+    const object = try sdk.get(engine, global, "Object");
+    defer engine.freeValue(object);
+    const frozen = try sdk.invoke(engine, object, "freeze", &.{key});
+    engine.freeValue(frozen);
+    return key;
 }
 pub fn install(engine: *Engine) !void {
+    if (engine.native_module_names.contains("@earendil-works/chord/context")) return;
     if (!engine.abort_signals_ready) try @import("abort_signal.zig").install(engine);
     const exports = try sdk.object(engine);
     defer engine.freeValue(exports);
+    const description = try sdk.text(engine, "chord.abortSignal");
+    defer engine.freeValue(description);
+    const abort_key = try createKey(engine, description);
+    defer engine.freeValue(abort_key);
+    const bindings = try objects.bindings(engine, abort_key);
+    defer engine.freeValue(bindings);
     inline for (.{ "BACKGROUND_CONTEXT", "TODO_CONTEXT" }) |name| {
         const label = try sdk.text(engine, if (@import("std").mem.eql(u8, name, "BACKGROUND_CONTEXT")) "[Context BACKGROUND_CONTEXT]" else "[Context TODO_CONTEXT]");
         defer engine.freeValue(label);
-        try sdk.put(engine, exports, name, try derive(engine, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), label));
+        try sdk.put(engine, exports, name, try objects.create(engine, bindings, "EmptyContext", &.{label}));
     }
-    inline for (.{ "createContextKey", "withContextValue", "withAbortSignal", "withoutAbortSignal", "withCancel", "awaitWithContext" }, 0..) |name, operation| try sdk.put(engine, exports, name, try engine.checked(c.pi_js_function_magic(engine.context, exported, name, 3, @intCast(operation))));
+    inline for (.{ "createContextKey", "withContextValue", "withAbortSignal", "withoutAbortSignal", "withCancel", "awaitWithContext" }, 0..) |name, operation| {
+        const length: c_int = switch (operation) { 0, 3, 4 => 1, 1 => 3, else => 2 };
+        try sdk.put(engine, exports, name, try @import("native_node_function.zig").create(engine, name, length, exported, &.{ bindings, c.JS_NewInt32(engine.context, @intCast(operation)) }));
+    }
     try engine.registerValueModule("@earendil-works/chord/context", exports);
     const root = try sdk.object(engine);
     defer engine.freeValue(root);
@@ -74,12 +60,18 @@ pub fn install(engine: *Engine) !void {
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
-fn exported(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
-    const engine = Engine.fromContext(context.?);
-    return exportedOwned(engine, argv[0..@intCast(argc)], operation) catch |err| durable.reject(engine, err);
+fn exported(engine: *Engine, _: c.JSValue, args: []const c.JSValue, data: []const c.JSValue) !c.JSValue {
+    var operation: i32 = undefined;
+    if (c.JS_ToInt32(engine.context, &operation, data[1]) < 0) return error.JavaScriptException;
+    return exportedOwned(engine, args, operation, data[0]);
 }
-fn exportedOwned(engine: *Engine, args: []const c.JSValue, operation: c_int) !c.JSValue {
+fn exportedOwned(engine: *Engine, args: []const c.JSValue, operation: c_int, bindings: c.JSValue) anyerror!c.JSValue {
     if (operation == 5) return awaitWithContext(engine, argument(args, 0), argument(args, 1));
+    if (operation == 0) return createKey(engine, argument(args, 0));
+    const abort_key = try sdk.get(engine, bindings, "abortKey");
+    defer engine.freeValue(abort_key);
+    if (operation == 1) return objects.create(engine, bindings, "ContextValue", &.{ argument(args, 2), argument(args, 0), argument(args, 1) });
+    if (operation == 3) return objects.create(engine, bindings, "ContextValue", &.{ argument(args, 0), abort_key, c.pi_js_undefined() });
     if (operation == 4) {
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
@@ -91,36 +83,18 @@ fn exportedOwned(engine: *Engine, args: []const c.JSValue, operation: c_int) !c.
         defer engine.freeValue(signal);
         const result = try sdk.object(engine);
         errdefer engine.freeValue(result);
-        try sdk.put(engine, result, "context", try withAbortSignal(engine, signal, argument(args, 0)));
+        try sdk.put(engine, result, "context", try addSignal(engine, bindings, abort_key, signal, argument(args, 0)));
         var data = [_]c.JSValue{controller};
-        try sdk.put(engine, result, "cancel", try engine.checked(c.JS_NewCFunctionData(engine.context, cancel, 1, 0, 1, &data)));
+        try sdk.put(engine, result, "cancel", try engine.checked(c.JS_NewCFunctionData2(engine.context, cancel, "cancel", 1, 0, 1, &data)));
         return result;
     }
-    if (operation == 3) return withoutAbortSignal(engine, argument(args, 0));
-    if (operation == 0) {
-        const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
-        const symbol = try sdk.get(engine, global, "Symbol");
-        defer engine.freeValue(symbol);
-        var description = [_]c.JSValue{argument(args, 0)};
-        const value = try engine.checked(c.JS_Call(engine.context, symbol, c.pi_js_undefined(), 1, &description));
-        const key = try sdk.object(engine);
-        errdefer engine.freeValue(key);
-        try sdk.put(engine, key, "token", value);
-        const object = try sdk.get(engine, global, "Object");
-        defer engine.freeValue(object);
-        const frozen = try sdk.invoke(engine, object, "freeze", &.{key});
-        engine.freeValue(frozen);
-        return key;
-    }
-    const parent = argument(args, if (operation == 1) 2 else 1);
+    return addSignal(engine, bindings, abort_key, argument(args, 0), argument(args, 1));
+}
+fn addSignal(engine: *Engine, bindings: c.JSValue, abort_key: c.JSValue, signal: c.JSValue, parent: c.JSValue) !c.JSValue {
     const inherited = try sdk.get(engine, parent, "abortSignal");
     defer engine.freeValue(inherited);
-    const label = try sdk.text(engine, "chord.abortSignal");
-    defer engine.freeValue(label);
-    if (operation == 1) return derive(engine, parent, argument(args, 0), argument(args, 1), inherited, label);
-    var signal = c.JS_DupValue(engine.context, argument(args, 0));
-    defer engine.freeValue(signal);
+    var combined = c.JS_DupValue(engine.context, signal);
+    defer engine.freeValue(combined);
     if (!c.JS_IsUndefined(inherited)) {
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
@@ -130,11 +104,11 @@ fn exportedOwned(engine: *Engine, args: []const c.JSValue, operation: c_int) !c.
         defer engine.freeValue(signals);
         try sdk.append(engine, signals, c.JS_DupValue(engine.context, inherited));
         try sdk.append(engine, signals, c.JS_DupValue(engine.context, signal));
-        const combined = try sdk.invoke(engine, constructor, "any", &.{signals});
-        engine.freeValue(signal);
-        signal = combined;
+        const value = try sdk.invoke(engine, constructor, "any", &.{signals});
+        engine.freeValue(combined);
+        combined = value;
     }
-    return derive(engine, parent, c.pi_js_undefined(), c.pi_js_undefined(), signal, label);
+    return objects.create(engine, bindings, "ContextValue", &.{ parent, abort_key, combined });
 }
 fn cancel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -159,12 +133,12 @@ pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue)
     const signal = try sdk.get(engine, context, "abortSignal");
     defer engine.freeValue(signal);
     if (c.JS_IsUndefined(signal)) return c.JS_DupValue(engine.context, promise);
+    const aborted = try sdk.get(engine, signal, "aborted");
+    defer engine.freeValue(aborted);
     var functions: [2]c.JSValue = undefined;
     const waiter = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     errdefer engine.freeValue(waiter);
     defer for (functions) |function| engine.freeValue(function);
-    const aborted = try sdk.get(engine, signal, "aborted");
-    defer engine.freeValue(aborted);
     if (c.JS_ToBool(engine.context, aborted) > 0) {
         const failure = try abortError(engine, signal);
         defer engine.freeValue(failure);
@@ -173,8 +147,22 @@ pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue)
         engine.freeValue(result);
         return waiter;
     }
+    // Listener installation and then access run inside Source's Promise
+    // executor. Their raw errors reject this waiter, rather than throwing from
+    // awaitWithContext or issuing an extra observable removeEventListener call.
+    attachWaiter(engine, promise, signal, functions) catch |err| {
+        _ = durable.reject(engine, err);
+        const failure = c.JS_GetException(engine.context);
+        defer engine.freeValue(failure);
+        var args = [_]c.JSValue{failure};
+        const ignored = try engine.checked(c.JS_Call(engine.context, functions[1], c.pi_js_undefined(), 1, &args));
+        engine.freeValue(ignored);
+    };
+    return waiter;
+}
+fn attachWaiter(engine: *Engine, promise: c.JSValue, signal: c.JSValue, functions: [2]c.JSValue) !void {
     var abort_data = [_]c.JSValue{ signal, functions[0], functions[1] };
-    const on_abort = try engine.checked(c.JS_NewCFunctionData(engine.context, waitSettled, 1, 2, 3, &abort_data));
+    const on_abort = try engine.checked(c.JS_NewCFunctionData2(engine.context, waitSettled, "onAbort", 0, 2, 3, &abort_data));
     defer engine.freeValue(on_abort);
     const abort = try sdk.text(engine, "abort");
     defer engine.freeValue(abort);
@@ -183,9 +171,6 @@ pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue)
     try sdk.put(engine, options, "once", c.pi_js_bool(engine.context, 1));
     const installed = try sdk.invoke(engine, signal, "addEventListener", &.{ abort, on_abort, options });
     engine.freeValue(installed);
-    errdefer {
-        if (sdk.invoke(engine, signal, "removeEventListener", &.{ abort, on_abort })) |result| engine.freeValue(result) else |_| {}
-    }
     var data = [_]c.JSValue{ signal, functions[0], functions[1], on_abort };
     const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, waitSettled, 1, 0, 4, &data));
     defer engine.freeValue(fulfilled);
@@ -193,7 +178,6 @@ pub fn awaitWithContext(engine: *Engine, promise: c.JSValue, context: c.JSValue)
     defer engine.freeValue(rejected);
     const result = try sdk.invoke(engine, promise, "then", &.{ fulfilled, rejected });
     engine.freeValue(result);
-    return waiter;
 }
 fn waitSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

@@ -1,0 +1,30 @@
+[
+  {
+    "path": ".gitattributes",
+    "sha256": "7E1A130EB07D7E4582ED1E2BD29B02EA799E24C85B84826EB2D3DFC23BFCF019"
+  },
+  {
+    "path": "build.zig",
+    "sha256": "3F1A8E830E55299713362B1E89F00AE3AC6EA373A58A85023D2456C2B843868D"
+  },
+  {
+    "path": "src/extensions/native_durable_context.zig",
+    "sha256": "0D07D514C212483DEDB0625D059C1C49B022060FC883637C3BB52E54D719733F"
+  },
+  {
+    "path": "src/extensions/native_chord_context_objects.zig",
+    "sha256": "E3BD7CD9CDF2C9DC7C8AC9118B3B45BBF7406872499CD2FAC781889CE1897A18"
+  },
+  {
+    "path": "src/native_chord_context_source_test.zig",
+    "sha256": "FEB33A037DF6084164933CE54CB45DD8555ADD102C3BAEB1F6D67F668689CB9D"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-context-original-19cb.input.txt",
+    "sha256": "AFD72670AB79A3731F30DA83746039BE0889792B3ACE9FFA74461271A71D2F84"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-context-original-19cb.json",
+    "sha256": "737F04C54E7CE20986771BE3C36AB354973CF66788EB7379C995A6828F8EE9C5"
+  }
+]
