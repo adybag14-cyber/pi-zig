@@ -679,3 +679,132 @@ test "mcp.runtime real stdio initialize and concurrent request result ownership"
     try client.close();
     try std.testing.expect(transport.child == null);
 }
+
+test "mcp.runtime Source 19cb534 accepts every structured JSON value and normalizes absent content" {
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/mcp-latest19cb-original-source-20261012.json"));
+    defer original.deinit();
+    for ((try protocol.field(original.value, "rows")).array.items) |row| {
+        var normalized = try json.Owned.empty(gpa);
+        defer normalized.deinit();
+        normalized.value = try json.clone(normalized.arena.allocator(), try protocol.field(row, "input"));
+        try capabilities.validateCallTool(&normalized.value, normalized.arena.allocator());
+        try std.testing.expect(json.equal(try protocol.field(row, "result"), normalized.value));
+        var projected = try content.toLlmContent(gpa, normalized.value);
+        defer projected.deinit();
+        try std.testing.expect(json.equal(try protocol.field(row, "llm"), projected.value));
+    }
+    var invalid = try json.Owned.parse(gpa, "{\"content\":null,\"structuredContent\":[]}");
+    defer invalid.deinit();
+    try std.testing.expectError(error.InvalidMcpToolResult, capabilities.validateCallTool(&invalid.value, invalid.arena.allocator()));
+}
+
+test "mcp.runtime Source 19cb534 cancelled token resolution never dispatches or refreshes" {
+    const Auth = struct {
+        flag: bool = false,
+        refreshes: usize = 0,
+        fn token(raw: ?*anyopaque, a: std.mem.Allocator, _: ?*bool) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            @atomicStore(bool, &self.flag, true, .release);
+            return try a.dupe(u8, "old");
+        }
+        fn unauthorized(raw: ?*anyopaque, _: ?[]const u8, _: ?[]const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.refreshes += 1;
+        }
+        fn message(_: ?*anyopaque, _: protocol.Value) !void {}
+        fn failure(_: ?*anyopaque, _: anyerror) void {}
+        fn closed(_: ?*anyopaque) void {}
+    };
+    var auth: Auth = .{};
+    // This address must never be contacted: the original client has settled
+    // while its token callback was pending, before the dispatch boundary.
+    const transport = try http.Http.create(gpa, io, .{ .url = "http://127.0.0.1:1/mcp", .open_get_stream = false, .auth_context = &auth, .auth_token = Auth.token, .on_unauthorized = Auth.unauthorized });
+    defer transport.deinit();
+    try transport.transport().start(.{ .context = null, .message = Auth.message, .failure = Auth.failure, .closed = Auth.closed });
+    var request = try protocol.request(gpa, 1, "tools/call", null);
+    defer request.deinit();
+    try std.testing.expectError(error.McpRequestAborted, transport.transport().send(request.value, &auth.flag));
+    try std.testing.expectEqual(@as(usize, 0), auth.refreshes);
+}
+
+test "mcp.runtime Source 19cb534 cancelled authorization recovery cannot replay a tool call" {
+    const fixture = @import("../ai/http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, io, &.{.{ .path = "/mcp", .status = .unauthorized, .body = "denied", .headers = &.{.{ .name = "www-authenticate", .value = "Bearer" }}, .payload_contains = "tools/call" }});
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const Auth = struct {
+        flag: bool = false,
+        refreshes: usize = 0,
+        tokens: usize = 0,
+        fn token(raw: ?*anyopaque, a: std.mem.Allocator, _: ?*bool) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.tokens += 1;
+            return try a.dupe(u8, if (self.refreshes == 0) "old" else "new");
+        }
+        fn unauthorized(raw: ?*anyopaque, _: ?[]const u8, _: ?[]const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.refreshes += 1;
+            // Represents a shared recovery finishing after this request settled.
+            @atomicStore(bool, &self.flag, true, .release);
+        }
+        fn message(_: ?*anyopaque, _: protocol.Value) !void {}
+        fn failure(_: ?*anyopaque, _: anyerror) void {}
+        fn closed(_: ?*anyopaque) void {}
+    };
+    var auth: Auth = .{};
+    const transport = try http.Http.create(gpa, io, .{ .url = url, .open_get_stream = false, .auth_context = &auth, .auth_token = Auth.token, .on_unauthorized = Auth.unauthorized });
+    defer transport.deinit();
+    try transport.transport().start(.{ .context = null, .message = Auth.message, .failure = Auth.failure, .closed = Auth.closed });
+    var request = try protocol.request(gpa, 1, "tools/call", null);
+    defer request.deinit();
+    try std.testing.expectError(error.McpRequestAborted, transport.transport().send(request.value, &auth.flag));
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
+    try std.testing.expectEqual(@as(usize, 1), auth.refreshes);
+    try std.testing.expectEqual(@as(usize, 1), auth.tokens);
+}
+
+test "mcp.runtime Source 19cb534 cancelled unauthorized response never starts refresh" {
+    const fixture = @import("../ai/http_fixture.zig");
+    var observed: std.Io.Event = .unset;
+    var release: std.Io.Event = .unset;
+    const server = try fixture.PlanServer.init(gpa, io, &.{.{ .path = "/mcp", .status = .unauthorized, .body = "denied", .headers = &.{.{ .name = "www-authenticate", .value = "Bearer" }}, .request_observed = &observed, .response_release = &release }});
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const Auth = struct {
+        flag: bool = false,
+        refreshes: usize = 0,
+        fn token(_: ?*anyopaque, a: std.mem.Allocator, _: ?*bool) !?[]u8 {
+            return try a.dupe(u8, "old");
+        }
+        fn unauthorized(raw: ?*anyopaque, _: ?[]const u8, _: ?[]const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.refreshes += 1;
+        }
+        fn message(_: ?*anyopaque, _: protocol.Value) !void {}
+        fn failure(_: ?*anyopaque, _: anyerror) void {}
+        fn closed(_: ?*anyopaque) void {}
+    };
+    var auth: Auth = .{};
+    const transport = try http.Http.create(gpa, io, .{ .url = url, .open_get_stream = false, .auth_context = &auth, .auth_token = Auth.token, .on_unauthorized = Auth.unauthorized });
+    defer transport.deinit();
+    try transport.transport().start(.{ .context = null, .message = Auth.message, .failure = Auth.failure, .closed = Auth.closed });
+    var request = try protocol.request(gpa, 1, "tools/call", null);
+    defer request.deinit();
+    var sending = try io.concurrent(@import("transport.zig").Transport.send, .{ transport.transport(), request.value, &auth.flag });
+    var joined = false;
+    defer if (!joined) {
+        release.set(io);
+        sending.cancel(io) catch {};
+    };
+    try observed.wait(io);
+    @atomicStore(bool, &auth.flag, true, .release);
+    release.set(io);
+    try std.testing.expectError(error.McpRequestAborted, sending.await(io));
+    joined = true;
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 0), auth.refreshes);
+    try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
+}

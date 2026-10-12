@@ -1,0 +1,7 @@
+import {writeFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+const runtime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012';
+const {createMcpResultSchema}=await import(pathToFileURL(runtime+'/packages/coding-agent/dist/extensions/mcp/tools.js'));
+const {renderToolOutputType}=await import(pathToFileURL(runtime+'/packages/codemode/dist/declarations.js'));
+const inputs=[undefined,{type:'array',items:{$ref:'#/$defs/Hit'},$defs:{Hit:{type:'object',properties:{id:{type:'number'}},required:['id']}}},{type:'object',properties:{$ref:{$ref:'#/$defs/value'},self:{$ref:'#'},remote:{$ref:'https://example/schema'}},$defs:{value:{type:'string'}},const:{$ref:'#/literal'},default:{$ref:'#/data'},examples:[{$ref:'#/data'}],required:['$ref']}];
+writeFileSync(process.argv[2],JSON.stringify({source:'19cb534c3b6e3871458a8fa59e98f0312c50e995',rows:inputs.map(input=>{const schema=createMcpResultSchema(input);return {input:input??null,schema,type:renderToolOutputType(schema)}})},null,2)+'\n');

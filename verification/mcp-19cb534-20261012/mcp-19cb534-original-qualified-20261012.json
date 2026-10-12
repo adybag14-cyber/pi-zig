@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "structured_rows": 10,
+  "native_status": "not_run_lane_pending",
+  "source_original": "Genuine unmodified built Pi McpClient, StreamableHttpTransport, McpServerConnection, convertMcpResult and createMcpResultSchema",
+  "runtime_count": 31064,
+  "tooling_count": 1774,
+  "inventory_pre_post_mismatches": 0,
+  "observed_modules": 145,
+  "observed_mismatches": 0,
+  "junctions": 16,
+  "junction_mismatches": 0,
+  "cancelled": {
+    "cancellations": [
+      {
+        "name": "AbortError"
+      },
+      {
+        "name": "McpTimeoutError"
+      }
+    ],
+    "keptResult": {
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ]
+    },
+    "executed": [
+      "kept"
+    ],
+    "refreshes": 1
+  },
+  "resource_discovery": {
+    "methods": [
+      "initialize",
+      "tools/list"
+    ],
+    "state": "connected",
+    "hasResources": true,
+    "methodsAfterNotification": [
+      "initialize",
+      "tools/list"
+    ]
+  },
+  "fixture_sha256": "4C2049A45DCE253E37812E00337868DE1E5E61774FA1778CD49A3AA13DA338DF",
+  "manifests": [
+    {
+      "file": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    },
+    {
+      "file": "root-current8a-npm-tools-before.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    }
+  ],
+  "created_utc": "2026-10-12T15:31:13.1972306+00:00"
+}

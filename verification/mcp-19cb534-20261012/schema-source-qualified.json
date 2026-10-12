@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "schema_rows": 3,
+  "observed_modules": 119,
+  "observed_mismatches": 0,
+  "junctions": 16,
+  "junction_mismatches": 0,
+  "generated_schema_sha256": "A4DB944DAA143E2D63A8ADF7EFAFB36003FA15EF3186A073D33979A61C031511",
+  "fixture_sha256": "67EC390FC12D1C284C87E541F8A14ABE8A479A2BDFDD3B6F51460EA844851E93",
+  "runtime_count": 31064,
+  "tooling_count": 1774,
+  "inventory_pre_post_mismatches": 0
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "src/mcp/agent_tools.zig",
+    "sha256": "77C36CE383DAB7544221323C499D2D20C478B18A7EA5F73DE54C3443F892FB46"
+  },
+  {
+    "path": "src/mcp/capabilities.zig",
+    "sha256": "8ED2CB64F6F2671D9F283C6FCD68C4EED65B5E5278B42535A5BD8AFD4C829927"
+  },
+  {
+    "path": "src/mcp/cli.zig",
+    "sha256": "68A523CA8D0DD651B359334EBE9993C1A94C069E18282E6F59C9D0101A700CC7"
+  },
+  {
+    "path": "src/mcp/configured.zig",
+    "sha256": "7B88590D3B65F10428B278DE3C655274C80041F608557DE1F3628A4CE33C2EC9"
+  },
+  {
+    "path": "src/mcp/configured_fixture.zig",
+    "sha256": "60A165A138E4E9A5FDEE886EB785CA8E2930AF2544EB526F2D4D01BC31895BFF"
+  },
+  {
+    "path": "src/mcp/http_transport.zig",
+    "sha256": "F87012301C594BC978A241EF39858453C6225B3F29901D653377B4610BFB6610"
+  },
+  {
+    "path": "src/mcp/runtime_tests.zig",
+    "sha256": "717C34903EE6CF941D91DA830CEC3C35F1E5BFC49988C9FE9C74103DBF3003BE"
+  },
+  {
+    "path": "src/mcp/session.zig",
+    "sha256": "610CDEB566C9E16F5933D9627C066E2A2A86A232A6364AC025CACD8043C42D62"
+  },
+  {
+    "path": "src/mcp_configured_test.zig",
+    "sha256": "91EB8E18C92A7995916AE079337ABEF301B513B747983D44E64ED08B638646B5"
+  },
+  {
+    "path": "src/mcp/result_schema.json",
+    "sha256": "A4DB944DAA143E2D63A8ADF7EFAFB36003FA15EF3186A073D33979A61C031511"
+  },
+  {
+    "path": "src/mcp/fixtures/mcp-latest19cb-original-source-20261012.json",
+    "sha256": "4C2049A45DCE253E37812E00337868DE1E5E61774FA1778CD49A3AA13DA338DF"
+  },
+  {
+    "path": "src/mcp/fixtures/mcp-latest19cb-schema-original-source-20261012.json",
+    "sha256": "67EC390FC12D1C284C87E541F8A14ABE8A479A2BDFDD3B6F51460EA844851E93"
+  }
+]

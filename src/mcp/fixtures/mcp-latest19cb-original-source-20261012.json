@@ -1,0 +1,368 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "rows": [
+    {
+      "input": {
+        "structuredContent": null
+      },
+      "result": {
+        "structuredContent": null,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "null"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "null"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": null,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": []
+      },
+      "result": {
+        "structuredContent": [],
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "[]"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[]"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": [],
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": [
+          {
+            "id": 1
+          }
+        ]
+      },
+      "result": {
+        "structuredContent": [
+          {
+            "id": 1
+          }
+        ],
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"id\": 1\n  }\n]"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"id\": 1\n  }\n]"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": [
+            {
+              "id": 1
+            }
+          ],
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": true
+      },
+      "result": {
+        "structuredContent": true,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "true"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "true"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": true,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": false
+      },
+      "result": {
+        "structuredContent": false,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "false"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "false"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": false,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": 0
+      },
+      "result": {
+        "structuredContent": 0,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "0"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "0"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": 0,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": 42
+      },
+      "result": {
+        "structuredContent": 42,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "42"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "42"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": 42,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": -1.5
+      },
+      "result": {
+        "structuredContent": -1.5,
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "-1.5"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "-1.5"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": -1.5,
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": "text"
+      },
+      "result": {
+        "structuredContent": "text",
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "\"text\""
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\"text\""
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": "text",
+          "content": []
+        }
+      }
+    },
+    {
+      "input": {
+        "structuredContent": {
+          "n": 1
+        }
+      },
+      "result": {
+        "structuredContent": {
+          "n": 1
+        },
+        "content": []
+      },
+      "llm": [
+        {
+          "type": "text",
+          "text": "{\n  \"n\": 1\n}"
+        }
+      ],
+      "converted": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"n\": 1\n}"
+          }
+        ],
+        "details": {
+          "server": "docs",
+          "tool": "t"
+        },
+        "structuredContent": {
+          "structuredContent": {
+            "n": 1
+          },
+          "content": []
+        }
+      }
+    }
+  ],
+  "defaultStructuredSchema": {},
+  "resources": {
+    "methods": [
+      "initialize",
+      "tools/list"
+    ],
+    "state": "connected",
+    "hasResources": true,
+    "methodsAfterNotification": [
+      "initialize",
+      "tools/list"
+    ]
+  },
+  "cancellation": {
+    "cancellations": [
+      {
+        "name": "AbortError"
+      },
+      {
+        "name": "McpTimeoutError"
+      }
+    ],
+    "keptResult": {
+      "content": [
+        {
+          "type": "text",
+          "text": "hello"
+        }
+      ]
+    },
+    "executed": [
+      "kept"
+    ],
+    "refreshes": 1
+  }
+}

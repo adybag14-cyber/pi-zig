@@ -1,0 +1,37 @@
+import {writeFileSync, readFileSync, realpathSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import {createServer} from 'node:http';
+const runtime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012';
+const load=path=>import(pathToFileURL(runtime+'/'+path));
+const {McpClient,StreamableHttpTransport,LATEST_PROTOCOL_VERSION,toLlmContent}=await load('packages/mcp/dist/index.js');
+const {createInMemoryTransportPair}=await load('packages/mcp/dist/transports/in-memory.js');
+const {convertMcpResult,createMcpResultSchema}=await load('packages/coding-agent/dist/extensions/mcp/tools.js');
+const {McpServerConnection}=await load('packages/coding-agent/dist/extensions/mcp/runtime.js');
+const rows=[];
+for(const value of [null,[],[{id:1}],true,false,0,42,-1.5,'text',{n:1}]){
+ const input={structuredContent:value};
+ const pair=createInMemoryTransportPair();
+ pair.server.onMessage(message=>{if(message.id===undefined)return; void pair.server.send({jsonrpc:'2.0',id:message.id,result:message.method==='initialize'?{protocolVersion:LATEST_PROTOCOL_VERSION,capabilities:{tools:{}},serverInfo:{name:'source',version:'1'}}:input});});
+ await pair.server.start();
+ const client=new McpClient({name:'source-observer',version:'1'});
+ await client.connect(pair.client);
+ const result=await client.callTool('value',{});
+ rows.push({input,result,llm:toLlmContent(result),converted:await convertMcpResult('docs','t',result)});
+ await client.close(); await pair.server.close();
+}
+const methods=[];const pair=createInMemoryTransportPair();
+pair.server.onMessage(message=>{if(message.id===undefined)return; methods.push(message.method);void pair.server.send({jsonrpc:'2.0',id:message.id,result:message.method==='initialize'?{protocolVersion:LATEST_PROTOCOL_VERSION,capabilities:{tools:{},resources:{}},serverInfo:{name:'source',version:'1'}}:{tools:[]}});});
+await pair.server.start();
+const connection=new McpServerConnection({entry:{name:'source',config:{command:'unused'},source:'test'},cwd:runtime,createTransport:()=>pair.client,onTools:()=>{},onChange:()=>{},log:{write(){}}});
+await connection.getClient();
+const resources={methods,state:connection.state,hasResources:connection.hasResources};
+await pair.server.send({jsonrpc:'2.0',method:'notifications/resources/list_changed'});await new Promise(resolve=>setTimeout(resolve,5));
+resources.methodsAfterNotification=[...methods];await connection.close();await pair.server.close();
+const executed=[];let token='old',refreshes=0,waiting=0,releaseRefresh,allWaiting;
+const refreshGate=new Promise(resolve=>releaseRefresh=resolve);const waitingGate=new Promise(resolve=>allWaiting=resolve);let refresh;
+const server=createServer(async(req,res)=>{const chunks=[];for await(const c of req)chunks.push(c);const message=JSON.parse(Buffer.concat(chunks).toString());if(message.method==='tools/call'&&req.headers.authorization==='Bearer old'){res.writeHead(401,{'www-authenticate':'Bearer'}).end();return}if(message.method==='tools/call')executed.push(message.params.name);if(message.id===undefined){res.writeHead(202).end();return}const result=message.method==='initialize'?{protocolVersion:LATEST_PROTOCOL_VERSION,capabilities:{tools:{}},serverInfo:{name:'source',version:'1'}}:{content:[{type:'text',text:'hello'}]};res.writeHead(200,{'content-type':'application/json'}).end(JSON.stringify({jsonrpc:'2.0',id:message.id,result}));});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const client=new McpClient({name:'source-observer',version:'1'});await client.connect(new StreamableHttpTransport({url:`http://127.0.0.1:${server.address().port}/mcp`,openGetStream:false,authProvider:{token:async()=>token,onUnauthorized:async()=>{if(!refresh){refreshes++;refresh=refreshGate.then(()=>{token='new'})}if(++waiting===3)allWaiting();await refresh}}}));
+const controller=new AbortController();const aborted=client.callTool('aborted',{}, {signal:controller.signal}).catch(error=>({name:error.name}));const timedOut=client.callTool('timed-out',{}, {timeoutMs:100}).catch(error=>({name:error.name}));const kept=client.callTool('kept',{});await waitingGate;controller.abort();const cancellations=[await aborted,await timedOut];releaseRefresh();const keptResult=await kept;await client.close();await new Promise(resolve=>server.close(resolve));
+writeFileSync(process.argv[2],JSON.stringify({source:'19cb534c3b6e3871458a8fa59e98f0312c50e995',rows,defaultStructuredSchema:createMcpResultSchema(undefined).properties.structuredContent,resources,cancellation:{cancellations,keptResult,executed,refreshes}},null,2)+'\n');

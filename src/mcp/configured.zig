@@ -58,26 +58,24 @@ pub const Server = struct {
     reconnect_active: bool = false,
     reconnect_callers: usize = 0,
     has_resources: bool = false,
-    resources_count: usize = 0,
-    resource_templates_count: usize = 0,
     discovery: ?json.Owned = null,
     refresh_mutex: std.Io.Mutex = .init,
     refresh_group: std.Io.Group = .init,
     fn notified(raw: ?*anyopaque, client: *session.Client, method: []const u8, _: ?Value) !void {
         const self: *Server = @ptrCast(@alignCast(raw.?));
-        const kind: enum { tools, resources } = if (std.mem.eql(u8, method, "notifications/tools/list_changed")) .tools else if (std.mem.eql(u8, method, "notifications/resources/list_changed")) .resources else return;
+        if (!std.mem.eql(u8, method, "notifications/tools/list_changed")) return;
         self.refresh_mutex.lockUncancelable(self.owner.io);
         defer self.refresh_mutex.unlock(self.owner.io);
         if (self.owner.closing.load(.acquire) or !self.connection.isCurrent(client)) return;
         const borrow = self.connection.pinCallbackClient(client) orelse return;
-        self.refresh_group.concurrent(self.owner.io, refresh, .{ self, borrow, kind == .resources }) catch |err| {
+        self.refresh_group.concurrent(self.owner.io, refresh, .{ self, borrow }) catch |err| {
             borrow.release();
             return err;
         };
     }
-    fn refresh(self: *Server, borrow: connection.Borrow, resources: bool) void {
+    fn refresh(self: *Server, borrow: connection.Borrow) void {
         defer borrow.release();
-        self.refreshInner(borrow.client, resources) catch |err| {
+        self.refreshInner(borrow.client) catch |err| {
             if (self.owner.closing.load(.acquire) or err == error.Canceled) return;
             self.owner.catalog_mutex.lockUncancelable(self.owner.io);
             defer self.owner.catalog_mutex.unlock(self.owner.io);
@@ -85,7 +83,7 @@ pub const Server = struct {
             self.owner.diagnostic(self.name, @errorName(err)) catch {};
         };
     }
-    fn refreshInner(self: *Server, client: *session.Client, resources: bool) !void {
+    fn refreshInner(self: *Server, client: *session.Client) !void {
         const service = self.owner;
         var candidate = try json.Owned.empty(service.gpa);
         defer candidate.deinit();
@@ -97,27 +95,13 @@ pub const Server = struct {
             candidate.value = try json.clone(candidate.arena.allocator(), previous.value);
         }
         const a = candidate.arena.allocator();
-        if (resources) {
-            const counts = try Service.resourceCounts(self);
-            try candidate.value.object.put(a, "resourcesCount", .{ .integer = @intCast(counts.resources) });
-            try candidate.value.object.put(a, "resourceTemplatesCount", .{ .integer = @intCast(counts.templates) });
-        } else {
-            var listed = try capabilities.listAll(client, .tools, .{ .timeout_ms = self.timeout_ms });
-            defer listed.deinit();
-            try candidate.value.object.put(a, "tools", try json.clone(a, listed.value));
-        }
+        var listed = try capabilities.listAll(client, .tools, .{ .timeout_ms = self.timeout_ms });
+        defer listed.deinit();
+        try candidate.value.object.put(a, "tools", try json.clone(a, listed.value));
         service.catalog_mutex.lockUncancelable(service.io);
         defer service.catalog_mutex.unlock(service.io);
         if (service.closing.load(.acquire) or !self.connection.isCurrent(client)) return;
-        // Resource and tool notifications can finish in either order. Update
-        // only the field this request fetched before rebuilding definitions.
-        if (self.discovery) |current| {
-            inline for (.{ "tools", "resourcesCount", "resourceTemplatesCount" }) |key| {
-                const fetched = if (comptime std.mem.eql(u8, key, "tools")) !resources else resources;
-                if (!fetched) try candidate.value.object.put(a, key, try json.clone(a, try protocol.field(current.value, key)));
-            }
-        }
-        try service.publishDiscoveryWithBodies(self, candidate.value, resources);
+        try service.publishDiscovery(self, candidate.value);
     }
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
@@ -471,47 +455,6 @@ pub const Service = struct {
             try pool.add(server, fetchDiscovery, direct);
         }
     }
-    pub const ResourceCounts = struct { resources: usize = 0, templates: usize = 0 };
-    pub fn resourceCounts(server: *Server) anyerror!ResourceCounts {
-        const self = server.owner;
-        const ResourceJob = struct {
-            server: *Server,
-            operation: resource_tools.Operation,
-            reply: ?resource_tools.Reply = null,
-            cause: ?anyerror = null,
-            future: ?std.Io.Future(void) = null,
-            fn run(job: *@This()) void {
-                job.reply = invokeResource(job.server, job.server.owner.gpa, job.operation, null, null) catch |cause| {
-                    job.cause = cause;
-                    return;
-                };
-            }
-            fn deinit(job: *@This(), operation_io: std.Io) void {
-                if (job.future) |*future| future.cancel(operation_io);
-                if (job.reply) |*reply| reply.value.deinit();
-            }
-            fn count(job: *@This()) !usize {
-                if (job.cause) |cause| if (cause == error.OutOfMemory) return error.OutOfMemory;
-                const reply = job.reply orelse return 0;
-                if (reply.error_message != null) return 0;
-                var count_value: usize = 0;
-                for (reply.value.value.array.items) |item| if (!resource_tools.isApp(item)) {
-                    count_value += 1;
-                };
-                return count_value;
-            }
-        };
-        var resource_jobs = [_]ResourceJob{ .{ .server = server, .operation = .all_resources }, .{ .server = server, .operation = .all_templates } };
-        defer for (&resource_jobs) |*job| job.deinit(self.io);
-        for (&resource_jobs) |*job| {
-            job.future = try self.io.concurrent(ResourceJob.run, .{job});
-        }
-        for (&resource_jobs) |*job| {
-            job.future.?.await(self.io);
-            job.future = null;
-        }
-        return .{ .resources = try resource_jobs[0].count(), .templates = try resource_jobs[1].count() };
-    }
     fn fetchDiscovery(raw: *anyopaque) !json.Owned {
         const server: *Server = @ptrCast(@alignCast(raw));
         const self = server.owner;
@@ -524,11 +467,6 @@ pub const Service = struct {
         const initialized = borrow.client.initialized.?.value;
         try result.value.object.put(a, "initialized", try json.clone(a, initialized));
         const offers = try protocol.field(initialized, "capabilities");
-        var counts_future: ?std.Io.Future(anyerror!ResourceCounts) = null;
-        defer if (counts_future) |*future| {
-            _ = future.cancel(self.io) catch {};
-        };
-        if (json.get(offers, "resources") != null) counts_future = try self.io.concurrent(resourceCounts, .{server});
         var listed: json.Value = .{ .array = .init(a) };
         if (capabilities.offersTools(offers)) {
             var found = try capabilities.listAll(borrow.client, .tools, .{ .timeout_ms = server.timeout_ms });
@@ -536,13 +474,6 @@ pub const Service = struct {
             listed = try json.clone(a, found.value);
         }
         try result.value.object.put(a, "tools", listed);
-        const counts = if (counts_future) |*future| blk: {
-            const fetched = future.await(self.io);
-            counts_future = null;
-            break :blk try fetched;
-        } else ResourceCounts{};
-        try result.value.object.put(a, "resourcesCount", .{ .integer = @intCast(counts.resources) });
-        try result.value.object.put(a, "resourceTemplatesCount", .{ .integer = @intCast(counts.templates) });
         return result;
     }
     fn discover(self: *Service, server: *Server) !void {
@@ -553,16 +484,11 @@ pub const Service = struct {
         try self.publishDiscovery(server, result.value);
     }
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
-        return self.publishDiscoveryWithBodies(server, result, false);
-    }
-    fn publishDiscoveryWithBodies(self: *Service, server: *Server, result: json.Value, reuse_bodies: bool) !void {
         var discovery = try json.Owned.empty(self.gpa);
         errdefer discovery.deinit();
         discovery.value = try json.clone(discovery.arena.allocator(), result);
         const initialized = try protocol.field(result, "initialized");
         const has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
-        const resources_count: usize = @intCast(try json.asInteger(try protocol.field(result, "resourcesCount")));
-        const resource_templates_count: usize = @intCast(try json.asInteger(try protocol.field(result, "resourceTemplatesCount")));
         const listed = try protocol.field(result, "tools");
         if (self.name_registry == null) self.name_registry = try tool_names.Registry.init(self.gpa);
         const raw_names = try self.gpa.alloc([]const u8, listed.array.items.len);
@@ -618,12 +544,7 @@ pub const Service = struct {
             try offered.put(self.gpa, owned_name, {});
             const schema = try projection.schema(a, server.name, name, item);
             const metadata = try projection.codemodeMetadata(a, server.name, server.config, initialized, item);
-            var body_id: u64 = 0;
-            if (reuse_bodies) for (self.descriptors.items) |previous| if (previous.server == server and std.mem.eql(u8, previous.name, name)) {
-                body_id = previous.parameter_body_id;
-                break;
-            };
-            if (body_id == 0) body_id = try self.allocateDefinitionId();
+            const body_id = try self.allocateDefinitionId();
             try replacement.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = owned_name, .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId(), .parameter_id = try self.allocateDefinitionId(), .parameter_body_id = body_id, .raw_parameters = try json.clone(a, try protocol.field(item, "inputSchema")), .namespace_id = namespace_id, .storage = storage });
         }
         // Withdrawn definitions remain visible as hidden metadata and retain
@@ -655,15 +576,9 @@ pub const Service = struct {
             if (!existed) ordered.appendAssumeCapacity(fresh);
         }
         const previous_resources = server.has_resources;
-        const previous_count = server.resources_count;
-        const previous_templates = server.resource_templates_count;
         server.has_resources = has_resources;
-        server.resources_count = resources_count;
-        server.resource_templates_count = resource_templates_count;
         self.syncResourceToolsInto(&ordered) catch |err| {
             server.has_resources = previous_resources;
-            server.resources_count = previous_count;
-            server.resource_templates_count = previous_templates;
             return err;
         };
         for (self.descriptors.items) |descriptor| if (descriptor.server == server and !descriptor.resource and offered.contains(descriptor.name)) if (descriptor.storage) |storage| storage.release(self.gpa);

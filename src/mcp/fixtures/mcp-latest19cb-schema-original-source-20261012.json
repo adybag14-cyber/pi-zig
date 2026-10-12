@@ -1,0 +1,246 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "rows": [
+    {
+      "input": null,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "text",
+                    "image",
+                    "audio",
+                    "resource_link",
+                    "resource"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "mimeType": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "structuredContent": {},
+          "isError": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": true
+      },
+      "type": "{ content: Array<{ data?: string; mimeType?: string; text?: string; type: \"text\" | \"image\" | \"audio\" | \"resource_link\" | \"resource\"; [key: string]: unknown; }>; isError?: boolean; structuredContent?: unknown; [key: string]: unknown; }"
+    },
+    {
+      "input": {
+        "type": "array",
+        "items": {
+          "$ref": "#/$defs/Hit"
+        },
+        "$defs": {
+          "Hit": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "text",
+                    "image",
+                    "audio",
+                    "resource_link",
+                    "resource"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "mimeType": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "structuredContent": {
+            "type": "array",
+            "items": {
+              "$ref": "#/properties/structuredContent/$defs/Hit"
+            },
+            "$defs": {
+              "Hit": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          },
+          "isError": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": true
+      },
+      "type": "{ content: Array<{ data?: string; mimeType?: string; text?: string; type: \"text\" | \"image\" | \"audio\" | \"resource_link\" | \"resource\"; [key: string]: unknown; }>; isError?: boolean; structuredContent?: Array<{ id: number; }>; [key: string]: unknown; }"
+    },
+    {
+      "input": {
+        "type": "object",
+        "properties": {
+          "$ref": {
+            "$ref": "#/$defs/value"
+          },
+          "self": {
+            "$ref": "#"
+          },
+          "remote": {
+            "$ref": "https://example/schema"
+          }
+        },
+        "$defs": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "const": {
+          "$ref": "#/literal"
+        },
+        "default": {
+          "$ref": "#/data"
+        },
+        "examples": [
+          {
+            "$ref": "#/data"
+          }
+        ],
+        "required": [
+          "$ref"
+        ]
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "text",
+                    "image",
+                    "audio",
+                    "resource_link",
+                    "resource"
+                  ]
+                },
+                "text": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "mimeType": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "structuredContent": {
+            "type": "object",
+            "properties": {
+              "$ref": {
+                "$ref": "#/properties/structuredContent/$defs/value"
+              },
+              "self": {
+                "$ref": "#/properties/structuredContent"
+              },
+              "remote": {
+                "$ref": "https://example/schema"
+              }
+            },
+            "$defs": {
+              "value": {
+                "type": "string"
+              }
+            },
+            "const": {
+              "$ref": "#/literal"
+            },
+            "default": {
+              "$ref": "#/data"
+            },
+            "examples": [
+              {
+                "$ref": "#/data"
+              }
+            ],
+            "required": [
+              "$ref"
+            ]
+          },
+          "isError": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "additionalProperties": true
+      },
+      "type": "{\n  content: Array<{ data?: string; mimeType?: string; text?: string; type: \"text\" | \"image\" | \"audio\" | \"resource_link\" | \"resource\"; [key: string]: unknown; }>;\n  isError?: boolean;\n  // @default {\"$ref\":\"#/data\"}\n  structuredContent?: {\"$ref\":\"#/literal\"};\n  [key: string]: unknown;\n}"
+    }
+  ]
+}

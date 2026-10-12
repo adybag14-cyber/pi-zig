@@ -127,14 +127,14 @@ pub const Http = struct {
         self.mutex.unlock(self.io);
     }
     fn send(self: *Http, value: protocol.Value, flag: ?*bool) !void {
-        if (flag) |aborted| if (@atomicLoad(bool, aborted, .acquire)) return error.McpRequestAborted;
+        try self.checkDispatch(flag);
         try self.begin();
         defer self.endOperation();
         const bytes = try protocol.json.stringify(self.gpa, value);
         defer self.gpa.free(bytes);
         var body = Body.init(self, jsonRequestId(value));
         defer body.deinit();
-        _ = self.perform(.POST, bytes, &body, null, null) catch |cause| {
+        _ = self.performSend(bytes, &body, flag) catch |cause| {
             if (body.answered) {
                 try body.finish();
                 return;
@@ -142,14 +142,26 @@ pub const Http = struct {
             return cause;
         };
         if (try self.needsAuthorization(&body)) {
+            try self.checkDispatch(flag);
             try self.options.on_unauthorized.?(self.options.auth_context, body.token_used, body.challenge);
+            // Authorization recovery can be shared by several requests. Do not
+            // replay this request after its caller has settled or cancelled it.
+            try self.checkDispatch(flag);
             body.deinit();
             body = Body.init(self, jsonRequestId(value));
-            _ = try self.perform(.POST, bytes, &body, null, null);
+            _ = try self.performSend(bytes, &body, flag);
         }
         try body.finish();
         if (jsonRequestId(value) != null and (body.status == 202 or body.status == 204)) return error.McpAcceptedWithoutResponse;
         if (jsonRequestId(value) == null and jsonMethod(value, "notifications/initialized")) try self.startGet();
+    }
+    fn checkDispatch(self: *Http, flag: ?*bool) !void {
+        if (flag) |aborted| if (@atomicLoad(bool, aborted, .acquire)) return error.McpRequestAborted;
+        if (@atomicLoad(bool, &self.closing, .acquire)) return error.McpConnectionClosed;
+        try self.io.checkCancel();
+    }
+    fn performSend(self: *Http, payload: []const u8, body: *Body, flag: ?*bool) !fetch.Result {
+        return self.performControlled(.POST, payload, body, null, null, flag);
     }
     fn jsonRequestId(value: protocol.Value) ?protocol.Value {
         const kind = protocol.kind(value) catch return null;
@@ -191,6 +203,9 @@ pub const Http = struct {
         return std.mem.eql(u8, actual, method);
     }
     fn perform(self: *Http, method: std.http.Method, payload: ?[]const u8, body: *Body, last_id: ?[]const u8, timeout: ?u64) !fetch.Result {
+        return self.performControlled(method, payload, body, last_id, timeout, null);
+    }
+    fn performControlled(self: *Http, method: std.http.Method, payload: ?[]const u8, body: *Body, last_id: ?[]const u8, timeout: ?u64, flag: ?*bool) !fetch.Result {
         var arena = std.heap.ArenaAllocator.init(self.gpa);
         defer arena.deinit();
         var client: std.http.Client = .{ .allocator = self.gpa, .io = self.io };
@@ -217,6 +232,9 @@ pub const Http = struct {
             }
             if (current) |value| try putHeader(arena.allocator(), &headers, "authorization", try std.fmt.allocPrint(arena.allocator(), "Bearer {s}", .{value}));
         }
+        // A token callback can block on another request's refresh. Recheck at
+        // the last dispatch boundary, after it returns and before network I/O.
+        if (method == .POST) try self.checkDispatch(flag);
         return fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.options.url }, .method = method, .payload = payload, .keep_alive = false, .extra_headers = headers.items, .response_writer = &body.writer }, timeout, if (method == .DELETE) null else &self.closing, .{ .context = body, .callback = Body.head });
     }
     fn startGet(self: *Http) !void {

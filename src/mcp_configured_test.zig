@@ -166,7 +166,7 @@ test "mcp.configured shutdown cancels an admitted live list refresh and retires 
     try std.testing.expectEqual(@as(@TypeOf(server.connection.state), .closed), server.connection.state);
 }
 
-test "mcp.configured resource notification keeps parsed schema bodies and does not issue a tools refresh" {
+test "mcp.configured resource notification leaves discovery unchanged and resource listing remains on demand" {
     const program = try fixturePath();
     defer gpa.free(program);
     var root = try Root.init();
@@ -185,25 +185,20 @@ test "mcp.configured resource notification keeps parsed schema bodies and does n
     defer service.deinit();
     try service.start();
     const server = service.findServer("native").?;
-    try std.testing.expectEqual(@as(usize, 2), server.resources_count);
+    try std.testing.expect(server.has_resources);
     const parameter_id = service.descriptors.items[0].parameter_id;
     const body_id = service.descriptors.items[0].parameter_body_id;
     var reply = try execute(service, "mcp__native__trigger", "{}");
     defer reply.deinit(gpa);
-    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
-    while (true) {
-        service.catalog_mutex.lockUncancelable(io);
-        const ready = server.resources_count == 3;
-        service.catalog_mutex.unlock(io);
-        if (ready) break;
-        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.ResourceNotificationTimeout;
-        try io.sleep(.fromMilliseconds(2), .awake);
-    }
+    try std.testing.expectEqualStrings("resource lists before trigger: 0", reply.content);
+    var listed = try execute(service, "list_mcp_resources", "{}");
+    defer listed.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, listed.content, "file:///three") != null);
     try std.testing.expect(service.owns("mcp__native__old"));
     try std.testing.expect(!service.owns("mcp__native__new"));
     service.catalog_mutex.lockUncancelable(io);
     defer service.catalog_mutex.unlock(io);
-    try std.testing.expect(parameter_id != service.descriptors.items[0].parameter_id);
+    try std.testing.expectEqual(parameter_id, service.descriptors.items[0].parameter_id);
     try std.testing.expectEqual(body_id, service.descriptors.items[0].parameter_body_id);
 }
 
@@ -343,8 +338,7 @@ test "mcp.configured resource-only servers expose native global tools with pagin
     defer service.deinit();
     try service.start();
     try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
-    try std.testing.expectEqual(@as(usize, 2), service.findServer("native").?.resources_count);
-    try std.testing.expectEqual(@as(usize, 0), service.findServer("native").?.resource_templates_count);
+    try std.testing.expect(service.findServer("native").?.has_resources);
     try std.testing.expect(service.owns("list_mcp_resources"));
     try std.testing.expect(service.owns("list_mcp_resource_templates"));
     try std.testing.expect(service.owns("read_mcp_resource"));
@@ -443,7 +437,6 @@ test "mcp.configured failed initial resource lists keep reading available and fa
         const server = service.findServer("native").?;
         try std.testing.expect(server.has_resources);
         try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
-        try std.testing.expectEqual(@as(usize, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), server.resources_count);
         var read = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"file:///first\"}");
         defer read.deinit(gpa);
         try std.testing.expectEqualStrings("Native resource contents", read.content);
@@ -461,8 +454,8 @@ test "mcp.configured failed initial resource lists keep reading available and fa
         const row = (try protocol.field(report.value, "servers")).array.items[0];
         try std.testing.expectEqualStrings("connected", try protocol.text(row, "state"));
         try std.testing.expectEqual(@as(usize, 0), (try protocol.field(row, "tools")).array.items.len);
-        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), try json.asNumber(try protocol.field(row, "resources")));
-        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 1), try json.asNumber(try protocol.field(row, "resourceTemplates")));
+        try std.testing.expectEqual(true, (try protocol.field(row, "resources")).bool);
+        try std.testing.expect(json.get(row, "resourceTemplates") == null);
     }
 }
 
@@ -1558,4 +1551,45 @@ test "mcp.configured background shutdown cancels a pending reconnect factory bef
     try std.testing.expect(!server.reconnect_active);
     try std.testing.expectEqual(@as(usize, 0), server.reconnect_callers);
     try std.testing.expect(server.connection.connectionState() == .closed);
+}
+
+test "mcp.configured Source 19cb534 projects every structured JSON value and declares unknown without output schema" {
+    var original = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/mcp-latest19cb-original-source-20261012.json"));
+    defer original.deinit();
+    for ((try protocol.field(original.value, "rows")).array.items) |row| {
+        const expected = try protocol.field(row, "converted");
+        var result = try projection.convert(gpa, io, ".", "docs", "t", try protocol.field(row, "result"));
+        defer result.deinit(gpa);
+        const text = (try protocol.field(expected, "content")).array.items[0];
+        try std.testing.expectEqualStrings(try protocol.text(text, "text"), result.content);
+        var details = try json.Owned.parse(gpa, result.details_json.?);
+        defer details.deinit();
+        try sameValue(try protocol.field(expected, "structuredContent"), try protocol.field(details.value, "structuredContent"));
+    }
+    var tool = try json.Owned.parse(gpa, "{\"name\":\"value\",\"inputSchema\":{}}");
+    defer tool.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const metadata = try projection.codemodeMetadata(arena.allocator(), "docs", .{ .object = .empty }, .{ .object = .empty }, tool.value);
+    const schema = try protocol.field(try protocol.field(try protocol.field(metadata, "outputSchema"), "properties"), "structuredContent");
+    try sameValue(try protocol.field(original.value, "defaultStructuredSchema"), schema);
+}
+
+test "mcp.configured Source 19cb534 full MCP schemas retain any JSON and relocate only schema references" {
+    var original = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/mcp-latest19cb-schema-original-source-20261012.json"));
+    defer original.deinit();
+    for ((try protocol.field(original.value, "rows")).array.items) |row| {
+        var arena: std.heap.ArenaAllocator = .init(gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var tool: Value = .{ .object = .empty };
+        const input = try protocol.field(row, "input");
+        if (input != .null) try tool.object.put(a, "outputSchema", input);
+        const metadata = try @import("mcp/agent_tools.zig").codemodeMetadata(a, "docs", .{ .object = .empty }, .{ .object = .empty }, tool);
+        const schema = try protocol.field(metadata, "outputSchema");
+        try sameValue(try protocol.field(row, "schema"), schema);
+        const rendered = try @import("mcp/codemode_declarations.zig").outputType(gpa, schema);
+        defer gpa.free(rendered);
+        try std.testing.expectEqualStrings(try protocol.text(row, "type"), rendered);
+    }
 }

@@ -311,6 +311,7 @@ pub const Client = struct {
         return true;
     }
     fn retirePending(self: *Client, pending: *Pending) void {
+        @atomicStore(bool, &pending.canceled, true, .release);
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         _ = self.pending.remove(pending.id);
@@ -460,6 +461,9 @@ pub const Client = struct {
                     return cause;
                 };
                 pending.reply = owned;
+                // The response settles this request even if its HTTP send is
+                // still waiting on authorization or a concurrent response body.
+                @atomicStore(bool, &pending.canceled, true, .release);
                 pending.event.set(self.io);
             },
             .notification => {
@@ -859,4 +863,22 @@ test "mcp.runtime connection callback close and deinit reject before an external
         try owner.close();
         try std.testing.expectEqual(connection.State.closed, owner.connectionState());
     }
+}
+
+test "mcp.runtime Source 19cb534 response settlement aborts outstanding send dispatch" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var transport: DeadlineTestTransport = .{};
+    const client = try Client.create(gpa, io, transport.transport(), .{});
+    defer client.deinit();
+    client.state = .connected;
+    var pending: Pending = .{ .id = 1, .options = .{}, .timeout_ms = 0 };
+    try client.pending.put(pending.id, &pending);
+    defer client.retirePending(&pending);
+    defer if (pending.reply) |*reply| reply.deinit();
+    var response = try protocol.response(gpa, .{ .integer = 1 }, .null, false);
+    defer response.deinit();
+    try Client.receive(client, response.value);
+    try std.testing.expect(@atomicLoad(bool, &pending.canceled, .acquire));
+    try std.testing.expect(pending.reply != null);
 }

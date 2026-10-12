@@ -19,6 +19,7 @@ pub fn main(init: std.process.Init) !void {
     const notify_stall = args.len > 1 and std.mem.eql(u8, args[1], "--notify-stall");
     const notify_refresh = notify_resources or notify_stall or (args.len > 1 and std.mem.eql(u8, args[1], "--notify-refresh"));
     var refreshed = false;
+    var resource_lists: usize = 0;
     if (args.len > 1 and std.mem.eql(u8, args[1], "--stall")) {
         try init.io.sleep(.fromSeconds(3600), .awake);
         return;
@@ -34,6 +35,7 @@ pub fn main(init: std.process.Init) !void {
         defer request.deinit();
         if (try protocol.kind(request.value) != .request) continue;
         const method = try protocol.text(request.value, "method");
+        if (std.mem.eql(u8, method, "resources/list") or std.mem.eql(u8, method, "resources/templates/list")) resource_lists += 1;
         const id = try protocol.field(request.value, "id");
         const a = request.arena.allocator();
         var result: Value = undefined;
@@ -135,6 +137,7 @@ pub fn main(init: std.process.Init) !void {
             var text: []const u8 = "ok";
             var failure = false;
             if (notify_refresh and std.mem.eql(u8, name, "trigger")) {
+                if (notify_resources) text = try std.fmt.allocPrint(a, "resource lists before trigger: {d}", .{resource_lists});
                 refreshed = true;
                 var notification = try protocol.request(init.gpa, null, if (notify_resources) "notifications/resources/list_changed" else "notifications/tools/list_changed", null);
                 defer notification.deinit();

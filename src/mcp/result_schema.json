@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "text",
+              "image",
+              "audio",
+              "resource_link",
+              "resource"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "structuredContent": {},
+    "isError": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "content"
+  ],
+  "additionalProperties": true
+}

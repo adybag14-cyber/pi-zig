@@ -100,10 +100,12 @@ pub fn codemodeMetadata(a: std.mem.Allocator, server: []const u8, configuration:
             if (trimmed.len > 0) try namespace.object.put(a, field.key, .{ .string = try a.dupe(u8, trimmed) });
         };
     }
-    var result_schema = try json.Owned.parse(a, "{\"type\":\"object\",\"properties\":{\"content\":{\"type\":\"array\",\"items\":{\"type\":\"object\"}},\"isError\":{\"type\":\"boolean\"},\"_meta\":{\"type\":\"object\"}},\"required\":[\"content\"]}");
+    var result_schema = try json.Owned.parse(a, @embedFile("result_schema.json"));
     defer result_schema.deinit();
     var output = try json.clone(a, result_schema.value);
-    if (json.get(tool, "outputSchema")) |structured| if (structured == .object) try output.object.getPtr("properties").?.object.put(a, "structuredContent", try json.clone(a, structured));
+    const declared = json.get(tool, "outputSchema");
+    const structured = if (declared != null and declared.? == .object) declared.? else Value{ .object = .empty };
+    try output.object.getPtr("properties").?.object.put(a, "structuredContent", try relocateSchema(a, structured));
     var metadata: Value = .{ .object = .empty };
     try metadata.object.put(a, "namespace", namespace);
     try metadata.object.put(a, "outputSchema", output);
@@ -115,6 +117,38 @@ pub fn codemodeMetadata(a: std.mem.Allocator, server: []const u8, configuration:
     };
     if (annotations.object.count() != 0) try metadata.object.put(a, "annotations", annotations);
     return metadata;
+}
+/// Move local references below the result wrapper, retaining data keywords and
+/// named schema maps exactly as the original createMcpResultSchema does.
+fn relocateSchema(a: std.mem.Allocator, value: Value) anyerror!Value {
+    if (value == .array) {
+        var result: Value = .{ .array = .init(a) };
+        for (value.array.items) |item| try result.array.append(try relocateSchema(a, item));
+        return result;
+    }
+    if (value != .object) return json.clone(a, value);
+    var result: Value = .{ .object = .empty };
+    var iterator = value.object.iterator();
+    while (iterator.next()) |entry| {
+        const key = entry.key_ptr.*;
+        const item = entry.value_ptr.*;
+        const copied = if (std.mem.eql(u8, key, "$ref") and item == .string and (std.mem.eql(u8, item.string, "#") or std.mem.startsWith(u8, item.string, "#/")))
+            Value{ .string = try std.fmt.allocPrint(a, "#/properties/structuredContent{s}", .{item.string[1..]}) }
+        else if (schemaKeyword(key, &.{ "const", "enum", "default", "examples" }))
+            try json.clone(a, item)
+        else if (schemaKeyword(key, &.{ "properties", "patternProperties", "dependentSchemas", "dependencies", "$defs", "definitions" }) and item == .object) blk: {
+            var mapped: Value = .{ .object = .empty };
+            var names = item.object.iterator();
+            while (names.next()) |named| try mapped.object.put(a, try a.dupe(u8, named.key_ptr.*), try relocateSchema(a, named.value_ptr.*));
+            break :blk mapped;
+        } else try relocateSchema(a, item);
+        try result.object.put(a, try a.dupe(u8, key), copied);
+    }
+    return result;
+}
+fn schemaKeyword(key: []const u8, names: []const []const u8) bool {
+    for (names) |name| if (std.mem.eql(u8, key, name)) return true;
+    return false;
 }
 fn size(a: std.mem.Allocator, n: f64) ![]u8 {
     if (n < 1024) return std.fmt.allocPrint(a, "{d}B", .{n});

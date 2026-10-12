@@ -124,7 +124,8 @@ pub fn validateCallTool(value: *Value, a: std.mem.Allocator) !void {
     if (json.get(value.*, "content")) |content| {
         if (content != .array) return error.InvalidMcpToolResult;
     } else try value.object.put(a, "content", .{ .array = .init(a) });
-    if (json.get(value.*, "structuredContent")) |content| if (content != .object) return error.InvalidMcpStructuredContent;
+    // MCP 2026-07-28 permits every JSON value, including arrays and null.
+    // Preserve the original value; only omitted content is normalized above.
 }
 pub fn callTool(client: *session.Client, name: []const u8, args: ?Value, options: session.RequestOptions) !json.Owned {
     var params = try json.Owned.empty(client.gpa);

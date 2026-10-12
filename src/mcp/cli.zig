@@ -415,9 +415,7 @@ fn serverReport(a: std.mem.Allocator, entry: json.Value, service: *@import("conf
         if (overrides.object.count() != 0) try report.object.put(a, "toolExposure", overrides);
     }
     if (json.get(offers, "resources") != null) {
-        const counts = try @import("configured.zig").Service.resourceCounts(server);
-        try report.object.put(a, "resources", .{ .integer = @intCast(counts.resources) });
-        try report.object.put(a, "resourceTemplates", .{ .integer = @intCast(counts.templates) });
+        try report.object.put(a, "resources", .{ .bool = true });
     }
     try report.object.put(a, "state", .{ .string = "connected" });
     return report;
@@ -466,7 +464,7 @@ pub fn listServers(gpa: std.mem.Allocator, context: Context, environment: *const
                 }
                 try output.log(text.written());
             }
-            if (json.get(report, "resources")) |resources| try output.log(try std.fmt.allocPrint(a, "  resources: {d}, URI templates: {d}", .{ try json.asInteger(resources), try json.asInteger(json.get(report, "resourceTemplates").?) }));
+            if (json.get(report, "resources")) |resources| if (resources == .bool and resources.bool) try output.log("  offers resources");
             if (json.get(report, "error")) |cause| try output.log(try std.fmt.allocPrint(a, "  {s}", .{cause.string}));
         }
         for (errors.array.items) |value| try output.log(try std.fmt.allocPrint(a, "config error: {s}", .{value.string}));
