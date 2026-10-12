@@ -89,6 +89,14 @@ fn duration(engine: *Engine, state: c.JSValue) !void {
     const math = try scope.own(try js.global(engine, "Math"));
     const rounded = try scope.invoke(math, "round", &.{c.JS_NewFloat64(engine.context, left - right)});
     try put(engine, state, "duration", rounded);
+    if (engine.native_durable_duration_observer != null) {
+        const began = try scope.get(state, "nativePhysicalStartedAt");
+        var physical_start: i64 = 0;
+        if (c.JS_ToBigInt64(engine.context, &physical_start, began) < 0) return js.capture(engine);
+        const ended = std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds();
+        if (ended < physical_start) return error.InvalidNativeAttemptClock;
+        try @import("native_durable_tasks.zig").observeDuration(engine, try scope.get(state, "runtime"), @intCast(ended - physical_start));
+    }
 }
 fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
     const stage: Stage = @enumFromInt(raw_stage);
@@ -106,6 +114,9 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     const context = try scope.get(state, "context");
     switch (stage) {
         .environment => {
+            if (engine.native_durable_duration_observer != null) {
+                try put(engine, state, "nativePhysicalStartedAt", try scope.own(try engine.checked(c.JS_NewBigInt64(engine.context, std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds()))));
+            }
             const started = try performanceNow(&scope);
             try put(engine, state, "startedAt", started);
             const api = try scope.get(state, "api");

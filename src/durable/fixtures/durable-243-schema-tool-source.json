@@ -1,0 +1,451 @@
+{
+    "source": "24382bedd03c61c0994628907a017b4491f8fa76",
+    "rows": [
+      {
+        "mode": "nested-error-text",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "schema tool error text"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-thrown",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "permission denied"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-invalid-structured",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "invalid_structured_output",
+                "message": "Tool target returned structuredOutput that does not match its schema: value: must be string"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-error-structured",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "structuredOutput": {
+              "value": "kept"
+            },
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-success-structured",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "structuredOutput": {
+              "value": "kept"
+            },
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "model-error-text",
+        "requests": 2,
+        "executions": 1,
+        "nested": [],
+        "modelResults": [
+          {
+            "isError": true,
+            "content": [
+              {
+                "type": "text",
+                "text": "schema tool error text"
+              }
+            ]
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-unavailable",
+        "requests": 2,
+        "executions": 0,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_unavailable",
+                "message": "Tool absent is not available"
+              }
+            ]
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-explained",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "quota",
+                "message": "quota exceeded"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-warn-text",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "warn",
+                "code": "notice",
+                "message": "warning only"
+              },
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "partial log"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-empty-text",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-image-only",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-mixed-output",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "first\nsecond"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-bounded-text",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "warn",
+                "code": "truncated",
+                "message": "Output truncated to its beginning: 2 lines, 12 bytes dropped"
+              },
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "first\n"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-reported-error",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "quota",
+                "message": "quota exceeded"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-no-schema-error",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "structuredOutput": "schema tool error text",
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-truthy-error",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "invalid_structured_output",
+                "message": "Tool target returned no structuredOutput"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-after-hook-error",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "hook error"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "nested-after-hook-explained",
+        "requests": 2,
+        "executions": 1,
+        "nested": [
+          {
+            "taskId": 14,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "quota",
+                "message": "quota exceeded"
+              }
+            ],
+            "durationMs": 0
+          }
+        ],
+        "modelResults": [
+          {
+            "isError": false,
+            "content": []
+          }
+        ],
+        "reports": []
+      }
+    ]
+  }

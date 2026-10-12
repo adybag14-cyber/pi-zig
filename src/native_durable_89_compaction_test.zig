@@ -14,6 +14,7 @@ test "native durable actual 89 compaction failure public contract preserves real
     try @import("extensions/text_decoder.zig").install(engine);
     const result = engine.evalModule(@embedFile("durable/fixtures/durable-89-compaction-failure-program.txt"), "actual-89-compaction-failure") catch |err| {
         std.debug.print("Actual 89 compaction failure {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        @import("extensions/native_durable_tasks.zig").printFailureDiagnostics(engine);
         if (engine.captured_exception) |reason| {
             // Read the existing stack without checked()/captureException(), so
             // a diagnostic accessor failure cannot replace the original cause.

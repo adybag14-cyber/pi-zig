@@ -716,6 +716,16 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-durable-89-compaction", "Replay actual latest blocking compaction failure, persistent live state and produced-summary cleanup").dependOn(&b.addRunArtifact(latest_compaction_tests).step);
     const inspection_guard_tests = b.addTest(.{ .root_module = latest_compaction_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native durable actual 89 inspection Storage guard"} });
     b.step("test-native-durable-inspection-storage-guard", "Replay actual original read errors fatal close and underway successful-read discard").dependOn(&b.addRunArtifact(inspection_guard_tests).step);
+    const schema_tool_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_243_schema_tool_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable actual 243 schema tool error results"} });
+    linkQuickJs(b, schema_tool_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(schema_tool_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-243-schema-tools", "Replay actual latest nested schema-tool errors and model-issued controls").dependOn(&b.addRunArtifact(schema_tool_tests).step);
+    const schema_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_schema_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native schema duration measurements"} });
+    b.step("test-native-durable-schema-comparison", "Compare raw Source schema results and bound only explicitly identified real attempt measurements").dependOn(&b.addRunArtifact(schema_comparison_tests).step);
+    const owner_wakeup_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_owner_wakeup_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native owner", "native timer owner" } });
+    linkQuickJs(b, owner_wakeup_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(owner_wakeup_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-owner-wakeup", "Wake native owners without losing publications or starving ready Promise jobs behind timers").dependOn(&b.addRunArtifact(owner_wakeup_tests).step);
     const inspection_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_inspection_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable inspection timestamp comparison"} });
     b.step("test-native-durable-inspection-comparison", "Reject missing malformed out-of-bounds or unstable actual inspection timestamps").dependOn(&b.addRunArtifact(inspection_comparison_tests).step);
     const summary_transcript_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_summary_transcript_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"latest89 serializer"} });

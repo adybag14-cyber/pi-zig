@@ -180,6 +180,38 @@ fn finish(engine: *Engine, state: c.JSValue) !c.JSValue {
         try put(engine, projected, "structuredOutput", value);
         final = projected;
     }
+    // Source keeps a schema tool's own value separate from its error text.
+    // Its text is a diagnostic only when no existing error already explains it.
+    if (try calls.equalsString(engine, try scope.get(input, "kind"), "nested") and
+        !c.JS_IsUndefined(try scope.get(tool, "structuredOutputSchema")) and
+        c.JS_IsStrictEqual(engine.context, try scope.get(final, "isError"), c.pi_js_bool(engine.context, 1)) and
+        c.JS_IsUndefined(try scope.get(final, "structuredOutput")))
+    {
+        const raw = try scope.get(final, "diagnostics");
+        const own = if (nullish(raw)) try scope.own(try vm.array(engine)) else raw;
+        const combined = try scope.own(try js.collect(engine, own, symbol));
+        var extra = try js.Iterator.init(engine, harness, symbol);
+        defer extra.deinit();
+        errdefer extra.closePreserving();
+        while (try extra.next()) |item| {
+            defer engine.freeValue(item);
+            try js.push(engine, combined, item);
+        }
+        const predicate = try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, errorDiagnostic, "", 1)));
+        const explained = try scope.own(try vm.invoke(engine, combined, "some", &.{predicate}));
+        if (c.JS_ToBool(engine.context, explained) == 0) {
+            const mapper = try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, diagnosticText, "", 1)));
+            const texts = try scope.own(try vm.invoke(engine, bounded.content, "flatMap", &.{mapper}));
+            const separator = try scope.own(try engine.checked(c.JS_NewString(engine.context, "\n")));
+            const joined = try scope.own(try vm.invoke(engine, texts, "join", &.{separator}));
+            if (!try calls.equalsString(engine, joined, "")) {
+                const text = try engine.toString(joined);
+                defer engine.gpa.free(text);
+                const item = try scope.own(try diagnostic(engine, "error", "tool_error", text));
+                try js.push(engine, harness, item);
+            }
+        }
+    }
     const result = try js.spread(engine, final);
     errdefer engine.freeValue(result);
     try put(engine, result, "output", bounded.content);
@@ -194,6 +226,30 @@ fn finish(engine: *Engine, state: c.JSValue) !c.JSValue {
         try js.push(engine, diagnostics, item);
     }
     try put(engine, result, "diagnostics", diagnostics);
+    return result;
+}
+fn errorDiagnostic(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const item = if (argc > 0) argv[0] else c.pi_js_undefined();
+    const severity = vm.get(engine, item, "severity") catch |err| return @import("native_durable.zig").reject(engine, err);
+    defer engine.freeValue(severity);
+    const matches = calls.equalsString(engine, severity, "error") catch |err| return @import("native_durable.zig").reject(engine, err);
+    return c.pi_js_bool(engine.context, @intFromBool(matches));
+}
+fn diagnosticText(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return diagnosticTextOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
+}
+fn diagnosticTextOwned(engine: *Engine, item: c.JSValue) !c.JSValue {
+    const kind = try vm.get(engine, item, "type");
+    defer engine.freeValue(kind);
+    const result = try vm.array(engine);
+    errdefer engine.freeValue(result);
+    if (try calls.equalsString(engine, kind, "text")) {
+        const text = try vm.get(engine, item, "text");
+        defer engine.freeValue(text);
+        try js.push(engine, result, text);
+    }
     return result;
 }
 fn restWithoutStructured(engine: *Engine, source: c.JSValue) !c.JSValue {

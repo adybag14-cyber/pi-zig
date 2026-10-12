@@ -1,0 +1,67 @@
+import * as M from '@earendil-works/pi-durable';
+import {Type} from '@earendil-works/pi-ai';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+const usage={input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+const assistant=(content,stopReason='stop')=>({role:'assistant',provider:'held',model:'held',content,stopReason,usage,timestamp:Date.now()});
+const rows=[];
+const modes=['nested-error-text','nested-thrown','nested-invalid-structured','nested-error-structured','nested-success-structured','model-error-text','nested-unavailable','nested-explained','nested-warn-text','nested-empty-text','nested-image-only','nested-mixed-output','nested-bounded-text','nested-reported-error','nested-no-schema-error','nested-truthy-error','nested-after-hook-error','nested-after-hook-explained'];
+for(const mode of modes){
+ const reports=[],calls=[],nested=[];
+ let requests=0;
+ const toolName=mode==='model-error-text'?'target':'batch';
+ const models={getModel:()=>({id:'held',maxTokens:100,contextWindow:100000}),streamSimple:()=>{
+  requests++;const response=requests===1?assistant([{type:'toolCall',id:'c1',name:toolName,arguments:{}}],'toolUse'):assistant([{type:'text',text:'done'}]);
+  return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>response};
+ }};
+ const explained={severity:'error',code:'quota',message:'quota exceeded'};
+ const target=M.defineTool({name:'target',description:'target',parameters:Type.Object({}),...(mode==='nested-no-schema-error'?{}:{structuredOutputSchema:Type.Object({value:Type.String()})}),...(mode==='nested-bounded-text'?{outputLimits:{maxBytes:9,maxLines:2,retain:'head'}}:{}),execute:async(_args,api)=>{
+  calls.push('target');
+  if(mode==='nested-thrown')throw Error('permission denied');
+  if(mode==='nested-invalid-structured')return{structuredOutput:{value:7}};
+  if(mode==='nested-error-structured')return{isError:true,output:[{type:'text',text:'error output'}],structuredOutput:{value:'kept'}};
+  if(mode==='nested-success-structured'||mode==='nested-after-hook-error'||mode==='nested-after-hook-explained')return{output:[{type:'text',text:'success output'}],structuredOutput:{value:'kept'}};
+  if(mode==='nested-explained')return{isError:true,output:[{type:'text',text:'partial log'}],diagnostics:[explained]};
+  if(mode==='nested-warn-text')return{isError:true,output:[{type:'text',text:'partial log'}],diagnostics:[{severity:'warn',code:'notice',message:'warning only'}]};
+  if(mode==='nested-empty-text')return{isError:true,output:[]};
+  if(mode==='nested-image-only')return{isError:true,output:[{type:'image',data:'AA==',mimeType:'image/png'}]};
+  if(mode==='nested-mixed-output')return{isError:true,output:[{type:'text',text:'first'},{type:'image',data:'AA==',mimeType:'image/png'},{type:'text',text:'second'}]};
+  if(mode==='nested-bounded-text')return{isError:true,output:[{type:'text',text:'first\nsecond\nthird'}]};
+  if(mode==='nested-reported-error'){api.diagnostic(explained);return{isError:true,output:[{type:'text',text:'partial log'}]}}
+  if(mode==='nested-truthy-error')return{isError:1,output:[{type:'text',text:'truthy output'}]};
+  return{isError:true,output:[{type:'text',text:'schema tool error text'}]};
+ }});
+ const batch=M.defineTool({name:'batch',description:'batch',parameters:Type.Object({}),execute:async(_args,api,callContext)=>{
+  nested.push(await api.executeTool(mode==='nested-unavailable'?'absent':'target',{},callContext));return{output:[]};
+ }});
+ const hooks=mode==='nested-after-hook-error'||mode==='nested-after-hook-explained'?[M.hook(M.ToolTask,{afterTool:(call,final)=>call.name==='target'?{...final,structuredOutput:undefined,isError:true,output:[{type:'text',text:'hook error'}],diagnostics:mode==='nested-after-hook-explained'?[explained]:[]}:final})]:[];
+ const registry=M.createRegistry();registry.install(M.defineExtension({name:'actual-243-tools',tools:[target,batch],hooks}));
+ const harness=await M.Harness.open(new M.MemoryStorage(),{models,registry,settings:{compaction:{enabled:false},retry:{enabled:false}},onReport:error=>reports.push({name:error?.name,message:error?.message})},context);
+ const root=await harness.root(context,{agent:{model:{provider:'held',modelId:'held'}}});harness.resume();
+ try{
+  const receipt=await(await root.submit({type:'input',content:'go'},context)).wait(context);
+  if(receipt.status!=='done'||requests!==2)throw Error('Actual model/tool generation did not finish');
+  const entries=(await root.entries({},256,undefined,context)).items;
+  const results=entries.filter(entry=>M.ToolResultEntry.is(entry)).flatMap(entry=>entry.model??[]).filter(message=>message.role==='toolResult');
+  const row={mode,requests,executions:calls.length,nested,modelResults:results.map(message=>({isError:message.isError,content:message.content})),reports};
+  if(mode==='model-error-text'){
+   if(nested.length!==0||calls.length!==1||results.length!==1||results[0].isError!==true)throw Error('Model-issued control did not execute the schema tool');
+  }else{
+   if(nested.length!==1||calls.length!==(mode==='nested-unavailable'?0:1))throw Error('Nested public API coverage absent');
+   const result=nested[0],diagnostics=result.diagnostics;
+   if(mode!=='nested-no-schema-error'&&!['nested-error-structured','nested-success-structured'].includes(mode)&&Object.hasOwn(result,'structuredOutput'))throw Error('Schema error gained a program value');
+   if(mode==='nested-error-text'&&!(result.isError===true&&diagnostics.length===1&&diagnostics[0].code==='tool_error'&&diagnostics[0].message==='schema tool error text'))throw Error('Schema error text diagnostic absent');
+   if(mode==='nested-thrown'&&!(diagnostics.length===1&&diagnostics[0].code==='tool_error'&&diagnostics[0].message==='permission denied'))throw Error('Thrown message duplicated or lost');
+   if(['nested-invalid-structured','nested-truthy-error'].includes(mode)&&!(diagnostics.length===1&&diagnostics[0].code==='invalid_structured_output'))throw Error('Invalid structured output diagnostic absent');
+   if(['nested-error-structured','nested-success-structured'].includes(mode)&&result.structuredOutput?.value!=='kept')throw Error('Provided valid schema value was replaced');
+   if(['nested-explained','nested-reported-error','nested-after-hook-explained'].includes(mode)&&!(diagnostics.length===1&&diagnostics[0].code==='quota'))throw Error('Existing error diagnostic duplicated or lost');
+   if(mode==='nested-warn-text'&&!(diagnostics.length===2&&diagnostics[1].code==='tool_error'))throw Error('Warning suppressed the error diagnostic');
+   if(['nested-empty-text','nested-image-only'].includes(mode)&&diagnostics.length!==0)throw Error('No text produced a diagnostic');
+   if(mode==='nested-mixed-output'&&diagnostics[0]?.message!=='first\nsecond')throw Error('Image or text join changed');
+   if(mode==='nested-bounded-text'&&!(diagnostics.length===2&&diagnostics[0].code==='truncated'&&diagnostics[1].code==='tool_error'&&diagnostics[1].message==='first\n'))throw Error('Unbounded text reached the diagnostic');
+   if(mode==='nested-no-schema-error'&&result.structuredOutput!=='schema tool error text')throw Error('Schema-less error lost its own bounded output');
+   if(mode==='nested-after-hook-error'&&diagnostics[0]?.message!=='hook error')throw Error('afterTool replacement text did not win');
+  }
+  rows.push(row);
+ }finally{await harness.close(context)}
+}
+globalThis.latestSchemaToolErrorTrace={source:'24382bedd03c61c0994628907a017b4491f8fa76',rows};export const proof=true;

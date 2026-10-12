@@ -103,3 +103,14 @@ JS-facing sandbox API, original declared tool identifiers, complete delivery and
 abort edge cases, and a source-complete VM fingerprint still require work.
 Latest upstream AgentSession hook signature and deferred tools also require
 implementation and actual reference tests. No native-default or release claim.
+The owner wakeup and newer nested schema-tool behavior passed the full Windows
+Debug graph: 230/230 tests across 179 successful build steps. This includes the
+previous 209, original compaction eight, seven owner wakeup regressions, and six
+schema-tool tests (eighteen actual Source scenarios plus strict measurement
+comparison controls). All 4,008 source and 19,546 tool inputs were unchanged;
+independent composed coverage passed. The original ten-second compaction bound
+and program remain intact. Failure diagnostics read worker-owned last_count and
+driver_failure only after an acquire observation of completed worker state.
+Latest ee409 reference captures reproduced all eighteen prior243 schema records
+exactly; this does not imply full current upstream durable parity. Focused macOS
+Debug remains under diagnosis; Windows success is not macOS qualification.
