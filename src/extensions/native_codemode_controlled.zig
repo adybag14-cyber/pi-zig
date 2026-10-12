@@ -33,13 +33,15 @@ const Owner = struct {
     timeout_label: ?[]const u8 = null,
     on_finish: c.JSValue,
 
-    fn release(self: *Owner) void {
+    fn release(self: *Owner, runtime: ?*c.JSRuntime) void {
         if (self.worker) |worker| worker.deinit();
         self.host.deinit();
         self.pending.deinit(self.engine.gpa);
         self.data.deinit();
         if (self.selected) |*value| value.deinit();
-        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope", "on_finish" }) |name| self.engine.freeValue(@field(self, name));
+        // Runtime cycle collection can invoke this finalizer after the owning
+        // JSContext has been destroyed. The runtime supplied by C stays valid.
+        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope", "on_finish" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
         self.engine.gpa.destroy(self);
     }
     fn elapsed(self: *Owner, began: i64) i64 {
@@ -150,8 +152,8 @@ const Hub = struct {
 fn owner(value: c.JSValue) ?*Owner {
     return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value))));
 }
-fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
-    if (owner(value)) |state| state.release();
+fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    if (owner(value)) |state| state.release(runtime);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state = owner(value) orelse return;
@@ -562,4 +564,50 @@ test "native CodeMode JavaScript owner drains host microtasks between already bu
     defer engine.freeValue(closing);
     const closed = try engine.awaitValue(closing);
     engine.freeValue(closed);
+}
+
+test "native CodeMode JavaScript owner finalizer releases retained values after its context is gone" {
+    const runtime = c.JS_NewRuntime() orelse return error.OutOfMemory;
+    defer c.JS_FreeRuntime(runtime);
+    const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
+    var context_live = true;
+    defer if (context_live) c.JS_FreeContext(context);
+    // Finalization may only use the allocator and the runtime passed by C.
+    // The rest of this engine deliberately has no usable host context.
+    var detached_engine: Engine = undefined;
+    detached_engine.gpa = std.testing.allocator;
+    detached_engine.context = context;
+    detached_engine.runtime = runtime;
+    var class: c.JSClassID = 0;
+    _ = c.JS_NewClassID(runtime, &class);
+    const definition: c.JSClassDef = .{ .class_name = "ContextlessCodeModeOwner", .finalizer = finalizer, .gc_mark = mark };
+    if (c.JS_NewClass(runtime, class, &definition) < 0) return error.OutOfMemory;
+    const handle = c.JS_NewObjectProtoClass(context, c.pi_js_null(), class);
+    if (c.JS_IsException(handle)) return error.OutOfMemory;
+    defer c.JS_FreeValueRT(runtime, handle);
+    const retained = c.JS_NewString(context, "retained CodeMode cleanup root");
+    if (c.JS_IsException(retained)) return error.OutOfMemory;
+    errdefer c.JS_FreeValueRT(runtime, retained);
+    var data = try json.Owned.empty(std.testing.allocator);
+    errdefer data.deinit();
+    const retained_owner = try std.testing.allocator.create(Owner);
+    retained_owner.* = .{
+        .engine = &detached_engine,
+        .host = try host_mod.Host.init(std.testing.allocator, 0, 1),
+        .data = data,
+        .resolve = retained,
+        .on_started = c.pi_js_undefined(),
+        .on_call = c.pi_js_undefined(),
+        .on_idle = c.pi_js_undefined(),
+        .signal = c.pi_js_undefined(),
+        .abort_listener = c.pi_js_undefined(),
+        .async_scope = c.pi_js_undefined(),
+        .on_finish = c.pi_js_undefined(),
+    };
+    _ = c.JS_SetOpaque(handle, retained_owner);
+    c.JS_FreeContext(context);
+    context_live = false;
+    detached_engine.context = undefined;
+    // The real registered finalizer runs when handle's deferred RT release
+    // executes. It must free both the retained JS string and native owner.
 }

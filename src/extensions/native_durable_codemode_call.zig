@@ -9,7 +9,7 @@ const awaiter = @import("native_durable_await.zig");
 const journal = @import("native_durable_codemode_journal.zig");
 const mapping = @import("native_durable_codemode_outcome.zig");
 const c = em.c;
-const Stage = enum(c_int) { initialized, fingerprint, result, formatted, completed, batch, tool, global, decided, earlier_snapshot, earlier_task, closed };
+const Stage = enum(c_int) { initialized, fingerprint, result, formatted, completed, batch, tool, global, decided, earlier_snapshot, earlier_task, closed, model_waiter, model_ready };
 const Event = enum(c_int) { started, call, idle, abort };
 fn number(engine: *em.Engine, value: c.JSValue) !f64 {
     var result: f64 = 0;
@@ -121,9 +121,9 @@ pub fn execute(engine: *em.Engine, docs: c.JSValue, api: c.JSValue, context: c.J
     inline for (.{ .{ "documents", docs }, .{ "api", api }, .{ "context", context }, .{ "sandbox", sandbox }, .{ "code", code }, .{ "globals", globals } }) |field| try scope.put(state, field[0], field[1]);
     const controller = try scope.own(try js.builtin(engine, "AbortController", &.{}));
     try scope.put(state, "controller", controller);
-    inline for (.{ "held", "waiting", "queue", "releaseCalls" }) |key| try scope.put(state, key, try scope.array());
+    inline for (.{ "held", "waiting", "queue", "releaseCalls", "modelWaiters" }) |key| try scope.put(state, key, try scope.array());
     inline for (.{ "acks", "ready", "replayIndex", "rows" }) |key| try scope.put(state, key, try scope.own(try js.builtin(engine, "Map", &.{})));
-    inline for (.{ "journalLength", "nextReplayed", "issued", "durableIssued", "releaseIndex" }) |key| try setNumber(&scope, state, key, 0);
+    inline for (.{ "journalLength", "nextReplayed", "issued", "durableIssued", "releaseIndex", "modelCalls", "generatedImages" }) |key| try setNumber(&scope, state, key, 0);
     const pending = try scope.own(try journal.initialize(engine, docs, api, context, draft));
     return c.JS_DupValue(engine.context, try wait(&scope, state, pending, .initialized));
 }
@@ -161,14 +161,33 @@ fn handle(scope: *Scope, state: c.JSValue, kind: Event, args: []const c.JSValue)
             }
         },
         .call => {
-            const call = args[0];
+            var call = args[0];
+            if (try is(scope, try scope.get(call, "target"), "global")) {
+                const name = try scope.get(call, "name");
+                if (try is(scope, name, "models.classify") or try is(scope, name, "models.generateImages")) {
+                    const mapped = try scope.object();
+                    const given = try scope.get(call, "args");
+                    const list = if (c.JS_IsArray(given)) given else try scope.array();
+                    const model = try item(scope, list, 0);
+                    const context = try item(scope, list, 1);
+                    const parameters = try scope.object();
+                    try scope.put(mapped, "id", try scope.get(call, "id"));
+                    try scope.put(mapped, "target", try scope.text("tool"));
+                    try scope.put(mapped, "name", try scope.concat(try scope.text("pi.codemode."), name));
+                    try scope.put(parameters, "model", if (c.JS_IsUndefined(model) or c.JS_IsNull(model)) c.pi_js_null() else model);
+                    try scope.put(parameters, "context", if (c.JS_IsUndefined(context) or c.JS_IsNull(context)) c.pi_js_null() else context);
+                    try scope.put(mapped, "args", parameters);
+                    call = mapped;
+                }
+            }
             const id = try scope.get(call, "id");
             if (try is(scope, try scope.get(call, "target"), "tool")) {
                 const rows = try scope.get(state, "rows");
                 if (!scope.truthy(try scope.invoke(rows, "has", &.{id}))) {
                     const row = try scope.object();
                     try scope.put(row, "id", id);
-                    try scope.put(row, "name", try scope.get(call, "name"));
+                    const name = try scope.get(call, "name");
+                    try scope.put(row, "name", if (scope.truthy(try scope.invoke(name, "startsWith", &.{try scope.text("pi.codemode.")}))) try scope.invoke(name, "slice", &.{c.JS_NewInt32(scope.engine.context, "pi.codemode.".len)}) else name);
                     const given = try scope.get(call, "args");
                     const encoded = if (c.JS_IsUndefined(given)) try scope.text("") else try scope.invoke(try scope.global("JSON"), "stringify", &.{given});
                     try scope.put(row, "args", try cut(scope, encoded, 200));
@@ -308,10 +327,42 @@ fn launch(scope: *Scope, state: c.JSValue, call: c.JSValue) !void {
     const api = try scope.get(state, "api");
     const context = try scope.get(state, "context");
     if (try is(scope, try scope.get(call, "target"), "tool")) {
+        if (scope.truthy(try scope.invoke(try scope.get(call, "name"), "startsWith", &.{try scope.text("pi.codemode.")}))) {
+            try setFlag(scope, operation, "modelSlot", true);
+            if (try n(scope, state, "modelCalls") >= 4) {
+                var functions: [2]c.JSValue = undefined;
+                const promise = try scope.own(try scope.engine.checked(c.JS_NewPromiseCapability(scope.engine.context, &functions)));
+                defer scope.engine.freeValue(functions[0]);
+                defer scope.engine.freeValue(functions[1]);
+                try append(scope, try scope.get(state, "modelWaiters"), functions[0]);
+                _ = try wait(scope, operation, promise, .model_waiter);
+            } else {
+                try setNumber(scope, state, "modelCalls", try n(scope, state, "modelCalls") + 1);
+                _ = try wait(scope, operation, c.pi_js_undefined(), .model_ready);
+            }
+            return;
+        }
         const options = try scope.object();
         try scope.put(options, "key", try scope.concat(try scope.text("c"), try scope.stringify(try scope.get(call, "id"))));
         _ = try wait(scope, operation, try scope.invoke(api, "executeTool", &.{ try scope.get(call, "name"), if (c.JS_IsUndefined(args) or c.JS_IsNull(args)) try scope.object() else args, context, options }), .tool);
     } else {
+        if (try @import("native_durable_codemode_catalog.zig").isCatalog(scope.engine, try scope.get(call, "name"))) {
+            const pending = @import("native_durable_codemode_catalog.zig").invoke(scope.engine, try scope.get(state, "documents"), try scope.get(api, "models"), context, call) catch |err| {
+                if (err != error.JavaScriptException or scope.engine.captured_exception == null) return err;
+                const signal = try scope.get(context, "abortSignal");
+                if (!c.JS_IsUndefined(signal) and try flag(scope, signal, "aborted")) {
+                    try failure(scope, state, scope.engine.captured_exception.?);
+                    return;
+                }
+                const outcome = try scope.object();
+                try setFlag(scope, outcome, "ok", false);
+                try scope.put(outcome, "message", try errorMessage(scope, scope.engine.captured_exception.?));
+                try finished(scope, operation, outcome);
+                return;
+            };
+            _ = try wait(scope, operation, try scope.own(pending), .global);
+            return;
+        }
         if (try @import("native_durable_codemode_discovery.zig").isDiscovery(scope.engine, try scope.get(call, "name"))) {
             const value = @import("native_durable_codemode_discovery.zig").invoke(scope.engine, try scope.get(state, "start"), call) catch |err| {
                 if (err != error.JavaScriptException or scope.engine.captured_exception == null) return err;
@@ -350,6 +401,14 @@ fn launch(scope: *Scope, state: c.JSValue, call: c.JSValue) !void {
         try scope.put(outcome, "message", try scope.concat(try scope.text("Unknown global "), try scope.get(call, "name")));
         try finished(scope, operation, outcome);
     }
+}
+fn releaseModelSlot(scope: *Scope, operation: c.JSValue) !void {
+    if (!try flag(scope, operation, "modelSlot")) return;
+    try setFlag(scope, operation, "modelSlot", false);
+    const state = try scope.get(operation, "parent");
+    try setNumber(scope, state, "modelCalls", try n(scope, state, "modelCalls") - 1);
+    const waiter = try scope.invoke(try scope.get(state, "modelWaiters"), "shift", &.{});
+    if (!c.JS_IsUndefined(waiter)) _ = try scope.call(waiter, c.pi_js_undefined(), &.{});
 }
 fn finished(scope: *Scope, operation: c.JSValue, outcome: c.JSValue) !void {
     const state = try scope.get(operation, "parent");
@@ -435,6 +494,7 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
     defer scope.deinit();
     const stage: Stage = @enumFromInt(raw);
     if (rejected) {
+        if (stage == .tool) try releaseModelSlot(&scope, state);
         const parent = if (stage == .tool or stage == .global) try scope.get(state, "parent") else state;
         if (stage == .global) {
             const signal = try scope.get(try scope.get(parent, "context"), "abortSignal");
@@ -461,6 +521,26 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
         return c.pi_js_undefined();
     }
     switch (stage) {
+        .model_waiter => {
+            const parent = try scope.get(state, "parent");
+            try setNumber(&scope, parent, "modelCalls", try n(&scope, parent, "modelCalls") + 1);
+            _ = try wait(&scope, state, c.pi_js_undefined(), .model_ready);
+        },
+        .model_ready => {
+            const parent = try scope.get(state, "parent");
+            if (try stopped(&scope, parent)) {
+                try releaseModelSlot(&scope, state);
+                return c.pi_js_undefined();
+            }
+            const call = try scope.get(state, "call");
+            const options = try scope.object();
+            try scope.put(options, "key", try scope.concat(try scope.text("c"), try scope.stringify(try scope.get(call, "id"))));
+            const pending = scope.invoke(try scope.get(parent, "api"), "executeTool", &.{ try scope.get(call, "name"), try scope.get(call, "args"), try scope.get(parent, "context"), options }) catch |err| {
+                try releaseModelSlot(&scope, state);
+                return err;
+            };
+            _ = try wait(&scope, state, pending, .tool);
+        },
         .initialized => {
             const done = try scope.get(value, "done");
             if (!c.JS_IsUndefined(done)) return c.JS_DupValue(engine.context, done);
@@ -527,6 +607,17 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
             const call = try scope.get(state, "call");
             var outcome: c.JSValue = undefined;
             if (stage == .tool) {
+                try releaseModelSlot(&scope, state);
+                if (try is(&scope, try scope.get(call, "name"), "pi.codemode.models.generateImages")) {
+                    const structured = try scope.get(value, "structuredOutput");
+                    if (c.JS_IsObject(structured) and !c.JS_IsNull(structured)) {
+                        const output = try scope.get(structured, "output");
+                        if (c.JS_IsArray(output)) for (0..try vm.length(engine, output)) |i| {
+                            const block = try item(&scope, output, i);
+                            if (c.JS_IsObject(block) and !c.JS_IsNull(block) and try is(&scope, try scope.get(block, "type"), "image")) try setNumber(&scope, parent, "generatedImages", try n(&scope, parent, "generatedImages") + 1);
+                        };
+                    }
+                }
                 var structured = false;
                 const tools = try scope.get(try scope.get(parent, "start"), "tools");
                 for (0..try vm.length(engine, tools)) |i| {
@@ -647,7 +738,7 @@ fn advance(engine: *em.Engine, state: c.JSValue, value: c.JSValue, rejected: boo
             }
             try scope.put(state, "result", value);
             const options = try scope.object();
-            try setNumber(&scope, options, "generatedImages", 0);
+            try scope.put(options, "generatedImages", try scope.get(state, "generatedImages"));
             try setNumber(&scope, options, "wallMs", try number(engine, try scope.invoke(try scope.global("Date"), "now", &.{})) - try n(&scope, try scope.get(state, "start"), "startedAt"));
             try scope.put(options, "maxOutputTokens", try scope.get(try scope.get(state, "start"), "maxOutputTokens"));
             try scope.put(options, "calls", try scope.get(try details(&scope, state), "calls"));

@@ -1,0 +1,242 @@
+{"source":"19cb534c3b6e3871458a8fa59e98f0312c50e995","modelToolMetadata":[
+    {
+      "name": "pi.codemode.models.classify",
+      "description": "models.classify() of code mode scripts.",
+      "parameters": {
+        "type": "object",
+        "required": [
+          "model",
+          "context"
+        ],
+        "properties": {
+          "model": {},
+          "context": {}
+        }
+      },
+      "structuredOutputSchema": {},
+      "callers": [
+        "tools"
+      ]
+    },
+    {
+      "name": "pi.codemode.models.generateImages",
+      "description": "models.generateImages() of code mode scripts.",
+      "parameters": {
+        "type": "object",
+        "required": [
+          "model",
+          "context"
+        ],
+        "properties": {
+          "model": {},
+          "context": {}
+        }
+      },
+      "structuredOutputSchema": {},
+      "callers": [
+        "tools"
+      ]
+    }
+  ],"rows":[
+    {
+      "name": "catalog-no-headers",
+      "value": [
+        [
+          "judge"
+        ],
+        "judge",
+        false,
+        [
+          "painter"
+        ]
+      ],
+      "calls": {
+        "classify": 0,
+        "inFlight": 0,
+        "maxInFlight": 0
+      },
+      "usage": {
+        "models": {
+          "faux/faux-1": {
+            "input": 848,
+            "output": 83,
+            "cacheRead": 736,
+            "cacheWrite": 848,
+            "totalTokens": 2515,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "name": "classify-hidden-nested-usage",
+      "value": [
+        "stop",
+        true,
+        false,
+        false,
+        0,
+        false
+      ],
+      "calls": {
+        "classify": 1,
+        "inFlight": 0,
+        "maxInFlight": 1
+      },
+      "usage": {
+        "models": {
+          "faux/faux-1": {
+            "input": 925,
+            "output": 162,
+            "cacheRead": 736,
+            "cacheWrite": 925,
+            "totalTokens": 2748,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {
+          "pi.codemode.models.classify": {
+            "input": 10,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 12,
+            "cost": {
+              "input": 0.001,
+              "output": 0.0002,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0.0012
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "structured-classifier-error-resolves",
+      "value": [
+        "error",
+        "quota exceeded"
+      ],
+      "calls": {
+        "classify": 1,
+        "inFlight": 0,
+        "maxInFlight": 0
+      },
+      "usage": {
+        "models": {
+          "faux/faux-1": {
+            "input": 839,
+            "output": 77,
+            "cacheRead": 736,
+            "cacheWrite": 839,
+            "totalTokens": 2491,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "name": "nine-classifiers-four-slots",
+      "value": 9,
+      "calls": {
+        "classify": 9,
+        "inFlight": 0,
+        "maxInFlight": 4
+      },
+      "usage": {
+        "models": {
+          "faux/faux-1": {
+            "input": 835,
+            "output": 80,
+            "cacheRead": 736,
+            "cacheWrite": 836,
+            "totalTokens": 2487,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {
+          "pi.codemode.models.classify": {
+            "input": 90,
+            "output": 18,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 108,
+            "cost": {
+              "input": 0.009000000000000001,
+              "output": 0.0018000000000000004,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0.010799999999999999
+            }
+          }
+        }
+      }
+    }
+  ],"cases":[{
+        "name": "catalog-no-headers",
+        "expected": [
+          [
+            "judge"
+          ],
+          "judge",
+          false,
+          [
+            "painter"
+          ]
+        ],
+        "code": "const classifiers = await models.getModelsOfType(\"classifier\", \"test\");const one = await models.getModelOfType(\"classifier\", \"test\", \"judge\");const available = await models.getAvailableOfType(\"image\");return [classifiers.map((m) => m.id), one.id, \"headers\" in one, available.map((m) => m.id)];"
+      },{
+        "name": "classify-hidden-nested-usage",
+        "expected": [
+          "stop",
+          true,
+          false,
+          false,
+          0,
+          false
+        ],
+        "calls": 1,
+        "code": "const model = await models.getModelOfType(\"classifier\", \"test\", \"judge\");const result = await models.classify(model, {state: { text: \"hi\" },questions: { good: { type: \"bool\", instructions: \"Is it good?\", criteria: { true: \"yes\", false: \"no\" } } }});const found = (await searchTools(\"classify generate images models\")).length;const described = (await describeTool(\"pi.codemode.models.classify\")) !== undefined;return [result.stopReason, result.answers.good.value, Object.keys(tools).some((name) => name.includes(\"models\")), ALL_TOOLS.some((tool) => tool.name.includes(\"models\")), found, described];"
+      },{
+        "name": "structured-classifier-error-resolves",
+        "expected": [
+          "error",
+          "quota exceeded"
+        ],
+        "calls": 1,
+        "errorCall": true,
+        "code": "const model=await models.getModelOfType(\"classifier\",\"test\",\"judge\");const result=await models.classify(model,{state:{fail:true},questions:{good:{type:\"bool\",instructions:\"Is it good?\",criteria:{true:\"yes\",false:\"no\"}}}});return [result.stopReason,result.errorMessage];"
+      },{
+        "name": "nine-classifiers-four-slots",
+        "expected": 9,
+        "calls": 9,
+        "hold": true,
+        "code": "const model=await models.getModelOfType(\"classifier\",\"test\",\"judge\");const results=await Promise.all(Array.from({length:9},(_,i)=>models.classify(model,{state:{i},questions:{good:{type:\"bool\",instructions:\"Is it good?\",criteria:{true:\"yes\",false:\"no\"}}}})));return results.length;"
+      }]}

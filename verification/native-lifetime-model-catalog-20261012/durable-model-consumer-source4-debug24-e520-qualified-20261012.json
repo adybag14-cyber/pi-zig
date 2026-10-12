@@ -1,0 +1,26 @@
+{
+  "base": "e52028c1ab9185e7e5014d2be6599bdc3a6d2a43",
+  "patch": "durable-model-consumer-source4-debug24-e520-qualified-20261012.patch",
+  "sha256": "193F58DD3300A22D8B7F4426AFD02A43968B77C01E47001C273F3891251CA75C",
+  "qualified_pid": 3344,
+  "tests": "24/24 Debug (existing17 + catalogue/paidconsumer7)",
+  "source": 4109,
+  "membership_drift": 0,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "final_samebytes_utc": "2026-10-12T18:50:31.3878645+00:00",
+  "causal_red": "e520 isolatedPID50096 actualUnknownGlobalmodels.getModelsOfType;5controlsPASS/1caseFAIL;4107+19546post0",
+  "auth_fixture_negative": "PID52828 actual23/24; heldProvider omitted Source-required auth; only2fixture declarations repaired beforePID3344;4109+19546post0",
+  "source_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "authority": "durable-19cb534-models-original-qualified-20261012.json",
+  "scope": "DefaultCodeMode consumer: actual native query/availability registry; local controlled Models-service callbacks; Sourcecatalog/header stripping,internaltoolrouting/hiddenrows/usage,structurederrorvalue,nineclassifiercalls max4; NOTwholetypedModelsservice ABI",
+  "open": [
+    "ReleaseSafe currentmodeldelta",
+    "NativeModels typedinstance/service/registry ABI and auth execution bridge",
+    "Full latestgeneratedcatalog provenance (Rootowned)",
+    "Image-modelcases notyetnativequalified",
+    "publicextension/export activation",
+    "originalMacDebug10s failure"
+  ]
+}

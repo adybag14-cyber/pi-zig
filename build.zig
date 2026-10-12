@@ -759,6 +759,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_journal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_journal_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-journal-core", "Exercise actual durable tool API document transactions and atomic CodeMode outcome store decisions").dependOn(&b.addRunArtifact(codemode_journal_tests).step);
+    const codemode_models_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_codemode_models_catalog_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native durable default CodeMode model catalog actual Source program", "native durable default CodeMode model calls Source" } });
+    linkQuickJs(b, codemode_models_catalog_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(codemode_models_catalog_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-codemode-model-catalog", "Exercise the original default model catalog script over the actual native Models query registry").dependOn(&b.addRunArtifact(codemode_models_catalog_tests).step);
     const owner_wakeup_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_owner_wakeup_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native owner", "native timer owner" } });
     linkQuickJs(b, owner_wakeup_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(owner_wakeup_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -764,7 +764,9 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     try observed.send(&child, "\x15/reload\r", "Reloaded:");
     try observed.send(&child, "%", "→ Plugin One");
     try observed.sendEditorRow(&child, "\t", "one");
-    try observed.sendEditorRow(&child, "\x15%error", "%error");
+    // Rejection can end the application before its next scheduled paint. The
+    // exact diagnostic below proves that the provider consumed this input.
+    try child.send("\x15%error");
     const term = try child.wait(5000);
     try observed.drain(&child);
     try std.testing.expect(term == .exited and term.exited == 1);
@@ -794,7 +796,9 @@ test "real custom editor fatal diagnostic getter runs after physical raw restora
     defer observed.deinit();
     try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
-    try observed.sendEditorRow(&child, "%error", "%error");
+    // The getter record and exact diagnostic prove input consumption without
+    // requiring a transient editor frame after fatal shutdown has started.
+    try child.send("%error");
     const term = try child.wait(5000);
     try observed.drain(&child);
     try std.testing.expect(term == .exited and term.exited == 1);

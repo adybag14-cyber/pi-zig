@@ -1,0 +1,13 @@
+{
+  "name": "root-lifetime-model-catalog-integrated-20261012",
+  "pid": 5880,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-codemode-sandbox test-native-codemode-controlled-binding test-native-durable-codemode-outcome test-native-durable-codemode-journal-core test-native-durable-codemode-model-catalog test-latest-catalog test-maintenance test-custom-editor-frontend -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T18:54:03.8340310Z",
+  "launched_utc": "2026-10-12T18:54:03.8311844+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T18:56:37.1251070+00:00"
+}
