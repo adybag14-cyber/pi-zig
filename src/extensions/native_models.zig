@@ -235,6 +235,9 @@ pub fn create(engine: *engine_mod.Engine, cache: c.JSValue, options: c.JSValue) 
     defer engine.freeValue(map_constructor);
     try put(engine, store, "map", try engine.checked(c.JS_CallConstructor(engine.context, map_constructor, 0, null)));
     inline for (.{ "credentials", "authContext" }) |name| try put(engine, store, name, if (c.JS_IsUndefined(options) or c.JS_IsNull(options)) c.pi_js_undefined() else try get(engine, options, name));
+    const credentials = try get(engine, store, "credentials");
+    defer engine.freeValue(credentials);
+    if (c.JS_IsUndefined(credentials) or c.JS_IsNull(credentials)) try put(engine, store, "credentials", try @import("native_credentials_store.zig").create(engine));
     const auth_context = try get(engine, store, "authContext");
     defer engine.freeValue(auth_context);
     if (c.JS_IsUndefined(auth_context) or c.JS_IsNull(auth_context)) {
@@ -249,6 +252,7 @@ pub fn create(engine: *engine_mod.Engine, cache: c.JSValue, options: c.JSValue) 
     try @import("native_models_refresh.zig").initialize(engine, store, options);
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Method)) |field| try put(engine, result, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCallback, field.name, 0, field.value, data.len, &data)));
+    try @import("native_models_typed.zig").install(engine, result, store);
     return result;
 }
 fn createCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -269,6 +273,7 @@ fn typeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
 
 pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_models_store.zig").install(engine, exports);
+    try @import("native_credentials_store.zig").install(engine, exports);
     if (engine.abort_signal_class == 0) try abort_signal.install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -288,6 +293,7 @@ pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const promise = try get(engine, global, "Promise");
     defer engine.freeValue(promise);
     try put(engine, cache, "promise_constructor", c.JS_DupValue(engine.context, promise));
+    try put(engine, cache, "promise_resolve", try get(engine, promise, "resolve"));
     try put(engine, cache, "promise_all", try get(engine, promise, "all"));
     const promise_prototype = try get(engine, promise, "prototype");
     defer engine.freeValue(promise_prototype);

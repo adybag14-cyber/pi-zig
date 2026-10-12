@@ -767,6 +767,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_journal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_journal_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-journal-core", "Exercise actual durable tool API document transactions and atomic CodeMode outcome store decisions").dependOn(&b.addRunArtifact(codemode_journal_tests).step);
+    const typed_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_typed_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Models actual Source9"} });
+    linkQuickJs(b, typed_models_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(typed_models_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-models-typed-services", "Replay actual Source typed Models auth and service operations over native instance and credential store").dependOn(&b.addRunArtifact(typed_models_tests).step);
     const codemode_models_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_codemode_models_catalog_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native durable default CodeMode model catalog actual Source program", "native durable default CodeMode model calls Source", "native durable default CodeMode model images Source" } });
     linkQuickJs(b, codemode_models_catalog_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_models_catalog_tests.root_module, sqlite_lib_dir, sqlite_library);

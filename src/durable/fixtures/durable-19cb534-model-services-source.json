@@ -1,0 +1,530 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "dc25b5f11e7808646f3eee95dcc76957b2d2db6ba963a8ba1256a35762652cda",
+  "originalBody": "const cases=['ambient-getAuth','model-getAuth-headers','explicit-key-env','stored-key-env','stored-oauth-no-handler','classify-auth-transforms','generateImages-auth','classify-wrong-type','preaborted-getAuth'],rows=[],raw=[];\nfor(const name of cases){const credentials=new InMemoryCredentialStore(),events=[],control=new AbortController(),signal=control.signal;let reads=0;const originalRead=credentials.read.bind(credentials);credentials.read=async(...args)=>{reads++;return originalRead(...args)};const authContext={env:async key=>'base-'+key,fileExists:async()=>false},models=A.createModels({credentials,authContext}),cost={input:0,output:0,cacheRead:0,cacheWrite:0};\nmodels.setProvider(A.createProvider({id:'fixture',models:[{id:'judge',name:'Judge',api:'fixture-classifier',provider:'fixture',baseUrl:'https://original.invalid',input:['text'],type:'classifier',contextWindow:1000,cost,headers:{Auth:'model',ModelOnly:'yes',Drop:undefined}},{id:'painter',name:'Painter',api:'fixture-images',provider:'fixture',baseUrl:'https://original.invalid',input:['text'],output:['image'],type:'image',cost}],auth:{apiKey:{name:'Fixture',resolve:async({credential,ctx,signal:received})=>{events.push({type:'resolve',credential,region:await ctx.env('REGION'),zone:await ctx.env('ZONE'),signalSame:received===signal});return{auth:{apiKey:credential?.key??'ambient-fixture',headers:{AUTH:'base',Keep:'base',Drop:'base'},baseUrl:'https://resolved.invalid'},env:{REGION:'resolved'},source:'fixture'}}}},classifiers:{'fixture-classifier':{classify:async(model,context,options)=>{events.push({type:'classify',model,context,options:{...options,signal:undefined},optionKeys:Object.keys(options),headerKeys:Object.keys(options.headers??{}),dropOwn:Object.hasOwn(options.headers??{},'Drop'),signalSame:options.signal===signal});return{api:model.api,provider:model.provider,model:model.id,answers:{good:{value:true}},stopReason:'stop',timestamp:0}}}},images:{'fixture-images':{generateImages:async(model,context,options)=>{events.push({type:'images',model,context,options:{...options,signal:undefined},optionKeys:Object.keys(options),signalSame:options.signal===signal});return{api:model.api,provider:model.provider,model:model.id,output:[],stopReason:'stop',timestamp:0}}}}}));\nconst judge=models.getModelOfType('classifier','fixture','judge'),painter=models.getModelOfType('image','fixture','painter');if(name==='stored-key-env')await credentials.modify('fixture',async()=>({type:'api_key',key:'stored-fixture',env:{REGION:'stored'}}));if(name==='stored-oauth-no-handler')await credentials.modify('fixture',async()=>({type:'oauth',access:'access-fixture',refresh:'refresh-fixture',expires:Date.now()+3600000}));let value,abortedExact=false;const start=Date.now();\nif(name==='ambient-getAuth')value=await models.getAuth('fixture',{signal});else if(name==='model-getAuth-headers')value=await models.getAuth(judge,{signal});else if(name==='explicit-key-env')value=await models.getAuth(judge,{apiKey:'override-fixture',env:{ZONE:'override',REGION:'request'},signal});else if(name==='stored-key-env')value=await models.getAuth(judge,{env:{REGION:'request'},signal});else if(name==='stored-oauth-no-handler')value=await models.getAuth(judge,{signal});else if(name==='classify-auth-transforms')value=await models.classify(judge,{state:{n:1},questions:{good:{type:'bool',instructions:'Good?',criteria:{true:'yes',false:'no'}}}},{apiKey:'request-fixture',headers:{auth:'request',ModelOnly:undefined},env:{EXTRA:'request'},signal,transformHeaders:async headers=>({...headers,Transformed:'yes'})});else if(name==='generateImages-auth')value=await models.generateImages(painter,{input:[{type:'text',text:'hi'}]},{signal});else if(name==='classify-wrong-type')value=await models.classify(painter,{state:{},questions:{}},{signal});else{const reason={cancel:'source-fixture'};control.abort(reason);try{await models.getAuth(judge,{signal});throw Error('missing abort')}catch(error){abortedExact=error===reason;if(!abortedExact)throw error}}const end=Date.now();\nif(name==='explicit-key-env'&&reads!==0||name==='stored-oauth-no-handler'&&(value!==undefined||events.length!==0)||name==='classify-auth-transforms'&&(!events.some(event=>event.type==='classify'&&event.model.baseUrl==='https://resolved.invalid'&&event.options.apiKey==='request-fixture'&&event.options.headers.auth==='request'&&event.options.headers.Transformed==='yes'&&!event.optionKeys.includes('transformHeaders')))||name==='classify-wrong-type'&&(value.stopReason!=='error'||value.timestamp<start||value.timestamp>end)||name==='preaborted-getAuth'&&(!abortedExact||reads!==0||events.length!==0))throw Error(JSON.stringify({name,value,events,reads}));rows.push({name,value,valueType:typeof value,reads,abortedExact,headerKeys:value?.auth?.headers?Object.keys(value.auth.headers):undefined,dropOwn:value?.auth?.headers?Object.hasOwn(value.auth.headers,'Drop'):undefined,start,end});raw.push({name,value,events,reads,start,end})}\n",
+  "rows": [
+    {
+      "name": "ambient-getAuth",
+      "value": {
+        "auth": {
+          "apiKey": "ambient-fixture",
+          "headers": {
+            "AUTH": "base",
+            "Keep": "base",
+            "Drop": "base"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "valueType": "object",
+      "reads": 1,
+      "abortedExact": false,
+      "headerKeys": [
+        "AUTH",
+        "Keep",
+        "Drop"
+      ],
+      "dropOwn": true,
+      "start": 1791831816126,
+      "end": 1791831816127
+    },
+    {
+      "name": "model-getAuth-headers",
+      "value": {
+        "auth": {
+          "apiKey": "ambient-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "valueType": "object",
+      "reads": 1,
+      "abortedExact": false,
+      "headerKeys": [
+        "Keep",
+        "Auth",
+        "ModelOnly",
+        "Drop"
+      ],
+      "dropOwn": true,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "explicit-key-env",
+      "value": {
+        "auth": {
+          "apiKey": "override-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "valueType": "object",
+      "reads": 0,
+      "abortedExact": false,
+      "headerKeys": [
+        "Keep",
+        "Auth",
+        "ModelOnly",
+        "Drop"
+      ],
+      "dropOwn": true,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "stored-key-env",
+      "value": {
+        "auth": {
+          "apiKey": "stored-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "valueType": "object",
+      "reads": 1,
+      "abortedExact": false,
+      "headerKeys": [
+        "Keep",
+        "Auth",
+        "ModelOnly",
+        "Drop"
+      ],
+      "dropOwn": true,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "stored-oauth-no-handler",
+      "valueType": "undefined",
+      "reads": 1,
+      "abortedExact": false,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "classify-auth-transforms",
+      "value": {
+        "api": "fixture-classifier",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {
+          "good": {
+            "value": true
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "reads": 0,
+      "abortedExact": false,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "generateImages-auth",
+      "value": {
+        "api": "fixture-images",
+        "provider": "fixture",
+        "model": "painter",
+        "output": [],
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "valueType": "object",
+      "reads": 1,
+      "abortedExact": false,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "classify-wrong-type",
+      "value": {
+        "api": "fixture-images",
+        "provider": "fixture",
+        "model": "painter",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "Model fixture/painter is not a classifier model",
+        "timestamp": 1791831816128
+      },
+      "valueType": "object",
+      "reads": 0,
+      "abortedExact": false,
+      "start": 1791831816127,
+      "end": 1791831816128
+    },
+    {
+      "name": "preaborted-getAuth",
+      "valueType": "undefined",
+      "reads": 0,
+      "abortedExact": true,
+      "start": 1791831816128,
+      "end": 1791831816128
+    }
+  ],
+  "raw": [
+    {
+      "name": "ambient-getAuth",
+      "value": {
+        "auth": {
+          "apiKey": "ambient-fixture",
+          "headers": {
+            "AUTH": "base",
+            "Keep": "base",
+            "Drop": "base"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "region": "base-REGION",
+          "zone": "base-ZONE",
+          "signalSame": true
+        }
+      ],
+      "reads": 1,
+      "start": 1791831816126,
+      "end": 1791831816127
+    },
+    {
+      "name": "model-getAuth-headers",
+      "value": {
+        "auth": {
+          "apiKey": "ambient-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "region": "base-REGION",
+          "zone": "base-ZONE",
+          "signalSame": true
+        }
+      ],
+      "reads": 1,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "explicit-key-env",
+      "value": {
+        "auth": {
+          "apiKey": "override-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "credential": {
+            "type": "api_key",
+            "key": "override-fixture",
+            "env": {
+              "ZONE": "override",
+              "REGION": "request"
+            }
+          },
+          "region": "request",
+          "zone": "override",
+          "signalSame": true
+        }
+      ],
+      "reads": 0,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "stored-key-env",
+      "value": {
+        "auth": {
+          "apiKey": "stored-fixture",
+          "headers": {
+            "Keep": "base",
+            "Auth": "model",
+            "ModelOnly": "yes"
+          },
+          "baseUrl": "https://resolved.invalid"
+        },
+        "env": {
+          "REGION": "resolved"
+        },
+        "source": "fixture"
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "credential": {
+            "type": "api_key",
+            "key": "stored-fixture",
+            "env": {
+              "REGION": "request"
+            }
+          },
+          "region": "request",
+          "zone": "base-ZONE",
+          "signalSame": true
+        }
+      ],
+      "reads": 1,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "stored-oauth-no-handler",
+      "events": [],
+      "reads": 1,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "classify-auth-transforms",
+      "value": {
+        "api": "fixture-classifier",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {
+          "good": {
+            "value": true
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "credential": {
+            "type": "api_key",
+            "key": "request-fixture",
+            "env": {
+              "EXTRA": "request"
+            }
+          },
+          "region": "base-REGION",
+          "zone": "base-ZONE",
+          "signalSame": true
+        },
+        {
+          "type": "classify",
+          "model": {
+            "id": "judge",
+            "name": "Judge",
+            "api": "fixture-classifier",
+            "provider": "fixture",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "type": "classifier",
+            "contextWindow": 1000,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "headers": {
+              "Auth": "model",
+              "ModelOnly": "yes"
+            }
+          },
+          "context": {
+            "state": {
+              "n": 1
+            },
+            "questions": {
+              "good": {
+                "type": "bool",
+                "instructions": "Good?",
+                "criteria": {
+                  "true": "yes",
+                  "false": "no"
+                }
+              }
+            }
+          },
+          "options": {
+            "apiKey": "request-fixture",
+            "headers": {
+              "Keep": "base",
+              "auth": "request",
+              "Transformed": "yes"
+            },
+            "env": {
+              "REGION": "resolved",
+              "EXTRA": "request"
+            }
+          },
+          "optionKeys": [
+            "apiKey",
+            "headers",
+            "env",
+            "signal"
+          ],
+          "headerKeys": [
+            "Keep",
+            "Drop",
+            "auth",
+            "ModelOnly",
+            "Transformed"
+          ],
+          "dropOwn": true,
+          "signalSame": true
+        }
+      ],
+      "reads": 0,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "generateImages-auth",
+      "value": {
+        "api": "fixture-images",
+        "provider": "fixture",
+        "model": "painter",
+        "output": [],
+        "stopReason": "stop",
+        "timestamp": 0
+      },
+      "events": [
+        {
+          "type": "resolve",
+          "region": "base-REGION",
+          "zone": "base-ZONE",
+          "signalSame": true
+        },
+        {
+          "type": "images",
+          "model": {
+            "id": "painter",
+            "name": "Painter",
+            "api": "fixture-images",
+            "provider": "fixture",
+            "baseUrl": "https://resolved.invalid",
+            "input": [
+              "text"
+            ],
+            "output": [
+              "image"
+            ],
+            "type": "image",
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            }
+          },
+          "context": {
+            "input": [
+              {
+                "type": "text",
+                "text": "hi"
+              }
+            ]
+          },
+          "options": {
+            "apiKey": "ambient-fixture",
+            "headers": {
+              "AUTH": "base",
+              "Keep": "base",
+              "Drop": "base"
+            },
+            "env": {
+              "REGION": "resolved"
+            }
+          },
+          "optionKeys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env"
+          ],
+          "signalSame": true
+        }
+      ],
+      "reads": 1,
+      "start": 1791831816127,
+      "end": 1791831816127
+    },
+    {
+      "name": "classify-wrong-type",
+      "value": {
+        "api": "fixture-images",
+        "provider": "fixture",
+        "model": "painter",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "Model fixture/painter is not a classifier model",
+        "timestamp": 1791831816128
+      },
+      "events": [],
+      "reads": 0,
+      "start": 1791831816127,
+      "end": 1791831816128
+    },
+    {
+      "name": "preaborted-getAuth",
+      "events": [],
+      "reads": 0,
+      "start": 1791831816128,
+      "end": 1791831816128
+    }
+  ],
+  "scope": "Native Models instance and native credential store; caller-supplied valid Provider ABI. createProvider factory, streaming and persistent auth store are separate."
+}
