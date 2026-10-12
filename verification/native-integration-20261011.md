@@ -78,3 +78,28 @@ compiled coverage passed with 126 named / 135 compiled composed cases. All
 3,992 source and 19,546 tool inputs were unchanged. The previous job was
 interrupted during the pause and produced no terminal output; it is not counted.
 This context component does not implement public start or durable replay.
+The controlled owner-thread CodeMode run and additive SDK platform fixtures
+passed the combined Windows Debug graph: 209/209 tests, including 135 shared,
+4 controlled-run, 8 clock, 55 retained UI, and 7 ordinary inline CodeMode cases.
+All 4,002 source and 19,546 tool inputs were unchanged during execution; the
+owned process exited successfully and was gone. Independent composed coverage
+also passed. The controlled-run test retains all sixteen actual original Source
+records and validates wall durations against measured elapsed time before
+comparing deterministic observations; full owner allocation cleanup passed.
+
+The SDK platform fixtures retain original Windows captures and add seven genuine
+POSIX captures. Their isolated SDK validation passed all 40 queue cases on
+Windows C, same binary on D, and Linux. This combined Root check is Windows
+Debug qualification; it does not claim new exact-head hosted matrix success.
+
+The latest official upstream reference now builds at
+`ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e`: all 2,034 original files, 22,218
+dependencies, 43 hydrated inputs, 1,774 npm tool files and 19 workspace junctions
+were unchanged, and 2,893 generated dist files were pinned. This supersedes the
+previous observed reference for ongoing implementation, not native parity.
+
+The controlled run remains a private owner-thread core. Public worker transport,
+JS-facing sandbox API, original declared tool identifiers, complete delivery and
+abort edge cases, and a source-complete VM fingerprint still require work.
+Latest upstream AgentSession hook signature and deferred tools also require
+implementation and actual reference tests. No native-default or release claim.

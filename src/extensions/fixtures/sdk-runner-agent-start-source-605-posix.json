@@ -1,0 +1,2741 @@
+{
+  "schema": "sdk-source560-before-agent-start-v1",
+  "sourcePaths": {
+    "readme": "/sdk-agent-start-package/README.md",
+    "docs": "/sdk-agent-start-package/docs",
+    "examples": "/sdk-agent-start-package/examples"
+  },
+  "rows": [
+    {
+      "id": "forced-default",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash",
+              "edit",
+              "write"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {}
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {}
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": []
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": []
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "normalization-getters",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "input.get",
+          "customPrompt"
+        ],
+        [
+          "input.get",
+          "forceSystemPrompt"
+        ],
+        [
+          "input.get",
+          "selectedTools"
+        ],
+        [
+          "input.get",
+          "hiddenTools"
+        ],
+        [
+          "input.get",
+          "toolSnippets"
+        ],
+        [
+          "input.get",
+          "toolGuidelines"
+        ],
+        [
+          "input.get",
+          "promptGuidelines"
+        ],
+        [
+          "input.get",
+          "appendSystemPrompt"
+        ],
+        [
+          "input.get",
+          "sections"
+        ],
+        [
+          "input.get",
+          "cwd"
+        ],
+        [
+          "input.get",
+          "contextFiles"
+        ],
+        [
+          "input.get",
+          "skills"
+        ],
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "iterable-tools",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        "tools.iterator.get",
+        [
+          "tools.iterator.call",
+          true
+        ],
+        "tools.next",
+        "tools.next",
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "shallow-copies",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "copies",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ],
+        [
+          "copies",
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "descriptor-copy",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "descriptor-setter-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        [
+          "context.system.set",
+          false,
+          "function"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "lazy-current-options",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "mutated.render",
+          "mutated in handler",
+          "mutated in handler"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "result-getters",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "message-2"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "prompt-2"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "result.message",
+          1
+        ],
+        [
+          "result.message",
+          2
+        ],
+        [
+          "result.systemPrompt",
+          1
+        ],
+        [
+          "result.systemPrompt",
+          2
+        ],
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "prompt-2",
+          "prompt-2",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "handler-reject",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "initial forced"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "marker.toString",
+        "extension.path",
+        "error.listener",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ]
+      ],
+      "errors": [
+        {
+          "extensionPath": "agent.ext",
+          "event": "before_agent_start",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "listener-error",
+      "outcome": {
+        "marker": false,
+        "listener": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        "marker.toString",
+        "extension.path",
+        "error.listener"
+      ],
+      "errors": [
+        {
+          "extensionPath": "agent.ext",
+          "event": "before_agent_start",
+          "error": "original marker",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stale-context-guard",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ],
+        [
+          "retained.event",
+          "override one"
+        ],
+        [
+          "retained.context",
+          "override one"
+        ],
+        [
+          "runtime.invalidate",
+          "controlled stale"
+        ],
+        [
+          "stale.event",
+          "override one"
+        ],
+        [
+          "stale.context.error",
+          "Error",
+          "controlled stale"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "custom-sections-context",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "string",
+            "value": "custom prefix"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": "append"
+          },
+          "sections": {
+            "type": "object",
+            "value": {
+              "extra": "custom section"
+            }
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "custom prefix\n\n<addendum>\nappend\n</addendum>\n\n<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"instructions.md\">\ninstructions\n</project_instructions>\n</project_context>\n\n<cwd>\nC:/working\n</cwd>\n\n<extra>\ncustom section\n</extra>",
+          "custom prefix\n\n<addendum>\nappend\n</addendum>\n\n<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"instructions.md\">\ninstructions\n</project_instructions>\n</project_context>\n\n<cwd>\nC:/working\n</cwd>\n\n<extra>\ncustom section\n</extra>",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "hidden-skills",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "string",
+            "value": "custom prefix"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": [
+              "read"
+            ]
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": [
+              {
+                "name": "demo",
+                "description": "Useful <skill>",
+                "filePath": "C:/skills/demo/SKILL.md",
+                "baseDir": "C:/skills/demo",
+                "source": "user",
+                "disableModelInvocation": false
+              }
+            ]
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "custom prefix\n\n<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"instructions.md\">\ninstructions\n</project_instructions>\n</project_context>\n\n<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>demo</name>\n    <description>Useful &lt;skill&gt;</description>\n    <location>C:/skills/demo/SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>\n\n<cwd>\nC:/working\n</cwd>",
+          "custom prefix\n\n<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"instructions.md\">\ninstructions\n</project_instructions>\n</project_context>\n\n<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>demo</name>\n    <description>Useful &lt;skill&gt;</description>\n    <location>C:/skills/demo/SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>\n\n<cwd>\nC:/working\n</cwd>",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "default-docs",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": []
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.\n\n<tools>\n- read: read files\n- bash: run commands\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>\n\n<rules>\n- Use bash for file operations like ls, rg, find\n- one\n- two\n- extra\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>\n\n<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /sdk-agent-start-package/README.md\n- Additional docs: /sdk-agent-start-package/docs\n- Examples: /sdk-agent-start-package/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>\n\n<cwd>\nC:/working\n</cwd>",
+          "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.\n\n<tools>\n- read: read files\n- bash: run commands\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>\n\n<rules>\n- Use bash for file operations like ls, rg, find\n- one\n- two\n- extra\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>\n\n<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /sdk-agent-start-package/README.md\n- Additional docs: /sdk-agent-start-package/docs\n- Examples: /sdk-agent-start-package/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>\n\n<cwd>\nC:/working\n</cwd>",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "id": "invalid-section",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [],
+        "options": {
+          "customPrompt": {
+            "type": "string",
+            "value": "custom"
+          },
+          "forceSystemPrompt": {
+            "type": "undefined"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {
+              "preamble": "invalid"
+            }
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        "extension.path",
+        "error.listener",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        "extension.path",
+        "error.listener",
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": [
+        {
+          "extensionPath": "agent.ext",
+          "event": "before_agent_start",
+          "error": "Invalid system prompt section name: preamble",
+          "stack": "Error: Invalid system prompt section name: preamble\n    at buildSystemPromptSections (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:73:19)\n    at buildSystemPromptState (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:129:37)\n    at buildSystemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:133:54)\n    at renderCurrentSystemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1123:49)\n    at get systemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1138:36)\n    at inspect (file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:43:31)\n    at one (file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:47:11)\n    at ExtensionRunner.emitBeforeAgentStart (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1142:49)\n    at file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:60:27",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        },
+        {
+          "extensionPath": "agent.ext",
+          "event": "before_agent_start",
+          "error": "Invalid system prompt section name: preamble",
+          "stack": "Error: Invalid system prompt section name: preamble\n    at buildSystemPromptSections (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:73:19)\n    at buildSystemPromptState (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:129:37)\n    at buildSystemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/system-prompt.js:133:54)\n    at renderCurrentSystemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1123:49)\n    at get systemPrompt (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1138:36)\n    at inspect (file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:43:31)\n    at two (file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:53:40)\n    at ExtensionRunner.emitBeforeAgentStart (file:///home/tdamre/pi-sdk-source596-20261012/mirror/mnt/c/Users/adyba/pi-upstream-runtime-04566631-20261011/packages/coding-agent/dist/core/extensions/runner.js:1142:49)\n    at file:///home/tdamre/pi-sdk-source596-20261012/sdk-source605-agent-start-linux.mjs:60:27",
+          "ownKeys": [
+            "extensionPath",
+            "event",
+            "error",
+            "stack"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "normalize-error",
+      "outcome": {
+        "marker": true,
+        "listener": false
+      },
+      "events": [
+        [
+          "input.get",
+          "customPrompt"
+        ],
+        [
+          "input.get",
+          "forceSystemPrompt"
+        ],
+        [
+          "input.get",
+          "selectedTools"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "no-handlers",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "initial forced"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash",
+              "edit",
+              "write"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {}
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {}
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": []
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": []
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": false
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask"
+      ],
+      "errors": []
+    },
+    {
+      "id": "callback-lifetime",
+      "outcome": {
+        "keys": [
+          "messages",
+          "systemPromptOptions"
+        ],
+        "messages": [
+          {
+            "tag": "one"
+          },
+          {
+            "tag": "two"
+          }
+        ],
+        "options": {
+          "customPrompt": {
+            "type": "undefined"
+          },
+          "forceSystemPrompt": {
+            "type": "string",
+            "value": "override one"
+          },
+          "selectedTools": {
+            "type": "object",
+            "value": [
+              "read",
+              "bash"
+            ]
+          },
+          "hiddenTools": {
+            "type": "object",
+            "value": []
+          },
+          "toolSnippets": {
+            "type": "object",
+            "value": {
+              "read": "read files",
+              "bash": "run commands"
+            }
+          },
+          "toolGuidelines": {
+            "type": "object",
+            "value": {
+              "read": [
+                "one"
+              ],
+              "bash": [
+                "two"
+              ]
+            }
+          },
+          "promptGuidelines": {
+            "type": "object",
+            "value": [
+              " extra "
+            ]
+          },
+          "appendSystemPrompt": {
+            "type": "string",
+            "value": ""
+          },
+          "sections": {
+            "type": "object",
+            "value": {}
+          },
+          "cwd": {
+            "type": "string",
+            "value": "C:\\working"
+          },
+          "contextFiles": {
+            "type": "object",
+            "value": [
+              {
+                "path": "instructions.md",
+                "content": "instructions",
+                "nested": {
+                  "nested": true
+                }
+              }
+            ]
+          },
+          "skills": {
+            "type": "object",
+            "value": []
+          }
+        },
+        "sameOptions": true
+      },
+      "events": [
+        [
+          "context.create",
+          true
+        ],
+        "extensions.map",
+        [
+          "extensions.map.call",
+          true,
+          "",
+          1
+        ],
+        [
+          "one",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "initial forced",
+          "initial forced",
+          "context tag"
+        ],
+        [
+          "returnedPromise",
+          true
+        ],
+        "outside.microtask",
+        [
+          "two",
+          true,
+          false,
+          [
+            "type",
+            "prompt",
+            "images",
+            "systemPrompt",
+            "systemPromptOptions"
+          ],
+          "prompt",
+          true,
+          true,
+          true,
+          true,
+          "get systemPrompt",
+          0,
+          "",
+          0
+        ],
+        [
+          "context.tag",
+          false
+        ],
+        [
+          "render",
+          "override one",
+          "override one",
+          "context tag"
+        ],
+        [
+          "retained.event",
+          "override one"
+        ],
+        [
+          "retained.context",
+          "override one"
+        ]
+      ],
+      "errors": []
+    }
+  ]
+}

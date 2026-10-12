@@ -1,0 +1,820 @@
+{
+  "source": "current045-pinned-files",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "default-actions",
+      "options": {
+        "selectedTools": [],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "",
+        "sections": {},
+        "cwd": "/sdk-command-actions/default-actions",
+        "contextFiles": [],
+        "skills": []
+      },
+      "optionsSame": true,
+      "methods": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        }
+      ],
+      "trace": [
+        [
+          "default",
+          "waitForIdle",
+          "returned",
+          true
+        ],
+        [
+          "default",
+          "newSession",
+          "returned",
+          true
+        ],
+        [
+          "default",
+          "fork",
+          "returned",
+          true
+        ],
+        [
+          "default",
+          "navigateTree",
+          "returned",
+          true
+        ],
+        [
+          "default",
+          "switchSession",
+          "returned",
+          true
+        ],
+        [
+          "default",
+          "reload",
+          "returned",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "bound-rebind",
+      "bound": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "waitForIdle",
+              "args": 0
+            }
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "newSession",
+              "args": 1
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "fork",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "navigateTree",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "switchSession",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "reload",
+              "args": 0
+            }
+          }
+        }
+      ],
+      "reset": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "waitForIdle",
+              "args": 0
+            }
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "newSession",
+              "args": 1
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "fork",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "navigateTree",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "switchSession",
+              "args": 2
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "promise": true,
+            "value": {
+              "tag": "reload",
+              "args": 0
+            }
+          }
+        }
+      ],
+      "rebind": [
+        {
+          "name": "waitForIdle",
+          "rejectedIdentity": true
+        },
+        {
+          "name": "newSession",
+          "promise": false,
+          "identity": true
+        },
+        {
+          "name": "fork",
+          "promise": true,
+          "identity": true
+        },
+        {
+          "name": "navigateTree",
+          "rejectedIdentity": true
+        },
+        {
+          "name": "switchSession",
+          "promise": false,
+          "identity": false
+        },
+        {
+          "name": "reload",
+          "promise": true,
+          "identity": false
+        }
+      ],
+      "optionsSame": true,
+      "trace": [
+        [
+          "bind.get",
+          "waitForIdle"
+        ],
+        [
+          "bind.get",
+          "newSession"
+        ],
+        [
+          "bind.get",
+          "fork"
+        ],
+        [
+          "bind.get",
+          "navigateTree"
+        ],
+        [
+          "bind.get",
+          "switchSession"
+        ],
+        [
+          "bind.get",
+          "reload"
+        ],
+        [
+          "action",
+          "waitForIdle",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          []
+        ],
+        [
+          "bound",
+          "waitForIdle",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "newSession",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "bound.options"
+            }
+          ]
+        ],
+        [
+          "bound",
+          "newSession",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "fork",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "bound.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "bound",
+          "fork",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "navigateTree",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "bound.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "bound",
+          "navigateTree",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "switchSession",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "bound.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "bound",
+          "switchSession",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "reload",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          []
+        ],
+        [
+          "bound",
+          "reload",
+          "returned",
+          true
+        ],
+        [
+          "bind.get",
+          "waitForIdle"
+        ],
+        [
+          "bind.get",
+          "newSession"
+        ],
+        [
+          "bind.get",
+          "fork"
+        ],
+        [
+          "bind.get",
+          "navigateTree"
+        ],
+        [
+          "bind.get",
+          "switchSession"
+        ],
+        [
+          "bind.get",
+          "reload"
+        ],
+        [
+          "action",
+          "waitForIdle",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          []
+        ],
+        [
+          "reset",
+          "waitForIdle",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "newSession",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "reset.options"
+            }
+          ]
+        ],
+        [
+          "reset",
+          "newSession",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "fork",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "reset.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "reset",
+          "fork",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "navigateTree",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "reset.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "reset",
+          "navigateTree",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "switchSession",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          [
+            {
+              "tag": "reset.options"
+            },
+            "second"
+          ]
+        ],
+        [
+          "reset",
+          "switchSession",
+          "returned",
+          true
+        ],
+        [
+          "action",
+          "reload",
+          "receiverActions",
+          false,
+          "receiverRunner",
+          true,
+          "sameReceiver",
+          true,
+          "args",
+          []
+        ],
+        [
+          "reset",
+          "reload",
+          "returned",
+          true
+        ]
+      ]
+    },
+    {
+      "id": "stale-context",
+      "oldBefore": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        }
+      ],
+      "oldAfter": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "error": {
+              "name": "Error",
+              "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+            }
+          }
+        }
+      ],
+      "oldOptions": {
+        "error": {
+          "name": "Error",
+          "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+        }
+      },
+      "freshAfter": [
+        {
+          "name": "waitForIdle",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        },
+        {
+          "name": "newSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "fork",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "navigateTree",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "switchSession",
+          "result": {
+            "promise": true,
+            "value": {
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "name": "reload",
+          "result": {
+            "promise": true,
+            "undefined": true
+          }
+        }
+      ],
+      "trace": [
+        [
+          "old-before-dispose",
+          "waitForIdle",
+          "returned",
+          true
+        ],
+        [
+          "old-before-dispose",
+          "newSession",
+          "returned",
+          true
+        ],
+        [
+          "old-before-dispose",
+          "fork",
+          "returned",
+          true
+        ],
+        [
+          "old-before-dispose",
+          "navigateTree",
+          "returned",
+          true
+        ],
+        [
+          "old-before-dispose",
+          "switchSession",
+          "returned",
+          true
+        ],
+        [
+          "old-before-dispose",
+          "reload",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "waitForIdle",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "newSession",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "fork",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "navigateTree",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "switchSession",
+          "returned",
+          true
+        ],
+        [
+          "fresh-after-old-dispose",
+          "reload",
+          "returned",
+          true
+        ]
+      ]
+    }
+  ]
+}

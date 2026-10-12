@@ -1,0 +1,430 @@
+{
+  "source": "current045-pinned-files",
+  "agentSessionSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "runnerSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "loaderSha256": "0177db97c7e35ea39cdab53124c04dbf6e045ac379670bcae0b4e1269002eb3a",
+  "node": "24.14.0",
+  "rows": [
+    {
+      "id": "metadata-and-copy",
+      "before": {
+        "customPrompt": "custom prompt",
+        "selectedTools": [],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "append A\n\nappend B",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/metadata-and-copy",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/metadata-and-copy/AGENTS.md",
+            "content": "project instructions",
+            "nested": {
+              "tag": "metadata-and-copy"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+            "baseDir": "/sdk-normalized-options/metadata-and-copy",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "metadata-and-copy"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "identities": {
+        "same": true,
+        "skillsArray": false,
+        "skillRow": false,
+        "skillNested": true,
+        "filesArray": false,
+        "fileRow": false,
+        "fileNested": true,
+        "selectedActive": false
+      },
+      "keys": [
+        "customPrompt",
+        "forceSystemPrompt",
+        "selectedTools",
+        "hiddenTools",
+        "toolSnippets",
+        "toolGuidelines",
+        "promptGuidelines",
+        "appendSystemPrompt",
+        "sections",
+        "cwd",
+        "contextFiles",
+        "skills"
+      ],
+      "descriptors": {
+        "customPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "forceSystemPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "selectedTools": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "hiddenTools": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "toolSnippets": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "toolGuidelines": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "promptGuidelines": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "appendSystemPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "sections": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "cwd": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "contextFiles": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "skills": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      },
+      "mutated": {
+        "customPrompt": "custom prompt",
+        "selectedTools": [
+          "mutated"
+        ],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "append A\n\nappend B",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/metadata-and-copy",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/metadata-and-copy/AGENTS.md",
+            "content": "project instructions",
+            "nested": {
+              "tag": "changed nested"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+            "baseDir": "/sdk-normalized-options/metadata-and-copy",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "changed nested"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "activeAfterMutation": [],
+      "newObject": true,
+      "oldSelected": [
+        "mutated"
+      ],
+      "after": {
+        "customPrompt": "custom prompt",
+        "selectedTools": [],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "append A\n\nappend B",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/metadata-and-copy",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/metadata-and-copy/AGENTS.md",
+            "content": "changed original",
+            "nested": {
+              "tag": "changed nested"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+            "baseDir": "/sdk-normalized-options/metadata-and-copy",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "changed nested"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/metadata-and-copy/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "activeAfterRebuild": [],
+      "toolInfo": []
+    },
+    {
+      "id": "empty-metadata",
+      "before": {
+        "selectedTools": [],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/empty-metadata",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/empty-metadata/AGENTS.md",
+            "content": "project instructions",
+            "nested": {
+              "tag": "empty-metadata"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/empty-metadata/SKILL.md",
+            "baseDir": "/sdk-normalized-options/empty-metadata",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "empty-metadata"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/empty-metadata/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "identities": {
+        "same": true,
+        "skillsArray": false,
+        "skillRow": false,
+        "skillNested": true,
+        "filesArray": false,
+        "fileRow": false,
+        "fileNested": true,
+        "selectedActive": false
+      },
+      "keys": [
+        "customPrompt",
+        "forceSystemPrompt",
+        "selectedTools",
+        "hiddenTools",
+        "toolSnippets",
+        "toolGuidelines",
+        "promptGuidelines",
+        "appendSystemPrompt",
+        "sections",
+        "cwd",
+        "contextFiles",
+        "skills"
+      ],
+      "descriptors": {
+        "customPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "forceSystemPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "selectedTools": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "hiddenTools": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "toolSnippets": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "toolGuidelines": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "promptGuidelines": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "appendSystemPrompt": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "sections": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "cwd": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "contextFiles": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "skills": {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      },
+      "mutated": {
+        "selectedTools": [
+          "mutated"
+        ],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/empty-metadata",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/empty-metadata/AGENTS.md",
+            "content": "project instructions",
+            "nested": {
+              "tag": "changed nested"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/empty-metadata/SKILL.md",
+            "baseDir": "/sdk-normalized-options/empty-metadata",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "changed nested"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/empty-metadata/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "activeAfterMutation": [],
+      "newObject": true,
+      "oldSelected": [
+        "mutated"
+      ],
+      "after": {
+        "selectedTools": [],
+        "hiddenTools": [],
+        "toolSnippets": {},
+        "toolGuidelines": {},
+        "promptGuidelines": [],
+        "appendSystemPrompt": "",
+        "sections": {},
+        "cwd": "/sdk-normalized-options/empty-metadata",
+        "contextFiles": [
+          {
+            "path": "/sdk-normalized-options/empty-metadata/AGENTS.md",
+            "content": "changed original",
+            "nested": {
+              "tag": "changed nested"
+            }
+          }
+        ],
+        "skills": [
+          {
+            "name": "fixture-skill",
+            "description": "Fixture skill",
+            "filePath": "/sdk-normalized-options/empty-metadata/SKILL.md",
+            "baseDir": "/sdk-normalized-options/empty-metadata",
+            "disableModelInvocation": false,
+            "nested": {
+              "tag": "changed nested"
+            },
+            "sourceInfo": {
+              "path": "/sdk-normalized-options/empty-metadata/SKILL.md",
+              "source": "inline",
+              "scope": "temporary",
+              "origin": "top-level"
+            }
+          }
+        ]
+      },
+      "activeAfterRebuild": [],
+      "toolInfo": []
+    }
+  ]
+}

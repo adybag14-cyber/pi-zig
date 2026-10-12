@@ -2,6 +2,27 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const group_mod = @import("extensions/native_group.zig");
 const json = @import("mcp/protocol.zig").json;
+const host = @import("builtin");
+
+// Original Source567 was captured on C:. Source598 repeated the unchanged
+// corpus on actual C: and D: working directories: only these six absolute
+// cwd strings change; all four cwd identity comparisons remain false.
+// Bind that observed Source drive parameter before comparing whole rows.
+fn sourceFixture(comptime windows: []const u8, comptime posix: []const u8, comptime stem: []const u8, comptime count: usize) ![]u8 {
+    const original = @embedFile(windows);
+    if (host.os.tag != .windows) return std.testing.allocator.dupe(u8, @embedFile(posix));
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const directory = try std.Io.Dir.cwd().openDir(std.testing.io, ".", .{});
+    defer directory.close(std.testing.io);
+    const length = try directory.realPath(std.testing.io, &buffer);
+    const drive = std.fs.path.diskDesignatorWindows(buffer[0..length]);
+    try std.testing.expectEqual(@as(usize, 2), drive.len);
+    const needle = "C:\\\\" ++ stem;
+    try std.testing.expectEqual(count, std.mem.count(u8, original, needle));
+    const bound = try std.fmt.allocPrint(std.testing.allocator, "{s}\\\\{s}", .{ drive, stem });
+    defer std.testing.allocator.free(bound);
+    return std.mem.replaceOwned(u8, std.testing.allocator, original, needle, bound);
+}
 test "native SDK queue order FACTORY all eleven actual current Source588 auth traces retain preflight lookup order and raw identity" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
@@ -24,7 +45,7 @@ test "native SDK queue order FACTORY all eleven actual current Source588 auth tr
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-auth-preflight-source-571.json"));
+    var expected = try json.Owned.parse(std.testing.allocator, if (host.os.tag == .windows) @embedFile("extensions/fixtures/sdk-auth-preflight-source-571.json") else @embedFile("extensions/fixtures/sdk-auth-preflight-source-599-posix.json"));
     defer expected.deinit();
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 11), rows.len);
@@ -56,7 +77,9 @@ test "native SDK queue order FACTORY actual Source567 eleven shared runner runti
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-factory-runner-source-567.json"));
+    const fixture = try sourceFixture("extensions/fixtures/sdk-factory-runner-source-567.json", "extensions/fixtures/sdk-factory-runner-source-596-posix.json", "sdk-owned-factory-566", 6);
+    defer std.testing.allocator.free(fixture);
+    var expected = try json.Owned.parse(std.testing.allocator, fixture);
     defer expected.deinit();
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 11), rows.len);
@@ -467,10 +490,12 @@ test "native SDK queue order actual command actions defaults bound receiver rebi
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-command-actions-source-505.json"));
+    // Source603 repeats the full original corpus on D: and POSIX. Only this
+    // one absolute cwd changes; all identities and callback traces are exact.
+    const fixture = try sourceFixture("extensions/fixtures/sdk-command-actions-source-505.json", "extensions/fixtures/sdk-command-actions-source-505-posix-603.json", "sdk-command-actions", 1);
+    defer std.testing.allocator.free(fixture);
+    var expected = try json.Owned.parse(std.testing.allocator, fixture);
     defer expected.deinit();
-    const projected = try @import("test_support/sdk_source_cwd.zig").project(std.testing.allocator, &expected, .command_actions);
-    try std.testing.expect(projected == 0 or projected == 1);
     const rows = expected.value.object.get("rows").?;
     if (!json.equal(rows, actual.value)) std.debug.print("SDK complete command actions Source505 actual={s}\n", .{raw});
     try std.testing.expect(json.equal(rows, actual.value));
@@ -498,10 +523,12 @@ fn normalizedOptions(comptime capture: []const u8) !void {
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ ".json"));
+    // All three complete Source603 corpora independently retain their six
+    // platform cwd values and every shallow identity and descriptor field.
+    const fixture = try sourceFixture("extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ ".json", "extensions/fixtures/sdk-normalized-options-source-" ++ capture ++ "-posix-603.json", "sdk-normalized-options", 6);
+    defer std.testing.allocator.free(fixture);
+    var expected = try json.Owned.parse(std.testing.allocator, fixture);
     defer expected.deinit();
-    const projected = try @import("test_support/sdk_source_cwd.zig").project(std.testing.allocator, &expected, .normalized_options);
-    try std.testing.expect(projected == 0 or projected == 6);
     const rows = expected.value.object.get("rows").?;
     if (!json.equal(rows, actual.value)) std.debug.print("SDK complete normalized options Source{s} actual={s}\n", .{ capture, raw });
     try std.testing.expect(json.equal(rows, actual.value));
@@ -1206,10 +1233,11 @@ test "native SDK queue order PUBLIC before agent start full normalization lazy r
     defer std.testing.allocator.free(raw);
     var actual = try json.Owned.parse(std.testing.allocator, raw);
     defer actual.deinit();
-    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/sdk-runner-agent-start-source-560.json"));
+    // Actual current045 Source605 repeats every row with the caller's absolute
+    // POSIX package directory. Keep original Windows rows and all descriptor,
+    // identity, getter, error and retained-callback checks unchanged.
+    var expected = try json.Owned.parse(std.testing.allocator, if (host.os.tag == .windows) @embedFile("extensions/fixtures/sdk-runner-agent-start-source-560.json") else @embedFile("extensions/fixtures/sdk-runner-agent-start-source-605-posix.json"));
     defer expected.deinit();
-    const projected_docs = try @import("test_support/sdk_source_docs.zig").project(std.testing.allocator, &expected);
-    try std.testing.expect(projected_docs == 0 or projected_docs == 6);
     const rows = expected.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 18), rows.len);
     try std.testing.expectEqual(rows.len, actual.value.array.items.len);

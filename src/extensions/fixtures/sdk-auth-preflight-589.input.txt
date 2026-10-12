@@ -1,5 +1,5 @@
 import{ModelRuntime,DefaultResourceLoader,SessionManager,SettingsManager,createAgentSession}from'@earendil-works/pi-coding-agent';
-const savedPackage=process.env.PI_PACKAGE_DIR;process.env.PI_PACKAGE_DIR='C:/sdk-auth-package';
+const savedPackage=process.env.PI_PACKAGE_DIR;process.env.PI_PACKAGE_DIR=process.platform==='win32'?'C:/sdk-auth-package':'/sdk-auth-package';
 const rows=[];
 for(const id of ['unknown-default','model-null','check-undefined','oauth-failure','check-null','check-false','check-zero','configured-object','check-reject','has-throws','provider-cycling']){
  const events=[],notifications=[],marker={raw:true},stop={stop:true},cwd='/sdk-auth-preflight-571',settings=SettingsManager.inMemory();

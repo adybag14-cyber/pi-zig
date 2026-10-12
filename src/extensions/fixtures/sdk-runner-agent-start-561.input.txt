@@ -1,7 +1,7 @@
 import{ExtensionRunner}from'@earendil-works/pi-coding-agent';
 {
 const savedPackageDir=process.env.PI_PACKAGE_DIR;
-process.env.PI_PACKAGE_DIR='C:/sdk-agent-start-package';
+process.env.PI_PACKAGE_DIR=process.platform==='win32'?'C:/sdk-agent-start-package':'/sdk-agent-start-package';
 const rows=[];
 const ids=['forced-default','normalization-getters','iterable-tools','shallow-copies','descriptor-copy','descriptor-setter-error','lazy-current-options','result-getters','handler-reject','listener-error','stale-context-guard','custom-sections-context','hidden-skills','default-docs','invalid-section','normalize-error','no-handlers','callback-lifetime'];
 const describe=value=>value===undefined?{type:'undefined'}:value===null?{type:'null'}:typeof value==='function'?{type:'function',name:value.name,length:value.length}:{type:typeof value,value};
