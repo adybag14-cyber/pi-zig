@@ -1,0 +1,16 @@
+{
+  "name": "chord-resource19cb-debug-first-20261012",
+  "pid": 53040,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-chord-resource-source -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-12T19:17:26.4648324Z",
+  "launched_utc": "2026-10-12T19:17:26.4632326+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-chord-runtime19cb-20261012",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-12T19:17:37.4729093+00:00"
+}

@@ -1,0 +1,15 @@
+import{readFileSync,writeFileSync}from'node:fs';
+import{pathToFileURL}from'node:url';
+const runtime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012';
+const chord=await import(pathToFileURL(runtime+'/packages/chord/dist/index.js'));
+const record=await import(pathToFileURL(runtime+'/packages/chord/dist/record.js'));
+const errors=await import(pathToFileURL(runtime+'/packages/chord/dist/errors.js'));
+const host=chord.createHost({name:'actual-resource-oracle',onError(error){throw error}});
+const token=chord.local('oracle.resource',{version:1,input:{type:'object',properties:{}},members:{owner:chord.opaque('owner@1')}});
+let ResourceFacade;
+host.serve(token,(_input,_principal,self)=>{const resources=self.resources({owner:chord.resource({rev:1,open(){return {actual:true}},close(){}})});ResourceFacade=resources.owner.constructor;return {owner:self.expose(resources.owner)}});
+const handle=host.get(token,{});await handle.ready;if(ResourceFacade?.name!=='ResourceFacade')throw Error('Original Host did not create real ResourceFacade');handle.release();await host.close();
+const input=readFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-resource19cb-input-20261012.txt','utf8');
+const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
+await new AsyncFunction('api',input)({...errors,ResourceImpl:record.ResourceImpl,ResourceFacade});
+writeFileSync(process.argv[2],JSON.stringify({source:'19cb534c3b6e3871458a8fa59e98f0312c50e995',facadeObtained:'Actual createHost + local contract + self.resources + self.expose + live handle, closed normally',cases:globalThis.chordResourceCases},null,2)+'\n');

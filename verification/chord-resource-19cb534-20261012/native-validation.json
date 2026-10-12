@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "3e26b13a3062641c92f6b38f3894c27e3fbf400b",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "total_tests": 4,
+  "source_regression_cases": 17,
+  "build_steps": 156,
+  "record": "chord-resource19cb-debug-warm2-20261012.json",
+  "compiler_negatives": [
+    "first: reserved keyword resume used as callback identifier",
+    "warm: finalizer local state shadowed state helper"
+  ],
+  "first_compiled_runtime": "17-case genuine Source replay, pending-open GC ownership and exhaustive allocator ownership all passed without assertion changes.",
+  "source_post_files": 4249,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 7,
+  "processes_retired": [
+    53040,
+    46020,
+    48816
+  ],
+  "limits": [
+    "Nonpublic actual ResourceImpl/ResourceFacade/error foundation only; createHost/local contracts/cells/reload/links/epoch registries remain further native work.",
+    "No createHost/Runtime stub or public partial package activation was added.",
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "Global native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T19:22:54.5592270+00:00"
+}

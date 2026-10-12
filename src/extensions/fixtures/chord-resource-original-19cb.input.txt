@@ -1,0 +1,63 @@
+const cases=[];
+const {ResourceImpl,ResourceFacade,ChordError,isChordError,forbidden,invalid,asChordError}=api;
+const errorInfo=error=>({name:error.name,message:error.message,code:error.code,reason:error.reason??null,retryable:error.retryable,details:error.details??null,hasCause:Object.hasOwn(error,'cause'),keys:Object.keys(error)});
+const caught=fn=>{try{return {value:fn()}}catch(error){return {error:errorInfo(error)}}};
+const metadata=constructor=>({name:constructor.name,length:constructor.length,keys:Object.getOwnPropertyNames(constructor.prototype),members:Object.getOwnPropertyNames(constructor.prototype).filter(name=>name!=='constructor').map(name=>{const d=Object.getOwnPropertyDescriptor(constructor.prototype,name),f=d.get??d.value;return {name,enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,get:!!d.get,functionName:f.name,length:f.length,async:Object.getPrototypeOf(f)===Object.getPrototypeOf(async()=>{})}})});
+{
+ const spec={rev:1,open(){return 1}},deps=[],r=new ResourceImpl('db',spec,deps);
+ cases.push({name:'actual resource classes descriptors ordinary fields and strict exclusive',resource:metadata(ResourceImpl),facade:metadata(ResourceFacade),own:Object.keys(r),specIdentity:r.spec===spec,depsIdentity:r.deps===deps,state:r.state,before:caught(()=>r.value),exclusive:[undefined,false,true,1,'true',null].map(value=>new ResourceImpl('x',{exclusive:value},[]).exclusive)});
+}
+{
+ const cause={opaque:true},details={detail:true},events=[],options={get reason(){events.push('reason');return 'args'},get cause(){events.push('cause');return cause},get details(){events.push('details');return details}};
+ const e=new ChordError('invalid','bad',options);
+ cases.push({name:'actual ChordError fields getter order and raw cause identity',constructor:{name:ChordError.name,length:ChordError.length,parent:Object.getPrototypeOf(ChordError).name},error:errorInfo(e),events,causeIdentity:e.cause===cause,detailsIdentity:e.details===details,isError:e instanceof Error,isChord:isChordError(e),matching:isChordError(e,'invalid'),wrong:isChordError(e,'gone'),helpers:[isChordError,forbidden,invalid,asChordError].map(f=>({name:f.name,length:f.length,prototype:Object.hasOwn(f,'prototype')})),retryable:['superseded','upgrade_conflict','gone','invalid'].map(code=>new ChordError(code,'x').retryable)});
+ cases.push({name:'actual ChordError helper values identities and wrapping',forbidden:errorInfo(forbidden()),invalid:errorInfo(invalid('state','bad',7)),same:asChordError(e,'ignored')===e,wrapped:errorInfo(asChordError(new Error('original'),'operation')),wrappedCause:asChordError(cause,'operation').cause===cause});
+}
+{
+ const events=[],value={owner:true},order=[],controller=new AbortController();let r;
+ const spec={rev:1,open({signal}){events.push({stage:'open',receiver:this===spec,signal:signal===controller.signal,state:r.state,notReady:caught(()=>r.value)});return value},close(given){events.push({stage:'close',receiver:this===spec,value:given===value,state:r.state,order:order.length,notReady:caught(()=>r.value)})}};
+ r=new ResourceImpl('db',spec,[]);const opening=r.open(controller.signal,order),during=r.state;await opening;const live={state:r.state,value:r.value===value,ordered:order[0]===r};const closing=r.close(order),duringClose=r.state;await closing;await r.close(order);
+ cases.push({name:'open publication and close retirement are ordered before callbacks settle',during,live,duringClose,after:r.state,order:order.length,events});
+}
+{
+ let release,opens=0,closes=0;const gate=new Promise(resolve=>release=resolve),value={v:1},order=[],r=new ResourceImpl('pending',{open(){opens++;return gate},close(){closes++}},[]),signal=new AbortController().signal;
+ const first=r.open(signal,order),second=r.open(signal,order),closing=r.close(order);const during={state:r.state,opens,closes,distinct:first!==second};await second;await closing;release(value);await first;const live={state:r.state,value:r.value===value,order:order.length};await r.close(order);
+ cases.push({name:'pending duplicate open and close do not acquire or dispose twice',during,live,after:r.state,opens,closes,order:order.length});
+}
+for(const mode of ['throw','reject','thenable']){
+ const marker={mode},r=new ResourceImpl('failed',{open(){if(mode==='throw')throw marker;if(mode==='thenable')return {then(_resolve,reject){reject(marker)}};return Promise.reject(marker)}},[]);let sync=false,pending;try{pending=r.open(new AbortController().signal,[])}catch(error){sync=error===marker}const during=r.state;let original=false;try{await pending}catch(error){original=error===marker}
+ cases.push({name:'open failure retains raw value '+mode,sync,during,after:r.state,original});
+}
+{
+ let releaseOpen,releaseClose,started;const openingGate=new Promise(resolve=>releaseOpen=resolve),closingGate=new Promise(resolve=>releaseClose=resolve),closeStarted=new Promise(resolve=>started=resolve),value={live:true},order=[],events=[],controller=new AbortController();
+ const r=new ResourceImpl('late',{open({signal}){events.push(['open',signal===controller.signal]);return openingGate},close(given){events.push(['close',given===value,r.state,order.length]);started();return closingGate}},[]);
+ const pending=r.open(controller.signal,order),outcome=pending.then(()=>({success:true}),error=>errorInfo(error));controller.abort({stop:true});releaseOpen(value);await closeStarted;const beforeCleanup={state:r.state,order:order.length,access:caught(()=>r.value)};releaseClose();const error=await outcome;
+ cases.push({name:'late successful open after abort closes produced value before rejecting',beforeCleanup,error,events,after:r.state,order:order.length});
+}
+{
+ const controller=new AbortController(),marker={closeFailure:true},events=[],value={v:3};controller.abort('already');const r=new ResourceImpl('late-failure',{open({signal}){events.push(['open',signal.aborted]);return value},close(given){events.push(['close',given===value]);throw marker}},[]);let original=false;try{await r.open(controller.signal,[])}catch(error){original=error===marker}cases.push({name:'preabort still opens and cleanup failure overrides abort with original identity',original,events,state:r.state});
+}
+{
+ let closes=0;const order=[],r=new ResourceImpl('lost',{open(){return 42},close(){closes++}},[]);await r.open(new AbortController().signal,order);r.markUnavailable();const access=caught(()=>r.value);await r.open(new AbortController().signal,order);await r.close(order);cases.push({name:'unavailable value clears ownership and prevents later reopening or close',access,state:r.state,closes,order:order.length});
+}
+{
+ const marker={getter:true},events=[],spec={open(){return 'owned'}},r=new ResourceImpl('close-getter',spec,[]),order=[];await r.open(new AbortController().signal,order);Object.defineProperty(spec,'close',{get(){events.push([r.state,order.length]);throw marker}});let original=false;try{await r.close(order)}catch(error){original=error===marker}cases.push({name:'close getter failure happens after private value and order retirement',events,original,state:r.state,access:caught(()=>r.value)});
+}
+{
+ const marker={order:true},value={retained:true},r=new ResourceImpl('order',{open(){return value}},[]);let openError=false;try{await r.open(new AbortController().signal,{push(){throw marker}})}catch(error){openError=error===marker}const published={state:r.state,value:r.value===value};let closeError=false;try{await r.close({indexOf(){throw marker}})}catch(error){closeError=error===marker}const retiredState=r.state;r.state='open';const retained=r.value===value;await r.close([]);cases.push({name:'order callback failures preserve Source publication and private-value order',openError,published,closeError,retiredState,retained,final:r.state});
+}
+{
+ const r=new ResourceImpl('facade',{open(){return {resource:true}}},[]),host={inFactory:0},facade=new ResourceFacade(r,host),order=[];const before=caught(()=>facade.value);await r.open(new AbortController().signal,order);const live=facade.value===r.value;host.inFactory=1;const factory=caught(()=>facade.value);host.inFactory='0';const after=facade.value===r.value;r.markUnavailable();const unavailable=caught(()=>facade.value);
+ cases.push({name:'actual factory facade admits live values only outside all factories',key:facade.key,own:Object.keys(facade),before,live,factory,after,unavailable});
+}
+{
+ const p=ResourceImpl.prototype,facade=ResourceFacade.prototype,fake={state:'open'},closed={state:'closed'};await p.open.call(fake);await p.close.call(closed);let brand;try{Object.getOwnPropertyDescriptor(p,'value').get.call(fake)}catch(error){brand=error.name}let unavailable;try{p.markUnavailable.call(fake)}catch(error){unavailable=error.name}let facadeBrand;try{Object.getOwnPropertyDescriptor(facade,'key').get.call({})}catch(error){facadeBrand=error.name}
+ cases.push({name:'private brands occur at actual access and early noops remain legal',fakeState:fake.state,closedState:closed.state,brand,unavailable,facadeBrand,exclusive:Object.getOwnPropertyDescriptor(p,'exclusive').get.call({spec:{exclusive:true}})});
+}
+{
+ class Child extends ResourceImpl{};class ChildFacade extends ResourceFacade{};const value={subclass:true},r=new Child('child',{open(){return value}},[]),order=[];await r.open(new AbortController().signal,order);const f=new ChildFacade(r,{inFactory:0});cases.push({name:'subclasses retain genuine private resource and facade identity',child:r instanceof ResourceImpl,facade:f instanceof ResourceFacade,value:f.value===value,key:f.key});await r.close(order);
+}
+{
+ const r=new ResourceImpl('undefined',{open(){}},[]),order=[];await r.open(new AbortController().signal,order);const valid=r.state==='open'&&r.value===undefined;await r.close(order);cases.push({name:'undefined is a valid opened value and optional close may be absent',valid,state:r.state,order:order.length});
+}
+globalThis.chordResourceCases=cases;
