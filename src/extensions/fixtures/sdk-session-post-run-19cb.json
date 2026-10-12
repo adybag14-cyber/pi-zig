@@ -1,0 +1,1155 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified original post-run and before-settlement bodies with caller-supplied dependencies",
+  "post": [
+    {
+      "name": "empty",
+      "trace": [
+        "queue"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "empty-queue-value",
+      "trace": [
+        "queue"
+      ],
+      "value": "queued",
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "abort-before",
+      "trace": [
+        "cancel"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "success",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "success-queued",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": true,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "retry-accepted",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume"
+      ],
+      "value": true,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "message",
+      "abort": false
+    },
+    {
+      "name": "retry-declined",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume",
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "retry-accepted-abort",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume",
+        "cancel"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "message",
+      "abort": true
+    },
+    {
+      "name": "retry-declined-abort",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume",
+        "cancel"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "retry-reject",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume"
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "retry-check-throw",
+      "trace": [
+        [
+          "retryable",
+          true
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "exhausted",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "emit",
+          {
+            "type": "auto_retry_end",
+            "success": false,
+            "attempt": 2,
+            "finalError": "failure"
+          }
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "exhausted-emit-throw",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "emit",
+          {
+            "type": "auto_retry_end",
+            "success": false,
+            "attempt": 2,
+            "finalError": "failure"
+          }
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 2,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "compaction",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume"
+      ],
+      "value": true,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "compaction-abort",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "compaction-declined-abort",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume"
+      ],
+      "value": false,
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "compaction-reject",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume"
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "queue-throw",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "cancel-throw",
+      "trace": [
+        "cancel"
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "retry-cancel-throw",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "prepare",
+          true
+        ],
+        "prepare-resume",
+        "cancel"
+      ],
+      "error": {
+        "same": true
+      },
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": true
+    },
+    {
+      "name": "raw-queue-result",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": "later",
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    },
+    {
+      "name": "promise-queue-result",
+      "trace": [
+        [
+          "retryable",
+          true
+        ],
+        [
+          "compact",
+          true,
+          true,
+          true
+        ],
+        "compact-resume",
+        "queue"
+      ],
+      "value": "promised-queue",
+      "messageCleared": true,
+      "resultsFresh": true,
+      "attempt": 0,
+      "failed": "old",
+      "abort": false
+    }
+  ],
+  "boundary": [
+    {
+      "name": "no-handlers",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        "queue"
+      ],
+      "value": false,
+      "flag": "prior",
+      "abort": "prior",
+      "calls": 0
+    },
+    {
+      "name": "no-handlers-queue",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        "queue"
+      ],
+      "value": "queued",
+      "flag": "prior",
+      "abort": "prior",
+      "calls": 0
+    },
+    {
+      "name": "settle",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "queue"
+      ],
+      "value": false,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "continue",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ]
+      ],
+      "value": true,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "raw-continue",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ]
+      ],
+      "value": "yes",
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "queue",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "queue"
+      ],
+      "value": "queued",
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "invalid-explicit",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        [
+          "invalid",
+          "agent_before_settle"
+        ]
+      ],
+      "value": false,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "invalid-queue",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "queue"
+      ],
+      "value": false,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "abort",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ]
+      ],
+      "value": false,
+      "flag": false,
+      "abort": true,
+      "calls": 2
+    },
+    {
+      "name": "emit-reject",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume"
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 1
+    },
+    {
+      "name": "emit-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 0
+    },
+    {
+      "name": "commit-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 1
+    },
+    {
+      "name": "flush-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush"
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 1
+    },
+    {
+      "name": "final-context-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "report-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        [
+          "invalid",
+          "agent_before_settle"
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "queue-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "queue"
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "handler-check-throw",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ]
+      ],
+      "error": {
+        "same": true
+      },
+      "flag": "prior",
+      "abort": "prior",
+      "calls": 0
+    },
+    {
+      "name": "late-callback",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "queue",
+        [
+          "late",
+          true,
+          "agent_before_settle",
+          true
+        ],
+        [
+          "late-result",
+          "late"
+        ]
+      ],
+      "value": false,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    },
+    {
+      "name": "continue-getter",
+      "trace": [
+        [
+          "has",
+          "agent_before_settle"
+        ],
+        [
+          "boundary",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "context",
+          "entries",
+          "agent_before_settle",
+          true
+        ],
+        [
+          "callback",
+          "context"
+        ],
+        "boundary-resume",
+        [
+          "commit",
+          true
+        ],
+        "flush",
+        [
+          "context",
+          0,
+          "agent_before_settle",
+          true
+        ],
+        "continue-get",
+        "continue-get",
+        [
+          "invalid",
+          "agent_before_settle"
+        ]
+      ],
+      "value": false,
+      "flag": false,
+      "abort": false,
+      "calls": 2
+    }
+  ]
+}

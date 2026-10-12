@@ -1,0 +1,21 @@
+{
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Private original post-run retry/compaction and before-settlement orchestration over live receiver dependencies",
+  "source_post_cases": 22,
+  "source_boundary_cases": 19,
+  "native_tests": 11,
+  "build_steps": 156,
+  "gpa_operation_indices": {
+    "run": 17,
+    "custom": 19,
+    "settlement": 5
+  },
+  "gpa_scope": "Failure injection begins after class and receiver setup; complete factory allocation graph is not claimed",
+  "retained_negative": "First9/9 run excluded new post-run test by name filter; new Source41 replay was qualified only after name correction and actual10/10 run",
+  "production_activated": false,
+  "limitations": [
+    "Actual retry scheduling and compaction algorithms remain caller dependencies in these component fixtures.",
+    "Complete native Agent/session production wiring and public class ABI remain incomplete.",
+    "Hosted non-Windows and ReleaseSafe qualification for this increment remains pending."
+  ]
+}

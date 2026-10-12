@@ -1,0 +1,53 @@
+const sdkPostRows=[];
+for(const cfg of [
+{name:'empty',empty:true},{name:'empty-queue-value',empty:true,queue:'queued'},
+{name:'abort-before',abort:true},{name:'success'}, {name:'success-queued',queue:true},
+{name:'retry-accepted',retry:true,prepared:true},{name:'retry-declined',retry:true},
+{name:'retry-accepted-abort',retry:true,prepared:true,abortRetry:true},
+{name:'retry-declined-abort',retry:true,abortRetry:true},
+{name:'retry-reject',retry:true,rejectRetry:true},{name:'retry-check-throw',throwRetryCheck:true},
+{name:'exhausted',error:true,attempt:2},{name:'exhausted-emit-throw',error:true,attempt:2,throwEmit:true},
+{name:'compaction',compact:true},{name:'compaction-abort',compact:true,abortCompact:true},
+{name:'compaction-declined-abort',abortCompact:true},{name:'compaction-reject',rejectCompact:true},
+{name:'queue-throw',throwQueue:true},{name:'cancel-throw',abort:true,throwCancel:true},
+{name:'retry-cancel-throw',retry:true,prepared:true,abortRetry:true,throwCancel:true},
+{name:'raw-queue-result',queue:'later'},{name:'promise-queue-result',queuePromise:true},
+]){
+ const trace=[],reason={case:cfg.name},message={role:'assistant',stopReason:cfg.error?'error':'stop',errorMessage:'failure'},results=[{role:'toolResult'}];
+ const receiver={_lastAssistantMessage:cfg.empty?undefined:message,_lastAssistantToolResults:results,_agentRunAbortRequested:!!cfg.abort,_retryAttempt:cfg.attempt??0,_failedResponse:'old',
+ _finishCancelledRetry(){trace.push('cancel');if(cfg.throwCancel)throw reason},
+ _isRetryableError(actual){trace.push(['retryable',actual===message]);if(cfg.throwRetryCheck)throw reason;return!!cfg.retry},
+ async _prepareRetry(actual){trace.push(['prepare',actual===message]);await Promise.resolve();trace.push('prepare-resume');if(cfg.rejectRetry)throw reason;if(cfg.abortRetry)this._agentRunAbortRequested=true;return cfg.prepared},
+ _emit(event){trace.push(['emit',event]);if(cfg.throwEmit)throw reason},
+ async _checkCompaction(actual,auto,tools){trace.push(['compact',actual===message,auto,tools===results]);await Promise.resolve();trace.push('compact-resume');if(cfg.rejectCompact)throw reason;if(cfg.abortCompact)this._agentRunAbortRequested=true;return cfg.compact},
+ agent:{hasQueuedMessages(){trace.push('queue');if(cfg.throwQueue)throw reason;return cfg.queuePromise?Promise.resolve('promised-queue'):cfg.queue??false}}};
+ let value,error;try{value=await AgentSession.prototype._handlePostAgentRun.call(receiver)}catch(thrown){error={same:thrown===reason,name:thrown?.name,message:thrown?.message}}
+ sdkPostRows.push({name:cfg.name,trace,value,error,messageCleared:receiver._lastAssistantMessage===undefined,resultsFresh:receiver._lastAssistantToolResults!==results&&receiver._lastAssistantToolResults.length===0,attempt:receiver._retryAttempt,failed:receiver._failedResponse===message?'message':receiver._failedResponse,abort:receiver._agentRunAbortRequested});
+}
+const sdkBoundaryRows=[];
+for(const cfg of [
+{name:'no-handlers',handlers:false},{name:'no-handlers-queue',handlers:false,queue:'queued'},
+{name:'settle'},{name:'continue',cont:true},{name:'raw-continue',cont:'yes'},
+{name:'queue',queue:'queued'},{name:'invalid-explicit',cont:true,can:false},
+{name:'invalid-queue',queue:true,can:false},{name:'abort',cont:true,abort:true},
+{name:'emit-reject',reject:true},{name:'emit-throw',throwEmit:true},
+{name:'commit-throw',throwCommit:true},{name:'flush-throw',throwFlush:true},
+{name:'final-context-throw',throwContext:true},{name:'report-throw',cont:true,can:false,throwReport:true},
+{name:'queue-throw',throwQueue:true},{name:'handler-check-throw',throwHandlers:true},
+{name:'late-callback',late:true},{name:'continue-getter',cont:true,getter:true,can:false},
+]){
+ const trace=[],reason={case:cfg.name},entries=[{type:'custom',customType:'fixture'}],outcome={status:'done'};
+ let callback,calls=0;
+ const result={entries};Object.defineProperty(result,'continue',{get(){if(cfg.getter)trace.push('continue-get');return cfg.cont??false}});
+ const receiver={_lastActivityOutcome:outcome,_isBeforeSettle:'prior',_abortDuringBeforeSettle:'prior',
+ _extensionRunner:{hasHandlers(type){trace.push(['has',type]);if(cfg.throwHandlers)throw reason;return cfg.handlers??true},emitBoundary(event,build){trace.push(['boundary',event.type,event.outcome===outcome]);callback=build;if(cfg.throwEmit)throw reason;return(async()=>{trace.push(['callback',build(entries).marker]);await Promise.resolve();trace.push('boundary-resume');if(cfg.reject)throw reason;if(cfg.abort)receiver._abortDuringBeforeSettle=true;return result})()}},
+ _buildBoundaryContext(actual,type){calls++;trace.push(['context',actual===entries?'entries':actual.length,type,this===receiver]);if(cfg.throwContext&&actual!==entries)throw reason;return{marker:'context',canContinue:cfg.can??true}},
+ _commitBoundaryDrafts(actual){trace.push(['commit',actual===entries]);if(cfg.throwCommit)throw reason},
+ _flushPendingCustomMessages(){trace.push('flush');if(cfg.throwFlush)throw reason},
+ _reportInvalidBoundaryContinuation(type){trace.push(['invalid',type]);if(cfg.throwReport)throw reason},
+ agent:{hasQueuedMessages(){trace.push('queue');if(cfg.throwQueue)throw reason;return cfg.queue??false}}};
+ let value,error;try{value=await AgentSession.prototype._runBeforeSettleBoundary.call(receiver)}catch(thrown){error={same:thrown===reason,name:thrown?.name,message:thrown?.message}}
+ if(cfg.late){receiver._buildBoundaryContext=function(actual,type){trace.push(['late',actual===entries,type,this===receiver]);return{marker:'late'}};trace.push(['late-result',callback(entries).marker])}
+ sdkBoundaryRows.push({name:cfg.name,trace,value,error,flag:receiver._isBeforeSettle,abort:receiver._abortDuringBeforeSettle,calls});
+}
+globalThis.sdkPostRows=sdkPostRows;globalThis.sdkBoundaryRows=sdkBoundaryRows;
