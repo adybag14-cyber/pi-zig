@@ -125,6 +125,11 @@ pub fn build(b: *std.Build) void {
     const codemode_clock_tests = b.addTest(.{ .root_module = codemode_clock_module, .use_llvm = use_llvm, .filters = &.{ "native CodeMode deterministic", "CodeMode virtual clock" } });
     b.step("compile-native-codemode-clock", "Compile the exact native clock test artifact without running tests").dependOn(&b.addInstallArtifact(codemode_clock_tests, .{ .dest_sub_path = "native-codemode-clock.exe" }).step);
     b.step("test-native-codemode-clock", "Compare native context time seed and UTC against actual latest WASM observations").dependOn(&b.addRunArtifact(codemode_clock_tests).step);
+    const codemode_run_module = b.createModule(.{ .root_source_file = b.path("src/native_codemode_run_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, codemode_run_module, quickjs, sqlite_lib_dir);
+    linkSqlite(codemode_run_module, sqlite_lib_dir, sqlite_library);
+    const codemode_run_tests = b.addTest(.{ .root_module = codemode_run_module, .use_llvm = use_llvm, .filters = &.{"native CodeMode controlled run"} });
+    b.step("test-native-codemode-run", "Compare real native controlled VM execution with original deterministic Source observations").dependOn(&b.addRunArtifact(codemode_run_tests).step);
     const composed_vm_module = b.createModule(.{ .root_source_file = b.path("src/native_composed_vm_test.zig"), .target = target, .optimize = optimize });
     composed_vm_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, composed_vm_module, quickjs, sqlite_lib_dir);

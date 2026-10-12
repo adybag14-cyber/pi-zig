@@ -1,0 +1,777 @@
+{
+  "upstream": "04566631c2b51fb688486bc1f040f60d1518c126",
+  "scope": "Actual inline WASM deterministic VM and host, 16 cases; wall-clock durations kept separately",
+  "rows": [
+    {
+      "name": "clock-random-seed1",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.34227450605335275,
+            0.4620546081390098,
+            "2026-01-15T10:00:00.000Z"
+          ]
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.34227450605335275,
+            0.4620546081390098,
+            "2026-01-15T10:00:00.000Z",
+            0.056110785474501323
+          ]
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0",
+        "call 2",
+        "idle 1"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0.34227450605335275,
+          0.4620546081390098,
+          "2026-01-15T10:00:00.000Z",
+          0.056110785474501323
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "[1768471201000,1000,0.5807179129204683]"
+          }
+        ],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          },
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "durations": [
+        0.1454999999999984,
+        0.01659999999999684
+      ],
+      "finished": true
+    },
+    {
+      "name": "clock-random-seed1-repeat",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.34227450605335275,
+            0.4620546081390098,
+            "2026-01-15T10:00:00.000Z"
+          ]
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.34227450605335275,
+            0.4620546081390098,
+            "2026-01-15T10:00:00.000Z",
+            0.056110785474501323
+          ]
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0",
+        "call 2",
+        "idle 1"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0.34227450605335275,
+          0.4620546081390098,
+          "2026-01-15T10:00:00.000Z",
+          0.056110785474501323
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "[1768471201000,1000,0.5807179129204683]"
+          }
+        ],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          },
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "durations": [
+        0.03330000000001121,
+        0.09850000000000136
+      ],
+      "finished": true
+    },
+    {
+      "name": "clock-random-seed2",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.013411759080029118,
+            0.49472857242946944,
+            "2026-01-15T10:00:00.000Z"
+          ]
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "echo",
+          "args": [
+            1768471200000,
+            0,
+            0.013411759080029118,
+            0.49472857242946944,
+            "2026-01-15T10:00:00.000Z",
+            0.4810601493271356
+          ]
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0",
+        "call 2",
+        "idle 1"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0.013411759080029118,
+          0.49472857242946944,
+          "2026-01-15T10:00:00.000Z",
+          0.4810601493271356
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "[1768471201000,1000,0.9520503801533875]"
+          }
+        ],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          },
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "durations": [
+        0.02719999999999345,
+        0.013800000000003365
+      ],
+      "finished": true
+    },
+    {
+      "name": "seed-zero",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "seed-max",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "utc-weak-intrinsics",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          "undefined",
+          "undefined"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "backwards-clock",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          1768471200000,
+          0
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "durations": [
+        0.02930000000000632
+      ],
+      "finished": true
+    },
+    {
+      "name": "out-of-order",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "wait",
+          "args": "a"
+        },
+        {
+          "id": 2,
+          "target": "tool",
+          "name": "wait",
+          "args": "b"
+        }
+      ],
+      "idles": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "call 2",
+        "idle 0",
+        "idle 1"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          [
+            "a",
+            1768471201000
+          ],
+          [
+            "b",
+            1768471202000
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "wait",
+            "status": "ok"
+          },
+          {
+            "name": "wait",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 2,
+          "issued": 2
+        }
+      },
+      "durations": [
+        0.1244999999999834,
+        0.10050000000001091
+      ],
+      "finished": true
+    },
+    {
+      "name": "global-spread",
+      "calls": [
+        {
+          "id": 1,
+          "target": "global",
+          "name": "math.echo",
+          "args": [
+            1,
+            {
+              "x": 2
+            }
+          ]
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          {
+            "x": 2
+          }
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "failure-properties",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": 1
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "original failure",
+          7,
+          [
+            "extra"
+          ]
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "durations": [
+        0.033299999999997
+      ],
+      "finished": true
+    },
+    {
+      "name": "store-copy-writes",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": {
+          "nested": [
+            1,
+            2,
+            3
+          ]
+        },
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "out": {
+              "nested": [
+                1,
+                2,
+                3
+              ]
+            }
+          },
+          "delete": [
+            "original"
+          ]
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "done-no-calls",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": 7,
+        "output": [
+          {
+            "type": "text",
+            "text": "first"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "exit",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "stalled",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "Error",
+          "message": "The script is waiting on a promise that can never settle: no tool call is pending, and timers do not exist here."
+        },
+        "output": [],
+        "calls": [],
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    },
+    {
+      "name": "microtasks",
+      "calls": [
+        {
+          "id": 1,
+          "target": "tool",
+          "name": "echo",
+          "args": "after"
+        }
+      ],
+      "idles": [
+        [
+          0,
+          1
+        ]
+      ],
+      "events": [
+        "started",
+        "call 1",
+        "idle 0"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": true,
+        "value": "after",
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "durations": [
+        0.02930000000000632
+      ],
+      "finished": true
+    },
+    {
+      "name": "script-error",
+      "calls": [],
+      "idles": [],
+      "events": [
+        "started"
+      ],
+      "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude a5a5c307, deterministic 1, stack 262144, heap 67108864, budget 50000",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "Error",
+          "message": "actual error",
+          "stack": "Error: actual error\n    at <anonymous> (codemode.js:1:34)"
+        },
+        "output": [],
+        "calls": [],
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "durations": [],
+      "finished": true
+    }
+  ]
+}

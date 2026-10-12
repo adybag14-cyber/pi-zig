@@ -79,7 +79,9 @@ const Work = struct {
     }
 };
 const Pending = struct { work: *Work, resolve: c.JSValue, reject: c.JSValue, started: i64, record_index: ?usize };
-const Execution = struct {
+/// Shared owner-thread VM core. Controlled runs supply host answers instead of
+/// launching the ordinary native tool workers.
+pub const Execution = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
     engine: *engine_mod.Engine,
@@ -103,19 +105,21 @@ const Execution = struct {
     tool_names: std.ArrayList([]u8) = .empty,
     discovery_tools: []const discovery.Tool = &.{},
     model_call_count: usize = 0,
+    control_context: ?*anyopaque = null,
+    control_call: ?*const fn (?*anyopaque, []const u8, ?json.Owned) anyerror!c.JSValue = null,
 
     fn from(context: ?*c.JSContext) *Execution {
         const engine = engine_mod.Engine.fromContext(context.?);
         return @ptrCast(@alignCast(engine.host_data.?));
     }
-    fn now(self: *Execution) i64 {
+    pub fn now(self: *Execution) i64 {
         return std.Io.Clock.awake.now(self.io).toMilliseconds();
     }
-    fn interrupt(_: ?*c.JSRuntime, raw: ?*anyopaque) callconv(.c) c_int {
+    pub fn interrupt(_: ?*c.JSRuntime, raw: ?*anyopaque) callconv(.c) c_int {
         const self: *Execution = @ptrCast(@alignCast(raw.?));
         return @intFromBool(self.checkLimits(true));
     }
-    fn checkLimits(self: *Execution, consume_poll: bool) bool {
+    pub fn checkLimits(self: *Execution, consume_poll: bool) bool {
         if (self.script_settled) return true;
         if (self.options.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) {
             self.aborted = true;
@@ -136,7 +140,7 @@ const Execution = struct {
         };
         return false;
     }
-    fn drainJobs(self: *Execution) !void {
+    pub fn drainJobs(self: *Execution) !void {
         defer self.engine.finishJob();
         while (c.JS_IsJobPending(self.engine.runtime)) {
             const jobs = try self.engine.runReadyJobs(50);
@@ -144,7 +148,7 @@ const Execution = struct {
             if (jobs == 50 and self.checkLimits(true)) return;
         }
     }
-    fn captureTerminalError(self: *Execution, reason: c.JSValue) !void {
+    pub fn captureTerminalError(self: *Execution, reason: c.JSValue) !void {
         self.describeTerminalError(reason) catch |cause| {
             if (cause == error.OutOfMemory) return cause;
             const a = self.result.arena.allocator();
@@ -259,7 +263,7 @@ const Execution = struct {
         self.script_settled = true;
         return c.pi_js_undefined();
     }
-    fn observeTerminal(self: *Execution, promise: c.JSValue) !void {
+    pub fn observeTerminal(self: *Execution, promise: c.JSValue) !void {
         if (!c.JS_IsObject(promise)) return;
         const then = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, promise, "then"));
         defer self.engine.freeValue(then);
@@ -271,7 +275,7 @@ const Execution = struct {
         const observed = try self.engine.checked(c.JS_Call(self.engine.context, then, promise, 2, &callbacks));
         self.engine.freeValue(observed);
     }
-    fn installVm(self: *Execution) !void {
+    pub fn installVm(self: *Execution) !void {
         const state = self;
         const engine = self.engine;
         const gpa = self.gpa;
@@ -637,7 +641,7 @@ const Execution = struct {
         try message.writer.print(" ALL_TOOLS lists every tool; searchTools(query) finds tools by topic. Check for a member with \"{s}\" in tools.", .{property});
         return message.toOwnedSlice();
     }
-    fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
+    pub fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
         if (c.JS_IsUndefined(value)) return null;
         const encoded = try self.engine.checked(c.JS_JSONStringify(self.engine.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
         defer self.engine.freeValue(encoded);
@@ -671,6 +675,7 @@ const Execution = struct {
         return self.enqueue(.{ .name = name, .execute = Work.noop, .error_marker = true, .success_envelope = true }, args, operation) catch |cause| self.fail(cause);
     }
     fn enqueue(self: *Execution, tool: Tool, args: ?json.Owned, operation: ?models.Operation) !c.JSValue {
+        if (self.control_call) |callback| return callback(self.control_context, tool.name, args);
         const context = self.engine.context;
         var owned_args = args;
         defer if (owned_args) |*value| value.deinit();
@@ -979,14 +984,14 @@ const Execution = struct {
         }
         return true;
     }
-    fn completeCall(self: *Execution, optional_index: ?usize, status: []const u8, started: i64) !void {
+    pub fn completeCall(self: *Execution, optional_index: ?usize, status: []const u8, started: i64) !void {
         const index = optional_index orelse return;
         const a = self.result.arena.allocator();
         const record = &self.result.value.object.getPtr("calls").?.array.items[index];
         try record.object.put(a, "status", .{ .string = status });
         try record.object.put(a, "durationMs", .{ .integer = @max(0, self.now() - started) });
     }
-    fn recordCall(self: *Execution, name: []const u8, status: []const u8, started: i64) !void {
+    pub fn recordCall(self: *Execution, name: []const u8, status: []const u8, started: i64) !void {
         const a = self.result.arena.allocator();
         var record: Value = .{ .object = .empty };
         try record.object.put(a, "name", .{ .string = try a.dupe(u8, name) });
