@@ -50,3 +50,5 @@ verification/chord-resource-19cb534-20261012/** whitespace=blank-at-eol,-blank-a
 verification/hosted-group-repair-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/native-integration-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/sdk-session-queries-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/chord-contract-original-19cb.input.txt whitespace=cr-at-eol
+verification/chord-contract-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

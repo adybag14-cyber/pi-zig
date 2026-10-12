@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "a17c642309a050000606542181996af688edee6e",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "total_tests": 4,
+  "source_regression_cases": 44,
+  "source_compatibility_pairs": 625,
+  "build_steps": 156,
+  "record": "chord-contract19cb-debug-first-20261012.json",
+  "source_post_files": 4273,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 11,
+  "processes_retired": [
+    50092
+  ],
+  "limits": [
+    "Real contract, canonical identity and conservative compatibility foundation only; typed Clone/Default/Clean/Check and actual Host records, handles and epoch registries remain further work.",
+    "No synthetic Runtime/createHost facade or public partial package activation.",
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "Native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T20:11:37.7452308+00:00"
+}

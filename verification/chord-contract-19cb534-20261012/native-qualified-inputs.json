@@ -1,0 +1,46 @@
+[
+  {
+    "path": ".gitattributes",
+    "sha256": "4C6EEE6738C8B64CF3E3FD808095ADF2B01F9AE403431B80EA84A20A21142A0B"
+  },
+  {
+    "path": "build.zig",
+    "sha256": "7CD3EE26585591FD3BE490AB1C0289DCB3E636E71F87EA3A98653AEBF8C33449"
+  },
+  {
+    "path": "src/extensions/native_chord_canonical.zig",
+    "sha256": "76D5B663F68E60FC48B3F6124ED612A420410DC62E2A9829902D5548AF98C695"
+  },
+  {
+    "path": "src/extensions/native_chord_contracts.zig",
+    "sha256": "BD2739EA6C629F2204D6B7EC17A5B707B16BD0E8A47EFBA69942FC157C822F24"
+  },
+  {
+    "path": "src/extensions/native_chord_fits.zig",
+    "sha256": "A42C263259C0FA68B583FC86B6F9A95E9F5028D49EF1300A22F28E44E43DA8F1"
+  },
+  {
+    "path": "src/extensions/native_chord_identity.zig",
+    "sha256": "58E52232336695A814A7A4F2A661BADA610E86DFD1CBAFB5A1822274B7298092"
+  },
+  {
+    "path": "src/extensions/native_chord_schema_api.zig",
+    "sha256": "C2E2426ABDC6A5A2FBD4B43573AF193099EDF48416EA43178D77D5A8C1D895E3"
+  },
+  {
+    "path": "src/extensions/native_chord_values.zig",
+    "sha256": "53F12BCABB5CDD4491FFABBF7C5313BB617AC3AD8958A7DCC225203666AB6525"
+  },
+  {
+    "path": "src/native_chord_contract_source_test.zig",
+    "sha256": "A8D2FFB0C3BD75FD9A146D4AFAF91660850D6FDF24A0A2A9F75430B8D1AD6944"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-contract-original-19cb.input.txt",
+    "sha256": "7534F743ECB120DBF6A9E5CCCD9E2B77275533E51BF4198E70205779686C4317"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-contract-original-19cb.json",
+    "sha256": "8056EA41FD425CF2EA4EF02732496C167B7B3A21153BAD7E457F9786D24776B2"
+  }
+]
