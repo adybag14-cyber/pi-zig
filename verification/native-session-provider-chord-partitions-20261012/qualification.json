@@ -1,0 +1,14 @@
+{
+  "scope": "Native provider factory with original Models operation replay; composed session lifecycle, Chord normalization and allocation coverage checks",
+  "provider_patch_sha256": "B40B8FF2976417CABE6E2F2F1F888B77985B2EF2A442A5C84C2C957DCAE84F71",
+  "provider_source_commit": "a3612306e26c79fb3572b93151e476cc0c1f39e8",
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "production_session_lifecycle_activated": false,
+  "hosted_qualification": false,
+  "limits": [
+    "Full SDK factory lifecycle integration remains required.",
+    "Persistent authentication backend is separate unfinished work.",
+    "Complete Chord algebra and host admission lifecycle remain unfinished.",
+    "Final platform parity and bridge removal remain unqualified."
+  ]
+}

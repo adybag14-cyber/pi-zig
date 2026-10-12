@@ -36,7 +36,7 @@ fn sourceProof(comptime fixture_path: []const u8, comptime input_path: []const u
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try @import("extensions/timers.zig").install(engine, std.testing.io);
-    const exports = if (comptime std.mem.eql(u8, label, "native-model-streams-source10")) stream_exports: {
+    const exports = if (comptime (std.mem.eql(u8, label, "native-model-streams-source10") or std.mem.eql(u8, label, "native-provider-factory-source7"))) stream_exports: {
         try @import("extensions/native_stream.zig").install(engine);
         break :stream_exports c.JS_DupValue(engine.context, engine.native_module_values.get("@earendil-works/pi-ai").?);
     } else plain_exports: {
@@ -162,4 +162,35 @@ test "native Models actual login credential mutation release every failed host a
 
 test "native Models actual Source auth mutation3 no eager termination after mutation start" {
     try sourceProof("durable/fixtures/durable-19cb534-model-auth-mutation-boundaries-source.json", "durable/fixtures/durable-19cb534-model-auth-mutation-boundaries-native.input.txt", "native-model-auth-mutation-source3");
+}
+
+test "native Models actual Source provider factory7 shape dispatch dynamic restore and publication" {
+    try sourceProof("durable/fixtures/durable-19cb534-provider-factory-source.json", "durable/fixtures/durable-19cb534-provider-factory-native.input.txt", "native-provider-factory-source7");
+}
+test "native Models actual provider factory catalog refresh releases every failed host allocation" {
+    const Probe = struct {
+        fn exercise(gpa: std.mem.Allocator) !void {
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            defer engine.deinit();
+            engine.native_io = std.testing.io;
+            const exports = try sdk.object(engine);
+            defer engine.freeValue(exports);
+            try @import("extensions/native_models.zig").populateExports(engine, exports);
+            try engine.registerValueModule("native-typed-models", exports);
+            const module = try engine.evalModule(
+                \\import{createProvider}from'native-typed-models';const model={id:'same',provider:'fixture',api:'fixture-api'},replacement={...model,name:'new'},provider=createProvider({id:'fixture',auth:{},models:[model],api:{stream(){throw Error('unused')},streamSimple(){throw Error('unused')}},fetchModels:async()=>[replacement]});if(provider.getModels()[0]!==model)throw Error('baseline');await provider.refreshModels({allowNetwork:true,signal:new AbortController().signal,async publish(publication){publication.update();return true}});if(provider.getAllModels()[0]!==replacement)throw Error('dynamic');export const proof=true;
+            , "native-provider-factory-allocation");
+            defer engine.freeValue(module);
+            c.JS_RunGC(engine.runtime);
+        }
+        fn run(gpa: std.mem.Allocator) !void {
+            exercise(gpa) catch |err| {
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                if (failing.has_induced_failure and (err == error.JavaScriptException or err == error.OutOfMemory)) return error.OutOfMemory;
+                std.debug.print("provider factory GPA unexpected {s} fail_index={d} induced={} stack={f}\n", .{ @errorName(err), failing.fail_index, failing.has_induced_failure, std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
+                return err;
+            };
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }

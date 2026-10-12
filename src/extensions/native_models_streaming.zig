@@ -244,3 +244,23 @@ fn retireHostFailure(engine: *em.Engine, state: c.JSValue, err: anyerror) void {
     defer engine.freeValue(reason);
     @import("native_stream.zig").reject(engine, outer, reason) catch {};
 }
+
+/// Source lazyStream used by native Provider factory deferred dispatch. Setup
+/// executes now; its promise/exception is forwarded behind a synchronous stream.
+pub fn fromSetup(engine: *em.Engine, store: c.JSValue, model: c.JSValue, setup_function: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const state = try scope.object();
+    try scope.put(state, "store", store);
+    try scope.put(state, "model", model);
+    try scope.put(state, "startedAt", try scope.invoke(try scope.global("Date"), "now", &.{}));
+    const exports = engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativeModelsStreamUnavailable;
+    const outer = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, try scope.get(exports, "AssistantMessageEventStream"), 0, null)));
+    try scope.put(state, "outer", outer);
+    const pending = scope.call(setup_function, c.pi_js_undefined(), &.{}) catch |err| pending: {
+        if (err != error.JavaScriptException or engine.captured_exception == null) return err;
+        break :pending try scope.own(try rejection(engine, engine.captured_exception.?));
+    };
+    _ = try wait(&scope, state, pending, .source);
+    return c.JS_DupValue(engine.context, outer);
+}

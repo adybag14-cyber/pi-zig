@@ -22,7 +22,7 @@ fn concat(scope: *Scope, parts: []const c.JSValue) !c.JSValue {
     for (parts) |part| value = try scope.concat(value, part);
     return value;
 }
-fn optional(scope: *Scope, value: c.JSValue, key: [*:0]const u8) !c.JSValue {
+fn optional(scope: anytype, value: c.JSValue, key: [*:0]const u8) !c.JSValue {
     return if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) c.pi_js_undefined() else scope.get(value, key);
 }
 fn intrinsic(scope: *Scope, state: c.JSValue) !awaiting.Intrinsics {
@@ -169,7 +169,7 @@ fn authValue(scope: *Scope, state: c.JSValue, value: c.JSValue) !c.JSValue {
     try scope.put(result, "auth", copied);
     return c.JS_DupValue(scope.engine.context, result);
 }
-fn errorResult(scope: *Scope, state: c.JSValue, reason: c.JSValue) !c.JSValue {
+pub fn errorResult(scope: anytype, state: c.JSValue, reason: c.JSValue) !c.JSValue {
     if (scope.truthy(try scope.get(state, "requestOnly"))) return scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, reason)));
     const model = try scope.get(state, "model");
     const result = try scope.object();

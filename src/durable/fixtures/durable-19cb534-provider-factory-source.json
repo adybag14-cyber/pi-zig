@@ -1,0 +1,392 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "a4cec9400c6d9e5ffe7a6e1e823e1176dcb88095c26f07d7c05190bf37952ab0",
+  "originalBodySha256": "4a1dc4f6848be7141d68ff73957952704dcb8cc04cd3f63a6000cb7b09cb6276",
+  "originalBody": "const rows=[],raw=[],base={provider:'fixture',baseUrl:'https://fixture.invalid',input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0}},chat={...base,id:'same',api:'a'},image={...base,id:'same',api:'image-a',type:'image'},classifier={...base,id:'judge',api:'classifier-a',type:'classifier',contextWindow:1000};\r\nfor(const input of[{id:'fixture',auth:{},models:[]},{id:'fixture',auth:{},models:[],api:{}},{id:'fixture',auth:{},models:[],images:{},classifiers:{}}]){let error;try{A.createProvider(input);throw Error('expected missing implementation')}catch(thrown){error={name:thrown.name,message:thrown.message}}rows.push({name:'empty-implementation',error})}\r\n{\r\nconst auth={},filterModels=models=>models,filterAllModels=models=>models,api={stream(){throw Error('unused')},streamSimple(){throw Error('unused')},fetchDeferred(){throw Error('unused')},async cancelDeferred(){}};const provider=A.createProvider({id:'fixture',models:[chat,image,classifier],auth,api,filterModels,filterAllModels,images:{'image-a':{async generateImages(){return{fixture:'image'}}}},classifiers:{'classifier-a':{async classify(){return{fixture:'classify'}}}}});const all=provider.getAllModels(),again=provider.getAllModels();rows.push({name:'shape-static',keys:Object.keys(provider),nameDefault:provider.name,authIdentity:provider.auth===auth,filterIdentity:provider.filterModels===filterModels&&provider.filterAllModels===filterAllModels,arrayFresh:all!==again,modelIdentity:all[0]===chat&&all[1]===image&&all[2]===classifier,all:all.map(m=>({id:m.id,type:m.type??'chat'})),chat:provider.getModels().map(m=>m.id),undefinedOwn:['baseUrl','headers','refreshModels'].map(key=>[key,Object.hasOwn(provider,key),provider[key]===undefined]),lengths:Object.fromEntries(Object.keys(provider).filter(key=>typeof provider[key]==='function').map(key=>[key,provider[key].length]))});const imageResult=await provider.generateImages(image,{input:[]},{}),classifierResult=await provider.classify(classifier,{state:{},questions:{}},{});rows.push({name:'typed-map-dispatch',imageResult,classifierResult});}\r\n{\r\nconst replacement={...chat,name:'dynamic'},added={...base,id:'new',api:'a'},unknown={...base,id:'future',api:'future',type:'future'},restored={...image,name:'restored'},foreign={...chat,provider:'foreign',id:'foreign'},events=[],snapshots=[];const provider=A.createProvider({id:'fixture',models:[chat,image],auth:{},api:{stream(){throw Error('unused')},streamSimple(){throw Error('unused')}},fetchModels:async context=>{events.push({type:'fetch',allowNetwork:context.allowNetwork,force:context.force});return[replacement,added,unknown]}});const signal=new AbortController().signal;const context={stored:{models:[restored,foreign],checkedAt:123},allowNetwork:true,force:true,signal,async publish(publication){events.push({type:'publish',keys:Object.keys(publication),persistModels:publication.persist?.models.map(m=>({id:m.id,type:m.type??'chat'})),checkedAtType:typeof publication.persist?.checkedAt});publication.update?.();snapshots.push(provider.getAllModels().map(m=>({id:m.id,type:m.type??'chat',name:m.name})));return true}};await provider.refreshModels(context);rows.push({name:'dynamic-restore-overlay',events:structuredClone(events),snapshots:structuredClone(snapshots),finalIdentity:provider.getAllModels()[0]===replacement&&provider.getAllModels()[1]===image&&provider.getAllModels()[2]===added});events.length=0;snapshots.length=0;await provider.refreshModels({...context,allowNetwork:false});rows.push({name:'offline-restore',events:[...events],snapshots:[...snapshots]});}\r\nraw.push(...rows);\r\n",
+  "rows": [
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "shape-static",
+      "keys": [
+        "id",
+        "name",
+        "baseUrl",
+        "headers",
+        "auth",
+        "getModels",
+        "getAllModels",
+        "refreshModels",
+        "filterModels",
+        "filterAllModels",
+        "stream",
+        "streamSimple",
+        "fetchDeferred",
+        "cancelDeferred",
+        "generateImages",
+        "classify"
+      ],
+      "nameDefault": "fixture",
+      "authIdentity": true,
+      "filterIdentity": true,
+      "arrayFresh": true,
+      "modelIdentity": true,
+      "all": [
+        {
+          "id": "same",
+          "type": "chat"
+        },
+        {
+          "id": "same",
+          "type": "image"
+        },
+        {
+          "id": "judge",
+          "type": "classifier"
+        }
+      ],
+      "chat": [
+        "same"
+      ],
+      "undefinedOwn": [
+        [
+          "baseUrl",
+          true,
+          true
+        ],
+        [
+          "headers",
+          true,
+          true
+        ],
+        [
+          "refreshModels",
+          true,
+          true
+        ]
+      ],
+      "lengths": {
+        "getModels": 0,
+        "getAllModels": 0,
+        "filterModels": 1,
+        "filterAllModels": 1,
+        "stream": 3,
+        "streamSimple": 3,
+        "fetchDeferred": 3,
+        "cancelDeferred": 3,
+        "generateImages": 3,
+        "classify": 3
+      }
+    },
+    {
+      "name": "typed-map-dispatch",
+      "imageResult": {
+        "fixture": "image"
+      },
+      "classifierResult": {
+        "fixture": "classify"
+      }
+    },
+    {
+      "name": "dynamic-restore-overlay",
+      "events": [
+        {
+          "type": "publish",
+          "keys": [
+            "update"
+          ],
+          "checkedAtType": "undefined"
+        },
+        {
+          "type": "fetch",
+          "allowNetwork": true,
+          "force": true
+        },
+        {
+          "type": "publish",
+          "keys": [
+            "persist",
+            "update"
+          ],
+          "persistModels": [
+            {
+              "id": "same",
+              "type": "chat"
+            },
+            {
+              "id": "new",
+              "type": "chat"
+            }
+          ],
+          "checkedAtType": "number"
+        }
+      ],
+      "snapshots": [
+        [
+          {
+            "id": "same",
+            "type": "chat"
+          },
+          {
+            "id": "same",
+            "type": "image",
+            "name": "restored"
+          }
+        ],
+        [
+          {
+            "id": "same",
+            "type": "chat",
+            "name": "dynamic"
+          },
+          {
+            "id": "same",
+            "type": "image"
+          },
+          {
+            "id": "new",
+            "type": "chat"
+          }
+        ]
+      ],
+      "finalIdentity": true
+    },
+    {
+      "name": "offline-restore",
+      "events": [
+        {
+          "type": "publish",
+          "keys": [
+            "update"
+          ],
+          "checkedAtType": "undefined"
+        }
+      ],
+      "snapshots": [
+        [
+          {
+            "id": "same",
+            "type": "chat"
+          },
+          {
+            "id": "same",
+            "type": "image",
+            "name": "restored"
+          }
+        ]
+      ]
+    }
+  ],
+  "raw": [
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "empty-implementation",
+      "error": {
+        "name": "Error",
+        "message": "Provider fixture: at least one of \"api\", \"images\", or \"classifiers\" is required."
+      }
+    },
+    {
+      "name": "shape-static",
+      "keys": [
+        "id",
+        "name",
+        "baseUrl",
+        "headers",
+        "auth",
+        "getModels",
+        "getAllModels",
+        "refreshModels",
+        "filterModels",
+        "filterAllModels",
+        "stream",
+        "streamSimple",
+        "fetchDeferred",
+        "cancelDeferred",
+        "generateImages",
+        "classify"
+      ],
+      "nameDefault": "fixture",
+      "authIdentity": true,
+      "filterIdentity": true,
+      "arrayFresh": true,
+      "modelIdentity": true,
+      "all": [
+        {
+          "id": "same",
+          "type": "chat"
+        },
+        {
+          "id": "same",
+          "type": "image"
+        },
+        {
+          "id": "judge",
+          "type": "classifier"
+        }
+      ],
+      "chat": [
+        "same"
+      ],
+      "undefinedOwn": [
+        [
+          "baseUrl",
+          true,
+          true
+        ],
+        [
+          "headers",
+          true,
+          true
+        ],
+        [
+          "refreshModels",
+          true,
+          true
+        ]
+      ],
+      "lengths": {
+        "getModels": 0,
+        "getAllModels": 0,
+        "filterModels": 1,
+        "filterAllModels": 1,
+        "stream": 3,
+        "streamSimple": 3,
+        "fetchDeferred": 3,
+        "cancelDeferred": 3,
+        "generateImages": 3,
+        "classify": 3
+      }
+    },
+    {
+      "name": "typed-map-dispatch",
+      "imageResult": {
+        "fixture": "image"
+      },
+      "classifierResult": {
+        "fixture": "classify"
+      }
+    },
+    {
+      "name": "dynamic-restore-overlay",
+      "events": [
+        {
+          "type": "publish",
+          "keys": [
+            "update"
+          ],
+          "checkedAtType": "undefined"
+        },
+        {
+          "type": "fetch",
+          "allowNetwork": true,
+          "force": true
+        },
+        {
+          "type": "publish",
+          "keys": [
+            "persist",
+            "update"
+          ],
+          "persistModels": [
+            {
+              "id": "same",
+              "type": "chat"
+            },
+            {
+              "id": "new",
+              "type": "chat"
+            }
+          ],
+          "checkedAtType": "number"
+        }
+      ],
+      "snapshots": [
+        [
+          {
+            "id": "same",
+            "type": "chat"
+          },
+          {
+            "id": "same",
+            "type": "image",
+            "name": "restored"
+          }
+        ],
+        [
+          {
+            "id": "same",
+            "type": "chat",
+            "name": "dynamic"
+          },
+          {
+            "id": "same",
+            "type": "image"
+          },
+          {
+            "id": "new",
+            "type": "chat"
+          }
+        ]
+      ],
+      "finalIdentity": true
+    },
+    {
+      "name": "offline-restore",
+      "events": [
+        {
+          "type": "publish",
+          "keys": [
+            "update"
+          ],
+          "checkedAtType": "undefined"
+        }
+      ],
+      "snapshots": [
+        [
+          {
+            "id": "same",
+            "type": "chat"
+          },
+          {
+            "id": "same",
+            "type": "image",
+            "name": "restored"
+          }
+        ]
+      ]
+    }
+  ]
+}

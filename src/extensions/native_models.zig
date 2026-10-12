@@ -317,6 +317,7 @@ pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, exports, "createModels", try engine.checked(c.JS_NewCFunctionData2(engine.context, createCallback, "createModels", 1, 0, 1, &data)));
     try put(engine, exports, "getModelType", try engine.checked(c.pi_js_function_magic(engine.context, typeCallback, "getModelType", 1, 0)));
     try put(engine, exports, "isModelType", try engine.checked(c.pi_js_function_magic(engine.context, typeCallback, "isModelType", 2, 1)));
+    try @import("native_provider_factory.zig").install(engine, exports, cache);
 }
 
 // Availability is completed by native Promise callbacks, never by blocking a

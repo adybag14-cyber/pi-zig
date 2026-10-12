@@ -1,5 +1,4 @@
-import{createModels,AssistantMessageEventStream}from'native-typed-models';
-const A={createModels,AssistantMessageEventStream,createProvider:config=>({id:config.id,auth:config.auth,getModels:()=>config.models,getAllModels:()=>config.models,stream:(...args)=>config.api.stream(...args),streamSimple:(...args)=>config.api.streamSimple(...args),fetchDeferred:(...args)=>config.api.fetchDeferred(...args),cancelDeferred:(...args)=>config.api.cancelDeferred(...args)})};
+import{createModels,createProvider,AssistantMessageEventStream}from'native-typed-models';const A={createModels,createProvider,AssistantMessageEventStream};
 const originalDateNow=Date.now,clockCalls=[],clockSlices=[];let clockOffset=0;Date.now=function(...args){const value=Reflect.apply(originalDateNow,this,args);clockCalls.push(value);return value};
 const cases=['stream','complete','streamSimple','completeSimple','streamDeferred','fetchDeferred','cancelDeferred','wrong-type-stream','missing-auth-stream','setup-plain-throw'],rows=[],raw=[];
 const originalRowsPush=rows.push;rows.push=function(...args){clockSlices.push(clockCalls.slice(clockOffset));clockOffset=clockCalls.length;return Reflect.apply(originalRowsPush,this,args)};
@@ -18,6 +17,7 @@ if(duration(-1,0,1)||duration(NaN,0,1)||duration(Infinity,0,1)||duration(undefin
 const presence=(message,phase,start,end)=>Object.hasOwn(message,'durationMs')===(message.timestamp>=phase.outerStartedAt)&&(!Object.hasOwn(message,'durationMs')||duration(message.durationMs,start,end));
 if(presence({timestamp:1},{outerStartedAt:1},0,2)||presence({timestamp:0,durationMs:0},{outerStartedAt:1},0,2)||presence({timestamp:1,durationMs:-1},{outerStartedAt:1},0,2)||!presence({timestamp:1,durationMs:0},{outerStartedAt:1},0,2)||!presence({timestamp:0},{outerStartedAt:1},0,2))throw Error('conditional timing presence controls');
 if(rows.length!==modelsServiceSource.rows.length)throw Error('Source streams row count');
+if(clockSlices.length!==modelsServiceSource.clockSlices.length||clockSlices.some((calls,i)=>calls.length!==modelsServiceSource.clockSlices[i].length))throw Error('actual provider factory lazy-layer clock inventory changed');
 const errors=['wrong-type-stream','missing-auth-stream','setup-plain-throw'];
 for(let i=0;i<rows.length;i++){
  const actual=rows[i],expected=modelsServiceSource.rows[i];

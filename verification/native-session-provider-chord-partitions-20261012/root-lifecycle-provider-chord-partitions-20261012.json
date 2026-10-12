@@ -1,0 +1,13 @@
+{
+  "name": "root-lifecycle-provider-chord-partitions-20261012",
+  "pid": 47388,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-session-lifecycle test-native-models-typed-services test-native-models-stream-regressions test-native-chord-normalization-evaluate-source test-exhaustive-allocation-coverage test-exhaustive-allocation-helper test-maintenance -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "created_utc": "2026-10-12T21:27:35.5345650Z",
+  "launched_utc": "2026-10-12T21:27:35.5315966+00:00",
+  "identity_captured": true,
+  "working_directory": "C:\\Users\\adyba\\pi-zig-composition241-20261010",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T21:28:44.0381435+00:00"
+}

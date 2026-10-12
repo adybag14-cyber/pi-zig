@@ -1,0 +1,16 @@
+{
+  "name": "durable-model-services-provider-source56-releasesafe-actual-factory-full-chain-20261012",
+  "pid": 48232,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-models-typed-services test-native-durable-codemode-model-catalog test-native-models-stream-regressions -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-12T21:09:52.4404220Z",
+  "launched_utc": "2026-10-12T21:09:52.4367790+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-durable-journal-c01-20261012",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-12T21:11:48.3668846+00:00"
+}

@@ -1,5 +1,4 @@
-import {createModels,InMemoryCredentialStore} from 'native-typed-models';
-const A={createModels,createProvider:config=>({id:config.id,name:config.id,auth:config.auth,getModels:()=>config.models.filter(model=>(model.type??'chat')==='chat'),getAllModels:()=>config.models,classify:(model,context,options)=>config.classifiers[model.api].classify(model,context,options),generateImages:(model,context,options)=>config.images[model.api].generateImages(model,context,options)})};
+import{createModels,createProvider,InMemoryCredentialStore}from'native-typed-models';const A={createModels,createProvider};
 const cases=['resolve-sync','resolve-async','read-sync','read-async','transform-sync','transform-async','provider-plain','oauth-toAuth-sync','oauth-toAuth-async','unknown-preabort'],rows=[],raw=[];
 for(const name of cases){const events=[],controller=new AbortController(),signal=controller.signal,cause=new Error('detail-'+name),credentials=new InMemoryCredentialStore(),originalRead=credentials.read.bind(credentials);let reads=0;
 credentials.read=(...args)=>{reads++;if(name==='read-sync')throw cause;if(name==='read-async')return Promise.reject(cause);return originalRead(...args)};
