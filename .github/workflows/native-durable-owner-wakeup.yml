@@ -37,16 +37,16 @@ jobs:
           $zig = (Get-Command zig).Source
           $toolRoot = Split-Path -Parent $zig
           @(Get-ChildItem -LiteralPath $toolRoot -File -Recurse | ForEach-Object { [ordered]@{ path = $_.FullName; sha256 = (Get-FileHash -LiteralPath $_.FullName).Hash } }) | ConvertTo-Json -Depth 4 | Set-Content verification/owner-wakeup/tool-before.json
-          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; scope = 'Original eight compaction/inspection cases plus seven owner wakeup and four JSON DTO regressions; no full Pi or SDK qualification'; original_host_deadline_ms = 10000; per_test_deadline = '120s' } | ConvertTo-Json | Set-Content verification/owner-wakeup/identity.json
+          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; scope = 'Original eight compaction/inspection cases plus seven owner wakeup, four JSON DTO and two bounded JSON clone allocation regressions; no full Pi or SDK qualification'; original_host_deadline_ms = 10000; per_test_deadline = '120s' } | ConvertTo-Json | Set-Content verification/owner-wakeup/identity.json
       - name: Run unchanged original compaction and owner wakeup regressions
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          & zig build test-native-durable-89-compaction test-native-owner-wakeup test-native-durable-json-dto -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/owner-wakeup/tests.log
+          & zig build test-native-durable-89-compaction test-native-owner-wakeup test-native-durable-json-dto test-durable-json-clone -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object verification/owner-wakeup/tests.log
           $testExit = $LASTEXITCODE
           if ($testExit -ne 0) { throw "Native original/wakeup tests failed: $testExit" }
           $log = Get-Content -LiteralPath verification/owner-wakeup/tests.log -Raw
-          if ($log -notmatch '19/19 tests passed' -or $log -notmatch 'run test 8 pass \(8 total\)' -or $log -notmatch 'run test 7 pass \(7 total\)' -or $log -notmatch 'run test 4 pass \(4 total\)') { throw 'Missing complete execution counts' }
+          if ($log -notmatch '21/21 tests passed' -or $log -notmatch 'run test 8 pass \(8 total\)' -or $log -notmatch 'run test 7 pass \(7 total\)' -or $log -notmatch 'run test 4 pass \(4 total\)' -or $log -notmatch 'run test 2 pass \(2 total\)') { throw 'Missing complete execution counts' }
       - name: Verify every frozen source and tool input
         if: always()
         shell: pwsh

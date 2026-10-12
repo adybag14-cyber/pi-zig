@@ -794,6 +794,8 @@ pub fn build(b: *std.Build) void {
     const install_jsonl_fixture = b.addInstallArtifact(jsonl_fixture, .{});
     const jsonl_fixture_step = b.step("jsonl-fixture", "Build original/native durable JSONL interop fixture");
     jsonl_fixture_step.dependOn(&install_jsonl_fixture.step);
+    const durable_json_clone_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/backend/json.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "durable JSON scalar array clone", "durable JSON object clone" } });
+    b.step("test-durable-json-clone", "Verify known-size JSON clone allocations and object insertion order").dependOn(&b.addRunArtifact(durable_json_clone_tests).step);
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
