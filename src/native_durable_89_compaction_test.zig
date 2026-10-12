@@ -7,7 +7,8 @@ const json = @import("durable/backend/json.zig");
 const c = engine_mod.c;
 
 test "native durable actual 89 compaction failure public contract preserves real blocking and events" {
-    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    var allocation_profile: @import("durable/diagnostic_allocator.zig").Probe = .{ .backing = std.testing.allocator, .io = std.testing.io };
+    const engine = try engine_mod.Engine.init(allocation_profile.allocator(), .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
     engine.native_owner_diagnostics.enabled = true;
@@ -15,10 +16,14 @@ test "native durable actual 89 compaction failure public contract preserves real
     try durable.install(engine);
     try @import("extensions/text_decoder.zig").install(engine);
     const began = std.Io.Clock.awake.now(std.testing.io).toMilliseconds();
+    allocation_profile.enabled.store(true, .release);
     defer {
+        allocation_profile.enabled.store(false, .release);
+        allocation_profile.print();
         const diagnostic = engine.native_owner_diagnostics;
         const signal = &engine.native_owner_signal;
         std.debug.print("Actual 89 owner elapsedMs={d} controls={d} controlsWorked={d} controlsInclusiveMs={d} jsJobs={d} timerLoops={d} timerFires={d} notifications={d} waits={d} raced={d} timeouts={d} blockedMs={d}\n", .{ std.Io.Clock.awake.now(std.testing.io).toMilliseconds() - began, diagnostic.controls, diagnostic.controls_worked, diagnostic.controls_ms, diagnostic.js_jobs, diagnostic.timer_loops, diagnostic.timer_fires, signal.observe(), signal.waits, signal.raced, signal.timeouts, signal.blocked_ms });
+        inline for (.{ "host", "storage", "durable", "sdk", "tools", "commands" }, 0..) |name, kind| std.debug.print("Actual 89 control profile kind={s} calls={d} inclusiveNanoseconds={d}\n", .{ name, diagnostic.control_calls[kind], diagnostic.control_ns[kind] });
     }
     const result = engine.evalModule(@embedFile("durable/fixtures/durable-89-compaction-failure-program.txt"), "actual-89-compaction-failure") catch |err| {
         std.debug.print("Actual 89 compaction failure {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
