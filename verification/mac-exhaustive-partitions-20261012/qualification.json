@@ -1,0 +1,63 @@
+{
+  "scope": "Complete original allocation probes and CI coverage wiring",
+  "base": "3b9db8c0b6756f4b07ee76e7a71900aa494f6f24 tree preserved by isolated cherry-picks",
+  "runtime": "Windows x86_64 default Debug backend Zig0.16.0",
+  "test_deadline": "120s",
+  "host_deadline": "10s unchanged",
+  "outer_deadline_seconds": 300,
+  "unit_tests": 17,
+  "actual_probe_and_imported_control_tests": 18,
+  "actual_full_tests": 35,
+  "actual_full_steps": 175,
+  "actual_graphs": [
+    {
+      "graph": "codemode-host",
+      "total": 1980,
+      "begin": 1980,
+      "complete": 1980
+    },
+    {
+      "graph": "codemode-workers",
+      "total": 1993,
+      "begin": 1993,
+      "complete": 1993
+    },
+    {
+      "graph": "codemode-discovery",
+      "total": 2019,
+      "begin": 2019,
+      "complete": 2019
+    },
+    {
+      "graph": "codemode-adapter",
+      "total": 2007,
+      "begin": 2007,
+      "complete": 2007
+    },
+    {
+      "graph": "codemode-vm-owner",
+      "total": 1978,
+      "begin": 1978,
+      "complete": 1978
+    },
+    {
+      "graph": "tui-alt",
+      "total": 770,
+      "begin": 770,
+      "complete": 770
+    }
+  ],
+  "actual_failure_indices": 10747,
+  "actual_full_log": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\mac-partitions-full-default.stderr.log",
+  "actual_full_log_sha256": "0631028E6A5FBDAD46A7123BA21ED04AC5EF62FF4D9C588F65A87EF59C9A6E2B",
+  "canonical_cli": "Native maintenance verify-exhaustive-allocation-group actual full marker file 1 0 1; six accepted rows",
+  "partial_pilot": "Actual Windows0/64 six graphs165indices, not Mac group0/8 or global64 qualification",
+  "failed_admission": "Preserved full-first failure: caller incorrectly set shard variables empty; default retry used genuinely absent variables; no source change",
+  "source_posthash": "4421 files mismatch0; toolchain19546 files mismatch0",
+  "input_manifest_sha256": "3FEDCFFB9E63B96A7B3FE4216A64383F2C7D872F493CAE653E506F66A8E56893",
+  "tool_manifest_sha256": "5C50316080E76FA6F83E61FE2D06D3CA9C573F72E53168EEDD912889014F171F",
+  "workflow_script_blocks": 18,
+  "workflow_parse_errors": 0,
+  "mac_canonical": "g0 Core/latest range0 only; dedicated g0 ranges1..7, other groups8 each; collector requires all6x64 and fixed totals",
+  "remaining": "No hosted macOS64-range or whole Core/latest pass claimed. Root async journal/model changes independent. Qualification receipts added after frozen executable-source gate."
+}

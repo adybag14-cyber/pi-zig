@@ -137,6 +137,8 @@ pub fn build(b: *std.Build) void {
     linkSqlite(codemode_worker_module, sqlite_lib_dir, sqlite_library);
     const codemode_worker_tests = b.addTest(.{ .root_module = codemode_worker_module, .use_llvm = use_llvm, .filters = &.{"native CodeMode worker"} });
     b.step("test-native-codemode-vm-worker", "Replay controlled Source runs on owned native VM threads and verify cancellation and joined teardown").dependOn(&b.addRunArtifact(codemode_worker_tests).step);
+    const codemode_worker_allocation_tests = b.addTest(.{ .root_module = codemode_worker_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native CodeMode worker releases every failed owner allocation across native thread startup execution event publication and joined teardown"} });
+    b.step("test-native-codemode-worker-allocation", "Run the complete original worker-owner failure indices, optionally partitioned").dependOn(&b.addRunArtifact(codemode_worker_allocation_tests).step);
     const codemode_owner_module = b.createModule(.{ .root_source_file = b.path("src/native_codemode_controlled_binding_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, codemode_owner_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_owner_module, sqlite_lib_dir, sqlite_library);
@@ -2304,6 +2306,14 @@ pub fn build(b: *std.Build) void {
     catalog_projection_step.dependOn(&run_catalog_projection_tests.step);
     const agent_coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/agent_allocation_coverage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     b.step("test-agent-allocation-coverage", "Check each platform group's actual Agent runtime marker ingestion").dependOn(&b.addRunArtifact(agent_coverage_tests).step);
+    const exhaustive_coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/exhaustive_allocation_coverage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    b.step("test-exhaustive-allocation-coverage", "Verify every original failure index and fixed baseline across all eight groups").dependOn(&b.addRunArtifact(exhaustive_coverage_tests).step);
+    const exhaustive_helper_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/exhaustive_allocation_helper_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    b.step("test-exhaustive-allocation-helper", "Keep the original failing allocator behavior and complete nondivisible partitions").dependOn(&b.addRunArtifact(exhaustive_helper_tests).step);
+    const exhaustive_targets = [_][]const u8{ "test-codemode-allocation", "test-native-codemode-worker-allocation", "test-native-tui-alt-allocation-source" };
+    const exhaustive_run = b.step("test-hosted-exhaustive-allocation", "Execute all six original CodeMode worker and TUI failure probes in a bounded range");
+    for (exhaustive_targets) |name| exhaustive_run.dependOn(&b.top_level_steps.get(name).?.step);
+    addCompileOnlyGroup(b, "build-hosted-exhaustive-allocation", &exhaustive_targets);
 
     // Select compile/install prerequisites from the existing runtime targets.
     // Their test runners remain outside these cold-compilation steps, including

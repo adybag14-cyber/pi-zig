@@ -1,0 +1,50 @@
+[
+  {
+    "graph": "codemode-host",
+    "range": 0,
+    "start": 0,
+    "end": 1980,
+    "total": 1980,
+    "complete": true
+  },
+  {
+    "graph": "codemode-workers",
+    "range": 0,
+    "start": 0,
+    "end": 1993,
+    "total": 1993,
+    "complete": true
+  },
+  {
+    "graph": "codemode-discovery",
+    "range": 0,
+    "start": 0,
+    "end": 2019,
+    "total": 2019,
+    "complete": true
+  },
+  {
+    "graph": "codemode-adapter",
+    "range": 0,
+    "start": 0,
+    "end": 2007,
+    "total": 2007,
+    "complete": true
+  },
+  {
+    "graph": "codemode-vm-owner",
+    "range": 0,
+    "start": 0,
+    "end": 1978,
+    "total": 1978,
+    "complete": true
+  },
+  {
+    "graph": "tui-alt",
+    "range": 0,
+    "start": 0,
+    "end": 770,
+    "total": 770,
+    "complete": true
+  }
+]

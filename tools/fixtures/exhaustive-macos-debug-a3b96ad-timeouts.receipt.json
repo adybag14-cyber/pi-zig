@@ -1,0 +1,9 @@
+{
+  "run": "38299561639",
+  "job": 114983272659,
+  "head": "a3b96adfaa8c24b2fb5a17aad91ebd9ad2ab8908",
+  "source": "Actual uploaded components.log from failed macOS Debug group0; verbatim error lines with ANSI formatting removed",
+  "raw_components_sha256": "15AF3883D1D88FB0A68629B5F3D8D94DDBE9C730CAF47220DE7974CDB7DECAC8",
+  "fixture_sha256": "BCDF6295C893D0D750415FA4988E68753C0F8A57577082E329B220B79388A116",
+  "scope": "Negative checker regression; no successful failure-index coverage inferred."
+}

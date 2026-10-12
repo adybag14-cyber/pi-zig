@@ -8,6 +8,7 @@ const release = @import("release.zig");
 const upstream_contract = @import("upstream_contract.zig");
 const composed_coverage = @import("native_composed_coverage.zig");
 const agent_coverage = @import("agent_allocation_coverage.zig");
+const exhaustive_coverage = @import("exhaustive_allocation_coverage.zig");
 const release_config = @import("release_config");
 
 const forbidden_names = [_][]const u8{
@@ -236,6 +237,15 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
+    if (args.len == 6 and std.mem.eql(u8, args[1], "verify-exhaustive-allocation-group")) {
+        const shards = try std.fmt.parseInt(usize, args[3], 10);
+        const group = try std.fmt.parseInt(usize, args[4], 10);
+        const groups = try std.fmt.parseInt(usize, args[5], 10);
+        try exhaustive_coverage.verifyDirectory(init.gpa, init.io, args[2], shards, group, groups);
+        try writer.writeAll("Complete original exhaustive allocation group coverage passed.\n");
+        try writer.flush();
+        return;
+    }
     if (args.len == 6 and std.mem.eql(u8, args[1], "verify-agent-allocation-group")) {
         const shards = try std.fmt.parseInt(usize, args[3], 10);
         const group = try std.fmt.parseInt(usize, args[4], 10);
@@ -356,6 +366,7 @@ pub fn main(init: std.process.Init) !void {
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
         "       pi-maintenance verify-composed-coverage <repository> <test-log>\n" ++
         "       pi-maintenance verify-agent-allocation-group <log-directory> <shards> <group> <groups>\n" ++
+        "       pi-maintenance verify-exhaustive-allocation-group <log-directory> <shards> <group> <groups>\n" ++
         "       pi-maintenance verify-command-allocation-coverage <test-log>\n" ++
         "       pi-maintenance verify-live-allocation-coverage <test-log>\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++

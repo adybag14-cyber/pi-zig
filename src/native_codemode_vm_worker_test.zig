@@ -162,5 +162,5 @@ test "native CodeMode worker releases every failed owner allocation across nativ
             try std.testing.expect(done);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Lifecycle.exercise, .{});
+    try @import("test_support/exhaustive_allocation_shards.zig").check(.worker, "codemode-vm-owner", Lifecycle.exercise, .{});
 }

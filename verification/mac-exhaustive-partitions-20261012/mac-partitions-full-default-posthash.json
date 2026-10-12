@@ -1,0 +1,14 @@
+[
+  {
+    "manifest": "mac-partitions-full-source-before.json",
+    "files": 4421,
+    "mismatches": 0,
+    "paths": []
+  },
+  {
+    "manifest": "catalog19cb-zig-tools-before.json",
+    "files": 19546,
+    "mismatches": 0,
+    "paths": []
+  }
+]
