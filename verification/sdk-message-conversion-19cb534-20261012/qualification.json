@@ -1,0 +1,17 @@
+{
+  "scope": "Public native coding-agent convertToLlm",
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "source_cases": 33,
+  "new_target_tests": 10,
+  "combined_tests": 21,
+  "build_steps": 159,
+  "operation_failure_indices": 14,
+  "production_export_activated": true,
+  "limits": [
+    "Complete SDK Agent factory and manual run replacement remain incomplete.",
+    "The factory blockImages wrapper is separate required work.",
+    "Operation allocator injection begins after SDK and input setup; QuickJS C allocator and full SDK constructor faults are not covered.",
+    "Runtime-generated TypeError wording is not asserted by this corpus; identity and error type are observed.",
+    "Source Node process completed before live CIM identity capture; terminal status is retained from its owned process handle."
+  ]
+}

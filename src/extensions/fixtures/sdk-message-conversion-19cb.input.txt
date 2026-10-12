@@ -1,0 +1,28 @@
+const sdkMessageRows=[];
+function observeMessageCase(name,build){const trace=[],reason={case:name};let value,error;try{const input=build(trace,reason);const result=convertToLlm(input.messages);value={result,identity:Array.isArray(result)?result.map(item=>input.identity?.map(original=>item===original)??[]):null,extra:input.extra?.(result)}}catch(thrown){error={same:thrown===reason,name:thrown?.name}}sdkMessageRows.push({name,trace,value,error})}
+observeMessageCase('ordinary-identities',()=>{const messages=['system','user','assistant','toolResult'].map((role,i)=>({role,content:[],timestamp:i,extra:{index:i}}));return{messages,identity:messages}});
+for(const cfg of[
+{name:'empty-output',output:''},{name:'output',output:'one\ntwo'},
+{name:'cancelled',cancelled:true,exitCode:5},{name:'exit-zero',exitCode:0},
+{name:'exit-null',exitCode:null},{name:'exit-undefined'},{name:'exit-error',exitCode:7},
+{name:'exit-string-zero',exitCode:'0'},{name:'exit-false',exitCode:false},
+{name:'truncated',truncated:true,fullOutputPath:'/owned/full.txt'},
+{name:'truncated-no-path',truncated:true},{name:'excluded',excludeFromContext:true},
+])observeMessageCase(cfg.name,()=>({messages:[{role:'bashExecution',command:'echo hello',output:'',timestamp:123,...cfg}]}));
+for(const content of['hello',[],[{type:'image',data:'fixture',mimeType:'image/png'}],undefined,null])observeMessageCase('custom-'+(content===undefined?'undefined':content===null?'null':typeof content==='string'?'string':content.length?'image':'empty'),()=>({messages:[{role:'custom',customType:'probe',content,display:false,details:{x:1},timestamp:12}],extra:result=>({sameContent:result[0].content===content,keys:Object.keys(result[0])})}));
+for(const role of['branchSummary','compactionSummary'])observeMessageCase(role,(trace)=>({messages:[{role,summary:{[Symbol.toPrimitive](hint){trace.push(['coerce-summary',hint]);return'kept'}},timestamp:24}]}));
+observeMessageCase('unknown-roles',()=>({messages:[{role:'unknown'},{role:0},{role:undefined}],extra:result=>({length:result.length})}));
+observeMessageCase('bash-getter-order',(trace)=>({messages:[new Proxy({role:'bashExecution',command:{[Symbol.toPrimitive](hint){trace.push(['command-coerce',hint]);return'cmd'}},output:{[Symbol.toPrimitive](hint){trace.push(['output-coerce',hint]);return'out'}},cancelled:false,exitCode:9,truncated:true,fullOutputPath:{[Symbol.toPrimitive](hint){trace.push(['path-coerce',hint]);return'/path'}},timestamp:10},{get(target,key,receiver){trace.push(['get',String(key)]);return Reflect.get(target,key,receiver)}})]}));
+observeMessageCase('custom-changing-content',(trace)=>{let reads=0;return{messages:[{role:'custom',get content(){trace.push('content');return++reads===1?'string-test':{retained:'second-read'}},get timestamp(){trace.push('timestamp');return 88}}]}});
+observeMessageCase('role-throw',(trace,reason)=>({messages:[{get role(){trace.push('role');throw reason}}]}));
+observeMessageCase('output-second-read-throw',(trace,reason)=>{let reads=0;return{messages:[{role:'bashExecution',command:'cmd',get output(){trace.push('output');if(++reads===2)throw reason;return true}}]}});
+observeMessageCase('summary-symbol',(trace)=>({messages:[{role:'branchSummary',summary:Symbol('cannot-add'),timestamp:0}]}));
+observeMessageCase('sparse-inherited',(trace)=>{const proto=Object.create(Array.prototype);proto[1]={role:'custom',content:'inherited',timestamp:2};const messages=new Array(4);Object.setPrototypeOf(messages,proto);messages[3]={role:'user',content:'last',timestamp:3};return{messages,identity:[messages[3]],extra:result=>({length:result.length})}});
+observeMessageCase('map-filter-live',(trace)=>{const identity={role:'assistant',content:[]};const messages={get map(){trace.push('map-get');return function(mapper){trace.push(['map-call',this===messages,mapper.length,mapper.name,Object.hasOwn(mapper,'prototype')]);const mapped={get filter(){trace.push('filter-get');return function(predicate){trace.push(['filter-call',this===mapped,predicate.length,predicate.name,Object.hasOwn(predicate,'prototype')]);return[mapper(identity),mapper({role:'unknown'}),null,0].filter(predicate)}}};return mapped}}};return{messages,identity:[identity]}});
+observeMessageCase('map-replaced-filter',(trace,reason)=>({messages:{map(mapper){trace.push('map');return{get filter(){trace.push('filter');throw reason}}}}}));
+observeMessageCase('map-return-primitives',(trace)=>({messages:{map(){trace.push('map');return{filter(predicate){return[undefined,null,false,0,''].filter(predicate)}}}}}));
+observeMessageCase('custom-map-getter-error',(trace,reason)=>({messages:{get map(){trace.push('map');throw reason}}}));
+observeMessageCase('array-species',(trace)=>{class Derived extends Array{static get [Symbol.species](){trace.push('species');return Array}};const messages=new Derived({role:'user',content:'ok',timestamp:1},{role:'unknown'});return{messages,extra:result=>({array:result instanceof Array,derived:result instanceof Derived})}});
+const descriptor=Object.getOwnPropertyDescriptor(convertToLlm,'prototype');
+sdkMessageRows.push({name:'public-function',keys:Object.getOwnPropertyNames(convertToLlm),functionName:convertToLlm.name,length:convertToLlm.length,prototype:{writable:descriptor.writable,enumerable:descriptor.enumerable,configurable:descriptor.configurable,constructor:descriptor.value.constructor===convertToLlm},constructed:new convertToLlm([{role:'user',content:'constructed'}])});
+globalThis.sdkMessageRows=sdkMessageRows;

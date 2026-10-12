@@ -1,0 +1,807 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Original public coding-agent convertToLlm function and live map/filter inputs",
+  "rows": [
+    {
+      "name": "ordinary-identities",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "system",
+            "content": [],
+            "timestamp": 0,
+            "extra": {
+              "index": 0
+            }
+          },
+          {
+            "role": "user",
+            "content": [],
+            "timestamp": 1,
+            "extra": {
+              "index": 1
+            }
+          },
+          {
+            "role": "assistant",
+            "content": [],
+            "timestamp": 2,
+            "extra": {
+              "index": 2
+            }
+          },
+          {
+            "role": "toolResult",
+            "content": [],
+            "timestamp": 3,
+            "extra": {
+              "index": 3
+            }
+          }
+        ],
+        "identity": [
+          [
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            false,
+            true,
+            false,
+            false
+          ],
+          [
+            false,
+            false,
+            true,
+            false
+          ],
+          [
+            false,
+            false,
+            false,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "empty-output",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "output",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n```\none\ntwo\n```"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "cancelled",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)\n\n(command cancelled)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-zero",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-null",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-undefined",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-error",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)\n\nCommand exited with code 7"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-string-zero",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)\n\nCommand exited with code 0"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "exit-false",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)\n\nCommand exited with code false"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "truncated",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)\n\n[Output truncated. Full output: /owned/full.txt]"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "truncated-no-path",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `echo hello`\n(no output)"
+              }
+            ],
+            "timestamp": 123
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "excluded",
+      "trace": [],
+      "value": {
+        "result": [],
+        "identity": []
+      }
+    },
+    {
+      "name": "custom-string",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "hello"
+              }
+            ],
+            "timestamp": 12
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "sameContent": false,
+          "keys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        }
+      }
+    },
+    {
+      "name": "custom-empty",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [],
+            "timestamp": 12
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "sameContent": true,
+          "keys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        }
+      }
+    },
+    {
+      "name": "custom-image",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              }
+            ],
+            "timestamp": 12
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "sameContent": true,
+          "keys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        }
+      }
+    },
+    {
+      "name": "custom-undefined",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "timestamp": 12
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "sameContent": true,
+          "keys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        }
+      }
+    },
+    {
+      "name": "custom-null",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": null,
+            "timestamp": 12
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "sameContent": true,
+          "keys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        }
+      }
+    },
+    {
+      "name": "branchSummary",
+      "trace": [
+        [
+          "coerce-summary",
+          "default"
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "The following is a summary of a branch that this conversation came back from:\n\n<summary>\nkept</summary>"
+              }
+            ],
+            "timestamp": 24
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "compactionSummary",
+      "trace": [
+        [
+          "coerce-summary",
+          "default"
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "The conversation history before this point was compacted into the following summary:\n\n<summary>\nkept\n</summary>"
+              }
+            ],
+            "timestamp": 24
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "unknown-roles",
+      "trace": [],
+      "value": {
+        "result": [],
+        "identity": [],
+        "extra": {
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "bash-getter-order",
+      "trace": [
+        [
+          "get",
+          "role"
+        ],
+        [
+          "get",
+          "excludeFromContext"
+        ],
+        [
+          "get",
+          "command"
+        ],
+        [
+          "command-coerce",
+          "string"
+        ],
+        [
+          "get",
+          "output"
+        ],
+        [
+          "get",
+          "output"
+        ],
+        [
+          "output-coerce",
+          "string"
+        ],
+        [
+          "get",
+          "cancelled"
+        ],
+        [
+          "get",
+          "exitCode"
+        ],
+        [
+          "get",
+          "exitCode"
+        ],
+        [
+          "get",
+          "exitCode"
+        ],
+        [
+          "get",
+          "exitCode"
+        ],
+        [
+          "get",
+          "truncated"
+        ],
+        [
+          "get",
+          "fullOutputPath"
+        ],
+        [
+          "get",
+          "fullOutputPath"
+        ],
+        [
+          "path-coerce",
+          "string"
+        ],
+        [
+          "get",
+          "timestamp"
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Ran `cmd`\n```\nout\n```\n\nCommand exited with code 9\n\n[Output truncated. Full output: /path]"
+              }
+            ],
+            "timestamp": 10
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "custom-changing-content",
+      "trace": [
+        "content",
+        "content",
+        "timestamp"
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "retained": "second-read"
+                }
+              }
+            ],
+            "timestamp": 88
+          }
+        ],
+        "identity": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-throw",
+      "trace": [
+        "role"
+      ],
+      "error": {
+        "same": true
+      }
+    },
+    {
+      "name": "output-second-read-throw",
+      "trace": [
+        "output",
+        "output"
+      ],
+      "error": {
+        "same": true
+      }
+    },
+    {
+      "name": "summary-symbol",
+      "trace": [],
+      "error": {
+        "same": false,
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "sparse-inherited",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "inherited"
+              }
+            ],
+            "timestamp": 2
+          },
+          {
+            "role": "user",
+            "content": "last",
+            "timestamp": 3
+          }
+        ],
+        "identity": [
+          [
+            false
+          ],
+          [
+            true
+          ]
+        ],
+        "extra": {
+          "length": 2
+        }
+      }
+    },
+    {
+      "name": "map-filter-live",
+      "trace": [
+        "map-get",
+        [
+          "map-call",
+          true,
+          1,
+          "",
+          false
+        ],
+        "filter-get",
+        [
+          "filter-call",
+          true,
+          1,
+          "",
+          false
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "assistant",
+            "content": []
+          },
+          null,
+          0
+        ],
+        "identity": [
+          [
+            true
+          ],
+          [
+            false
+          ],
+          [
+            false
+          ]
+        ]
+      }
+    },
+    {
+      "name": "map-replaced-filter",
+      "trace": [
+        "map",
+        "filter"
+      ],
+      "error": {
+        "same": true
+      }
+    },
+    {
+      "name": "map-return-primitives",
+      "trace": [
+        "map"
+      ],
+      "value": {
+        "result": [
+          null,
+          false,
+          0,
+          ""
+        ],
+        "identity": [
+          [],
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    {
+      "name": "custom-map-getter-error",
+      "trace": [
+        "map"
+      ],
+      "error": {
+        "same": true
+      }
+    },
+    {
+      "name": "array-species",
+      "trace": [
+        "species"
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": "ok",
+            "timestamp": 1
+          }
+        ],
+        "identity": [
+          []
+        ],
+        "extra": {
+          "array": true,
+          "derived": false
+        }
+      }
+    },
+    {
+      "name": "public-function",
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "functionName": "convertToLlm",
+      "length": 1,
+      "prototype": {
+        "writable": true,
+        "enumerable": false,
+        "configurable": false,
+        "constructor": true
+      },
+      "constructed": [
+        {
+          "role": "user",
+          "content": "constructed"
+        }
+      ]
+    }
+  ]
+}

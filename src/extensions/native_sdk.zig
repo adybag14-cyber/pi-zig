@@ -2508,6 +2508,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_sdk_session_projection.zig").install(engine, exports);
     try @import("native_sdk_builtin_execution.zig").installFindFactories(engine, exports);
     try @import("native_sdk_public_runner.zig").install(engine, exports);
+    try put(engine, exports, "convertToLlm", try @import("native_sdk_messages.zig").create(engine));
     try put(engine, exports, "resizeImage", try @import("native_image_resize_api.zig").create(engine));
     try put(engine, exports, "formatDimensionNote", try @import("native_image_dimension_note.zig").create(engine));
     try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
