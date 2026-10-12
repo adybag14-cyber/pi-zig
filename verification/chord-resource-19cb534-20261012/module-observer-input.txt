@@ -1,0 +1,24 @@
+import {registerHooks} from 'node:module';
+import {realpathSync,readFileSync,appendFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {threadId} from 'node:worker_threads';
+const runtime=realpathSync('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012');
+const evidence='C:/Users/adyba/pi-zig-update-evidence-20261003/';
+const allowed=new Set(['chord-resource19cb-observe-modules-20261012.mjs','chord-resource19cb-original-source-20261012.mjs','chord-resource19cb-input-20261012.txt'].map(name=>realpathSync(evidence+name).toLowerCase()));
+const seen=new Set();
+function observe(url){
+ if(!url.startsWith('file:'))return;
+ const path=realpathSync(fileURLToPath(url));
+ if(!allowed.has(path.toLowerCase())&&!path.toLowerCase().startsWith((runtime+'\\').toLowerCase()))throw Error('Actual MCP module escaped immutable runtime: '+path);
+ if(seen.has(path))return;seen.add(path);
+ appendFileSync(evidence+`chord-resource19cb-observed-${process.pid}-${threadId}-20261012.jsonl`,JSON.stringify({thread:threadId,path,sha256:createHash('sha256').update(readFileSync(path)).digest('hex')})+'\n');
+}
+registerHooks({resolve(specifier,context,next){const result=next(specifier,context);observe(result.url);return result}});
+observe(import.meta.url);
+
+
+
+
+
+observe('file:///C:/Users/adyba/pi-zig-update-evidence-20261003/chord-resource19cb-input-20261012.txt');

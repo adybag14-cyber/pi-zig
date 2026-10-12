@@ -1,0 +1,575 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "facadeObtained": "Actual createHost + local contract + self.resources + self.expose + live handle, closed normally",
+  "cases": [
+    {
+      "name": "actual resource classes descriptors ordinary fields and strict exclusive",
+      "resource": {
+        "name": "ResourceImpl",
+        "length": 3,
+        "keys": [
+          "constructor",
+          "value",
+          "exclusive",
+          "open",
+          "close",
+          "markUnavailable"
+        ],
+        "members": [
+          {
+            "name": "value",
+            "enumerable": false,
+            "configurable": true,
+            "get": true,
+            "functionName": "get value",
+            "length": 0,
+            "async": false
+          },
+          {
+            "name": "exclusive",
+            "enumerable": false,
+            "configurable": true,
+            "get": true,
+            "functionName": "get exclusive",
+            "length": 0,
+            "async": false
+          },
+          {
+            "name": "open",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": false,
+            "functionName": "open",
+            "length": 2,
+            "async": true
+          },
+          {
+            "name": "close",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": false,
+            "functionName": "close",
+            "length": 1,
+            "async": true
+          },
+          {
+            "name": "markUnavailable",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": false,
+            "functionName": "markUnavailable",
+            "length": 0,
+            "async": false
+          }
+        ]
+      },
+      "facade": {
+        "name": "ResourceFacade",
+        "length": 2,
+        "keys": [
+          "constructor",
+          "key",
+          "value"
+        ],
+        "members": [
+          {
+            "name": "key",
+            "enumerable": false,
+            "configurable": true,
+            "get": true,
+            "functionName": "get key",
+            "length": 0,
+            "async": false
+          },
+          {
+            "name": "value",
+            "enumerable": false,
+            "configurable": true,
+            "get": true,
+            "functionName": "get value",
+            "length": 0,
+            "async": false
+          }
+        ]
+      },
+      "own": [
+        "key",
+        "spec",
+        "deps",
+        "state"
+      ],
+      "specIdentity": true,
+      "depsIdentity": true,
+      "state": "closed",
+      "before": {
+        "error": {
+          "name": "ChordError",
+          "message": "not_ready: resource db is not ready",
+          "code": "not_ready",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      },
+      "exclusive": [
+        false,
+        false,
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "actual ChordError fields getter order and raw cause identity",
+      "constructor": {
+        "name": "ChordError",
+        "length": 3,
+        "parent": "Error"
+      },
+      "error": {
+        "name": "ChordError",
+        "message": "invalid/args: bad",
+        "code": "invalid",
+        "reason": "args",
+        "retryable": false,
+        "details": {
+          "detail": true
+        },
+        "hasCause": true,
+        "keys": [
+          "code",
+          "reason",
+          "retryable",
+          "details",
+          "name"
+        ]
+      },
+      "events": [
+        "reason",
+        "reason",
+        "cause",
+        "reason",
+        "details"
+      ],
+      "causeIdentity": true,
+      "detailsIdentity": true,
+      "isError": true,
+      "isChord": true,
+      "matching": true,
+      "wrong": false,
+      "helpers": [
+        {
+          "name": "isChordError",
+          "length": 2,
+          "prototype": false
+        },
+        {
+          "name": "forbidden",
+          "length": 0,
+          "prototype": false
+        },
+        {
+          "name": "invalid",
+          "length": 3,
+          "prototype": false
+        },
+        {
+          "name": "asChordError",
+          "length": 2,
+          "prototype": false
+        }
+      ],
+      "retryable": [
+        true,
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "actual ChordError helper values identities and wrapping",
+      "forbidden": {
+        "name": "ChordError",
+        "message": "forbidden: forbidden",
+        "code": "forbidden",
+        "reason": null,
+        "retryable": false,
+        "details": null,
+        "hasCause": true,
+        "keys": [
+          "code",
+          "reason",
+          "retryable",
+          "details",
+          "name"
+        ]
+      },
+      "invalid": {
+        "name": "ChordError",
+        "message": "invalid/state: bad",
+        "code": "invalid",
+        "reason": "state",
+        "retryable": false,
+        "details": 7,
+        "hasCause": true,
+        "keys": [
+          "code",
+          "reason",
+          "retryable",
+          "details",
+          "name"
+        ]
+      },
+      "same": true,
+      "wrapped": {
+        "name": "ChordError",
+        "message": "unavailable: operation: original",
+        "code": "unavailable",
+        "reason": null,
+        "retryable": false,
+        "details": null,
+        "hasCause": true,
+        "keys": [
+          "code",
+          "reason",
+          "retryable",
+          "details",
+          "name"
+        ]
+      },
+      "wrappedCause": true
+    },
+    {
+      "name": "open publication and close retirement are ordered before callbacks settle",
+      "during": "opening",
+      "live": {
+        "state": "open",
+        "value": true,
+        "ordered": true
+      },
+      "duringClose": "closed",
+      "after": "closed",
+      "order": 0,
+      "events": [
+        {
+          "stage": "open",
+          "receiver": true,
+          "signal": true,
+          "state": "opening",
+          "notReady": {
+            "error": {
+              "name": "ChordError",
+              "message": "not_ready: resource db is not ready",
+              "code": "not_ready",
+              "reason": null,
+              "retryable": false,
+              "details": null,
+              "hasCause": true,
+              "keys": [
+                "code",
+                "reason",
+                "retryable",
+                "details",
+                "name"
+              ]
+            }
+          }
+        },
+        {
+          "stage": "close",
+          "receiver": true,
+          "value": true,
+          "state": "closed",
+          "order": 0,
+          "notReady": {
+            "error": {
+              "name": "ChordError",
+              "message": "not_ready: resource db is not ready",
+              "code": "not_ready",
+              "reason": null,
+              "retryable": false,
+              "details": null,
+              "hasCause": true,
+              "keys": [
+                "code",
+                "reason",
+                "retryable",
+                "details",
+                "name"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pending duplicate open and close do not acquire or dispose twice",
+      "during": {
+        "state": "opening",
+        "opens": 1,
+        "closes": 0,
+        "distinct": true
+      },
+      "live": {
+        "state": "open",
+        "value": true,
+        "order": 1
+      },
+      "after": "closed",
+      "opens": 1,
+      "closes": 1,
+      "order": 0
+    },
+    {
+      "name": "open failure retains raw value throw",
+      "sync": false,
+      "during": "closed",
+      "after": "closed",
+      "original": true
+    },
+    {
+      "name": "open failure retains raw value reject",
+      "sync": false,
+      "during": "opening",
+      "after": "closed",
+      "original": true
+    },
+    {
+      "name": "open failure retains raw value thenable",
+      "sync": false,
+      "during": "opening",
+      "after": "closed",
+      "original": true
+    },
+    {
+      "name": "late successful open after abort closes produced value before rejecting",
+      "beforeCleanup": {
+        "state": "closed",
+        "order": 0,
+        "access": {
+          "error": {
+            "name": "ChordError",
+            "message": "not_ready: resource late is not ready",
+            "code": "not_ready",
+            "reason": null,
+            "retryable": false,
+            "details": null,
+            "hasCause": true,
+            "keys": [
+              "code",
+              "reason",
+              "retryable",
+              "details",
+              "name"
+            ]
+          }
+        }
+      },
+      "error": {
+        "name": "ChordError",
+        "message": "aborted: resource late opened after abort",
+        "code": "aborted",
+        "reason": null,
+        "retryable": false,
+        "details": null,
+        "hasCause": true,
+        "keys": [
+          "code",
+          "reason",
+          "retryable",
+          "details",
+          "name"
+        ]
+      },
+      "events": [
+        [
+          "open",
+          true
+        ],
+        [
+          "close",
+          true,
+          "closed",
+          0
+        ]
+      ],
+      "after": "closed",
+      "order": 0
+    },
+    {
+      "name": "preabort still opens and cleanup failure overrides abort with original identity",
+      "original": true,
+      "events": [
+        [
+          "open",
+          true
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "state": "closed"
+    },
+    {
+      "name": "unavailable value clears ownership and prevents later reopening or close",
+      "access": {
+        "error": {
+          "name": "ChordError",
+          "message": "unavailable: resource lost could not be restored",
+          "code": "unavailable",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      },
+      "state": "unavailable",
+      "closes": 0,
+      "order": 1
+    },
+    {
+      "name": "close getter failure happens after private value and order retirement",
+      "events": [
+        [
+          "closed",
+          0
+        ]
+      ],
+      "original": true,
+      "state": "closed",
+      "access": {
+        "error": {
+          "name": "ChordError",
+          "message": "not_ready: resource close-getter is not ready",
+          "code": "not_ready",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      }
+    },
+    {
+      "name": "order callback failures preserve Source publication and private-value order",
+      "openError": true,
+      "published": {
+        "state": "open",
+        "value": true
+      },
+      "closeError": true,
+      "retiredState": "closed",
+      "retained": true,
+      "final": "closed"
+    },
+    {
+      "name": "actual factory facade admits live values only outside all factories",
+      "key": "facade",
+      "own": [],
+      "before": {
+        "error": {
+          "name": "ChordError",
+          "message": "not_ready: resource facade is not ready",
+          "code": "not_ready",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      },
+      "live": true,
+      "factory": {
+        "error": {
+          "name": "ChordError",
+          "message": "not_ready: resource facade (inside a factory) is not ready",
+          "code": "not_ready",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      },
+      "after": true,
+      "unavailable": {
+        "error": {
+          "name": "ChordError",
+          "message": "unavailable: resource facade could not be restored",
+          "code": "unavailable",
+          "reason": null,
+          "retryable": false,
+          "details": null,
+          "hasCause": true,
+          "keys": [
+            "code",
+            "reason",
+            "retryable",
+            "details",
+            "name"
+          ]
+        }
+      }
+    },
+    {
+      "name": "private brands occur at actual access and early noops remain legal",
+      "fakeState": "unavailable",
+      "closedState": "closed",
+      "brand": "TypeError",
+      "unavailable": "TypeError",
+      "facadeBrand": "TypeError",
+      "exclusive": true
+    },
+    {
+      "name": "subclasses retain genuine private resource and facade identity",
+      "child": true,
+      "facade": true,
+      "value": true,
+      "key": "child"
+    },
+    {
+      "name": "undefined is a valid opened value and optional close may be absent",
+      "valid": true,
+      "state": "closed",
+      "order": 0
+    }
+  ]
+}
