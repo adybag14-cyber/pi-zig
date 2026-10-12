@@ -1,0 +1,321 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "c4a30fb7b03b36005e9f114c3364e86b156749b1968773cd97bc533ccbc3a511",
+  "originalBody": "const cases=['resolve-sync','resolve-async','read-sync','read-async','transform-sync','transform-async','provider-plain','oauth-toAuth-sync','oauth-toAuth-async','unknown-preabort'],rows=[],raw=[];\nfor(const name of cases){const events=[],controller=new AbortController(),signal=controller.signal,cause=new Error('detail-'+name),credentials=new InMemoryCredentialStore(),originalRead=credentials.read.bind(credentials);let reads=0;\ncredentials.read=(...args)=>{reads++;if(name==='read-sync')throw cause;if(name==='read-async')return Promise.reject(cause);return originalRead(...args)};\nconst model={id:'judge',provider:'fixture',api:'classifier-fixture',type:'classifier',input:['text'],baseUrl:'https://fixture.invalid',contextWindow:1000,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}},models=A.createModels({credentials,authContext:{env:async()=>undefined,fileExists:async()=>false}});\nmodels.setProvider(A.createProvider({id:'fixture',models:[model],auth:name.startsWith('oauth-')?{oauth:{toAuth:credential=>{events.push('toAuth');if(name.endsWith('-sync'))throw cause;return Promise.reject(cause)},refresh:async()=>{throw Error('unexpected refresh')}}}:{apiKey:{name:'Fixture',resolve:()=>{events.push('resolve');if(name==='resolve-sync')throw cause;if(name==='resolve-async')return Promise.reject(cause);return{auth:{apiKey:'fixture-key'},source:'fixture'}}}},classifiers:{'classifier-fixture':{classify:async()=>{events.push('classify');if(name==='provider-plain')throw{message:'not-Error'};return{api:model.api,provider:model.provider,model:model.id,answers:{},stopReason:'stop',timestamp:0}}}}}));\nif(name.startsWith('oauth-'))await credentials.modify('fixture',async()=>({type:'oauth',access:'fixture-access',refresh:'fixture-refresh',expires:Date.now()+3600000}));\nlet value,error,identity=false;const start=Date.now();try{if(name.startsWith('transform-')||name==='provider-plain')value=await models.classify(model,{state:{},questions:{}},{signal,transformHeaders:name.startsWith('transform-')?()=>{events.push('transform');if(name.endsWith('-sync'))throw cause;return Promise.reject(cause)}:undefined});else if(name==='unknown-preabort'){controller.abort(cause);value=await models.getAuth('unknown',{signal})}else value=await models.getAuth(model,{signal})}catch(thrown){identity=thrown.cause===cause;error={name:thrown.name,code:thrown.code,message:thrown.message,causeSame:identity}}\nconst end=Date.now();if(value?.timestamp!==undefined&&value.timestamp!==0&&(value.timestamp<start||value.timestamp>end))throw Error('invalid native timing fixture');rows.push({name,value,valueType:typeof value,error,reads,events,start,end});raw.push({name,value,error,reads,events,start,end})}\n",
+  "rows": [
+    {
+      "name": "resolve-sync",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "API key auth failed for provider fixture: detail-resolve-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "resolve"
+      ],
+      "start": 1791832828530,
+      "end": 1791832828531
+    },
+    {
+      "name": "resolve-async",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "API key auth failed for provider fixture: detail-resolve-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "resolve"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "read-sync",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store read failed for fixture: detail-read-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "read-async",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store read failed for fixture: detail-read-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "transform-sync",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "detail-transform-sync",
+        "timestamp": 1791832828531
+      },
+      "valueType": "object",
+      "reads": 1,
+      "events": [
+        "resolve",
+        "transform"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "transform-async",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "detail-transform-async",
+        "timestamp": 1791832828531
+      },
+      "valueType": "object",
+      "reads": 1,
+      "events": [
+        "resolve",
+        "transform"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "provider-plain",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "[object Object]",
+        "timestamp": 1791832828531
+      },
+      "valueType": "object",
+      "reads": 1,
+      "events": [
+        "resolve",
+        "classify"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "oauth-toAuth-sync",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "oauth",
+        "message": "OAuth auth derivation failed for fixture: detail-oauth-toAuth-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "toAuth"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "oauth-toAuth-async",
+      "valueType": "undefined",
+      "error": {
+        "name": "ModelsError",
+        "code": "oauth",
+        "message": "OAuth auth derivation failed for fixture: detail-oauth-toAuth-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "toAuth"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828532
+    },
+    {
+      "name": "unknown-preabort",
+      "valueType": "undefined",
+      "reads": 0,
+      "events": [],
+      "start": 1791832828532,
+      "end": 1791832828532
+    }
+  ],
+  "raw": [
+    {
+      "name": "resolve-sync",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "API key auth failed for provider fixture: detail-resolve-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "resolve"
+      ],
+      "start": 1791832828530,
+      "end": 1791832828531
+    },
+    {
+      "name": "resolve-async",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "API key auth failed for provider fixture: detail-resolve-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "resolve"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "read-sync",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store read failed for fixture: detail-read-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "read-async",
+      "error": {
+        "name": "ModelsError",
+        "code": "auth",
+        "message": "Credential store read failed for fixture: detail-read-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "transform-sync",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "detail-transform-sync",
+        "timestamp": 1791832828531
+      },
+      "reads": 1,
+      "events": [
+        "resolve",
+        "transform"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "transform-async",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "detail-transform-async",
+        "timestamp": 1791832828531
+      },
+      "reads": 1,
+      "events": [
+        "resolve",
+        "transform"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "provider-plain",
+      "value": {
+        "api": "classifier-fixture",
+        "provider": "fixture",
+        "model": "judge",
+        "answers": {},
+        "stopReason": "error",
+        "errorMessage": "[object Object]",
+        "timestamp": 1791832828531
+      },
+      "reads": 1,
+      "events": [
+        "resolve",
+        "classify"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "oauth-toAuth-sync",
+      "error": {
+        "name": "ModelsError",
+        "code": "oauth",
+        "message": "OAuth auth derivation failed for fixture: detail-oauth-toAuth-sync",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "toAuth"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828531
+    },
+    {
+      "name": "oauth-toAuth-async",
+      "error": {
+        "name": "ModelsError",
+        "code": "oauth",
+        "message": "OAuth auth derivation failed for fixture: detail-oauth-toAuth-async",
+        "causeSame": true
+      },
+      "reads": 1,
+      "events": [
+        "toAuth"
+      ],
+      "start": 1791832828531,
+      "end": 1791832828532
+    },
+    {
+      "name": "unknown-preabort",
+      "reads": 0,
+      "events": [],
+      "start": 1791832828532,
+      "end": 1791832828532
+    }
+  ],
+  "originalDriverNormalizedTextSha256": "065216713f6c733507fc6b5f17db3c9937bed82addb212a369464765c473a6f0",
+  "originalBodySha256": "0ed5bd7d84a2adf3590e5666325fedd2905c51f3c608ba5700414e9645d77ba2"
+}

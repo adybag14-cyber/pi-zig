@@ -1,0 +1,20 @@
+import {createModels,InMemoryCredentialStore} from 'native-typed-models';
+const A={createModels,createProvider:config=>({id:config.id,name:config.id,auth:config.auth,getModels:()=>config.models.filter(model=>(model.type??'chat')==='chat'),getAllModels:()=>config.models,classify:(model,context,options)=>config.classifiers[model.api].classify(model,context,options),generateImages:(model,context,options)=>config.images[model.api].generateImages(model,context,options)})};
+const cases=['resolve-sync','resolve-async','read-sync','read-async','transform-sync','transform-async','provider-plain','oauth-toAuth-sync','oauth-toAuth-async','unknown-preabort'],rows=[],raw=[];
+for(const name of cases){const events=[],controller=new AbortController(),signal=controller.signal,cause=new Error('detail-'+name),credentials=new InMemoryCredentialStore(),originalRead=credentials.read.bind(credentials);let reads=0;
+credentials.read=(...args)=>{reads++;if(name==='read-sync')throw cause;if(name==='read-async')return Promise.reject(cause);return originalRead(...args)};
+const model={id:'judge',provider:'fixture',api:'classifier-fixture',type:'classifier',input:['text'],baseUrl:'https://fixture.invalid',contextWindow:1000,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}},models=A.createModels({credentials,authContext:{env:async()=>undefined,fileExists:async()=>false}});
+models.setProvider(A.createProvider({id:'fixture',models:[model],auth:name.startsWith('oauth-')?{oauth:{toAuth:credential=>{events.push('toAuth');if(name.endsWith('-sync'))throw cause;return Promise.reject(cause)},refresh:async()=>{throw Error('unexpected refresh')}}}:{apiKey:{name:'Fixture',resolve:()=>{events.push('resolve');if(name==='resolve-sync')throw cause;if(name==='resolve-async')return Promise.reject(cause);return{auth:{apiKey:'fixture-key'},source:'fixture'}}}},classifiers:{'classifier-fixture':{classify:async()=>{events.push('classify');if(name==='provider-plain')throw{message:'not-Error'};return{api:model.api,provider:model.provider,model:model.id,answers:{},stopReason:'stop',timestamp:0}}}}}));
+if(name.startsWith('oauth-'))await credentials.modify('fixture',async()=>({type:'oauth',access:'fixture-access',refresh:'fixture-refresh',expires:Date.now()+3600000}));
+let value,error,identity=false;const start=Date.now();try{if(name.startsWith('transform-')||name==='provider-plain')value=await models.classify(model,{state:{},questions:{}},{signal,transformHeaders:name.startsWith('transform-')?()=>{events.push('transform');if(name.endsWith('-sync'))throw cause;return Promise.reject(cause)}:undefined});else if(name==='unknown-preabort'){controller.abort(cause);value=await models.getAuth('unknown',{signal})}else value=await models.getAuth(model,{signal})}catch(thrown){identity=thrown.cause===cause;error={name:thrown.name,code:thrown.code,message:thrown.message,causeSame:identity}}
+const end=Date.now();if(value?.timestamp!==undefined&&value.timestamp!==0&&(value.timestamp<start||value.timestamp>end))throw Error('invalid native timing fixture');rows.push({name,value,valueType:typeof value,error,reads,events,start,end});raw.push({name,value,error,reads,events,start,end})}
+
+if(rows.length!==modelsServiceSource.rows.length)throw Error('Source row count changed');
+for(let i=0;i<rows.length;i++){
+ const actual=rows[i],expected=modelsServiceSource.rows[i];
+ for(const row of [actual,expected]){if(!Number.isSafeInteger(row.start)||!Number.isSafeInteger(row.end)||row.start<0||row.end<row.start)throw Error('invalid interval');if(row.value?.timestamp!==undefined&&row.value.timestamp!==0&&(!Number.isSafeInteger(row.value.timestamp)||row.value.timestamp<row.start||row.value.timestamp>row.end))throw Error('out-of-bounds error timestamp')}
+ const {start:as,end:ae,...a}=actual,{start:bs,end:be,...b}=expected;
+ if(['transform-sync','transform-async','provider-plain'].includes(actual.name)){const{timestamp:at,...av}=a.value,{timestamp:bt,...bv}=b.value;a.value=av;b.value=bv}
+ if(JSON.stringify(a)!==JSON.stringify(b))throw Error(JSON.stringify({name:actual.name,actual:a,expected:b}));
+}
+globalThis.modelsServicesActual={rows,raw};export const proof=true;
