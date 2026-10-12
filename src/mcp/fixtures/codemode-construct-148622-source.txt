@@ -1,0 +1,15 @@
+import{CodemodeSandbox}from'file:///C:/Users/adyba/pi-upstream-runtime-148622bc-20261012/packages/codemode/dist/runtime/host.js';
+const rows=[];
+function capture(name,make){const events=[];let box;try{box=new CodemodeSandbox(make(events));rows.push({name,value:{globals:box.globals.map(g=>g.name),tools:box.tools.map(t=>t.name)},events})}catch(e){rows.push({name,error:{name:e.name,message:e.message},events})}}
+capture('undefined',()=>undefined);
+capture('empty',()=>({}));
+for(const name of ['','bad-name','a.b.c','a.','1x','tools','tools.run','console.log','globalThis.x','store.a'])capture('invalid-'+name,()=>({globals:[{name,execute(){}}]}));
+capture('valid',()=>({globals:[{name:'math.add',execute(){}},{name:'$under_9',execute(){}}]}));
+capture('duplicate',()=>({globals:[{name:'a',execute(){}},{name:'a',execute(){}}]}));
+capture('namespace-first',()=>({globals:[{name:'a.b',execute(){}},{name:'a',execute(){}}]}));
+capture('namespace-last',()=>({globals:[{name:'a',execute(){}},{name:'a.b',execute(){}}]}));
+capture('globals-generator',events=>({globals:(function*(){events.push('yield');yield{name:'a',execute(){}}})()}));
+capture('globals-getter',events=>({get globals(){events.push('get');return[{name:'a',execute(){}}]}}));
+capture('duplicate-tools-before-invalid-global',()=>({tools:[{name:'echo'},{name:'echo'}],globals:[{name:'tools'}]}));
+capture('tool-generator',events=>({tools:(function*(){events.push('tool-yield');yield{name:'echo'}})()}));
+console.log(JSON.stringify({upstream:'148622bc6f8d0ffd64e33cbc0e1e66754f45d32c',rows},null,2));

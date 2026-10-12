@@ -1,0 +1,15 @@
+const rows=[];
+function capture(name,make){const effects=[];const value=make(effects);let error;try{JSON.stringify(value)}catch(e){error={name:e.name,message:e.message}}rows.push({name,error,effects})}
+capture('self-object',()=>{const x={};x.self=x;return x});
+capture('self-array',()=>{const x=[];x.push(x);return x});
+capture('two-object',()=>{const x={};x.child={parent:x};return x});
+capture('array-object',()=>{const x=[];x.push({back:x});return x});
+capture('custom-class',()=>{class Custom{}const x=new Custom;x.self=x;return x});
+capture('null-prototype',()=>{const x=Object.create(null);x.self=x;return x});
+capture('constructor-getter',effects=>{const x={};Object.defineProperty(x,'constructor',{get(){effects.push('constructor');throw Error('bad constructor')}});x.self=x;return x});
+capture('symbol-tag',effects=>{const x={get[Symbol.toStringTag](){effects.push('tag');return'Tagged'}};x.self=x;return x});
+capture('deep-cycle',()=>{const x={};let p=x;for(let i=0;i<8;i++)p=p['child'+i]={};p.back=x;return x});
+capture('inner-cycle',()=>{const x={outer:{inner:{}}};x.outer.inner.back=x.outer;return x});
+capture('getter-once',effects=>{const x={get self(){effects.push('get');return x}};return x});
+capture('toJSON-once',effects=>{const x={toJSON(){effects.push('json');return this}};x.self=x;return x});
+console.log(JSON.stringify({node:process.versions.node,rows},null,2));

@@ -195,3 +195,48 @@ trace matches that complete observation. All four targeted owner tests passed,
 including the earlier eleven Source outcomes and full allocation sweep; all
 4,067 source and 19,546 tool inputs were unchanged. The initial nested fixture
 self-type compile error is retained; it is not counted as a runtime failure.
+
+The October12 sandbox checkpoint adds an explicitly installed native worker-backed
+CodemodeSandbox class. Original148622 captures cover twenty constructor and
+registration observations, five ordinary execution records and six portable VM
+environment observations. The raw environment-dependent clock observations are
+retained, with their original Windows host binding; they are not asserted as
+portable timezone goldens. Twelve actual Node24.14 circular-serialization records
+cover error text, deep paths, arrays, custom classes, getters and toJSON counts.
+The host serializes store entries individually, preserves public result field
+order, and constructs circular diagnostics during the original traversal rather
+than invoking user code again. The inner VM retains upstream QuickJS collation
+and its absent Atomics surface; outer extension hosts retain Node collation.
+
+The combined Windows Debug component gate passed31/31 tests across171 steps:
+sandbox8, controlled runs6, worker5, JavaScript owner4, durable JSON DTO4 and
+physical stdio4. This includes the earlier owner/run allocation checks, not a
+complete new sandbox-class allocation qualification. All4078 source and19546
+tool inputs were unchanged. Direct C allocator testing remains a separate gate:
+the first three offside tests passed but observed only two backing-allocation
+failure indices because QuickJS pools small blocks. That is not exhaustive
+coverage of every internal VM allocation.
+
+Replay identity now uses SHA256 over the native src and tools trees, QuickJS and
+ICU inputs, build scripts, exact Zig compiler and installed library tree, target,
+optimization and backend selection. This deliberately invalidates journals on
+conservative source changes. It does not hash external OS libraries or itself
+prove cross-runtime persisted replay compatibility. Full package exports, class
+ABI/edge behavior, portable/remote launchers, sandbox allocation qualification
+and actual durable CodeMode journal integration remain open. Public package and
+native-default activation remain disabled; the Node bridge is retained.
+
+The official immutable148622 reference build completed with its original inputs
+unchanged. The integrated latest durable graph rejects wait cycles and preserves
+original diagnosed errors. Fifteen actual upstream observations passed in the
+private focused gate, and broad Debug/ReleaseSafe each passed94/99 with the five
+existing backend platform skips. The pure scheduler gate remains32/36: the same
+four failures reproduce against the pre-graph baseline, while the new genuine
+self-wait record passes. Those existing failures remain requirements, not waived
+checks. The old historical fixture is retained separately.
+
+The qualified two-file Windows modal raw-input handoff fix and native durable
+JSON DTO construction are integrated. The complete physical Main error lifecycle
+has not passed its process tests. Hosted results above still concern9699132;
+they do not qualify this newer source. This branch remains an implementation
+checkpoint rather than a completed Pi release.

@@ -136,6 +136,7 @@ pub const Manager = struct {
     live_task_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
     missing_tasks: std.AutoHashMapUnmanaged(u64, void) = .empty,
     pending_reads: std.AutoHashMapUnmanaged(u64, u64) = .empty,
+    settling_waiters: bool = false,
     read_queries: std.ArrayList(ReadQuery) = .empty,
     read_replies: std.ArrayList(ReadReply) = .empty,
     next_read_generation: u64 = 1,
@@ -3042,6 +3043,10 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     const storage_context = @import("native_durable_storage.zig").withContext(native, data[2]);
     defer storage_context.restore();
     const admitted = self.entry.runtime.tryCommit(Change.run, &call) catch |err| {
+        if (self.entry.runtime.diagnosticMessage(err)) |message| {
+            const reason = messageError(engine, message) catch |failure| return durable.reject(engine, failure);
+            return c.JS_Throw(engine.context, reason);
+        }
         return durable.reject(engine, err);
     };
     if (!admitted) {
@@ -3171,6 +3176,12 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
     return settleWaitersMode(self, false);
 }
 fn settleWaitersMode(self: *Manager, idle_only: bool) !void {
+    // A custom Storage read can pump this same owner before it returns. The
+    // waiter still exists then, so starting its read again recursively retains
+    // the same Session line and C stack instead of making progress.
+    if (self.settling_waiters) return;
+    self.settling_waiters = true;
+    defer self.settling_waiters = false;
     var index = self.waiters.items.len;
     while (index > 0) {
         index -= 1;

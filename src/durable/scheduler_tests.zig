@@ -92,6 +92,10 @@ fn oracleCase(value: Value, name: []const u8) !Value {
 test "durable.scheduler actual upstream captured task records completed fault aborted and recovery" {
     var oracle = try json.Owned.parse(gpa, @embedFile("fixtures/scheduler_b7df.json"));
     defer oracle.deinit();
+    // eb2fce4 changes the self-wait diagnostic. Preserve the historical corpus
+    // and compare this changed scenario with the genuine latest id2 record.
+    var latest_self = try json.Owned.parse(gpa, @embedFile("fixtures/durable-148622-self-wait-source.json"));
+    defer latest_self.deinit();
     const handlers = [_]struct { name: []const u8, handler: scheduler_mod.Handler }{
         .{ .name = "completed", .handler = finish }, .{ .name = "noop", .handler = noop }, .{ .name = "failed", .handler = fail }, .{ .name = "terminalThenError", .handler = terminalThenError }, .{ .name = "aborted", .handler = finish }, .{ .name = "waitingSelf", .handler = waitSelf },
     };
@@ -99,6 +103,13 @@ test "durable.scheduler actual upstream captured task records completed fault ab
         var fixture: Fixture = undefined;
         try fixture.init();
         defer fixture.deinit();
+        if (comptime std.mem.eql(u8, scenario.name, "waitingSelf")) {
+            fixture.session.source_clock = struct {
+                fn now(_: ?*anyopaque) i64 {
+                    return 123;
+                }
+            }.now;
+        }
         try fixture.scheduler.register(def("job", scenario.handler));
         const id = try fixture.add("job", "{\"phase\":\"start\"}", .{ .conversationId = 1 });
         try fixture.scheduler.open();
@@ -107,7 +118,8 @@ test "durable.scheduler actual upstream captured task records completed fault ab
         _ = try fixture.scheduler.runUntilBlocked(5);
         var record = try fixture.record(id);
         defer record.deinit();
-        try std.testing.expect(json.equal(try model.field(try oracleCase(oracle.value, scenario.name), "record"), record.value));
+        const expected = if (comptime std.mem.eql(u8, scenario.name, "waitingSelf")) latest_self.value else try oracleCase(oracle.value, scenario.name);
+        try std.testing.expect(json.equal(try model.field(expected, "record"), record.value));
     }
     var fixture: Fixture = undefined;
     try fixture.init();

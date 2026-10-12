@@ -11,6 +11,7 @@ const host_mod = @import("../mcp/codemode_run_host.zig");
 const json = @import("../mcp/protocol.zig").json;
 const scopes = @import("native_async_scope.zig");
 const Pending = struct { record: ?usize, started: i64 };
+pub const Policy = struct { memory_limit: usize = std.math.maxInt(usize), deterministic: bool = true, interrupt_budget: ?f64 = null, on_finish: ?c.JSValue = null };
 const Owner = struct {
     engine: *Engine,
     worker: ?*worker_mod.Session = null,
@@ -26,6 +27,10 @@ const Owner = struct {
     signal: c.JSValue,
     abort_listener: c.JSValue,
     async_scope: c.JSValue,
+    deadline: ?i64 = null,
+    timeout_ms: ?u64 = null,
+    timeout_label: ?[]const u8 = null,
+    on_finish: c.JSValue,
 
     fn release(self: *Owner) void {
         if (self.worker) |worker| worker.deinit();
@@ -33,7 +38,7 @@ const Owner = struct {
         self.pending.deinit(self.engine.gpa);
         self.data.deinit();
         if (self.selected) |*value| value.deinit();
-        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope" }) |name| self.engine.freeValue(@field(self, name));
+        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope", "on_finish" }) |name| self.engine.freeValue(@field(self, name));
         self.engine.gpa.destroy(self);
     }
     fn elapsed(self: *Owner, began: i64) i64 {
@@ -50,14 +55,23 @@ const Owner = struct {
         if (self.finished) return;
         var selected = try json.Owned.empty(self.engine.gpa);
         errdefer selected.deinit();
-        selected.value = try json.clone(selected.arena.allocator(), result);
+        const a = selected.arena.allocator();
+        // Preserve the public host result's insertion order as well as its
+        // values; the VM transport builds its fields in a different order.
+        selected.value = .{ .object = .empty };
+        inline for (.{ "ok", "error", "value" }) |name| if (result.object.get(name)) |value| try selected.value.object.put(a, name, try json.clone(a, value));
         var pending = self.pending.valueIterator();
         while (pending.next()) |call| try self.completeCall(call.*, "cancelled");
-        try selected.value.object.put(selected.arena.allocator(), "calls", try json.clone(selected.arena.allocator(), self.data.value.object.get("calls").?));
-        try selected.value.object.put(selected.arena.allocator(), "output", try json.clone(selected.arena.allocator(), self.data.value.object.get("output").?));
+        try selected.value.object.put(a, "output", try json.clone(a, self.data.value.object.get("output").?));
+        try selected.value.object.put(a, "calls", try json.clone(a, self.data.value.object.get("calls").?));
+        inline for (.{ "storeWrites", "during" }) |name| if (result.object.get(name)) |value| try selected.value.object.put(a, name, try json.clone(a, value));
         self.selected = selected;
         self.finished = true;
         self.host.finish();
+        if (!c.JS_IsUndefined(self.on_finish)) {
+            const cleanup = try js.call(self.engine, self.on_finish, c.pi_js_undefined(), &.{});
+            self.engine.freeValue(cleanup);
+        }
         if (!c.JS_IsUndefined(self.abort_listener)) {
             const event_name = try stringValue(self.engine, "abort");
             defer self.engine.freeValue(event_name);
@@ -140,7 +154,7 @@ fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state = owner(value) orelse return;
-    inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
+    inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope", "on_finish" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
 }
 fn hub(engine: *Engine) !*Hub {
     if (engine.native_codemode_owner) |raw| return @ptrCast(@alignCast(raw));
@@ -183,6 +197,11 @@ fn pump(engine: *Engine) !bool {
         const handle = self.active.items[index];
         const state = owner(handle).?;
         const worker = state.worker.?;
+        if (!state.finished) if (state.deadline) |deadline| if (std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() >= deadline) {
+            const message = try std.fmt.allocPrint(engine.gpa, "Execution timed out after {s} ms", .{state.timeout_label.?});
+            defer engine.gpa.free(message);
+            try state.failure("timeout", message);
+        };
         var count: usize = 0;
         while (count < 128) : (count += 1) {
             var event = (worker.next() catch |err| {
@@ -295,6 +314,7 @@ fn deliver(self: *Owner, args: []const c.JSValue) !void {
     const props = if (c.JS_IsUndefined(properties)) null else try serialized(engine, properties);
     defer if (props) |text| engine.gpa.free(text);
     const native: host_mod.Outcome = if (ok) .{ .success = bytes } else .{ .failure = .{ .message = bytes orelse "undefined", .properties = props } };
+    if (self.finished) return;
     const key: u64 = @intFromFloat(call_id);
     try self.host.deliver(number, clock, key, native);
     var accepted = self.host.early.fetchRemove(@bitCast(number)).?.value;
@@ -305,9 +325,47 @@ fn deliver(self: *Owner, args: []const c.JSValue) !void {
 }
 fn serialized(engine: *Engine, value: c.JSValue) !?[]u8 {
     if (c.JS_IsUndefined(value)) return null;
-    const encoded = try engine.checked(c.JS_JSONStringify(engine.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
+    const encoded = try engine.checked(c.JS_PiJSONStringifyNode(engine.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
     defer engine.freeValue(encoded);
     return if (c.JS_IsUndefined(encoded)) null else try engine.toString(encoded);
+}
+
+fn snapshotStore(engine: *Engine, input: c.JSValue) !json.Owned {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const object = try scope.global("Object");
+    const entries = try scope.invoke(object, "entries", &.{if (c.JS_IsNull(input) or c.JS_IsUndefined(input)) try scope.object() else input});
+    const encoded = try scope.object();
+    var count: u32 = 0;
+    if (c.JS_ToUint32(engine.context, &count, try scope.get(entries, "length")) < 0) return js.capture(engine);
+    // Upstream enumerates the container once and stringifies each value.
+    // Its ordinary assignment semantics also apply to names like __proto__.
+    for (0..count) |index| {
+        const entry = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(index))));
+        const key = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, entry, 0)));
+        const value = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, entry, 1)));
+        const text = try scope.invoke(try scope.global("JSON"), "stringify", &.{value});
+        if (!c.JS_IsUndefined(text)) try js.setKey(engine, encoded, key, text);
+    }
+    const stored = try scope.invoke(object, "entries", &.{encoded});
+    if (c.JS_ToUint32(engine.context, &count, try scope.get(stored, "length")) < 0) return js.capture(engine);
+    var result = try json.Owned.empty(engine.gpa);
+    errdefer result.deinit();
+    result.value = .{ .object = .empty };
+    for (0..count) |index| {
+        const entry = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, stored, @intCast(index))));
+        const key = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, entry, 0)));
+        const encoded_value = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, entry, 1)));
+        const name = try engine.toString(key);
+        defer engine.gpa.free(name);
+        const bytes = try engine.toString(encoded_value);
+        defer engine.gpa.free(bytes);
+        var parsed_value = try json.Owned.parse(engine.gpa, bytes);
+        defer parsed_value.deinit();
+        const a = result.arena.allocator();
+        try result.value.object.put(a, try a.dupe(u8, name), try json.clone(a, parsed_value.value));
+    }
+    return result;
 }
 fn ownedText(engine: *Engine, arena: std.mem.Allocator, value: c.JSValue) ![]const u8 {
     const bytes = try engine.toString(value);
@@ -331,11 +389,14 @@ fn signalAborted(self: *Owner) !void {
 /// The sandbox class supplies memory/stack policy. All declared tools/globals
 /// and callbacks belong to this run, independently of registered execute tools.
 pub fn start(engine: *Engine, code: c.JSValue, options: c.JSValue, memory_limit: usize) !c.JSValue {
+    return launch(engine, code, options, .{ .memory_limit = memory_limit });
+}
+pub fn launch(engine: *Engine, code: c.JSValue, options: c.JSValue, policy: Policy) !c.JSValue {
     const self = try hub(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const started = try scope.get(options, "startedAt");
-    const seed = try scope.get(options, "seed");
+    const started = if (policy.deterministic) try scope.get(options, "startedAt") else c.JS_NewInt32(engine.context, 0);
+    const seed = if (policy.deterministic) try scope.get(options, "seed") else c.JS_NewInt32(engine.context, 0);
     var time: f64 = undefined;
     var random: f64 = undefined;
     if (!c.JS_IsNumber(started) or c.JS_ToFloat64(engine.context, &time, started) < 0 or !std.math.isFinite(time) or time < 0) return throwError(engine, "startedAt must be a non-negative number of milliseconds since the epoch");
@@ -363,9 +424,9 @@ pub fn start(engine: *Engine, code: c.JSValue, options: c.JSValue, memory_limit:
     const globals = try a.alloc(run_mod.Global, global_count);
     for (globals, 0..) |*global, index| {
         const value = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, declared_globals, @intCast(index))));
-        global.* = .{ .name = try ownedText(engine, a, try scope.get(value, "name")), .spread = c.JS_ToBool(engine.context, try scope.get(value, "spread")) != 0 };
+        global.* = .{ .name = try ownedText(engine, a, try scope.get(value, "name")), .spread = c.JS_IsStrictEqual(engine.context, try scope.get(value, "spread"), c.pi_js_bool(engine.context, 1)) };
     }
-    run_mod.validateDeclarations(engine.gpa, tools, globals) catch |err| switch (err) {
+    if (policy.deterministic) run_mod.validateDeclarations(engine.gpa, tools, globals) catch |err| switch (err) {
         error.DuplicateToolName => return throwError(engine, "Tool names must be unique"),
         error.DuplicateToolScriptName => return throwError(engine, "Tool script names must be unique"),
         else => return err,
@@ -390,20 +451,29 @@ pub fn start(engine: *Engine, code: c.JSValue, options: c.JSValue, memory_limit:
         data.deinit();
     };
     const state = try engine.gpa.create(Owner);
-    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined(), .async_scope = scopes.capture(engine) };
+    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined(), .async_scope = scopes.capture(engine), .on_finish = c.JS_DupValue(engine.context, policy.on_finish orelse c.pi_js_undefined()) };
     _ = c.JS_SetOpaque(handle, state);
     transferred = true;
     state.data.value = .{ .object = .empty };
     inline for (.{ "calls", "output" }) |name| try state.data.value.object.put(state.data.arena.allocator(), name, .{ .array = .init(state.data.arena.allocator()) });
     const store_value = try scope.get(options, "store");
-    const store_bytes = try serialized(engine, store_value);
-    defer if (store_bytes) |bytes| engine.gpa.free(bytes);
-    var store = if (store_bytes) |bytes| try json.Owned.parse(engine.gpa, bytes) else try json.Owned.empty(engine.gpa);
+    var store = try snapshotStore(engine, store_value);
     defer store.deinit();
-    if (store_bytes == null) store.value = .{ .object = .empty };
     // The worker has a separate allocation domain, as an upstream worker does.
     // Outer owner allocation faults must not race another thread's allocator.
-    state.worker = try worker_mod.Session.create(std.heap.smp_allocator, engine.native_io.?, source, .{ .started_at = time, .seed = random, .tools = tools, .globals = globals, .store = store.value, .memory_limit = memory_limit, .notify_context = engine, .notify = Engine.notifyOwner });
+    const timeout_value = try scope.get(options, "timeoutMs");
+    if (c.JS_IsNumber(timeout_value)) {
+        var timeout_number: f64 = undefined;
+        if (c.JS_ToFloat64(engine.context, &timeout_number, timeout_value) < 0) return js.capture(engine);
+        if (std.math.isFinite(timeout_number)) {
+            // The upstream worker host uses Node timers: finite delays outside
+            // 1..2^31-1 become 1 ms; fractional accepted delays are truncated.
+            state.timeout_ms = if (timeout_number < 1 or timeout_number > 2147483647) 1 else @intFromFloat(@trunc(timeout_number));
+            state.timeout_label = try ownedText(engine, state.data.arena.allocator(), timeout_value);
+            state.deadline = std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() +| @as(i64, @intCast(state.timeout_ms.?));
+        }
+    }
+    state.worker = try worker_mod.Session.create(std.heap.smp_allocator, engine.native_io.?, source, .{ .started_at = time, .seed = random, .tools = tools, .globals = globals, .store = store.value, .memory_limit = policy.memory_limit, .interrupt_budget = policy.interrupt_budget, .deterministic = policy.deterministic, .notify_context = engine, .notify = Engine.notifyOwner });
     try scope.put(handle, "result", promise);
     var handle_root = [_]c.JSValue{handle};
     try scope.put(handle, "deliver", try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, delivery, "deliver", 4, 0, handle_root.len, &handle_root))));

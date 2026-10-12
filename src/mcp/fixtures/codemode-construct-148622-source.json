@@ -1,0 +1,179 @@
+{
+  "upstream": "148622bc6f8d0ffd64e33cbc0e1e66754f45d32c",
+  "rows": [
+    {
+      "name": "undefined",
+      "value": {
+        "globals": [],
+        "tools": []
+      },
+      "events": []
+    },
+    {
+      "name": "empty",
+      "value": {
+        "globals": [],
+        "tools": []
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-bad-name",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"bad-name\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-a.b.c",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"a.b.c\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-a.",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"a.\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-1x",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"1x\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-tools",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"tools\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-tools.run",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"tools.run\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-console.log",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"console.log\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-globalThis.x",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"globalThis.x\""
+      },
+      "events": []
+    },
+    {
+      "name": "invalid-store.a",
+      "error": {
+        "name": "Error",
+        "message": "Invalid global name \"store.a\""
+      },
+      "events": []
+    },
+    {
+      "name": "valid",
+      "value": {
+        "globals": [
+          "math.add",
+          "$under_9"
+        ],
+        "tools": []
+      },
+      "events": []
+    },
+    {
+      "name": "duplicate",
+      "error": {
+        "name": "Error",
+        "message": "Global \"a\" is already registered"
+      },
+      "events": []
+    },
+    {
+      "name": "namespace-first",
+      "error": {
+        "name": "Error",
+        "message": "Global \"a\" conflicts with the namespace \"a\""
+      },
+      "events": []
+    },
+    {
+      "name": "namespace-last",
+      "error": {
+        "name": "Error",
+        "message": "Global \"a\" conflicts with the namespace \"a\""
+      },
+      "events": []
+    },
+    {
+      "name": "globals-generator",
+      "value": {
+        "globals": [],
+        "tools": []
+      },
+      "events": [
+        "yield"
+      ]
+    },
+    {
+      "name": "globals-getter",
+      "value": {
+        "globals": [
+          "a"
+        ],
+        "tools": []
+      },
+      "events": [
+        "get",
+        "get"
+      ]
+    },
+    {
+      "name": "duplicate-tools-before-invalid-global",
+      "error": {
+        "name": "Error",
+        "message": "Tool \"echo\" is already registered"
+      },
+      "events": []
+    },
+    {
+      "name": "tool-generator",
+      "value": {
+        "globals": [],
+        "tools": [
+          "echo"
+        ]
+      },
+      "events": [
+        "tool-yield"
+      ]
+    }
+  ]
+}

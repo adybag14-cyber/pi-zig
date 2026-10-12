@@ -1090,6 +1090,10 @@ JS_EXTERN JSValue JS_ParseJSON(JSContext *ctx, const char *buf, size_t buf_len,
                                const char *filename);
 JS_EXTERN JSValue JS_JSONStringify(JSContext *ctx, JSValueConst obj,
                                    JSValueConst replacer, JSValueConst space0);
+/* Node-host diagnostics for the native compatibility boundary. VM-internal
+   stringify retains its original QuickJS error behavior. */
+JS_EXTERN JSValue JS_PiJSONStringifyNode(JSContext *ctx, JSValueConst obj,
+                                       JSValueConst replacer, JSValueConst space0);
 
 /* Manages the backing memory of an externally created ArrayBuffer.
    When 'size' is zero, 'ptr' must be freed and NULL returned. Otherwise the

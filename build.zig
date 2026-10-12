@@ -13,6 +13,8 @@ pub fn build(b: *std.Build) void {
     // optional companions on constrained builders. Default remains Zig's
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
+    const vm_identity = @import("tools/build_native_vm_identity.zig").add(b, target, optimize, use_llvm) catch |err| std.debug.panic("Native VM identity cannot bind its source/tool inputs: {s}", .{@errorName(err)});
+    b.modules.put(b.graph.arena, "native_vm_identity", vm_identity) catch @panic("OOM");
     const native_yaml = @import("tools/build_native_yaml.zig").add(b, target, optimize);
     const frontmatter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_frontmatter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native frontmatter"}, .use_llvm = use_llvm });
     frontmatter_tests.root_module.addIncludePath(b.path("vendor/libfyaml"));
@@ -140,6 +142,11 @@ pub fn build(b: *std.Build) void {
     linkSqlite(codemode_owner_module, sqlite_lib_dir, sqlite_library);
     const codemode_owner_tests = b.addTest(.{ .root_module = codemode_owner_module, .use_llvm = use_llvm, .filters = &.{"native CodeMode JavaScript owner"} });
     b.step("test-native-codemode-controlled-binding", "Compare actual JavaScript controlled-run callbacks and lifecycle through native worker VMs").dependOn(&b.addRunArtifact(codemode_owner_tests).step);
+    const codemode_sandbox_module = b.createModule(.{ .root_source_file = b.path("src/native_codemode_sandbox_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, codemode_sandbox_module, quickjs, sqlite_lib_dir);
+    linkSqlite(codemode_sandbox_module, sqlite_lib_dir, sqlite_library);
+    const codemode_sandbox_tests = b.addTest(.{ .root_module = codemode_sandbox_module, .use_llvm = use_llvm, .filters = &.{"native CodeMode sandbox"} });
+    b.step("test-native-codemode-sandbox", "Exercise the native sandbox class, real async tools, cancellation and deadlines through worker VMs").dependOn(&b.addRunArtifact(codemode_sandbox_tests).step);
     const composed_vm_module = b.createModule(.{ .root_source_file = b.path("src/native_composed_vm_test.zig"), .target = target, .optimize = optimize });
     composed_vm_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, composed_vm_module, quickjs, sqlite_lib_dir);
@@ -738,6 +745,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, schema_tool_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(schema_tool_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-243-schema-tools", "Replay actual latest nested schema-tool errors and model-issued controls").dependOn(&b.addRunArtifact(schema_tool_tests).step);
+    const wait_cycle_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_148622_wait_cycle_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable latest148622 wait cycle"} });
+    linkQuickJs(b, wait_cycle_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(wait_cycle_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-148622-wait-cycle", "Replay actual latest wait cycles ordinary holds abort marks and background owner waits").dependOn(&b.addRunArtifact(wait_cycle_tests).step);
     const schema_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_schema_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native schema duration measurements"} });
     b.step("test-native-durable-schema-comparison", "Compare raw Source schema results and bound only explicitly identified real attempt measurements").dependOn(&b.addRunArtifact(schema_comparison_tests).step);
     const owner_wakeup_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_owner_wakeup_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native owner", "native timer owner" } });
@@ -752,6 +763,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_output_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_output_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-output", "Replay actual durable CodeMode output layout truncation images and asynchronous writer outcomes").dependOn(&b.addRunArtifact(codemode_output_tests).step);
+    const durable_json_dto_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_json_dto_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable JSON DTO"} });
+    linkQuickJs(b, durable_json_dto_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(durable_json_dto_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-durable-json-dto", "Preserve JSON.parse semantics while avoiding native DTO format/reparse allocations").dependOn(&b.addRunArtifact(durable_json_dto_tests).step);
     const inspection_comparison_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_inspection_compare.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable inspection timestamp comparison"} });
     b.step("test-native-durable-inspection-comparison", "Reject missing malformed out-of-bounds or unstable actual inspection timestamps").dependOn(&b.addRunArtifact(inspection_comparison_tests).step);
     const summary_transcript_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_summary_transcript_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"latest89 serializer"} });
@@ -2200,6 +2215,7 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.addImport("native_icu_api", b.modules.get("native_icu_api").?);
     module.addIncludePath(b.path("vendor/photon-native"));
     module.addImport("native_photon_link", b.modules.get("native_photon_link").?);
+    module.addImport("native_vm_identity", b.modules.get("native_vm_identity").?);
     module.link_libcpp = true;
     module.linkLibrary(library);
     module.link_libc = true;

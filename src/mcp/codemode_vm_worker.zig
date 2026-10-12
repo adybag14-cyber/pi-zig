@@ -15,6 +15,7 @@ pub const Options = struct {
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: ?f64 = null,
+    deterministic: bool = true,
     notify_context: ?*anyopaque = null,
     /// Must be thread-safe and must not call a VM. Its lease outlives join().
     notify: ?*const fn (?*anyopaque) void = null,
@@ -60,7 +61,7 @@ pub const Session = struct {
     pub fn create(parent: std.mem.Allocator, io: std.Io, source: []const u8, options: Options) !*Session {
         var validation = try host_mod.Host.init(parent, options.started_at, options.seed);
         defer validation.deinit();
-        try run_mod.validateDeclarations(parent, options.tools, options.globals);
+        if (options.deterministic) try run_mod.validateDeclarations(parent, options.tools, options.globals);
         const self = try parent.create(Session);
         self.* = .{ .parent = parent, .io = io, .inputs = undefined, .source = "", .options = options, .owner = std.Thread.getCurrentId() };
         self.inputs = std.heap.ArenaAllocator.init(self.allocator());
@@ -264,7 +265,7 @@ pub const Session = struct {
         if (self.options.notify) |notify| notify(self.options.notify_context);
     }
     fn execute(self: *Session) !void {
-        const run = try run_mod.Run.create(self.allocator(), self.io, self.source, .{ .started_at = self.options.started_at, .seed = self.options.seed, .tools = self.options.tools, .globals = self.options.globals, .store = self.options.store, .timeout_ms = self.options.timeout_ms, .memory_limit = self.options.memory_limit, .stack_limit = self.options.stack_limit, .interrupt_budget = self.options.interrupt_budget, .abort_flag = &self.abort_requested, .observer = .{ .context = self, .started = started, .call = called, .idle = idle, .output = output } });
+        const run = try run_mod.Run.create(self.allocator(), self.io, self.source, .{ .started_at = self.options.started_at, .seed = self.options.seed, .tools = self.options.tools, .globals = self.options.globals, .store = self.options.store, .timeout_ms = self.options.timeout_ms, .memory_limit = self.options.memory_limit, .stack_limit = self.options.stack_limit, .interrupt_budget = self.options.interrupt_budget, .abort_flag = &self.abort_requested, .deterministic = self.options.deterministic, .observer = .{ .context = self, .started = started, .call = called, .idle = idle, .output = output } });
         var released = false;
         defer if (!released) run.deinit();
         try run.begin();

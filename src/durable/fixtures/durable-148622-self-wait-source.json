@@ -1,0 +1,36 @@
+{
+        "scenario": "waitingSelf",
+        "record": {
+          "id": 2,
+          "conversationId": 1,
+          "kind": "job",
+          "version": 1,
+          "input": null,
+          "background": false,
+          "abortRequested": false,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "faulted",
+              "error": {
+                "message": "Task 2 cannot wait on 2: 2 -> 2 is a wait cycle"
+              }
+            }
+          },
+          "startedAt": 123,
+          "endedAt": 123
+        },
+        "late": "Task 2 invocation has ended",
+        "cleanup": [
+          {
+            "id": 2,
+            "outcome": {
+              "status": "faulted",
+              "error": {
+                "message": "Task 2 cannot wait on 2: 2 -> 2 is a wait cycle"
+              }
+            }
+          }
+        ],
+        "reports": []
+      }

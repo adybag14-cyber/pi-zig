@@ -27,6 +27,9 @@ pub const Hub = struct {
     main_index: usize = 0,
     subscriptions: [16]?Subscription = @splat(null),
     main_enabled: bool = false,
+    // Main guard transitions retain raw ownership across modal handoffs.
+    // Explicit guest raw-mode control transfers that ownership back.
+    main_raw_owned: bool = false,
     flowing: bool = false,
     started: bool = false,
     closing: bool = false,
@@ -137,6 +140,7 @@ pub const Hub = struct {
             .raw_mode => |enabled| {
                 try self.console.setRaw(enabled);
                 self.metadata.stdin_raw = enabled;
+                self.main_raw_owned = false;
             },
             .@"resume" => {
                 try self.startLocked();
@@ -151,6 +155,7 @@ pub const Hub = struct {
         const self: *Hub = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.backing);
         self.metadata.stdin_raw = enabled;
+        self.main_raw_owned = true;
         self.console.raw = enabled;
         self.mutex.unlock(self.backing);
         try self.publish(.{ .raw = enabled });
@@ -294,12 +299,18 @@ pub const Hub = struct {
             };
         }
     }
+    fn pollPhysical(self: *Hub, reader: *Io.File.Reader) !?u8 {
+        self.mutex.lockUncancelable(self.backing);
+        const raw_only = self.main_enabled and self.main_raw_owned;
+        self.mutex.unlock(self.backing);
+        return if (raw_only) platform.pollBytePhysicalRaw(reader) else platform.pollBytePhysical(reader);
+    }
     fn readPhysical(self: *Hub, buffer: []u8, console_reader: *Io.File.Reader) !usize {
         if (comptime builtin.os.tag == .windows) if (self.metadata.stdin_tty) {
             var count: usize = 0;
             while (count == 0) {
                 try self.backing.checkCancel();
-                if (try platform.pollBytePhysical(console_reader)) |byte| {
+                if (try self.pollPhysical(console_reader)) |byte| {
                     buffer[0] = byte;
                     count = 1;
                 } else try self.backing.sleep(.fromMilliseconds(10), .awake);
@@ -308,7 +319,7 @@ pub const Hub = struct {
             // physical console decoder, rather than File.Reader's byte buffer.
             // Retain that burst before publishing one input turn to Main.
             while (count < buffer.len and platform.inputBufferedPhysical(console_reader)) {
-                buffer[count] = (try platform.pollBytePhysical(console_reader)) orelse break;
+                buffer[count] = (try self.pollPhysical(console_reader)) orelse break;
                 count += 1;
             }
             return count;

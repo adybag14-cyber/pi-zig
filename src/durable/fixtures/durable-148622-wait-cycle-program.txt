@@ -1,0 +1,82 @@
+import * as M from '@earendil-works/pi-durable';
+import {BACKGROUND_CONTEXT as context} from '@earendil-works/chord/context';
+const defer=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}};
+const end=(name,status='completed')=>({status:'terminal',outcome:{status,result:name}});
+const wait=(on,policy='allSettled')=>({status:'waiting',checkpoint:{phase:'done'},on,policy});
+const modes=['self','self-failfast','missing','foreign-failfast','two-cycle','three-cycle','held-owner-cycle','deep-held-cycle','background-owner','ordinary-owner','ended-owner','owned-child','diamond','abort-marked-stale-wait','abort-handler-wait'];
+const rows=[],raw=[];
+for(const mode of modes){
+ const ids={},behavior=new Map(),gates=new Map(),log=[],reports=[];
+ globalThis.waitCycleProgress={mode,ids,log,rows};
+ const gate=name=>{if(!gates.has(name))gates.set(name,defer());return gates.get(name)};
+ let harness,root,Node;
+ const finish=(runtime,ctx,name)=>runtime.commit(()=>end(name),ctx);
+ const spawn=(tx,owner,name)=>tx.createTask(Node,{name},{ownership:{kind:'task',taskId:owner}});
+ const state=async name=>(await harness.getTask(ids[name],context)).state;
+ const until=async check=>{const deadline=Date.now()+5000;while(!await check()){if(Date.now()>deadline)throw Error(mode+': expected task state not reached');await new Promise(resolve=>setTimeout(resolve,1))}};
+ Node=M.defineTask({name:'fixture.148622-wait-cycle',version:1,initial:()=>({phase:'run'}),phases:{run:async(task,runtime,ctx)=>{
+  const name=task.input.name;log.push(`run:${name}`);
+  if(behavior.has(name))return behavior.get(name)(runtime,ctx);
+  await Promise.race([gate(name).promise,new Promise(resolve=>{if(runtime.signal.aborted)resolve();else runtime.signal.addEventListener('abort',resolve,{once:true})})]);
+  if(runtime.signal.aborted)return;
+  return finish(runtime,ctx,name);
+ },done:async(task,runtime,ctx)=>finish(runtime,ctx,task.input.name)},abort:async(task,runtime,ctx)=>{
+  const name=task.input.name;log.push(`abort:${name}`);
+  if(mode==='abort-marked-stale-wait'&&name==='c'){gate('cleanup-started').resolve();await gate('cleanup').promise}
+  if(mode==='abort-handler-wait'&&name==='a')return runtime.commit(()=>wait([ids.b]),ctx);
+  return runtime.commit(()=>end(name,'aborted'),ctx);
+ }});
+ const registry=M.createRegistry();registry.install(M.defineExtension({name:'actual-wait-cycle',tasks:[Node]}));
+ harness=await M.Harness.open(new M.MemoryStorage(),{models:{},registry,now:()=>123,onReport:error=>reports.push({name:error?.name,message:error?.message})},context);
+ root=await harness.root(context);
+ const create=async names=>root.commit(async tx=>{for(const name of names)ids[name]=await tx.createTask(Node,{name},{ownership:{kind:'conversation'}})},context);
+ const waits=(name,on,after,signal,policy)=>behavior.set(name,async(runtime,ctx)=>{if(after)await gate(after).promise;await runtime.commit(()=>wait(on.map(key=>ids[key]),policy),ctx);if(signal)gate(signal).resolve()});
+ let observed;
+ try{
+  if(mode==='self'||mode==='self-failfast'){
+   behavior.set('a',(runtime,ctx)=>runtime.commit(()=>wait([runtime.taskId],mode==='self'?'allSettled':'failFast'),ctx));await create(['a']);
+  }else if(mode==='missing'){
+   behavior.set('a',(runtime,ctx)=>runtime.commit(()=>wait([999999]),ctx));await create(['a']);
+  }else if(mode==='foreign-failfast'){
+   waits('a',['b'],null,null,'failFast');await create(['a','b']);gate('b').resolve();
+  }else if(mode==='two-cycle'){
+   waits('a',['b'],null,'a-waits');waits('b',['a'],'a-waits');await create(['a','b']);
+  }else if(mode==='three-cycle'){
+   waits('a',['b'],null,'a-waits');waits('b',['c'],'a-waits','b-waits');waits('c',['a'],'b-waits');await create(['a','b','c']);
+  }else if(mode==='held-owner-cycle'||mode==='deep-held-cycle'){
+   behavior.set('owner',(runtime,ctx)=>runtime.commit(async tx=>{ids.child=await spawn(tx,runtime.taskId,'child');return{status:'running',checkpoint:{phase:'done'}}},ctx));
+   if(mode==='deep-held-cycle'){
+    behavior.set('child',(runtime,ctx)=>runtime.commit(async tx=>{ids.grandchild=await spawn(tx,runtime.taskId,'grandchild');return{status:'running',checkpoint:{phase:'done'}}},ctx));
+    waits('grandchild',['other'],null,'child-waits');
+   }else waits('child',['other'],null,'child-waits');
+   waits('other',['owner'],'child-waits');await create(['owner','other']);
+  }else if(mode==='background-owner'||mode==='ordinary-owner'||mode==='ended-owner'){
+   waits('a',['owner']);await root.commit(async tx=>{ids.owner=await tx.createTask(Node,{name:'owner'},{ownership:{kind:'conversation'}});const conversation=await tx.createConversation({ownership:{kind:'task',taskId:ids.owner}});ids.conversation=conversation.id;if(mode!=='ended-owner')ids.a=await tx.createTask(Node,{name:'a'},{conversationId:conversation.id,ownership:{kind:'conversation'},...(mode==='background-owner'?{background:true}:{})})},context);
+  }else if(mode==='owned-child'){
+   behavior.set('a',(runtime,ctx)=>runtime.commit(async tx=>{ids.b=await spawn(tx,runtime.taskId,'b');return wait([ids.b],'failFast')},ctx));await create(['a']);
+  }else if(mode==='diamond'){
+   waits('left',['bottom']);waits('right',['bottom']);waits('top',['left','right']);await create(['bottom','left','right','top']);
+  }else if(mode==='abort-marked-stale-wait'){
+   waits('a',['b'],'a-release');behavior.set('b',(runtime,ctx)=>runtime.commit(async tx=>{ids.c=await spawn(tx,runtime.taskId,'c');return wait([ids.a])},ctx));await create(['a','b']);
+  }else if(mode==='abort-handler-wait')await create(['a','b']);
+  harness.resume();
+  if(mode==='background-owner'||mode==='ordinary-owner'){
+   await until(async()=>['waiting','terminal'].includes((await state('a')).status));observed=(await state('a')).status;gate('owner').resolve();
+  }else if(mode==='ended-owner'){
+   gate('owner').resolve();await harness.waitForTask(ids.owner,context);const conversation=await harness.conversation(ids.conversation,context);ids.a=await conversation.commit(tx=>tx.createTask(Node,{name:'a'},{ownership:{kind:'conversation'}}),context);
+  }else if(mode==='owned-child'){
+   await until(()=>ids.b!==undefined);gate('b').resolve();
+  }else if(mode==='diamond'){
+   await until(async()=>(await state('left')).status==='waiting'&&(await state('right')).status==='waiting'&&(await state('top')).status==='waiting');gate('bottom').resolve();
+  }else if(mode==='abort-marked-stale-wait'){
+   await until(async()=>(await state('b')).status==='waiting');await harness.abortTask(ids.b,context);await gate('cleanup-started').promise;gate('a-release').resolve();await until(async()=>['waiting','terminal'].includes((await state('a')).status));observed=(await state('a')).status;gate('cleanup').resolve();
+  }else if(mode==='abort-handler-wait'){
+   await until(()=>log.includes('run:a'));await harness.abortTask(ids.a,context);gate('a').resolve();gate('b').resolve();
+  }
+  const records=[];
+  for(const [name,id]of Object.entries(ids)){if(name==='conversation')continue;const record=await harness.waitForTask(id,context);records.push({name,id,status:record.state.outcome.status,...(record.state.outcome.error?.message===undefined?{}:{message:record.state.outcome.error.message})});raw.push({mode,name,record})}
+  rows.push({mode,records,...(observed===undefined?{}:{observed}),reports});
+ }finally{for(const item of gates.values())item.resolve();await harness.close(context)}
+}
+globalThis.latestWaitCycleTrace={source:'148622bc6f8d0ffd64e33cbc0e1e66754f45d32c',rows};
+globalThis.latestWaitCycleRaw=raw;export const proof=true;

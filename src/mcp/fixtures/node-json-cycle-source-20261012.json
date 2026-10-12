@@ -1,0 +1,106 @@
+{
+  "node": "24.14.0",
+  "rows": [
+    {
+      "name": "self-object",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "self-array",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Array'\n    --- index 0 closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "two-object",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    |     property 'child' -> object with constructor 'Object'\n    --- property 'parent' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "array-object",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Array'\n    |     index 0 -> object with constructor 'Object'\n    --- property 'back' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "custom-class",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Custom'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "null-prototype",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "constructor-getter",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "symbol-tag",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "deep-cycle",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    |     property 'child0' -> object with constructor 'Object'\n    |     property 'child1' -> object with constructor 'Object'\n    |     ...\n    |     property 'child7' -> object with constructor 'Object'\n    --- property 'back' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "inner-cycle",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    |     property 'inner' -> object with constructor 'Object'\n    --- property 'back' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "getter-once",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": [
+        "get"
+      ]
+    },
+    {
+      "name": "toJSON-once",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+      },
+      "effects": [
+        "json",
+        "json"
+      ]
+    }
+  ]
+}

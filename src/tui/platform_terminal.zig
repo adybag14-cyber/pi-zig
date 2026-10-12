@@ -94,11 +94,25 @@ pub fn pollByte(reader: *Io.File.Reader) !?u8 {
     return pollBytePhysical(reader);
 }
 pub fn pollBytePhysical(reader: *Io.File.Reader) !?u8 {
+    return pollBytePhysicalMode(reader, false);
+}
+/// Main raw readers retain ownership across the temporary cooked modal gap.
+/// A cooked read started here may remain pending after raw mode is restored.
+pub fn pollBytePhysicalRaw(reader: *Io.File.Reader) !?u8 {
+    return pollBytePhysicalMode(reader, true);
+}
+fn pollBytePhysicalMode(reader: *Io.File.Reader, raw_only: bool) !?u8 {
     if (reader.interface.seek < reader.interface.end) return try reader.interface.takeByte();
     if (comptime builtin.os.tag == .windows) {
         const handle = reader.file.handle;
         var mode: u32 = 0;
-        if (handle == Io.File.stdin().handle and win.GetConsoleMode(handle, &mode).toBool() and mode & 2 == 0) {
+        if (handle == Io.File.stdin().handle and win.GetConsoleMode(handle, &mode).toBool()) {
+            if (raw_only) {
+                // Preserve bytes already decoded by the previous raw owner.
+                if (console_input.take()) |byte| return byte;
+                if (mode & 2 != 0) return null;
+            }
+            if (mode & 2 != 0) return try reader.interface.takeByte();
             if (console_input.take()) |byte| return byte;
             switch (try waitInputPhysical(0)) {
                 .timeout => return null,

@@ -51781,6 +51781,12 @@ static JSValue js_json_rawJSON(JSContext *ctx, JSValueConst this_val,
     return JS_EXCEPTION;
 }
 
+typedef struct PiJSONPath {
+    struct PiJSONPath *previous;
+    JSValueConst value;
+    JSValueConst key;
+} PiJSONPath;
+
 typedef struct JSONStringifyContext {
     JSValueConst replacer_func;
     JSValue stack;
@@ -51788,7 +51794,109 @@ typedef struct JSONStringifyContext {
     JSValue gap;
     JSValue empty;
     StringBuffer *b;
+    PiJSONPath *path;
+    bool node_diagnostics;
 } JSONStringifyContext;
+
+/* Read only internal data properties while describing a failed serialization.
+   Re-running user getters or toJSON here would change observable behavior. */
+static void pi_json_constructor_name(JSContext *ctx, StringBuffer *b,
+                                     JSValueConst value)
+{
+    JSObject *p = JS_VALUE_GET_OBJ(value);
+    JSProperty *pr;
+    JSShapeProperty *shape;
+    const char *name = NULL;
+    if (p->class_id == JS_CLASS_ARRAY) {
+        string_buffer_puts8(b, "Array");
+        return;
+    }
+    for (p = p->shape->proto; p; p = p->shape->proto) {
+        shape = find_own_property(&pr, p, JS_ATOM_constructor);
+        if (!shape)
+            continue;
+        if ((shape->flags & JS_PROP_TMASK) == JS_PROP_NORMAL)
+            name = get_func_name(ctx, pr->u.value);
+        break;
+    }
+    if (JS_HasException(ctx)) {
+        string_buffer_set_error(b);
+        JS_FreeCString(ctx, name);
+        return;
+    }
+    string_buffer_puts8(b, name && *name ? name : "Object");
+    JS_FreeCString(ctx, name);
+}
+
+static void pi_json_edge(StringBuffer *b, JSValueConst parent,
+                          JSValueConst key)
+{
+    if (JS_VALUE_GET_OBJ(parent)->class_id == JS_CLASS_ARRAY) {
+        string_buffer_puts8(b, "index ");
+        string_buffer_concat_value(b, key);
+    } else {
+        string_buffer_puts8(b, "property '");
+        string_buffer_concat_value(b, key);
+        string_buffer_putc8(b, '\'');
+    }
+}
+
+static void pi_json_circular_error(JSContext *ctx, JSONStringifyContext *jsc,
+                                   JSValueConst value, JSValueConst key)
+{
+    PiJSONPath *frame, **frames;
+    StringBuffer b;
+    JSValue message, error;
+    size_t count = 0, i;
+    for (frame = jsc->path; frame; frame = frame->previous) {
+        count++;
+        if (JS_VALUE_GET_OBJ(frame->value) == JS_VALUE_GET_OBJ(value))
+            break;
+    }
+    if (!frame) {
+        JS_ThrowTypeError(ctx, "circular reference");
+        return;
+    }
+    frames = js_malloc(ctx, count * sizeof(*frames));
+    if (!frames)
+        return;
+    frame = jsc->path;
+    for (i = count; i > 0; i--, frame = frame->previous)
+        frames[i - 1] = frame;
+    string_buffer_init(ctx, &b, 0);
+    string_buffer_puts8(&b, "Converting circular structure to JSON\n    --> starting at object with constructor '");
+    pi_json_constructor_name(ctx, &b, frames[0]->value);
+    string_buffer_putc8(&b, '\'');
+    for (i = 1; i < count; i++) {
+        if (count > 4 && i == 3) {
+            string_buffer_puts8(&b, "\n    |     ...");
+            i = count - 1;
+        }
+        string_buffer_puts8(&b, "\n    |     ");
+        pi_json_edge(&b, frames[i - 1]->value, frames[i]->key);
+        string_buffer_puts8(&b, " -> object with constructor '");
+        pi_json_constructor_name(ctx, &b, frames[i]->value);
+        string_buffer_putc8(&b, '\'');
+    }
+    string_buffer_puts8(&b, "\n    --- ");
+    pi_json_edge(&b, jsc->path->value, key);
+    string_buffer_puts8(&b, " closes the circle");
+    js_free(ctx, frames);
+    message = string_buffer_end(&b);
+    if (JS_IsException(message))
+        return;
+    error = JS_MakeError2(ctx, JS_TYPE_ERROR, true, "");
+    if (JS_IsException(error)) {
+        JS_FreeValue(ctx, message);
+        return;
+    }
+    if (JS_DefinePropertyValueStr(ctx, error, "message", message,
+                                   JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE) < 0) {
+        JS_FreeValue(ctx, error);
+        return;
+    }
+    JS_Throw(ctx, error);
+}
 
 static JSValue JS_ToQuotedStringFree(JSContext *ctx, JSValue val) {
     JSValue r = JS_ToQuotedString(ctx, val);
@@ -51855,9 +51963,10 @@ exception:
 
 static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
                           JSValueConst holder, JSValue val,
-                          JSValueConst indent)
+                          JSValueConst indent, JSValueConst path_key)
 {
-    JSValue indent1, sep, sep1, tab, v, prop;
+    JSValue indent1, sep, sep1, tab, v, prop, edge;
+    PiJSONPath path = { jsc->path, val, path_key };
     JSObject *p;
     int64_t i, len;
     int cl, ret;
@@ -51868,6 +51977,7 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
     sep1 = JS_UNDEFINED;
     tab = JS_UNDEFINED;
     prop = JS_UNDEFINED;
+    edge = JS_UNDEFINED;
 
     if (js_check_stack_overflow(ctx->rt, 0)) {
         JS_ThrowStackOverflow(ctx);
@@ -51903,9 +52013,14 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
         if (JS_IsException(v))
             goto exception;
         if (JS_ToBoolFree(ctx, v)) {
-            JS_ThrowTypeError(ctx, "circular reference");
+            if (jsc->node_diagnostics)
+                pi_json_circular_error(ctx, jsc, val, path_key);
+            else
+                JS_ThrowTypeError(ctx, "circular reference");
             goto exception;
         }
+        path.value = val;
+        jsc->path = &path;
         indent1 = JS_ConcatString(ctx, js_dup(indent), js_dup(jsc->gap));
         if (JS_IsException(indent1))
             goto exception;
@@ -51939,17 +52054,19 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
                     goto exception;
                 /* XXX: could do this string conversion only when needed */
                 prop = JS_ToStringFree(ctx, js_int64(i));
-                if (JS_IsException(prop))
+                if (JS_IsException(prop)) {
+                    JS_FreeValue(ctx, v);
                     goto exception;
+                }
                 v = js_json_check(ctx, jsc, val, v, prop);
-                JS_FreeValue(ctx, prop);
-                prop = JS_UNDEFINED;
                 if (JS_IsException(v))
                     goto exception;
                 if (JS_IsUndefined(v))
                     v = JS_NULL;
-                if (js_json_to_str(ctx, jsc, val, v, indent1))
+                if (js_json_to_str(ctx, jsc, val, v, indent1, prop))
                     goto exception;
+                JS_FreeValue(ctx, prop);
+                prop = JS_UNDEFINED;
             }
             if (len > 0 && !JS_IsEmptyString(jsc->gap)) {
                 string_buffer_putc8(jsc->b, '\n');
@@ -51982,6 +52099,7 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
                 if (!JS_IsUndefined(v)) {
                     if (has_content)
                         string_buffer_putc8(jsc->b, ',');
+                    edge = js_dup(prop);
                     prop = JS_ToQuotedStringFree(ctx, prop);
                     if (JS_IsException(prop)) {
                         JS_FreeValue(ctx, v);
@@ -51991,8 +52109,10 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
                     string_buffer_concat_value(jsc->b, prop);
                     string_buffer_putc8(jsc->b, ':');
                     string_buffer_concat_value(jsc->b, sep1);
-                    if (js_json_to_str(ctx, jsc, val, v, indent1))
+                    if (js_json_to_str(ctx, jsc, val, v, indent1, edge))
                         goto exception;
+                    JS_FreeValue(ctx, edge);
+                    edge = JS_UNDEFINED;
                     has_content = true;
                 }
             }
@@ -52010,6 +52130,7 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
         JS_FreeValue(ctx, sep1);
         JS_FreeValue(ctx, indent1);
         JS_FreeValue(ctx, prop);
+        jsc->path = path.previous;
         return 0;
     }
  concat_primitive:
@@ -52029,6 +52150,7 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
     case JS_TAG_BOOL:
     case JS_TAG_NULL:
     concat_value:
+        jsc->path = path.previous;
         return string_buffer_concat_value_free(jsc->b, val);
     case JS_TAG_SHORT_BIG_INT:
     case JS_TAG_BIG_INT:
@@ -52036,6 +52158,7 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
         goto exception;
     default:
         JS_FreeValue(ctx, val);
+        jsc->path = path.previous;
         return 0;
     }
 
@@ -52046,11 +52169,14 @@ exception:
     JS_FreeValue(ctx, sep1);
     JS_FreeValue(ctx, indent1);
     JS_FreeValue(ctx, prop);
+    JS_FreeValue(ctx, edge);
+    jsc->path = path.previous;
     return -1;
 }
 
-JSValue JS_JSONStringify(JSContext *ctx, JSValueConst obj,
-                         JSValueConst replacer, JSValueConst space0)
+static JSValue pi_json_stringify(JSContext *ctx, JSValueConst obj,
+                                 JSValueConst replacer, JSValueConst space0,
+                                 bool node_diagnostics)
 {
     StringBuffer b_s;
     JSONStringifyContext jsc_s, *jsc = &jsc_s;
@@ -52064,6 +52190,8 @@ JSValue JS_JSONStringify(JSContext *ctx, JSValueConst obj,
     jsc->gap = JS_UNDEFINED;
     jsc->b = &b_s;
     jsc->empty = js_empty_string(ctx->rt);
+    jsc->path = NULL;
+    jsc->node_diagnostics = node_diagnostics;
     ret = JS_UNDEFINED;
     wrapper = JS_UNDEFINED;
 
@@ -52168,7 +52296,7 @@ JSValue JS_JSONStringify(JSContext *ctx, JSValueConst obj,
         ret = JS_UNDEFINED;
         goto done1;
     }
-    if (js_json_to_str(ctx, jsc, wrapper, val, jsc->empty))
+    if (js_json_to_str(ctx, jsc, wrapper, val, jsc->empty, jsc->empty))
         goto exception;
 
     ret = string_buffer_end(jsc->b);
@@ -52185,6 +52313,18 @@ done:
     JS_FreeValue(ctx, jsc->property_list);
     JS_FreeValue(ctx, jsc->stack);
     return ret;
+}
+
+JSValue JS_JSONStringify(JSContext *ctx, JSValueConst obj,
+                         JSValueConst replacer, JSValueConst space0)
+{
+    return pi_json_stringify(ctx, obj, replacer, space0, false);
+}
+
+JSValue JS_PiJSONStringifyNode(JSContext *ctx, JSValueConst obj,
+                               JSValueConst replacer, JSValueConst space0)
+{
+    return pi_json_stringify(ctx, obj, replacer, space0, true);
 }
 
 static JSValue js_json_stringify(JSContext *ctx, JSValueConst this_val,

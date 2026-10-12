@@ -1,0 +1,263 @@
+{
+    "source": "148622bc6f8d0ffd64e33cbc0e1e66754f45d32c",
+    "rows": [
+      {
+        "mode": "self",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "faulted",
+            "message": "Task 7 cannot wait on 7: 7 -> 7 is a wait cycle"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "self-failfast",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "faulted",
+            "message": "Task 7 can wait failFast only on tasks it owns; 7 is not one"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "missing",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "faulted",
+            "message": "Task 999999 does not exist"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "foreign-failfast",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "faulted",
+            "message": "Task 7 can wait failFast only on tasks it owns; 8 is not one"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "completed"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "two-cycle",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "faulted",
+            "message": "Task 8 cannot wait on 7: 8 -> 7 -> 8 is a wait cycle"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "three-cycle",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "completed"
+          },
+          {
+            "name": "c",
+            "id": 9,
+            "status": "faulted",
+            "message": "Task 9 cannot wait on 7: 9 -> 7 -> 8 -> 9 is a wait cycle"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "held-owner-cycle",
+        "records": [
+          {
+            "name": "owner",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "other",
+            "id": 8,
+            "status": "faulted",
+            "message": "Task 8 cannot wait on 7: 8 -> 7 -> 9 -> 8 is a wait cycle"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "deep-held-cycle",
+        "records": [
+          {
+            "name": "owner",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "other",
+            "id": 8,
+            "status": "faulted",
+            "message": "Task 8 cannot wait on 7: 8 -> 7 -> 10 -> 8 is a wait cycle"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "background-owner",
+        "records": [
+          {
+            "name": "owner",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "a",
+            "id": 14,
+            "status": "completed"
+          }
+        ],
+        "observed": "waiting",
+        "reports": []
+      },
+      {
+        "mode": "ordinary-owner",
+        "records": [
+          {
+            "name": "owner",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "a",
+            "id": 14,
+            "status": "faulted",
+            "message": "Task 14 cannot wait on 7: 14 -> 7 -> 14 is a wait cycle"
+          }
+        ],
+        "observed": "terminal",
+        "reports": []
+      },
+      {
+        "mode": "ended-owner",
+        "records": [
+          {
+            "name": "owner",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "a",
+            "id": 14,
+            "status": "completed"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "owned-child",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "completed"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "diamond",
+        "records": [
+          {
+            "name": "bottom",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "left",
+            "id": 8,
+            "status": "completed"
+          },
+          {
+            "name": "right",
+            "id": 9,
+            "status": "completed"
+          },
+          {
+            "name": "top",
+            "id": 10,
+            "status": "completed"
+          }
+        ],
+        "reports": []
+      },
+      {
+        "mode": "abort-marked-stale-wait",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "completed"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "aborted"
+          },
+          {
+            "name": "c",
+            "id": 9,
+            "status": "aborted"
+          }
+        ],
+        "observed": "waiting",
+        "reports": []
+      },
+      {
+        "mode": "abort-handler-wait",
+        "records": [
+          {
+            "name": "a",
+            "id": 7,
+            "status": "faulted",
+            "message": "Abort handler of task 7 cannot wait"
+          },
+          {
+            "name": "b",
+            "id": 8,
+            "status": "completed"
+          }
+        ],
+        "reports": []
+      }
+    ]
+  }

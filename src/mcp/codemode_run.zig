@@ -29,6 +29,7 @@ pub const Options = struct {
     stack_limit: usize = 256 * 1024,
     interrupt_budget: ?f64 = 100_000,
     abort_flag: ?*bool = null,
+    deterministic: bool = true,
 };
 const Pending = struct { resolve: c.JSValue, reject: c.JSValue, started: i64, record: ?usize };
 pub const Run = struct {
@@ -52,12 +53,13 @@ pub const Run = struct {
     sandbox_failure: ?[]const u8 = null,
     abort_message: ?[]const u8 = null,
     last_idle: ?struct { seq: f64, issued: f64 } = null,
+    deterministic: bool = true,
 
     /// Creation performs validation and ownership admission. begin() is a
     /// separate owner turn, so callbacks cannot precede publication of this Run.
     pub fn create(gpa: std.mem.Allocator, io: std.Io, source: []const u8, options: Options) !*Run {
         const clock = try clock_mod.Clock.init(options.started_at, options.seed);
-        try validateDeclarations(gpa, options.tools, options.globals);
+        if (options.deterministic) try validateDeclarations(gpa, options.tools, options.globals);
         const self = try gpa.create(Run);
         var transferred = false;
         errdefer if (!transferred) gpa.destroy(self);
@@ -65,12 +67,13 @@ pub const Run = struct {
         errdefer if (!transferred) host.deinit();
         var result = try json.Owned.empty(gpa);
         errdefer if (!transferred) result.deinit();
-        const engine = try em.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64), .deterministic_clock = clock });
+        const engine = try em.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64), .deterministic_clock = if (options.deterministic) clock else null, .node_locale_compare = false });
         errdefer if (!transferred) engine.deinit();
         self.* = .{ .gpa = gpa, .core = .{ .gpa = gpa, .io = io, .engine = engine, .tools = &.{}, .options = .{ .timeout_ms = options.timeout_ms, .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = options.interrupt_budget, .store = options.store }, .result = result, .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |limit| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(limit, std.math.maxInt(i64)))) else null }, .host = host, .clock = clock, .observer = options.observer, .globals = &.{}, .source = "", .fingerprint = "", .promise = c.pi_js_undefined() };
         transferred = true;
         errdefer self.deinit();
         self.core.options.abort_flag = options.abort_flag;
+        self.deterministic = options.deterministic;
         const arena = self.core.result.arena.allocator();
         self.source = try arena.dupe(u8, source);
         const tools = try arena.alloc(vm.Tool, options.tools.len);
@@ -95,16 +98,22 @@ pub const Run = struct {
         c.JS_SetInterruptHandler(engine.runtime, vm.Execution.interrupt, &self.core);
         const global_object = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global_object);
-        inline for (.{ "WeakRef", "FinalizationRegistry" }) |name| {
+        // Upstream's WASM VM exposes SharedArrayBuffer, but no Atomics host
+        // primitives. Preserve that script-visible environment in native runs.
+        const atomics = c.JS_NewAtom(engine.context, "Atomics");
+        if (atomics == c.JS_ATOM_NULL) return error.OutOfMemory;
+        defer c.JS_FreeAtom(engine.context, atomics);
+        if (c.JS_DeleteProperty(engine.context, global_object, atomics, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
+        if (options.deterministic) inline for (.{ "WeakRef", "FinalizationRegistry" }) |name| {
             const atom = c.JS_NewAtom(engine.context, name);
             if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
             defer c.JS_FreeAtom(engine.context, atom);
             if (c.JS_DeleteProperty(engine.context, global_object, atom, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
-        }
+        };
         try self.core.installVm();
         try self.installGlobals(global_object);
         const budget = if (options.interrupt_budget) |value| try std.fmt.allocPrint(arena, "{d}", .{value}) else "none";
-        self.fingerprint = try std.fmt.allocPrint(arena, "quickjs-native clock-v1, quickjs {d}.{d}.{d}, implementation {x}, deterministic 1, stack {d}, heap {d}, budget {s}", .{ c.QJS_VERSION_MAJOR, c.QJS_VERSION_MINOR, c.QJS_VERSION_PATCH, std.hash.Fnv1a_64.hash(@embedFile("codemode.zig") ++ @embedFile("codemode_run.zig") ++ @embedFile("codemode_clock.zig")), options.stack_limit, options.memory_limit, budget });
+        self.fingerprint = try std.fmt.allocPrint(arena, "quickjs-native clock-v1, quickjs {d}.{d}.{d}, implementation sha256:{s}, deterministic {d}, stack {d}, heap {d}, budget {s}", .{ c.QJS_VERSION_MAJOR, c.QJS_VERSION_MINOR, c.QJS_VERSION_PATCH, @import("native_vm_identity").sha256, @intFromBool(options.deterministic), options.stack_limit, options.memory_limit, budget });
         return self;
     }
     pub fn deinit(self: *Run) void {
@@ -127,7 +136,7 @@ pub const Run = struct {
     pub fn begin(self: *Run) !void {
         if (self.begun or self.finished) return error.RunAlreadyStarted;
         self.begun = true;
-        if (self.observer.started) |notify| try notify(self.observer.context, self, self.fingerprint);
+        if (self.deterministic) if (self.observer.started) |notify| try notify(self.observer.context, self, self.fingerprint);
         if (self.finished) return;
         if (self.core.aborted) return self.finish();
         if (self.core.checkLimits(true)) return self.finish();
@@ -200,8 +209,10 @@ pub const Run = struct {
             const removed = self.pending.fetchRemove(reply.id) orelse return error.MissingPendingRunCall;
             defer self.core.engine.freeValue(removed.value.resolve);
             defer self.core.engine.freeValue(removed.value.reject);
-            try self.clock.advance(self.host.clock);
-            if (c.JS_PIAdvanceDeterministicTime(self.core.engine.runtime, self.clock.realtime(), self.clock.elapsed()) < 0) return error.InvalidDeterministicTime;
+            if (self.deterministic) {
+                try self.clock.advance(self.host.clock);
+                if (c.JS_PIAdvanceDeterministicTime(self.core.engine.runtime, self.clock.realtime(), self.clock.elapsed()) < 0) return error.InvalidDeterministicTime;
+            }
             const value = self.replyValue(reply) catch |err| {
                 if (err == error.OutOfMemory) return err;
                 const text = if (self.core.engine.captured_exception) |exception| try self.core.engine.toString(exception) else try self.gpa.dupe(u8, @errorName(err));
@@ -238,11 +249,11 @@ pub const Run = struct {
             self.script_failure = error.CodemodeStalledPromise;
             return self.finish();
         }
-        if (self.observer.idle) |notify| {
+        if (self.deterministic) if (self.observer.idle) |notify| {
             if (self.last_idle) |last| if (last.seq == self.host.current and last.issued == self.host.issued) return;
             self.last_idle = .{ .seq = self.host.current, .issued = self.host.issued };
             try notify(self.observer.context, self, self.host.current, self.host.issued);
-        }
+        };
     }
     fn finish(self: *Run) !void {
         if (self.finished) return;
@@ -254,7 +265,7 @@ pub const Run = struct {
         var during: json.Value = .{ .object = .empty };
         try during.object.put(arena, "seq", .{ .float = self.host.current });
         try during.object.put(arena, "issued", .{ .float = self.host.issued });
-        if (self.sandbox_failure == null and !self.core.aborted and !self.core.timed_out) try self.core.result.value.object.put(arena, "during", during);
+        if (self.deterministic and self.sandbox_failure == null and !self.core.aborted and !self.core.timed_out) try self.core.result.value.object.put(arena, "during", during);
         if (success) {
             var set: json.Value = .{ .object = .empty };
             var deleted: json.Value = .{ .array = .init(arena) };

@@ -395,6 +395,72 @@ pub const Index = struct {
         std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
         return ids.toOwnedSlice(gpa);
     }
+    pub fn waitCycle(self: *const Index, gpa: std.mem.Allocator, waiter: u64, on: []const u64) !?[]u64 {
+        try self.check();
+        var from: std.AutoHashMapUnmanaged(u64, ?u64) = .{};
+        defer from.deinit(gpa);
+        var walked: std.AutoHashMapUnmanaged(u64, void) = .{};
+        defer walked.deinit(gpa);
+        var pending: std.ArrayList(u64) = .empty;
+        defer pending.deinit(gpa);
+        var below: std.ArrayList(Node) = .empty;
+        defer below.deinit(gpa);
+        var found: std.ArrayList(u64) = .empty;
+        defer found.deinit(gpa);
+        for (on) |id| try waitReach(gpa, &from, &pending, id, null);
+        while (pending.pop()) |id| {
+            if (id == waiter) {
+                var path: std.ArrayList(u64) = .empty;
+                errdefer path.deinit(gpa);
+                var at: ?u64 = id;
+                while (at) |task| {
+                    try path.append(gpa, task);
+                    at = from.get(task) orelse return error.WaitCyclePathMissing;
+                }
+                std.mem.reverse(u64, path.items);
+                return try path.toOwnedSlice(gpa);
+            }
+            const record = self.live.get(id) orelse continue;
+            if (record.status == .waiting and !record.abort_requested) {
+                for (record.wait_on) |member| try waitReach(gpa, &from, &pending, member, id);
+            }
+            if (walked.contains(id)) continue;
+            try walked.put(gpa, id, {});
+            below.clearRetainingCapacity();
+            found.clearRetainingCapacity();
+            try below.append(gpa, Node.task(id));
+            var remaining = self.live.count() + self.settled.count() + self.edges.count() + 1;
+            while (below.pop()) |node| {
+                if (remaining == 0) return error.TaskOwnershipCycle;
+                remaining -= 1;
+                const children = self.below.get(node) orelse continue;
+                for (children.keys()) |child| {
+                    if (child.kind == .conversation) {
+                        try below.append(gpa, child);
+                        continue;
+                    }
+                    const fields = self.link(child.id) orelse continue;
+                    if (fields.background) continue;
+                    if (self.live.contains(child.id)) {
+                        try found.append(gpa, child.id);
+                        // Source links each reached descendant to this walk's
+                        // root, including holds more than one ownership level deep.
+                        try waitReach(gpa, &from, &pending, child.id, id);
+                    }
+                    if (!walked.contains(child.id)) try below.append(gpa, child);
+                }
+            }
+            for (found.items) |child| try walked.put(gpa, child, {});
+        }
+        return null;
+    }
+    fn waitReach(gpa: std.mem.Allocator, from: *std.AutoHashMapUnmanaged(u64, ?u64), pending: *std.ArrayList(u64), id: u64, via: ?u64) !void {
+        const slot = try from.getOrPut(gpa, id);
+        if (slot.found_existing) return;
+        slot.value_ptr.* = via;
+        try pending.append(gpa, id);
+    }
+
     pub fn ordinaryOwned(self: *const Index, gpa: std.mem.Allocator, owner: u64) ![]u64 {
         return self.walkOwned(gpa, owner, false);
     }

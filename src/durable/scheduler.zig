@@ -98,6 +98,12 @@ pub const Runtime = struct {
     pub fn taskId(self: Runtime) u64 {
         return self.invocation.task_id;
     }
+    /// A native validation failure retains its Source diagnostic until the
+    /// owner bridge constructs the guest Error for this original operation.
+    pub fn diagnosticMessage(self: Runtime, cause: anyerror) ?[]const u8 {
+        const invocation = self.invocation;
+        return if (invocation.diagnostic_cause != null and invocation.diagnostic_cause.? == cause and invocation.diagnostic_len > 0) invocation.diagnostic[0..invocation.diagnostic_len] else null;
+    }
     pub fn setFailureGeneration(self: Runtime, generation: u64) void {
         self.invocation.source_failure_generation.store(generation, .release);
     }
@@ -171,6 +177,8 @@ const RuntimeCommit = struct {
         const scheduler = invocation.scheduler;
         if (!invocation.active.load(.acquire)) return error.InvocationEnded;
         if (scheduler.closing.load(.acquire)) return error.SchedulerClosed;
+        invocation.diagnostic_cause = null;
+        invocation.diagnostic_len = 0;
         const record = (try tx.currentRecord(invocation.task_id, .task)) orelse return error.UnknownTask;
         if (try model.status(record) != .running) return error.TaskNotRunning;
         if (invocation.mode == .run and try model.flag(record, "abortRequested")) return error.TaskAbortMarked;
@@ -597,27 +605,43 @@ pub const Scheduler = struct {
         return candidate;
     }
     fn validateCandidateWait(self: *Scheduler, tx: *Transaction, record: Value, state: Value, invocation: *Invocation) !void {
-        try self.loadCandidateParent(tx, (try recordLink(record)).parent());
-        var candidate = try self.candidateIndex(tx);
-        defer candidate.deinit();
         const members = try model.field(state, "on");
         if (members != .array) return error.InvalidTaskWait;
         const task_id = try model.number(record, "id");
+        const fail_fast = std.mem.eql(u8, try model.text(state, "policy"), "failFast");
+        var targets: std.ArrayList(u64) = .empty;
+        defer targets.deinit(self.gpa);
         for (members.array.items) |member| {
             const id = try json.asInteger(member);
-            if (id == task_id or try candidate.reaches((try recordLink(record)).parent(), ownership.Node.task(id), true)) return invocation.diagnose(error.TaskCannotWaitOnOwner, "Task {d} cannot wait on itself or its owner {d}", .{ task_id, id });
             var fetched: ?json.Owned = null;
             defer if (fetched) |*value| value.deinit();
             const child = (try candidateRecord(tx, .task, id)) orelse if (self.live_records.get(id)) |live_record| live_record.value else blk: {
                 fetched = try self.session.storage.readTableRecord(self.gpa, .task, id);
                 break :blk if (fetched) |value| value.value else return invocation.diagnose(error.UnknownTask, "Task {d} does not exist", .{id});
             };
-            if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
-                const owner = json.get(child, "owner");
-                if (owner == null or try json.asInteger(owner.?) != task_id) return invocation.diagnose(error.FailFastRequiresChild, "Task {d} can wait failFast only on tasks it owns; {d} is not one", .{ task_id, id });
+            const owner = json.get(child, "owner");
+            const directly_owned = owner != null and try json.asInteger(owner.?) == task_id;
+            if (fail_fast and !directly_owned) return invocation.diagnose(error.FailFastRequiresChild, "Task {d} can wait failFast only on tasks it owns; {d} is not one", .{ task_id, id });
+            if (try model.status(child) != .terminal and !directly_owned) try targets.append(self.gpa, id);
+        }
+        // A direct child already holds the waiter. Ended targets add no edge.
+        if (targets.items.len == 0) return;
+        var candidate = try self.candidateIndex(tx);
+        defer candidate.deinit();
+        if (try candidate.waitCycle(self.gpa, task_id, targets.items)) |cycle| {
+            defer self.gpa.free(cycle);
+            var path: std.ArrayList(u8) = .empty;
+            defer path.deinit(self.gpa);
+            var digits: [20]u8 = undefined;
+            try path.appendSlice(self.gpa, try std.fmt.bufPrint(&digits, "{d}", .{task_id}));
+            for (cycle) |id| {
+                try path.appendSlice(self.gpa, " -> ");
+                try path.appendSlice(self.gpa, try std.fmt.bufPrint(&digits, "{d}", .{id}));
             }
+            return invocation.diagnose(error.TaskWaitCycle, "Task {d} cannot wait on {d}: {s} is a wait cycle", .{ task_id, cycle[0], path.items });
         }
     }
+
     fn recover(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
         const view = try self.session.storage.snapshot(self.gpa);

@@ -15,6 +15,9 @@ pub const c = @cImport({
 
 pub const Options = struct {
     deterministic_clock: ?@import("../mcp/codemode_clock.zig").Clock = null,
+    // Extension hosts use Node collation; CodeMode's inner VM uses the
+    // original QuickJS comparison and does not inspect locale/options.
+    node_locale_compare: bool = true,
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
@@ -214,7 +217,7 @@ pub const Engine = struct {
         }
         // Capture genuine symbols and error constructors before guest code can
         // replace globals or String.prototype. ICU bootstrap requires no Io.
-        try @import("native_localecompare_binding.zig").install(self);
+        if (options.node_locale_compare) try @import("native_localecompare_binding.zig").install(self);
         // Capture pristine intrinsics before any extension input executes.
         // Lease affinity must not depend on mutable globals/prototypes.
         const global = c.JS_GetGlobalObject(context);

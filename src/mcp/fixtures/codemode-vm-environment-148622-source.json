@@ -1,0 +1,145 @@
+{
+  "upstream": "148622bc6f8d0ffd64e33cbc0e1e66754f45d32c",
+  "hostLocalClock": [
+    13,
+    -60,
+    1593601200000
+  ],
+  "rows": [
+    {
+      "name": "locale-order",
+      "code": "return [\"a\".localeCompare(\"B\"),\"ä\".localeCompare(\"z\"),\"2\".localeCompare(\"10\",\"en\",{numeric:true})]",
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          1,
+          1
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "locale-options-no-coercion",
+      "code": "let n=0;const locale={toString(){n++;throw Error(\"locale touched\")}};return [\"a\".localeCompare(\"b\",locale,{get numeric(){n++;throw Error(\"option touched\")}}),n]",
+      "result": {
+        "ok": true,
+        "value": [
+          -1,
+          0
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "builtin-surface",
+      "code": "return [typeof performance,typeof Intl,typeof Atomics,typeof SharedArrayBuffer,typeof setTimeout,typeof WeakRef,typeof FinalizationRegistry,typeof TextEncoder,typeof Buffer,typeof process,typeof require]",
+      "result": {
+        "ok": true,
+        "value": [
+          "object",
+          "undefined",
+          "undefined",
+          "function",
+          "undefined",
+          "function",
+          "function",
+          "undefined",
+          "undefined",
+          "undefined",
+          "undefined"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "performance-clock",
+      "code": "return [typeof performance.now,typeof performance.timeOrigin,Number.isFinite(performance.now())]",
+      "result": {
+        "ok": true,
+        "value": [
+          "function",
+          "number",
+          true
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "date-format",
+      "code": "return [new Date(0).toISOString(),new Date(0).toUTCString(),new Date(NaN).toString()]",
+      "result": {
+        "ok": true,
+        "value": [
+          "1970-01-01T00:00:00.000Z",
+          "Thu, 01 Jan 1970 00:00:00 GMT",
+          "Invalid Date"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "array-features",
+      "code": "return [typeof Array.fromAsync,typeof [].toSorted,typeof [].with,typeof Promise.withResolvers,typeof JSON.rawJSON]",
+      "result": {
+        "ok": true,
+        "value": [
+          "function",
+          "function",
+          "function",
+          "function",
+          "function"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "ordinary-local-clock",
+      "code": "return [new Date(1593604800000).getHours(),new Date(1593604800000).getTimezoneOffset(),new Date(\"2020-07-01T12:00:00\").getTime()]",
+      "result": {
+        "ok": true,
+        "value": [
+          13,
+          -60,
+          1593601200000
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    }
+  ]
+}

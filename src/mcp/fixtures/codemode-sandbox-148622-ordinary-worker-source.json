@@ -1,0 +1,224 @@
+{
+  "upstream": "148622bc6f8d0ffd64e33cbc0e1e66754f45d32c",
+  "scope": "Actual original default worker-backed sandbox and real WASM VM; complete ordinary observations",
+  "rows": [
+    {
+      "name": "tools-global-output",
+      "code": "text(\"hello\"); return [await tools.echo({n:7}),await math.add(2,3),typeof WeakRef]",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": [
+          {
+            "n": 7
+          },
+          5,
+          "function"
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "hello"
+          }
+        ],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.1531999999999698
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          {
+            "n": 7
+          }
+        ],
+        [
+          "global",
+          [
+            2,
+            3
+          ],
+          false
+        ]
+      ],
+      "signalsAfter": [
+        false,
+        false
+      ],
+      "elapsedMs": 555.9619
+    },
+    {
+      "name": "tool-error",
+      "code": "try{await tools.echo(1)}catch(e){return [e.name,e.message,Object.keys(e)]}",
+      "mode": "throw",
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual tool failure",
+          []
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.11340000000018335
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 544.1982
+    },
+    {
+      "name": "tool-cycle-serialization",
+      "code": "try{await tools.echo(1)}catch(e){return [e.name,e.message]}",
+      "mode": "cycle",
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.06610000000000582
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 524.2533999999998
+    },
+    {
+      "name": "store-entries-ignore-container-toJSON",
+      "code": "return [load(\"x\"),load(\"wrong\")]",
+      "mode": "store",
+      "result": {
+        "ok": true,
+        "value": [
+          7,
+          null
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [],
+      "signalsAfter": [],
+      "elapsedMs": 525.5647999999999
+    },
+    {
+      "name": "ordinary-vm-timezone",
+      "code": "return [new Date(1593604800000).getHours(),new Date(1593604800000).getTimezoneOffset(),new Date(\"2020-07-01T12:00:00\").toISOString(),typeof WeakRef,typeof FinalizationRegistry]",
+      "mode": "clock",
+      "result": {
+        "ok": true,
+        "value": [
+          13,
+          -60,
+          "2020-07-01T11:00:00.000Z",
+          "function",
+          "function"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [],
+      "signalsAfter": [],
+      "elapsedMs": 518.3712
+    },
+    {
+      "name": "fire-and-forget-call",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.029399999999895954
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 524.1295
+    }
+  ]
+}
