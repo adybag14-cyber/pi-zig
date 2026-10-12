@@ -1,0 +1,26 @@
+[
+  {
+    "path": ".gitattributes",
+    "sha256": "73D4002F7743F501D3CB22C0ECB5A9B36277C953425D16459C4654CCA3FD2D42"
+  },
+  {
+    "path": "build.zig",
+    "sha256": "C6958F41FCEA5AF135C833D9395C4EF07C5DA39806FE5B266A0233F7FBF81BA5"
+  },
+  {
+    "path": "src/extensions/native_chord_clone.zig",
+    "sha256": "B7254D6F4E1E7B1CC0880D7636D4791F3150E83A230C019CAC1045882B02FE4B"
+  },
+  {
+    "path": "src/native_chord_clone_source_test.zig",
+    "sha256": "A521E5F6F33A80385C95D0C1EE3F51E343C917660052342B63DAEFC32A90DF85"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-clone-original-19cb.input.txt",
+    "sha256": "3E42351A5CBE1A90F6D094E9700D46E1FBA9FB1BFA183882CC7DEB371E0F4037"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-clone-original-19cb.json",
+    "sha256": "A763B2682B6C7E65725819A657771D41C10C5DA51992145E90B51B4305DDCD17"
+  }
+]

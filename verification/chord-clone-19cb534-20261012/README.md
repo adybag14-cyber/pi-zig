@@ -1,0 +1,9 @@
+# Chord Host fresh-value clone prerequisite
+
+Authority is actual unmodified TypeBox Value.Clone -> SystemClone in the pinned Pi19cb534 runtime. Host normalize first clones its supplied value before defaulting, cleaning and checking it; generic structured cloning and tool argument coercion have different behavior.
+
+The native Zig traversal preserves ordinary functions/primitives and arbitrary class instances atomically, deep-copies plain own string/symbol values, skips unsafe prototype keys, retains schema non-enumerable descriptors while omitting schema symbols, preserves sparse array map behavior, slices typed arrays and rebuilds RegExp/Map/Set through actual guest constructors and iterators. Dynamic getter and callback boundaries remain observable, including constructor reads, overridden map/slice/iterator methods and original thrown values.
+
+Thirty-two original Source cases execute genuine immutable modules without replacing classes/methods or expected outputs. Full31064 runtime/1774 tooling inventories and16junctions are unchanged before/after. All665 resolved observer/module/input hashes are retained and unchanged afterward. Native tests replay all32 cases and add collected callback/container liveness and exhaustive GPA failure ownership.
+
+The first default-backend Debug gate passed actual4/4 tests and156/156 build steps with fresh16GiB, j1 and test120/outer300. Full4301 source and19546 tools pre/post hashes had zero drift; owned PID52920 retired. This is a nonpublic value-traversal foundation. TypeBox global metrics, Default/Clean/Check composition, Host local records/handles/epoch registries and the remaining public package still require work; no Runtime/Host substitute or partial public activation is added. The global native-default gate and Node extension bridge remain as before.
