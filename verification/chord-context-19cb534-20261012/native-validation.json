@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "07036735a29da746d6b665a4de4bd941a690a6d6",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "total_tests": 11,
+  "source_regression_cases": 13,
+  "build_steps": 156,
+  "record": "chord-context19cb-debug-warm-20261012.json",
+  "first_attempt": "Compiled and passed Source, GC and Storage Context cases; exhaustive native allocator test found constructor-host-boundary OOM mapping error. Repaired product boundary with actual generation-tagged native allocation mapping, without changing assertions.",
+  "first_record": "chord-context19cb-debug-first-20261012.json",
+  "source_post_files": 4223,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 7,
+  "processes_retired": [
+    52392,
+    36640
+  ],
+  "limits": [
+    "Only the Chord Context subpath foundation is qualified; createHost/Host roots, contract lifecycle, epoch registries, cells/resources and links remain incomplete native work.",
+    "No synthetic Runtime/Host facade or public partial package activation was added.",
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "Global native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T19:00:15.6885846+00:00"
+}

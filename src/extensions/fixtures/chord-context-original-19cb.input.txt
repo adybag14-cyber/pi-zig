@@ -1,0 +1,49 @@
+const cases=[];
+const {BACKGROUND_CONTEXT:B,TODO_CONTEXT:T,createContextKey,withContextValue,withAbortSignal,withoutAbortSignal,withCancel,awaitWithContext}=ctx;
+const errorName=fn=>{try{return {value:fn()}}catch(error){return {error:error.name}}};
+const functions=Object.keys(ctx).sort().filter(key=>typeof ctx[key]==='function').map(key=>({key,name:ctx[key].name,length:ctx[key].length,prototype:Object.hasOwn(ctx[key],'prototype')}));
+const descriptor=(object,name)=>{const d=Object.getOwnPropertyDescriptor(object,name);return d?{enumerable:d.enumerable,configurable:d.configurable,...(d.get?{get:{name:d.get.name,length:d.get.length}}:{writable:d.writable,name:d.value.name,length:d.value.length})}:null};
+const shape=object=>{const p=Object.getPrototypeOf(object),base=Object.getPrototypeOf(p);return {own:Reflect.ownKeys(object).map(String),constructor:p.constructor.name,constructorLength:p.constructor.length,constructorParent:Object.getPrototypeOf(p.constructor).name,prototypeKeys:Object.getOwnPropertyNames(p),value:descriptor(p,'value'),toString:descriptor(p,'toString'),abortSignal:descriptor(base,'abortSignal')}};
+const key=createContextKey('owner'),stored={identity:true},context=withContextValue(key,stored,B);
+cases.push({name:'class hierarchy descriptors and ordinary exported functions',functions,background:shape(B),todo:String(T),derived:shape(context),backgroundText:String(B),derivedText:String(context),valueIdentity:context.value(key)===stored,aliasIdentity:context.value({token:key.token})===stored,keyFrozen:Object.isFrozen(key),keyDescription:key.token.description});
+{
+ const calls=[],signal={signal:true},key=createContextKey('local');let value=signal;
+ const parent={get abortSignal(){calls.push('unexpected abort getter');throw Error('must not read abortSignal at construction')},value(request){calls.push(['parent value',request.token.description,Object.isFrozen(request)]);return value},toString(){return 'parent'}};
+ const derived=withContextValue(key,7,parent);const afterConstruction=[...calls];const first=derived.abortSignal===signal;value=undefined;const second=derived.abortSignal===undefined;
+ cases.push({name:'lazy live abort getter delegates through parent value',afterConstruction,first,second,calls,text:String(derived)});
+}
+{
+ const signal={guestSignal:true};
+ const base=Object.getPrototypeOf(Object.getPrototypeOf(B)),getter=Object.getOwnPropertyDescriptor(base,'abortSignal').get;const calls=[];
+ const value=getter.call({value(key){calls.push({description:key.token.description,frozen:Object.isFrozen(key)});return signal}});
+ cases.push({name:'base getter observes custom receiver value without replacing Source methods',getterIdentity:value===signal,calls});
+}
+{
+ const value=Object.getPrototypeOf(context).value,toString=Object.getPrototypeOf(context).toString,empty=Object.getPrototypeOf(B);
+ class Child extends context.constructor{};const child=new Child(B,key,stored);
+ const rebuilt=new B.constructor('other'),anonymous=withContextValue({token:Symbol()},3,B),nullDescription=withContextValue({token:{description:null}},4,B);
+ cases.push({name:'private brands constructors subclass identity and labels',invalidValue:errorName(()=>value.call({},key)),invalidString:errorName(()=>toString.call({})),emptyValue:errorName(()=>empty.value.call({},key)),emptyString:errorName(()=>empty.toString.call({})),childIdentity:child.value(key)===stored,childSignal:child.abortSignal===undefined,childText:String(child),rebuilt:String(rebuilt),anonymous:String(anonymous),nullDescription:String(nullDescription),constructedKey:Object.isFrozen(new createContextKey('constructed'))});
+}
+{
+ const parent=withCancel(context),child=withCancel(parent.context),clean=withoutAbortSignal(child.context),reason=new Error('parent stop');parent.cancel(reason);
+ cases.push({name:'cancel propagation cleanup retains values and identities',parent:parent.context.abortSignal.aborted,child:child.context.abortSignal.aborted,reasonIdentity:child.context.abortSignal.reason===reason,cleanSignal:clean.abortSignal===undefined,cleanValue:clean.value(key)===stored,childText:String(child.context),cleanText:String(clean),cancelName:parent.cancel.name,cancelLength:parent.cancel.length});
+}
+{
+ const promise=Promise.resolve(9);cases.push({name:'uncancelled await preserves original promise identity',identity:awaitWithContext(promise,B)===promise,value:await awaitWithContext(promise,B)});
+}
+for(const originalReason of [new Error('caller'),{opaque:true},'text']){
+ let resolve;const pending=new Promise(done=>resolve=done),cancelled=withCancel(B),waiter=awaitWithContext(pending,cancelled.context),outcome=waiter.then(value=>({value}),error=>({error:error.name,message:error.message,original:error===originalReason}));cancelled.cancel(originalReason);const rejected=await outcome;resolve(17);const underlying=await pending;
+ cases.push({name:'waiter cancellation preserves underlying '+(originalReason instanceof Error?'error':typeof originalReason),rejected,underlying});
+}
+for(const stage of ['add listener','then getter','then call']){
+ const marker={stage},events=[];const signal={aborted:false,addEventListener(...args){events.push(['add',args[0],args[2].once]);if(stage==='add listener')throw marker},removeEventListener(...args){events.push(['remove',args[0]])}};
+ const promise=stage==='then getter'?Object.defineProperty({},'then',{get(){events.push(['then getter']);throw marker}}):{then(){events.push(['then call']);throw marker}};
+ let sync=false,returned;try{returned=awaitWithContext(promise,{abortSignal:signal})}catch(error){sync=error===marker}let rejected=false;if(returned)try{await returned}catch(error){rejected=error===marker}
+ cases.push({name:'Promise executor failures reject waiter '+stage,sync,rejected,events});
+}
+{
+ const events=[],signal={aborted:false,addEventListener(...args){events.push(['add',args[0],args[2].once])},removeEventListener(...args){events.push(['remove',args[0]])}};
+ const success=await awaitWithContext(Promise.resolve('ok'),{abortSignal:signal});let rejected;const marker={failure:true};try{await awaitWithContext(Promise.reject(marker),{abortSignal:signal})}catch(error){rejected=error===marker}
+ cases.push({name:'settlement removes cancellation listener and keeps rejection identity',success,rejected,events});
+}
+globalThis.chordContextCases=cases;

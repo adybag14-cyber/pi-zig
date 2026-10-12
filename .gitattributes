@@ -37,3 +37,7 @@ src/mcp/result_schema.json whitespace=blank-at-eol,blank-at-eof,space-before-tab
 # Latest TUI wheel observers retain exact source-input and terminal EOF bytes.
 src/extensions/fixtures/tui-overlay-wheel-original-19cb.input.txt whitespace=cr-at-eol
 verification/tui-overlay-wheel-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+
+# Genuine Chord2 Context observer programs retain captured boundary bytes.
+src/extensions/fixtures/chord-context-original-19cb.input.txt whitespace=cr-at-eol
+verification/chord-context-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

@@ -1,0 +1,316 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "chordExports": [
+    "ChordError",
+    "acceptWebSockets",
+    "bind",
+    "cell",
+    "copyJson",
+    "coverage",
+    "createHost",
+    "defineFacet",
+    "defineRegistry",
+    "derivation",
+    "forbidden",
+    "hostPrincipal",
+    "invalid",
+    "ipcLink",
+    "isChordError",
+    "isJsonValue",
+    "listener",
+    "local",
+    "memoryLinkPair",
+    "method",
+    "opaque",
+    "remote",
+    "replicatedState",
+    "resource",
+    "webSocketLink"
+  ],
+  "contextExports": [
+    "BACKGROUND_CONTEXT",
+    "TODO_CONTEXT",
+    "awaitWithContext",
+    "createContextKey",
+    "withAbortSignal",
+    "withCancel",
+    "withContextValue",
+    "withoutAbortSignal"
+  ],
+  "cases": [
+    {
+      "name": "class hierarchy descriptors and ordinary exported functions",
+      "functions": [
+        {
+          "key": "awaitWithContext",
+          "name": "awaitWithContext",
+          "length": 2,
+          "prototype": true
+        },
+        {
+          "key": "createContextKey",
+          "name": "createContextKey",
+          "length": 1,
+          "prototype": true
+        },
+        {
+          "key": "withAbortSignal",
+          "name": "withAbortSignal",
+          "length": 2,
+          "prototype": true
+        },
+        {
+          "key": "withCancel",
+          "name": "withCancel",
+          "length": 1,
+          "prototype": true
+        },
+        {
+          "key": "withContextValue",
+          "name": "withContextValue",
+          "length": 3,
+          "prototype": true
+        },
+        {
+          "key": "withoutAbortSignal",
+          "name": "withoutAbortSignal",
+          "length": 1,
+          "prototype": true
+        }
+      ],
+      "background": {
+        "own": [],
+        "constructor": "EmptyContext",
+        "constructorLength": 1,
+        "constructorParent": "BaseContext",
+        "prototypeKeys": [
+          "constructor",
+          "value",
+          "toString"
+        ],
+        "value": {
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "value",
+          "length": 1
+        },
+        "toString": {
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "toString",
+          "length": 0
+        },
+        "abortSignal": {
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get abortSignal",
+            "length": 0
+          }
+        }
+      },
+      "todo": "[Context TODO_CONTEXT]",
+      "derived": {
+        "own": [],
+        "constructor": "ContextValue",
+        "constructorLength": 3,
+        "constructorParent": "BaseContext",
+        "prototypeKeys": [
+          "constructor",
+          "value",
+          "toString"
+        ],
+        "value": {
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "value",
+          "length": 1
+        },
+        "toString": {
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "name": "toString",
+          "length": 0
+        },
+        "abortSignal": {
+          "enumerable": false,
+          "configurable": true,
+          "get": {
+            "name": "get abortSignal",
+            "length": 0
+          }
+        }
+      },
+      "backgroundText": "[Context BACKGROUND_CONTEXT]",
+      "derivedText": "[Context BACKGROUND_CONTEXT].WithValue(owner)",
+      "valueIdentity": true,
+      "aliasIdentity": true,
+      "keyFrozen": true,
+      "keyDescription": "owner"
+    },
+    {
+      "name": "lazy live abort getter delegates through parent value",
+      "afterConstruction": [],
+      "first": true,
+      "second": true,
+      "calls": [
+        [
+          "parent value",
+          "chord.abortSignal",
+          true
+        ],
+        [
+          "parent value",
+          "chord.abortSignal",
+          true
+        ]
+      ],
+      "text": "parent.WithValue(local)"
+    },
+    {
+      "name": "base getter observes custom receiver value without replacing Source methods",
+      "getterIdentity": true,
+      "calls": [
+        {
+          "description": "chord.abortSignal",
+          "frozen": true
+        }
+      ]
+    },
+    {
+      "name": "private brands constructors subclass identity and labels",
+      "invalidValue": {
+        "error": "TypeError"
+      },
+      "invalidString": {
+        "error": "TypeError"
+      },
+      "emptyValue": {},
+      "emptyString": {
+        "error": "TypeError"
+      },
+      "childIdentity": true,
+      "childSignal": true,
+      "childText": "[Context BACKGROUND_CONTEXT].WithValue(owner)",
+      "rebuilt": "other",
+      "anonymous": "[Context BACKGROUND_CONTEXT].WithValue(anonymous)",
+      "nullDescription": "[Context BACKGROUND_CONTEXT].WithValue(anonymous)",
+      "constructedKey": true
+    },
+    {
+      "name": "cancel propagation cleanup retains values and identities",
+      "parent": true,
+      "child": true,
+      "reasonIdentity": true,
+      "cleanSignal": true,
+      "cleanValue": true,
+      "childText": "[Context BACKGROUND_CONTEXT].WithValue(owner).WithValue(chord.abortSignal).WithValue(chord.abortSignal)",
+      "cleanText": "[Context BACKGROUND_CONTEXT].WithValue(owner).WithValue(chord.abortSignal).WithValue(chord.abortSignal).WithValue(chord.abortSignal)",
+      "cancelName": "cancel",
+      "cancelLength": 1
+    },
+    {
+      "name": "uncancelled await preserves original promise identity",
+      "identity": true,
+      "value": 9
+    },
+    {
+      "name": "waiter cancellation preserves underlying error",
+      "rejected": {
+        "error": "Error",
+        "message": "caller",
+        "original": true
+      },
+      "underlying": 17
+    },
+    {
+      "name": "waiter cancellation preserves underlying object",
+      "rejected": {
+        "error": "AbortError",
+        "message": "The operation was aborted",
+        "original": false
+      },
+      "underlying": 17
+    },
+    {
+      "name": "waiter cancellation preserves underlying string",
+      "rejected": {
+        "error": "AbortError",
+        "message": "The operation was aborted",
+        "original": false
+      },
+      "underlying": 17
+    },
+    {
+      "name": "Promise executor failures reject waiter add listener",
+      "sync": false,
+      "rejected": true,
+      "events": [
+        [
+          "add",
+          "abort",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "Promise executor failures reject waiter then getter",
+      "sync": false,
+      "rejected": true,
+      "events": [
+        [
+          "add",
+          "abort",
+          true
+        ],
+        [
+          "then getter"
+        ]
+      ]
+    },
+    {
+      "name": "Promise executor failures reject waiter then call",
+      "sync": false,
+      "rejected": true,
+      "events": [
+        [
+          "add",
+          "abort",
+          true
+        ],
+        [
+          "then call"
+        ]
+      ]
+    },
+    {
+      "name": "settlement removes cancellation listener and keeps rejection identity",
+      "success": "ok",
+      "rejected": true,
+      "events": [
+        [
+          "add",
+          "abort",
+          true
+        ],
+        [
+          "remove",
+          "abort"
+        ],
+        [
+          "add",
+          "abort",
+          true
+        ],
+        [
+          "remove",
+          "abort"
+        ]
+      ]
+    }
+  ]
+}
