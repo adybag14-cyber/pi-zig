@@ -415,6 +415,7 @@ fn pump(engine: *engine_mod.Engine) !bool {
     };
     const deadline = state.timers.items[index].deadline_ms;
     while (true) {
+        if (engine.native_owner_diagnostics.enabled) engine.native_owner_diagnostics.timer_loops += 1;
         const owner_epoch = engine.native_owner_signal.observe();
         // Abort listeners run on this owner thread and may clear or schedule
         // timers. Yield after any dispatched control so awaitValue drains jobs
@@ -436,6 +437,7 @@ fn pump(engine: *engine_mod.Engine) !bool {
 
 fn fire(state: *Scheduler, index: usize) !bool {
     const engine = state.engine;
+    if (engine.native_owner_diagnostics.enabled) engine.native_owner_diagnostics.timer_fires += 1;
     // Remove before invocation: callbacks can clear or schedule more timers.
     const timer = state.timers.orderedRemove(index);
     defer state.freeTimer(timer);

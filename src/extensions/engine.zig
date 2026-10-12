@@ -132,6 +132,8 @@ pub const Engine = struct {
     host_owner_notify_context: ?*anyopaque = null,
     host_owner_notify: ?*const fn (?*anyopaque) void = null,
     native_owner_signal: @import("native_owner_signal.zig").Signal = .{},
+    // Opt-in, owner-only counters for focused original-program diagnostics.
+    native_owner_diagnostics: struct { enabled: bool = false, controls: u64 = 0, controls_worked: u64 = 0, controls_ms: i64 = 0, js_jobs: u64 = 0, timer_loops: u64 = 0, timer_fires: u64 = 0 } = .{},
     native_durable_control_context: ?*anyopaque = null,
     native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_control_deinit: ?*const fn (*Engine) void = null,
@@ -698,6 +700,11 @@ pub const Engine = struct {
 
     /// Return a new owned result without consuming the caller's promise/value.
     pub fn pumpControls(self: *Engine) !bool {
+        const diagnostic_start = if (self.native_owner_diagnostics.enabled and self.native_io != null) std.Io.Clock.awake.now(self.native_io.?).toMilliseconds() else null;
+        defer if (diagnostic_start) |start| {
+            self.native_owner_diagnostics.controls += 1;
+            self.native_owner_diagnostics.controls_ms += std.Io.Clock.awake.now(self.native_io.?).toMilliseconds() - start;
+        };
         self.refreshUiDeadline();
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
@@ -705,7 +712,9 @@ pub const Engine = struct {
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
         const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
         const commands_worked = if (self.native_command_metadata_pump) |pump| try pump(self) else false;
-        return host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked;
+        const worked = host_worked or storage_worked or durable_worked or sdk_retired or tools_worked or commands_worked;
+        if (self.native_owner_diagnostics.enabled and worked) self.native_owner_diagnostics.controls_worked += 1;
+        return worked;
     }
     /// Native leases notify through this Engine-owned signal. External worker
     /// transports keep their existing wakeup while standalone VMs wake too.
@@ -743,6 +752,7 @@ pub const Engine = struct {
                 return error.JavaScriptException;
             }
             jobs += 1;
+            if (self.native_owner_diagnostics.enabled) self.native_owner_diagnostics.js_jobs += 1;
         }
         return jobs;
     }
@@ -802,6 +812,7 @@ pub const Engine = struct {
                 return error.JavaScriptPromiseUnsettled;
             }
             jobs += 1;
+            if (self.native_owner_diagnostics.enabled) self.native_owner_diagnostics.js_jobs += 1;
         }
         return switch (c.JS_PromiseState(self.context, value)) {
             c.JS_PROMISE_REJECTED => blk: {

@@ -61,6 +61,21 @@ pub const Channel = struct {
         defer self.mutex.unlock(self.io);
         return self.queue.items.len;
     }
+    pub fn printFailureDiagnostics(self: *Channel, label: []const u8) void {
+        std.debug.assert(std.Thread.getCurrentId() == self.owner);
+        if (!self.mutex.tryLock()) {
+            std.debug.print("Durable failure settlement={s} mutex busy calls={d} active={d}\n", .{ label, self.calls.load(.acquire), self.active });
+            return;
+        }
+        defer self.mutex.unlock(self.io);
+        std.debug.print("Durable failure settlement={s} generation={d} closed={} queued={d} active={d} calls={d}\n", .{ label, self.generation, self.closed, self.queue.items.len, self.active, self.calls.load(.acquire) });
+        for (self.queue.items) |request| {
+            const lease = request.lease;
+            // Only immutable lease scalars; Transaction and fault DTOs remain
+            // borrowed by the blocked worker and must not be dereferenced.
+            std.debug.print("Durable failure settlement={s} worker={d} generation={d} epoch={d} success={} cleanup={} fault={} assembly={}\n", .{ label, lease.worker_thread, lease.owner_generation, lease.line_epoch, lease.success, lease.cleanup != null, lease.fault_message != null, lease.assembly != null });
+        }
+    }
     pub fn close(self: *Channel) void {
         std.debug.assert(std.Thread.getCurrentId() == self.owner);
         self.mutex.lockUncancelable(self.io);

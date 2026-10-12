@@ -1708,7 +1708,14 @@ pub fn printFailureDiagnostics(engine: *Engine) void {
     const owner: *Hub = @ptrCast(@alignCast(raw));
     for (owner.managers.items, 0..) |manager, manager_index| {
         std.debug.print("Durable failure manager={d} generation={d} closed={} enabled={} workerFinished={} joined={} guestDispatches={d} lineOwner={d} lineEpoch={d} waiters={d} signals={d} sleepers={d} reads={d} joins={d}\n", .{ manager_index, manager.generation, manager.closed, manager.enabled, manager.finished.load(.acquire), manager.thread == null, manager.active_dispatches, manager.lease.value.ownerThread.load(.acquire), manager.lease.value.line_epoch.load(.acquire), manager.waiters.items.len, manager.signals.items.len, manager.sleepers.items.len, manager.pending_reads.count(), manager.join_waiters.items.len });
-        std.debug.print("Durable failure manager settlingCache={} settlingContexts={} driveRequested={} lastCount={d} failure={s}\n", .{ manager.settling_cache, manager.settling_contexts, manager.drive_requested, manager.last_count, if (manager.driver_failure) |failure| @errorName(failure) else "none" });
+        std.debug.print("Durable failure manager settlingCache={} settlingContexts={} driveRequested={}\n", .{ manager.settling_cache, manager.settling_contexts, manager.drive_requested });
+        // These two scalars are written by the driver. Acquire its completion
+        // publication before reading; an unfinished worker owns them.
+        if (manager.finished.load(.acquire)) std.debug.print("Durable failure manager lastCount={d} failure={s}\n", .{ manager.last_count, if (manager.driver_failure) |failure| @errorName(failure) else "none" });
+        manager.broker.printFailureDiagnostics("guest");
+        if (manager.context_broker) |*broker| broker.printFailureDiagnostics("context");
+        if (manager.settlement) |*channel| channel.printFailureDiagnostics("cache");
+        if (manager.outcome_settlement) |*channel| channel.printFailureDiagnostics("outcome");
         var pending = manager.first_phase;
         while (pending) |phase| : (pending = phase.next) {
             const invocation = phase.entry.runtime.invocation;
@@ -1727,6 +1734,14 @@ pub fn printFailureDiagnostics(engine: *Engine) void {
             std.debug.print("Durable failure live task={d} kind={s} status={s} phase={s}\n", .{ if (id == .integer) id.integer else -1, if (kind == .string) kind.string else "?", if (status == .string) status.string else "?", if (phase == .string) phase.string else "?" });
         }
         if (manager.mutex.tryLock()) {
+            std.debug.print("Durable failure manager ledger={d} readQueries={d} readReplies={d}\n", .{ manager.ledger.items.len, manager.read_queries.items.len, manager.read_replies.items.len });
+            for (manager.ledger.items) |entry| {
+                std.debug.print("Durable failure ledger task={d} generation={d} active={} dispatch={s} replyEvent={}\n", .{ entry.runtime.taskId(), entry.generation, entry.active.load(.acquire), @tagName(entry.dispatch_phase.load(.acquire)), entry.reply_done.isSet() });
+                if (entry.reply_mutex.tryLock()) {
+                    std.debug.print("Durable failure ledger replySettled={} failure={s}\n", .{ entry.reply_settled, if (entry.reply_failure) |failure| @errorName(failure) else "none" });
+                    entry.reply_mutex.unlock(manager.lease.value.io);
+                } else std.debug.print("Durable failure ledger reply mutex busy\n", .{});
+            }
             for (manager.events.items) |event| std.debug.print("Durable failure publication seq={d} ready={} cacheReady={} cacheAdopted={} ownerCommit={} lineEpoch={d}\n", .{ event.seq, event.ready, event.cache_ready, event.cache_adopted, event.owner_public_commit, event.line_epoch });
             manager.mutex.unlock(manager.lease.value.io);
         } else std.debug.print("Durable failure publication mutex busy\n", .{});

@@ -8,6 +8,8 @@ pub const Signal = struct {
     waits: u64 = 0,
     raced: u64 = 0,
     timeouts: u64 = 0,
+    measure_wait: bool = false,
+    blocked_ms: i64 = 0,
 
     pub fn observe(self: *const Signal) u64 {
         return self.epoch.load(.acquire);
@@ -30,6 +32,10 @@ pub const Signal = struct {
             self.raced += 1;
             return true;
         }
+        const began = if (self.measure_wait) std.Io.Clock.awake.now(io).toMilliseconds() else null;
+        defer if (began) |start| {
+            self.blocked_ms += std.Io.Clock.awake.now(io).toMilliseconds() - start;
+        };
         self.event.waitTimeout(io, timeout) catch |err| switch (err) {
             error.Timeout => {
                 self.timeouts += 1;

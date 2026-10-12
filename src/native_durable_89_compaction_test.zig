@@ -10,8 +10,16 @@ test "native durable actual 89 compaction failure public contract preserves real
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
+    engine.native_owner_diagnostics.enabled = true;
+    engine.native_owner_signal.measure_wait = true;
     try durable.install(engine);
     try @import("extensions/text_decoder.zig").install(engine);
+    const began = std.Io.Clock.awake.now(std.testing.io).toMilliseconds();
+    defer {
+        const diagnostic = engine.native_owner_diagnostics;
+        const signal = &engine.native_owner_signal;
+        std.debug.print("Actual 89 owner elapsedMs={d} controls={d} controlsWorked={d} controlsInclusiveMs={d} jsJobs={d} timerLoops={d} timerFires={d} notifications={d} waits={d} raced={d} timeouts={d} blockedMs={d}\n", .{ std.Io.Clock.awake.now(std.testing.io).toMilliseconds() - began, diagnostic.controls, diagnostic.controls_worked, diagnostic.controls_ms, diagnostic.js_jobs, diagnostic.timer_loops, diagnostic.timer_fires, signal.observe(), signal.waits, signal.raced, signal.timeouts, signal.blocked_ms });
+    }
     const result = engine.evalModule(@embedFile("durable/fixtures/durable-89-compaction-failure-program.txt"), "actual-89-compaction-failure") catch |err| {
         std.debug.print("Actual 89 compaction failure {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
         @import("extensions/native_durable_tasks.zig").printFailureDiagnostics(engine);

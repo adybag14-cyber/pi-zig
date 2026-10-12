@@ -531,6 +531,10 @@ pub fn printFailureDiagnostics(engine: *Engine) void {
     const raw = engine.native_durable_storage_context orelse return;
     const owner: *Hub = @ptrCast(@alignCast(raw));
     std.debug.print("Durable failure storage adapters={d} deferred={d}\n", .{ owner.adapters.items.len, owner.commits.items.len });
+    for (owner.adapters.items, 0..) |adapter, index| {
+        std.debug.print("Durable failure storage adapter={d} owner={d} attached={}\n", .{ index, adapter.owner, adapter.session != null });
+        adapter.broker.printFailureDiagnostics("storage");
+    }
     for (owner.commits.items) |request| {
         const parent = request.captures[if (request.kind == .runtime_commit or request.kind == .runtime_memo) 3 else 0];
         if (durable.state(engine, parent)) |native| {

@@ -119,6 +119,27 @@ pub const Broker = struct {
         defer self.mutex.unlock(self.io);
         return self.queue.items.len;
     }
+    /// Owner-only failure snapshot. Never wait for a worker-held mutex and
+    /// never inspect guest values or request arguments.
+    pub fn printFailureDiagnostics(self: *Broker, label: []const u8) void {
+        std.debug.assert(std.Thread.getCurrentId() == self.owner);
+        if (!self.mutex.tryLock()) {
+            std.debug.print("Durable failure broker={s} mutex busy calls={d} active={d}\n", .{ label, self.calls.load(.acquire), self.active.items.len });
+            return;
+        }
+        defer self.mutex.unlock(self.io);
+        std.debug.print("Durable failure broker={s} generation={d} closed={} queued={d} active={d} calls={d}\n", .{ label, self.owner_generation, self.closed, self.queue.items.len, self.active.items.len, self.calls.load(.acquire) });
+        for (self.queue.items) |request| self.printRequest(label, "queued", request);
+        for (self.active.items) |request| self.printRequest(label, "active", request);
+    }
+    fn printRequest(self: *Broker, label: []const u8, state: []const u8, request: *Request) void {
+        const operation = json.get(request.payload.value, "op") orelse .null;
+        std.debug.print("Durable failure broker={s} request={s} task={d} invocation={d} ownerGeneration={d} op={s} canceled={}\n", .{ label, state, request.identity.task_id, request.identity.invocation_generation, request.identity.owner_generation, if (operation == .string) operation.string else "guest", request.canceled.load(.acquire) });
+        if (request.mutex.tryLock()) {
+            defer request.mutex.unlock(self.io);
+            std.debug.print("Durable failure broker={s} settled={} response={} failure={s}\n", .{ label, request.settled, request.response != null, if (request.failure) |failure| @errorName(failure) else "none" });
+        } else std.debug.print("Durable failure broker={s} request mutex busy\n", .{label});
+    }
     fn failPending(self: *Broker, cause: anyerror) void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
