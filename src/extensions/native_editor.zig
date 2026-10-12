@@ -264,7 +264,7 @@ pub const Manager = struct {
             }
             self.engine.freeValue(self.autocomplete_wrappers.orderedRemove(index).factory);
         }
-        if (self.owners.count() > 0) self.refreshAutocomplete() catch {};
+        if (!self.engine.native_fatal_teardown and self.owners.count() > 0) self.refreshAutocomplete() catch {};
     }
     pub fn updateAutocompleteContext(self: *Manager, snapshot: c.JSValue) !void {
         const owned = c.JS_DupValue(self.engine.context, snapshot);
@@ -366,9 +366,10 @@ pub const Manager = struct {
         self.dirty = false;
         self.retiring = true;
         defer self.retiring = false;
-        retireAutocomplete(self.engine, current_component);
         defer self.engine.freeValue(current_component);
         defer if (current_factory) |value| self.engine.freeValue(value);
+        if (self.engine.native_fatal_teardown) return;
+        retireAutocomplete(self.engine, current_component);
         defer {
             if (components.callMethod(self.engine, current_component, "dispose", &.{}, true) catch null) |value| self.engine.freeValue(value);
         }

@@ -1,0 +1,70 @@
+{
+  "status": "qualified-components-full-goal-incomplete",
+  "base_published_head": "7091eef3bac0e306b43de3fd0c0b1e24059bd2bf",
+  "print_integrated_commit": "9c57545",
+  "mcp_integrated_commits": [
+    "39d8d66",
+    "14c5fd2"
+  ],
+  "zig": "0.16.0",
+  "journal_ui_print": {
+    "job": "root-journal-ui-print-integrated-20261012",
+    "tests": 49,
+    "steps": 184,
+    "source_inputs": 4141,
+    "tool_inputs": 19546,
+    "source_drift": 0,
+    "tool_drift": 0,
+    "process_gone": true,
+    "stderr_sha256": "1FE7FC89DB9E94BCC9EF0AF978580588D0D09B58E3A5E0BE203C7667B4F7586A",
+    "source_manifest_sha256": "B30E20DEBD3262E26DFAFD3CF1EC313747A93120A9277FE3436EB83B07222552"
+  },
+  "mcp": {
+    "job": "root-mcp-integrated-20261012",
+    "tests": 125,
+    "steps": 167,
+    "source_inputs": 4174,
+    "tool_inputs": 19546,
+    "source_drift": 0,
+    "tool_drift": 0,
+    "process_gone": true,
+    "stderr_sha256": "2A35E678510AE8FC8271272C3181D7C9F8A025F563906205C108810F1B9E1493",
+    "source_manifest_sha256": "9897F78B35C23601D0828BCB95F974674C94923CCF2F18EBD7D2F1B8D8BFF37C"
+  },
+  "hosted_prior_head": {
+    "run": 38269576295,
+    "head": "7091eef3bac0e306b43de3fd0c0b1e24059bd2bf",
+    "terminal": "failure",
+    "jobs_passed": 1,
+    "jobs_total": 6,
+    "WindowsDebug": "passed",
+    "LinuxDebug": "all Agent allocation ranges complete; CodeMode fire-and-forget status/signal mismatch",
+    "macOSDebug": "later Agent allocation ranges exceed unchanged120s test guard",
+    "ReleaseSafe": "three jobs exhausted shared compilation/runtime step28m",
+    "new_workflow": "separate cold compilation; complete64 macOS allocation partitions; runtime120s unchanged; not yet hosted-qualified"
+  },
+  "private_factory": {
+    "job": "root-durable-factory-repair-20261012",
+    "tests": 16,
+    "source_inputs": 4103,
+    "tool_inputs": 19546,
+    "post_drift": 0,
+    "integrated": false
+  },
+  "native_default": false,
+  "node_bridge_retained": true,
+  "source_scope": "Metadata additions after component freezes; no full release or full parity certification",
+  "factory_integrated": {
+    "job": "root-factory-integrated-20261012",
+    "tests": 51,
+    "steps": 184,
+    "source_inputs": 4181,
+    "tool_inputs": 19546,
+    "source_drift": 0,
+    "tool_drift": 0,
+    "process_gone": true,
+    "stderr_sha256": "ED78C63AAA2558B3A33C5050749032F8E326F45DBE27CF1BFE1EE4D2011C2A25",
+    "source_manifest_sha256": "C7C5407C9933016D4F9D69F715055842949B63C72F845373C6E746AB37A24F6B",
+    "scope": "Original Source6 now uses actual native factory/start metadata, actual SQLite restart3, discovery9, replay-negative6; default model catalog/four model slots/output environment and public activation incomplete"
+  }
+}

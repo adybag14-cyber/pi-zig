@@ -1,0 +1,274 @@
+{"source":"19cb534c3b6e3871458a8fa59e98f0312c50e995","start":{
+            "version": 2,
+            "startedAt": 1791819382153,
+            "seed": 332244274,
+            "tools": [
+              {
+                "name": "echo",
+                "jsName": "echo",
+                "description": "echo\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { echo(args: { i: number; }): Promise<string>; };\n```"
+              }
+            ],
+            "namespaces": [
+              {
+                "name": "mcp__repo",
+                "description": "Echo documents",
+                "instructions": "Keep arguments unchanged",
+                "tools": [
+                  "echo"
+                ]
+              }
+            ],
+            "globals": [
+              {
+                "name": "searchTools",
+                "spread": true
+              },
+              {
+                "name": "describeTool",
+                "spread": true
+              },
+              {
+                "name": "describeNamespace",
+                "spread": true
+              },
+              {
+                "name": "probeGlobal",
+                "spread": false
+              }
+            ],
+            "maxOutputTokens": 10000,
+            "store": {},
+            "fingerprint": "quickjs-wasi 3.6.2, quickjs 0.17.0, prelude 8c6c9242, deterministic 1, stack 524288, heap 67108864, budget none"
+          },"calls":[{
+            "id": 1,
+            "target": "global",
+            "name": "describeTool",
+            "args": [
+              "echo"
+            ]
+          },{
+            "id": 2,
+            "target": "global",
+            "name": "describeTool",
+            "args": [
+              "missing"
+            ]
+          },{
+            "id": 3,
+            "target": "global",
+            "name": "describeNamespace",
+            "args": [
+              "mcp__repo"
+            ]
+          },{
+            "id": 4,
+            "target": "global",
+            "name": "describeNamespace",
+            "args": [
+              "repo"
+            ]
+          },{
+            "id": 5,
+            "target": "global",
+            "name": "searchTools",
+            "args": [
+              "echo"
+            ]
+          },{
+            "id": 6,
+            "target": "global",
+            "name": "searchTools",
+            "args": [
+              "echo",
+              {
+                "namespace": "mcp__repo"
+              }
+            ]
+          },{
+            "id": 7,
+            "target": "global",
+            "name": "searchTools",
+            "args": [
+              "echo",
+              {
+                "namespace": ""
+              }
+            ]
+          },{
+            "id": 8,
+            "target": "global",
+            "name": "searchTools",
+            "args": [
+              "echo",
+              {
+                "limit": 0
+              }
+            ]
+          },{
+            "id": 9,
+            "target": "global",
+            "name": "describeTool",
+            "args": [
+              1
+            ]
+          }],"deliveries":[{
+          "phase": "deliver",
+          "seq": 1,
+          "id": 1,
+          "at": 1791819382217,
+          "outcome": {
+            "ok": true,
+            "value": "echo\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { echo(args: { i: number; }): Promise<string>; };\n```"
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "string",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 2,
+          "id": 2,
+          "at": 1791819382219,
+          "outcome": {
+            "ok": true
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "undefined",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 3,
+          "id": 3,
+          "at": 1791819382219,
+          "outcome": {
+            "ok": true,
+            "value": {
+              "name": "mcp__repo",
+              "description": "Echo documents",
+              "instructions": "Keep arguments unchanged",
+              "tools": [
+                "echo"
+              ]
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 4,
+          "id": 4,
+          "at": 1791819382220,
+          "outcome": {
+            "ok": true
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "undefined",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 5,
+          "id": 5,
+          "at": 1791819382221,
+          "outcome": {
+            "ok": true,
+            "value": [
+              {
+                "name": "echo",
+                "description": "echo\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { echo(args: { i: number; }): Promise<string>; };\n```"
+              }
+            ]
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 6,
+          "id": 6,
+          "at": 1791819382221,
+          "outcome": {
+            "ok": true,
+            "value": [
+              {
+                "name": "echo",
+                "description": "echo\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { echo(args: { i: number; }): Promise<string>; };\n```"
+              }
+            ]
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 7,
+          "id": 7,
+          "at": 1791819382222,
+          "outcome": {
+            "ok": true,
+            "value": []
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 8,
+          "id": 8,
+          "at": 1791819382222,
+          "outcome": {
+            "ok": false,
+            "message": "searchTools() limit must be a positive integer"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined",
+          "journalCommitted": true
+        },{
+          "phase": "deliver",
+          "seq": 9,
+          "id": 9,
+          "at": 1791819382223,
+          "outcome": {
+            "ok": false,
+            "message": "describeTool() expects a tool name"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined",
+          "journalCommitted": true
+        }]}

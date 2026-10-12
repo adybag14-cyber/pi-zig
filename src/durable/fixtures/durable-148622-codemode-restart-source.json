@@ -1,0 +1,121 @@
+{"source":"148622bc6f8d0ffd64e33cbc0e1e66754f45d32c","cases":[{
+        "name": "finished-calls-reattach",
+        "code": "const a = await tools.echo({ text: \"a\" });\n\t\t\tconst held = await tools.hold({ id: 1 });\n\t\t\tconst b = await tools.echo({ text: \"b\" });\n\t\t\treturn [a, held, b, Date.now() > 0];"
+      },{
+        "name": "host-close-undecided",
+        "code": "await tools.echo({ text: \"a\" }); await tools.hold({}); return \"done\";",
+        "closeSandbox": true
+      },{
+        "name": "ended-before-original-first-idle",
+        "code": "if (load(\"k\")) { store(\"x\", 1); return \"early\"; } await tools.hold({});",
+        "early": true
+      }],"rows":[
+    {
+      "name": "finished-calls-reattach",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {
+        "a": 1,
+        "b": 1
+      },
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "Script completed\nWall time 0.1 seconds\nOutput:\n"
+          },
+          {
+            "type": "text",
+            "text": "[\"echo a\",\"held 1\",\"echo b\",true]"
+          }
+        ],
+        "isError": false,
+        "details": {
+          "calls": [
+            {
+              "id": 1,
+              "name": "echo",
+              "args": "{\"text\":\"a\"}",
+              "status": "ok",
+              "durationMs": 0
+            },
+            {
+              "id": 2,
+              "name": "hold",
+              "args": "{\"id\":1}",
+              "status": "ok",
+              "durationMs": 0
+            },
+            {
+              "id": 3,
+              "name": "echo",
+              "args": "{\"text\":\"b\"}",
+              "status": "ok",
+              "durationMs": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "host-close-undecided",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {
+        "a": 1
+      },
+      "closeUndecided": true,
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "Script completed\nWall time 0.2 seconds\nOutput:\n"
+          },
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "isError": false,
+        "details": {
+          "calls": [
+            {
+              "id": 1,
+              "name": "echo",
+              "args": "{\"text\":\"a\"}",
+              "status": "ok",
+              "durationMs": 0
+            },
+            {
+              "id": 2,
+              "name": "hold",
+              "args": "{}",
+              "status": "ok",
+              "durationMs": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ended-before-original-first-idle",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script took a different path when resumed after a restart: it ended after result 0, where it went on before."
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": []
+        }
+      }
+    }
+  ]}

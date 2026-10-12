@@ -1,0 +1,389 @@
+[
+{"name":"text-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": [
+              {
+                "type": "text",
+                "text": "first"
+              },
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ],
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": "first\nsecond"
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "string"
+        }},
+{"name":"text-error","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": "denied",
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "denied",
+            "properties": {
+              "structuredOutput": "denied"
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "message",
+            "properties"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"diagnostic-error","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": "",
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "warn",
+                "code": "w",
+                "message": "warning"
+              },
+              {
+                "severity": "error",
+                "code": "e",
+                "message": "quota"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "quota",
+            "properties": {
+              "structuredOutput": ""
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "message",
+            "properties"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"image-only-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": {
+              "type": "image",
+              "data": "AA==",
+              "mimeType": "image/png"
+            },
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": ""
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "string"
+        }},
+{"name":"text-image-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": [
+              {
+                "type": "text",
+                "text": "first"
+              },
+              {
+                "type": "image",
+                "data": "AA==",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ],
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": "first\nsecond"
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "string"
+        }},
+{"name":"explicit-number-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": "",
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "invalid_structured_output",
+                "message": "Tool echo returned structuredOutput but declares no structuredOutputSchema"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "Tool echo returned structuredOutput but declares no structuredOutputSchema",
+            "properties": {
+              "structuredOutput": ""
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "message",
+            "properties"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"explicit-array-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": "",
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "invalid_structured_output",
+                "message": "Tool echo returned structuredOutput but declares no structuredOutputSchema"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "Tool echo returned structuredOutput but declares no structuredOutputSchema",
+            "properties": {
+              "structuredOutput": ""
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "message",
+            "properties"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"schema-null-success","structured":true,"result":{
+            "taskId": 17,
+            "structuredOutput": null,
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": null
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object"
+        }},
+{"name":"schema-null-error-resolves","structured":true,"result":{
+            "taskId": 17,
+            "structuredOutput": null,
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": null
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object"
+        }},
+{"name":"schema-value-error-resolves","structured":true,"result":{
+            "taskId": 17,
+            "structuredOutput": {
+              "value": "kept"
+            },
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": {
+              "value": "kept"
+            }
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "object"
+        }},
+{"name":"schema-error-text","structured":true,"result":{
+            "taskId": 17,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "denied"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "denied"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"schema-error-diagnostics","structured":true,"result":{
+            "taskId": 17,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "one",
+                "message": "first"
+              },
+              {
+                "severity": "warn",
+                "code": "w",
+                "message": "warning"
+              },
+              {
+                "severity": "error",
+                "code": "two",
+                "message": "second"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "first\nsecond"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"schema-empty-success","structured":true,"result":{
+            "taskId": 17,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "invalid_structured_output",
+                "message": "Tool echo returned no structuredOutput"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "Tool echo returned no structuredOutput"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"schema-thrown","structured":true,"result":{
+            "taskId": 17,
+            "isError": true,
+            "diagnostics": [
+              {
+                "severity": "error",
+                "code": "tool_error",
+                "message": "permission denied"
+              }
+            ],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "permission denied"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"schema-error-no-text","structured":true,"result":{
+            "taskId": 17,
+            "isError": true,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": false,
+            "message": "Tool echo failed"
+          },
+          "outcomeKeys": [
+            "ok",
+            "message"
+          ],
+          "hasValue": false,
+          "valueType": "undefined"
+        }},
+{"name":"empty-success","structured":false,"result":{
+            "taskId": 17,
+            "structuredOutput": "",
+            "isError": false,
+            "diagnostics": [],
+            "durationMs": 0
+          },"expected":{
+          "outcome": {
+            "ok": true,
+            "value": ""
+          },
+          "outcomeKeys": [
+            "ok",
+            "value"
+          ],
+          "hasValue": true,
+          "valueType": "string"
+        }}
+]

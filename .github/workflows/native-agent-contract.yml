@@ -20,7 +20,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
         mode: [Debug, ReleaseSafe]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -28,6 +28,7 @@ jobs:
           version: 0.16.0
           use-cache: false
       - name: Freeze exact checkout and compiler inputs
+        id: freeze
         shell: pwsh
         env:
           EXPECTED_HEAD: ${{ github.sha }}
@@ -47,7 +48,15 @@ jobs:
           $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
           $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
           [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; source_count = $taskInputs.Count; tool_count = @($taskTools).Count; public_activation = $false; scope = 'Private Agent/Loop allocation and CodeMode component qualification; full Pi and AgentSession parity remain separate requirements.' } | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
-      - name: Exercise every Agent allocation index and integrated CodeMode components
+      - name: Compile Agent contract artifacts before the runtime budget
+        id: compile_agent
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-agent-contract -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile.log
+          if ($LASTEXITCODE -ne 0) { throw 'Agent contract compilation failed' }
+      - name: Exercise every Agent allocation index
         shell: pwsh
         timeout-minutes: 28
         run: |
@@ -59,11 +68,15 @@ jobs:
           & zig build maintenance -j1 -- verify-vendors 2>&1 | Tee-Object -FilePath "$taskReceipt/vendors.log"
           if ($LASTEXITCODE -ne 0) { throw 'Native C dependency provenance failed' }
           $taskGraphs = @('agent-complete-metadata','agent-complete-runtime','agent-loop-changes','agent-loop-tools','agent-loop-owned-stream')
+          # macOS Debug allocator instrumentation made the larger late ranges
+          # exceed the unchanged 120s per-test guard. Smaller partitions retain
+          # every original failure index and the same full Source assertions.
+          $taskShards = if ($IsMacOS) { 64 } else { 8 }
           $taskTotals = @{}
           $taskProof = @()
-          $env:PI_SDK_ALLOCATION_SHARDS = '8'
+          $env:PI_SDK_ALLOCATION_SHARDS = [string]$taskShards
           $env:PI_SDK_ALLOCATION_TRACE = '1'
-          foreach ($taskRange in 0..7) {
+          foreach ($taskRange in 0..($taskShards - 1)) {
             $env:PI_SDK_ALLOCATION_SHARD = [string]$taskRange
             $taskLog = "$taskReceipt/agent-range-$taskRange.log"
             & zig build test-native-agent-complete test-native-agent-loop -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath $taskLog
@@ -72,13 +85,13 @@ jobs:
             if ($taskRaw -notmatch '28/28 tests passed') { throw 'Actual Agent test count changed; review coverage before accepting' }
             foreach ($taskGraph in $taskGraphs) {
               $taskLabel = [regex]::Escape($taskGraph)
-              $taskMarkers = [regex]::Matches($taskRaw, "SDK_ALLOCATION_COMPLETE $taskLabel $taskRange/8 range=\[(\d+),(\d+)\) total=(\d+)")
+              $taskMarkers = [regex]::Matches($taskRaw, "SDK_ALLOCATION_COMPLETE $taskLabel $taskRange/$taskShards range=\[(\d+),(\d+)\) total=(\d+)")
               if ($taskMarkers.Count -ne 1) { throw "Missing or duplicated graph completion: $taskGraph" }
               $taskTotal = [int]$taskMarkers[0].Groups[3].Value
               if ($taskRange -eq 0) { $taskTotals[$taskGraph] = $taskTotal }
               elseif ($taskTotals[$taskGraph] -ne $taskTotal) { throw "Allocation universe changed: $taskGraph" }
-              $taskStart = [int][Math]::Floor($taskTotal * $taskRange / 8)
-              $taskEnd = [int][Math]::Floor($taskTotal * ($taskRange + 1) / 8)
+              $taskStart = [int][Math]::Floor($taskTotal * $taskRange / $taskShards)
+              $taskEnd = [int][Math]::Floor($taskTotal * ($taskRange + 1) / $taskShards)
               if ([int]$taskMarkers[0].Groups[1].Value -ne $taskStart -or [int]$taskMarkers[0].Groups[2].Value -ne $taskEnd) { throw 'Incorrect allocation partition' }
               $taskBegins = @([regex]::Matches($taskRaw, "SDK_ALLOCATION_INDEX_BEGIN $taskLabel (\d+)") | ForEach-Object { [int]$_.Groups[1].Value })
               $taskEnds = @([regex]::Matches($taskRaw, "SDK_ALLOCATION_INDEX_COMPLETE $taskLabel (\d+)") | ForEach-Object { [int]$_.Groups[1].Value })
@@ -91,10 +104,30 @@ jobs:
           }
           $taskProof | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/allocation-coverage.json"
           Remove-Item Env:PI_SDK_ALLOCATION_SHARD, Env:PI_SDK_ALLOCATION_SHARDS, Env:PI_SDK_ALLOCATION_TRACE
+          [ordered]@{ status = 'passed'; ranges = $taskShards; graphs = 5; distinct_agent_tests = 28; repeated_agent_executions = 28 * $taskShards; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/agent-result.json"
+      - name: Exercise integrated CodeMode components
+        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' }}
+        shell: pwsh
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-agent-contract'
           & zig build test-native-codemode-sandbox test-native-codemode-run test-native-codemode-vm-worker test-native-codemode-controlled-binding test-native-durable-148622-wait-cycle test-native-durable-json-dto test-native-physical-stdio test-codemode-inline test-codemode-allocation test-durable-scheduler test-durable-json-clone -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/components.log"
           if ($LASTEXITCODE -ne 0) { throw 'Integrated component gate failed' }
           if ((Get-Content "$taskReceipt/components.log" -Raw) -notmatch '91/91 tests passed') { throw 'Integrated component coverage changed; review actual inventory' }
-          [ordered]@{ status = 'passed'; ranges = 8; graphs = 5; distinct_agent_tests = 28; repeated_agent_executions = 224; component_tests = 91; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+          [ordered]@{ status = 'passed'; component_tests = 91; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+      - name: Exercise latest MCP application restoration and durable replay components
+        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' }}
+        shell: pwsh
+        timeout-minutes: 15
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-agent-contract'
+          & zig build test-native-durable-codemode-outcome test-native-durable-codemode-journal-core test-custom-editor-frontend test-extension-filesystem test-print-mode-process test-mcp-runtime test-mcp-configured -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/latest-components.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Latest MCP application and replay components failed' }
+          if ((Get-Content "$taskReceipt/latest-components.log" -Raw) -notmatch '176/176 tests passed') { throw 'Latest component inventory changed; review exact execution and any platform skips' }
       - name: Verify every source and compiler posthash
         if: always()
         shell: pwsh

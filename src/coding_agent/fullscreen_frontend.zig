@@ -18,6 +18,7 @@ const ui = @import("../extensions/ui.zig");
 const transcript_mod = @import("transcript_view.zig");
 const platform = @import("../tui/platform_terminal.zig");
 const component_protocol = @import("../extensions/component_protocol.zig");
+const FatalPlan = @import("../extensions/js_runtime.zig").FatalPlan;
 pub const renderer_protocol = @import("../extensions/renderer_protocol.zig");
 
 pub const CommandKind = enum { submit, complete, shortcut, clipboard, presentation, quit };
@@ -457,6 +458,7 @@ pub const Frontend = struct {
     pause_depth: usize = 0,
     paused: bool = false,
     failure: ?anyerror = null,
+    fatal_terminal_dead: std.atomic.Value(bool) = .init(false),
     editor_text: []u8 = &.{},
     editor_cursor: usize = 0,
     editor_revision: u64 = 0,
@@ -605,6 +607,11 @@ pub const Frontend = struct {
         @atomicStore(bool, &self.abort_flag, true, .release);
         self.changed.broadcast(self.io);
         self.mutex.unlock(self.io);
+    }
+    pub fn fatalSink(raw: ?*anyopaque, plan: FatalPlan) void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        if (plan == .emergency_terminal_exit) self.fatal_terminal_dead.store(true, .release);
+        self.recordFailure(error.NativeApplicationFatal);
     }
     pub fn syncBranch(self: *Frontend, source: *const session.Session) !void {
         const branch = try source.branchEntries(self.gpa);
@@ -1777,10 +1784,10 @@ pub const Frontend = struct {
         self.app.program_status_override = self.environ.get("PI_PROGRAM_STATUS");
         var raw = try line_editor.RawMode.enter();
         var raw_active = true;
-        defer if (raw_active) raw.leave();
+        defer if (raw_active and !self.fatal_terminal_dead.load(.acquire)) raw.leave();
         try self.app.start(self.io);
         var terminal_alive = true;
-        defer if (terminal_alive) self.app.stop(self.io) catch {};
+        defer if (terminal_alive and !self.fatal_terminal_dead.load(.acquire)) self.app.stop(self.io) catch {};
         self.mutex.lockUncancelable(self.io);
         self.ready = true;
         self.changed.broadcast(self.io);

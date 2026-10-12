@@ -1373,9 +1373,11 @@ pub const Manager = struct {
 
     fn detach(self: *Manager, pending: *Pending) void {
         for (pending.signals[0..pending.signal_count]) |signal| {
-            var args = [_]c.JSValue{ self.abort_text, pending.listener };
-            const result = c.JS_Call(self.engine.context, self.remove_listener, signal, args.len, &args);
-            if (c.JS_IsException(result)) self.engine.freeValue(c.JS_GetException(self.engine.context)) else self.engine.freeValue(result);
+            if (!self.engine.native_fatal_teardown) {
+                var args = [_]c.JSValue{ self.abort_text, pending.listener };
+                const result = c.JS_Call(self.engine.context, self.remove_listener, signal, args.len, &args);
+                if (c.JS_IsException(result)) self.engine.freeValue(c.JS_GetException(self.engine.context)) else self.engine.freeValue(result);
+            }
             self.engine.freeValue(signal);
         }
         pending.signal_count = 0;
@@ -1452,6 +1454,7 @@ pub const Manager = struct {
     pub fn cancel(self: *Manager, id: u32) !void {
         var pending = self.takePending(id) orelse return;
         defer self.freePending(&pending);
+        if (self.engine.native_fatal_teardown) return;
         if (!pending.provider_request) if (self.bridge) |bridge| bridge.cancel(bridge.context, id) catch |err| {
             try self.rejectError(pending.reject, err);
             return err;

@@ -1,0 +1,160 @@
+{"source":"19cb534c3b6e3871458a8fa59e98f0312c50e995","cases":[{
+        "name": "fingerprint-mismatch",
+        "code": "await tools.hold({}); await tools.echo({ text: \"new\" });",
+        "fault": "fingerprint",
+        "message": "The script cannot resume: the sandbox changed since it started ("
+      },{
+        "name": "version-mismatch",
+        "code": "await tools.hold({}); await tools.echo({ text: \"new\" });",
+        "fault": "version",
+        "message": "The script cannot resume: it started under code mode version 999, this is 2."
+      },{
+        "name": "expired-deadline",
+        "code": "await tools.hold({}); await tools.echo({ text: \"new\" });",
+        "fault": "deadline",
+        "message": "Script timed out: its deadline passed while it was interrupted."
+      },{
+        "name": "held-arguments-mismatch",
+        "code": "const k = load(\"k\"); await tools.hold({ id: k ? 2 : 1 }); await tools.echo({ text: \"new\" });",
+        "fault": "arguments",
+        "message": "call 1 is tools.hold({\"id\":2}), but was tools.hold({\"id\":1})"
+      },{
+        "name": "held-global-tool-target-mismatch",
+        "code": "if (load(\"k\")) { await pick(); await tools.echo({ text: \"new\" }); } else { await tools.hold({}); }",
+        "fault": "arguments",
+        "message": "call 1 is pick(), but was tools.hold({})"
+      },{
+        "name": "first-issued-mismatch",
+        "code": "await tools.hold({}); await tools.echo({ text: \"new\" });",
+        "fault": "firstIssued",
+        "message": "its first run made 1 calls, where it had made 7"
+      }],"rows":[
+    {
+      "name": "fingerprint-mismatch",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script cannot resume: the sandbox changed since it started (another sandbox -> quickjs-wasi 3.6.2, quickjs 0.17.0, prelude 8c6c9242, deterministic 1, stack 524288, heap 67108864, budget none)."
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": []
+        }
+      }
+    },
+    {
+      "name": "version-mismatch",
+      "status": "done",
+      "starts": 1,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script cannot resume: it started under code mode version 999, this is 2."
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": []
+        }
+      }
+    },
+    {
+      "name": "expired-deadline",
+      "status": "done",
+      "starts": 1,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "Script timed out: its deadline passed while it was interrupted."
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": []
+        }
+      }
+    },
+    {
+      "name": "held-arguments-mismatch",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script took a different path when resumed after a restart: call 1 is tools.hold({\"id\":2}), but was tools.hold({\"id\":1})"
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": [
+            {
+              "id": 1,
+              "name": "hold",
+              "args": "{\"id\":2}",
+              "status": "cancelled"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "held-global-tool-target-mismatch",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script took a different path when resumed after a restart: call 1 is pick(), but was tools.hold({})"
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": []
+        }
+      }
+    },
+    {
+      "name": "first-issued-mismatch",
+      "status": "done",
+      "starts": 2,
+      "holdRuns": 2,
+      "echo": {},
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "The script took a different path when resumed after a restart: its first run made 1 calls, where it had made 7"
+          }
+        ],
+        "isError": true,
+        "details": {
+          "calls": [
+            {
+              "id": 1,
+              "name": "hold",
+              "args": "{}",
+              "status": "cancelled"
+            }
+          ]
+        }
+      }
+    }
+  ]}

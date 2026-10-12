@@ -6,8 +6,8 @@ const node_buffer = @import("node_buffer.zig");
 const node_directory = @import("node_directory.zig");
 const native_url = @import("native_url.zig");
 const c = engine_mod.c;
-const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync, accessSync };
-const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access };
+const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync, accessSync, appendFileSync };
+const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access, appendFile };
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     engine.native_io = io;
@@ -16,14 +16,14 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     defer engine.freeValue(exports);
     inline for (std.meta.fields(Method)) |field| {
         const name: [:0]const u8 = field.name;
-        const function = try engine.checked(c.pi_js_function_magic(engine.context, invoke, name.ptr, 2, @intCast(field.value)));
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, invoke, name.ptr, if (field.value == @intFromEnum(Method.appendFileSync)) 3 else 2, @intCast(field.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, exports, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     const promises = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(promises);
     inline for (std.meta.fields(PromiseMethod)) |field| {
         const name: [:0]const u8 = field.name;
-        const function = try engine.checked(c.pi_js_function_magic(engine.context, invokePromise, name.ptr, 2, @intCast(field.value)));
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, invokePromise, name.ptr, if (field.value == @intFromEnum(PromiseMethod.appendFile)) 3 else 2, @intCast(field.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, promises, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "promises", c.JS_DupValue(engine.context, promises), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -44,6 +44,7 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     const method: Method = switch (@as(PromiseMethod, @enumFromInt(magic))) {
         .readFile => .readFileSync,
         .writeFile => .writeFileSync,
+        .appendFile => .appendFileSync,
         .mkdir => .mkdirSync,
         .unlink => .unlinkSync,
         .access => .accessSync,
@@ -116,6 +117,36 @@ test "native filesystem promises settle asynchronous reads writes access and fai
     try std.testing.expectEqualStrings("[\"sync\",\"settled\"]", order);
 }
 
+test "native filesystem append preserves all eight original Node text binary flag and Promise observations" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const path = try std.fs.path.join(std.testing.allocator, &.{ path_buffer[0..length], "append.bin" });
+    defer std.testing.allocator.free(path);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "appendFixturePath", c.JS_NewStringLen(engine.context, path.ptr, path.len)) < 0) return error.JavaScriptException;
+    const loaded = try engine.evalModule(@embedFile("fixtures/node-fs-append-source-20261012.input.txt"), "node-fs-append-source.mjs");
+    defer engine.freeValue(loaded);
+    const rows = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "appendSourceRows"));
+    defer engine.freeValue(rows);
+    const encoded = try engine.stringify(rows);
+    defer std.testing.allocator.free(encoded);
+    const json = @import("../mcp/protocol.zig").json;
+    var actual = try json.Owned.parse(std.testing.allocator, encoded);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("fixtures/node-fs-append-source-20261012.json"));
+    defer source.deinit();
+    const expected = source.value.object.get("rows").?;
+    try std.testing.expectEqual(@as(usize, 8), expected.array.items.len);
+    if (!json.equal(expected, actual.value)) std.debug.print("Native append observations: {s}\n", .{encoded});
+    try std.testing.expect(json.equal(expected, actual.value));
+}
+
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
@@ -179,7 +210,7 @@ fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, ar
     if (filesystemCode(err)) |code| {
         const syscall: [:0]const u8 = switch (method) {
             .readFileSync => if (err == error.IsDir or err == error.InputOutput) "read" else "open",
-            .writeFileSync => if (err == error.NoSpaceLeft or err == error.FileTooBig or err == error.InputOutput) "write" else "open",
+            .writeFileSync, .appendFileSync => if (err == error.NoSpaceLeft or err == error.FileTooBig or err == error.InputOutput) "write" else "open",
             .mkdirSync => "mkdir",
             .unlinkSync => "unlink",
             .accessSync => "access",
@@ -313,10 +344,10 @@ fn parseEncoding(engine: *engine_mod.Engine, value: c.JSValue) !node_buffer.enco
     return node_buffer.encodings.parse(encoding) orelse error.UnsupportedNativeTextEncoding;
 }
 
-const WriteOptions = struct { file: std.Io.Dir.CreateFileOptions = .{}, encoding: node_buffer.encodings.Encoding = .utf8 };
+const WriteOptions = struct { file: std.Io.Dir.CreateFileOptions = .{}, encoding: node_buffer.encodings.Encoding = .utf8, append: bool = false };
 
-fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue) !WriteOptions {
-    var options: WriteOptions = .{};
+fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue, append: bool) !WriteOptions {
+    var options: WriteOptions = .{ .file = .{ .truncate = !append }, .append = append };
     if (args.len < 3 or c.JS_IsUndefined(args[2]) or c.JS_IsNull(args[2])) return options;
     if (c.JS_IsString(args[2])) {
         options.encoding = try parseEncoding(engine, args[2]);
@@ -332,7 +363,13 @@ fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue) !WriteOptions {
         if (!c.JS_IsString(flag)) return error.UnsupportedNativeWriteFlag;
         const name = try engine.toString(flag);
         defer engine.gpa.free(name);
-        if (std.mem.eql(u8, name, "wx")) options.file.exclusive = true else if (!std.mem.eql(u8, name, "w")) return error.UnsupportedNativeWriteFlag;
+        if (append and (std.mem.eql(u8, name, "a") or std.mem.eql(u8, name, "ax"))) {
+            options.file.exclusive = std.mem.eql(u8, name, "ax");
+        } else if (std.mem.eql(u8, name, "w") or std.mem.eql(u8, name, "wx")) {
+            options.append = false;
+            options.file.truncate = true;
+            options.file.exclusive = std.mem.eql(u8, name, "wx");
+        } else return error.UnsupportedNativeWriteFlag;
     }
     const mode = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "mode"));
     defer engine.freeValue(mode);
@@ -347,6 +384,17 @@ fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValu
     var snapshot: ?c.JSValue = null;
     defer if (snapshot) |value| engine.freeValue(value);
     return callCaptured(engine, method, args, &snapshot);
+}
+fn writeContent(file: std.Io.File, io: std.Io, bytes: []const u8, append: bool) !void {
+    if (!append) return file.writePositionalAll(io, bytes, 0);
+    if (builtin.os.tag == .windows) return @import("../durable/filesystem.zig").appendWindows(file, bytes);
+    // Set kernel append mode rather than racing a stat/positional write against
+    // another appender. File creation has already preserved existing contents.
+    const flags = std.posix.system.fcntl(file.handle, std.posix.F.GETFL, @as(usize, 0));
+    if (std.posix.errno(flags) != .SUCCESS) return error.Unexpected;
+    const mask: u32 = @bitCast(std.posix.O{ .APPEND = true });
+    if (std.posix.errno(std.posix.system.fcntl(file.handle, std.posix.F.SETFL, @as(usize, @intCast(flags)) | mask)) != .SUCCESS) return error.Unexpected;
+    try file.writeStreamingAll(io, bytes);
 }
 fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, snapshot: *?c.JSValue) !c.JSValue {
     if (args.len == 0) return error.MissingFilesystemPath;
@@ -378,9 +426,9 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
             }
             return node_buffer.fromBytes(engine, bytes);
         },
-        .writeFileSync => {
+        .writeFileSync, .appendFileSync => {
             if (args.len < 2) return error.MissingFilesystemData;
-            const options = try writeOptions(engine, args);
+            const options = try writeOptions(engine, args, method == .appendFileSync);
             if (c.JS_IsString(args[1])) {
                 const text = try engine.toString(args[1]);
                 defer engine.gpa.free(text);
@@ -388,7 +436,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
                 defer engine.gpa.free(bytes);
                 const file = try std.Io.Dir.cwd().createFile(io, path, options.file);
                 defer file.close(io);
-                try file.writePositionalAll(io, bytes, 0);
+                try writeContent(file, io, bytes, options.append);
             } else {
                 var backing_length: usize = 0;
                 var offset: usize = 0;
@@ -403,7 +451,7 @@ fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, s
                 const file = try std.Io.Dir.cwd().createFile(io, path, options.file);
                 defer file.close(io);
                 const content: []const u8 = if (length == 0) &.{} else bytes[offset .. offset + length];
-                try file.writePositionalAll(io, content, 0);
+                try writeContent(file, io, content, options.append);
             }
             return c.pi_js_undefined();
         },

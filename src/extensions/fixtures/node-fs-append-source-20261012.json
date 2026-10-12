@@ -1,0 +1,44 @@
+{
+  "source": "Original Node 24.14.0",
+  "input_sha256": "883e269cf1f0ccaaae14743038f3827860d72832c2a9fd63b33f1d0fcf987339",
+  "rows": [
+    {
+      "id": "metadata",
+      "name": "appendFileSync",
+      "length": 3,
+      "promiseLength": 3
+    },
+    {
+      "id": "create-preserve-unicode-binary",
+      "hex": "ceb100ff"
+    },
+    {
+      "id": "encoding-view-offset",
+      "hex": "ceb100ff210506"
+    },
+    {
+      "id": "explicit-truncate",
+      "text": "T"
+    },
+    {
+      "id": "exclusive-preserves",
+      "code": "EEXIST",
+      "syscall": "open",
+      "text": "T"
+    },
+    {
+      "id": "invalid-data-preserves",
+      "invalid": true,
+      "text": "T"
+    },
+    {
+      "id": "promise-append",
+      "isPromise": true,
+      "text": "T?"
+    },
+    {
+      "id": "empty-append-preserves",
+      "text": "T?"
+    }
+  ]
+}

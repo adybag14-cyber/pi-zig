@@ -90,6 +90,7 @@ pub fn normalizeWithPredicate(engine: *engine_mod.Engine, value: c.JSValue, pred
 }
 
 pub fn callMethod(engine: *engine_mod.Engine, component: c.JSValue, name: [*:0]const u8, args: []c.JSValue, optional: bool) !?c.JSValue {
+    if (engine.native_fatal_teardown) return if (optional) null else error.NativeApplicationFatal;
     const function = try engine.checked(c.JS_GetPropertyStr(engine.context, component, name));
     defer engine.freeValue(function);
     if (c.JS_IsUndefined(function) or c.JS_IsNull(function)) {
@@ -237,6 +238,7 @@ pub const Manager = struct {
     fn settle(self: *Manager, entry: *Entry, value: c.JSValue, success: bool) !void {
         if (entry.settled) return;
         entry.settled = true;
+        if (self.engine.native_fatal_teardown) return;
         const function_value = c.JS_DupValue(self.engine.context, if (success) entry.resolve else entry.reject);
         defer self.engine.freeValue(function_value);
         var args = [_]c.JSValue{value};

@@ -13,6 +13,13 @@ const native_catalog_broker = @import("native_catalog_broker.zig");
 const process_protocol = @import("process_stream_protocol.zig");
 const process_parent = @import("process_stream_parent.zig");
 const raw_envelope = @import("native_json_envelope.zig");
+const fatal_protocol = @import("native_fatal_protocol.zig");
+pub const FatalPlan = fatal_protocol.Plan;
+pub const FatalBridge = struct {
+    context: ?*anyopaque,
+    request_fn: *const fn (?*anyopaque, FatalPlan) void,
+};
+pub var application_exit_code: u8 = 1;
 pub const ProcessBridge = @import("process_stream_bridge.zig").Bridge;
 pub const ProcessSink = @import("process_stream_bridge.zig").Sink;
 pub const WidgetBridge = struct {
@@ -154,12 +161,20 @@ const NativeReadSession = struct {
             const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
-                self.failure = err;
+                if (self.failure == null) self.failure = err;
                 self.mutex.unlock(self.runtime.io);
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = (self.runtime.dispatchProcessRecord(record) catch |err| {
+            const adopted = (self.runtime.dispatchFatalRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchProcessRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -893,6 +908,10 @@ pub const Runtime = struct {
     extension_id: u64 = 1,
     group_references: std.atomic.Value(usize) = .init(1),
     native_read_session: ?*NativeReadSession = null,
+    fatal_mutex: Io.Mutex = .init,
+    fatal_wake: Io.Event = .unset,
+    fatal_latch: ?fatal_protocol.Latch = null,
+    fatal_bridge: ?FatalBridge = null,
     process_io: process_parent.Parent = .{},
     native_reader_group: Io.Group = .init,
     ui_services: NativeUiServices = .{},
@@ -983,6 +1002,7 @@ pub const Runtime = struct {
         /// Process-wide IO is attached before extension factories execute.
         /// Its lifetime is independent of every UI bridge and SDK session.
         process_bridge: ?ProcessBridge = null,
+        application_fatal: bool = false,
     };
 
     pub fn start(
@@ -1010,6 +1030,13 @@ pub const Runtime = struct {
             return error.NativeOwnerGenerationLimit;
         }
         runtime.owner_generation = generation;
+        if (options.application_fatal) {
+            const lease = fatal_protocol.Lease.generate(io, generation) catch |err| {
+                runtime.deinit();
+                return err;
+            };
+            runtime.fatal_latch = .{ .lease = lease };
+        }
         if (options.process_bridge) |bridge| {
             const process_generation = native_process_generation.fetchAdd(1, .monotonic);
             if (process_generation == 0) {
@@ -1026,6 +1053,11 @@ pub const Runtime = struct {
         const written: ?anyerror = blk: {
             startup.writer.print("{{\"kind\":\"load_group\",\"ownerGeneration\":\"{d}\",\"sources\":", .{generation}) catch break :blk error.OutOfMemory;
             std.json.Stringify.value(source_paths, .{}, &startup.writer) catch break :blk error.OutOfMemory;
+            if (runtime.fatal_latch) |latch| {
+                startup.writer.writeAll(",\"applicationFatal\":{") catch break :blk error.OutOfMemory;
+                fatal_protocol.writeLease(&startup.writer, latch.lease) catch |err| break :blk err;
+                startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
+            }
             if (options.startup_context_json) |context| {
                 startup.writer.writeAll(",\"context\":") catch break :blk error.OutOfMemory;
                 startup.writer.writeAll(context) catch break :blk error.OutOfMemory;
@@ -1105,6 +1137,17 @@ pub const Runtime = struct {
                     runtime.closeUnlocked();
                     return err;
                 };
+                const fatal_handled = runtime.dispatchFatalRecord(line) catch |err| {
+                    gpa.free(line);
+                    return err;
+                };
+                if (fatal_handled) {
+                    gpa.free(line);
+                    // Factories run before Main acquires the terminal. No UI
+                    // owner exists yet, so the current terminal is released.
+                    application_exit_code = try runtime.finishApplicationFatal();
+                    return error.NativeApplicationFatal;
+                }
                 const handled = runtime.dispatchProcessRecord(line) catch |err| {
                     gpa.free(line);
                     return err;
@@ -1344,6 +1387,7 @@ pub const Runtime = struct {
         self.mutex.unlock(self.io);
         if (self.last_error) |message| self.gpa.free(message);
         if (self.last_owner_error) |message| self.gpa.free(message);
+        if (self.fatal_latch) |*latch| latch.deinit();
         if (self.context_json) |context| self.gpa.free(context);
         self.gpa.free(self.source_path);
         self.gpa.free(self.node_program);
@@ -2999,6 +3043,123 @@ pub const Runtime = struct {
         self.closed = true;
     }
 
+    pub fn setFatalBridge(self: *Runtime, bridge: ?FatalBridge) void {
+        if (self.shared_owner) |owner| return owner.setFatalBridge(bridge);
+        self.fatal_mutex.lockUncancelable(self.io);
+        defer self.fatal_mutex.unlock(self.io);
+        self.fatal_bridge = bridge;
+        if (bridge) |sink| if (self.fatal_latch) |latch| if (latch.record) |record| sink.request_fn(sink.context, record.plan);
+    }
+    pub fn fatalPlan(self: *Runtime) ?FatalPlan {
+        if (self.shared_owner) |owner| return owner.fatalPlan();
+        self.fatal_mutex.lockUncancelable(self.io);
+        defer self.fatal_mutex.unlock(self.io);
+        const latch = self.fatal_latch orelse return null;
+        return if (latch.record) |record| record.plan else null;
+    }
+    fn dispatchFatalRecord(self: *Runtime, bytes: []const u8) !bool {
+        const envelope = raw_envelope.parse(std.heap.page_allocator, bytes) catch |err| switch (err) {
+            error.NotJsonObject => return false,
+            else => return err,
+        };
+        const kind = envelope.kind orelse return false;
+        const header = raw_envelope.stringEquals(kind, "native_fatal");
+        const diagnostic = raw_envelope.stringEquals(kind, "native_fatal_diagnostic");
+        if (!header and !diagnostic) return false;
+        self.fatal_mutex.lockUncancelable(self.io);
+        defer self.fatal_mutex.unlock(self.io);
+        const latch = if (self.fatal_latch) |*value| value else return true;
+        var parsed = try std.json.parseFromSlice(std.json.Value, std.heap.page_allocator, bytes, .{});
+        defer parsed.deinit();
+        if (header) {
+            var record = (try fatal_protocol.readAuthenticated(std.heap.page_allocator, &parsed.value.object, latch.lease)) orelse return true;
+            if (!latch.accept(record)) {
+                record.deinit();
+                return true;
+            }
+            if (self.fatal_bridge) |bridge| bridge.request_fn(bridge.context, record.plan);
+            if (self.native_read_session) |session| {
+                session.mutex.lockUncancelable(self.io);
+                session.finished = true;
+                session.failure = error.NativeApplicationFatal;
+                session.mutex.unlock(self.io);
+                session.wake.set(self.io);
+            }
+        } else {
+            var record = (try fatal_protocol.readDiagnostic(std.heap.page_allocator, &parsed.value.object, latch.lease)) orelse return true;
+            if (!latch.acceptDiagnostic(record)) record.deinit();
+        }
+        self.fatal_wake.set(self.io);
+        return true;
+    }
+    /// Main calls this after joining its terminal owner and leaving raw mode.
+    /// It sends an ACK first, then receives diagnostic bytes and reaps only
+    /// this Runtime's already-owned child. No guest code executes in Main.
+    pub fn finishApplicationFatal(self: *Runtime) !u8 {
+        if (self.shared_owner) |owner| return owner.finishApplicationFatal();
+        self.fatal_mutex.lockUncancelable(self.io);
+        const latch = if (self.fatal_latch) |*value| value else {
+            self.fatal_mutex.unlock(self.io);
+            return error.NoNativeFatalRecord;
+        };
+        const record = latch.record orelse {
+            self.fatal_mutex.unlock(self.io);
+            return error.NoNativeFatalRecord;
+        };
+        latch.completeRelease(switch (record.plan) {
+            .uncaught_crash, .handler_failure => .restored,
+            .emergency_terminal_exit => .terminal_dead,
+            .already_shutting_down => .already_released,
+        }) catch |err| {
+            self.fatal_mutex.unlock(self.io);
+            return err;
+        };
+        const ack = latch.takeAck() catch |err| {
+            self.fatal_mutex.unlock(self.io);
+            return err;
+        };
+        self.fatal_mutex.unlock(self.io);
+        var output: Io.Writer.Allocating = .init(self.gpa);
+        defer output.deinit();
+        try fatal_protocol.writeAck(&output.writer, ack);
+        try self.writeLine(std.mem.trimEnd(u8, output.written(), "\n"));
+        const reporting = record.plan == .uncaught_crash or record.plan == .handler_failure;
+        const deadline = Io.Clock.awake.now(self.io).toMilliseconds() + 15_000;
+        while (reporting) {
+            self.fatal_mutex.lockUncancelable(self.io);
+            self.fatal_wake.reset();
+            const received = self.fatal_latch.?.diagnostic_received;
+            self.fatal_mutex.unlock(self.io);
+            if (received) break;
+            if (self.native_read_session == null) {
+                const line = try self.readRecordUnlocked();
+                defer self.gpa.free(line);
+                _ = try self.dispatchFatalRecord(line);
+                continue;
+            }
+            const remaining = deadline - Io.Clock.awake.now(self.io).toMilliseconds();
+            if (remaining <= 0) return error.NativeFatalDiagnosticTimeout;
+            self.fatal_wake.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } }) catch |err| switch (err) {
+                error.Timeout => continue,
+                else => return err,
+            };
+        }
+        const term = try self.child.wait(self.io);
+        self.mutex.lockUncancelable(self.io);
+        self.closed = true;
+        self.mutex.unlock(self.io);
+        self.fatal_mutex.lockUncancelable(self.io);
+        defer self.fatal_mutex.unlock(self.io);
+        const final = self.fatal_latch.?.final_exit_code orelse record.plan.exitCode();
+        if (term != .exited or term.exited != final) return error.NativeFatalChildExitMismatch;
+        if (self.fatal_latch.?.record.?.diagnostic) |diagnostic| {
+            var error_buffer: [4096]u8 = undefined;
+            var stderr = Io.File.stderr().writerStreaming(self.io, &error_buffer);
+            try stderr.interface.writeAll(diagnostic);
+            try stderr.interface.flush();
+        }
+        return final;
+    }
     fn writeLine(self: *Runtime, line: []const u8) !void {
         if (self.shared_owner) |owner| return owner.writeLine(line);
         self.write_mutex.lockUncancelable(self.io);
@@ -4428,4 +4589,46 @@ test "native runtime late metadata FIFO rejects stale owners and revisions witho
     try std.testing.expectEqual(@as(u64, 2), next.revision);
     runtime.commitMetadata(2);
     try std.testing.expect((try runtime.peekMetadata()) == null);
+}
+
+test "native application fatal runtime preserves opaque ordinary UTF16 and ignores nested fatal types" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    runtime.fatal_latch = .{ .lease = .{ .owner_generation = 42, .secret = .{0x31} ** 32 } };
+    defer runtime.fatal_latch.?.deinit();
+    try std.testing.expect(!try runtime.dispatchFatalRecord("{\"ok\":true,\"result\":{\"type\":\"native_fatal\",\"key\":\"\\ud800\"}}"));
+    try std.testing.expect(!try runtime.dispatchFatalRecord("{\"type\":\"native_metadata\",\"key\":\"\\udc00\"}"));
+    try std.testing.expectError(error.SyntaxError, runtime.dispatchFatalRecord("{\"ok\":true,\"result\":{\"x\":[1,]}}"));
+    try std.testing.expect(runtime.fatal_latch.?.record == null);
+}
+
+test "native application fatal runtime authenticates owner and retains diagnostic only after restoration ACK" {
+    const lease: fatal_protocol.Lease = .{ .owner_generation = 42, .secret = .{0x31} ** 32 };
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    runtime.fatal_latch = .{ .lease = lease };
+    defer runtime.fatal_latch.?.deinit();
+    var output: Io.Writer.Allocating = .init(std.testing.allocator);
+    defer output.deinit();
+    var record: fatal_protocol.Record = .{ .gpa = std.testing.allocator, .lease = lease, .sequence = 1, .plan = .uncaught_crash, .diagnostic = null };
+    record.lease.owner_generation += 1;
+    try fatal_protocol.writeRecord(&output.writer, record);
+    try std.testing.expect(try runtime.dispatchFatalRecord(std.mem.trim(u8, output.written()[1..], "\n")));
+    try std.testing.expect(runtime.fatal_latch.?.record == null);
+    output.clearRetainingCapacity();
+    record.lease = lease;
+    try fatal_protocol.writeRecord(&output.writer, record);
+    try std.testing.expect(try runtime.dispatchFatalRecord(std.mem.trim(u8, output.written()[1..], "\n")));
+    try std.testing.expectEqual(FatalPlan.uncaught_crash, runtime.fatalPlan().?);
+    var diagnostic: fatal_protocol.Diagnostic = .{ .gpa = std.testing.allocator, .lease = lease, .sequence = 1, .exit_code = 1, .bytes = try std.testing.allocator.dupe(u8, "original Ω\n") };
+    defer diagnostic.deinit();
+    output.clearRetainingCapacity();
+    try fatal_protocol.writeDiagnostic(&output.writer, diagnostic);
+    const wire = std.mem.trim(u8, output.written()[1..], "\n");
+    try std.testing.expect(try runtime.dispatchFatalRecord(wire));
+    try std.testing.expect(!runtime.fatal_latch.?.diagnostic_received);
+    try std.testing.expectError(error.NativeTerminalReleasePending, runtime.fatal_latch.?.takeAck());
+    try runtime.fatal_latch.?.completeRelease(.restored);
+    _ = try runtime.fatal_latch.?.takeAck();
+    try std.testing.expect(try runtime.dispatchFatalRecord(wire));
+    try std.testing.expect(runtime.fatal_latch.?.diagnostic_received);
+    try std.testing.expectEqualStrings("original Ω\n", runtime.fatal_latch.?.record.?.diagnostic.?);
 }

@@ -1,0 +1,49 @@
+{"source":"ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e","cases":[{
+        "name": "return",
+        "code": "return 'ok';"
+      },{
+        "name": "sequential",
+        "code": "const a=await tools.echo({i:1});const b=await tools.echo({i:2});text(a);return b;",
+        "calls": 2
+      },{
+        "name": "parallel",
+        "code": "return await Promise.all([tools.echo({i:1}),tools.echo({i:2})]);",
+        "calls": 2
+      },{
+        "name": "global",
+        "code": "return await probeGlobal({n:3});",
+        "globals": 1
+      },{
+        "name": "store-atomic",
+        "code": "store('kept',{n:1});await tools.echo({i:3});return load('kept');",
+        "calls": 1,
+        "store": true
+      },{
+        "name": "error-does-not-store",
+        "code": "await tools.echo({i:1});store('ignored',4);throw Error('intentional-script');",
+        "calls": 1,
+        "error": true
+      }],"startData":{"tools":[
+              {
+                "name": "echo",
+                "jsName": "echo",
+                "description": "echo\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { echo(args: { i: number; }): Promise<string>; };\n```"
+              }
+            ],"namespaces":[],"globals":[
+              {
+                "name": "searchTools",
+                "spread": true
+              },
+              {
+                "name": "describeTool",
+                "spread": true
+              },
+              {
+                "name": "describeNamespace",
+                "spread": true
+              },
+              {
+                "name": "probeGlobal",
+                "spread": false
+              }
+            ],"maxOutputTokens":10000}}

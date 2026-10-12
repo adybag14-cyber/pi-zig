@@ -51,6 +51,11 @@ pub const Engine = struct {
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
     native_exception_diagnostics_suppressed: usize = 0,
+    // Installed only by the interactive application's owned worker. Public
+    // promise state/result queries must never consume a guest rejection.
+    native_application_fatal: ?*anyopaque = null,
+    native_rejection_tracking: bool = false,
+    native_fatal_teardown: bool = false,
     native_allocation_exception: ?c.JSValue = null,
     native_allocation_generation: u64 = 0,
     host_data: ?*anyopaque = null,
@@ -780,6 +785,8 @@ pub const Engine = struct {
         return self.awaitValueImpl(value, false);
     }
     fn awaitValueImpl(self: *Engine, value: c.JSValue, drain_ready_jobs: bool) !c.JSValue {
+        if (self.native_rejection_tracking and c.JS_PromiseState(self.context, value) >= 0)
+            c.JS_PromiseMarkAsHandled(self.context, value);
         defer self.finishJob();
         const previous_deadline = self.host_await_deadline_ms;
         defer self.host_await_deadline_ms = previous_deadline;

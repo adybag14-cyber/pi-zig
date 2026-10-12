@@ -313,3 +313,66 @@ index, the real compiled test counts, and unchanged source/compiler posthashes.
 No hosted result is claimed until those exact-head jobs finish. Native-default
 activation remains disabled and the Node bridge is retained while the full Pi,
 AgentSession, physical UI, durable replay, and platform requirements remain open.
+
+The subsequent integrated Windows Debug gate passes49/49 across184 build steps:
+durable nested outcome6, real journal body8, physical editor4, application crash
+owner18, restoration protocol2, filesystem10, and print-mode process1. All4,141
+source and19,546 tool inputs remained unchanged and the owned process exited.
+The journal uses actual Harness/ToolExecutionApi transactions and SQLite restart
+scenarios. It persists start/fingerprint/issued events and commits successful
+store writes atomically with outcomes. Settled document proxies retain Source's
+non-thenable behavior while rejecting ordinary closed-transaction data access.
+The restart caller program is retained byte-for-byte as an input.txt fixture;
+it is guest/test input, not repository host implementation.
+
+The interactive worker retains original rejection roots, requests terminal
+release, and reports diagnostics only after Main acknowledges restoration.
+Reload copies the crash callback along with the editor/widget bridges. Real
+physical tests prove exit1, leaving the alternate screen, and the stack getter
+observing stdin.isRaw=false. The native filesystem now supplies appendFileSync
+and promise appendFile, preserving existing contents with kernel append semantics
+instead of a racy stat/positional write. Eight genuine Node24.14 observations
+cover metadata, Unicode/binary data, typed-array offsets, encoding, exclusive and
+truncate flags, invalid-data preservation, promise completion, and empty writes.
+The first private physical gate passed21/23; a subsequent incorrect newline edit
+made one guest fixture syntactically invalid. The corrected private gate passed
+33/33, followed by the integrated49/49 gate with the extra existing modal test.
+
+Current Pi print mode now warns and returns1 for a truncated final text response,
+while JSON mode and an earlier truncation followed by success preserve their
+original status. The actual process regression covers eight scenarios and six
+compare against original upstream results. The exit status returns through main
+so normal session persistence and teardown execute.
+
+The latest MCP integration separately passes125/125 tests (runtime76/configured49)
+across167 build steps with all4,174 source and19,546 tool inputs unchanged. It
+accepts structuredContent as any JSON value, retains latest result-schema and
+rendered type semantics, checks cancellation around authentication recovery and
+actual sends, settles reply signals, and discovers resources only on demand.
+Original captures retain the real upstream dependency/module closure and the
+unchanged31,064 runtime/1,774 tool inputs. The factory's later discovery/replay
+extension has separately passed16/16 in its isolated checkout; it is not yet
+part of this integrated journal checkpoint.
+
+Hosted run38269576295 at7091eef is terminal1/6. Windows Debug passed. Linux Debug
+completed every Agent allocation range, then failed the ordinary sandbox
+fire-and-forget call status/signal observation. macOS Debug exceeded the existing
+120-second test limit in later allocation ranges. All three ReleaseSafe jobs
+exhausted the shared28-minute compilation/runtime step, with completed Agent
+ranges retained. These failures remain open. The revised workflow compiles the
+Agent artifacts in a separate bounded phase, retains120-second runtime guards,
+and uses64 complete allocation partitions on macOS and8 elsewhere. Its validator
+still requires every index in order exactly once. The revised hosted jobs have
+not yet qualified this newer source. The Node bridge and incomplete parity flag
+remain until the full requested implementation and platform gates pass.
+
+The subsequently integrated native factory also passes the combined51/51 gate
+across184 build steps, with all4,181 source and19,546 tool inputs unchanged.
+The original six programs now invoke the actual native factory and assert its
+captured start metadata. SQLite restart, nine discovery observations, and six
+replay refusals retain the original programs and admission/store assertions.
+This supersedes the earlier private-only factory note. Default model declarations,
+four-slot model admission, output environment behavior, public activation, and
+full platform qualification remain unfinished. Hosted latest-component checks
+run independently after compilation so an allocation failure does not suppress
+all evidence for MCP, application restoration, or durable replay.

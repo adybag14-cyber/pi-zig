@@ -26,6 +26,9 @@ const provider_tickets = @import("native_provider_tickets.zig");
 const process_protocol = @import("process_stream_protocol.zig");
 const process_transport = @import("native_process_transport.zig");
 const process_streams = @import("native_process_streams.zig");
+const application_fatal = @import("native_application_fatal.zig");
+const fatal_protocol = application_fatal.protocol;
+pub var application_exit_code: u8 = 1;
 
 const WireRecord = struct {
     const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, native_process_response, native_process_input, native_process_resize, native_process_end, native_process_raw, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
@@ -64,6 +67,8 @@ const Transport = struct {
     metadata_snapshot: ?[]u8 = null,
     tickets: ?*provider_tickets.Manager = null,
     process_worker: ?process_transport.Worker = null,
+    fatal_manager: ?*application_fatal.Manager = null,
+    fatal_lease: ?fatal_protocol.Lease = null,
 
     fn deinit(self: *Transport) void {
         if (self.process_worker) |*worker| worker.closed = true;
@@ -179,6 +184,10 @@ const Transport = struct {
             self.engine.beginInvocation();
             self.pumpIdle() catch |err| {
                 if (err != error.JavaScriptException) return err;
+                if (self.fatal_manager) |manager| {
+                    try manager.capturedUncaught();
+                    if (manager.pending != null) return error.NativeApplicationFatal;
+                }
                 var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
                 defer arena.deinit();
                 var object: std.json.ObjectMap = .empty;
@@ -228,13 +237,65 @@ const Transport = struct {
     fn pumpIdle(self: *Transport) !void {
         _ = try self.engine.pumpControls();
         _ = try self.engine.drainReadyJobs();
+        try self.checkFatal();
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
+        try self.checkFatal();
         if (self.tickets) |tickets| try tickets.pump();
         try self.group.pollUiServices();
         _ = try self.group.renderers.pumpDirtyReady();
         _ = try self.group.ui.editors.pumpDirty();
         _ = try self.group.ui.widgets.pumpDirty();
         _ = try self.group.ui.footer_data.poll();
+        _ = try self.engine.drainReadyJobs();
+        try self.checkFatal();
+    }
+    fn checkFatal(self: *Transport) !void {
+        if (self.fatal_manager) |manager| if (!self.active and try manager.checkpoint()) return error.NativeApplicationFatal;
+    }
+    fn finishFatal(self: *Transport) !void {
+        const manager = self.fatal_manager orelse return error.NoNativeFatalRecord;
+        const lease = self.fatal_lease orelse return error.InvalidNativeFatalLease;
+        try fatal_protocol.writeRecord(self.writer, try manager.header(lease));
+        const deadline = std.Io.Clock.awake.now(self.io).toMilliseconds() + 15_000;
+        // Only owned protocol bytes are read after the terminal outcome. Do
+        // not pump guest jobs, timers, dispose callbacks or ordinary requests.
+        while (true) {
+            self.mutex.lockUncancelable(self.io);
+            self.available.reset();
+            const queued = if (self.records.items.len != 0) self.records.orderedRemove(0) else null;
+            if (queued) |record| self.queued_bytes -= record.bytes.len;
+            const finished = self.finished;
+            self.mutex.unlock(self.io);
+            if (queued) |record| {
+                defer std.heap.page_allocator.free(record.bytes);
+                var parsed = try std.json.parseFromSlice(std.json.Value, self.engine.gpa, record.bytes, .{});
+                defer parsed.deinit();
+                if (parsed.value != .object) continue;
+                const kind = parsed.value.object.get("kind") orelse continue;
+                if (kind != .string) continue;
+                if (std.mem.eql(u8, kind.string, "native_fatal_restore_ack")) {
+                    const ack = (try fatal_protocol.readAck(&parsed.value.object, lease)) orelse continue;
+                    try manager.release(ack);
+                    break;
+                }
+                if (record.kind == .native_process_raw) try self.processData(parsed.value, record.kind);
+                continue;
+            }
+            if (finished) return error.NativeFatalParentClosedBeforeRestoration;
+            const remaining = deadline - std.Io.Clock.awake.now(self.io).toMilliseconds();
+            if (remaining <= 0) return error.NativeFatalRestorationTimeout;
+            self.available.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } }) catch |err| switch (err) {
+                error.Timeout => continue,
+                else => return err,
+            };
+        }
+        application_exit_code = manager.pending.?.plan.exitCode();
+        if (try manager.diagnostic(lease)) |value| {
+            var diagnostic = value;
+            defer diagnostic.deinit();
+            application_exit_code = diagnostic.exit_code;
+            try fatal_protocol.writeDiagnostic(self.writer, diagnostic);
+        }
     }
     fn notifyOwner(raw: ?*anyopaque) void {
         const self: *Transport = @ptrCast(@alignCast(raw.?));
@@ -313,7 +374,8 @@ const Transport = struct {
     fn pump(engine: *engine_mod.Engine) !bool {
         const self: *Transport = @ptrCast(@alignCast(engine.host_control_context.?));
         var dispatched = false;
-        while (self.takeControl()) |record| {
+        const single_turn = self.fatal_manager != null and !self.active;
+        while (if (single_turn and dispatched) null else self.takeControl()) |record| {
             defer std.heap.page_allocator.free(record.bytes);
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
@@ -1585,7 +1647,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     return runWithEnvironment(gpa, io, extension_path, &environment, &.{extension_path});
 }
 pub fn runWithEnvironment(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
-    return runOwner(gpa, io, &.{extension_path}, null, false, 1, null, null, environment, arguments);
+    return runOwner(gpa, io, &.{extension_path}, null, false, 1, null, null, null, environment, arguments);
 }
 
 /// Native programmatic embedding entrypoint. It evaluates a user SDK module
@@ -1688,12 +1750,21 @@ pub fn runGroupWithEnvironment(gpa: std.mem.Allocator, io: std.Io, environment: 
     if (context) |value| if (value != .object) return error.InvalidNativeGroupStartup;
     const process_io = parsed.value.object.get("processIO");
     if (process_io) |value| if (value != .object) return error.InvalidNativeGroupStartup;
-    return runOwner(gpa, io, paths, &input, true, owner_generation, context, process_io, environment, arguments);
+    const fatal_lease = if (parsed.value.object.get("applicationFatal")) |value| blk: {
+        if (value != .object) return error.InvalidNativeGroupStartup;
+        break :blk try fatal_protocol.readStartup(&value.object, owner_generation);
+    } else null;
+    return runOwner(gpa, io, paths, &input, true, owner_generation, context, process_io, fatal_lease, environment, arguments);
 }
 
-fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value, startup_process: ?std.json.Value, environment: *const std.process.Environ.Map, arguments: []const []const u8) anyerror!void {
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value, startup_process: ?std.json.Value, fatal_lease: ?fatal_protocol.Lease, environment: *const std.process.Environ.Map, arguments: []const []const u8) anyerror!void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
+    const stack_owner = if (fatal_lease != null) try @import("native_error_stack.zig").install(engine) else null;
+    defer if (stack_owner) |owner| {
+        @import("native_error_stack.zig").uninstall(engine);
+        engine.freeValue(owner);
+    };
     var loader: Loader = .{ .io = io, .engine = engine };
     engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
     const group = try native_group.Group.init(engine);
@@ -1705,6 +1776,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
     try @import("native_process.zig").install(engine, io, environment, arguments);
+    const fatal_manager = if (fatal_lease != null) try application_fatal.Manager.init(engine) else null;
+    defer if (fatal_manager) |manager| manager.deinit();
     try bindings.installSchemas();
     try node_path.install(engine, io);
     try node_url.install(engine);
@@ -1720,6 +1793,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     const writer = &output.interface;
     var typed_tickets: provider_tickets.Manager = .{ .engine = engine, .io = io };
     var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input, .tickets = &typed_tickets };
+    transport.fatal_manager = fatal_manager;
+    transport.fatal_lease = fatal_lease;
     defer transport.deinit();
     engine.host_control_context = &transport;
     engine.host_control_pump = Transport.pump;
@@ -1758,6 +1833,15 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         if (bootstrap) |bytes| try source_binding.setContext(bytes);
         const loaded_factory = loadSource(gpa, io, engine, &loader, source_binding, extension_path);
         loaded_factory catch |err| {
+            if (err == error.JavaScriptException) if (fatal_manager) |manager| {
+                try manager.capturedUncaught();
+                if (manager.pending != null) {
+                    graceful_shutdown = true;
+                    defer engine.native_fatal_teardown = true;
+                    try transport.finishFatal();
+                    return error.NativeApplicationFatal;
+                }
+            };
             if (engine.last_error) |message| {
                 var error_buffer: [4096]u8 = undefined;
                 var stderr = std.Io.File.stderr().writerStreaming(io, &error_buffer);
@@ -1804,7 +1888,14 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     }
     while (true) {
         owner_phase = "owner-next";
-        const record = (try transport.next()) orelse {
+        const next_record = transport.next() catch |err| {
+            if (err != error.NativeApplicationFatal) return @as(anyerror!void, err);
+            graceful_shutdown = true;
+            defer engine.native_fatal_teardown = true;
+            try transport.finishFatal();
+            return error.NativeApplicationFatal;
+        };
+        const record = next_record orelse {
             owner_phase = "worker-input-ended";
             return;
         };

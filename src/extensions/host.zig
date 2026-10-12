@@ -429,6 +429,7 @@ pub const Host = struct {
     script_ui_bridge: ?js_runtime.UiBridge = null,
     script_renderer_bridge: ?js_runtime.RendererBridge = null,
     script_editor_bridge: ?js_runtime.EditorBridge = null,
+    script_fatal_bridge: ?js_runtime.FatalBridge = null,
     script_widget_bridge: ?js_runtime.WidgetBridge = null,
     native_group_runtime: ?*js_runtime.Runtime = null,
     native_catalog_source: ?native_catalog.Source = null,
@@ -638,6 +639,18 @@ pub const Host = struct {
     pub fn setScriptEditorBridge(self: *Host, bridge: ?js_runtime.EditorBridge) !void {
         if (self.native_group_runtime) |owner| try owner.setEditorBridge(bridge);
         self.script_editor_bridge = bridge;
+    }
+    pub fn setScriptFatalBridge(self: *Host, bridge: ?js_runtime.FatalBridge) void {
+        if (self.native_group_runtime) |owner| owner.setFatalBridge(bridge);
+        self.script_fatal_bridge = bridge;
+    }
+    pub fn applicationFatalPlan(self: *Host) ?js_runtime.FatalPlan {
+        const owner = self.native_group_runtime orelse return null;
+        return owner.fatalPlan();
+    }
+    pub fn finishApplicationFatal(self: *Host) !u8 {
+        const owner = self.native_group_runtime orelse return error.NoNativeFatalRecord;
+        return owner.finishApplicationFatal();
     }
     pub fn setScriptWidgetBridge(self: *Host, bridge: ?js_runtime.WidgetBridge) !void {
         if (self.native_group_runtime) |owner| try owner.setWidgetBridge(bridge);
@@ -914,6 +927,7 @@ pub const Host = struct {
         if (self.script_context_json) |context| try view.setContextJson(context);
         if (created) if (self.script_renderer_bridge) |bridge| try group.?.setRendererBridge(bridge);
         if (created) if (self.script_editor_bridge) |bridge| try group.?.setEditorBridge(bridge);
+        if (created) if (self.script_fatal_bridge) |bridge| group.?.setFatalBridge(bridge);
         if (created) if (self.script_widget_bridge) |bridge| try group.?.setWidgetBridge(bridge);
         const previous_len = self.extensions.items.len;
         try self.loadJsonMode(raw_manifest, std.fs.path.dirname(source_path) orelse ".", true);

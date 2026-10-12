@@ -639,7 +639,16 @@ fn trap(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, 
 }
 fn trapOwned(engine: *Engine, args: []const c.JSValue, operation: c_int, data: [*c]c.JSValue) !c.JSValue {
     const owner = try durable.state(engine, data[0]);
-    if (!owner.transaction.?.active or owner.documents.?.prepared) return error.TransactionClosed;
+    if (!owner.transaction.?.active or owner.documents.?.prepared) {
+        // Source overlay drafts remain non-thenable after settlement. Promise
+        // assimilation may return a retained draft, without reopening its data.
+        if (operation == 0 and c.JS_IsString(args[1])) {
+            const key = try engine.toString(args[1]);
+            defer engine.gpa.free(key);
+            if (std.mem.eql(u8, key, "then")) return c.pi_js_undefined();
+        }
+        return error.TransactionClosed;
+    }
     const index: usize = @intCast(try durable.number(engine, data[1]));
     if (operation >= 3) {
         const global = c.JS_GetGlobalObject(engine.context);

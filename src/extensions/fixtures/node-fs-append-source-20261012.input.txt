@@ -1,0 +1,19 @@
+import fs, {appendFileSync} from 'node:fs';
+const file=appendFixturePath, rows=[];
+rows.push({id:'metadata',name:appendFileSync.name,length:appendFileSync.length,promiseLength:fs.promises.appendFile.length});
+appendFileSync(file,'α');appendFileSync(file,Buffer.from([0,255]));
+rows.push({id:'create-preserve-unicode-binary',hex:fs.readFileSync(file).toString('hex')});
+appendFileSync(file,'21','hex');appendFileSync(file,new Uint8Array([4,5,6]).subarray(1));
+rows.push({id:'encoding-view-offset',hex:fs.readFileSync(file).toString('hex')});
+appendFileSync(file,'T',{flag:'w'});
+rows.push({id:'explicit-truncate',text:fs.readFileSync(file,'utf8')});
+let exclusive;try{appendFileSync(file,'bad',{flag:'ax'})}catch(error){exclusive={code:error.code,syscall:error.syscall}}
+rows.push({id:'exclusive-preserves',...exclusive,text:fs.readFileSync(file,'utf8')});
+let invalid=false;try{appendFileSync(file,{})}catch(error){invalid=error instanceof TypeError}
+rows.push({id:'invalid-data-preserves',invalid,text:fs.readFileSync(file,'utf8')});
+const pending=fs.promises.appendFile(file,'3f','hex');const isPromise=pending instanceof Promise;await pending;
+rows.push({id:'promise-append',isPromise,text:fs.readFileSync(file,'utf8')});
+appendFileSync(file,new Uint8Array(0));
+rows.push({id:'empty-append-preserves',text:fs.readFileSync(file,'utf8')});
+fs.unlinkSync(file);
+globalThis.appendSourceRows=rows;

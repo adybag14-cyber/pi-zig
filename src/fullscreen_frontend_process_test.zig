@@ -751,8 +751,8 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     try std.testing.io.sleep(.fromMilliseconds(400), .awake);
     try observed.drain(&child);
     try std.testing.expect(!try observed.screen.contains("Plugin One"));
-    try observed.sendEditorRow(&child, "\x15%error", "%error");
-    try observed.wait(&child, "autocomplete-original-rejection", 0);
+    // Source ordinary rejected autocomplete is fatal. Complete every valid
+    // interactive resize/cancel/reload assertion before its final rejection.
     try observed.send(&child, "\x15%", "→ Plugin One");
     const before_resize = observed.screen.frames;
     try observed.screen.resize(70, 22);
@@ -764,8 +764,49 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     try observed.send(&child, "\x15/reload\r", "Reloaded:");
     try observed.send(&child, "%", "→ Plugin One");
     try observed.sendEditorRow(&child, "\t", "one");
-    try cleanExit(&fixture, &child, &observed);
+    try observed.sendEditorRow(&child, "\x15%error", "%error");
+    const term = try child.wait(5000);
+    try observed.drain(&child);
+    try std.testing.expect(term == .exited and term.exited == 1);
+    try std.testing.expect(!observed.screen.in_alternate);
+    const diagnostic = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(diagnostic);
+    try std.testing.expect(std.mem.startsWith(u8, diagnostic, "pi exiting due to uncaughtException:\n"));
+    try std.testing.expect(std.mem.indexOf(u8, diagnostic, "Error: autocomplete-original-rejection") != null);
 }
+const fatal_getter_autocomplete_extension = blk: {
+    const needle = "if(value==='%error')throw new Error('autocomplete-original-rejection');";
+    const index = std.mem.indexOf(u8, autocomplete_extension, needle).?;
+    break :blk "import {appendFileSync} from 'node:fs';\n" ++ autocomplete_extension[0..index].* ++
+        "if(value==='%error'){const original=Error('diagnostic-getter-original');Object.defineProperty(original,'stack',{get(){appendFileSync('fatal-getter.log',String(process.stdin.isRaw)+'\\n');return 'Error: diagnostic-getter-original'}});throw original;}" ++
+        autocomplete_extension[index + needle.len ..].*;
+};
+
+test "real custom editor fatal diagnostic getter runs after physical raw restoration and exits owned child1" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnEditor(errors, fatal_getter_autocomplete_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.sendEditorRow(&child, "%error", "%error");
+    const term = try child.wait(5000);
+    try observed.drain(&child);
+    try std.testing.expect(term == .exited and term.exited == 1);
+    try std.testing.expect(!observed.screen.in_alternate);
+    const getter = try fixture.scratch.dir.readFileAlloc(std.testing.io, "fatal-getter.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(getter);
+    try std.testing.expectEqualStrings("false\n", getter);
+    const diagnostic = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(diagnostic);
+    try std.testing.expectEqualStrings("pi exiting due to uncaughtException:\nError: diagnostic-getter-original\n", diagnostic);
+}
+
 test "real custom editor focus modal handoff retained draft default restoration and owner disposal" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");

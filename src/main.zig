@@ -2558,6 +2558,7 @@ const RuntimeResourceReloadContext = struct {
             .native_catalog_source = self.host.native_catalog_source,
             .script_renderer_bridge = self.host.script_renderer_bridge,
             .script_editor_bridge = self.host.script_editor_bridge,
+            .script_fatal_bridge = self.host.script_fatal_bridge,
             .script_widget_bridge = self.host.script_widget_bridge,
         };
         errdefer new_host.deinit();
@@ -3231,6 +3232,7 @@ pub fn main(init: std.process.Init) !u8 {
     var exit_code: u8 = 0;
     runMain(init, &exit_code) catch |err| {
         if (err == error.DeadTerminal) std.process.exit(129);
+        if (err == error.NativeApplicationFatal) return extensions.js_runtime.application_exit_code;
         return err;
     };
     return exit_code;
@@ -3348,7 +3350,10 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
         return extensions.native_worker.runWithEnvironment(gpa, io, raw_args[2], environ, raw_args);
     }
     if (raw_args.len == 2 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-group-worker")) {
-        return extensions.native_worker.runGroupWithEnvironment(gpa, io, environ, raw_args);
+        return extensions.native_worker.runGroupWithEnvironment(gpa, io, environ, raw_args) catch |err| {
+            if (err == error.NativeApplicationFatal) std.process.exit(extensions.native_worker.application_exit_code);
+            return err;
+        };
     }
     // Internal workers keep their private framing descriptors. Only the
     // process frontend owns and fans out the physical stdin/stdout handles.
@@ -4020,7 +4025,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
         .js_runtime_program = environ.get("PI_JS_RUNTIME") orelse "node",
         .script_ui_bridge = extension_ui.bridge(),
         .script_backend = extension_backend,
-        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ, .process_bridge = if (physical_stdio) |hub| hub.bridge() else null },
+        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ, .process_bridge = if (physical_stdio) |hub| hub.bridge() else null, .application_fatal = std.mem.eql(u8, extension_mode, "tui") },
         .native_catalog_source = main_catalog_source.source(),
         .settings_snapshot_json = try gpa.dupe(u8, settings.source_json orelse "{}"),
     };
@@ -4229,7 +4234,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
         session_dir,
     );
     if (extensions_active) try extension_bridge.sessionStart(gpa, cwd, sess.id, "startup");
-    defer {
+    defer if (extension_host.applicationFatalPlan() == null) {
         if (extension_host.extensions.items.len > 0) extension_bridge.sessionShutdown(gpa, cwd, sess.id, "quit") catch |err| {
             var buffer: [256]u8 = undefined;
             const warning = std.fmt.bufPrint(&buffer, "warning: extension session_shutdown failed: {s}", .{@errorName(err)}) catch "warning: extension session_shutdown failed";
@@ -4245,7 +4250,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
             const warning = std.fmt.bufPrint(&buffer, "warning: session save after extension shutdown failed: {s}", .{@errorName(err)}) catch "warning: session save after extension shutdown failed";
             tui.render.printLine(io, warning) catch {};
         };
-    }
+    };
 
     // Context / skills / prompts
     var context_count: usize = 0;
@@ -5080,13 +5085,24 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
     // custom scene or standard dialog borrows this mode and restores it, rather
     // than exposing a canonical interval that translates already-typed Enter
     // into Ctrl+J before the next editor takes ownership.
+    // Registered before both terminal guards: this runs only after the actual
+    // frontend owner has joined and the original input mode is restored.
+    defer if (extension_host.applicationFatalPlan() != null) {
+        extensions.js_runtime.application_exit_code = extension_host.finishApplicationFatal() catch |err| blk: {
+            std.log.err("Application crash reporting failed: {s}", .{@errorName(err)});
+            break :blk 7;
+        };
+    };
     var regular_terminal_mode: ?tui.line_editor.RawMode = if (use_terminal_editor and !use_persistent_scene) try tui.line_editor.RawMode.enter() else null;
-    defer if (regular_terminal_mode) |*mode| mode.leave();
+    defer if (regular_terminal_mode) |*mode| {
+        if (extension_host.applicationFatalPlan() != .emergency_terminal_exit) mode.leave();
+    };
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer extension_host.setScriptWidgetBridge(null) catch {};
     const widget_size = tui.terminal.terminalDimensions(environ, .{ .columns = 80, .rows = 24 });
     if (!use_fullscreen_scene) try extension_host.setScriptWidgetBridge(.{ .context = &extension_ui, .record_fn = extensions.ui.Controller.widgetRecordProjection, .closed_fn = extensions.ui.Controller.widgetProjectionClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .action_fn = extensions.ui.Controller.persistentAction, .action_context = &extension_ui });
     defer if (frontend) |scene| {
+        extension_host.setScriptFatalBridge(null);
         extension_host.setScriptEditorBridge(null) catch {};
         extension_host.setScriptWidgetBridge(null) catch {};
         extension_host.setScriptRendererBridge(null) catch {};
@@ -5115,6 +5131,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
         const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
         defer gpa.free(header);
         frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x, .alternate_screen = use_fullscreen_scene, .fullscreen_wheel_scroll_lines = settings.fullscreen_wheel_scroll_lines orelse .auto });
+        extension_host.setScriptFatalBridge(.{ .context = frontend, .request_fn = coding.fullscreen_frontend.Frontend.fatalSink });
         component_frontend_owner.persistent = frontend;
         interactive_render.fullscreen = frontend;
         agent_cfg.abort_flag = &frontend.?.abort_flag;
