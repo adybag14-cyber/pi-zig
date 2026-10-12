@@ -1,0 +1,1434 @@
+{
+  "upstream": "04566631c2b51fb688486bc1f040f60d1518c126",
+  "scope": "Actual inline WASM clock edges and seeded context creation, 48 cases",
+  "rows": [
+    {
+      "startedAt": 0,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.49999999999999994,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.49999999999999994,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.49999999999999994,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.5,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.5,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.5,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.9999999999999999,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.9999999999999999,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0.9999999999999999,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          0,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.5,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          2,
+          0,
+          0,
+          "1970-01-01T00:00:00.002Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.5,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          2,
+          0,
+          0,
+          "1970-01-01T00:00:00.002Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.5,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          2,
+          0,
+          0,
+          "1970-01-01T00:00:00.002Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1234.5,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          1235,
+          0,
+          0,
+          "1970-01-01T00:00:01.235Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1234.5,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1235,
+          0,
+          0,
+          "1970-01-01T00:00:01.235Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1234.5,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          1235,
+          0,
+          0,
+          "1970-01-01T00:00:01.235Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1768471200000,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0,
+          "2026-01-15T10:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1768471200000,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0,
+          "2026-01-15T10:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1768471200000,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          1768471200000,
+          0,
+          0,
+          "2026-01-15T10:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          18446744073709,
+          0,
+          0,
+          "2554-07-21T23:34:33.709Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          18446744073709,
+          0,
+          0,
+          "2554-07-21T23:34:33.709Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          18446744073709,
+          0,
+          0,
+          "2554-07-21T23:34:33.709Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073710,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073710,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073710,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 9007199254740992,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          5188146770730,
+          0,
+          0,
+          "2134-05-28T23:52:50.730Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 9007199254740992,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          5188146770730,
+          0,
+          0,
+          "2134-05-28T23:52:50.730Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 9007199254740992,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          5188146770730,
+          0,
+          0,
+          "2134-05-28T23:52:50.730Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709552000,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709552000,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709552000,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709556000,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          4096,
+          0,
+          0,
+          "1970-01-01T00:00:04.096Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709556000,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          4096,
+          0,
+          0,
+          "1970-01-01T00:00:04.096Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 18446744073709556000,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          4096,
+          0,
+          0,
+          "1970-01-01T00:00:04.096Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 8.307674973655724e+34,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 8.307674973655724e+34,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 8.307674973655724e+34,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.7976931348623157e+308,
+      "seed": 0,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.6711372530266764,
+          0.7258461452833667
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.7976931348623157e+308,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.7976931348623157e+308,
+      "seed": 4294967295,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.32306919411247104,
+          0.6888886901883535
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 0,
+          "issued": 0
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0,
+      "now": 0.5,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1,
+          1,
+          0,
+          "1970-01-01T00:00:00.001Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1.5,
+      "now": 2,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          2,
+          1,
+          0,
+          "1970-01-01T00:00:00.002Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1234.5,
+      "now": 1235,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1235,
+          1,
+          0,
+          "1970-01-01T00:00:01.235Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 1768471200000,
+      "now": 1768471201000,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          1768471201000,
+          1000,
+          0,
+          "2026-01-15T10:00:01.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0,
+      "now": 18446744073710,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0.448384,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    },
+    {
+      "startedAt": 0,
+      "now": 1.7976931348623157e+308,
+      "seed": 1,
+      "result": {
+        "ok": true,
+        "value": [
+          0,
+          0,
+          0,
+          "1970-01-01T00:00:00.000Z",
+          "2026-01-15T10:00:00.000Z",
+          0,
+          0,
+          0.34227450605335275,
+          0.4620546081390098
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "finished": true
+    }
+  ]
+}

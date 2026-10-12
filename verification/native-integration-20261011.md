@@ -69,3 +69,12 @@ to a drive-qualified path; POSIX retains the supplied absolute path. All other
 captured records match. A genuine POSIX upstream capture and native qualification
 are required before platform-specific expected records can be accepted. This
 negative is preserved; no cross-platform pass is inferred from the Windows gate.
+
+The optional per-runtime CodeMode clock subsequently passed 198/198 Windows
+Debug integration tests, including all 48 captured clock/seed observations,
+runtime isolation, invalid-input and late-reseeding controls, exhaustive owner
+allocation cleanup, 135 composed cases and the 55 retained UI cases. Independent
+compiled coverage passed with 126 named / 135 compiled composed cases. All
+3,992 source and 19,546 tool inputs were unchanged. The previous job was
+interrupted during the pause and produced no terminal output; it is not counted.
+This context component does not implement public start or durable replay.

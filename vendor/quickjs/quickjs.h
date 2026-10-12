@@ -506,6 +506,11 @@ typedef void JSRuntimeFinalizer(JSRuntime *rt, void *arg);
 typedef struct JSGCObjectHeader JSGCObjectHeader;
 
 JS_EXTERN JSRuntime *JS_NewRuntime(void);
+/* Pi host-only per-runtime deterministic CodeMode clock; never a JS global. */
+JS_EXTERN int JS_PISetDeterministicTime(JSRuntime *rt, uint32_t seed,
+                                       double realtime_ms, double elapsed_ms);
+JS_EXTERN int JS_PIAdvanceDeterministicTime(JSRuntime *rt,
+                                           double realtime_ms, double elapsed_ms);
 /* info lifetime must exceed that of rt */
 JS_EXTERN void JS_SetRuntimeInfo(JSRuntime *rt, const char *info);
 /* use 0 to disable memory limit */

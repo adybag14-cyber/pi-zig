@@ -335,6 +335,10 @@ typedef struct JSClass {
 } JSClass;
 
 struct JSRuntime {
+    bool pi_deterministic_time;
+    uint32_t pi_deterministic_seed;
+    double pi_realtime_ms;
+    double pi_elapsed_ms;
     JSMallocFunctions mf;
     JSMallocState malloc_state;
     JSArenaState arena_state;
@@ -2945,7 +2949,9 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_stack_trace_limit = js_int32(10);
     init_list_head(&ctx->loaded_modules);
     // TODO(bnoordhuis) use getrandom() etc.
-    ctx->random_state = js__gettimeofday_us();
+    ctx->random_state = rt->pi_deterministic_time
+        ? (uint64_t)rt->pi_deterministic_seed + 1
+        : js__gettimeofday_us();
     // the state must be non zero
     if (ctx->random_state == 0)
         ctx->random_state = 1;
@@ -49282,7 +49288,9 @@ static const JSCFunctionListEntry js_math_obj[] = {
 
 /* OS dependent. d = argv[0] is in ms from 1970. Return the difference
    between UTC time and local time 'd' in minutes */
-static int getTimezoneOffset(int64_t time) {
+static int getTimezoneOffset(JSContext *ctx, int64_t time) {
+    if (ctx->rt->pi_deterministic_time)
+        return 0;
 #if defined(_WIN32)
     DWORD r;
     TIME_ZONE_INFORMATION t;
@@ -57542,7 +57550,7 @@ static __exception int get_date_fields(JSContext *ctx, JSValueConst obj,
     } else {
         d = dval;     /* assuming -8.64e15 <= dval <= -8.64e15 */
         if (is_local) {
-            tz = -getTimezoneOffset(d);
+            tz = -getTimezoneOffset(ctx, d);
             d += tz * 60000;
         }
     }
@@ -57588,7 +57596,7 @@ static double time_clip(double t) {
 
 /* The spec mandates the use of 'double' and it specifies the order
    of the operations */
-static double set_date_fields(double fields[minimum_length(7)], int is_local) {
+static double set_date_fields(JSContext *ctx, double fields[minimum_length(7)], int is_local) {
     double y, m, dt, ym, mn, day, h, s, milli, time, tv;
     int yi, mi, i;
     int64_t days;
@@ -57642,7 +57650,7 @@ static double set_date_fields(double fields[minimum_length(7)], int is_local) {
     /* adjust for local time and clip */
     if (is_local) {
         int64_t ti = tv < INT64_MIN ? INT64_MIN : tv >= 0x1p63 ? INT64_MAX : (int64_t)tv;
-        tv += getTimezoneOffset(ti) * 60000;
+        tv += getTimezoneOffset(ctx, ti) * 60000;
     }
     d = time_clip(tv);
 out:
@@ -57702,7 +57710,7 @@ static JSValue set_date_field(JSContext *ctx, JSValueConst this_val,
         return JS_NAN;
 
     if (argc > 0)
-        d = set_date_fields(fields, is_local);
+        d = set_date_fields(ctx, fields, is_local);
 
     return JS_SetThisTimeValue(ctx, this_val, d);
 }
@@ -57826,7 +57834,9 @@ static JSValue get_date_string(JSContext *ctx, JSValueConst this_val,
 }
 
 /* OS dependent: return the UTC time in ms since 1970. */
-static int64_t date_now(void) {
+static int64_t date_now(JSContext *ctx) {
+    if (ctx->rt->pi_deterministic_time)
+        return (int64_t)ctx->rt->pi_realtime_ms;
     return js__gettimeofday_us() / 1000;
 }
 
@@ -57844,7 +57854,7 @@ static JSValue js_date_constructor(JSContext *ctx, JSValueConst new_target,
     }
     n = argc;
     if (n == 0) {
-        val = date_now();
+        val = date_now(ctx);
     } else if (n == 1) {
         JSValue v, dv;
         if (JS_VALUE_GET_TAG(argv[0]) == JS_TAG_OBJECT) {
@@ -57882,7 +57892,7 @@ static JSValue js_date_constructor(JSContext *ctx, JSValueConst new_target,
             if (i == 0 && fields[0] >= 0 && fields[0] < 100)
                 fields[0] += 1900;
         }
-        val = (i == n) ? set_date_fields(fields, 1) : NAN;
+        val = (i == n) ? set_date_fields(ctx, fields, 1) : NAN;
     }
 has_val:
     rv = js_create_from_ctor(ctx, new_target, JS_CLASS_DATE);
@@ -57920,7 +57930,7 @@ static JSValue js_Date_UTC(JSContext *ctx, JSValueConst this_val,
         if (i == 0 && fields[0] >= 0 && fields[0] < 100)
             fields[0] += 1900;
     }
-    return js_float64(set_date_fields(fields, 0));
+    return js_float64(set_date_fields(ctx, fields, 0));
 }
 
 /* Date string parsing */
@@ -58376,7 +58386,7 @@ static JSValue js_Date_parse(JSContext *ctx, JSValueConst this_val,
         if (valid) {
             for(i = 0; i < 7; i++)
                 fields1[i] = fields[i];
-            d = set_date_fields(fields1, is_local) - fields[8] * 60000;
+            d = set_date_fields(ctx, fields1, is_local) - fields[8] * 60000;
             rv = js_float64(d);
         }
     }
@@ -58388,7 +58398,7 @@ static JSValue js_Date_now(JSContext *ctx, JSValueConst this_val,
                            int argc, JSValueConst *argv)
 {
     // now()
-    return js_int64(date_now());
+    return js_int64(date_now(ctx));
 }
 
 static JSValue js_date_Symbol_toPrimitive(JSContext *ctx, JSValueConst this_val,
@@ -58435,7 +58445,7 @@ static JSValue js_date_getTimezoneOffset(JSContext *ctx, JSValueConst this_val,
         return JS_NAN;
     else
         /* assuming -8.64e15 <= v <= -8.64e15 */
-        return js_int64(getTimezoneOffset((int64_t)trunc(v)));
+        return js_int64(getTimezoneOffset(ctx, (int64_t)trunc(v)));
 }
 
 static JSValue js_date_getTime(JSContext *ctx, JSValueConst this_val,
@@ -63153,6 +63163,35 @@ int JS_AddIntrinsicTypedArrays(JSContext *ctx)
 
 /* Performance */
 
+static bool pi_valid_deterministic_time(double realtime_ms, double elapsed_ms)
+{
+    return isfinite(realtime_ms) && isfinite(elapsed_ms)
+        && realtime_ms >= 0 && realtime_ms <= 18446744073710.0
+        && elapsed_ms >= 0 && elapsed_ms <= 18446744073710.0;
+}
+
+int JS_PISetDeterministicTime(JSRuntime *rt, uint32_t seed,
+                               double realtime_ms, double elapsed_ms)
+{
+    if (!list_empty(&rt->context_list) || !pi_valid_deterministic_time(realtime_ms, elapsed_ms))
+        return -1;
+    rt->pi_deterministic_time = true;
+    rt->pi_deterministic_seed = seed;
+    rt->pi_realtime_ms = realtime_ms;
+    rt->pi_elapsed_ms = elapsed_ms;
+    return 0;
+}
+
+int JS_PIAdvanceDeterministicTime(JSRuntime *rt,
+                                   double realtime_ms, double elapsed_ms)
+{
+    if (!rt->pi_deterministic_time || !pi_valid_deterministic_time(realtime_ms, elapsed_ms))
+        return -1;
+    rt->pi_realtime_ms = realtime_ms;
+    rt->pi_elapsed_ms = elapsed_ms;
+    return 0;
+}
+
 static double js__now_ms(void)
 {
     return js__hrtime_ns() / 1e6;
@@ -63160,6 +63199,8 @@ static double js__now_ms(void)
 
 static JSValue js_perf_now(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
+    if (ctx->rt->pi_deterministic_time)
+        return js_float64(ctx->rt->pi_elapsed_ms);
     return js_float64(js__now_ms() - ctx->time_origin);
 }
 
@@ -63169,7 +63210,7 @@ static const JSCFunctionListEntry js_perf_proto_funcs[] = {
 
 int JS_AddPerformance(JSContext *ctx)
 {
-    ctx->time_origin = js__now_ms();
+    ctx->time_origin = ctx->rt->pi_deterministic_time ? 0 : js__now_ms();
 
     JSValue performance = JS_NewObject(ctx);
     JS_SetPropertyFunctionList(ctx, performance, js_perf_proto_funcs, countof(js_perf_proto_funcs));

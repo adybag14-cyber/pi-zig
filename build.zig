@@ -119,6 +119,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     const catalog_tool = b.createModule(.{ .root_source_file = b.path("tools/catalog.zig"), .target = target, .optimize = optimize });
+    const codemode_clock_module = b.createModule(.{ .root_source_file = b.path("src/native_codemode_clock_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, codemode_clock_module, quickjs, sqlite_lib_dir);
+    linkSqlite(codemode_clock_module, sqlite_lib_dir, sqlite_library);
+    const codemode_clock_tests = b.addTest(.{ .root_module = codemode_clock_module, .use_llvm = use_llvm, .filters = &.{ "native CodeMode deterministic", "CodeMode virtual clock" } });
+    b.step("compile-native-codemode-clock", "Compile the exact native clock test artifact without running tests").dependOn(&b.addInstallArtifact(codemode_clock_tests, .{ .dest_sub_path = "native-codemode-clock.exe" }).step);
+    b.step("test-native-codemode-clock", "Compare native context time seed and UTC against actual latest WASM observations").dependOn(&b.addRunArtifact(codemode_clock_tests).step);
     const composed_vm_module = b.createModule(.{ .root_source_file = b.path("src/native_composed_vm_test.zig"), .target = target, .optimize = optimize });
     composed_vm_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, composed_vm_module, quickjs, sqlite_lib_dir);

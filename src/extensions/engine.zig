@@ -14,6 +14,7 @@ pub const c = @cImport({
 });
 
 pub const Options = struct {
+    deterministic_clock: ?@import("../mcp/codemode_clock.zig").Clock = null,
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
@@ -161,6 +162,7 @@ pub const Engine = struct {
     source_loader: ?SourceLoader = null,
 
     pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {
+        if (options.deterministic_clock) |clock| try clock.validate();
         const self = try gpa.create(Engine);
         errdefer gpa.destroy(self);
         var memory_owner: ?*anyopaque = null;
@@ -169,6 +171,7 @@ pub const Engine = struct {
         errdefer c.JS_FreeRuntime(runtime);
         c.JS_SetMemoryLimit(runtime, options.memory_limit);
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
+        if (options.deterministic_clock) |clock| if (c.JS_PISetDeterministicTime(runtime, clock.seed, clock.realtime(), clock.elapsed()) < 0) return error.InvalidDeterministicTime;
         const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
         errdefer c.JS_FreeContext(context);
         if (c.JS_AddPerformance(context) < 0) return error.OutOfMemory;
