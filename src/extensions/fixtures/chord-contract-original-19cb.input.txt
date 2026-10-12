@@ -1,0 +1,34 @@
+const cases=[];
+const{method,opaque,local,remote,coverage,bind,ChordError,canonicalJson,hash64,deepEqual,fits,canonicalIdentity}=api;
+const errorInfo=error=>({name:error.name,message:error.message,code:error.code??null,reason:error.reason??null,retryable:error.retryable??null});
+const outcome=fn=>{try{const value=fn();return{value:value===undefined?null:value}}catch(error){return{error:errorInfo(error)}}};
+for(const value of [null,undefined,true,false,0,-0,NaN,Infinity,17,'😀\ud800',[],[undefined,NaN],{z:1,a:2,'10':'ten','2':'two',missing:undefined},{toJSON(){return 'ignored'},value:4}]){
+ const text=canonicalJson(value);cases.push({name:'actual canonical JSON and UTF16 FNV',text,hash:hash64(text)});
+}
+{
+ const sparse=new Array(3);sparse[1]=7;const calls=[],input=Object.defineProperty({b:2},'a',{enumerable:true,get(){calls.push('a');return 1}});cases.push({name:'sparse arrays and canonical ordinary getter counts',sparse:canonicalJson(sparse),text:canonicalJson(input),calls});
+}
+{
+ const args={type:'object',properties:{x:{type:'number'}}},result={type:'string'},spec=method(args,result),owner=opaque('owner@1'),definition={version:1,input:{type:'object'},members:{run:spec,owner,state:{type:'number'}}},token=local('service',definition),variant=remote('remote',{version:1,input:{type:'object'},variants:{live:{state:{n:{type:'number'}},methods:{run:spec}}}});
+ cases.push({name:'genuine branded declarations contracts descriptions aliases and fingerprints',functions:[method,opaque,local,remote,coverage,bind].map(fn=>({name:fn.name,length:fn.length,prototype:Object.hasOwn(fn,'prototype')})),specKeys:Object.keys(spec),symbols:Object.getOwnPropertySymbols(spec).map(symbol=>symbol.description),args:spec.args===args,result:spec.result===result,owner:owner.id,definition:token.def===definition,input:token.input===definition.input,descriptionArgs:token.description.variants[''].run.args===args,token,remote:variant,constructible:new local('constructed',{version:1,input:{}}).name});
+}
+for(const id of ['owner@0','世界@12','😀@3','\ud800@4','','owner','owner@x','a b@1','a@1@2','a\u00a0@1'])cases.push({name:'actual opaque identifier '+JSON.stringify(id),result:outcome(()=>opaque(id))});
+for(const [name,version]of[['',1],['bad',0],['bad',1.5],['bad','1']])cases.push({name:'actual contract header '+JSON.stringify([name,version]),result:outcome(()=>local(name,{version,input:{}}))});
+for(const members of [{then:{type:'string'}},{ready:method({}, {})},{run:null}])cases.push({name:'actual local reserved or malformed members',result:outcome(()=>local('bad',{version:1,input:{},members}))});
+for(const variants of [{},{live:{state:{run:{}},methods:{run:method({},{})}}},{live:{methods:{run:{type:'number'}}}},{live:{state:{owner:opaque('owner@1')}}}])cases.push({name:'actual remote variants/member admission',result:outcome(()=>remote('bad',{version:1,input:{},variants}))});
+{
+ let version=0,input=0;const definition={get version(){return ++version},get input(){return {type:'number',title:String(++input)}},members:{}};const token=local('getters',definition);cases.push({name:'ordinary definition getters are read at original description/token boundaries',versionReads:version,inputReads:input,version:token.version,descriptionVersion:token.description.version,inputTitle:token.input.title,descriptionTitle:token.description.input.title,fingerprint:token.fingerprint});
+}
+{
+ const old=local('versioned',{version:1,input:{type:'object'},members:{run:method({type:'integer'},{type:'number'})}}),provider=local('versioned',{version:2,input:{type:'object'},members:{run:method({type:'number'},{type:'integer'})}}),adapter=value=>value;
+ const same=local('versioned',{version:1,input:{type:'object'},members:{run:method({type:'number'},{type:'integer'})}}),wrong=local('versioned',{version:1,input:{type:'object'},members:{run:method({type:'string'},{type:'number'})}});
+ cases.push({name:'actual contract variance coverage version adapters and mismatch codes',coverage:coverage(same.description,old.description)??null,bind:bind(same,undefined,old)===undefined,adapter:bind(provider,{1:adapter},old)===adapter,missing:outcome(()=>bind(provider,undefined,old)),mismatch:outcome(()=>bind(wrong,undefined,old)),different:coverage(same.description,{...old.description,name:'other'})});
+}
+const schemas=[{},true,false,{type:'number'},{type:'integer'},{type:'string'},{const:1},{enum:[1,2]},{type:['integer','string']},{type:'number',minimum:1},{type:'number',minimum:2},{type:'object',properties:{x:{type:'number'}},required:['x'],additionalProperties:false},{type:'object',properties:{x:{type:'integer'}},required:['x'],additionalProperties:false},{type:'object',properties:{x:{type:'number'}}},{type:'object',properties:{},additionalProperties:{type:'string'}},{type:'array',items:{type:'number'}},{type:'array',items:[{type:'integer'},{type:'string'}]},{type:'function',parameters:[{type:'number'}],returnType:{type:'integer'}},{type:'function',parameters:[{type:'integer'},{type:'string'}],returnType:{type:'number'}},{anyOf:[{type:'number'},{type:'string'}]},{$ref:'#/a'},{type:'object',patternProperties:{'^x-':{type:'number'}}},{type:'object',properties:{'x-a':{type:'integer'}},additionalProperties:false},{type:'object',additionalProperties:null},{type:'object',properties:{x:{type:'number'}}}];
+const matrix=[];for(let sub=0;sub<schemas.length;sub++)for(let sup=0;sup<schemas.length;sup++)matrix.push({sub,sup,result:fits(schemas[sub],schemas[sup])});
+cases.push({name:'actual conservative schema compatibility matrix',schemas,matrix});
+{
+ const holes=new Array(1);cases.push({name:'schema union and enum array holes retain every/some semantics',subUnion:fits({anyOf:holes},{type:'number'}),supUnion:fits({type:'number'},{anyOf:holes}),subEnum:fits({enum:holes},{enum:[1]}),supEnum:fits({const:undefined},{enum:holes})});
+}
+for(const [schema,value]of [[{type:'object',properties:{x:{default:1},nested:{properties:{a:{default:'a'}}}}},{x:1,y:2,nested:{a:'a',b:4}}],[{items:[{default:1},{properties:{x:{default:2}}}]},[1,{x:2,y:3}]],[{properties:{list:{items:{properties:{x:{default:1}}}}}},{list:[{x:1,y:2},{x:2}]}]])cases.push({name:'actual canonical default-elided record identity',schema,value,identity:canonicalIdentity(schema,value)});
+globalThis.chordContractCases=cases;

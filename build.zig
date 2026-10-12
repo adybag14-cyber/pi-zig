@@ -674,6 +674,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_resource_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_resource_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-resource-source", "Replay actual Chord Host resource lifecycle factory facade late abort cleanup and raw errors").dependOn(&b.addRunArtifact(chord_resource_tests).step);
+    const chord_contract_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_contract_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord contracts"} });
+    linkQuickJs(b, chord_contract_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_contract_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-contract-source", "Replay actual Chord canonical identity contract fingerprints compatibility and version adapters").dependOn(&b.addRunArtifact(chord_contract_tests).step);
     const storage_lifetime_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{
         "Storage adapter lifetime",
         "agent selections store names from cyclic",

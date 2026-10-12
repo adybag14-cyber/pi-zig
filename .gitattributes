@@ -43,3 +43,5 @@ src/extensions/fixtures/chord-context-original-19cb.input.txt whitespace=cr-at-e
 verification/chord-context-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/chord-resource-original-19cb.input.txt whitespace=cr-at-eol
 verification/chord-resource-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/chord-contract-original-19cb.input.txt whitespace=cr-at-eol
+verification/chord-contract-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

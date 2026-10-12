@@ -1,0 +1,4 @@
+import{readFileSync,writeFileSync}from'node:fs';import{pathToFileURL}from'node:url';
+const runtime='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012';const chord=await import(pathToFileURL(runtime+'/packages/chord/dist/index.js'));const schema=await import(pathToFileURL(runtime+'/packages/chord/dist/schema.js'));
+const input=readFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-contract19cb-input-20261012.txt','utf8'),AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;await new AsyncFunction('api',input)({...chord,...schema});
+writeFileSync(process.argv[2],JSON.stringify({source:'19cb534c3b6e3871458a8fa59e98f0312c50e995',cases:globalThis.chordContractCases},null,2)+'\n');
