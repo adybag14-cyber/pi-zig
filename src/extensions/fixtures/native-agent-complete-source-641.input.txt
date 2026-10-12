@@ -1,0 +1,16 @@
+
+const core=sdkAgentCompleteNative;
+const {Agent,setDefaultStreamFn}=core,rows=[],asyncPrototype=Object.getPrototypeOf(async()=>{}),marker={owned:true};
+const describe=fn=>({name:fn.name,length:fn.length,async:Object.getPrototypeOf(fn)===asyncPrototype,ownKeys:Reflect.ownKeys(fn).map(String)});
+const prototype=Reflect.ownKeys(Agent.prototype).map(key=>{const d=Object.getOwnPropertyDescriptor(Agent.prototype,key);return{name:String(key),value:typeof d.value==='function'?describe(d.value):undefined,get:typeof d.get==='function'?describe(d.get):undefined,set:typeof d.set==='function'?describe(d.set):undefined,writable:d.writable,enumerable:d.enumerable,configurable:d.configurable}});
+rows.push({id:'metadata',constructor:describe(Agent),prototype,setDefault:describe(setDefaultStreamFn)});
+for(const id of ['unconfigured','null-default','false-default','zero-default','configured-function','configured-object','explicit-false','explicit-zero','explicit-null','missing-options']){
+ const stream=function ownedStream(){throw marker},configured=id==='configured-function'?stream:id==='configured-object'?{owned:true}:id==='false-default'?false:id==='zero-default'?0:id==='null-default'?null:undefined;
+ const returned=setDefaultStreamFn(configured);let outcome;
+ const options=id==='explicit-false'?{streamFn:false}:id==='explicit-zero'?{streamFn:0}:id==='explicit-null'?{streamFn:null}:{};
+ try{const agent=id==='missing-options'?new Agent():new Agent(options);outcome={sameConfigured:agent.streamFunction===configured,sameExplicit:agent.streamFunction===options.streamFn,streamType:typeof agent.streamFunction,stream:typeof agent.streamFunction==='function'?describe(agent.streamFunction):agent.streamFunction};}catch(error){outcome={name:error?.name,message:error?.message}}
+ rows.push({id,setReturnedUndefined:returned===undefined,outcome});
+}
+const constructedStream=function constructedStream(){};const constructedSetter=new setDefaultStreamFn(constructedStream);const constructedAgent=new Agent({});rows.push({id:'setter-new',prototype:Object.getPrototypeOf(constructedSetter)===setDefaultStreamFn.prototype,constructor:constructedSetter.constructor===setDefaultStreamFn,ownKeys:Reflect.ownKeys(constructedSetter).map(String),sameDefault:constructedAgent.streamFunction===constructedStream});
+setDefaultStreamFn(undefined);
+globalThis.sdkAgentCompleteRows=rows;

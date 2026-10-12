@@ -1,0 +1,8 @@
+const rows=[];
+function capture(name,make){const effects=[];const value=make(effects);let result,error;try{result=JSON.stringify(value)}catch(e){error={name:e.name,message:e.message}}rows.push({name,result,error,effects})}
+capture('unicode-constructor',()=>{class Κατασκευαστής{}const x=new Κατασκευαστής;x.self=x;return x});
+capture('unicode-key',()=>{const x={};x['ключ']=x;return x});
+capture('nul-key',()=>{const x={};x['a\0b']=x;return x});
+capture('bigint',()=>1n);
+capture('boxed-bigint',()=>Object(1n));
+console.log(JSON.stringify({node:process.versions.node,rows},null,2));

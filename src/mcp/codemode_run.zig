@@ -67,7 +67,7 @@ pub const Run = struct {
         errdefer if (!transferred) host.deinit();
         var result = try json.Owned.empty(gpa);
         errdefer if (!transferred) result.deinit();
-        const engine = try em.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64), .deterministic_clock = if (options.deterministic) clock else null, .node_locale_compare = false });
+        const engine = try em.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64), .deterministic_clock = if (options.deterministic) clock else null, .node_locale_compare = false, .node_json_diagnostics = false });
         errdefer if (!transferred) engine.deinit();
         self.* = .{ .gpa = gpa, .core = .{ .gpa = gpa, .io = io, .engine = engine, .tools = &.{}, .options = .{ .timeout_ms = options.timeout_ms, .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = options.interrupt_budget, .store = options.store }, .result = result, .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |limit| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(limit, std.math.maxInt(i64)))) else null }, .host = host, .clock = clock, .observer = options.observer, .globals = &.{}, .source = "", .fingerprint = "", .promise = c.pi_js_undefined() };
         transferred = true;
@@ -98,12 +98,6 @@ pub const Run = struct {
         c.JS_SetInterruptHandler(engine.runtime, vm.Execution.interrupt, &self.core);
         const global_object = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global_object);
-        // Upstream's WASM VM exposes SharedArrayBuffer, but no Atomics host
-        // primitives. Preserve that script-visible environment in native runs.
-        const atomics = c.JS_NewAtom(engine.context, "Atomics");
-        if (atomics == c.JS_ATOM_NULL) return error.OutOfMemory;
-        defer c.JS_FreeAtom(engine.context, atomics);
-        if (c.JS_DeleteProperty(engine.context, global_object, atomics, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
         if (options.deterministic) inline for (.{ "WeakRef", "FinalizationRegistry" }) |name| {
             const atom = c.JS_NewAtom(engine.context, name);
             if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;

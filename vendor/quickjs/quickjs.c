@@ -3051,6 +3051,11 @@ JSValue JS_GetIteratorSymbol(JSContext *ctx)
     return JS_AtomToValue(ctx, JS_ATOM_Symbol_iterator);
 }
 
+JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx)
+{
+    return JS_AtomToValue(ctx, JS_ATOM_Symbol_asyncIterator);
+}
+
 JSValue JS_GetToPrimitiveSymbol(JSContext *ctx)
 {
     return JS_AtomToValue(ctx, JS_ATOM_Symbol_toPrimitive);
@@ -51806,7 +51811,8 @@ static void pi_json_constructor_name(JSContext *ctx, StringBuffer *b,
     JSObject *p = JS_VALUE_GET_OBJ(value);
     JSProperty *pr;
     JSShapeProperty *shape;
-    const char *name = NULL;
+    JSValueConst name = JS_UNDEFINED;
+    (void)ctx;
     if (p->class_id == JS_CLASS_ARRAY) {
         string_buffer_puts8(b, "Array");
         return;
@@ -51815,17 +51821,22 @@ static void pi_json_constructor_name(JSContext *ctx, StringBuffer *b,
         shape = find_own_property(&pr, p, JS_ATOM_constructor);
         if (!shape)
             continue;
-        if ((shape->flags & JS_PROP_TMASK) == JS_PROP_NORMAL)
-            name = get_func_name(ctx, pr->u.value);
+        if ((shape->flags & JS_PROP_TMASK) == JS_PROP_NORMAL &&
+            JS_IsObject(pr->u.value)) {
+            JSProperty *name_property;
+            JSShapeProperty *name_shape = find_own_property(&name_property,
+                JS_VALUE_GET_OBJ(pr->u.value), JS_ATOM_name);
+            if (name_shape &&
+                (name_shape->flags & JS_PROP_TMASK) == JS_PROP_NORMAL &&
+                JS_VALUE_GET_TAG(name_property->u.value) == JS_TAG_STRING)
+                name = name_property->u.value;
+        }
         break;
     }
-    if (JS_HasException(ctx)) {
-        string_buffer_set_error(b);
-        JS_FreeCString(ctx, name);
-        return;
-    }
-    string_buffer_puts8(b, name && *name ? name : "Object");
-    JS_FreeCString(ctx, name);
+    if (JS_IsUndefined(name) || JS_IsEmptyString(name))
+        string_buffer_puts8(b, "Object");
+    else
+        string_buffer_concat_value(b, name);
 }
 
 static void pi_json_edge(StringBuffer *b, JSValueConst parent,
@@ -52154,7 +52165,9 @@ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
         return string_buffer_concat_value_free(jsc->b, val);
     case JS_TAG_SHORT_BIG_INT:
     case JS_TAG_BIG_INT:
-        JS_ThrowTypeError(ctx, "BigInt are forbidden in JSON.stringify");
+        JS_ThrowTypeError(ctx, "%s", jsc->node_diagnostics ?
+            "Do not know how to serialize a BigInt" :
+            "BigInt are forbidden in JSON.stringify");
         goto exception;
     default:
         JS_FreeValue(ctx, val);

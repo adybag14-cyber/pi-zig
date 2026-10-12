@@ -1,0 +1,11 @@
+
+import {EventStream} from '@earendil-works/pi-ai';
+const rows=[];
+for(const id of ['raw-long-queue','extract-throw','predicate-throw']){
+ const trace=[],marker={owned:true},terminal={final:true},second={final:false},ending={ended:true};let first=true;
+ const stream=new EventStream(function(value){trace.push(['predicate',this===stream,value===terminal,typeof value]);if(id==='predicate-throw'&&first){first=false;throw marker}return value===terminal},function(value){trace.push(['extract',this===stream,value===terminal]);if(id==='extract-throw')throw marker;return value});
+ let rawFailure=false;if(id==='raw-long-queue'){for(let i=0;i<130;i++)stream.push(i);stream.push(terminal)}else{try{stream.push(terminal)}catch(error){rawFailure=error===marker}if(id==='extract-throw'){stream.push(second);stream.end(ending)}else stream.push(terminal)}
+ const result=stream.result(),sameResultPromise=stream.result()===result,events=[];for await(const value of stream)events.push({type:typeof value,sameTerminal:value===terminal,sameSecond:value===second,number:typeof value==='number'?value:undefined});
+ const final=await result;rows.push({id,trace,rawFailure,sameResultPromise,resultSameTerminal:final===terminal,resultSameEnding:final===ending,events});
+}
+globalThis.sdkAgentLoopRows=rows;

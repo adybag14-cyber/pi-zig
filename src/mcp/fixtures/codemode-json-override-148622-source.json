@@ -1,0 +1,67 @@
+{
+  "upstream": "148622bc6f8d0ffd64e33cbc0e1e66754f45d32c",
+  "rows": [
+    {
+      "mode": "execute",
+      "result": {
+        "ok": true,
+        "value": {
+          "intercepted": 7
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.11509999999998399
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "effects": [
+        [
+          true,
+          "object",
+          7
+        ]
+      ],
+      "elapsedMs": 577.675
+    },
+    {
+      "mode": "start",
+      "result": {
+        "ok": true,
+        "value": {
+          "intercepted": 7
+        },
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.08320000000003347
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        },
+        "during": {
+          "seq": 1,
+          "issued": 1
+        }
+      },
+      "effects": [
+        [
+          true,
+          "object",
+          7
+        ]
+      ],
+      "elapsedMs": 558.9425
+    }
+  ]
+}

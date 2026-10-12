@@ -1,6 +1,35 @@
 const std = @import("std");
 const em = @import("extensions/engine.zig");
 const c = em.c;
+test "native CodeMode sandbox respects the actual original host stringify override in execute and controlled delivery" {
+    const engine = try prepare();
+    defer engine.deinit();
+    const data = @embedFile("mcp/fixtures/codemode-json-override-148622-source.json");
+    const fixture = try engine.checked(c.JS_ParseJSON(engine.context, data, data.len, "original-json-override.json"));
+    defer engine.freeValue(fixture);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "originalOverride", c.JS_DupValue(engine.context, fixture)) < 0) return error.JavaScriptException;
+    const value = engine.evalModule(
+        \\import{CodemodeSandbox}from'@earendil-works/pi-codemode';
+        \\const mismatches=[];let tested=0;
+        \\for(const row of originalOverride.rows){
+        \\ const effects=[],original=JSON.stringify,box=new CodemodeSandbox({tools:[{name:'echo',execute(){return{n:7}}}]});let run,result;
+        \\ const begin=Date.now();try{
+        \\  JSON.stringify=function(value,...args){effects.push([this===JSON,typeof value,value?.n]);return original.call(this,value?.n===7?{intercepted:7}:value,...args)};
+        \\  result=row.mode==='execute'?await box.execute('return await tools.echo(1)'):await(run=box.start('return await tools.echo(1)',{startedAt:0,seed:1,tools:[{name:'echo'}],onCall(call){run.deliver(1,1,call.id,{ok:true,value:{n:7}})}})).result;
+        \\ }finally{JSON.stringify=original;await box.close()}
+        \\ const elapsed=Date.now()-begin;
+        \\ function canonical(value,max){const copy=JSON.parse(JSON.stringify(value));for(const call of copy.calls){if(!Number.isFinite(call.durationMs)||call.durationMs<0||call.durationMs>max+1)throw Error('call duration');call.durationMs=0}return copy}
+        \\ const actual={result:canonical(result,elapsed),effects},expected={result:canonical(row.result,row.elapsedMs),effects:row.effects};
+        \\ if(JSON.stringify(actual)!==JSON.stringify(expected))mismatches.push({mode:row.mode,actual,expected});tested++;
+        \\}if(tested!==2)throw Error('original override record count');if(mismatches.length)throw Error('host stringify differs '+JSON.stringify(mismatches));
+    , "native-original-json-override.mjs") catch |err| {
+        std.debug.print("host stringify original: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(value);
+}
 test "native CodeMode sandbox VM environment matches six original worker engine observations" {
     const engine = try prepare();
     defer engine.deinit();
@@ -64,13 +93,18 @@ fn nodeStringify(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
 }
 
 test "native CodeMode sandbox host JSON diagnostics match twelve actual Node cycle observations without repeated getters" {
+    try compareNodeSerialization(@embedFile("mcp/fixtures/node-json-cycle-source-20261012.txt"), @embedFile("mcp/fixtures/node-json-cycle-source-20261012.json"), 12);
+}
+test "native CodeMode sandbox host JSON matches five actual Unicode NUL and BigInt observations" {
+    try compareNodeSerialization(@embedFile("mcp/fixtures/node-json-extra-source-20261012.txt"), @embedFile("mcp/fixtures/node-json-extra-source-20261012.json"), 5);
+}
+fn compareNodeSerialization(source: []const u8, expected: []const u8, count: usize) !void {
     const engine = try prepare();
     defer engine.deinit();
     const root = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
     const stringify = try engine.checked(c.JS_NewCFunction(engine.context, nodeStringify, "nodeJSONStringify", 1));
     if (c.JS_SetPropertyStr(engine.context, root, "nodeJSONStringify", stringify) < 0) return error.JavaScriptException;
-    const source = @embedFile("mcp/fixtures/node-json-cycle-source-20261012.txt");
     const a = std.testing.allocator;
     try std.testing.expectEqual(@as(usize, 1), std.mem.count(u8, source, "JSON.stringify(value)"));
     const call_bound = try std.mem.replaceOwned(u8, a, source, "JSON.stringify(value)", "nodeJSONStringify(value)");
@@ -89,8 +123,9 @@ test "native CodeMode sandbox host JSON diagnostics match twelve actual Node cyc
     const actual_text = try engine.toString(actual);
     defer a.free(actual_text);
     const json = @import("mcp/protocol.zig").json;
-    var fixture = try json.Owned.parse(a, @embedFile("mcp/fixtures/node-json-cycle-source-20261012.json"));
+    var fixture = try json.Owned.parse(a, expected);
     defer fixture.deinit();
+    try std.testing.expectEqual(count, fixture.value.object.get("rows").?.array.items.len);
     const expected_text = try json.stringify(a, fixture.value.object.get("rows").?);
     defer a.free(expected_text);
     var actual_value = try json.Owned.parse(a, actual_text);

@@ -551,6 +551,7 @@ JS_EXTERN JSValue JS_GetAsyncIteratorPrototype(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
 /* Owned well-known identities, independent of mutable guest global Symbol. */
 JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
+JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
 
 /* the following functions are used to select the intrinsic object to

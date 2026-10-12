@@ -1,0 +1,45 @@
+{
+  "node": "24.14.0",
+  "rows": [
+    {
+      "name": "unicode-constructor",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Κατασκευαστής'\n    --- property 'self' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "unicode-key",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'ключ' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "nul-key",
+      "error": {
+        "name": "TypeError",
+        "message": "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'a\u0000b' closes the circle"
+      },
+      "effects": []
+    },
+    {
+      "name": "bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "Do not know how to serialize a BigInt"
+      },
+      "effects": []
+    },
+    {
+      "name": "boxed-bigint",
+      "error": {
+        "name": "TypeError",
+        "message": "Do not know how to serialize a BigInt"
+      },
+      "effects": []
+    }
+  ]
+}

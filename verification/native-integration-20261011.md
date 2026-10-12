@@ -258,3 +258,58 @@ all4085 source and19546 tool inputs unchanged. The generated test copies preserv
 the pool; this closes the earlier two-backing-allocation coverage gap for these
 three selected serializer paths. It does not qualify every other VM allocation
 path or complete the sandbox-class API/allocation gates.
+
+The next October12 integration adds the privately assembled native Agent class
+and low-level AgentLoop, including tool calls, changes, events, response streaming,
+queues, abort, failures, idle ownership, and the lexical default stream fallback.
+Eighty-seven observations captured from the original upstream programs pass.
+All eight allocation partitions pass against the same 4,116-source-input freeze.
+The five measured universes are 918,3735,2255,4041,3793: all 14,742 failure indices
+are begun and completed exactly once, with balanced allocations. Each partition
+runs the same 28 compiled tests; 224 executions do not mean 224 distinct tests.
+The earlier isolated Agent checkout separately qualified 14,973 indices before
+integration and the JSON clone capacity optimization changed its allocations.
+True native OutOfMemory is tagged at the shared SDK and stream boundaries.
+Ordinary guest failures and pending streams retain their original behavior.
+The new class remains privately installed by its tests; full AgentSession and
+public package activation are separate unfinished requirements.
+
+Node-host serialization now retains Unicode constructor names and the original
+BigInt diagnostic. Five additional original Node observations and two actual
+upstream worker observations qualify these repairs and replacement of the host
+global JSON.stringify. Controlled serialization invokes the current host method
+with its original JSON receiver. Inner CodeMode VMs keep QuickJS serialization
+and collation. The original WASM VM's absent Atomics surface is applied at the
+shared execution boundary, including the older direct CodeMode entry point.
+The maintained C pool fault gate passes 3/3 with all 97 indices in universes
+24,29,44 after eliminating the temporary constructor-name allocation.
+
+The final combined Windows Debug component gate passed 91/91 tests across all
+188 build steps: sandbox10, controlled-run6, worker5, owner4, latest-wait6,
+JSON-DTO4, stdio4, direct-inline7, direct-allocation6, scheduler37, JSON-clone2.
+All 4,116 source and 19,546 compiler/tool inputs were unchanged and the owned
+process exited. The first invocation used a nonexistent CLI target and failed
+before running tests; the corrected invocation used the existing
+test-durable-json-clone target. That command error is retained as evidence.
+JSON clone reserves known array/map capacity while retaining insertion order.
+The separate macOS Debug compaction failure still exceeds its original ten
+second bound; the optimization does not establish a repair for that failure.
+
+Fresh upstream HEAD observed October12 is
+19cb534c3b6e3871458a8fa59e98f0312c50e995, newer than stable v1.1.0. Its native
+whole-tree capture and verification pass with 1,898 files and zero differences.
+Its official immutable build:offline passes with original source, 22,223
+dependency files, 43 hydrated catalog files, 16 workspace links matched to the
+original lockfile, and all 1,774 Node/tool inputs unchanged. It generates 2,771
+distribution files. The newer source replaces the experimental service runtime
+with Chord2 and removes the former server/client/protocol packages. MCP content,
+authentication cancellation, terminal scrolling, print-mode failures, and
+CodeMode rendering also changed. Native parity with those changes remains open;
+structural capture and an original reference build do not certify native parity.
+
+The new hosted Native Agent and CodeMode contract workflow runs both optimization
+modes on Windows, Linux and macOS. It requires every allocation partition and
+index, the real compiled test counts, and unchanged source/compiler posthashes.
+No hosted result is claimed until those exact-head jobs finish. Native-default
+activation remains disabled and the Node bridge is retained while the full Pi,
+AgentSession, physical UI, durable replay, and platform requirements remain open.

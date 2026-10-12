@@ -210,14 +210,15 @@ pub fn clone(gpa: std.mem.Allocator, value: Value) anyerror!Value {
     return switch (value) {
         .string => |string| .{ .string = try gpa.dupe(u8, string) },
         .array => |array| blk: {
-            var copy: std.array_list.Managed(Value) = .init(gpa);
-            for (array.items) |item| try copy.append(try clone(gpa, item));
+            var copy: std.array_list.Managed(Value) = try .initCapacity(gpa, array.items.len);
+            for (array.items) |item| copy.appendAssumeCapacity(try clone(gpa, item));
             break :blk .{ .array = copy };
         },
         .object => |object| blk: {
             var copy: std.json.ObjectMap = .empty;
+            try copy.ensureTotalCapacity(gpa, object.count());
             var iterator = object.iterator();
-            while (iterator.next()) |item| try copy.put(gpa, try gpa.dupe(u8, item.key_ptr.*), try clone(gpa, item.value_ptr.*));
+            while (iterator.next()) |item| copy.putAssumeCapacity(try gpa.dupe(u8, item.key_ptr.*), try clone(gpa, item.value_ptr.*));
             break :blk .{ .object = copy };
         },
         else => value,
@@ -380,4 +381,33 @@ test "durable JSON finite numeric serialization retains exact prior formatter by
         defer std.testing.allocator.free(expected);
         try std.testing.expectEqualStrings(expected, actual);
     }
+}
+
+test "durable JSON scalar array clone needs one allocation and no resize" {
+    var parent = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer parent.deinit();
+    var bounded = std.testing.FailingAllocator.init(parent.allocator(), .{ .fail_index = 1, .resize_fail_index = 0 });
+    var elements: [1024]Value = undefined;
+    for (&elements, 0..) |*element, index| element.* = .{ .integer = @intCast(index) };
+    const source: Value = .{ .array = .fromOwnedSlice(std.testing.allocator, &elements) };
+    const actual = try clone(bounded.allocator(), source);
+    try std.testing.expect(equal(source, actual));
+    try std.testing.expect(!bounded.has_induced_failure);
+}
+
+test "durable JSON object clone reserves its known map size and retains insertion order" {
+    var parent = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer parent.deinit();
+    const allocator = parent.allocator();
+    var source: Value = .{ .object = .empty };
+    for (0..1024) |index| try source.object.put(allocator, try std.fmt.allocPrint(allocator, "field_{d}", .{index}), .{ .integer = @intCast(index) });
+    // One copy per key and two map buffers; repeated map growth exceeds this.
+    var bounded = std.testing.FailingAllocator.init(allocator, .{ .fail_index = 1026, .resize_fail_index = 0 });
+    const actual = try clone(bounded.allocator(), source);
+    try std.testing.expect(equal(source, actual));
+    var before = source.object.iterator();
+    var after = actual.object.iterator();
+    while (before.next()) |entry| try std.testing.expectEqualStrings(entry.key_ptr.*, after.next().?.key_ptr.*);
+    try std.testing.expect(after.next() == null);
+    try std.testing.expect(!bounded.has_induced_failure);
 }

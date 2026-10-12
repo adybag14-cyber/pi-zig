@@ -1,0 +1,3388 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actual original complete Agent constructor, prompt/continue, real AgentLoop, queues, abort, awaited listeners/failure and owned idle lifecycle; public caller streams/options only, no Source instance/class/prototype method replacements or provider execution",
+  "rows": [
+    {
+      "id": "prompt-string",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                }
+              ],
+              "timestamp": 42
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "prompt-message",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "prompt-array",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": true,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": true,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 4
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "user",
+              "content": "second",
+              "timestamp": 2
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "continue-user",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "continue-assistant-queue",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "assistant",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": true,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": true,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 4
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "assistant",
+              "content": [],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5
+            },
+            {
+              "role": "user",
+              "content": "steer",
+              "timestamp": 3
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "continue-empty",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          false,
+          false
+        ]
+      ],
+      "events": [],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "No messages to continue from",
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "steering",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": true,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": true,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 4
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "user",
+              "content": "steer",
+              "timestamp": 3
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "followup",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "stream",
+          true,
+          2,
+          "owned",
+          [
+            "system",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          2,
+          [
+            {
+              "type": "text",
+              "text": "response2"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": true,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": true,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 5
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 5
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 5
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            },
+            {
+              "role": "user",
+              "content": "follow",
+              "timestamp": 4
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response2"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "abort-start",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": true,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "aborted",
+              "timestamp": 6,
+              "errorMessage": "owned cancelled",
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "errorMessage": "owned cancelled",
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "listener-throw",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        "marker.toString"
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": ""
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "error",
+              "errorMessage": "owned Agent marker",
+              "timestamp": 42
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "errorMessage": "owned Agent marker",
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "stream-throw",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "marker.toString"
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": ""
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "error",
+              "errorMessage": "owned Agent marker",
+              "timestamp": 42
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "errorMessage": "owned Agent marker",
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "reset-after",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "owned-idle",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "idle.at-end",
+          true,
+          true
+        ],
+        "idle.settled"
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": true
+        }
+      }
+    },
+    {
+      "id": "prepare-next",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "prepare",
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [
+            "user",
+            "assistant"
+          ],
+          true
+        ],
+        [
+          "stream",
+          true,
+          2,
+          "next",
+          [
+            "system",
+            "user",
+            "assistant",
+            "user"
+          ],
+          null,
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          2,
+          [
+            {
+              "type": "text",
+              "text": "response2"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": true,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": true,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 4
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 5
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 5
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 5
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            },
+            {
+              "role": "user",
+              "content": "follow",
+              "timestamp": 4
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response2"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "off"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "default-setter",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    },
+    {
+      "id": "reentrant-prompt",
+      "trace": [
+        [
+          "returnedPromise",
+          true,
+          true,
+          true
+        ],
+        [
+          "reentrant",
+          "Error",
+          "Agent is already processing a prompt. Use steer() or followUp() to queue messages, or wait for completion."
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "owned",
+          [
+            "system",
+            "user"
+          ],
+          "medium",
+          true,
+          false
+        ],
+        "response.result",
+        [
+          "finish",
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 1
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 2
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": false,
+          "pending": [],
+          "messageCount": 3
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameSecond": false,
+          "sameSteer": false,
+          "sameFollow": false,
+          "isStreaming": true,
+          "signalSame": true,
+          "aborted": false,
+          "streamingSame": true,
+          "pending": [],
+          "messageCount": 3
+        }
+      ],
+      "outcome": {
+        "resolved": true,
+        "state": {
+          "systemPrompt": "base",
+          "model": {
+            "api": "controlled",
+            "provider": "caller",
+            "id": "owned"
+          },
+          "thinkingLevel": "medium",
+          "messages": [
+            {
+              "role": "system",
+              "content": "base",
+              "timestamp": 0
+            },
+            {
+              "role": "user",
+              "content": "caller",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 6,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "isStreaming": false,
+          "streamingUndefined": true,
+          "pending": [],
+          "signalUndefined": true,
+          "queues": [],
+          "idleSettled": false
+        }
+      }
+    }
+  ]
+}

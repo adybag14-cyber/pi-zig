@@ -1,0 +1,557 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actual original complete Agent prototype metadata and module-local default stream setter/constructor fallback; caller values only; no Source class/prototype edits or provider execution",
+  "rows": [
+    {
+      "id": "metadata",
+      "constructor": {
+        "name": "Agent",
+        "length": 1,
+        "async": false,
+        "ownKeys": [
+          "length",
+          "name",
+          "prototype"
+        ]
+      },
+      "prototype": [
+        {
+          "name": "constructor",
+          "value": {
+            "name": "Agent",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name",
+              "prototype"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "subscribe",
+          "value": {
+            "name": "subscribe",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "state",
+          "get": {
+            "name": "get state",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "steeringMode",
+          "get": {
+            "name": "get steeringMode",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "set": {
+            "name": "set steeringMode",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "followUpMode",
+          "get": {
+            "name": "get followUpMode",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "set": {
+            "name": "set followUpMode",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "steer",
+          "value": {
+            "name": "steer",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "followUp",
+          "value": {
+            "name": "followUp",
+            "length": 1,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "clearSteeringQueue",
+          "value": {
+            "name": "clearSteeringQueue",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "clearFollowUpQueue",
+          "value": {
+            "name": "clearFollowUpQueue",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "clearAllQueues",
+          "value": {
+            "name": "clearAllQueues",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "hasQueuedMessages",
+          "value": {
+            "name": "hasQueuedMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "peekQueuedMessages",
+          "value": {
+            "name": "peekQueuedMessages",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "signal",
+          "get": {
+            "name": "get signal",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "abort",
+          "value": {
+            "name": "abort",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "waitForIdle",
+          "value": {
+            "name": "waitForIdle",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "reset",
+          "value": {
+            "name": "reset",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "prompt",
+          "value": {
+            "name": "prompt",
+            "length": 2,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "continue",
+          "value": {
+            "name": "continue",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "normalizePromptInput",
+          "value": {
+            "name": "normalizePromptInput",
+            "length": 2,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "runPromptMessages",
+          "value": {
+            "name": "runPromptMessages",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "runContinuation",
+          "value": {
+            "name": "runContinuation",
+            "length": 0,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "createContextSnapshot",
+          "value": {
+            "name": "createContextSnapshot",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "createLoopConfig",
+          "value": {
+            "name": "createLoopConfig",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "runWithLifecycle",
+          "value": {
+            "name": "runWithLifecycle",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "handleRunFailure",
+          "value": {
+            "name": "handleRunFailure",
+            "length": 2,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "finishRun",
+          "value": {
+            "name": "finishRun",
+            "length": 0,
+            "async": false,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        },
+        {
+          "name": "processEvents",
+          "value": {
+            "name": "processEvents",
+            "length": 1,
+            "async": true,
+            "ownKeys": [
+              "length",
+              "name"
+            ]
+          },
+          "writable": true,
+          "enumerable": false,
+          "configurable": true
+        }
+      ],
+      "setDefault": {
+        "name": "setDefaultStreamFn",
+        "length": 1,
+        "async": false,
+        "ownKeys": [
+          "length",
+          "name",
+          "prototype"
+        ]
+      }
+    },
+    {
+      "id": "unconfigured",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "null-default",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "false-default",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "zero-default",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "configured-function",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "sameConfigured": true,
+        "sameExplicit": false,
+        "streamType": "function",
+        "stream": {
+          "name": "ownedStream",
+          "length": 0,
+          "async": false,
+          "ownKeys": [
+            "length",
+            "name",
+            "prototype"
+          ]
+        }
+      }
+    },
+    {
+      "id": "configured-object",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "sameConfigured": true,
+        "sameExplicit": false,
+        "streamType": "object",
+        "stream": {
+          "owned": true
+        }
+      }
+    },
+    {
+      "id": "explicit-false",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "sameConfigured": false,
+        "sameExplicit": true,
+        "streamType": "boolean",
+        "stream": false
+      }
+    },
+    {
+      "id": "explicit-zero",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "sameConfigured": false,
+        "sameExplicit": true,
+        "streamType": "number",
+        "stream": 0
+      }
+    },
+    {
+      "id": "explicit-null",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "missing-options",
+      "setReturnedUndefined": true,
+      "outcome": {
+        "name": "Error",
+        "message": "No default stream function configured. Pass streamFn explicitly or call setDefaultStreamFn()."
+      }
+    },
+    {
+      "id": "setter-new",
+      "prototype": true,
+      "constructor": true,
+      "ownKeys": [],
+      "sameDefault": true
+    }
+  ]
+}

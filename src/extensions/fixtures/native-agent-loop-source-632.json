@@ -1,0 +1,3782 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actual original AgentLoop with public caller context transforms, request/turn hooks, queues and controlled sync/async stream failure inputs; raw rejection and iterator-close observations; no Source class/prototype changes or provider execution",
+  "rows": [
+    {
+      "id": "transform-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "convert-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "key-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "stream-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "next-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "body-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "event.type.throw",
+        [
+          "return",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "emit-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "normal-close-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": false,
+        "rawClose": true
+      }
+    },
+    {
+      "id": "error-close-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "event.type.throw",
+        [
+          "return",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "sync-values",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "sync.iterator",
+          true
+        ],
+        "sync.next",
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        "sync.return",
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "originalMessages": []
+      }
+    },
+    {
+      "id": "sync-value-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "sync.iterator",
+          true
+        ],
+        "sync.next",
+        "sync.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "fallback-result",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "originalMessages": []
+      }
+    },
+    {
+      "id": "finish-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "request-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "prepare-reject",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ],
+        [
+          "prepareNext",
+          true,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [
+            "user",
+            "assistant"
+          ]
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        }
+      ],
+      "outcome": {
+        "rawBody": true,
+        "rawClose": false
+      }
+    },
+    {
+      "id": "steering-followup",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user",
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user",
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ],
+        [
+          "prepareNext",
+          true,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [
+            "user",
+            "user",
+            "assistant"
+          ]
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user",
+            "user",
+            "assistant",
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user",
+            "user",
+            "assistant",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          2,
+          "initial",
+          [
+            "user",
+            "user",
+            "assistant",
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          2,
+          [
+            {
+              "type": "text",
+              "text": "response2"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          3
+        ],
+        [
+          "followup",
+          true,
+          2
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "steer",
+            "timestamp": 2
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "steer",
+            "timestamp": 2
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "follow",
+            "timestamp": 3
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "follow",
+            "timestamp": 3
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "user",
+              "content": "steer",
+              "timestamp": 2
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            },
+            {
+              "role": "user",
+              "content": "follow",
+              "timestamp": 3
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response2"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "user",
+            "content": "steer",
+            "timestamp": 2
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          {
+            "role": "user",
+            "content": "follow",
+            "timestamp": 3
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "originalMessages": []
+      }
+    },
+    {
+      "id": "explicit-continuation",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ],
+        [
+          "prepareNext",
+          true,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [
+            "user",
+            "assistant"
+          ]
+        ],
+        [
+          "steering",
+          true,
+          3
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user",
+            "assistant"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user",
+            "assistant"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          2,
+          "initial",
+          [
+            "user",
+            "assistant"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          2,
+          [
+            {
+              "type": "text",
+              "text": "response2"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          4
+        ],
+        [
+          "followup",
+          true,
+          2
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response2"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "originalMessages": []
+      }
+    },
+    {
+      "id": "prepare-model-change",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          true,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "initial",
+          [
+            "user"
+          ],
+          "medium",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          true,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          true,
+          2
+        ],
+        [
+          "followup",
+          true,
+          1
+        ],
+        [
+          "prepareNext",
+          true,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [
+            "user",
+            "assistant"
+          ]
+        ],
+        [
+          "steering",
+          false,
+          3
+        ],
+        [
+          "prepareRequest",
+          false,
+          "next",
+          "off",
+          true
+        ],
+        [
+          "transform",
+          false,
+          [
+            "user",
+            "assistant",
+            "system"
+          ],
+          true
+        ],
+        [
+          "convert",
+          false,
+          [
+            "user",
+            "assistant",
+            "system"
+          ]
+        ],
+        [
+          "key",
+          false,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          2,
+          "next",
+          [
+            "user",
+            "assistant",
+            "system"
+          ],
+          null,
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          false,
+          2,
+          [
+            {
+              "type": "text",
+              "text": "response2"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          false,
+          4
+        ],
+        [
+          "followup",
+          false,
+          2
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "prepared",
+            "timestamp": 4
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "prepared",
+            "timestamp": 4
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "off"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "off"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "off"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "initial",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "medium"
+            },
+            {
+              "role": "system",
+              "content": "prepared",
+              "timestamp": 4
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response2"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "next",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "off"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "initial",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "medium"
+          },
+          {
+            "role": "system",
+            "content": "prepared",
+            "timestamp": 4
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response2"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "off"
+          }
+        ],
+        "originalMessages": []
+      }
+    },
+    {
+      "id": "request-model-change",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "steering",
+          true,
+          1
+        ],
+        [
+          "prepareRequest",
+          true,
+          "initial",
+          "medium",
+          true
+        ],
+        [
+          "transform",
+          false,
+          [
+            "user"
+          ],
+          true
+        ],
+        [
+          "convert",
+          false,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          false,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          1,
+          "next",
+          [
+            "user"
+          ],
+          "high",
+          "owned-key",
+          true
+        ],
+        [
+          "async.iterator",
+          true
+        ],
+        [
+          "next",
+          true
+        ],
+        "result.get",
+        [
+          "result.call",
+          true
+        ],
+        [
+          "return",
+          true
+        ],
+        [
+          "finish",
+          false,
+          1,
+          [
+            {
+              "type": "text",
+              "text": "response1"
+            }
+          ],
+          [],
+          true
+        ],
+        [
+          "steering",
+          false,
+          2
+        ],
+        [
+          "followup",
+          false,
+          1
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start"
+        },
+        {
+          "type": "turn_start"
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "high"
+          }
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "high"
+          }
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "high"
+          },
+          "toolResults": []
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "initial",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "response1"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "next",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 5,
+              "thinkingLevel": "high"
+            }
+          ]
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "initial",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "response1"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "next",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 5,
+            "thinkingLevel": "high"
+          }
+        ],
+        "originalMessages": []
+      }
+    }
+  ]
+}

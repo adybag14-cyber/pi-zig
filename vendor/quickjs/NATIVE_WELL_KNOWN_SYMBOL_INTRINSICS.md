@@ -14,3 +14,10 @@ frozen6c84e40c6cd5bbc9fdc83c2b6c126fb20498467a prerequisite. Core also adds the
 corresponding toPrimitive accessor for Source indexOf-result + 1 semantics.
 This Core composition is source only and uncompiled. The standalone iterator
 prerequisite's qualification must not be attributed to this further addition.
+
+The October12 AgentLoop composition also exposes the owned intrinsic
+Symbol.asyncIterator with JS_GetAsyncIteratorSymbol. It uses the same internal
+well-known atom and does not consult the guest Symbol global. This composition
+has now passed the Agent/Loop Source observations and every native failure index
+in its eight allocation partitions. Those gates do not activate the public
+Agent package or certify the broader AgentSession implementation.

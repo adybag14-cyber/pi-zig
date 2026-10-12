@@ -39,7 +39,7 @@ const Iterator = struct { engine: *engine_mod.Engine, stream: c.JSValue, closed:
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native provider stream: %s", @as([*:0]const u8, @errorName(err)));
 }
 
@@ -150,14 +150,17 @@ fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.J
         return c.pi_js_undefined();
     }
     if (self.done) return c.pi_js_undefined();
-    const encoded = try engine.stringify(value);
-    defer engine.gpa.free(encoded);
+    // A generic Source EventStream queues arbitrary raw JS values. Inspecting
+    // them through JSON would invoke caller toJSON/getters and reject cycles
+    // before the actual completion predicate ever sees the event.
+    const encoded: []const u8 = if (self.assistant) try engine.stringify(value) else &.{};
+    defer if (self.assistant) engine.gpa.free(encoded);
     if (encoded.len > maximum_event_bytes) {
         _ = c.JS_ThrowRangeError(engine.context, "assistant stream event exceeds the native byte limit");
         _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch {};
         return error.JavaScriptException;
     }
-    if (self.waiting.items.len == 0 and (self.events.items.len >= 64 or encoded.len > 1024 * 1024 - self.queued_bytes)) {
+    if (self.assistant and self.waiting.items.len == 0 and (self.events.items.len >= 64 or encoded.len > 1024 * 1024 - self.queued_bytes)) {
         _ = c.JS_ThrowRangeError(engine.context, "assistant stream producer exceeded the bounded pending queue");
         const failure = c.JS_GetException(engine.context);
         defer engine.freeValue(failure);
@@ -179,6 +182,9 @@ fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.J
         break :blk c.JS_ToBool(engine.context, result) != 0;
     };
     const terminal = if (complete) blk: {
+        // The generic Source class marks itself done before calling the
+        // extractor. A caller extractor failure therefore closes admission.
+        if (!self.assistant) self.done = true;
         break :blk if (self.assistant) assistant: {
             const kind = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "type"));
             defer engine.freeValue(kind);
@@ -786,12 +792,12 @@ test "native terminal admission allocation failure preserves original pending re
     }
 }
 
-test "native EventStream producer queue overflow rejects its original result and closes after queued values" {
+test "native AssistantMessageEventStream producer queue overflow rejects its original result and closes after queued values" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try install(engine);
     const module = try engine.evalModule(
-        "import {EventStream} from 'pi-ai';const stream=new EventStream(()=>false,x=>x);const failure=stream.result().catch(e=>e);for(let i=0;i<64;i++)stream.push(i);let original;try{stream.push(65)}catch(e){original=e}if(!(original instanceof RangeError)||await failure!==original)throw Error('queue failure identity');let count=0;for await(const event of stream)count++;if(count!==64)throw Error('queue cleanup');stream.push(66);",
+        "import {AssistantMessageEventStream} from 'pi-ai';const stream=new AssistantMessageEventStream();const failure=stream.result().catch(e=>e);for(let i=0;i<64;i++)stream.push(i);let original;try{stream.push(65)}catch(e){original=e}if(!(original instanceof RangeError)||await failure!==original)throw Error('queue failure identity');let count=0;for await(const event of stream)count++;if(count!==64)throw Error('queue cleanup');stream.push(66);",
         "native-event-queue-limit.mjs",
     );
     defer engine.freeValue(module);

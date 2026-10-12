@@ -325,7 +325,9 @@ fn deliver(self: *Owner, args: []const c.JSValue) !void {
 }
 fn serialized(engine: *Engine, value: c.JSValue) !?[]u8 {
     if (c.JS_IsUndefined(value)) return null;
-    const encoded = try engine.checked(c.JS_PiJSONStringifyNode(engine.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
+    const json_object = try js.global(engine, "JSON");
+    defer engine.freeValue(json_object);
+    const encoded = try js.invoke(engine, json_object, "stringify", &.{value});
     defer engine.freeValue(encoded);
     return if (c.JS_IsUndefined(encoded)) null else try engine.toString(encoded);
 }

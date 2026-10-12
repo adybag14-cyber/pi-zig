@@ -1,0 +1,22 @@
+// Actual original AgentLoop, public caller-owned tools and controlled streams.
+
+const {runAgentLoop}=sdkLoopNative;
+const savedNow=Date.now,savedPerformance=Object.getOwnPropertyDescriptor(performance,'now');Date.now=()=>42;
+const rows=[];
+try{for(const id of ['sequential','parallel','force-sequential-tool','blocked','unknown','invalid','prepare-args','execute-throw','after-replace','after-throw','update-reject','abort-before','abort-during','terminate-all','terminate-one','length','result-error']){
+ const trace=[],emitted=[],controller=new AbortController(),marker={toString(){trace.push('marker.toString');return'owned tool marker'}};
+ Object.defineProperty(performance,'now',{configurable:true,value(){trace.push('performance.now');return 100}});
+ const schema={type:'object',properties:{value:{type:'number'}},required:['value'],additionalProperties:false};
+ const tools=['a','b'].map(name=>({name,description:name,parameters:schema,executionMode:id==='force-sequential-tool'&&name==='b'?'sequential':undefined,prepareArguments: id==='prepare-args'?function(args){trace.push(['prepare',this===tools.find(t=>t.name===name),name,args]);return{value:Number(args.value)}}:undefined,async execute(callId,args,signal,onUpdate){trace.push(['execute',this===tools.find(t=>t.name===name),name,callId,args,signal===controller.signal,onUpdate.name,onUpdate.length]);if(id==='execute-throw')throw marker;const result={content:[{type:'text',text:name}],details:{tool:name},structuredContent:{tool:name},terminate:id==='terminate-all'||id==='terminate-one'&&name==='a',isError:id==='result-error'};const returned=onUpdate({content:[{type:'text',text:'partial '+name}],details:{update:true}});trace.push(['update.return',name,returned===undefined]);await Promise.resolve();if(id==='abort-during'&&name==='a')controller.abort();return result}}));
+ const count=['parallel','force-sequential-tool','terminate-all','terminate-one','abort-during'].includes(id)?2:1;
+ const calls=tools.slice(0,count).map((tool,index)=>({type:'toolCall',id:'call'+index,name:id==='unknown'?'missing':tool.name,arguments:{value:id==='invalid'?'bad':id==='prepare-args'?'7':index+1}}));
+ const assistant={role:'assistant',content:calls,api:'controlled',provider:'caller',model:'owned',usage:{input:0,output:0,totalTokens:0,cost:{input:0,output:0,total:0}},stopReason:id==='length'?'length':'toolUse',timestamp:3};
+ const context={messages:[],tools},user={role:'user',content:'run',timestamp:1};
+ const config={model:{provider:'caller',id:'owned'},toolExecution:id==='sequential'||id==='abort-during'?'sequential':'parallel',convertToLlm(messages){trace.push(['convert',messages.map(m=>m.role)]);return messages},beforeToolCall(request,signal){trace.push(['before',this===config,request.toolCall.name,request.args,request.args!==request.toolCall.arguments,request.context.tools===tools,signal===controller.signal]);if(id==='blocked')return{block:true,reason:'owned block',terminate:true};if(id==='abort-before')controller.abort()},afterToolCall(request,signal){trace.push(['after',this===config,request.toolCall.name,request.args,request.result,request.isError,signal===controller.signal]);if(id==='after-throw')throw marker;if(id==='after-replace')return{content:[],details:{after:true},usage:{output:2},isError:false}},finishTurn(turn,signal){trace.push(['finish',this===config,turn.toolResults,turn.message===assistant,signal===controller.signal]);return{action:'end'}}};
+ const stream={result(){trace.push(['result',this===stream]);return Promise.resolve(assistant)},async *[Symbol.asyncIterator](){yield{type:'done',message:assistant}}};
+ const streamFn=function(model,llm,options){trace.push(['stream',this===undefined,model===config.model,llm.messages.map(m=>m.role),options.signal===controller.signal]);return stream};
+ const emit=function(event){emitted.push(JSON.parse(JSON.stringify(event)));if(id==='update-reject'&&event.type==='tool_execution_update')return Promise.reject(marker)};
+ let outcome;try{const pending=runAgentLoop([user],context,config,emit,controller.signal,streamFn);trace.push(['returnedPromise',pending instanceof Promise]);const messages=await pending;outcome={messages,originalMessages:context.messages,aborted:controller.signal.aborted};}catch(error){outcome={raw:error===marker,name:error?.name,message:error?.message}}
+ rows.push({id,trace,emitted,outcome});
+}}finally{Date.now=savedNow;if(savedPerformance)Object.defineProperty(performance,'now',savedPerformance);else delete performance.now}
+globalThis.sdkAgentLoopRows=rows;

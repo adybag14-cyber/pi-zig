@@ -18,6 +18,7 @@ pub const Options = struct {
     // Extension hosts use Node collation; CodeMode's inner VM uses the
     // original QuickJS comparison and does not inspect locale/options.
     node_locale_compare: bool = true,
+    node_json_diagnostics: bool = true,
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
@@ -62,6 +63,8 @@ pub const Engine = struct {
     native_sdk_mcp_registry_prototype: ?c.JSValue = null,
     native_sdk_agent_default_model: ?c.JSValue = null,
     native_agent_core_cache: ?c.JSValue = null,
+    native_agent_default_stream: ?c.JSValue = null,
+    native_agent_complete_cache: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -218,6 +221,7 @@ pub const Engine = struct {
         // Capture genuine symbols and error constructors before guest code can
         // replace globals or String.prototype. ICU bootstrap requires no Io.
         if (options.node_locale_compare) try @import("native_localecompare_binding.zig").install(self);
+        if (options.node_json_diagnostics) try @import("native_json_host.zig").install(self);
         // Capture pristine intrinsics before any extension input executes.
         // Lease affinity must not depend on mutable globals/prototypes.
         const global = c.JS_GetGlobalObject(context);
@@ -249,6 +253,8 @@ pub const Engine = struct {
         if (self.native_sdk_mcp_registry_prototype) |value| self.freeValue(value);
         if (self.native_sdk_agent_default_model) |value| self.freeValue(value);
         if (self.native_agent_core_cache) |value| self.freeValue(value);
+        if (self.native_agent_default_stream) |value| self.freeValue(value);
+        if (self.native_agent_complete_cache) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
         if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);

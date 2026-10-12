@@ -842,6 +842,8 @@ pub fn build(b: *std.Build) void {
     const install_jsonl_fixture = b.addInstallArtifact(jsonl_fixture, .{});
     const jsonl_fixture_step = b.step("jsonl-fixture", "Build original/native durable JSONL interop fixture");
     jsonl_fixture_step.dependOn(&install_jsonl_fixture.step);
+    const durable_json_clone_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/backend/json.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "durable JSON scalar array clone", "durable JSON object clone" } });
+    b.step("test-durable-json-clone", "Verify known-size JSON clone allocations and object insertion order").dependOn(&b.addRunArtifact(durable_json_clone_tests).step);
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1303,6 +1305,31 @@ pub fn build(b: *std.Build) void {
     agent_foundation_tests.root_module.addImport("catalog_tool", catalog_tool);
     const agent_foundation_run = b.addRunArtifact(agent_foundation_tests);
     b.step("test-native-agent-foundations", "Compare private native Agent constructor and real method bodies with current Source observations").dependOn(&agent_foundation_run.step);
+    const agent_loop_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_loop_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AgentLoop"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_loop_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_loop_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_loop_run = b.addRunArtifact(agent_loop_tests);
+    b.step("test-native-agent-loop", "Compare actual native low-level AgentLoop bodies with original Source controlled streams").dependOn(&agent_loop_run.step);
+    const agent_allocation_diagnostic_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_loop_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"SDK Agent allocation2631"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_allocation_diagnostic_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_allocation_diagnostic_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_allocation_diagnostic_run = b.addRunArtifact(agent_allocation_diagnostic_tests);
+    b.step("test-sdk-agent-allocation-diagnostic", "Observe the exact first native Agent producer allocation failure without changing settlement").dependOn(&agent_allocation_diagnostic_run.step);
+    const agent_allocation2654_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_loop_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"SDK Agent allocation2654"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_allocation2654_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_allocation2654_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_allocation2654_run = b.addRunArtifact(agent_allocation2654_tests);
+    b.step("test-sdk-agent-allocation2654-diagnostic", "Observe the exact next native Agent producer allocation failure without changing settlement").dependOn(&agent_allocation2654_run.step);
+    const agent_owned_fault_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_loop_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "SDK Agent allocation2631", "SDK Agent allocation2654" }, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_owned_fault_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_owned_fault_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_owned_fault_run = b.addRunArtifact(agent_owned_fault_tests);
+    b.step("test-sdk-agent-owned-faults", "Verify native producer fault identities without settling ordinary pending streams").dependOn(&agent_owned_fault_run.step);
+    const agent_complete_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_complete_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Agent complete"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_complete_tests.root_module, quickjs, sqlite_lib_dir);
+    agent_complete_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_complete_run = b.addRunArtifact(agent_complete_tests);
+    b.step("test-native-agent-complete", "Compare privately assembled complete Agent bodies and lexical stream fallback with original Source").dependOn(&agent_complete_run.step);
     const sdk_await_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_await_primitives_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK await primitives"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_await_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_await_tests.root_module.addImport("catalog_tool", catalog_tool);

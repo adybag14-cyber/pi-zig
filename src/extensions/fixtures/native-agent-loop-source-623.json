@@ -1,0 +1,3872 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actual original runAgentLoop/runAgentLoopContinue with controlled public caller streams; full tool declaration and assistant response/turn events; no provider execution",
+  "rows": [
+    {
+      "id": "empty",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          []
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": false,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "user",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "add-tool",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "system",
+              "content": "",
+              "timestamp": 42,
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "remove-tool",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "b",
+                  "description": "B",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "toolsRemoved": [
+                {
+                  "name": "a"
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "system",
+              "content": "",
+              "timestamp": 42,
+              "toolsRemoved": [
+                {
+                  "name": "a"
+                }
+              ]
+            },
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "system",
+            "content": "base",
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "b",
+                "description": "B",
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "changed-tool",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "b",
+                  "description": "B",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "changed",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "toolsRemoved": [
+                {
+                  "name": "a"
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "changed",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ],
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "changed",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ],
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "system",
+              "content": "",
+              "timestamp": 42,
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "changed",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ],
+              "toolsRemoved": [
+                {
+                  "name": "a"
+                }
+              ]
+            },
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "",
+            "timestamp": 42,
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "changed",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ],
+            "toolsRemoved": [
+              {
+                "name": "a"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "system",
+            "content": "base",
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "b",
+                "description": "B",
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "same-declaration",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "b",
+                  "description": "B",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "system",
+            "content": "base",
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "b",
+                "description": "B",
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "reordered-tools",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "b",
+                  "description": "B",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "system",
+            "content": "base",
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "b",
+                "description": "B",
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "pending-system",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "system",
+            "system",
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "system",
+              "toolsAdded": [
+                {
+                  "name": "a",
+                  "description": "A",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "x": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "b",
+                  "description": "B",
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            {
+              "role": "system",
+              "toolsRemoved": [
+                {
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "system",
+            "content": "next",
+            "timestamp": 2,
+            "toolsRemoved": [
+              {
+                "name": "b"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "system",
+            "content": "next",
+            "timestamp": 2,
+            "toolsRemoved": [
+              {
+                "name": "b"
+              }
+            ]
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "system",
+              "content": "next",
+              "timestamp": 2,
+              "toolsRemoved": [
+                {
+                  "name": "b"
+                }
+              ]
+            },
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "system",
+            "content": "next",
+            "timestamp": 2,
+            "toolsRemoved": [
+              {
+                "name": "b"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "system",
+            "content": "base",
+            "toolsAdded": [
+              {
+                "name": "a",
+                "description": "A",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "b",
+                "description": "B",
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            ],
+            "timestamp": 0
+          }
+        ],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "partial-updates",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        [
+          "iterator.next",
+          1
+        ],
+        [
+          "iterator.next",
+          2
+        ],
+        [
+          "iterator.next",
+          3
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "first"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_update",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false,
+          "eventType": "text_delta"
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "no-stream-events",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ]
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "continue-user",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "stop",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameUser": false,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    },
+    {
+      "id": "aborted-message",
+      "trace": [
+        [
+          "returnedPromise",
+          true
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "key",
+          true,
+          "caller"
+        ],
+        [
+          "stream",
+          true,
+          true,
+          [
+            {
+              "role": "user"
+            }
+          ],
+          [
+            "model",
+            "reasoning",
+            "convertToLlm",
+            "getApiKey",
+            "apiKey",
+            "signal"
+          ],
+          "owned-key",
+          true
+        ],
+        [
+          "iterator.call",
+          true
+        ],
+        [
+          "iterator.next",
+          0
+        ],
+        "response.result.get",
+        [
+          "response.result.call",
+          true
+        ],
+        "iterator.return"
+      ],
+      "emitted": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          "sameUser": true,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "message_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "turn_end",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          },
+          "toolResults": [],
+          "sameUser": false,
+          "sameFinal": true,
+          "samePartial": false,
+          "sameUpdate": false
+        },
+        {
+          "type": "agent_end",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello",
+              "timestamp": 1
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final"
+                }
+              ],
+              "api": "controlled",
+              "provider": "caller",
+              "model": "owned",
+              "usage": {
+                "input": 0,
+                "output": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "total": 0
+                }
+              },
+              "stopReason": "aborted",
+              "timestamp": 3,
+              "thinkingLevel": "medium"
+            }
+          ],
+          "sameUser": false,
+          "sameFinal": false,
+          "samePartial": false,
+          "sameUpdate": false
+        }
+      ],
+      "outcome": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "hello",
+            "timestamp": 1
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "final"
+              }
+            ],
+            "api": "controlled",
+            "provider": "caller",
+            "model": "owned",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": 3,
+            "thinkingLevel": "medium"
+          }
+        ],
+        "sameInitialMessages": true,
+        "originalMessages": [],
+        "sameUser": true,
+        "sameFinal": true,
+        "thinkingLevel": "medium"
+      }
+    }
+  ]
+}

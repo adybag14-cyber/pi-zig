@@ -24,3 +24,9 @@ indices. A first pool-level probe exposed an incorrect test assumption: construc
 the callback argument inside the getter can fail before the callback runs. The
 maintained test prepares that argument during setup and retains its strict getter,
 callback and GC assertions. The earlier failed observation is preserved externally.
+
+The subsequent constructor-name repair borrows the original QuickJS string
+instead of allocating a UTF-8 copy. The same maintained gate passed all three
+tests again with allocation universes 24,29,44 (97 total). Unicode names now
+retain their original code points. This is a measured change in the allocation
+universe, not an omitted failure index.

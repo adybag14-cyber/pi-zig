@@ -291,6 +291,11 @@ pub const Execution = struct {
         try engine.bindFunction("exit", Execution.exit, 0);
         const globals = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(globals);
+        // The upstream WASM VM exposes SharedArrayBuffer without Atomics.
+        const atomics = c.JS_NewAtom(engine.context, "Atomics");
+        if (atomics == c.JS_ATOM_NULL) return error.OutOfMemory;
+        defer c.JS_FreeAtom(engine.context, atomics);
+        if (c.JS_DeleteProperty(engine.context, globals, atomics, c.JS_PROP_THROW) < 0) return error.JavaScriptException;
         const tool_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
         defer engine.freeValue(tool_object);
         const metadata = try engine.checked(c.JS_NewArray(engine.context));
@@ -1038,7 +1043,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
 }
 const ExecutionMeasurements = struct { interrupt_polls: f64 = 0, budget_exhausted: bool = false };
 fn executeMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options, measurements: ?*ExecutionMeasurements) !json.Owned {
-    const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64) });
+    const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64), .node_locale_compare = false, .node_json_diagnostics = false });
     defer engine.deinit();
     // Error description below owns guest coercion order. Engine diagnostics
     // must retain the original thrown value without an earlier ToString call.

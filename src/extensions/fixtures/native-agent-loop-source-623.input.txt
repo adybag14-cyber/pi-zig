@@ -1,0 +1,29 @@
+// Actual original AgentLoop with controlled caller-owned stream functions.
+// No Source class/prototype/function replacement; no provider execution.
+
+const {runAgentLoop,runAgentLoopContinue}=sdkLoopNative;
+const savedNow=Date.now;Date.now=()=>42;
+const rows=[];
+try{for(const id of ['empty','user','add-tool','remove-tool','changed-tool','same-declaration','reordered-tools','pending-system','partial-updates','no-stream-events','continue-user','aborted-message']){
+ const trace=[],emitted=[];const a={name:'a',description:'A',parameters:{type:'object',properties:{x:{type:'string'}}}},b={name:'b',description:'B',parameters:{type:'object'}},user={role:'user',content:'hello',timestamp:1},system={role:'system',content:'base',toolsAdded:[a,b],timestamp:0};
+ const context={messages:[],tools:[]};let prompts=[];
+ if(id!=='empty')prompts=[user];
+ if(id==='add-tool')context.tools=[a];
+ if(id==='remove-tool'){context.messages=[system];context.tools=[b];}
+ if(id==='changed-tool'){context.messages=[system];context.tools=[{...a,description:'changed'},b];}
+ if(id==='same-declaration'){context.messages=[system];context.tools=[{...a,execute(){},label:'ignored'},b];}
+ if(id==='reordered-tools'){context.messages=[system];context.tools=[b,a];}
+ if(id==='pending-system'){context.messages=[system];context.tools=[a];prompts=[{role:'system',content:'next',toolsAdded:[b],toolsRemoved:[{name:'a'}],timestamp:2},user];}
+ if(id==='continue-user'){context.messages=[user];prompts=[];}
+ const initialMessages=context.messages,signal=new AbortController().signal;
+ const partial={role:'assistant',content:[{type:'text',text:'first'}],api:'controlled',provider:'caller',model:'owned',usage:{input:0,output:0,totalTokens:0,cost:{input:0,output:0,total:0}},stopReason:'stop',timestamp:3};
+ const update={...partial,content:[{type:'text',text:'second'}]},final={...partial,content:[{type:'text',text:'final'}],stopReason:id==='aborted-message'?'aborted':'stop'};
+ const events=id==='no-stream-events'?[]:id==='partial-updates'?[{type:'text_delta',partial:update},{type:'start',partial},{type:'text_delta',partial:update},{type:'done',message:final}]:[{type:'done',message:final}];
+ const stream={get result(){trace.push('response.result.get');return function(){trace.push(['response.result.call',this===stream]);return Promise.resolve(final)}},[Symbol.asyncIterator](){trace.push(['iterator.call',this===stream]);let index=0;return{next(){trace.push(['iterator.next',index]);return Promise.resolve(index<events.length?{value:events[index++],done:false}:{done:true})},return(){trace.push('iterator.return');return Promise.resolve({done:true})}}}};
+ const config={model:{provider:'caller',id:'owned'},reasoning:'medium',convertToLlm(messages){trace.push(['convert',this===config,messages.map(m=>m.role)]);return messages},getApiKey(provider){trace.push(['key',this===config,provider]);return'owned-key'}};
+ const streamFn=function(model,llm,options){trace.push(['stream',this===undefined,model===config.model,llm.messages.map(m=>({role:m.role,toolsAdded:m.toolsAdded,toolsRemoved:m.toolsRemoved})),Object.keys(options),options.apiKey,options.signal===signal]);return stream};
+ const emit=function(event){emitted.push({type:event.type,message:event.message?structuredClone(event.message):undefined,toolResults:event.toolResults,messages:event.messages?structuredClone(event.messages):undefined,sameUser:event.message===user,sameFinal:event.message===final,samePartial:event.message===partial,sameUpdate:event.message===update,eventType:event.assistantMessageEvent?.type});};
+ let outcome;try{const pending=id==='continue-user'?runAgentLoopContinue(context,config,emit,signal,streamFn):runAgentLoop(prompts,context,config,emit,signal,streamFn);trace.push(['returnedPromise',pending instanceof Promise]);const messages=await pending;outcome={messages,sameInitialMessages:context.messages===initialMessages,originalMessages:context.messages,sameUser:messages.includes(user),sameFinal:messages.includes(final),thinkingLevel:final.thinkingLevel};}catch(error){outcome={name:error?.name,message:error?.message}}
+ rows.push({id,trace,emitted,outcome});
+}}finally{Date.now=savedNow}
+globalThis.sdkAgentLoopRows=rows;

@@ -1,0 +1,241 @@
+{
+  "status": "validated-component-checkpoint-goal-incomplete",
+  "base_head": "c01b99e4c39901c3e9ba14bad966a53a27c62bd4",
+  "zig": "0.16.0",
+  "platform": "Windows",
+  "mode": "Debug",
+  "agent": {
+    "status": "passed",
+    "normal_Source_records": 87,
+    "graphs": [
+      {
+        "label": "agent-complete-metadata",
+        "total": 918,
+        "range_end": 114
+      },
+      {
+        "label": "agent-complete-runtime",
+        "total": 3735,
+        "range_end": 466
+      },
+      {
+        "label": "agent-loop-changes",
+        "total": 2255,
+        "range_end": 281
+      },
+      {
+        "label": "agent-loop-tools",
+        "total": 4041,
+        "range_end": 505
+      },
+      {
+        "label": "agent-loop-owned-stream",
+        "total": 3793,
+        "range_end": 474
+      }
+    ],
+    "total_failure_indices": 14742,
+    "ranges": 8,
+    "compiled_tests_per_range": 28,
+    "repeated_executions": 224,
+    "distinct_compiled_tests": 28,
+    "source_count": 4116,
+    "tool_count": 19546,
+    "post_drift": 0,
+    "public_activation": false
+  },
+  "components": {
+    "job": "root-complete-agent-serde-final-corrected-20261012",
+    "compiled_tests": 91,
+    "build_steps": 188,
+    "source_count": 4116,
+    "tool_count": 19546,
+    "post_source_drift": 0,
+    "post_tool_drift": 0,
+    "process_gone": true,
+    "log_sha256": "A58AC2727CC22BB4911998BE7BA9C3D2CD9DC7A0A68F2F5F27A625C2D7397283",
+    "source_manifest_sha256": "1EAEE69ECDE8BA1251DFC8790C95F02C8F7159ED6738DCE1609184201B0D60A8"
+  },
+  "pool": {
+    "job": "root-json-pool-host-fixes-20261012",
+    "tests": 3,
+    "universes": [
+      24,
+      29,
+      44
+    ],
+    "failure_indices": 97,
+    "source_count": 4091,
+    "tool_count": 19546,
+    "post_drift": 0
+  },
+  "upstream_reference": {
+    "status": "passed",
+    "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+    "original": 1898,
+    "dependencies": 22223,
+    "hydrated": 43,
+    "tools": 1774,
+    "junctions": 16,
+    "dist": 2771,
+    "prebuild_runtime": 28293,
+    "built_runtime": 31064,
+    "post_mismatches": 0,
+    "catalog_sha256": "439C53478C84ED27A58F8B54E1C3BD45810E5A969515B4E3666A3898D51EE22F",
+    "completed_utc": "2026-10-12T16:05:58.602503+01:00"
+  },
+  "structural_contract": {
+    "path": "verification/upstream-contract/tree-19cb534.json",
+    "files": 1898,
+    "added": 0,
+    "removed": 0,
+    "changed": 0
+  },
+  "production_inputs": [
+    {
+      "path": "build.zig",
+      "sha256": "D03162AB764BD7CC9199FE6CAC590C1360DD66106B6D8B9D364487000EE25900"
+    },
+    {
+      "path": "src/durable/backend/json.zig",
+      "sha256": "75BAA4266FBF1F9C069E5751D92382C4622FCE44FFA0DD4AC7E9B84604495304"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "02050BA6BE121362B8CDEF0010C7DB5E028700BB96FBC9190FFD38804D1FD64B"
+    },
+    {
+      "path": "src/extensions/native_agent_async.zig",
+      "sha256": "417EE313A8A36B74B8A25131675DA7F8D8F1EA1EC4A971DFDF975CD9982FE696"
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "sha256": "7518F6A3ACFE1907C145D9767DB7188D9EDF18A0D3201BB7529119C3AF6113CA"
+    },
+    {
+      "path": "src/extensions/native_agent_construct.zig",
+      "sha256": "BAD96750D72E86B5921E939094DB9AE1BE17E4F8F68679BB5A6C18ECB52E1C6B"
+    },
+    {
+      "path": "src/extensions/native_agent_core.zig",
+      "sha256": "64AA08A1F00DF7301FEFF07127D605743BDE00E89245610296798208598F9650"
+    },
+    {
+      "path": "src/extensions/native_agent_default_stream.zig",
+      "sha256": "9C2B1AA614B6DD6782DBCA00D7F78F11B2A69C2C20FF6F817876D6BADDB2C0CB"
+    },
+    {
+      "path": "src/extensions/native_agent_events.zig",
+      "sha256": "E34650DF010E36DB22A1AC38F991C0B5C408EA8A0EE9002BA32DC850A0B06CE1"
+    },
+    {
+      "path": "src/extensions/native_agent_failure.zig",
+      "sha256": "C814013159AAD898F03D18A11B33098A7C46492C2B6C87E192CA0C4D59734581"
+    },
+    {
+      "path": "src/extensions/native_agent_lifecycle.zig",
+      "sha256": "32709F723726E810F797BC7C77F1A9A625DEBC9E294C8B44E5A10835165E4052"
+    },
+    {
+      "path": "src/extensions/native_agent_loop_config.zig",
+      "sha256": "D10C3CCECEE3A7B990F9B7C7728C9F48006A90B56D0C6AFD4DFEDA2ACC0E9BD4"
+    },
+    {
+      "path": "src/extensions/native_agent_loop.zig",
+      "sha256": "7E4EE90C577FBCA6A3C025740D65C2514E7E16713C89B38D18962AA939FB398A"
+    },
+    {
+      "path": "src/extensions/native_agent_methods.zig",
+      "sha256": "0478AFA91633401705600807C159165E861C31C6183633649FAED6D18573273B"
+    },
+    {
+      "path": "src/extensions/native_agent_queue.zig",
+      "sha256": "FD9A1AF85890394F4D4E4C71D1150365BFCD060FEF565652BFDE3151ED2301CE"
+    },
+    {
+      "path": "src/extensions/native_agent_response.zig",
+      "sha256": "5377DB664B4C2192ECA737AEE53E204A4A878CE8355641F97C5F6AE50C966D20"
+    },
+    {
+      "path": "src/extensions/native_agent_run.zig",
+      "sha256": "6C7AAA4F0B93265687D88FB1AB1B568DD79F23B635530C30049DE910084D4936"
+    },
+    {
+      "path": "src/extensions/native_agent_state.zig",
+      "sha256": "446C3CAB21601E6AEDD3504DE0E288941CDE7162ED069FC196C15F3DFC16007A"
+    },
+    {
+      "path": "src/extensions/native_agent_stream.zig",
+      "sha256": "8E0556C93532E1681A17F82DE58405A8433CD36FFEB61B0AA9B91361EAEC37A7"
+    },
+    {
+      "path": "src/extensions/native_agent_tool_call.zig",
+      "sha256": "FD8D54574650C0780D5A157644736DD57B8C4A8C813916F94DA77792BBCCB888"
+    },
+    {
+      "path": "src/extensions/native_agent_tool_changes.zig",
+      "sha256": "1940213184AC2A33764F2E39C3FB4C1A7D85994DBD58F269FD283B15EBDEB8A6"
+    },
+    {
+      "path": "src/extensions/native_agent_tool_events.zig",
+      "sha256": "559314711B5148AA17338844E5A2289CC1C61C936E75CF2D680426F8AB23871D"
+    },
+    {
+      "path": "src/extensions/native_agent_tools.zig",
+      "sha256": "7F5EEDD26C0601E959D8EB99551ABC90398D39FB9A9A0696F1005C61AD5F2E8F"
+    },
+    {
+      "path": "src/extensions/native_codemode_controlled.zig",
+      "sha256": "57398B00482AE68234D90DB457206AA6C395135CD9CCBE7E259F177A247B2707"
+    },
+    {
+      "path": "src/extensions/native_json_host.zig",
+      "sha256": "65A8B6509178E84E35A56FDCAEB4DD402D12C46A37136FC46AAD186E00A9F9E0"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E140740D33E1A354DE169EFDAFA5BD363A061BDA95D072AD2AC867C10F4AA11C"
+    },
+    {
+      "path": "src/extensions/native_stream.zig",
+      "sha256": "5F87F0942B780F5644613E0E972DA13F04E6F66983C226AD38C947D3FB829977"
+    },
+    {
+      "path": "src/mcp/codemode_run.zig",
+      "sha256": "D0DE211E8FF2FCCD5C37B18D0DCBE9DE82E6BDBB43393430854943DF250F7431"
+    },
+    {
+      "path": "src/mcp/codemode.zig",
+      "sha256": "A344F59EDE3C91A8FD09EC39628A056AF699AEE26E3115F84785D58FA33F22CE"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F4964A32020538D733A92E179B945C985708A09B2B77E510806A9CB1C446B9FB"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "37D58C41E561DABD3E936C65877339CFF7610E93BC151AA4278C72AD01349E60"
+    }
+  ],
+  "hosted": "Pending exact-head workflow; no hosted success inferred",
+  "remaining": [
+    "Full AgentSession",
+    "Public Agent and Sandbox package parity",
+    "Physical Main UI lifecycle",
+    "Durable CodeMode replay and recovery",
+    "Latest Chord2 and MCP changes",
+    "macOS Debug compaction",
+    "Complete platform and release qualification"
+  ],
+  "native_default": false,
+  "node_bridge_retained": true,
+  "publication_checks": {
+    "vendor_files": 1187,
+    "vendor_failures": 0,
+    "catalog": "native generator check passed",
+    "structure": "2101 files, zero failures; exact POSIX PTY C ABI exception reviewed",
+    "workflow": "YAML and three PowerShell blocks parsed; all8 real allocation logs accepted; five corrupt coverage cases rejected",
+    "artifacts": "regenerated with native artifact-manifest241 and verified",
+    "metadata": "Publication metadata added after frozen component gates; qualified production body hashes retained"
+  }
+}

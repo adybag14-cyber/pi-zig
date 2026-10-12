@@ -1,0 +1,21 @@
+
+const {agentLoop,agentLoopContinue}=sdkLoopNative;
+import {EventStream} from '@earendil-works/pi-ai';
+const savedNow=Date.now;Date.now=()=>42;const rows=[];
+try{for(const id of ['normal','continue','constructor','cycle','tojson-getter','tojson-throw','continue-empty','continue-assistant']){
+ const trace=[],events=[],user={role:'user',content:'owned',timestamp:1},marker={owned:true};let getterReads=0,tojsonCalls=0;
+ if(id==='cycle')user.content=user;
+ if(id==='tojson-getter'||id==='tojson-throw')Object.defineProperty(user,'toJSON',{configurable:true,get(){getterReads++;trace.push('user.toJSON.get');return function(){tojsonCalls++;trace.push('user.toJSON.call');if(id==='tojson-throw')throw marker;return{role:'changed'}}}});
+ const final={role:'assistant',content:[],api:'controlled',provider:'caller',model:'owned',usage:{input:0,output:0,totalTokens:0,cost:{input:0,output:0,total:0}},stopReason:'stop',timestamp:2};
+ const context={messages:id==='continue'?[user]:id==='continue-assistant'?[final]:[],tools:[]},original=context.messages,signal=new AbortController().signal;
+ const config={model:{provider:'caller',id:'owned'},convertToLlm(messages){trace.push(['convert',messages.includes(user),messages.map(m=>m.role)]);return messages}};
+ const response={result(){trace.push('response.result');return Promise.resolve(final)},async *[Symbol.asyncIterator](){yield{type:'done',message:final}}};
+ const streamFn=function(model,llm,options){trace.push(['stream',this===undefined,llm.messages.includes(user),options.signal===signal]);return response};
+ let outcome;try{const stream=id.startsWith('continue')?agentLoopContinue(context,config,signal,streamFn):id==='constructor'?new agentLoop([user],context,config,signal,streamFn):agentLoop([user],context,config,signal,streamFn);trace.push(['returned',stream instanceof EventStream,stream.constructor===EventStream]);const resultPromise=stream.result(),sameResultPromise=stream.result()===resultPromise;
+  const push=stream.push,end=stream.end;let endMessages;stream.push=function(event){trace.push(['push',this===stream,event.type]);return push.call(this,event)};stream.end=function(messages){endMessages=messages;trace.push(['end',this===stream,Array.isArray(messages)]);return end.call(this,messages)};
+  let endedMessages;for await(const event of stream){events.push({type:event.type,role:event.message?.role,sameUser:event.message===user,sameFinal:event.message===final,cycle:event.message===user&&event.message.content===user,messageKeys:event.message?Object.keys(event.message):undefined});if(event.type==='agent_end')endedMessages=event.messages;}
+  const messages=await resultPromise;await Promise.resolve();await Promise.resolve();outcome={sameResultPromise,sameEndedMessages:messages===endedMessages,sameEndCall:messages===endMessages,userIncluded:messages.includes(user),finalIncluded:messages.includes(final),roles:messages.map(m=>m.role),originalSame:context.messages===original,originalRoles:context.messages.map(m=>m.role),getterReads,tojsonCalls};
+ }catch(error){outcome={raw:error===marker,name:error?.name,message:error?.message,getterReads,tojsonCalls}}
+ rows.push({id,trace,events,outcome});
+}}finally{Date.now=savedNow}
+globalThis.sdkAgentLoopRows=rows;

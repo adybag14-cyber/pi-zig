@@ -1,0 +1,1060 @@
+{
+  "source": "ee409a85f6ad92bf8c6ab8ed735c6cd24f2e749e",
+  "scope": "Actual original agentLoop/Continue wrappers and EventStream raw cyclic/caller toJSON identity inputs; observed finite records preserve caller references as explicit identity booleans; no Source class/prototype changes or provider execution",
+  "rows": [
+    {
+      "id": "normal",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": true,
+        "finalIncluded": true,
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "continue",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": false,
+        "finalIncluded": true,
+        "roles": [
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [
+          "user",
+          "assistant"
+        ],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "constructor",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": true,
+        "finalIncluded": true,
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "cycle",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": true,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": true,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": true,
+        "finalIncluded": true,
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "tojson-getter",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": true,
+        "finalIncluded": true,
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "tojson-throw",
+      "trace": [
+        [
+          "returned",
+          true,
+          true
+        ],
+        [
+          "push",
+          true,
+          "turn_start"
+        ],
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "convert",
+          true,
+          [
+            "user"
+          ]
+        ],
+        [
+          "stream",
+          true,
+          true,
+          true
+        ],
+        "response.result",
+        [
+          "push",
+          true,
+          "message_start"
+        ],
+        [
+          "push",
+          true,
+          "message_end"
+        ],
+        [
+          "push",
+          true,
+          "turn_end"
+        ],
+        [
+          "push",
+          true,
+          "agent_end"
+        ],
+        [
+          "end",
+          true,
+          true
+        ]
+      ],
+      "events": [
+        {
+          "type": "agent_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "turn_start",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        },
+        {
+          "type": "message_start",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "user",
+          "sameUser": true,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "timestamp"
+          ]
+        },
+        {
+          "type": "message_start",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "message_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "turn_end",
+          "role": "assistant",
+          "sameUser": false,
+          "sameFinal": true,
+          "cycle": false,
+          "messageKeys": [
+            "role",
+            "content",
+            "api",
+            "provider",
+            "model",
+            "usage",
+            "stopReason",
+            "timestamp",
+            "thinkingLevel"
+          ]
+        },
+        {
+          "type": "agent_end",
+          "sameUser": false,
+          "sameFinal": false,
+          "cycle": false
+        }
+      ],
+      "outcome": {
+        "sameResultPromise": true,
+        "sameEndedMessages": true,
+        "sameEndCall": true,
+        "userIncluded": true,
+        "finalIncluded": true,
+        "roles": [
+          "user",
+          "assistant"
+        ],
+        "originalSame": true,
+        "originalRoles": [],
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "continue-empty",
+      "trace": [],
+      "events": [],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "Cannot continue: no messages in context",
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    },
+    {
+      "id": "continue-assistant",
+      "trace": [],
+      "events": [],
+      "outcome": {
+        "raw": false,
+        "name": "Error",
+        "message": "Cannot continue from message role: assistant",
+        "getterReads": 0,
+        "tojsonCalls": 0
+      }
+    }
+  ]
+}
