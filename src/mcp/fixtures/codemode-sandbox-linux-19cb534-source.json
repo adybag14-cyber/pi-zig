@@ -1,0 +1,656 @@
+{
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Actual original Linux default worker-backed CodemodeSandbox and real QuickJS WASM; unmodified Source classes and methods; module loading observed only",
+  "rows": [
+    {
+      "name": "tools-global-output",
+      "code": "text(\"hello\"); return [await tools.echo({n:7}),await math.add(2,3),typeof WeakRef]",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": [
+          {
+            "n": 7
+          },
+          5,
+          "function"
+        ],
+        "output": [
+          {
+            "type": "text",
+            "text": "hello"
+          }
+        ],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.11222700000007535
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          {
+            "n": 7
+          }
+        ],
+        [
+          "global",
+          [
+            2,
+            3
+          ],
+          false
+        ]
+      ],
+      "signalsAfter": [
+        false,
+        false
+      ],
+      "elapsedMs": 262.9494340000001
+    },
+    {
+      "name": "tool-error",
+      "code": "try{await tools.echo(1)}catch(e){return [e.name,e.message,Object.keys(e)]}",
+      "mode": "throw",
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "actual tool failure",
+          []
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.08437900000012633
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 238.11245599999984
+    },
+    {
+      "name": "tool-cycle-serialization",
+      "code": "try{await tools.echo(1)}catch(e){return [e.name,e.message]}",
+      "mode": "cycle",
+      "result": {
+        "ok": true,
+        "value": [
+          "Error",
+          "Converting circular structure to JSON\n    --> starting at object with constructor 'Object'\n    --- property 'self' closes the circle"
+        ],
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "error",
+            "durationMs": 0.04815900000016882
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 248.30199199999993
+    },
+    {
+      "name": "store-entries-ignore-container-toJSON",
+      "code": "return [load(\"x\"),load(\"wrong\")]",
+      "mode": "store",
+      "result": {
+        "ok": true,
+        "value": [
+          7,
+          null
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [],
+      "signalsAfter": [],
+      "elapsedMs": 227.17951200000016
+    },
+    {
+      "name": "ordinary-vm-timezone",
+      "code": "return [new Date(1593604800000).getHours(),new Date(1593604800000).getTimezoneOffset(),new Date(\"2020-07-01T12:00:00\").toISOString(),typeof WeakRef,typeof FinalizationRegistry]",
+      "mode": "clock",
+      "result": {
+        "ok": true,
+        "value": [
+          13,
+          -60,
+          "2020-07-01T11:00:00Z",
+          "function",
+          "function"
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [],
+      "signalsAfter": [],
+      "elapsedMs": 232.37999600000012
+    },
+    {
+      "name": "fire-and-forget-call",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.029409999999643333
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 226.51684799999975
+    },
+    {
+      "name": "fire-and-forget-repeat-0",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.027118999999856896
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 224.79541999999992
+    },
+    {
+      "name": "fire-and-forget-repeat-1",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.028960000000097352
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 229.29704399999991
+    },
+    {
+      "name": "fire-and-forget-repeat-2",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.024689000000307715
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 220.83406699999978
+    },
+    {
+      "name": "fire-and-forget-repeat-3",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.03386900000032256
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 220.50910999999996
+    },
+    {
+      "name": "fire-and-forget-repeat-4",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.042428999999629013
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 221.01712499999985
+    },
+    {
+      "name": "fire-and-forget-repeat-5",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.023779999999987922
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 225.39914
+    },
+    {
+      "name": "fire-and-forget-repeat-6",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.03595899999982066
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 226.1197860000002
+    },
+    {
+      "name": "fire-and-forget-repeat-7",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.018959999999424326
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 224.97582800000055
+    },
+    {
+      "name": "fire-and-forget-repeat-8",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.027189999999791326
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 220.92544499999985
+    },
+    {
+      "name": "fire-and-forget-repeat-9",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.020869999999376887
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 226.96157500000027
+    },
+    {
+      "name": "fire-and-forget-repeat-10",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.029998999999406806
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 232.45643400000063
+    },
+    {
+      "name": "fire-and-forget-repeat-11",
+      "code": "tools.echo(1);return 9",
+      "mode": "ordinary",
+      "result": {
+        "ok": true,
+        "value": 9,
+        "output": [],
+        "calls": [
+          {
+            "name": "echo",
+            "status": "ok",
+            "durationMs": 0.02249900000060734
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      },
+      "events": [
+        [
+          true,
+          true,
+          false,
+          [
+            "signal"
+          ],
+          1
+        ]
+      ],
+      "signalsAfter": [
+        false
+      ],
+      "elapsedMs": 240.29309100000046
+    }
+  ]
+}

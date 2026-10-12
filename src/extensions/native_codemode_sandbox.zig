@@ -225,7 +225,7 @@ fn operate(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue, operat
             }
             var data = [_]c.JSValue{ holder, class };
             const on_finish = if (operation == .execute) try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, finishCalls, "", 0, 0, 1, &data))) else c.pi_js_undefined();
-            const handle = try scope.own(try controlled.launch(engine, first, options, .{ .memory_limit = self.memory, .deterministic = operation == .start, .on_finish = if (operation == .execute) on_finish else null }));
+            const handle = try scope.own(try controlled.launch(engine, first, options, .{ .memory_limit = self.memory, .deterministic = operation == .start, .worker_message_tasks = true, .on_finish = if (operation == .execute) on_finish else null }));
             try scope.put(holder, "handle", handle);
             _ = try scope.invoke(self.running, "add", &.{handle});
             const completion = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, completed, "", 0, 0, data.len, &data)));

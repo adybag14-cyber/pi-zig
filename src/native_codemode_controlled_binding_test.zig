@@ -81,7 +81,14 @@ test "native CodeMode JavaScript owner preserves all eleven genuine callback rep
             std.debug.print("JS owner Source row {s} actual={s}\n", .{ expected.object.get("name").?.string, trace });
         }
         try std.testing.expect(json.equal(original.value, native_result.*));
-        inline for (.{ "events", "calls", "finished" }) |key| try std.testing.expect(json.equal(expected.object.get(key).?, observed.object.get(key).?));
+        inline for (.{ "events", "calls", "finished" }) |key| {
+            if (!json.equal(expected.object.get(key).?, observed.object.get(key).?)) {
+                const trace = try json.stringify(std.testing.allocator, observed.*);
+                defer std.testing.allocator.free(trace);
+                std.debug.print("JS owner Source row {s} differing {s} actual={s}\n", .{ expected.object.get("name").?.string, key, trace });
+            }
+            try std.testing.expect(json.equal(expected.object.get(key).?, observed.object.get(key).?));
+        }
     }
 }
 

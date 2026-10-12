@@ -1,0 +1,225 @@
+{"source":"19cb534c3b6e3871458a8fa59e98f0312c50e995","rows":[{"input":{
+        "name": "truncated-no-environment",
+        "files": 0,
+        "noEnv": true,
+        "code": "// @options: {\"max_output_tokens\": 1}\nreturn \"abc\".repeat(100);"
+      },"ioEvents":[]},{"input":{
+        "name": "truncated-real-file",
+        "files": 1,
+        "code": "// @options: {\"max_output_tokens\": 1}\nreturn \"abc\".repeat(100);"
+      },"ioEvents":[
+        {
+          "type": "create",
+          "prefix": "pi-codemode-",
+          "result": {
+            "ok": true,
+            "value": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-3Iu1j0"
+          }
+        },
+        {
+          "type": "write",
+          "path": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-3Iu1j0/output.txt",
+          "content": {
+            "text": "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc"
+          },
+          "result": {
+            "ok": true
+          },
+          "actualSha256": "d9f5aeb06abebb3be3f38adec9a2e3b94228d52193be923eb4e24c9b56ee0930"
+        }
+      ]},{"input":{
+        "name": "image-real-file",
+        "files": 1,
+        "code": "image(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+nmQAAAABJRU5ErkJggg==\");"
+      },"ioEvents":[
+        {
+          "type": "create",
+          "prefix": "pi-codemode-",
+          "result": {
+            "ok": true,
+            "value": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-HOQ7JI"
+          }
+        },
+        {
+          "type": "write",
+          "path": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-HOQ7JI/image-1.png",
+          "content": {
+            "bytes": [
+              137,
+              80,
+              78,
+              71,
+              13,
+              10,
+              26,
+              10,
+              0,
+              0,
+              0,
+              13,
+              73,
+              72,
+              68,
+              82,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              8,
+              4,
+              0,
+              0,
+              0,
+              181,
+              28,
+              12,
+              2,
+              0,
+              0,
+              0,
+              11,
+              73,
+              68,
+              65,
+              84,
+              120,
+              218,
+              99,
+              252,
+              255,
+              31,
+              0,
+              3,
+              3,
+              2,
+              0,
+              239,
+              167,
+              153,
+              0,
+              0,
+              0,
+              0,
+              73,
+              69,
+              78,
+              68,
+              174,
+              66,
+              96,
+              130
+            ]
+          },
+          "result": {
+            "ok": true
+          },
+          "actualSha256": "867032e3c2cd02a63ee8d98de9e4f598c8863a65b35c2e8522ccfebfa0a053d4"
+        }
+      ]},{"input":{
+        "name": "shared-directory-text-and-image",
+        "files": 2,
+        "code": "// @options: {\"max_output_tokens\": 1}\nimage(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+nmQAAAABJRU5ErkJggg==\");return \"abc\".repeat(100);"
+      },"ioEvents":[
+        {
+          "type": "create",
+          "prefix": "pi-codemode-",
+          "result": {
+            "ok": true,
+            "value": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-vokIis"
+          }
+        },
+        {
+          "type": "write",
+          "path": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-vokIis/output.txt",
+          "content": {
+            "text": "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc"
+          },
+          "result": {
+            "ok": true
+          },
+          "actualSha256": "d9f5aeb06abebb3be3f38adec9a2e3b94228d52193be923eb4e24c9b56ee0930"
+        },
+        {
+          "type": "write",
+          "path": "C:\\Users\\adyba\\AppData\\Local\\Temp\\pi-codemode-vokIis/image-1.png",
+          "content": {
+            "bytes": [
+              137,
+              80,
+              78,
+              71,
+              13,
+              10,
+              26,
+              10,
+              0,
+              0,
+              0,
+              13,
+              73,
+              72,
+              68,
+              82,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1,
+              8,
+              4,
+              0,
+              0,
+              0,
+              181,
+              28,
+              12,
+              2,
+              0,
+              0,
+              0,
+              11,
+              73,
+              68,
+              65,
+              84,
+              120,
+              218,
+              99,
+              252,
+              255,
+              31,
+              0,
+              3,
+              3,
+              2,
+              0,
+              239,
+              167,
+              153,
+              0,
+              0,
+              0,
+              0,
+              73,
+              69,
+              78,
+              68,
+              174,
+              66,
+              96,
+              130
+            ]
+          },
+          "result": {
+            "ok": true
+          },
+          "actualSha256": "867032e3c2cd02a63ee8d98de9e4f598c8863a65b35c2e8522ccfebfa0a053d4"
+        }
+      ]}]}

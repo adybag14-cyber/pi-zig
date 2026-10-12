@@ -1,0 +1,59 @@
+{
+  "status": "validated-integration-full-goal-incomplete",
+  "base_published_head": "2077c466f00bd20128cc0e10bd3e700df43a799f",
+  "wheel_integrated_head": "005f7593dc1f74df1a787bd2e00a5aad99994b5b",
+  "zig": "0.16.0",
+  "mode": "Windows Debug",
+  "combined": {
+    "job": "root-wheel-files-checkpoint-integrated-20261012",
+    "tests": 73,
+    "build_steps": 177,
+    "source_inputs": 4204,
+    "tool_inputs": 19546,
+    "source_drift": 0,
+    "tool_drift": 0,
+    "owned_process_gone": true,
+    "stderr_sha256": "F1B3D59DED025F91F9DA460683A0A7531AF1296BE5D1DA966A18FCA3CB7384FF",
+    "source_manifest_sha256": "483537465189AE00628A2FCEC00730EBA058D455FF298AB4F666CD48BB360393"
+  },
+  "worker_checkpoint": {
+    "original_Linux_fireforget_runs": 13,
+    "original_Linux_status": "ok",
+    "original_signal_after": false,
+    "forced_buffered_regression_before": "4/5 failed; actualcancelled vs expectedok",
+    "compile_shadow_and_numeric_tag_test_negatives": "retained separately; not behavioral proof",
+    "initial_global_repair": "41/42 passed; violated original inline abort-gap event trace",
+    "qualified_repair": "Worker message tasks drain Promise jobs; private inline policy retains original batching",
+    "focused_after": "42/42",
+    "source_inputs": 4182,
+    "post_drift": 0
+  },
+  "output_environment": {
+    "actual_NodeExecutionEnv_Source_cases": 4,
+    "private_Debug": "17/17",
+    "private_ReleaseSafe": "17/17 same4105 source+19546tool snapshot",
+    "scope": "Private real-filesystem interface; full public NodeEnv ABI and error matrix remain open"
+  },
+  "hosted": {
+    "prior_run": 38269576295,
+    "prior_head": "7091eef",
+    "prior_result": "1/6",
+    "current_run": 38285475118,
+    "current_head": "2077c466f00bd20128cc0e10bd3e700df43a799f",
+    "current_state": "Still live at last observation; no terminal success claim",
+    "new_workflow": "20platform jobs; all64 macOS allocation ranges split across8 groups; eight other-platform ranges; aggregate rejects omissions duplicate ranges changed universe and failed job",
+    "checker_unit": "Synthetic checker fixture accepted; four corrupt/failure cases rejected; not platform evidence",
+    "test_deadline_seconds": 120
+  },
+  "native_default": false,
+  "node_bridge_retained": true,
+  "remaining": [
+    "Latest archive-bound model catalog",
+    "Default model tools and four model slots",
+    "Full public AgentSession SDK and package surfaces",
+    "NodeEnv complete ABI and errors",
+    "Chord2 runtime integration",
+    "macOS compaction and full hosted qualification",
+    "Remove legacy host only after parity"
+  ]
+}

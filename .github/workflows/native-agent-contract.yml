@@ -17,8 +17,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        mode: [Debug, ReleaseSafe]
+        include:
+          - {os: windows-latest, mode: Debug, group: 0, groups: 1}
+          - {os: windows-latest, mode: ReleaseSafe, group: 0, groups: 1}
+          - {os: ubuntu-latest, mode: Debug, group: 0, groups: 1}
+          - {os: ubuntu-latest, mode: ReleaseSafe, group: 0, groups: 1}
+          - {os: macos-latest, mode: Debug, group: 0, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 1, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 2, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 3, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 4, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 5, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 6, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 7, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 0, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 1, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 2, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 3, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 4, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 5, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 6, groups: 8}
+          - {os: macos-latest, mode: ReleaseSafe, group: 7, groups: 8}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -72,11 +91,15 @@ jobs:
           # exceed the unchanged 120s per-test guard. Smaller partitions retain
           # every original failure index and the same full Source assertions.
           $taskShards = if ($IsMacOS) { 64 } else { 8 }
+          $taskGroups = ${{ matrix.groups }}
+          $taskGroup = ${{ matrix.group }}
+          $taskRangeStart = [int][Math]::Floor($taskShards * $taskGroup / $taskGroups)
+          $taskRangeEnd = [int][Math]::Floor($taskShards * ($taskGroup + 1) / $taskGroups)
           $taskTotals = @{}
           $taskProof = @()
           $env:PI_SDK_ALLOCATION_SHARDS = [string]$taskShards
           $env:PI_SDK_ALLOCATION_TRACE = '1'
-          foreach ($taskRange in 0..($taskShards - 1)) {
+          foreach ($taskRange in $taskRangeStart..($taskRangeEnd - 1)) {
             $env:PI_SDK_ALLOCATION_SHARD = [string]$taskRange
             $taskLog = "$taskReceipt/agent-range-$taskRange.log"
             & zig build test-native-agent-complete test-native-agent-loop -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath $taskLog
@@ -104,9 +127,9 @@ jobs:
           }
           $taskProof | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/allocation-coverage.json"
           Remove-Item Env:PI_SDK_ALLOCATION_SHARD, Env:PI_SDK_ALLOCATION_SHARDS, Env:PI_SDK_ALLOCATION_TRACE
-          [ordered]@{ status = 'passed'; ranges = $taskShards; graphs = 5; distinct_agent_tests = 28; repeated_agent_executions = 28 * $taskShards; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/agent-result.json"
+          [ordered]@{ status = 'passed'; global_ranges = $taskShards; range_start = $taskRangeStart; range_end = $taskRangeEnd; group = $taskGroup; groups = $taskGroups; graphs = 5; distinct_agent_tests = 28; repeated_agent_executions = 28 * ($taskRangeEnd - $taskRangeStart); completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/agent-result.json"
       - name: Exercise integrated CodeMode components
-        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
         timeout-minutes: 12
         run: |
@@ -115,19 +138,20 @@ jobs:
           $taskReceipt = 'verification/native-agent-contract'
           & zig build test-native-codemode-sandbox test-native-codemode-run test-native-codemode-vm-worker test-native-codemode-controlled-binding test-native-durable-148622-wait-cycle test-native-durable-json-dto test-native-physical-stdio test-codemode-inline test-codemode-allocation test-durable-scheduler test-durable-json-clone -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/components.log"
           if ($LASTEXITCODE -ne 0) { throw 'Integrated component gate failed' }
-          if ((Get-Content "$taskReceipt/components.log" -Raw) -notmatch '91/91 tests passed') { throw 'Integrated component coverage changed; review actual inventory' }
-          [ordered]@{ status = 'passed'; component_tests = 91; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+          if ((Get-Content "$taskReceipt/components.log" -Raw) -notmatch '92/92 tests passed') { throw 'Integrated component coverage changed; review actual inventory' }
+          [ordered]@{ status = 'passed'; component_tests = 92; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
       - name: Exercise latest MCP application restoration and durable replay components
-        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
         timeout-minutes: 15
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
           $taskReceipt = 'verification/native-agent-contract'
-          & zig build test-native-durable-codemode-outcome test-native-durable-codemode-journal-core test-custom-editor-frontend test-extension-filesystem test-print-mode-process test-mcp-runtime test-mcp-configured -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/latest-components.log"
+          & zig build test-native-durable-codemode-outcome test-native-durable-codemode-journal-core test-custom-editor-frontend test-extension-filesystem test-print-mode-process test-mcp-runtime test-mcp-configured test-native-tui-alt-source test-native-tui-base-source -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/latest-components.log"
           if ($LASTEXITCODE -ne 0) { throw 'Latest MCP application and replay components failed' }
-          if ((Get-Content "$taskReceipt/latest-components.log" -Raw) -notmatch '176/176 tests passed') { throw 'Latest component inventory changed; review exact execution and any platform skips' }
+          if ((Get-Content "$taskReceipt/latest-components.log" -Raw) -notmatch '207/207 tests passed') { throw 'Latest component inventory changed; review exact execution and any platform skips' }
+          [ordered]@{ status = 'passed'; tests = 207; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/latest-result.json"
       - name: Verify every source and compiler posthash
         if: always()
         shell: pwsh
@@ -147,7 +171,74 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
-          name: native-agent-contract-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          name: native-agent-contract-${{ matrix.os }}-${{ matrix.mode }}-g${{ matrix.group }}-${{ github.sha }}
           retention-days: 14
           include-hidden-files: true
           path: verification/native-agent-contract/**
+
+  coverage:
+    needs: platform
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: native-agent-contract-*-${{ github.sha }}
+          path: contract-results
+      - name: Require every platform group and allocation index partition
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+          PLATFORM_RESULT: ${{ needs.platform.result }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskGraphs = @('agent-complete-metadata','agent-complete-runtime','agent-loop-changes','agent-loop-tools','agent-loop-owned-stream')
+          $taskSummary = @()
+          foreach ($taskOs in @('windows-latest','ubuntu-latest','macos-latest')) {
+            foreach ($taskMode in @('Debug','ReleaseSafe')) {
+              $taskGroups = if ($taskOs -eq 'macos-latest') { 8 } else { 1 }
+              $taskRanges = if ($taskOs -eq 'macos-latest') { 64 } else { 8 }
+              $taskAll = @()
+              foreach ($taskGroup in 0..($taskGroups - 1)) {
+                $taskRoot = "contract-results/native-agent-contract-$taskOs-$taskMode-g$taskGroup-$env:EXPECTED_HEAD"
+                $taskSource = Get-Content "$taskRoot/source.json" -Raw | ConvertFrom-Json
+                $taskResult = Get-Content "$taskRoot/agent-result.json" -Raw | ConvertFrom-Json
+                if ($taskSource.head -cne $env:EXPECTED_HEAD -or $taskSource.mode -cne $taskMode -or $taskResult.status -cne 'passed' -or $taskResult.group -ne $taskGroup -or $taskResult.groups -ne $taskGroups -or $taskResult.global_ranges -ne $taskRanges) { throw 'Missing or inconsistent exact-head group qualification' }
+                foreach ($taskKind in @('inputs','tools')) {
+                  $taskPost = Get-Content "$taskRoot/$taskKind-posthash.json" -Raw | ConvertFrom-Json
+                  if (!$taskPost.count -or @($taskPost.drift).Count) { throw 'Group input posthash missing or changed' }
+                }
+                $taskAll += @(Get-Content "$taskRoot/allocation-coverage.json" -Raw | ConvertFrom-Json)
+                if ($taskGroup -eq 0) {
+                  $taskComponents = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
+                  $taskLatest = Get-Content "$taskRoot/latest-result.json" -Raw | ConvertFrom-Json
+                  if ($taskComponents.status -cne 'passed' -or $taskComponents.component_tests -ne 92 -or $taskLatest.status -cne 'passed' -or $taskLatest.tests -ne 207) { throw 'Platform component qualification is incomplete' }
+                }
+              }
+              if ($taskAll.Count -ne 5 * $taskRanges) { throw 'Unknown or missing allocation graph partition' }
+              foreach ($taskGraph in $taskGraphs) {
+                $taskRows = @($taskAll | Where-Object graph -CEQ $taskGraph | Sort-Object range)
+                if ($taskRows.Count -ne $taskRanges) { throw 'Missing graph ranges' }
+                $taskTotal = [int]$taskRows[0].total
+                $taskPrevious = 0
+                for ($taskRange = 0; $taskRange -lt $taskRanges; $taskRange++) {
+                  $taskRow = $taskRows[$taskRange]
+                  $taskStart = [int][Math]::Floor($taskTotal * $taskRange / $taskRanges)
+                  $taskEnd = [int][Math]::Floor($taskTotal * ($taskRange + 1) / $taskRanges)
+                  if (!$taskRow.complete -or $taskRow.range -ne $taskRange -or $taskRow.total -ne $taskTotal -or $taskRow.start -ne $taskStart -or $taskRow.end -ne $taskEnd -or $taskStart -ne $taskPrevious) { throw 'Allocation index gap duplicate or changed universe' }
+                  $taskPrevious = $taskEnd
+                }
+                if ($taskPrevious -ne $taskTotal) { throw 'Incomplete graph universe' }
+                $taskSummary += [ordered]@{ os = $taskOs; mode = $taskMode; graph = $taskGraph; total = $taskTotal; ranges = $taskRanges; complete = $true }
+              }
+            }
+          }
+          if ($env:PLATFORM_RESULT -cne 'success') { throw 'A required platform job failed' }
+          $taskSummary | ConvertTo-Json -Depth 5 | Set-Content contract-results/complete-coverage.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-agent-contract-complete-${{ github.sha }}
+          retention-days: 14
+          path: contract-results/complete-coverage.json

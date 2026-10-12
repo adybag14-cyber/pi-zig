@@ -1,0 +1,80 @@
+{
+  "status": "passed",
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "node": "v24.14.0",
+  "platform": "linux",
+  "linux_pid": 7244,
+  "linux_pid_post": "Verified /proc/7244 absent after terminal capture",
+  "official_archive_sha256": "41cd79bb7877c81605a9e68ec4c91547774f46a40c67a17e34d7179ef11729df",
+  "node_executable_sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+  "ordinary_rows": 6,
+  "additional_fireforget_repeats": 12,
+  "fireforget_ok_false_signals": 13,
+  "runtime_files": 31064,
+  "existing_tool_files": 1774,
+  "linux_tool_files": 4562,
+  "junctions": 16,
+  "module_thread_pairs": 169,
+  "unique_modules": 14,
+  "threads": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "post_mismatches": 0,
+  "hashes": [
+    {
+      "path": "linux-fireforget-19cb-source.mjs",
+      "sha256": "A454BE5CED84B56B0F9DA98422B40034B6433F654A35763C43E4AAD369256FF8"
+    },
+    {
+      "path": "linux-fireforget-19cb-observe.mjs",
+      "sha256": "C96BE616F6FDD28D62EE0717FE774D965E726F66E870097FEE7AD0B2696D992B"
+    },
+    {
+      "path": "Run-LinuxFireforget19cb.sh",
+      "sha256": "A0A46625647853CC8EFFF50DFC35225BAA324655CB3FE96DB716485C54B1F4F8"
+    },
+    {
+      "path": "linux-fireforget-19cb-output.json",
+      "sha256": "9E223F8EF75D1F25FB75D1CE5CC2A5FAD4BF0599AD04DB1D065BE57F45C19D1D"
+    },
+    {
+      "path": "linux-fireforget-19cb-fixture.json",
+      "sha256": "E5EEA4E762C78D6D6345C5E090D1FC00F99F7F217C833B6A686DA02C3A57495E"
+    },
+    {
+      "path": "linux-fireforget-19cb-owner.json",
+      "sha256": "AB4778DE6BA267B7E0EB519711B56FE298ACA1703603F5A69D0FE634501667E8"
+    },
+    {
+      "path": "linux-fireforget-19cb-second-prehash.json",
+      "sha256": "804F1F7BC18F556FFC71A0A5670CB80A7CD9DC95E53D96F1344A7F5D0B37296D"
+    },
+    {
+      "path": "linux-fireforget-19cb-second-posthash.json",
+      "sha256": "804F1F7BC18F556FFC71A0A5670CB80A7CD9DC95E53D96F1344A7F5D0B37296D"
+    },
+    {
+      "path": "linux-fireforget-19cb-original-second.json",
+      "sha256": "EF6D1C20F508956828895A11B98CC9C7068575BDE81E436EBB893BD9D28D1A47"
+    }
+  ],
+  "limitations": "Linux original executed under existing Ubuntu WSL2 from qualified read-only-in-use Windows runtime paths. This is actual Linux Node/worker/WASM evidence, not a hosted runner capture. No native implementation executed in this task."
+}

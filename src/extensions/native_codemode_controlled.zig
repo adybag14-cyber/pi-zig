@@ -11,7 +11,7 @@ const host_mod = @import("../mcp/codemode_run_host.zig");
 const json = @import("../mcp/protocol.zig").json;
 const scopes = @import("native_async_scope.zig");
 const Pending = struct { record: ?usize, started: i64 };
-pub const Policy = struct { memory_limit: usize = std.math.maxInt(usize), deterministic: bool = true, interrupt_budget: ?f64 = null, on_finish: ?c.JSValue = null };
+pub const Policy = struct { memory_limit: usize = std.math.maxInt(usize), deterministic: bool = true, worker_message_tasks: bool = false, interrupt_budget: ?f64 = null, on_finish: ?c.JSValue = null };
 const Owner = struct {
     engine: *Engine,
     worker: ?*worker_mod.Session = null,
@@ -20,6 +20,7 @@ const Owner = struct {
     data: json.Owned,
     selected: ?json.Owned = null,
     finished: bool = false,
+    worker_message_tasks: bool = false,
     resolve: c.JSValue,
     on_started: c.JSValue,
     on_call: c.JSValue,
@@ -189,6 +190,9 @@ fn deinit(engine: *Engine) void {
 fn pump(engine: *Engine) !bool {
     const self: *Hub = @ptrCast(@alignCast(engine.native_codemode_owner.?));
     if (self.pumping) return false;
+    // Node dispatches worker messages as separate tasks. Each task's Promise
+    // continuations finish before another message is admitted, including an
+    // async tool callback that returns a synchronous value.
     self.pumping = true;
     defer self.pumping = false;
     var worked = false;
@@ -197,6 +201,10 @@ fn pump(engine: *Engine) !bool {
         const handle = self.active.items[index];
         const state = owner(handle).?;
         const worker = state.worker.?;
+        if (state.worker_message_tasks and c.JS_IsJobPending(engine.runtime)) {
+            index += 1;
+            continue;
+        }
         if (!state.finished) if (state.deadline) |deadline| if (std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() >= deadline) {
             const message = try std.fmt.allocPrint(engine.gpa, "Execution timed out after {s} ms", .{state.timeout_label.?});
             defer engine.gpa.free(message);
@@ -212,6 +220,7 @@ fn pump(engine: *Engine) !bool {
             defer event.deinit();
             worked = true;
             try state.event(event.value);
+            if (state.worker_message_tasks and c.JS_IsJobPending(engine.runtime)) return worked;
         }
         if (state.finished and worker.isCompleted()) {
             const guard = scopes.enter(engine, state.async_scope);
@@ -453,7 +462,7 @@ pub fn launch(engine: *Engine, code: c.JSValue, options: c.JSValue, policy: Poli
         data.deinit();
     };
     const state = try engine.gpa.create(Owner);
-    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined(), .async_scope = scopes.capture(engine), .on_finish = c.JS_DupValue(engine.context, policy.on_finish orelse c.pi_js_undefined()) };
+    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined(), .async_scope = scopes.capture(engine), .on_finish = c.JS_DupValue(engine.context, policy.on_finish orelse c.pi_js_undefined()), .worker_message_tasks = policy.worker_message_tasks };
     _ = c.JS_SetOpaque(handle, state);
     transferred = true;
     state.data.value = .{ .object = .empty };
@@ -504,4 +513,53 @@ pub fn abort(engine: *Engine, handle: c.JSValue, message: []const u8) !void {
     const state = owner(handle) orelse return error.InvalidCodeModeRun;
     if (state.engine != engine) return error.InvalidCodeModeRun;
     try state.failure("aborted", message);
+}
+
+test "native CodeMode JavaScript owner drains host microtasks between already buffered worker messages" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const exports = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(exports);
+    try @import("native_codemode_sandbox.zig").install(engine, exports);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try js.get(engine, exports, "CodemodeSandbox");
+    defer engine.freeValue(constructor);
+    if (c.JS_SetPropertyStr(engine.context, global, "BufferedSandbox", c.JS_DupValue(engine.context, constructor)) < 0) return js.capture(engine);
+    const pending = try engine.eval(
+        "globalThis.bufferedSignal=null;globalThis.bufferedBox=new BufferedSandbox({tools:[{name:'echo',execute(args,context){bufferedSignal=context.signal;return 1}}]});bufferedBox.execute('tools.echo(1);return 9')",
+        "buffered-worker-host-checkpoint.js",
+        c.JS_EVAL_TYPE_GLOBAL,
+    );
+    defer engine.freeValue(pending);
+    const owner_hub: *Hub = @ptrCast(@alignCast(engine.native_codemode_owner.?));
+    try std.testing.expectEqual(@as(usize, 1), owner_hub.active.items.len);
+    const worker = owner(owner_hub.active.items[0]).?.worker.?;
+    // The worker does not await the tool result. Force its call and completion
+    // messages to be available together before the host handles either one.
+    const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 5000;
+    while (!worker.isCompleted()) {
+        if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.BufferedWorkerDidNotComplete;
+        try std.testing.io.sleep(.fromMilliseconds(1), .awake);
+    }
+    const result = try engine.awaitValue(pending);
+    defer engine.freeValue(result);
+    const encoded = try engine.stringify(result);
+    defer std.testing.allocator.free(encoded);
+    var observed = try json.Owned.parse(std.testing.allocator, encoded);
+    defer observed.deinit();
+    try std.testing.expectEqual(@as(f64, 9), observed.value.object.get("value").?.float);
+    const calls = observed.value.object.get("calls").?.array.items;
+    try std.testing.expectEqual(@as(usize, 1), calls.len);
+    try std.testing.expectEqualStrings("ok", calls[0].object.get("status").?.string);
+    const signal = try js.get(engine, global, "bufferedSignal");
+    defer engine.freeValue(signal);
+    const aborted = try js.get(engine, signal, "aborted");
+    defer engine.freeValue(aborted);
+    try std.testing.expect(c.JS_ToBool(engine.context, aborted) == 0);
+    const closing = try engine.eval("bufferedBox.close()", "buffered-worker-close.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(closing);
+    const closed = try engine.awaitValue(closing);
+    engine.freeValue(closed);
 }

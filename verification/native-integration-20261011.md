@@ -376,3 +376,37 @@ four-slot model admission, output environment behavior, public activation, and
 full platform qualification remain unfinished. Hosted latest-component checks
 run independently after compilation so an allocation failure does not suppress
 all evidence for MCP, application restoration, or durable replay.
+
+The next Windows Debug integration passes73/73 across177 steps, with every4,204
+source and19,546 tool input unchanged. It combines the buffered-message repair,
+ordinary and controlled CodeMode cases, real worker allocation cleanup, the
+native journal/factory/replay and real-filesystem output cases, plus all30
+alternate/base screen Source cases. The real-filesystem17 gate also passed
+ReleaseSafe in its isolated4105-source snapshot; that is separate evidence.
+
+Actual Linux original worker/WASM execution produced successful fire-and-forget
+calls with unaborted signals in13/13 runs, matching the Windows original golden.
+A deterministic regression buffers the native worker's call and completion
+messages before processing either; the old native implementation fails with
+cancelled instead ofok. Worker-mode dispatch now completes host Promise jobs
+between messages. The private inline-mode policy retains the original inline
+batching: an initial global repair exposed a different abort-gap event trace,
+which remained asserted and was resolved by the explicit launcher distinction.
+The focused corrected gate passed42/42; compiler-shadow and numeric-union test
+construction mistakes remain separate negatives rather than causal bug proof.
+
+The latest overlay wheel change removes only the original deferral in the wheel
+branch. Nine actual upstream observations preserve focused overlay behavior,
+handled/declined mouse outcomes, keyboard behavior, noncapturing and ordinary
+screens. The private gate passed30/30 after an unchanged cold compile timeout;
+those same assertions pass in the integrated73 gate. The output interface writes
+through real native filesystem operations and verifies directory commit order
+and readback against four actual upstream NodeExecutionEnv programs. Its complete
+public environment ABI, error matrix and default model admission remain open.
+
+Hosted allocation work now uses20 platform jobs: macOS's64 exhaustive partitions
+are distributed across eight groups per mode, and other platforms retain all
+eight ranges in one group. The aggregate requires every group, every graph/range,
+consistent universes, contiguous index coverage and successful exact-head
+component checks. All runtime guards remain120 seconds. Synthetic checker unit
+inputs test coverage validation only and are never platform qualification.

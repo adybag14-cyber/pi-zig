@@ -280,3 +280,42 @@ test "native durable CodeMode journal real tool API Source replay negatives6 ref
     };
     engine.freeValue(proof);
 }
+
+test "native durable CodeMode journal real tool API Source output files4 actual bytes and durable directory" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(std.testing.io, &path);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_stream.zig").install(engine);
+    try durable.install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/node_fs.zig").install(engine, std.testing.io);
+    const exports = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(exports);
+    try @import("extensions/native_codemode_sandbox.zig").install(engine, exports);
+    try engine.registerValueModule("@earendil-works/pi-codemode", exports);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "nativeCreateCodemodeTool", try engine.checked(c.JS_NewCFunctionData2(engine.context, createCodemodeTool, "", 1, 0, 0, null)));
+    try sdk.put(engine, global, "nativeOutputEnvironment", try @import("extensions/native_durable_file_environment.zig").create(engine, path[0..length]));
+    var fixture = try json.Owned.parse(std.testing.allocator, @embedFile("durable/fixtures/durable-19cb534-codemode-output-files-source.json"));
+    defer fixture.deinit();
+    try sdk.put(engine, global, "outputFilesSourceFixture", try durable.jsValue(engine, fixture.value));
+    const proof = engine.evalModule(
+        \\import * as M from'@earendil-works/pi-durable';import{CodemodeSandbox}from'@earendil-works/pi-codemode';import{BACKGROUND_CONTEXT as ctx}from'@earendil-works/chord/context';import fs from'node:fs';
+        \\for(const source of outputFilesSourceFixture.rows){const input=source.input,documents=new Map(),ioEvents=[];let requests=0;const require=(value,message)=>{if(!value)throw Error(input.name+': '+message)},sandbox=new CodemodeSandbox({memoryLimitBytes:67108864}),base=nativeOutputEnvironment;const env={createTempDir:async(prefix,context)=>{const result=await base.createTempDir(prefix,context);ioEvents.push({type:'create',prefix,result});return result},writeFile:async(path,content,context)=>{const run=documents.get('pi.codemode.run');require(typeof run?.outputDir==='string'&&path.startsWith(run.outputDir+'/'),'write before committed directory');const result=await base.writeFile(path,content,context);ioEvents.push({type:'write',path,content:typeof content==='string'?{text:content}:{bytes:[...content]},result});return result}};
+        \\const codemode=nativeCreateCodemodeTool({sandbox,models:false}),registry=M.createRegistry();registry.install(M.defineExtension({name:'file-output',tools:[codemode]}));const usage={input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>({id:'held',maxTokens:100,contextWindow:100000}),streamSimple:()=>{requests++;const result={role:'assistant',provider:'held',model:'held',content:requests===1?[{type:'toolCall',id:'c1',name:'codemode',arguments:{code:input.code}}]:[{type:'text',text:'done'}],stopReason:requests===1?'toolUse':'stop',usage,timestamp:123};return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>result}}};
+        \\const harness=await M.Harness.open(new M.MemoryStorage(),{models,registry,...(input.noEnv?{}:{env:()=>env}),settings:{compaction:{enabled:false},retry:{enabled:false}}},ctx);const stop=harness.subscribeCommits(publication=>{for(const change of publication.changes)if(change.type==='document'&&change.value!==null)documents.set(change.record.kind,JSON.parse(JSON.stringify(change.value)))});
+        \\try{const root=await harness.root(ctx,{agent:{model:{provider:'held',modelId:'held'}}});harness.resume();require((await(await root.submit({type:'input',content:'go'},ctx)).wait(ctx)).status==='done','generation complete');require(documents.get('pi.codemode.run')?.result?.isError===false,'script outcome');const writes=ioEvents.filter(event=>event.type==='write'),expected=source.ioEvents.filter(event=>event.type==='write');require(writes.length===input.files&&writes.length===expected.length,'file count');require(ioEvents.filter(event=>event.type==='create').length===(input.files?1:0),'shared directory');for(let i=0;i<writes.length;i++){const actual=writes[i],original=expected[i];require(actual.result.ok&&JSON.stringify(actual.content)===JSON.stringify(original.content),'Source payload bytes');require(actual.path.split(/[\\/]/).at(-1)===original.path.split(/[\\/]/).at(-1),'Source fixed file name');if(actual.content.text!==undefined)require(fs.readFileSync(actual.path,'utf8')===original.content.text,'actual text file');else require(JSON.stringify([...fs.readFileSync(actual.path)])===JSON.stringify(original.content.bytes),'actual image file')}if(input.files===0)require(documents.get('pi.codemode.run').outputDir===undefined,'no environment created directory')}finally{stop();await harness.close(ctx);await sandbox.close()}}
+        \\export const proof=true;
+    , "native-codemode-output-files-source4") catch |err| {
+        std.debug.print("Native output file Source4 {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "none" });
+        @import("extensions/native_durable_tasks.zig").printFailureDiagnostics(engine);
+        return err;
+    };
+    engine.freeValue(proof);
+}
