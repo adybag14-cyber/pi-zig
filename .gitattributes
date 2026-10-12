@@ -27,3 +27,7 @@ src/extensions/fixtures/sdk-runner-emit-527.input.txt whitespace=cr-at-eol
 src/extensions/fixtures/sdk-runner-emit-iterators-532.input.txt whitespace=cr-at-eol
 src/durable/fixtures/durable-89-inspection-storage-guard-program.txt whitespace=cr-at-eol
 src/extensions/fixtures/sdk-runner-ui-prompts-530.input.txt whitespace=cr-at-eol
+
+# Exact MCP observer inputs and terminal output retain their EOF boundaries.
+verification/mcp-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/mcp/result_schema.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

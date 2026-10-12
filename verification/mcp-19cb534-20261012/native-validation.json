@@ -12,21 +12,25 @@
   "outer_deadline_seconds": 300,
   "runtime_tests": 76,
   "configured_tests": 49,
-  "runtime_record": "mcp-latest19cb-debug-first-20261012.json",
-  "configured_record": "mcp-latest19cb-debug-warm-20261012.json",
+  "runtime_record": "mcp-latest19cb-debug-final-lf-20261012.json",
+  "configured_record": "mcp-latest19cb-debug-final-lf-20261012.json",
   "first_failure": "New test redundant local projection declaration shadowed file-level projection; removed declaration, retaining assertions.",
   "source_post_drift": 0,
   "tool_post_drift": 0,
   "tool_count": 19546,
-  "actual_native_paths_verified_against_warm_freeze": 12,
+  "actual_native_paths_verified_against_warm_freeze": 13,
   "processes_retired": [
     50564,
-    50208
+    50208,
+    16580
   ],
   "limitations": [
     "ReleaseSafe and non-Windows runtime were not run in this increment.",
     "Global native-default and removal of Node extension bridge remain unqualified.",
     "Native synchronous cancellation joins any uninterruptible provider rotation; only post-settlement dispatch/retry behavior is qualified here."
   ],
-  "completed_utc": "2026-10-12T15:46:18.7401444+00:00"
+  "completed_utc": "2026-10-12T15:51:46.5952008+00:00",
+  "final_source_files": 4151,
+  "final_combined_tests": 125,
+  "final_input_binding": "Final qualified Zig bytes equal committed LF blobs; exact evidence EOF/CRLF preserved by scoped whitespace attributes."
 }
