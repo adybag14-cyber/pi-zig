@@ -1,0 +1,446 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "primitive identity",
+      "value": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "ordinary object aliases split",
+      "value": [
+        true,
+        true,
+        true,
+        true,
+        {
+          "left": {
+            "x": [
+              1
+            ]
+          },
+          "right": {
+            "x": [
+              1
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "plain descriptors symbols and unsafe names",
+      "value": [
+        [
+          "x",
+          "hidden"
+        ],
+        [
+          "x",
+          "hidden"
+        ],
+        [
+          "s"
+        ],
+        true,
+        true,
+        {
+          "x": {
+            "v": 1
+          },
+          "hidden": {
+            "v": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "plain getter order",
+      "value": [
+        [
+          "x",
+          "y",
+          "z"
+        ],
+        {
+          "x": {
+            "x": 1
+          },
+          "y": 2,
+          "z": 3
+        },
+        {
+          "value": 3,
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "name": "null prototype becomes ordinary",
+      "value": [
+        true,
+        true,
+        true,
+        {
+          "x": {
+            "v": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "arbitrary custom prototype is discarded",
+      "value": [
+        true,
+        false,
+        {
+          "x": {
+            "v": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "class private state stays atomic",
+      "value": [
+        true,
+        7
+      ]
+    },
+    {
+      "name": "class named Object still plain",
+      "value": [
+        false,
+        true,
+        true,
+        {
+          "x": {
+            "v": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "atomic builtins",
+      "value": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "constructor getter exact read count",
+      "value": [
+        3,
+        true
+      ]
+    },
+    {
+      "name": "constructor getter short circuit",
+      "value": [
+        2,
+        false,
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "schema descriptors retained symbols omitted",
+      "value": [
+        [
+          "type",
+          "properties",
+          "~kind",
+          "hidden"
+        ],
+        [
+          "type",
+          "properties"
+        ],
+        0,
+        true,
+        true,
+        false,
+        true,
+        false,
+        {
+          "value": "Object",
+          "writable": false,
+          "enumerable": false,
+          "configurable": false
+        }
+      ]
+    },
+    {
+      "name": "unsafe schema inherited marker",
+      "value": [
+        [
+          "x"
+        ],
+        [
+          "x",
+          "hidden"
+        ],
+        2,
+        false
+      ]
+    },
+    {
+      "name": "enumerable schema accessor becomes undefined without read",
+      "value": [
+        0,
+        [
+          "~kind",
+          "x"
+        ],
+        {
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "name": "nonenumerable schema accessor descriptor is invalid",
+      "error": {
+        "name": "TypeError",
+        "raw": null
+      }
+    },
+    {
+      "name": "schema skips unsafe descriptor reads",
+      "value": {
+        "~kind": "Object"
+      }
+    },
+    {
+      "name": "sparse arrays preserve holes and omit own extras",
+      "value": [
+        3,
+        [
+          "0",
+          "2"
+        ],
+        true,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "array inherited indexed values",
+      "value": [
+        [
+          "0"
+        ],
+        true,
+        [
+          {
+            "v": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "array override map callback",
+      "value": [
+        1,
+        "",
+        false,
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "typed arrays sliced",
+      "value": [
+        [
+          true,
+          true,
+          true,
+          [
+            "1",
+            "2"
+          ]
+        ],
+        [
+          true,
+          true,
+          true,
+          [
+            "-1",
+            "2"
+          ]
+        ],
+        [
+          true,
+          true,
+          true,
+          [
+            "NaN",
+            "0"
+          ]
+        ],
+        [
+          true,
+          true,
+          true,
+          [
+            "1"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "typed slice override",
+      "value": "custom slice"
+    },
+    {
+      "name": "DataView also dispatched to slice",
+      "error": {
+        "name": "TypeError",
+        "raw": null
+      }
+    },
+    {
+      "name": "RegExp cloned source flags reset state",
+      "value": [
+        true,
+        "x+",
+        "giy",
+        0,
+        false
+      ]
+    },
+    {
+      "name": "Map deep clones key value separately",
+      "value": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        [
+          [
+            {
+              "v": 1
+            },
+            {
+              "v": 1
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "Set deep clones members",
+      "value": [
+        true,
+        true,
+        true,
+        false,
+        [
+          {
+            "v": [
+              1
+            ]
+          },
+          2
+        ]
+      ]
+    },
+    {
+      "name": "Map custom iterator order and cleanup",
+      "value": [
+        [
+          "entries",
+          "iterator",
+          "next",
+          "next"
+        ],
+        [
+          [
+            {
+              "x": 1
+            },
+            {
+              "y": 2
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "Map iterator original thrown value",
+      "error": {
+        "name": null,
+        "raw": "original iterator error"
+      }
+    },
+    {
+      "name": "Set values override",
+      "value": [
+        {
+          "x": 1
+        },
+        2
+      ]
+    },
+    {
+      "name": "ordinary object thrown getter",
+      "error": {
+        "name": null,
+        "raw": "original getter"
+      }
+    },
+    {
+      "name": "schema missing descriptor from proxy",
+      "error": {
+        "name": "TypeError",
+        "raw": null
+      }
+    },
+    {
+      "name": "global instanceof constructors are consulted for primitives",
+      "value": [
+        4,
+        [
+          4
+        ]
+      ]
+    },
+    {
+      "name": "Map spread ignores replaced global Symbol",
+      "value": [
+        [
+          {
+            "x": 1
+          },
+          {
+            "y": 2
+          }
+        ]
+      ]
+    }
+  ]
+}

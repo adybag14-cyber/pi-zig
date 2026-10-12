@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "93bc5c3a9df5fc9a8f9fcf066b976f55a3c6bfa0",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "total_tests": 4,
+  "source_regression_cases": 32,
+  "build_steps": 156,
+  "record": "chord-clone19cb-debug-first-20261012.json",
+  "source_post_files": 4301,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 6,
+  "processes_retired": [
+    52920
+  ],
+  "limits": [
+    "Nonpublic actual TypeBox SystemClone traversal only; global metrics, Default/Clean/Check composition and actual Host records/handles/epoch registries remain further work.",
+    "No synthetic Runtime/createHost facade or public partial Chord package activation.",
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "Native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T20:21:09.7033316+00:00"
+}
