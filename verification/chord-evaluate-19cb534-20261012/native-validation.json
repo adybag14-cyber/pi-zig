@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "native_base": "1622f528f270884dc3d2111f5bd0354a8ebe8be6",
+  "toolchain": "Zig 0.16.0",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "target": "Windows x86_64",
+  "mode": "Debug",
+  "backend": "default LLVM",
+  "jobs": 1,
+  "test_timeout_seconds": 120,
+  "outer_deadline_seconds": 300,
+  "total_tests": 9,
+  "source_worker_cases": 32,
+  "source_compare_narrow_pairs": 625,
+  "source_constructor_axes": 25,
+  "source_normalization_evaluator_cases": 11,
+  "build_steps": 158,
+  "record": "chord-normalization-evaluate19cb-debug-first-20261012.json",
+  "retained_negative": "chord-normalization19cb-debug-first-20261012 genuine worker runtime3/4 failure; original32 assertions unchanged",
+  "repair": "Clean priority preprocessing plus actual Extends/Compare/Instantiate/Evaluate wiring fixed the first original inherited-property failure and passed all32/625/11 original rows",
+  "source_post_files": 4355,
+  "source_post_drift": 0,
+  "tool_post_files": 19546,
+  "tool_post_drift": 0,
+  "qualified_source_paths": 17,
+  "processes_retired": [
+    43072,
+    31272
+  ],
+  "implemented": [
+    "Actual Default/Clean structural Array/Object/Record/Tuple/Ref/Cyclic/Union workers",
+    "Clean UnionPrioritySort schema reconstruction and Priority insertion via genuine Compare/Extends rules",
+    "Primitive/array/object/record/tuple/union Extends; Narrow/Composite/Distribute/Broaden/Flatten/Evaluate intersection algebra",
+    "Contextual structural Instantiate; deferred modifier/Evaluate/With/Partial/Required/Pick/Record routes",
+    "Real private Chord Clone -> Default -> Clean -> Check normalization and invalid-input error composition"
+  ],
+  "limits": [
+    "Full inference, cyclic extends, function/constructor and dependent-type algebra, computed indexers, other deferred variants and settings/metrics remain required and explicitly unresolved.",
+    "Complete normalization error details/metadata and remaining TypeBox public APIs require broader Source qualification.",
+    "Host local-record/handle/registry admission lifecycle remains next required native work.",
+    "No synthetic Runtime/createHost facade or partial public package activation.",
+    "ReleaseSafe and non-Windows runtime were not run in this increment.",
+    "Native-default and removal of Node extension bridge remain unqualified."
+  ],
+  "completed_utc": "2026-10-12T21:05:14.4506775+00:00"
+}

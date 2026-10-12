@@ -684,6 +684,18 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_clone_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_clone_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-clone-source", "Replay original TypeBox SystemClone Host normalization prerequisite and ownership").dependOn(&b.addRunArtifact(chord_clone_tests).step);
+    const chord_normalization_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_normalization_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord normalization workers"} });
+    linkQuickJs(b, chord_normalization_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_normalization_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-normalization-workers-source", "Replay original private Default/Clean workers; Instantiate/Evaluate remains required separately").dependOn(&b.addRunArtifact(chord_normalization_tests).step);
+    const chord_evaluator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_type_evaluator_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord evaluator"} });
+    linkQuickJs(b, chord_evaluator_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_evaluator_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const chord_evaluator_run = b.addRunArtifact(chord_evaluator_tests);
+    b.step("test-native-chord-evaluator-source", "Replay original625 TypeBox Compare/Narrow and11 real Intersect/deferred normalization cases").dependOn(&chord_evaluator_run.step);
+    const chord_normalization_evaluator = b.step("test-native-chord-normalization-evaluate-source", "Replay original32 Default/Clean cases plus actual TypeBox evaluator625/11 and ownership");
+    chord_normalization_evaluator.dependOn(&b.addRunArtifact(chord_normalization_tests).step);
+    chord_normalization_evaluator.dependOn(&chord_evaluator_run.step);
     const storage_lifetime_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{
         "Storage adapter lifetime",
         "agent selections store names from cyclic",

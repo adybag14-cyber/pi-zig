@@ -1,0 +1,509 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "plain schemas only root defaults",
+      "value": [
+        {
+          "z": 2
+        },
+        true,
+        true,
+        {
+          "unknown": 3
+        }
+      ]
+    },
+    {
+      "name": "root default copied and value already defined",
+      "value": [
+        {
+          "nested": [
+            1
+          ]
+        },
+        true,
+        true,
+        true,
+        null,
+        0
+      ]
+    },
+    {
+      "name": "default function receiver getter count",
+      "value": [
+        7,
+        2,
+        1
+      ]
+    },
+    {
+      "name": "default getter reread for clone",
+      "value": [
+        {
+          "read": 2
+        },
+        2
+      ]
+    },
+    {
+      "name": "typed object defaults required optional and undefined",
+      "value": [
+        true,
+        [
+          "x",
+          "optDefault",
+          "undef"
+        ],
+        {
+          "x": 1,
+          "optDefault": 2
+        }
+      ]
+    },
+    {
+      "name": "object nested default plus clean",
+      "value": [
+        {
+          "list": [
+            {
+              "value": "ok"
+            },
+            {
+              "value": "v"
+            }
+          ],
+          "nested": {
+            "x": 1
+          }
+        },
+        {
+          "list": [
+            {
+              "value": "ok"
+            },
+            {
+              "value": "v"
+            }
+          ],
+          "nested": {
+            "x": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "default object traverses arrays while clean leaves them",
+      "value": [
+        true,
+        true,
+        [
+          "0",
+          "x"
+        ],
+        4
+      ]
+    },
+    {
+      "name": "object additional defaults then cleaning",
+      "value": [
+        "{\"x\":1,\"a\":{\"count\":3},\"b\":{\"count\":2,\"extra\":4},\"bad\":9}",
+        {
+          "x": 1,
+          "a": {
+            "count": 3
+          },
+          "b": {
+            "count": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "object additional true kept without default traversal",
+      "value": [
+        true,
+        true,
+        {
+          "x": 1,
+          "y": {
+            "z": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "nonenumerable object keys cleaned",
+      "value": [
+        [
+          "x"
+        ],
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "clean refuses nonconfigurable unknown property",
+      "error": {
+        "name": "TypeError",
+        "raw": null
+      }
+    },
+    {
+      "name": "clean constructor prototype unsafe keys use own checks",
+      "value": []
+    },
+    {
+      "name": "inherited schema properties count as known except unsafe keys",
+      "value": {}
+    },
+    {
+      "name": "array defaults densify and recurse",
+      "value": [
+        true,
+        [
+          "0",
+          "1",
+          "2"
+        ],
+        [
+          7,
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "array clean preserves holes creates result",
+      "value": [
+        true,
+        true,
+        false,
+        [
+          "0",
+          "2"
+        ],
+        [
+          {
+            "x": 1
+          },
+          null,
+          {}
+        ],
+        [
+          {
+            "x": 1
+          },
+          null,
+          {}
+        ]
+      ]
+    },
+    {
+      "name": "array clean override map receives actual callback",
+      "value": [
+        1,
+        "",
+        false,
+        3
+      ]
+    },
+    {
+      "name": "tuple default extends missing trailing positions",
+      "value": [
+        true,
+        [
+          "0",
+          "1",
+          "2"
+        ],
+        [
+          1,
+          "s",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "tuple default keeps extras clean trims new result",
+      "value": [
+        true,
+        true,
+        3,
+        [
+          {
+            "x": 1
+          }
+        ]
+      ]
+    },
+    {
+      "name": "record default only runs known member when direct default exists",
+      "value": {
+        "a": {}
+      }
+    },
+    {
+      "name": "record direct default and unknown defaults",
+      "value": {
+        "a": 2,
+        "abc": 3,
+        "b": "extra"
+      }
+    },
+    {
+      "name": "record clean known recursion unknown check",
+      "value": {
+        "abc": {
+          "x": 1
+        },
+        "b": 2,
+        "c": "drop"
+      }
+    },
+    {
+      "name": "record boolean additional defaults throw on unmatched",
+      "error": {
+        "name": "TypeError",
+        "raw": null
+      }
+    },
+    {
+      "name": "union default candidate clones first valid",
+      "value": [
+        true,
+        {
+          "x": 1
+        },
+        {}
+      ]
+    },
+    {
+      "name": "union clean first valid and unmatched returns original",
+      "value": [
+        true,
+        {
+          "y": "s"
+        },
+        {
+          "y": "s",
+          "extra": 1
+        },
+        true
+      ]
+    },
+    {
+      "name": "union context reference checks",
+      "value": {
+        "x": 3
+      }
+    },
+    {
+      "name": "union iterator closes on matching branch",
+      "value": [
+        1,
+        [
+          "start",
+          "close"
+        ]
+      ]
+    },
+    {
+      "name": "union cleanup original value propagation",
+      "error": {
+        "name": null,
+        "raw": "original close"
+      }
+    },
+    {
+      "name": "ref resolves context and leaves missing ref untouched",
+      "value": [
+        true,
+        {
+          "x": 5
+        },
+        {
+          "x": 1
+        },
+        true
+      ]
+    },
+    {
+      "name": "cyclic definitions shadow context",
+      "value": [
+        {
+          "x": 6
+        },
+        {
+          "x": 2
+        }
+      ]
+    },
+    {
+      "name": "nested cyclic optional linked data",
+      "value": {
+        "next": {
+          "x": 1
+        },
+        "x": 1
+      }
+    },
+    {
+      "name": "default boolean schema is invalid while clean stays atomic",
+      "value": [
+        "TypeError",
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "worker type guard getter sequence",
+      "value": [
+        7,
+        [
+          "kind",
+          "kind",
+          "kind",
+          "kind",
+          "kind",
+          "kind",
+          "kind",
+          "kind"
+        ]
+      ]
+    }
+  ],
+  "evaluator_cases": [
+    {
+      "name": "intersect local input defaults",
+      "value": {
+        "x": 1,
+        "y": "s"
+      }
+    },
+    {
+      "name": "intersect optional shared property modifiers",
+      "value": [
+        {
+          "left": 2,
+          "right": "r"
+        },
+        {
+          "x": 3,
+          "left": 2,
+          "right": "r"
+        }
+      ]
+    },
+    {
+      "name": "intersect nested union distribution",
+      "value": [
+        {
+          "a": 1,
+          "c": true
+        },
+        {
+          "a": 1,
+          "c": true
+        }
+      ]
+    },
+    {
+      "name": "intersect incompatible primitive schemas",
+      "value": [
+        null,
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "intersect unevaluated fields reinterpreted",
+      "value": {
+        "x": 1,
+        "extra": 2
+      }
+    },
+    {
+      "name": "intersect context ref instantiation",
+      "value": [
+        {
+          "x": 4,
+          "y": "y"
+        },
+        {
+          "x": 1,
+          "y": "a"
+        }
+      ]
+    },
+    {
+      "name": "normalization forbids literal number conversion",
+      "error": {
+        "name": "ChordError",
+        "code": "invalid",
+        "reason": "input",
+        "message": "invalid/input: input: /x must be number"
+      }
+    },
+    {
+      "name": "intersect record and object composite",
+      "value": [
+        {
+          "x": 9
+        },
+        {
+          "x": 1
+        }
+      ]
+    },
+    {
+      "name": "intersect deferred Pick resolves context first",
+      "value": [
+        "Deferred",
+        "Pick",
+        {
+          "x": 4,
+          "y": "y"
+        },
+        {
+          "x": 1,
+          "y": "a"
+        }
+      ]
+    },
+    {
+      "name": "intersect deferred Partial then Required",
+      "value": [
+        "Required",
+        {
+          "x": 5,
+          "z": true
+        },
+        {
+          "x": 1,
+          "y": "a",
+          "z": false
+        }
+      ]
+    },
+    {
+      "name": "intersect deferred Record over literal keys",
+      "value": [
+        "Record",
+        {
+          "x": 8,
+          "y": 8,
+          "z": "z"
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "z": "a"
+        }
+      ]
+    }
+  ]
+}
