@@ -1,0 +1,266 @@
+{
+  "junctionsBefore": [
+    {
+      "path": "node_modules/@earendil-works/chord",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\chord",
+      "device": "370509649",
+      "inode": "844424941570466"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-agent-core",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\agent",
+      "device": "370509649",
+      "inode": "844424941570464"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-ai",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\ai",
+      "device": "370509649",
+      "inode": "844424941570463"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-codemode",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\codemode",
+      "device": "370509649",
+      "inode": "844424941570460"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent",
+      "device": "370509649",
+      "inode": "844424941570459"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-durable",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\durable",
+      "device": "370509649",
+      "inode": "844424941570455"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-env",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\env",
+      "device": "370509649",
+      "inode": "844424941570456"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-evals",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\evals",
+      "device": "370509649",
+      "inode": "844424941570450"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-mcp",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\mcp",
+      "device": "370509649",
+      "inode": "844424941570443"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-telemetry",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\telemetry",
+      "device": "370509649",
+      "inode": "844424941570453"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-tui",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui",
+      "device": "370509649",
+      "inode": "844424941570440"
+    },
+    {
+      "path": "node_modules/pi-extension-custom-provider-anthropic",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-anthropic",
+      "device": "370509649",
+      "inode": "844424941570452"
+    },
+    {
+      "path": "node_modules/pi-extension-custom-provider-gitlab-duo",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-gitlab-duo",
+      "device": "370509649",
+      "inode": "844424941570444"
+    },
+    {
+      "path": "node_modules/pi-extension-gondolin",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\gondolin",
+      "device": "370509649",
+      "inode": "844424941570447"
+    },
+    {
+      "path": "node_modules/pi-extension-sandbox",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\sandbox",
+      "device": "370509649",
+      "inode": "844424941570442"
+    },
+    {
+      "path": "node_modules/pi-extension-with-deps",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\with-deps",
+      "device": "370509649",
+      "inode": "844424941570448"
+    }
+  ],
+  "junctionsAfter": [
+    {
+      "path": "node_modules/@earendil-works/chord",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\chord",
+      "device": "370509649",
+      "inode": "844424941570466"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-agent-core",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\agent",
+      "device": "370509649",
+      "inode": "844424941570464"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-ai",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\ai",
+      "device": "370509649",
+      "inode": "844424941570463"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-codemode",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\codemode",
+      "device": "370509649",
+      "inode": "844424941570460"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent",
+      "device": "370509649",
+      "inode": "844424941570459"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-durable",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\durable",
+      "device": "370509649",
+      "inode": "844424941570455"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-env",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\env",
+      "device": "370509649",
+      "inode": "844424941570456"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-evals",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\evals",
+      "device": "370509649",
+      "inode": "844424941570450"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-mcp",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\mcp",
+      "device": "370509649",
+      "inode": "844424941570443"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-telemetry",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\telemetry",
+      "device": "370509649",
+      "inode": "844424941570453"
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-tui",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\tui",
+      "device": "370509649",
+      "inode": "844424941570440"
+    },
+    {
+      "path": "node_modules/pi-extension-custom-provider-anthropic",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-anthropic",
+      "device": "370509649",
+      "inode": "844424941570452"
+    },
+    {
+      "path": "node_modules/pi-extension-custom-provider-gitlab-duo",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\custom-provider-gitlab-duo",
+      "device": "370509649",
+      "inode": "844424941570444"
+    },
+    {
+      "path": "node_modules/pi-extension-gondolin",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\gondolin",
+      "device": "370509649",
+      "inode": "844424941570447"
+    },
+    {
+      "path": "node_modules/pi-extension-sandbox",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\sandbox",
+      "device": "370509649",
+      "inode": "844424941570442"
+    },
+    {
+      "path": "node_modules/pi-extension-with-deps",
+      "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\examples\\extensions\\with-deps",
+      "device": "370509649",
+      "inode": "844424941570448"
+    }
+  ],
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "original": "Actual runPrintMode, AgentSessionRuntime, AgentSession, ModelRuntime and original provider stream; only standard output sinks observed. No Source methods/classes replaced.",
+  "rows": [
+    {
+      "name": "length",
+      "mode": "text",
+      "exitCode": 1,
+      "stdout": "partial\n",
+      "stderr": "Response was truncated: the model reached its output token limit.\n",
+      "turns": 1
+    },
+    {
+      "name": "empty-length",
+      "mode": "text",
+      "exitCode": 1,
+      "stdout": "\n",
+      "stderr": "Response was truncated: the model reached its output token limit.\n",
+      "turns": 1
+    },
+    {
+      "name": "stop",
+      "mode": "text",
+      "exitCode": 0,
+      "stdout": "complete\n",
+      "stderr": "",
+      "turns": 1
+    },
+    {
+      "name": "earlier-length-final-stop",
+      "mode": "text",
+      "exitCode": 0,
+      "stdout": "complete\n",
+      "stderr": "",
+      "turns": 2
+    },
+    {
+      "name": "earlier-stop-final-length",
+      "mode": "text",
+      "exitCode": 1,
+      "stdout": "partial\n",
+      "stderr": "Response was truncated: the model reached its output token limit.\n",
+      "turns": 2
+    },
+    {
+      "name": "json-length",
+      "mode": "json",
+      "exitCode": 0,
+      "stdout": "{\"type\":\"session\",\"version\":3,\"id\":\"01a130bc-d732-772e-aa5d-9c03078e01b1\",\"timestamp\":\"2026-10-12T15:30:44.658Z\",\"cwd\":\"C:\\\\Users\\\\adyba\\\\pi-upstream-runtime-19cb534-20261012\"}\n{\"type\":\"agent_start\"}\n{\"type\":\"turn_start\"}\n{\"type\":\"message_start\",\"message\":{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"fixture\",\"cwd\":\"<cwd>\\nC:/Users/adyba/pi-upstream-runtime-19cb534-20261012\\n</cwd>\"},\"timestamp\":1791819044659}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"fixture\",\"cwd\":\"<cwd>\\nC:/Users/adyba/pi-upstream-runtime-19cb534-20261012\\n</cwd>\"},\"timestamp\":1791819044659}}\n{\"type\":\"message_start\",\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"first\"}],\"timestamp\":1791819044659}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"first\"}],\"timestamp\":1791819044659}}\n{\"type\":\"message_start\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"partial\"}],\"api\":\"fixture\",\"provider\":\"print-fixture\",\"model\":\"print\",\"usage\":{\"input\":0,\"output\":64,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":64,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"length\",\"timestamp\":1,\"thinkingLevel\":\"off\"}}\n{\"type\":\"message_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"partial\"}],\"api\":\"fixture\",\"provider\":\"print-fixture\",\"model\":\"print\",\"usage\":{\"input\":0,\"output\":64,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":64,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"length\",\"timestamp\":1,\"thinkingLevel\":\"off\"}}\n{\"type\":\"turn_end\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"partial\"}],\"api\":\"fixture\",\"provider\":\"print-fixture\",\"model\":\"print\",\"usage\":{\"input\":0,\"output\":64,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":64,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"length\",\"timestamp\":1,\"thinkingLevel\":\"off\"},\"toolResults\":[]}\n{\"type\":\"agent_end\",\"messages\":[{\"role\":\"system\",\"content\":\"\",\"sections\":{\"preamble\":\"fixture\",\"cwd\":\"<cwd>\\nC:/Users/adyba/pi-upstream-runtime-19cb534-20261012\\n</cwd>\"},\"timestamp\":1791819044659},{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"first\"}],\"timestamp\":1791819044659},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"partial\"}],\"api\":\"fixture\",\"provider\":\"print-fixture\",\"model\":\"print\",\"usage\":{\"input\":0,\"output\":64,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":64,\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0,\"total\":0}},\"stopReason\":\"length\",\"timestamp\":1,\"thinkingLevel\":\"off\"}],\"willRetry\":false}\n{\"type\":\"agent_settled\",\"aborted\":false}\n",
+      "stderr": "",
+      "turns": 1
+    },
+    {
+      "name": "error",
+      "mode": "text",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "fixture failure\n",
+      "turns": 1
+    },
+    {
+      "name": "aborted",
+      "mode": "text",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Request aborted\n",
+      "turns": 1
+    }
+  ]
+}

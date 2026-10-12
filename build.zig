@@ -2085,6 +2085,15 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/tool_helper.zig"), .target = target, .optimize = optimize }),
     });
     const install_tool_fixture = b.addInstallArtifact(tool_fixture, .{});
+    const print_mode_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/print_mode_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const print_mode_run = b.addRunArtifact(print_mode_tests);
+    print_mode_run.step.dependOn(b.getInstallStep());
+    print_mode_run.setEnvironmentVariable("PI_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    b.step("test-print-mode-process", "Exercise final print truncation exit status, stderr, partial stdout, JSON isolation and saved sessions").dependOn(&print_mode_run.step);
+    test_step.dependOn(&print_mode_run.step);
     const session_update_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/session_update_process_test.zig"), .target = target, .optimize = optimize }),
     });

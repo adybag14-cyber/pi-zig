@@ -5,6 +5,26 @@ const agent_loop = @import("../agent/loop.zig");
 const session_mod = @import("../agent/session.zig");
 const tui_render = @import("../tui/render.zig");
 
+/// Print mode inspects the final active message, not an earlier truncated
+/// response or a message on an inactive branch. Session metadata is not a
+/// message; custom messages and summary boundaries end assistant eligibility.
+pub fn printResponseTruncated(gpa: std.mem.Allocator, sess: *const session_mod.Session) !bool {
+    const entries = try sess.contextEntries(gpa);
+    defer gpa.free(entries);
+    var i = entries.len;
+    while (i > 0) {
+        i -= 1;
+        const entry = entries[i];
+        if (sess.isEntryExcludedFromActiveContext(entry.id)) continue;
+        switch (entry.entry_type) {
+            .message => return std.mem.eql(u8, entry.role, "assistant") and std.mem.eql(u8, entry.meta.stop_reason, "length"),
+            .custom_message, .compaction, .branch_summary => return false,
+            else => {},
+        }
+    }
+    return false;
+}
+
 pub const JsonEmitter = struct {
     io: Io,
     session_id: []const u8 = "",

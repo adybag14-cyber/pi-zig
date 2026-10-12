@@ -3227,11 +3227,13 @@ fn runInteractiveReleaseLifecycle(
     }
 }
 
-pub fn main(init: std.process.Init) !void {
-    runMain(init) catch |err| {
+pub fn main(init: std.process.Init) !u8 {
+    var exit_code: u8 = 0;
+    runMain(init, &exit_code) catch |err| {
         if (err == error.DeadTerminal) std.process.exit(129);
         return err;
     };
+    return exit_code;
 }
 
 fn parseExtensionBackend(value: ?[]const u8) !extensions.js_runtime.Backend {
@@ -3331,7 +3333,7 @@ test "production extension backend selector defaults legacy and rejects unknown 
     try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend("unknown"));
 }
 
-fn runMain(init: std.process.Init) !void {
+fn runMain(init: std.process.Init, exit_code: *u8) !void {
     const arena = init.arena.allocator();
     const gpa = init.gpa;
     var io = init.io;
@@ -5017,6 +5019,14 @@ fn runMain(init: std.process.Init) !void {
             }
         }
         std.debug.assert(completed_prompts == prompt_count);
+
+        // Pi 19cb534 reports a truncated final assistant response only in
+        // text print mode, after its partial text has reached stdout. Return
+        // the status through main so session/extension teardown still runs.
+        if (cli.mode != .json and try coding.modes.printResponseTruncated(gpa, &sess)) {
+            try Io.File.stderr().writeStreamingAll(io, "Response was truncated: the model reached its output token limit.\n");
+            exit_code.* = 1;
+        }
 
         if (session_path) |sp| {
             if (!cli.no_session) try sess.save(io, sp);
