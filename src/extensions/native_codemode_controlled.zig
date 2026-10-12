@@ -9,6 +9,7 @@ const worker_mod = @import("../mcp/codemode_vm_worker.zig");
 const run_mod = @import("../mcp/codemode_run.zig");
 const host_mod = @import("../mcp/codemode_run_host.zig");
 const json = @import("../mcp/protocol.zig").json;
+const scopes = @import("native_async_scope.zig");
 const Pending = struct { record: ?usize, started: i64 };
 const Owner = struct {
     engine: *Engine,
@@ -24,6 +25,7 @@ const Owner = struct {
     on_idle: c.JSValue,
     signal: c.JSValue,
     abort_listener: c.JSValue,
+    async_scope: c.JSValue,
 
     fn release(self: *Owner) void {
         if (self.worker) |worker| worker.deinit();
@@ -31,7 +33,7 @@ const Owner = struct {
         self.pending.deinit(self.engine.gpa);
         self.data.deinit();
         if (self.selected) |*value| value.deinit();
-        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener" }) |name| self.engine.freeValue(@field(self, name));
+        inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope" }) |name| self.engine.freeValue(@field(self, name));
         self.engine.gpa.destroy(self);
     }
     fn elapsed(self: *Owner, began: i64) i64 {
@@ -92,6 +94,8 @@ const Owner = struct {
     }
     fn event(self: *Owner, value: json.Value) !void {
         if (self.finished) return;
+        const guard = scopes.enter(self.engine, self.async_scope);
+        defer guard.restore();
         const kind = value.object.get("type").?.string;
         var scope: Scope = .{ .engine = self.engine };
         defer scope.deinit();
@@ -136,7 +140,7 @@ fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state = owner(value) orelse return;
-    inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
+    inline for (.{ "resolve", "on_started", "on_call", "on_idle", "signal", "abort_listener", "async_scope" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
 }
 fn hub(engine: *Engine) !*Hub {
     if (engine.native_codemode_owner) |raw| return @ptrCast(@alignCast(raw));
@@ -191,6 +195,8 @@ fn pump(engine: *Engine) !bool {
             try state.event(event.value);
         }
         if (state.finished and worker.isCompleted()) {
+            const guard = scopes.enter(engine, state.async_scope);
+            defer guard.restore();
             worker.join();
             const result = try parsed(engine, state.selected.?.value);
             defer engine.freeValue(result);
@@ -384,7 +390,7 @@ pub fn start(engine: *Engine, code: c.JSValue, options: c.JSValue, memory_limit:
         data.deinit();
     };
     const state = try engine.gpa.create(Owner);
-    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined() };
+    state.* = .{ .engine = engine, .host = host, .data = data, .resolve = c.JS_DupValue(engine.context, functions[0]), .on_started = c.JS_DupValue(engine.context, on_started), .on_call = c.JS_DupValue(engine.context, on_call), .on_idle = c.JS_DupValue(engine.context, on_idle), .signal = c.JS_DupValue(engine.context, signal), .abort_listener = c.pi_js_undefined(), .async_scope = scopes.capture(engine) };
     _ = c.JS_SetOpaque(handle, state);
     transferred = true;
     state.data.value = .{ .object = .empty };

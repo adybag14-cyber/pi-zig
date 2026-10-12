@@ -187,3 +187,11 @@ wait-cycle rejection in durable scheduling and clarifies MCP login timeout text.
 The latest immutable reference build and native wait-cycle port remain pending.
 The original certified baseline fields in config.zig do not certify these newer
 features; the target API version and structural captures are separate evidence.
+The JavaScript controlled-run owner now captures and roots its private start scope
+and restores it around worker callbacks and result resolution. Actual original
+148622 AsyncLocalStorage capture records started/call/idle in start scope and the
+awaiting continuation in its distinct wait scope. The native ownership-token
+trace matches that complete observation. All four targeted owner tests passed,
+including the earlier eleven Source outcomes and full allocation sweep; all
+4,067 source and 19,546 tool inputs were unchanged. The initial nested fixture
+self-type compile error is retained; it is not counted as a runtime failure.

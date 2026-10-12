@@ -108,3 +108,58 @@ test "native CodeMode JavaScript owner releases failed owner allocations before 
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Lifecycle.exercise, .{});
 }
+
+test "native CodeMode JavaScript owner preserves genuine original start callback and waiter async scopes" {
+    const scopes = @import("extensions/native_async_scope.zig");
+    const Fixture = struct {
+        const Self = @This();
+        active: u8 = 0,
+        const Tag = struct { fixture: *Self, value: u8 };
+        fn enter(raw: ?*anyopaque) void {
+            const tag: *Tag = @ptrCast(@alignCast(raw.?));
+            tag.fixture.active = tag.value;
+        }
+        fn leave(raw: ?*anyopaque) void {
+            const tag: *Tag = @ptrCast(@alignCast(raw.?));
+            tag.fixture.active = 0;
+        }
+        fn current(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const engine = em.Engine.fromContext(context.?);
+            const self: *@This() = @ptrCast(@alignCast(engine.host_data.?));
+            return c.JS_NewString(context, if (self.active == 1) "start" else if (self.active == 2) "wait" else "none");
+        }
+    };
+    var fixture: Fixture = .{};
+    const engine = try prepare(std.testing.allocator);
+    defer engine.deinit();
+    engine.host_data = &fixture;
+    var starting: Fixture.Tag = .{ .fixture = &fixture, .value = 1 };
+    var waiting: Fixture.Tag = .{ .fixture = &fixture, .value = 2 };
+    const start_scope = try scopes.create(engine, &starting, Fixture.enter, Fixture.leave);
+    defer engine.freeValue(start_scope);
+    const wait_scope = try scopes.create(engine, &waiting, Fixture.enter, Fixture.leave);
+    defer engine.freeValue(wait_scope);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "currentScope", try engine.checked(c.JS_NewCFunction(engine.context, Fixture.current, "currentScope", 0))) < 0) return error.JavaScriptException;
+    {
+        const guard = scopes.enter(engine, start_scope);
+        defer guard.restore();
+        const value = try engine.eval("globalThis.scopeEvents=[];globalThis.scopedRun=nativeStart('return await tools.echo(7)',{startedAt:0,seed:1,tools:[{name:'echo'}],onStarted(){scopeEvents.push(['started',currentScope()])},onCall(call){scopeEvents.push(['call',currentScope()]);queueMicrotask(()=>scopedRun.deliver(1,1,call.id,{ok:true,value:call.args}))},onIdle(){scopeEvents.push(['idle',currentScope()])}})", "start-scope.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(value);
+    }
+    const guard = scopes.enter(engine, wait_scope);
+    defer guard.restore();
+    engine.host_await_deadline_ms = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 5000;
+    const promise = try engine.eval("scopedRun.result.then(result=>{scopeEvents.push(['done',currentScope(),result.ok,result.value]);return scopeEvents})", "wait-scope.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    const result = try engine.awaitValue(promise);
+    defer engine.freeValue(result);
+    const bytes = try engine.stringify(result);
+    defer std.testing.allocator.free(bytes);
+    var actual = try json.Owned.parse(std.testing.allocator, bytes);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("mcp/fixtures/codemode-run-148622-async-scope-source.json"));
+    defer source.deinit();
+    try std.testing.expect(json.equal(source.value.object.get("events").?, actual.value));
+}
