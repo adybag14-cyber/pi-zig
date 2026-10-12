@@ -45,3 +45,6 @@ verification/chord-context-19cb534-20261012/** whitespace=blank-at-eol,-blank-at
 verification/sdk-send-user-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/chord-resource-original-19cb.input.txt whitespace=cr-at-eol
 verification/chord-resource-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+
+# Actual hosted/core runtime receipts retain their original terminal boundaries.
+verification/hosted-group-repair-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

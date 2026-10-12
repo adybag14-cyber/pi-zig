@@ -7,6 +7,7 @@ const artifacts = @import("artifacts.zig");
 const release = @import("release.zig");
 const upstream_contract = @import("upstream_contract.zig");
 const composed_coverage = @import("native_composed_coverage.zig");
+const agent_coverage = @import("agent_allocation_coverage.zig");
 const release_config = @import("release_config");
 
 const forbidden_names = [_][]const u8{
@@ -235,6 +236,15 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
+    if (args.len == 6 and std.mem.eql(u8, args[1], "verify-agent-allocation-group")) {
+        const shards = try std.fmt.parseInt(usize, args[3], 10);
+        const group = try std.fmt.parseInt(usize, args[4], 10);
+        const groups = try std.fmt.parseInt(usize, args[5], 10);
+        try agent_coverage.verifyDirectory(init.gpa, init.io, args[2], shards, group, groups);
+        try writer.writeAll("Agent runtime allocation group coverage passed.\n");
+        try writer.flush();
+        return;
+    }
     if (args.len == 3 and std.mem.eql(u8, args[1], "verify-command-allocation-coverage")) {
         const log = try std.Io.Dir.cwd().readFileAlloc(init.io, args[2], init.gpa, .limited(16 * 1024 * 1024));
         defer init.gpa.free(log);
@@ -345,6 +355,7 @@ pub fn main(init: std.process.Init) !void {
     }
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
         "       pi-maintenance verify-composed-coverage <repository> <test-log>\n" ++
+        "       pi-maintenance verify-agent-allocation-group <log-directory> <shards> <group> <groups>\n" ++
         "       pi-maintenance verify-command-allocation-coverage <test-log>\n" ++
         "       pi-maintenance verify-live-allocation-coverage <test-log>\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++

@@ -1357,6 +1357,8 @@ pub fn build(b: *std.Build) void {
     const agent_contract_compile = b.step("build-native-agent-contract", "Compile both Agent contract artifacts separately from their bounded runtime checks");
     agent_contract_compile.dependOn(&agent_loop_tests.step);
     agent_contract_compile.dependOn(&agent_complete_tests.step);
+    b.step("build-native-agent-loop", "Compile the AgentLoop contract artifact without running its tests").dependOn(&agent_loop_tests.step);
+    b.step("build-native-agent-complete", "Compile the complete Agent contract artifact without running its tests").dependOn(&agent_complete_tests.step);
     const sdk_await_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_await_primitives_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK await primitives"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_await_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_await_tests.root_module.addImport("catalog_tool", catalog_tool);
@@ -2276,6 +2278,36 @@ pub fn build(b: *std.Build) void {
     const run_catalog_projection_tests = b.addRunArtifact(catalog_projection_tests);
     const catalog_projection_step = b.step("test-catalog-projection", "Check native catalog projection against the prior generator");
     catalog_projection_step.dependOn(&run_catalog_projection_tests.step);
+    const agent_coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/agent_allocation_coverage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    b.step("test-agent-allocation-coverage", "Check each platform group's actual Agent runtime marker ingestion").dependOn(&b.addRunArtifact(agent_coverage_tests).step);
+
+    // Select compile/install prerequisites from the existing runtime targets.
+    // Their test runners remain outside these cold-compilation steps, including
+    // the nested fatal-application checks and process-fixture dependencies.
+    addCompileOnlyGroup(b, "build-hosted-core-components", &.{ "test-native-codemode-sandbox", "test-native-codemode-run", "test-native-codemode-vm-worker", "test-native-codemode-controlled-binding", "test-native-durable-148622-wait-cycle", "test-native-durable-json-dto", "test-native-physical-stdio", "test-codemode-inline", "test-codemode-allocation", "test-durable-scheduler", "test-durable-json-clone" });
+    addCompileOnlyGroup(b, "build-hosted-latest-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-custom-editor-frontend", "test-extension-filesystem", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured", "test-native-tui-alt-source", "test-native-tui-base-source" });
+    addCompileOnlyGroup(b, "build-hosted-model-components", &.{"test-native-durable-codemode-model-catalog"});
+    addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance" });
+    addCompileOnlyGroup(b, "build-hosted-chord-components", &.{"test-native-chord-context-source"});
+    addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{"test-native-sdk-send-user"});
+}
+
+fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
+    const target = b.step(name, "Compile hosted component artifacts and install fixtures without running tests");
+    var visited: std.AutoHashMap(*std.Build.Step, void) = .init(b.allocator);
+    defer visited.deinit();
+    for (runtime_names) |runtime_name| {
+        const source = &b.top_level_steps.get(runtime_name).?.step;
+        addCompilePrerequisites(target, source, &visited) catch @panic("OOM");
+    }
+}
+
+fn addCompilePrerequisites(target: *std.Build.Step, source: *std.Build.Step, visited: *std.AutoHashMap(*std.Build.Step, void)) !void {
+    if ((try visited.getOrPut(source)).found_existing) return;
+    switch (source.id) {
+        .compile, .install_artifact, .install_dir, .install_file => target.dependOn(source),
+        else => for (source.dependencies.items) |dependency| try addCompilePrerequisites(target, dependency, visited),
+    }
 }
 
 fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {

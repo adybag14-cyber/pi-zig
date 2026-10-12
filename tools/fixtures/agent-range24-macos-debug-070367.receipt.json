@@ -1,0 +1,11 @@
+{
+  "source": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38290825154/job/114954977836",
+  "head": "07036735a29da746d6b665a4de4bd941a690a6d6",
+  "group": 3,
+  "groups": 8,
+  "shards": 64,
+  "range": 24,
+  "extraction": "Verbatim actual SDK runtime allocation markers and actual Build Summary line; GitHub timestamp and ANSI formatting removed. No marker values invented.",
+  "raw_log_sha256": "8E685BEA5BDC58E7E30906BD6DF120F7BDFA068B81CDD7CD0D4D9B8E4F103DD3",
+  "fixture_sha256": "38C75A080E4FF9A3B1EA6C63A70CD25A1EEC1DFD608785A7E4DF1599D6579AFA"
+}
