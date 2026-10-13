@@ -793,7 +793,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, persistent_auth_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(persistent_auth_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-auth-storage-persistent", "Replay original AuthStorage Source over real owned files and native directory locks").dependOn(&b.addRunArtifact(persistent_auth_tests).step);
-    const auth_timer_control_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_timer_controls_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "extensions.timers.", "native allocation original identity" } });
+    const auth_timer_control_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_timer_controls_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "extensions.timers.", "native allocation original identity", "native authentication selected timer inventory" } });
     linkQuickJs(b, auth_timer_control_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(auth_timer_control_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-auth-timer-controls", "Verify shared timer failure provenance and original native allocation identity controls").dependOn(&b.addRunArtifact(auth_timer_control_tests).step);

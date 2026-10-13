@@ -8,7 +8,7 @@
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
   "file_count_excluding_FILES_sha256": 4505,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 271713539,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 271715143,
   "generated_catalog": {
     "models": 1631,
     "providers": 42,
@@ -23,7 +23,7 @@
   },
   "zig_source": {
     "files": 1155,
-    "lines": 382879
+    "lines": 382890
   },
   "excluded_generated_paths": [
     ".git",
