@@ -195,7 +195,8 @@ pub fn copyText(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Optio
 }
 
 pub fn isRemoteSession(environ: ?*const std.process.Environ.Map) bool {
-    return envHas(environ, "SSH_CONNECTION") or envHas(environ, "SSH_CLIENT") or envHas(environ, "MOSH_CONNECTION");
+    return envHas(environ, "SSH_CONNECTION") or envHas(environ, "SSH_CLIENT") or envHas(environ, "MOSH_CONNECTION") or
+        std.mem.eql(u8, envGet(environ, "PI_CLIPBOARD_OSC52") orelse "", "1");
 }
 
 fn copyNative(gpa: std.mem.Allocator, io: Io, text: []const u8, options: Options) bool {
@@ -919,6 +920,21 @@ test "Wayland copy prefers native wl-copy without OSC 52 locally" {
     try std.testing.expect(!result.osc52);
     try std.testing.expectEqual(@as(usize, 1), fake.calls);
     try std.testing.expectEqual(@as(usize, 0), sink.bytes.items.len);
+    // Pi 1.2 also copies to the client terminal when its remote transport has
+    // no SSH/Mosh markers. Only the exact opt-in value enables this path.
+    for ([_][]const u8{ "", "0", "true", "01", "1" }) |value| {
+        try env.put("PI_CLIPBOARD_OSC52", value);
+        sink.bytes.clearRetainingCapacity();
+        const opted_in = try copyText(std.testing.allocator, std.testing.io, "copy me", .{
+            .environ = &env,
+            .platform = .linux,
+            .write_runner = .{ .context = &fake, .run_fn = Fake.run },
+            .output_writer = .{ .context = &sink, .write_fn = Sink.write },
+        });
+        try std.testing.expect(opted_in.native);
+        try std.testing.expectEqual(std.mem.eql(u8, value, "1"), opted_in.osc52);
+        try std.testing.expectEqualStrings(if (opted_in.osc52) "\x1b]52;c;Y29weSBtZQ==\x07" else "", sink.bytes.items);
+    }
 }
 
 test "Wayland copy falls back to X11 and remote sessions also emit bounded OSC 52" {

@@ -27,6 +27,12 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     b.step("test-codemode-source", "Compare ECMAScript source directives with actual upstream results").dependOn(&b.addRunArtifact(codemode_source_tests).step);
+    const latest12_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/latest12_small_contracts_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "native codemode source", "Wayland copy", "latest Pi 1.2 selected inventory" },
+        .use_llvm = use_llvm,
+    });
+    b.step("test-latest12-small-contracts", "Replay latest directive placement and explicit remote clipboard opt-in").dependOn(&b.addRunArtifact(latest12_tests).step);
     const native_photon_library = @import("tools/build_photon.zig").library(b, target, optimize);
     const native_photon_link = b.addModule("native_photon_link", .{ .root_source_file = b.path("src/ai/photon_session.zig"), .target = target, .optimize = optimize, .link_libc = true });
     native_photon_link.addIncludePath(b.path("vendor/photon-native"));

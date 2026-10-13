@@ -47,8 +47,18 @@ fn unsupported(object: std.json.ObjectMap) ?[]const u8 {
     }
     return numeric_key orelse first;
 }
+fn misplacedOptionsLine(source: []const u8) ?usize {
+    var lines = std.mem.splitScalar(u8, source, '\n');
+    var number: usize = 0;
+    while (lines.next()) |line| {
+        number += 1;
+        if (number > 1 and std.mem.startsWith(u8, trim(line, true), prefix)) return number;
+    }
+    return null;
+}
 pub fn parse(gpa: std.mem.Allocator, source: []const u8) !Parsed {
     if (trim(source, false).len == 0) return error.EmptyCodemodeSource;
+    if (misplacedOptionsLine(source) != null) return error.MisplacedCodemodeOptions;
     const newline = std.mem.indexOfScalar(u8, source, '\n');
     const line = source[0 .. newline orelse source.len];
     const first = trim(if (std.mem.endsWith(u8, line, "\r")) line[0 .. line.len - 1] else line, true);
@@ -86,6 +96,9 @@ pub fn diagnostic(cause: anyerror) []const u8 {
     };
 }
 pub fn diagnosticForInput(gpa: std.mem.Allocator, input: []const u8, cause: anyerror) ![]u8 {
+    if (cause == error.MisplacedCodemodeOptions) {
+        if (misplacedOptionsLine(input)) |line| return std.fmt.allocPrint(gpa, "The // @options: line must be the first line of the input; found one on line {d}", .{line});
+    }
     if (cause != error.UnsupportedCodemodeOption) return gpa.dupe(u8, diagnostic(cause));
     const newline = std.mem.indexOfScalar(u8, input, '\n') orelse input.len;
     const first = trim(input[0..newline], true);
@@ -105,6 +118,29 @@ test "native codemode source directives preserve original line numbers and rejec
     try std.testing.expectError(error.InvalidCodemodeTimeout, parse(std.testing.allocator, "// @options: {\"timeout_ms\":0}\nreturn 1"));
     try std.testing.expectError(error.InvalidCodemodeOutputTokens, parse(std.testing.allocator, "// @options: {\"max_output_tokens\":-1}\nreturn 1"));
     try std.testing.expectError(error.UnsupportedCodemodeOption, parse(std.testing.allocator, "// @options: {\"unknown\":1}\nreturn 1"));
+}
+
+test "native codemode source latest Pi 1.2 rejects misplaced directives with original error precedence" {
+    const gpa = std.testing.allocator;
+    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-source-e6220e1.json"));
+    defer fixture.deinit();
+    const rows = fixture.value.object.get("rows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 20), rows.len);
+    for (rows) |row| {
+        const input = row.object.get("input").?.string;
+        const actual = parse(gpa, input) catch |cause| {
+            const message = try diagnosticForInput(gpa, input, cause);
+            defer gpa.free(message);
+            const expected = row.object.get("error") orelse return error.UnexpectedLatestSourceError;
+            try std.testing.expectEqualStrings(expected.object.get("message").?.string, message);
+            continue;
+        };
+        const expected = row.object.get("result") orelse return error.ExpectedLatestSourceError;
+        try std.testing.expectEqualStrings(expected.object.get("code").?.string, actual.code);
+        const options = expected.object.get("options").?.object;
+        try std.testing.expectEqual(if (options.get("maxOutputTokens")) |v| try json.asInteger(v) else @as(?u64, null), actual.max_output_tokens);
+        try std.testing.expectEqual(if (options.get("timeoutMs")) |v| @as(u32, @intCast(try json.asInteger(v))) else @as(?u32, null), actual.timeout_ms);
+    }
 }
 
 test "native codemode source ECMA whitespace key order and numeric validation match actual ea Source" {
