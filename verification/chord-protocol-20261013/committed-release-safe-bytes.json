@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "head": "76a092505f3eeddfc6a8dbdd328615ff8d3adc7c",
+  "tree": "c9629d36f74bd719435627c78475a160f7ae48ef",
+  "release_safe_source_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-composition-protocol-releasesafe-raw-throw-first-20261013-source-before.json",
+  "manifest_sha256": "9BC3317BD32FC423899EAABB23E9116A4DE071FE0C630818DBB8FA6CBDD8D5D1",
+  "committed_blobs_checked": 4816,
+  "committed_byte_drift": 0,
+  "drift": [],
+  "reader_pid": 49100,
+  "reader_created_utc": "2026-10-13T19:42:20.8978454Z",
+  "reader_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "reader_executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+  "reader_command": "git cat-file --batch",
+  "reader_exit_code": 0,
+  "completed_utc": "2026-10-13T19:42:23.9422665+00:00"
+}
