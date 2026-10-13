@@ -57,8 +57,8 @@ fn abort(scope: *Scope, saved: c.JSValue) !?c.JSValue {
 fn failure(scope: *Scope, saved: c.JSValue, reason: c.JSValue) !c.JSValue {
     return errors.failed(scope, try scope.get(saved, "bindings"), reason, try scope.get(try scope.get(saved, "self"), "path"));
 }
-fn caught(scope: *Scope, saved: c.JSValue, err: anyerror) !c.JSValue {
-    if (err == error.OutOfMemory) return err;
+fn caught(scope: *Scope, saved: c.JSValue, err: anyerror, generation: u64) !c.JSValue {
+    if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
     _ = @import("native_durable.zig").reject(scope.engine, err);
     return failure(scope, saved, try scope.own(c.JS_GetException(scope.engine.context)));
 }
@@ -181,7 +181,8 @@ fn step(scope: *Scope, saved: c.JSValue, value: c.JSValue, rejected: bool, stage
 fn advance(engine: *js.Engine, saved: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) anyerror!c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    return c.JS_DupValue(engine.context, step(&scope, saved, value, rejected, @enumFromInt(raw)) catch |err| try caught(&scope, saved, err));
+    const generation = engine.native_allocation_generation;
+    return c.JS_DupValue(engine.context, step(&scope, saved, value, rejected, @enumFromInt(raw)) catch |err| try caught(&scope, saved, err, generation));
 }
 fn start(scope: *Scope, saved: c.JSValue, args: []const c.JSValue, method: Method) !c.JSValue {
     const receiver = try scope.get(saved, "self");
@@ -231,7 +232,9 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, bind
         if (scope.truthy(try scope.get(receiver, "closed"))) return c.pi_js_undefined();
         try scope.set(receiver, "closed", c.pi_js_bool(engine.context, 1));
         if (kind == .text) try scope.set(receiver, "buffered", try scope.text(""));
+        const generation = engine.native_allocation_generation;
         const pending = closeCall(&scope, receiver, kind) catch |err| {
+            if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
             if (kind != .text) return err;
             engine.freeValue(c.JS_GetException(engine.context));
             return c.pi_js_undefined();
@@ -252,7 +255,8 @@ fn invoke(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, bind
     }, try scope.get(receiver, "path")));
     if (method == .read and (!try h.validInteger(&scope, h.arg(args, 0), false) or !try h.validInteger(&scope, h.arg(args, 1), false))) return c.JS_DupValue(engine.context, try errors.expected(&scope, bindings, "invalid", "Offset and length must be non-negative safe integers", try scope.get(receiver, "path")));
     if (method == .next and !try h.validInteger(&scope, h.arg(args, 0), true)) return c.JS_DupValue(engine.context, try errors.expected(&scope, bindings, "invalid", "maxEntries must be a positive safe integer", try scope.get(receiver, "path")));
-    return c.JS_DupValue(engine.context, start(&scope, saved, args, method) catch |err| try caught(&scope, saved, err));
+    const generation = engine.native_allocation_generation;
+    return c.JS_DupValue(engine.context, start(&scope, saved, args, method) catch |err| try caught(&scope, saved, err, generation));
 }
 fn makeScanner(scope: *Scope, bindings: c.JSValue, options: c.JSValue) !c.JSValue {
     const scanner_args = [_]c.JSValue{ try scope.get(options, "startLine"), try scope.get(options, "endLine") };
