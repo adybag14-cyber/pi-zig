@@ -25,13 +25,23 @@ directory paging, exhaustive allocation-failure ownership, and daemon cancellati
 followed by complete 10,100-entry and bounded 5,000-entry requests. Its full source
 and Zig tool-tree pre/post hash checks reported zero drift.
 
-The final candidate adds the remaining source cases, native Windows junction and
-surrogate regressions, source-specific protocol errors, and an actual compiler
-inventory gate. Local compilation of that final snapshot was not admitted because
-available RAM fell below the authorized thresholds. Its Zig AST/format checks and
-PowerShell parser check passed. Debug and ReleaseSafe execution of the final
-candidate must be established by the candidate workflow; the earlier snapshot's
-pass does not qualify this final snapshot.
+The first hosted candidate `181b363` retained its genuine negative outcomes: its
+inventory test used a runtime test count as an array type, and textual brace
+expansion promoted embedded `**` into a recursive wildcard. The repair allocates
+the actual compiler inventory at runtime and emits its marker on a separate line.
+The glob implementation now parses the locked globset token semantics and compiles
+an acyclic native state graph. Alternatives keep their original wildcard tokens;
+`foo/{**,deep}/a.txt` consequently leaves `foo/a.txt` visible, as the source does.
+Matching uses a bottom-up table, including wildcard self loops, without recursive
+calls for successive path bytes. All original captured expectations are unchanged.
+
+The repaired local Debug and ReleaseSafe gates each passed the actual selected
+listing inventory of 12 tests (11 passed, one explicit file-symlink privilege skip)
+and the complete existing Env inventory of 105 tests (88 passed, 17 platform/tool
+skips). The Windows junction/surrogate test executed successfully. Each mode's full
+4,585-source / 19,546-tool-file pre/post check reported zero drift. The ReleaseSafe
+log also passed the workflow's actual-inventory coverage validator. Final hosted
+qualification of the repaired candidate remains separate from these local results.
 
 `.github/workflows/native-env-list-files.yml` runs both the complete selected
 listing suite and the existing native Env regression target on Windows, with the
