@@ -1,0 +1,33 @@
+{
+  "measured_utc": "2026-10-13T20:50:05.0240310+00:00",
+  "free_physical_kib": 19968976,
+  "required_kib": 16777216,
+  "coordinated_concurrent_jobs": 1,
+  "observed_native_build_roots": 1,
+  "selected_zig_inventory": [
+    {
+      "ProcessId": 53096,
+      "ParentProcessId": 41300,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-hosted-native-env-guest -Doptimize=ReleaseSafe -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-13T20:45:44.6908880Z"
+    },
+    {
+      "ProcessId": 21756,
+      "ParentProcessId": 41800,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe build-exe -fllvm -OReleaseSafe -Mroot=C:\\Users\\adyba\\pi-zig-env-node-local-e6220e1-20261013\\src\\env_process_fixture.zig --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name pi-env-process-fixture --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "created_utc": "2026-10-13T20:50:00.5333620Z"
+    },
+    {
+      "ProcessId": 22520,
+      "ParentProcessId": 41800,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -fllvm -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-env-node-local-e6220e1-20261013\\src\\durable\\process_probe.c -OReleaseSafe -Mroot=C:\\Users\\adyba\\pi-zig-env-node-local-e6220e1-20261013\\src\\env_list_files_test.zig -lc --test-filter listFiles --test-runner C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\compiler\\test_runner.zig --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "created_utc": "2026-10-13T20:50:00.5340560Z"
+    }
+  ],
+  "owner_powershell_gc": true,
+  "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+  "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+}
