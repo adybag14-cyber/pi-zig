@@ -14,7 +14,7 @@ if(!$taskReceipt.StartsWith($taskRoot+[IO.Path]::DirectorySeparatorChar,[StringC
 New-Item -ItemType Directory -Path $taskReceipt -Force|Out-Null
 $taskHead=(git rev-parse HEAD).Trim()
 if($taskHead -cne $ExpectedHead){throw 'Checkout head drift'}
-$taskZig=(Get-Command zig -CommandType Application).Source
+$taskZig=(Get-Command zig -CommandType Application|Select-Object -First 1).Source
 if((& $taskZig version).Trim() -cne '0.16.0'){throw 'Zig version drift'}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned official Windows Zig executable drift'}
 $taskSourceManifest='src/env/fixtures/list-files-source-manifest-e6220e1.json'
@@ -60,7 +60,7 @@ if(!$taskFinished){
     if(!$taskFresh -or $taskFresh.ExecutablePath -cne $taskZig -or [Math]::Abs((([DateTimeOffset]$taskFresh.CreationDate).UtcDateTime-$taskCreated).Ticks) -gt 10 -or $taskFresh.ExecutablePath -match 'codex'){throw 'Owned timeout identity mismatch; refusing process control'}
     if($taskLive -and $taskFresh.CommandLine -cne $taskLive.CommandLine){throw 'Owned timeout command identity changed'}
     $taskProcess.Kill($true)
-    $taskProcess.WaitForExit()
+    if(!$taskProcess.WaitForExit(10000)){throw 'Verified owned timeout process did not settle within 10 seconds after termination'}
 }
 $taskOut=$taskStdout.GetAwaiter().GetResult()
 $taskErr=$taskStderr.GetAwaiter().GetResult()
