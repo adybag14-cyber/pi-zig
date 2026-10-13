@@ -1,0 +1,163 @@
+name: Native SDK provider and image latest Source qualification
+
+on:
+  workflow_call:
+  push:
+    branches: [work/native-session-factory-composition-20261013]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-sdk-provider-image-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source and compiler
+        id: freeze
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-sdk-provider-image-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)
+          $taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)
+          $taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }
+          $taskToolRoot = Split-Path -Parent $taskZig
+          $taskZigEnv = (& zig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Provider attribution, actual factory callbacks and image normalization; full public factory and full Pi parity remain separate'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+      - name: Compile attribution before its runtime budget
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-provider-attribution -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-provider-image-candidate/compile-attribution.log
+          if ($LASTEXITCODE -ne 0) { throw 'Provider attribution cold compilation failed' }
+      - name: Compile factory callbacks before their runtime budget
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-factory-provider -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-provider-image-candidate/compile-factory.log
+          if ($LASTEXITCODE -ne 0) { throw 'Factory callback cold compilation failed' }
+      - name: Compile image processing before its runtime budget
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-image-process -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-provider-image-candidate/compile-images.log
+          if ($LASTEXITCODE -ne 0) { throw 'Image processing cold compilation failed' }
+      - name: Exercise original provider callbacks attribution and image normalization
+        id: runtime
+        shell: pwsh
+        timeout-minutes: 5
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-sdk-provider-image-candidate'
+          & zig build test-native-sdk-provider-attribution test-native-sdk-factory-provider test-native-sdk-image-process -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Provider/image candidate runtime failed' }
+          $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
+          $taskRequiredInventories = @(
+            @{marker='FACTORY_PROVIDER_TEST_INVENTORY'; count=12; required=@('actual selected inventory','match24 genuine latest Source','retain pending response rejection','every allocation failure releases')},
+            @{marker='SDK_IMAGE_PROCESS_TEST_INVENTORY'; count=5; required=@('selected inventory','matches36 genuine latest Source','retained iterator and native byte owners','all native allocation failures')}
+          )
+          foreach ($taskSpec in $taskRequiredInventories) {
+            $taskMarkers = [regex]::Matches($taskLog, '(?m)^' + $taskSpec.marker + '=(\[[^\r\n]+\])')
+            if ($taskMarkers.Count -ne 1) { throw 'Missing or duplicated selected native inventory' }
+            $taskNames = @($taskMarkers[0].Groups[1].Value | ConvertFrom-Json)
+            if ($taskNames.Count -ne $taskSpec.count -or @($taskNames | Sort-Object -Unique).Count -ne $taskNames.Count) { throw 'Selected native inventory changed' }
+            foreach ($taskRequired in $taskSpec.required) {
+              if (@($taskNames | Where-Object { $_.Contains($taskRequired) }).Count -ne 1) { throw "Required Source comparator not selected: $taskRequired" }
+            }
+          }
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b21/21 tests passed') { throw 'Every selected test must execute successfully' }
+          [ordered]@{head='${{ github.sha }}'; status='passed'; platform='${{ matrix.os }}'; mode='${{ matrix.mode }}'; selected_tests=21; attribution_tests=4; factory_tests=12; image_tests=5; source_attribution_cases=96; source_factory_cases=24; source_image_cases=36; public_activation=$false; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+      - name: Verify frozen inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-sdk-provider-image-candidate'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-provider-image-candidate-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-provider-image-candidate/
+
+  coverage:
+    needs: qualify
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: native-sdk-provider-image-candidate-*-${{ github.sha }}
+          path: sdk-provider-image-results
+      - name: Require all six exact-commit provider and image qualifications
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+          QUALIFY_RESULT: ${{ needs.qualify.result }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:QUALIFY_RESULT -cne 'success') { throw 'A required provider/image matrix job failed or skipped' }
+          $taskSummary = @()
+          $taskSourceCount = $null
+          foreach ($taskOs in @('windows-latest','ubuntu-latest','macos-latest')) {
+            foreach ($taskMode in @('Debug','ReleaseSafe')) {
+              $taskRoot = "sdk-provider-image-results/native-sdk-provider-image-candidate-$taskOs-$taskMode-$env:EXPECTED_HEAD"
+              $taskSource = Get-Content "$taskRoot/source.json" -Raw | ConvertFrom-Json
+              $taskResult = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
+              if ($taskSource.head -cne $env:EXPECTED_HEAD -or $taskResult.head -cne $env:EXPECTED_HEAD -or $taskSource.mode -cne $taskMode -or $taskResult.mode -cne $taskMode -or $taskResult.platform -cne $taskOs -or $taskResult.status -cne 'passed' -or $taskSource.public_activation -or $taskResult.public_activation) { throw 'Missing or inconsistent exact-commit qualification' }
+              if ($taskResult.selected_tests -ne 21 -or $taskResult.attribution_tests -ne 4 -or $taskResult.factory_tests -ne 12 -or $taskResult.image_tests -ne 5 -or $taskResult.source_attribution_cases -ne 96 -or $taskResult.source_factory_cases -ne 24 -or $taskResult.source_image_cases -ne 36) { throw 'Required native or genuine upstream case inventory changed' }
+              foreach ($taskKind in @('inputs','tools')) {
+                $taskPost = Get-Content "$taskRoot/$taskKind-posthash.json" -Raw | ConvertFrom-Json
+                if (!$taskPost.count -or @($taskPost.drift).Count) { throw 'Missing or changed frozen inputs' }
+              }
+              if ($null -eq $taskSourceCount) { $taskSourceCount = $taskSource.source_count } elseif ($taskSourceCount -ne $taskSource.source_count) { throw 'Cross-platform source inventory changed' }
+              $taskSummary += $taskResult
+            }
+          }
+          if ($taskSummary.Count -ne 6) { throw 'Incomplete provider/image platform matrix' }
+          $taskSummary | ConvertTo-Json -Depth 6 | Set-Content sdk-provider-image-results/complete.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-provider-image-complete-${{ github.sha }}
+          retention-days: 14
+          path: sdk-provider-image-results/complete.json

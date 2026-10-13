@@ -1,0 +1,26 @@
+{
+  "observed_utc": "2026-10-13T16:54:59.3640815+00:00",
+  "scope": "Read-only posthash after original upstream factory provider24 capture; no upstream source body rewrite",
+  "manifests": [
+    {
+      "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+      "files": 1945,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "driver_sha256": "49F4068F7FA98637AB083FA2B5152498E6A00BE7D1AD868C540E8F5EF2D5E25D",
+  "input_sha256": "52C35173D7B2FC49C6251AC9744B92D2A16B66BEFDF2EC04015CD46A226DAB03"
+}

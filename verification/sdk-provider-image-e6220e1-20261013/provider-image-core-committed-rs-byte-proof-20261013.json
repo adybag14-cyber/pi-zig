@@ -1,0 +1,14 @@
+{
+  "head": "cd0d9a781ddb582c21fc71562392a14eab34ec74",
+  "source_manifest_sha256": "3DD5E0393BF762049BEB7A2A06D618C2C69E8043B851A86AEB9FB4270E81BEE9",
+  "committed_blobs_verified": 4689,
+  "byte_drift": 0,
+  "drift": [],
+  "reader_pid": 16772,
+  "reader_created_utc": "2026-10-13T17:22:16.0991768Z",
+  "reader_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "reader_executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+  "reader_command": "git cat-file --batch",
+  "reader_exit_code": 0,
+  "completed_utc": "2026-10-13T17:22:18.7586637+00:00"
+}

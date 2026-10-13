@@ -2387,6 +2387,9 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-sdk-event-components", &.{"test-native-sdk-session-events"});
     addCompileOnlyGroup(b, "build-hosted-auth-components", &.{ "test-native-auth-storage-persistent", "test-native-auth-timer-controls" });
     addCompileOnlyGroup(b, "build-native-sdk-cache-warmer", &.{"test-native-sdk-cache-warmer"});
+    addCompileOnlyGroup(b, "build-native-sdk-provider-attribution", &.{"test-native-sdk-provider-attribution"});
+    addCompileOnlyGroup(b, "build-native-sdk-factory-provider", &.{"test-native-sdk-factory-provider"});
+    addCompileOnlyGroup(b, "build-native-sdk-image-process", &.{"test-native-sdk-image-process"});
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

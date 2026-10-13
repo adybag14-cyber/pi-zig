@@ -1,0 +1,30 @@
+{
+  "implementation_commit": "cd0d9a781ddb582c21fc71562392a14eab34ec74",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "release_target": "Pi 1.2.0",
+  "status": "local-debug-and-releasesafe-qualified",
+  "hosted": "candidate-pending",
+  "genuine_source_cases": {
+    "provider_attribution": 96,
+    "factory_provider_callbacks": 24,
+    "image_processing": 36
+  },
+  "selected_tests": {
+    "provider_attribution": 4,
+    "factory_provider_callbacks": 12,
+    "image_processing": 5,
+    "total": 21
+  },
+  "local_source_files": 4689,
+  "local_compiler_inputs": 19546,
+  "full_source_posthash_drift": 0,
+  "compiler_posthash_drift": 0,
+  "committed_blob_byte_drift": 0,
+  "gc": "passed",
+  "all_native_allocation_failures": "passed",
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "outer_timeout_seconds": 300,
+  "public_factory_activation": false,
+  "scope": "Private actual native provider callbacks, attribution and complete image processing; full session class and public factory composition remain required"
+}
