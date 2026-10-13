@@ -1,0 +1,5 @@
+# Source-only child reload cancellation lifetime
+
+`native_chord_child_reload_lifetime.zig` ports the actual ChildReloads parent-loss and cancellation paths from `cluster.ts`. Loading/preparing operations are marked cancelled and their rollback failures are reported while their pending run settles. Prepared operations release the private operation slot immediately, report rollback failures, and end the reload in finally. `endReload` clears the host's reload flag and calls its real retirement logic. Optional reload values preserve the Source optional-chain behavior.
+
+This unimported module passes fmt/AST only. It supplies a concrete implementation for the Host connection module's mandatory parent-loss hook; no default or empty handler is provided. The remaining ChildReloads prepare/commit/run logic, actual Reload class and coordinator/reconciliation algorithms still need implementation and qualification before any Host control method or package activation. Earlier native Connection26 and Source fullHost8+closed2 fixtures retain their independent scopes.
