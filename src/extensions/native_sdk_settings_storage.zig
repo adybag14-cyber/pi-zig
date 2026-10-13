@@ -12,6 +12,8 @@ fn function(engine: *engine_mod.Engine, captured: c.JSValue, stage: Stage) !c.JS
 }
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, capture: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     return dispatch(engine, capture[0], @enumFromInt(magic), if (argc > 0) args[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
 }
 fn remove(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8) !void {
@@ -194,6 +196,10 @@ pub fn save(engine: *engine_mod.Engine, data: c.JSValue, project: bool) !void {
     if (c.JS_ToBool(engine.context, failure) == 1) return;
     const job = try sdk.object(engine);
     defer engine.freeValue(job);
+    // Ordinary storage errors are recorded by the queued catch below. A fresh
+    // native allocator failure must instead remain a rejected queue so flush
+    // can report it; its private identity is never matched by error text.
+    try sdk.put(engine, job, "nativeAllocationGeneration", try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation)));
     try sdk.put(engine, job, "data", c.JS_DupValue(engine.context, data));
     try sdk.put(engine, job, "project", c.pi_js_bool(engine.context, @intFromBool(project)));
     const settings = try sdk.get(engine, data, if (project) "project" else "global");
@@ -324,6 +330,15 @@ fn dispatch(engine: *engine_mod.Engine, capture: c.JSValue, stage: Stage, args: 
     defer engine.freeValue(project);
     const is_project = c.JS_ToBool(engine.context, project) == 1;
     if (stage == .failed) {
+        const tagged = c.pi_js_native_allocation_error_generation(first);
+        if (tagged != 0) {
+            const captured_generation = try sdk.get(engine, capture, "nativeAllocationGeneration");
+            defer engine.freeValue(captured_generation);
+            var generation: u64 = 0;
+            if (c.JS_ToBigUint64(engine.context, &generation, captured_generation) < 0) return @import("native_js_values.zig").capture(engine);
+            const distance = tagged -% generation;
+            if (distance != 0 and distance <= engine.native_allocation_generation -% generation) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, first)));
+        }
         try record(engine, data, if (is_project) "project" else "global", first);
         return c.pi_js_undefined();
     }

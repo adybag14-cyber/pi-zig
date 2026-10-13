@@ -73,8 +73,8 @@ jobs:
           $taskPattern = '(?ms)^test-native-sdk-session-control success\r?\n[^\r\n]*run test 12 pass \(12 total\)'
           if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw 'Session prompt artifact execution changed' }
           $taskFixture = Get-Content src/extensions/fixtures/sdk-session-control-e622.json -Raw | ConvertFrom-Json
-          if (@($taskFixture.rows).Count -ne 33 -or $taskFixture.factoryCount -ne 33) { throw 'Original33 factory cases must remain complete' }
-          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=12;source_cases=33;original_factory_instances=33;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+          if (@($taskFixture.rows).Count -ne 35 -or $taskFixture.factoryCount -ne 35) { throw 'Original35 factory cases must remain complete' }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=12;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
       - name: Verify frozen inputs after terminal execution
         if: ${{ always() && steps.freeze.outcome == 'success' }}
         shell: pwsh

@@ -1,8 +1,8 @@
 {
   "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
-  "inputSha256": "164a9f10a774886120d572ab19bfa83ba4b1298bdb59c61d46b7b137c769d28c",
+  "inputSha256": "71780aa82f430cc0f762c763bd25cce289d685d788f902fd0a35a9448aa01f59",
   "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
-  "factoryCount": 33,
+  "factoryCount": 35,
   "rows": [
     {
       "name": "method-metadata",
@@ -573,6 +573,21 @@
         }
       ],
       "log": []
+    },
+    {
+      "name": "resource-throw-conversion-not-observed",
+      "value": {
+        "same": true,
+        "count": 1
+      },
+      "log": []
+    },
+    {
+      "name": "dispose-abort-throw-conversion-not-observed",
+      "value": 0,
+      "log": [
+        "invalidate"
+      ]
     }
   ]
 }

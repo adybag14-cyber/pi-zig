@@ -15,6 +15,11 @@ pub fn bindings(engine: *em.Engine) !c.JSValue {
     inline for (.{ "registerSessionResourceCleanup", "cleanupSessionResources" }, 0..) |name, index| {
         const Adapter = struct {
             fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) !c.JSValue {
+                // These exceptions are still inside Source's cleanup catch;
+                // retaining them must not call guest ToString or allocate an
+                // optional host diagnostic before that catch receives them.
+                host.native_exception_diagnostics_suppressed += 1;
+                defer host.native_exception_diagnostics_suppressed -= 1;
                 return invoke(host, values[0], index, if (args.len > 0) args[0] else c.pi_js_undefined());
             }
         };

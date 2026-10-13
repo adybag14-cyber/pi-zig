@@ -31,14 +31,14 @@ fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     , "native-sdk-session-control-adapter.mjs");
     engine.freeValue(adapter);
 }
-test "native SDK session control matches33 original factory idle abort disposal queue settings and AI cleanup cases" {
+test "native SDK session control matches35 original factory idle abort disposal queue settings and AI cleanup cases" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     var environment: std.process.Environ.Map = .init(std.testing.allocator);
     defer environment.deinit();
     try setup(engine, &environment);
     const result = engine.evalModule(@embedFile("extensions/fixtures/sdk-session-control-e622.input.txt") ++
-        "\nif(sessionControlRows.length!==33||sessionControlSource.rows.length!==33)throw Error('33 original factory cases required');for(let i=0;i<33;i++)if(JSON.stringify(sessionControlRows[i])!==JSON.stringify(sessionControlSource.rows[i]))throw Error(JSON.stringify({case:i,actual:sessionControlRows[i],expected:sessionControlSource.rows[i]}));", "native-sdk-session-control-source.mjs") catch |err| {
+        "\nif(sessionControlRows.length!==35||sessionControlSource.rows.length!==35)throw Error('35 original factory cases required');for(let i=0;i<35;i++)if(JSON.stringify(sessionControlRows[i])!==JSON.stringify(sessionControlSource.rows[i]))throw Error(JSON.stringify({case:i,actual:sessionControlRows[i],expected:sessionControlSource.rows[i]}));", "native-sdk-session-control-source.mjs") catch |err| {
         std.debug.print("Session control Source: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
@@ -74,7 +74,7 @@ test "native SDK session control all allocation failures release idle cancellati
             try setup(engine, &environment);
             const generation = engine.native_allocation_generation;
             const result = engine.evalModule(
-                \\const state=await createControlCase();state.session._isAgentRunActive=true;const wait=state.session.waitForIdle(),first=state.session._getIdleWaitPromise();if(first!==state.session._getIdleWaitPromise())throw Error('waiter changed');state.session._isAgentRunActive=false;state.session._resolveIdleWaitIfIdle();await wait;state.session.setSteeringMode('all');state.session.setAutoRetryEnabled(false);let calls=0;const off=sessionResourceAPI.registerSessionResourceCleanup(id=>{if(id!==state.session.sessionId)throw Error('cleanup id');calls++;});state.session.dispose();if(calls!==1||state.session._unsubscribeAgent!==undefined)throw Error('dispose mismatch');off();export const proof=true;
+                \\const state=await createControlCase();state.session._isAgentRunActive=true;const wait=state.session.waitForIdle(),first=state.session._getIdleWaitPromise();if(first!==state.session._getIdleWaitPromise())throw Error('waiter changed');state.session._isAgentRunActive=false;state.session._resolveIdleWaitIfIdle();await wait;state.session.setSteeringMode('all');state.session.setAutoRetryEnabled(false);await state.settings.flush();let calls=0;const off=sessionResourceAPI.registerSessionResourceCleanup(id=>{if(id!==state.session.sessionId)throw Error('cleanup id');calls++;});state.session.dispose();if(calls!==1||state.session._unsubscribeAgent!==undefined)throw Error('dispose mismatch');off();export const proof=true;
             , "native-sdk-session-control-allocations.mjs") catch |err| return engine.nativeAllocationError(err, generation);
             engine.freeValue(result);
             c.JS_RunGC(engine.runtime);
@@ -105,6 +105,10 @@ test "native SDK session control cleanup aggregate errors retain original identi
             defer engine.freeValue(namespace);
             const cleanup = try sdk.get(engine, namespace, "cleanupSessionResources");
             defer engine.freeValue(cleanup);
+            // Inspect the original expected guest AggregateError before any
+            // optional host diagnostic conversion, as a VM catch would.
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
             if (js.call(engine, cleanup, c.pi_js_undefined(), &.{})) |unexpected| {
                 engine.freeValue(unexpected);
                 return error.ExpectedCleanupAggregate;

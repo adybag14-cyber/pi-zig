@@ -31,6 +31,8 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
 }
 fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const method: Method = @enumFromInt(magic);
     if (method == .abort or method == .waitForIdle) return beginAsync(engine, session, method) catch |err| sdk.fail(engine, err);
     return invoke(engine, session, method, if (argc > 0) argv[0] else c.pi_js_undefined(), roots[0]) catch |err| sdk.fail(engine, err);
