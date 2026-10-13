@@ -1,0 +1,27 @@
+{
+  "implementation_head": "d5e9a9169a68b842947e3cd6ff34b3c0c51690d9",
+  "original_source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "original_lifecycle_cases": 70,
+  "original_formatter_cases": 34,
+  "windows_debug": "6/6 passed",
+  "windows_releasesafe": "6/6 passed",
+  "source_files": 4662,
+  "tool_files": 19546,
+  "source_and_tool_drift": 0,
+  "committed_blobs_checked": 4662,
+  "committed_byte_drift": 0,
+  "native_gpa_scope": "Construction, class refresh, provider environment and both formatters",
+  "actual_selected_inventory": [
+    "selected inventory",
+    "matches70 genuine latest Source",
+    "real timer refresh and cancellation",
+    "formatters match34 genuine latest Source",
+    "allocation failures retain fatal provenance",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "workflow_powershell_blocks": 4,
+  "workflow_parser_errors": 0,
+  "hosted_status": "pending candidate publication",
+  "session_factory_activation": false,
+  "full_pi_parity": false
+}
