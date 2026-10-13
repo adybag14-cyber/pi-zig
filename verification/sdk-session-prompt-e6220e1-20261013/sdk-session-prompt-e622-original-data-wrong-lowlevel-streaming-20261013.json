@@ -1,0 +1,325 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "358ed36ae155f53c426bd8ad718b47b2abbd8c1ff7f6ca6f4b9aa07a6af07ec3",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 27,
+  "rows": [
+    {
+      "name": "prompt-metadata",
+      "value": {
+        "name": "prompt",
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "log": []
+    },
+    {
+      "name": "compaction-null",
+      "thrown": {
+        "name": "Error",
+        "message": "Cannot submit a prompt while compaction is in progress. Wait for compaction to finish and retry."
+      },
+      "log": []
+    },
+    {
+      "name": "compaction-false",
+      "thrown": {
+        "name": "Error",
+        "message": "Cannot submit a prompt while compaction is in progress. Wait for compaction to finish and retry."
+      },
+      "log": []
+    },
+    {
+      "name": "compaction-[object Object]",
+      "thrown": {
+        "name": "Error",
+        "message": "Cannot submit a prompt while compaction is in progress. Wait for compaction to finish and retry."
+      },
+      "log": []
+    },
+    {
+      "name": "extension-command-before-compaction",
+      "value": "undefined",
+      "log": [
+        [
+          "getCommand",
+          "hello"
+        ],
+        [
+          "handler",
+          true,
+          "args",
+          "context"
+        ],
+        [
+          "preflight",
+          true,
+          "handled"
+        ]
+      ]
+    },
+    {
+      "name": "extension-command-error-handled",
+      "value": "undefined",
+      "log": [
+        {
+          "extensionPath": "command:hello",
+          "event": "command",
+          "error": "12"
+        },
+        "handled"
+      ]
+    },
+    {
+      "name": "input-handled-before-model",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "preflight-error-identity",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "input-rejection-identity",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "streaming-undefined",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "streaming-steer",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "streaming-followUp",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "streaming-other",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "streaming-transform-and-template",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": [
+        [
+          "input",
+          [
+            "original",
+            [
+              "old"
+            ],
+            "custom",
+            null
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "streaming-no-expansion",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "settled-deferred-before-options",
+      "value": {
+        "before": {
+          "actions": 1,
+          "optionsRead": 0,
+          "name": "",
+          "length": 0,
+          "async": true
+        },
+        "optionsRead": 1
+      },
+      "log": [
+        "args",
+        "handled"
+      ]
+    },
+    {
+      "name": "settled-deferred-error-identity",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "public-steer",
+      "value": {
+        "result": "queued",
+        "steering": [
+          "transformed"
+        ],
+        "followUp": [],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "transformed"
+              }
+            ]
+          }
+        ]
+      },
+      "log": [
+        [
+          "hello",
+          [
+            "old"
+          ],
+          "rpc",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "public-followUp",
+      "value": {
+        "result": "queued",
+        "steering": [],
+        "followUp": [
+          "transformed"
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "transformed"
+              }
+            ]
+          }
+        ]
+      },
+      "log": [
+        [
+          "hello",
+          [
+            "old"
+          ],
+          "rpc",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "public-command-forbidden-steer",
+      "thrown": {
+        "name": "Error",
+        "message": "Extension command \"/hello\" cannot be queued. Use prompt() or execute the command when not streaming."
+      },
+      "log": []
+    },
+    {
+      "name": "public-command-forbidden-followUp",
+      "thrown": {
+        "name": "Error",
+        "message": "Extension command \"/hello\" cannot be queued. Use prompt() or execute the command when not streaming."
+      },
+      "log": []
+    },
+    {
+      "name": "public-input-handled",
+      "value": {
+        "result": "handled",
+        "steering": [],
+        "followUp": [],
+        "messages": []
+      },
+      "log": []
+    },
+    {
+      "name": "public-streaming-source-default",
+      "value": "handled",
+      "log": [
+        [
+          "hello",
+          null,
+          "interactive",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "queue-image-iterator-error",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "queue-update-before-image-error",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": [
+        {
+          "type": "queue_update",
+          "steering": [],
+          "followUp": [
+            "hello"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "auth-oauth-error",
+      "thrown": {
+        "name": "Error",
+        "message": "Authentication failed for \"fixture\". Credentials may have expired or network is unavailable. Run '/login fixture' to re-authenticate."
+      },
+      "log": [
+        [
+          "configured",
+          "fixture"
+        ],
+        [
+          "check",
+          "fixture"
+        ],
+        [
+          "oauth",
+          "fixture"
+        ]
+      ]
+    },
+    {
+      "name": "auth-live-runtime-after-check",
+      "thrown": {
+        "name": "Error",
+        "message": "Authentication failed for \"fixture\". Credentials may have expired or network is unavailable. Run '/login fixture' to re-authenticate."
+      },
+      "log": [
+        [
+          "next",
+          true,
+          "fixture"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "implementation_commit": "c85e1b5e345052020c636bf36c70b5da8bfe26ce",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Public prompt preflight, ordinary steer/followUp queues, deferred dispatch and live auth failure paths; successful complete _startRun integration still pending",
+  "source_cases": 27,
+  "original_factory_instances": 27,
+  "debug": {
+    "tests": 11,
+    "status": "passed"
+  },
+  "release_safe": {
+    "tests": 11,
+    "status": "passed"
+  },
+  "source_files": 4787,
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "committed_blobs_verified": 4787,
+  "committed_byte_drift": 0,
+  "original_source_posthash": {
+    "source_files": 1945,
+    "runtime_files": 31064,
+    "node_distribution_files": 1774,
+    "drift": 0
+  },
+  "preserved_negative": "Discarded first fixture set Agent low-level streaming flag and called unsupported setModel; its TypeError outcomes did not prove intended queue paths. Corrected capture uses session active-run flag and actual model state, and rejects unexpected TypeErrors.",
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "successful_start_run_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending"
+}
