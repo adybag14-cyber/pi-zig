@@ -46,17 +46,17 @@
       "estimateProjectedContextTokens"
     ],
     "native_fixture": "Actual native Agent, ExtensionRunner and SessionManager; caller instance fields; image dependency explicitly rejects if unexpectedly invoked",
-    "remaining": "Production factory composition and actual image normalizer supplied by root; expanded hook-path/runtime and allocation qualification pending",
+    "remaining": "Production factory composition and real image normalizer supplied by root; next-turn helper, virtual routing, boundary drafts, complete factory and allocation qualification pending",
     "release_parity_certified": false
   },
   "inputs": [
     {
       "path": "src/extensions/native_sdk_session_events.zig",
-      "sha256": "D725A79525E74DD4BA2074C4948F7E5149CCEA84D7CA091713B55A7D77994589"
+      "sha256": "A7A51D3733CBA2565BF253E90363C18F673332F48B440D2DEE69148B5CE263A4"
     },
     {
       "path": "src/extensions/native_sdk_session_hooks.zig",
-      "sha256": "01937C98496A4B54BB1FA40D812525A1DD8F9E2E55EA6E8AF3A58C1583EDB676"
+      "sha256": "102330DDFF1B390087750CCCA3A4655F53B50FDF739BFA628998D081FAE9E786"
     },
     {
       "path": "src/extensions/native_sdk_session_estimate.zig",
@@ -64,7 +64,7 @@
     },
     {
       "path": "src/native_sdk_session_events_test.zig",
-      "sha256": "D3CEB3DF84F72CC7F4C3259DAF6979C7E0C6B711D20254DD43189D584B2B8F20"
+      "sha256": "D3DD4B9F73F8E79AFC5F3A290B337B3AAA8E99B3B6AEC2F9FC6D6E86283E349A"
     },
     {
       "path": "src/extensions/fixtures/sdk-session-events-19cb.input.txt",
@@ -85,6 +85,29 @@
     {
       "path": "build.zig",
       "sha256": "C93F1118600F0006F50ED1662D0C46A58D30CCB920F22026C53D790BFBC2E01A"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-hooks-19cb.input.txt",
+      "sha256": "14B1A72E17FF536AA14B38FCB048821A97D378BBA69160584E4EF16F9695329F"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-hooks-19cb.json",
+      "sha256": "FF880F9F453E7917531D9AD55BA8340198827E6E2081F0D78703D05517C9ABB0"
+    },
+    {
+      "path": "docs/native-sdk-session-events.md",
+      "sha256": "6877731FEACD067EB763693C8E800CB601D5B188A527C683508E19371724661E"
     }
-  ]
+  ],
+  "source_hooks": {
+    "status": "passed",
+    "cases": 16,
+    "actual_factory": true,
+    "runtime_files": 31064,
+    "tool_files": 1774,
+    "driver_inputs": 2,
+    "drift": 0,
+    "nested_recorder_cases": 4,
+    "scope": "Caller nested recorder collaborator tests event decoration and combineUsage; does not certify NestedToolCallRunner"
+  }
 }

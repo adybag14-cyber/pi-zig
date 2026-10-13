@@ -8,6 +8,7 @@ const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const flow = @import("native_agent_async.zig");
 const c = em.c;
+extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Method = enum(c_int) { _emitExtensionEvent, _willRetryAfterAgentEnd, _replaceMessageInPlace, _emit, _emitQueueUpdate, subscribe, _findPersistedMessageEntryId, _limitsModel };
 
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
@@ -121,14 +122,24 @@ fn prelude(engine: *em.Engine, owner: c.JSValue) !void {
 }
 fn contentText(scope: *Scope, content: c.JSValue) !c.JSValue {
     if (c.JS_IsString(content)) return content;
-    const parts = try scope.array();
-    if (c.JS_IsArray(content)) {
-        for (0..try sdk.length(scope.engine, content)) |index| {
-            const part = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, content, @intCast(index))));
-            if (try is(scope, try scope.get(part, "type"), "text")) _ = try scope.invoke(parts, "push", &.{try scope.get(part, "text")});
-        }
-    }
+    const predicate = try scope.own(try scope.engine.checked(c.JS_NewCFunction(scope.engine.context, textBlock, "", 1)));
+    const filtered = try scope.invoke(content, "filter", &.{predicate});
+    const mapper = try scope.own(try scope.engine.checked(c.JS_NewCFunction(scope.engine.context, blockText, "", 1)));
+    const parts = try scope.invoke(filtered, "map", &.{mapper});
     return scope.invoke(parts, "join", &.{try scope.text("")});
+}
+fn textBlock(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const block = if (argc > 0) args[0] else c.pi_js_undefined();
+    const typ = scope.get(block, "type") catch |err| return sdk.fail(engine, err);
+    const matched = is(&scope, typ, "text") catch |err| return sdk.fail(engine, err);
+    return c.pi_js_bool(engine.context, @intFromBool(matched));
+}
+fn blockText(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return sdk.get(engine, if (argc > 0) args[0] else c.pi_js_undefined(), "text") catch |err| sdk.fail(engine, err);
 }
 fn afterExtension(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
     if (rejected) return flow.settle(engine, owner, true, value);
@@ -287,17 +298,21 @@ fn synchronous(engine: *em.Engine, receiver: c.JSValue, argument: c.JSValue, met
     switch (method) {
         ._emit => {
             const listeners = try scope.get(receiver, "_eventListeners");
-            var index: u32 = 0;
-            while (index < try sdk.length(engine, listeners)) : (index += 1) {
-                const listener = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, listeners, index)));
+            const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
+            var iterator = try js.Iterator.init(engine, listeners, symbol);
+            defer iterator.deinit();
+            errdefer iterator.closePreserving();
+            while (try iterator.next()) |listener| {
+                defer engine.freeValue(listener);
                 _ = try scope.call(listener, c.pi_js_undefined(), &.{argument});
             }
         },
         ._emitQueueUpdate => {
             const event = try scope.object();
             try scope.put(event, "type", try scope.text("queue_update"));
-            try scope.put(event, "steering", try scope.invoke(try scope.get(receiver, "_steeringMessages"), "slice", &.{}));
-            try scope.put(event, "followUp", try scope.invoke(try scope.get(receiver, "_followUpMessages"), "slice", &.{}));
+            const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
+            try scope.put(event, "steering", try scope.own(try js.collect(engine, try scope.get(receiver, "_steeringMessages"), symbol)));
+            try scope.put(event, "followUp", try scope.own(try js.collect(engine, try scope.get(receiver, "_followUpMessages"), symbol)));
             _ = try scope.invoke(receiver, "_emit", &.{event});
         },
         .subscribe => {

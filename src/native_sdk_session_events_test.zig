@@ -14,7 +14,7 @@ fn attach(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue
 fn unusedNormalizer(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_ThrowInternalError(context, "event fixture unexpectedly invoked image normalizer");
 }
-fn exercise(gpa: std.mem.Allocator) !void {
+fn exercise(gpa: std.mem.Allocator, comptime capture: enum { events, hooks }) !void {
     const engine = try em.Engine.init(gpa, .{});
     defer engine.deinit();
     engine.native_io = std.testing.io;
@@ -46,20 +46,25 @@ fn exercise(gpa: std.mem.Allocator) !void {
     try sdk.put(engine, global, "sdkSessionEventsNative", c.JS_DupValue(engine.context, namespace));
     var roots = [_]c.JSValue{dependencies};
     try sdk.put(engine, global, "attachSessionEvents", try engine.checked(c.JS_NewCFunctionData2(engine.context, attach, "attachSessionEvents", 1, 0, roots.len, &roots)));
-    const original = @embedFile("extensions/fixtures/sdk-session-events-19cb.json");
+    const original = if (capture == .events) @embedFile("extensions/fixtures/sdk-session-events-19cb.json") else @embedFile("extensions/fixtures/sdk-session-hooks-19cb.json");
     try sdk.put(engine, global, "sessionEventsSource", try engine.checked(c.JS_ParseJSON(engine.context, original.ptr, original.len, "sdk-session-events-19cb.json")));
-    const observed = engine.evalModule(@embedFile("extensions/fixtures/sdk-session-events-19cb.input.txt") ++
-        "\nif(sdkSessionEventsRows.length!==28)throw Error('28 Source scenarios required');for(let i=0;i<28;i++){const actual=sdkSessionEventsRows[i],expected=sessionEventsSource.rows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({scenario:actual.scenario,actual,expected}));}", "sdk-session-events-native.mjs") catch |err| {
+    const program = if (capture == .events) @embedFile("extensions/fixtures/sdk-session-events-19cb.input.txt") ++
+        "\nif(sdkSessionEventsRows.length!==28)throw Error('28 Source scenarios required');for(let i=0;i<28;i++){const actual=sdkSessionEventsRows[i],expected=sessionEventsSource.rows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({scenario:actual.scenario,actual,expected}));}" else @embedFile("extensions/fixtures/sdk-session-hooks-19cb.input.txt") ++
+        "\nif(sdkSessionHooksRows.length!==16)throw Error('16 Source hook scenarios required');for(let i=0;i<16;i++){const actual=sdkSessionHooksRows[i],expected=sessionEventsSource.rows[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({scenario:actual.scenario,actual,expected}));}";
+    const observed = engine.evalModule(program, if (capture == .events) "sdk-session-events-native.mjs" else "sdk-session-hooks-native.mjs") catch |err| {
         std.debug.print("SDK session events Source: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
     engine.freeValue(observed);
-    const clear = try engine.eval("delete globalThis.sdkSessionEventsNative;delete globalThis.attachSessionEvents;delete globalThis.sessionEventsSource;delete globalThis.sdkSessionEventsRows", "sdk-session-events-clear.js", c.JS_EVAL_TYPE_GLOBAL);
+    const clear = try engine.eval("delete globalThis.sdkSessionEventsNative;delete globalThis.attachSessionEvents;delete globalThis.sessionEventsSource;delete globalThis.sdkSessionEventsRows;delete globalThis.sdkSessionHooksRows", "sdk-session-events-clear.js", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(clear);
     c.JS_RunGC(engine.runtime);
 }
 test "native SDK session events match 28 genuine factory Source scenarios with actual native Agent runner and manager" {
-    try exercise(std.testing.allocator);
+    try exercise(std.testing.allocator, .events);
+}
+test "native SDK session events constructor hooks match 16 genuine factory Source projection request boundary tool and nested-recorder cases" {
+    try exercise(std.testing.allocator, .hooks);
 }
 test "native SDK session events compaction utilities match original Source values getters and failures" {
     const engine = try em.Engine.init(std.testing.allocator, .{});
