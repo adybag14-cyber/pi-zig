@@ -1,0 +1,250 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "real Host factory cells derivations listeners and atomic write rollback",
+      "initial": [
+        {
+          "n": 1
+        },
+        2,
+        true,
+        true
+      ],
+      "answer": 6,
+      "failure": {
+        "name": "ChordError",
+        "message": "invalid/state: state counter: /n must be number",
+        "code": "invalid",
+        "reason": "state"
+      },
+      "values": [
+        {
+          "n": 3
+        },
+        6
+      ],
+      "same": true,
+      "log": [
+        [
+          "state",
+          {
+            "type": "snap"
+          },
+          null
+        ],
+        [
+          "total",
+          {
+            "type": "snap"
+          }
+        ],
+        [
+          "listener",
+          2,
+          1,
+          false
+        ],
+        [
+          "state",
+          {
+            "type": "reset",
+            "value": {
+              "n": 1
+            }
+          },
+          2
+        ],
+        [
+          "total",
+          {
+            "type": "reset",
+            "value": 2
+          }
+        ],
+        [
+          "state",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "s",
+                [
+                  "n"
+                ],
+                3
+              ]
+            ],
+            "value": {
+              "n": 3
+            }
+          },
+          6
+        ],
+        [
+          "total",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                6
+              ]
+            ],
+            "value": 6
+          }
+        ],
+        [
+          "listener",
+          6,
+          1,
+          false
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "name": "real Host disposal detaches factory derived graph",
+      "status": "gone",
+      "dependents": 0,
+      "records": 0,
+      "errors": []
+    },
+    {
+      "name": "actual record write guard rejects factory mutation",
+      "failure": {
+        "name": "ChordError",
+        "message": "invalid/read_only: cells cannot be written while a factory runs",
+        "code": "invalid",
+        "reason": "read_only"
+      },
+      "status": "gone"
+    },
+    {
+      "name": "Host load installs all facets before awaiting eager consumers",
+      "log": [
+        "setup-a",
+        "setup-b",
+        "factory-a",
+        "factory-b"
+      ],
+      "answer": 3,
+      "facets": [
+        "first",
+        "second"
+      ],
+      "eager": 1
+    },
+    {
+      "name": "Host resolve preserves inline references and module order",
+      "names": [
+        "inline",
+        "facet-one",
+        "file:///facet-two"
+      ],
+      "same": true,
+      "log": [
+        [
+          "loader",
+          true,
+          [
+            "facet-one",
+            "file:///facet-two"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "Host load uses configured loader receiver and records facets",
+      "facets": [
+        "inline",
+        "facet-one",
+        "file:///facet-two"
+      ],
+      "log": [
+        [
+          "loader",
+          true,
+          [
+            "facet-one",
+            "file:///facet-two"
+          ]
+        ],
+        [
+          "loader",
+          true,
+          [
+            "facet-one",
+            "file:///facet-two"
+          ]
+        ],
+        [
+          "setup-inline"
+        ],
+        [
+          "setup",
+          0,
+          "loader"
+        ],
+        [
+          "setup",
+          1,
+          "loader"
+        ]
+      ]
+    },
+    {
+      "name": "Host rejects module load without loader",
+      "failure": {
+        "name": "Error",
+        "message": "loading modules needs createHost({ loader }), e.g. nodeLoader from @earendil-works/chord/node",
+        "code": null,
+        "reason": null
+      }
+    },
+    {
+      "name": "Host epoch allocation and invalid given epoch",
+      "ids": [
+        2,
+        8,
+        9
+      ],
+      "stale": {
+        "name": "Error",
+        "message": "epoch 1 is not newer than 1",
+        "code": null,
+        "reason": null
+      }
+    },
+    {
+      "name": "foreign roots require carrying links and defer ending running calls",
+      "frames": [],
+      "running": 1
+    },
+    {
+      "name": "foreign root settlement sends exactly one end frame",
+      "answer": 17,
+      "frames": [
+        {
+          "t": "root_end",
+          "rootId": "remote-root"
+        }
+      ],
+      "roots": 0
+    },
+    {
+      "name": "host retirement waits parent permission and sends only child-host frames",
+      "retained": true,
+      "previous": null,
+      "epochs": [
+        2
+      ],
+      "frames": [
+        {
+          "t": "retire",
+          "epoch": 1
+        }
+      ]
+    }
+  ]
+}

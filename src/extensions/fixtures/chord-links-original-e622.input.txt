@@ -1,0 +1,29 @@
+const cases=[],tick=async()=>{for(let i=0;i<6;i++)await Promise.resolve()};
+{
+ const [a,b]=api.memoryLinkPair(),log=[],frame={t:'ping',n:1},returned=a.send(frame);frame.n=99;a.send({t:'ping',n:2});await tick();b.receive(function(frame){log.push([frame,this===b])});a.send({t:'ping',n:3});await tick();cases.push({name:'memory FIFO detached frames receive queue and live callback receivers',log,returned:returned??null,constructors:[a.constructor.name,Object.getPrototypeOf(Object.getPrototypeOf(a)).constructor.name]});a.close();await tick();
+}
+{
+ const [a,b]=api.memoryLinkPair(),log=[];a.onClose(reason=>log.push(['a',reason]));b.onClose(reason=>log.push(['b',reason]));a.close('finished');a.close('ignored');a.send({t:'ping',n:1});a.onClose(reason=>log.push(['late',reason]));await tick();cases.push({name:'memory close notifies both ends exactly once and late handlers use closed',log,closed:[a.closed,b.closed]});
+}
+{
+ const [a,b]=api.memoryLinkPair(),log=[];b.receive(frame=>log.push(frame));a.send({t:'ping',n:1});a.sever();a.send({t:'ping',n:2});b.send({t:'ping',n:3});await tick();cases.push({name:'memory sever drops queued and future frames without signaling close',log,closed:[a.closed,b.closed]});a.close();await tick();
+}
+{
+ const [a,b]=api.memoryLinkPair();let failure;try{a.send({t:'ping',n:1n})}catch(error){failure={name:error.name}}cases.push({name:'memory stringify rejects bigint before pending delivery',failure,closed:a.closed});a.close();await tick();
+}
+{
+ const listeners=new Map(),log=[],channel={connected:true,on(name,fn){listeners.set(name,fn);log.push(['on',name])},off(name,fn){log.push(['off',name,listeners.get(name)===fn]);listeners.delete(name)},send(frame){log.push(['send',frame]);return true}},link=api.ipcLink(channel),frames=[];link.receive(frame=>frames.push(frame));listeners.get('message')({control:'other'});listeners.get('message')({chord2:{t:'ping',n:2}});link.send({t:'pong',n:3});channel.connected=false;link.send({t:'ping',n:4});link.onClose(reason=>log.push(['closed',reason]));listeners.get('disconnect')();cases.push({name:'IPC wraps chord frames ignores control and removes exact owned listeners',log,frames,closed:link.closed,listeners:listeners.size});
+}
+{
+ const listeners=new Map(),log=[],socket={readyState:0,addEventListener(name,fn){listeners.set(name,fn);log.push(['on',name])},send(data){log.push(['send',JSON.parse(data)])},close(code){log.push(['socket-close',code]);this.readyState=3}},link=api.webSocketLink(socket),frames=[];link.receive(frame=>frames.push(frame));link.send({t:'ping',n:1});socket.readyState=1;listeners.get('open')();link.send({t:'ping',n:2});listeners.get('message')({data:'{"t":"pong","n":3}'});listeners.get('message')({data:{toString(){return '{"t":"pong","n":4}'}}});link.onClose(reason=>log.push(['closed',reason]));link.close('done');cases.push({name:'structural WebSocket queues until open parses strings and coercible messages and closes1000',log,frames,closed:link.closed});
+}
+{
+ const listeners=new Map(),log=[],socket={readyState:1,addEventListener(name,fn){listeners.set(name,fn)},send(data){log.push(['send',JSON.parse(data)])},close(code){log.push(['close',code]);this.readyState=3}},link=api.webSocketLink(socket);link.onClose(reason=>log.push(['ended',reason]));listeners.get('message')({data:'null'});listeners.get('close')();cases.push({name:'invalid parsed WebSocket frame closes protocol once',log,closed:link.closed});
+}
+{
+ const [a,b]=api.memoryLinkPair(),log=[];a.shutdown=()=>{log.push('shutdown');throw new Error('shutdown failure')};a.onClose(reason=>log.push(['close',reason]));let failure;try{a.close('reason')}catch(error){failure={name:error.name,message:error.message}}cases.push({name:'BaseLink finally notifies handlers when transport shutdown throws',failure,log,closed:a.closed});b.close();await tick();
+}
+{
+ const [a,b]=api.memoryLinkPair(),log=[];a.transmit=()=>17;a.ended=()=>23;const values=[a.send({t:'ping',n:1}),a.close('reason'),a.deliver({t:'bye'})];cases.push({name:'BaseLink methods ignore overridden transport return values',values:values.map(v=>v??null),closed:a.closed});b.close();await tick();
+}
+globalThis.chordLinksCases=cases;

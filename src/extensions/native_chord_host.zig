@@ -3,15 +3,15 @@ const h = @import("native_chord_host_values.zig");
 const Scope = h.Scope;
 const js = h.js;
 const c = h.c;
-const Method = enum(c_int) { epoch, previousEpoch, report, install, ready, facetApi, serveInto, startEager, currentEpoch, hasEpoch, retainedEpochs, pendingEpoch, service, addressOf, acquire, forget, touch, root, joinRoot, endRoot, maybeRetire, registry, buildTables, liveDecls, checkRegistrations, registriesChanged, installTables, get, close, serve };
+const Method = enum(c_int) { epoch, previousEpoch, report, install, ready, facetApi, serveInto, startEager, currentEpoch, hasEpoch, retainedEpochs, pendingEpoch, service, addressOf, acquire, forget, touch, root, joinRoot, endRoot, maybeRetire, registry, buildTables, liveDecls, checkRegistrations, registriesChanged, installTables, get, close, serve, load, resolve, rootSent, foreignRootEnded, nextEpochId, allowRetire, retire, retireBehavior };
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, operation: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(operation);
     const target = if (method == .serve) data[1] else receiver;
     const result = invoke(engine, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, method, data[0]) catch |err| {
-        return if (method == .root or method == .joinRoot or method == .close) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
+        return if (method == .root or method == .joinRoot or method == .close or method == .load or method == .resolve) @import("native_durable.zig").rejectedPromise(engine, err) else @import("native_durable.zig").reject(engine, err);
     };
-    if (method == .root) {
+    if (method == .root or method == .resolve) {
         defer engine.freeValue(result);
         return @import("native_durable.zig").resolvedPromise(engine, result) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
     }
@@ -173,7 +173,16 @@ fn joinRoot(s: *Scope, host: c.JSValue, args: []const c.JSValue, bindings: c.JSV
         _ = try h.invoke(s, try s.get(owned.data, "local"), "delete", &.{root_id});
         return h.throwValue(s, try h.errorValue(s, bindings, "superseded", &.{ try s.text("epoch "), epoch_id, try s.text(" is not retained by "), try s.get(host, "name") }, c.pi_js_undefined()));
     }
-    if (!c.JS_IsUndefined(try s.get(settings, "from"))) return error.NativeChordForeignRootLinksRequired;
+    const from = try s.get(settings, "from");
+    if (!c.JS_IsUndefined(from) and c.JS_ToBool(s.engine.context, try h.invoke(s, try s.get(owned.data, "local"), "has", &.{root_id})) == 0) {
+        const foreign = try s.get(owned.data, "foreign");
+        var links = try h.invoke(s, foreign, "get", &.{root_id});
+        if (c.JS_IsUndefined(links)) {
+            links = try h.set(s);
+            _ = try h.invoke(s, foreign, "set", &.{ root_id, links });
+        }
+        _ = try h.invoke(s, links, "add", &.{from});
+    }
     const roots = try s.get(epoch, "roots");
     const previous = try h.invoke(s, roots, "get", &.{root_id});
     var count: f64 = 0;
@@ -248,6 +257,58 @@ fn excluding(s: *Scope, entries: c.JSValue, record: c.JSValue) !c.JSValue {
 fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, method: Method, bindings: c.JSValue) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
+    if (method == .resolve) return @import("native_chord_host_load.zig").resolve(engine, bindings, receiver, h.arg(args, 0));
+    if (method == .retire) return @import("native_chord_host_epoch.zig").retire(engine, receiver);
+    if (method == .retireBehavior) return @import("native_chord_host_epoch.zig").retireBehavior(engine, bindings, receiver, h.arg(args, 0), h.arg(args, 1));
+    if (method == .load) return @import("native_chord_host_load.zig").load(engine, receiver, h.arg(args, 0), try options(&s, h.arg(args, 1)));
+    if (method == .nextEpochId) {
+        const given = h.arg(args, 0);
+        const current = try s.get(try s.get(receiver, "current"), "id");
+        var value: f64 = 0;
+        var now: f64 = 0;
+        if (!c.JS_IsUndefined(given)) {
+            if (c.JS_ToFloat64(engine.context, &value, given) < 0 or c.JS_ToFloat64(engine.context, &now, current) < 0) return js.capture(engine);
+            if (value <= now) return h.ordinaryError(&s, &.{ try s.text("epoch "), given, try s.text(" is not newer than "), current });
+        }
+        const data = (try h.actor(&s, receiver, bindings, .HostImpl)).data;
+        const next = if (!h.nullish(given)) given else next: {
+            if (c.JS_ToFloat64(engine.context, &value, try s.get(data, "epochSeq")) < 0) return js.capture(engine);
+            break :next c.JS_NewFloat64(engine.context, value + 1);
+        };
+        try h.field(&s, data, "epochSeq", next);
+        return s.result(next);
+    }
+    if (method == .rootSent) {
+        const sent = try s.get((try h.actor(&s, receiver, bindings, .HostImpl)).data, "rootLinks");
+        var links = try h.invoke(&s, sent, "get", &.{h.arg(args, 0)});
+        if (c.JS_IsUndefined(links)) {
+            links = try h.set(&s);
+            _ = try h.invoke(&s, sent, "set", &.{ h.arg(args, 0), links });
+        }
+        _ = try h.invoke(&s, links, "add", &.{h.arg(args, 1)});
+        return c.pi_js_undefined();
+    }
+    if (method == .foreignRootEnded) {
+        const foreign = try s.get((try h.actor(&s, receiver, bindings, .HostImpl)).data, "foreign");
+        const root_id = h.arg(args, 0);
+        const links = try h.invoke(&s, foreign, "get", &.{root_id});
+        if (c.JS_IsUndefined(links) or c.JS_ToBool(engine.context, try h.invoke(&s, links, "delete", &.{h.arg(args, 1)})) == 0 or c.JS_ToBool(engine.context, try s.get(links, "size")) != 0) return c.pi_js_undefined();
+        const epochs = try h.values(&s, try s.get(receiver, "epochs"));
+        var running = false;
+        for (0..try h.length(&s, epochs)) |index| {
+            if (c.JS_ToBool(engine.context, try h.invoke(&s, try s.get(try s.at(epochs, index), "roots"), "has", &.{root_id})) != 0) {
+                running = true;
+                break;
+            }
+        }
+        _ = try h.invoke(&s, if (running) foreign else receiver, if (running) "delete" else "endRoot", &.{root_id});
+        return c.pi_js_undefined();
+    }
+    if (method == .allowRetire) {
+        const data = (try h.actor(&s, receiver, bindings, .HostImpl)).data;
+        try h.field(&s, data, "retireAllowed", try h.invoke(&s, try s.keep(try js.global(engine, "Math")), "max", &.{ try s.get(data, "retireAllowed"), h.arg(args, 0) }));
+        return js.invoke(engine, receiver, "maybeRetire", &.{});
+    }
     if (method == .epoch or method == .currentEpoch) return js.get(engine, try s.get(receiver, "current"), "id");
     if (method == .previousEpoch or method == .pendingEpoch) {
         const state = try s.get(receiver, if (method == .previousEpoch) "previous" else "pending");
@@ -382,20 +443,28 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         const touches = try s.get(owned.data, "touches");
         const touched = try h.invoke(&s, touches, "get", &.{root_id});
         if (!h.nullish(touched)) {
-            const records = try h.snapshot(&s, touched);
-            const count = try h.length(&s, records);
-            for (0..count) |index| _ = try h.invoke(&s, try s.at(records, index), "rootEnded", &.{root_id});
+            var records = try js.Iterator.init(engine, touched, try h.iteratorSymbol(&s));
+            defer records.deinit();
+            errdefer records.closePreserving();
+            while (try records.next()) |record| {
+                defer engine.freeValue(record);
+                _ = try h.invoke(&s, record, "rootEnded", &.{root_id});
+            }
         }
         _ = try h.invoke(&s, touches, "delete", &.{root_id});
         const root_links = try s.get(owned.data, "rootLinks");
         const links = try h.invoke(&s, root_links, "get", &.{root_id});
         if (!h.nullish(links)) {
-            const connections = try h.snapshot(&s, links);
-            const frame = try s.record();
-            try h.field(&s, frame, "t", try s.text("root_end"));
-            try h.field(&s, frame, "rootId", root_id);
-            const count = try h.length(&s, connections);
-            for (0..count) |index| _ = try h.invoke(&s, try s.at(connections, index), "send", &.{frame});
+            var connections = try js.Iterator.init(engine, links, try h.iteratorSymbol(&s));
+            defer connections.deinit();
+            errdefer connections.closePreserving();
+            while (try connections.next()) |connection| {
+                defer engine.freeValue(connection);
+                const frame = try s.record();
+                try h.field(&s, frame, "t", try s.text("root_end"));
+                try h.field(&s, frame, "rootId", root_id);
+                _ = try h.invoke(&s, connection, "send", &.{frame});
+            }
         }
         _ = try h.invoke(&s, root_links, "delete", &.{root_id});
         return c.pi_js_undefined();
@@ -403,7 +472,13 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
     if (method == .maybeRetire) {
         const previous = try s.get(receiver, "previous");
         if (c.JS_IsUndefined(previous) or c.JS_ToBool(engine.context, try s.get(try s.get(previous, "roots"), "size")) != 0) return c.pi_js_undefined();
-        return error.NativeChordEpochRetirementRequired;
+        if (!try s.equal(try s.get(receiver, "kind"), "client") and !c.JS_IsUndefined(try s.get(receiver, "upstream"))) {
+            var previous_id: f64 = 0;
+            var allowed: f64 = 0;
+            if (c.JS_ToFloat64(engine.context, &previous_id, try s.get(previous, "id")) < 0 or c.JS_ToFloat64(engine.context, &allowed, try s.get((try h.actor(&s, receiver, bindings, .HostImpl)).data, "retireAllowed")) < 0) return js.capture(engine);
+            if (previous_id > allowed) return c.pi_js_undefined();
+        }
+        return js.invoke(engine, receiver, "retire", &.{});
     }
     if (method == .registry) return @import("native_chord_host_registry.zig").view(engine, bindings, receiver, h.arg(args, 0));
     if (method == .buildTables) return @import("native_chord_host_registry.zig").build(engine, bindings, receiver, h.arg(args, 0));
@@ -517,6 +592,7 @@ fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     const prototype = try s.record();
     try js.define(engine, bindings, "HostImpl", try @import("native_class.zig").constructor(engine, "HostImpl", 1, prototype, construct, &.{bindings}));
     inline for (.{ .{ "epoch", Method.epoch, 0, true, false }, .{ "previousEpoch", Method.previousEpoch, 0, true, false }, .{ "report", Method.report, 1, false, false }, .{ "install", Method.install, 1, false, false }, .{ "ready", Method.ready, 0, false, false }, .{ "facetApi", Method.facetApi, 1, false, false }, .{ "serveInto", Method.serveInto, 2, false, false }, .{ "startEager", Method.startEager, 1, false, false }, .{ "currentEpoch", Method.currentEpoch, 0, false, false }, .{ "hasEpoch", Method.hasEpoch, 1, false, false }, .{ "pendingEpoch", Method.pendingEpoch, 0, false, false }, .{ "service", Method.service, 1, false, false }, .{ "addressOf", Method.addressOf, 4, false, false }, .{ "acquire", Method.acquire, 5, false, false }, .{ "forget", Method.forget, 1, false, false }, .{ "touch", Method.touch, 2, false, false }, .{ "root", Method.root, 1, false, true }, .{ "joinRoot", Method.joinRoot, 3, false, true }, .{ "endRoot", Method.endRoot, 1, false, false }, .{ "maybeRetire", Method.maybeRetire, 0, false, false }, .{ "registry", Method.registry, 1, false, false }, .{ "buildTables", Method.buildTables, 1, false, false }, .{ "liveDecls", Method.liveDecls, 0, false, false }, .{ "checkRegistrations", Method.checkRegistrations, 2, false, false }, .{ "registriesChanged", Method.registriesChanged, 1, false, false }, .{ "installTables", Method.installTables, 2, false, false }, .{ "get", Method.get, 3, false, false }, .{ "close", Method.close, 0, false, true } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], item[3], item[4]);
+    inline for (.{ .{ "load", Method.load, 1, true }, .{ "resolve", Method.resolve, 1, true }, .{ "rootSent", Method.rootSent, 2, false }, .{ "foreignRootEnded", Method.foreignRootEnded, 2, false }, .{ "nextEpochId", Method.nextEpochId, 0, false }, .{ "allowRetire", Method.allowRetire, 1, false }, .{ "retire", Method.retire, 0, false }, .{ "retireBehavior", Method.retireBehavior, 2, false } }) |item| try h.define(&s, prototype, bindings, item[0], callback, @intFromEnum(item[1]), item[2], false, item[3]);
 }
 fn createHost(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
@@ -551,6 +627,7 @@ pub fn classes(engine: *h.Engine) !Classes {
     try h.field(&s, bindings, "holdsByProxy", try s.keep(try js.builtin(engine, "WeakMap", &.{})));
     try @import("native_chord_publish.zig").initialize(engine, bindings);
     try @import("native_chord_cells.zig").install(engine, bindings);
+    try @import("native_chord_links.zig").install(engine, bindings);
     inline for (.{ "Decls", "ExposedImpl" }, 0..) |name, index| {
         const prototype = try s.record();
         try js.define(engine, bindings, name, try @import("native_class.zig").constructor(engine, name, @intCast(index), prototype, simpleConstruct, &.{c.pi_js_bool(engine.context, @intCast(index))}));
@@ -568,6 +645,7 @@ pub fn classes(engine: *h.Engine) !Classes {
     inline for (.{ "ChordError", "isChordError", "forbidden", "invalid" }) |name| try h.field(&s, api, name, try s.get(resource_classes.exports, name));
     inline for (.{ "cell", "resource", "listener", "derivation", "defineFacet", "defineRegistry" }) |name| try h.field(&s, api, name, try s.get(declarations, name));
     try h.field(&s, api, "hostPrincipal", principal);
+    inline for (.{ "memoryLinkPair", "ipcLink", "webSocketLink" }) |name| try h.field(&s, api, name, try s.get(bindings, name));
     try js.define(engine, api, "createHost", try @import("native_node_function.zig").create(engine, "createHost", 0, createHost, &.{bindings}));
     try js.define(engine, api, "Type", try @import("typebox.zig").create(engine));
     return .{ .exports = s.result(api), .bindings = s.result(bindings) };

@@ -82,9 +82,9 @@ pub fn unwind(engine: *h.Engine, record: c.JSValue, bindings: c.JSValue, run: c.
     var captures = [_]c.JSValue{try s.get(record, "openOrder")};
     const comparator = try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, sorting, "", 2, 0, 1, &captures)));
     _ = try h.invoke(&s, resources, "sort", &.{comparator});
-    return cleanup(engine, record, bindings, resources, try s.get(created, "holds"), "cleanup failed", false);
+    return cleanup(engine, record, bindings, resources, try s.get(created, "holds"), try s.text("cleanup failed"), false);
 }
-fn cleanup(engine: *h.Engine, record: c.JSValue, bindings: c.JSValue, resources: c.JSValue, holds: c.JSValue, label: []const u8, disposed: bool) !c.JSValue {
+pub fn cleanup(engine: *h.Engine, record: c.JSValue, bindings: c.JSValue, resources: c.JSValue, holds: c.JSValue, label: c.JSValue, disposed: bool) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const work = try record_api.workFor(&s, record, bindings);
@@ -92,7 +92,7 @@ fn cleanup(engine: *h.Engine, record: c.JSValue, bindings: c.JSValue, resources:
     try h.field(&s, work, "holds", holds);
     try h.field(&s, work, "errors", try s.list());
     try h.field(&s, work, "position", c.JS_NewInt32(engine.context, 0));
-    try h.field(&s, work, "label", try s.text(label));
+    try h.field(&s, work, "label", label);
     try h.field(&s, work, "disposed", c.pi_js_bool(engine.context, @intFromBool(disposed)));
     return cleanupNext(engine, work, c.pi_js_undefined(), false, -1);
 }
@@ -206,7 +206,7 @@ fn disposeStep(engine: *h.Engine, work: c.JSValue, _: c.JSValue, _: bool, stage:
     }
     const resources = try h.snapshot(&s, try s.get(record, "openOrder"));
     _ = try h.invoke(&s, resources, "reverse", &.{});
-    return cleanup(engine, record, bindings, resources, try s.get(work, "holds"), "disposal failed", true);
+    return cleanup(engine, record, bindings, resources, try s.get(work, "holds"), try s.text("disposal failed"), true);
 }
 fn disposeSettled(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !c.JSValue {
     // Settling the already-owned capability must remain possible after a

@@ -1,0 +1,218 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "memory FIFO detached frames receive queue and live callback receivers",
+      "log": [
+        [
+          {
+            "t": "ping",
+            "n": 1
+          },
+          false
+        ],
+        [
+          {
+            "t": "ping",
+            "n": 2
+          },
+          false
+        ],
+        [
+          {
+            "t": "ping",
+            "n": 3
+          },
+          true
+        ]
+      ],
+      "returned": null,
+      "constructors": [
+        "MemoryLink",
+        "BaseLink"
+      ]
+    },
+    {
+      "name": "memory close notifies both ends exactly once and late handlers use closed",
+      "log": [
+        [
+          "a",
+          "finished"
+        ],
+        [
+          "late",
+          "closed"
+        ],
+        [
+          "b",
+          "finished"
+        ]
+      ],
+      "closed": [
+        true,
+        true
+      ]
+    },
+    {
+      "name": "memory sever drops queued and future frames without signaling close",
+      "log": [],
+      "closed": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "memory stringify rejects bigint before pending delivery",
+      "failure": {
+        "name": "TypeError"
+      },
+      "closed": false
+    },
+    {
+      "name": "IPC wraps chord frames ignores control and removes exact owned listeners",
+      "log": [
+        [
+          "on",
+          "message"
+        ],
+        [
+          "on",
+          "disconnect"
+        ],
+        [
+          "send",
+          {
+            "chord2": {
+              "t": "pong",
+              "n": 3
+            }
+          }
+        ],
+        [
+          "off",
+          "message",
+          true
+        ],
+        [
+          "off",
+          "disconnect",
+          true
+        ],
+        [
+          "closed",
+          "ipc disconnected"
+        ]
+      ],
+      "frames": [
+        {
+          "t": "ping",
+          "n": 2
+        }
+      ],
+      "closed": true,
+      "listeners": 0
+    },
+    {
+      "name": "structural WebSocket queues until open parses strings and coercible messages and closes1000",
+      "log": [
+        [
+          "on",
+          "open"
+        ],
+        [
+          "on",
+          "message"
+        ],
+        [
+          "on",
+          "close"
+        ],
+        [
+          "send",
+          {
+            "t": "ping",
+            "n": 1
+          }
+        ],
+        [
+          "send",
+          {
+            "t": "ping",
+            "n": 2
+          }
+        ],
+        [
+          "send",
+          {
+            "t": "bye",
+            "reason": "done"
+          }
+        ],
+        [
+          "socket-close",
+          1000
+        ],
+        [
+          "closed",
+          "done"
+        ]
+      ],
+      "frames": [
+        {
+          "t": "pong",
+          "n": 3
+        },
+        {
+          "t": "pong",
+          "n": 4
+        }
+      ],
+      "closed": true
+    },
+    {
+      "name": "invalid parsed WebSocket frame closes protocol once",
+      "log": [
+        [
+          "send",
+          {
+            "t": "bye",
+            "reason": "protocol error"
+          }
+        ],
+        [
+          "close",
+          1000
+        ],
+        [
+          "ended",
+          "protocol error"
+        ]
+      ],
+      "closed": true
+    },
+    {
+      "name": "BaseLink finally notifies handlers when transport shutdown throws",
+      "failure": {
+        "name": "Error",
+        "message": "shutdown failure"
+      },
+      "log": [
+        "shutdown",
+        [
+          "close",
+          "reason"
+        ]
+      ],
+      "closed": true
+    },
+    {
+      "name": "BaseLink methods ignore overridden transport return values",
+      "values": [
+        null,
+        null,
+        null
+      ],
+      "closed": false
+    }
+  ]
+}

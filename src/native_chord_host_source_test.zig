@@ -7,7 +7,11 @@ fn setup(gpa: std.mem.Allocator) !*em.Engine {
     engine.native_io = std.testing.io;
     const root = em.c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
-    try js.define(engine, root, "nativeHostApi", try @import("extensions/native_chord_host.zig").exports(engine));
+    const classes = try @import("extensions/native_chord_host.zig").classes(engine);
+    defer engine.freeValue(classes.bindings);
+    defer engine.freeValue(classes.exports);
+    try js.define(engine, classes.exports, "isSource", try js.get(engine, classes.bindings, "isSource"));
+    try js.define(engine, root, "nativeHostApi", em.c.JS_DupValue(engine.context, classes.exports));
     return engine;
 }
 fn replay(engine: *em.Engine, comptime fixture: [:0]const u8, comptime input: []const u8, comptime cases: []const u8) !void {
@@ -49,6 +53,37 @@ test "native Chord Host pending activation retains graph through explicit collec
     , "chord-host-gc-complete.mjs");
     engine.freeValue(completed);
     em.c.JS_RunGC(engine.runtime);
+}
+test "native Chord Host latest real Cell Derived load roots and retirement Source composition" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    try @import("extensions/native_url.zig").install(engine);
+    try replay(engine, "extensions/fixtures/chord-composition-original-e622.json", "extensions/fixtures/chord-composition-original-e622.input.txt", "chordCompositionCases");
+}
+test "native Chord Host links replay latest memory IPC structural WebSocket and close failures" {
+    const engine = try setup(std.testing.allocator);
+    defer engine.deinit();
+    try replay(engine, "extensions/fixtures/chord-links-original-e622.json", "extensions/fixtures/chord-links-original-e622.input.txt", "chordLinksCases");
+}
+test "native Chord Host transport callbacks retain graph through GC and release every induced allocation failure" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            const engine = try setup(gpa);
+            defer engine.deinit();
+            const generation = engine.native_allocation_generation;
+            const started = engine.evalModule(
+                \\const api=nativeHostApi,[a,b]=api.memoryLinkPair(),frames=[];b.receive(frame=>frames.push(frame));a.send({t:'ping',n:1});const events=new Map(),socket={readyState:0,addEventListener(name,fn){events.set(name,fn)},send(){},close(){this.readyState=3}},link=api.webSocketLink(socket);link.send({t:'ping',n:2});const listeners=new Map(),channel={connected:true,on(name,fn){listeners.set(name,fn)},off(name,fn){if(listeners.get(name)===fn)listeners.delete(name)},send(){}},ipc=api.ipcLink(channel);globalThis.pendingTransports={a,b,frames,events,socket,link,listeners,ipc};
+            , "chord-transports-gc-start.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(started);
+            em.c.JS_RunGC(engine.runtime);
+            const completed = engine.evalModule(
+                \\const p=pendingTransports;for(let i=0;i<6;i++)await Promise.resolve();if(JSON.stringify(p.frames)!=='[{"t":"ping","n":1}]')throw Error('memory graph lost');p.socket.readyState=1;p.events.get('open')();p.listeners.get('disconnect')();if(!p.ipc.closed||p.listeners.size!==0)throw Error('ipc graph lost');p.link.close();p.a.close();for(let i=0;i<6;i++)await Promise.resolve();if(!p.a.closed||!p.b.closed||!p.link.closed)throw Error('close graph lost');delete globalThis.pendingTransports;
+            , "chord-transports-gc-finish.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            engine.freeValue(completed);
+            em.c.JS_RunGC(engine.runtime);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
 test "native Chord Host construction activation and disposal release induced allocation failures" {
     const Probe = struct {

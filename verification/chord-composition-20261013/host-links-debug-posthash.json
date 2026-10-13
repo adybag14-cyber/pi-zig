@@ -1,0 +1,18 @@
+{
+  "source": 4788,
+  "source_after": 4788,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admission": {
+    "measured_utc": "2026-10-13T18:07:01.5560123+00:00",
+    "free_physical_kib": 28594508,
+    "required_kib": 16777216,
+    "coordinated_concurrent_jobs": 1,
+    "selected_zig_inventory": [],
+    "owner_powershell_gc": true,
+    "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+    "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+  },
+  "completed_utc": "2026-10-13T18:07:26.5790441+00:00"
+}
