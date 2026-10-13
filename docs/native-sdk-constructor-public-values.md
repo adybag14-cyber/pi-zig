@@ -32,3 +32,12 @@ actual per-target completion counts in both modes on Windows/Linux/macOS. Those
 hosted results are pending. Full runtime/registry/core binding, public factory,
 remaining lifecycle methods and complete Pi parity are still required before
 removing the implementation compatibility bridge.
+
+The first hosted Windows ReleaseSafe candidate exhausted the 22 minute aggregate
+compile step before runtime started (job 115496013626, run 38455195412). Linux
+Debug/ReleaseSafe and Windows Debug passed; the incomplete matrix is retained
+as a negative. The follow-up gives each of the four independently compiled test
+artifacts its own 1320 second compile step, sequentially on the same frozen
+checkout. The four-artifact runtime remains one 300 second step with the same
+37 tests, 120 second test deadlines and 10000 ms host awaits. The job envelope
+accounts for all four compile steps and does not expand runtime deadlines.

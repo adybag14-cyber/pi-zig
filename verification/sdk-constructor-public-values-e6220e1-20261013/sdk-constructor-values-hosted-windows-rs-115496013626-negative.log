@@ -1,0 +1,255 @@
+﻿2026-10-13T19:29:14.2876723Z Current runner version: '2.337.0'
+2026-10-13T19:29:14.2915176Z ##[group]Runner Image Provisioner
+2026-10-13T19:29:14.2916552Z Hosted Compute Agent
+2026-10-13T19:29:14.2917568Z Version: 20260901.588
+2026-10-13T19:29:14.2918721Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-13T19:29:14.2920030Z Build Date: 2026-09-01T19:56:44Z
+2026-10-13T19:29:14.2921763Z Worker ID: {d9b320ac-b783-4eae-8842-f55c31a98f2c}
+2026-10-13T19:29:14.2923073Z Azure Region: westcentralus
+2026-10-13T19:29:14.2924489Z ##[endgroup]
+2026-10-13T19:29:14.2926831Z ##[group]Operating System
+2026-10-13T19:29:14.2927928Z Microsoft Windows Server 2025
+2026-10-13T19:29:14.2928773Z 10.0.26100
+2026-10-13T19:29:14.2929349Z Datacenter
+2026-10-13T19:29:14.2929911Z ##[endgroup]
+2026-10-13T19:29:14.2930464Z ##[group]Runner Image
+2026-10-13T19:29:14.2931061Z Image: windows-2025-vs2026
+2026-10-13T19:29:14.2931769Z Version: 20260925.250.1
+2026-10-13T19:29:14.2933577Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20260925.250/images/windows/Windows2025-VS2026-Readme.md
+2026-10-13T19:29:14.2935426Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20260925.250
+2026-10-13T19:29:14.2936461Z ##[endgroup]
+2026-10-13T19:29:14.2937694Z ##[group]GITHUB_TOKEN Permissions
+2026-10-13T19:29:14.2940033Z Contents: read
+2026-10-13T19:29:14.2940698Z Metadata: read
+2026-10-13T19:29:14.2941908Z ##[endgroup]
+2026-10-13T19:29:14.2944401Z Secret source: Actions
+2026-10-13T19:29:14.2945395Z Cache mode: write
+2026-10-13T19:29:14.2946168Z Prepare workflow directory
+2026-10-13T19:29:14.3292640Z Prepare all required actions
+2026-10-13T19:29:14.3341510Z Getting action download info
+2026-10-13T19:29:14.6070688Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-13T19:29:14.7422290Z Download action repository 'mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29' (SHA:d1434d08867e3ee9daa34448df10607b98908d29)
+2026-10-13T19:29:20.1928243Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-13T19:29:20.5108937Z Complete job name: qualify (ReleaseSafe, windows-latest)
+2026-10-13T19:29:20.6608662Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-13T19:29:20.6609562Z with:
+2026-10-13T19:29:20.6609827Z   repository: adybag14-cyber/pi-zig
+2026-10-13T19:29:20.6612703Z   token: ***
+2026-10-13T19:29:20.6612951Z   ssh-strict: true
+2026-10-13T19:29:20.6613192Z   ssh-user: git
+2026-10-13T19:29:20.6613441Z   persist-credentials: true
+2026-10-13T19:29:20.6613704Z   clean: true
+2026-10-13T19:29:20.6613943Z   sparse-checkout-cone-mode: true
+2026-10-13T19:29:20.6614230Z   fetch-depth: 1
+2026-10-13T19:29:20.6614468Z   fetch-tags: false
+2026-10-13T19:29:20.6614709Z   show-progress: true
+2026-10-13T19:29:20.6614963Z   lfs: false
+2026-10-13T19:29:20.6615192Z   submodules: false
+2026-10-13T19:29:20.6615468Z   set-safe-directory: true
+2026-10-13T19:29:20.6615763Z   allow-unsafe-pr-checkout: false
+2026-10-13T19:29:20.6616272Z ##[endgroup]
+2026-10-13T19:29:20.8078158Z Syncing repository: adybag14-cyber/pi-zig
+2026-10-13T19:29:20.8079898Z ##[group]Getting Git version info
+2026-10-13T19:29:20.8080332Z Working directory is 'D:\a\pi-zig\pi-zig'
+2026-10-13T19:29:20.9073856Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-13T19:29:21.2779686Z git version 2.55.0.windows.5
+2026-10-13T19:29:21.2823659Z ##[endgroup]
+2026-10-13T19:29:21.2842151Z Temporarily overriding HOME='D:\a\_temp\f07caa63-b92e-458f-a5a3-06ab85cbc609' before making global git config changes
+2026-10-13T19:29:21.2843936Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T19:29:21.2854958Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\pi-zig\pi-zig
+2026-10-13T19:29:21.3537151Z Deleting the contents of 'D:\a\pi-zig\pi-zig'
+2026-10-13T19:29:21.3544899Z ##[group]Initializing the repository
+2026-10-13T19:29:21.3554288Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\pi-zig\pi-zig
+2026-10-13T19:29:21.4566771Z Initialized empty Git repository in D:/a/pi-zig/pi-zig/.git/
+2026-10-13T19:29:21.4609827Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/adybag14-cyber/pi-zig
+2026-10-13T19:29:21.5217677Z ##[endgroup]
+2026-10-13T19:29:21.5218222Z ##[group]Disabling automatic garbage collection
+2026-10-13T19:29:21.5226878Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-13T19:29:21.5544503Z ##[endgroup]
+2026-10-13T19:29:21.5545904Z ##[group]Setting up auth
+2026-10-13T19:29:21.5556201Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T19:29:21.5867002Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-13T19:29:23.0206067Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T19:29:23.0524379Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-13T19:29:23.6058841Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T19:29:23.6362928Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-13T19:29:24.1610327Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-13T19:29:24.1932353Z ##[endgroup]
+2026-10-13T19:29:24.1933110Z ##[group]Fetching the repository
+2026-10-13T19:29:24.1948065Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +12330248ab4d17ea592c036ed425824555c5b611:refs/remotes/origin/work/native-sdk-constructor-values-20261013
+2026-10-13T19:29:28.3081246Z From https://github.com/adybag14-cyber/pi-zig
+2026-10-13T19:29:28.3082352Z  * [new ref]         12330248ab4d17ea592c036ed425824555c5b611 -> origin/work/native-sdk-constructor-values-20261013
+2026-10-13T19:29:28.3125980Z ##[endgroup]
+2026-10-13T19:29:28.3127021Z ##[group]Determining the checkout info
+2026-10-13T19:29:28.3128239Z ##[endgroup]
+2026-10-13T19:29:28.3138449Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-13T19:29:28.3584553Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-13T19:29:28.3904865Z ##[group]Checking out the ref
+2026-10-13T19:29:28.3915821Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B work/native-sdk-constructor-values-20261013 refs/remotes/origin/work/native-sdk-constructor-values-20261013
+2026-10-13T19:29:29.4897477Z Updating files:  53% (2528/4737)
+2026-10-13T19:29:29.5192092Z Updating files:  54% (2558/4737)
+2026-10-13T19:29:29.5322224Z Updating files:  55% (2606/4737)
+2026-10-13T19:29:29.5494919Z Updating files:  56% (2653/4737)
+2026-10-13T19:29:29.5647661Z Updating files:  57% (2701/4737)
+2026-10-13T19:29:29.5788792Z Updating files:  58% (2748/4737)
+2026-10-13T19:29:29.5962734Z Updating files:  59% (2795/4737)
+2026-10-13T19:29:29.6109445Z Updating files:  60% (2843/4737)
+2026-10-13T19:29:29.6253495Z Updating files:  61% (2890/4737)
+2026-10-13T19:29:29.6412984Z Updating files:  62% (2937/4737)
+2026-10-13T19:29:29.6555988Z Updating files:  63% (2985/4737)
+2026-10-13T19:29:29.6706037Z Updating files:  64% (3032/4737)
+2026-10-13T19:29:29.6847946Z Updating files:  65% (3080/4737)
+2026-10-13T19:29:29.7004593Z Updating files:  66% (3127/4737)
+2026-10-13T19:29:29.7146735Z Updating files:  67% (3174/4737)
+2026-10-13T19:29:29.7291228Z Updating files:  68% (3222/4737)
+2026-10-13T19:29:29.7421108Z Updating files:  69% (3269/4737)
+2026-10-13T19:29:29.7556417Z Updating files:  70% (3316/4737)
+2026-10-13T19:29:29.7711006Z Updating files:  71% (3364/4737)
+2026-10-13T19:29:29.7864595Z Updating files:  72% (3411/4737)
+2026-10-13T19:29:29.8025958Z Updating files:  73% (3459/4737)
+2026-10-13T19:29:29.8175384Z Updating files:  74% (3506/4737)
+2026-10-13T19:29:29.8323846Z Updating files:  75% (3553/4737)
+2026-10-13T19:29:29.8471452Z Updating files:  76% (3601/4737)
+2026-10-13T19:29:29.8609556Z Updating files:  77% (3648/4737)
+2026-10-13T19:29:29.8939690Z Updating files:  78% (3695/4737)
+2026-10-13T19:29:29.9951812Z Updating files:  79% (3743/4737)
+2026-10-13T19:29:30.0222317Z Updating files:  80% (3790/4737)
+2026-10-13T19:29:30.0803615Z Updating files:  81% (3837/4737)
+2026-10-13T19:29:30.0948526Z Updating files:  82% (3885/4737)
+2026-10-13T19:29:30.1227707Z Updating files:  83% (3932/4737)
+2026-10-13T19:29:30.1326002Z Updating files:  84% (3980/4737)
+2026-10-13T19:29:30.1442072Z Updating files:  85% (4027/4737)
+2026-10-13T19:29:30.1566123Z Updating files:  86% (4074/4737)
+2026-10-13T19:29:30.1698119Z Updating files:  87% (4122/4737)
+2026-10-13T19:29:30.1853312Z Updating files:  88% (4169/4737)
+2026-10-13T19:29:30.2018071Z Updating files:  89% (4216/4737)
+2026-10-13T19:29:30.2134846Z Updating files:  90% (4264/4737)
+2026-10-13T19:29:30.2250182Z Updating files:  91% (4311/4737)
+2026-10-13T19:29:30.2367172Z Updating files:  92% (4359/4737)
+2026-10-13T19:29:30.2485507Z Updating files:  93% (4406/4737)
+2026-10-13T19:29:30.2604005Z Updating files:  94% (4453/4737)
+2026-10-13T19:29:30.2719314Z Updating files:  95% (4501/4737)
+2026-10-13T19:29:30.2826852Z Updating files:  96% (4548/4737)
+2026-10-13T19:29:30.2938276Z Updating files:  97% (4595/4737)
+2026-10-13T19:29:30.3055499Z Updating files:  98% (4643/4737)
+2026-10-13T19:29:30.3247957Z Updating files:  99% (4690/4737)
+2026-10-13T19:29:30.3248623Z Updating files: 100% (4737/4737)
+2026-10-13T19:29:30.3249203Z Updating files: 100% (4737/4737), done.
+2026-10-13T19:29:30.3434380Z Switched to a new branch 'work/native-sdk-constructor-values-20261013'
+2026-10-13T19:29:30.3500848Z branch 'work/native-sdk-constructor-values-20261013' set up to track 'origin/work/native-sdk-constructor-values-20261013'.
+2026-10-13T19:29:30.3615612Z ##[endgroup]
+2026-10-13T19:29:30.4038612Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-13T19:29:30.4315188Z 12330248ab4d17ea592c036ed425824555c5b611
+2026-10-13T19:29:30.4744717Z ##[group]Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+2026-10-13T19:29:30.4745156Z with:
+2026-10-13T19:29:30.4745332Z   version: 0.16.0
+2026-10-13T19:29:30.4745522Z   use-cache: false
+2026-10-13T19:29:30.4745710Z   cache-size-limit: 2048
+2026-10-13T19:29:30.4745913Z ##[endgroup]
+2026-10-13T19:29:30.8232092Z Using tool-cache: false
+2026-10-13T19:29:30.8238080Z Fetching zig-x86_64-windows-0.16.0.zip
+2026-10-13T19:29:31.1686754Z Cache miss. Fetching Zig 0.16.0
+2026-10-13T19:29:31.6886408Z Available mirrors: https://pkg.hexops.org/zig, https://zigmirror.hryx.net/zig, https://zig.linus.dev/zig, https://zig.squirl.dev, https://zig.mirror.mschae23.de/zig, https://ziglang.freetls.fastly.net, https://zig.tilok.dev, https://zig-mirror.tsimnet.eu/zig, https://zig.karearl.com/zig, https://pkg.earth/zig, https://fs.liujiacai.net/zigbuilds, https://zigmirror.com, https://zig.chainsafe.dev, https://zig.savalione.com, https://zig.bcr.ist, https://zig.vortan.dev/zig, https://pkg.alexrp.com/zig
+2026-10-13T19:29:31.6890460Z Attempting mirror: https://pkg.alexrp.com/zig
+2026-10-13T19:29:52.4984630Z [command]"C:\Program Files\Git\usr\bin\tar.exe" --posix -cf cache.tzst --exclude cache.tzst -P -C D:/a/pi-zig/pi-zig --files-from manifest.txt --force-local --use-compress-program "zstd -T0"
+2026-10-13T19:29:53.0598428Z Failed to save: Unable to reserve cache with key setup-zig-tarball-zig-x86_64-windows-0.16.0, another job may be creating this cache.
+2026-10-13T19:29:53.0646982Z Fetch took 22241 ms
+2026-10-13T19:29:53.0648062Z Extracting tarball zig-x86_64-windows-0.16.0.zip
+2026-10-13T19:29:53.1599930Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command "$ErrorActionPreference = 'Stop' ; try { Add-Type -AssemblyName System.IO.Compression.ZipFile } catch { } ; try { [System.IO.Compression.ZipFile]::ExtractToDirectory('D:\a\_temp\zig-x86_64-windows-0.16.0.zip', 'D:\a\_temp\a42d8c3a-90fb-402b-91ee-6bf63eb6bc86', $true) } catch { if (($_.Exception.GetType().FullName -eq 'System.Management.Automation.MethodException') -or ($_.Exception.GetType().FullName -eq 'System.Management.Automation.RuntimeException') ){ Expand-Archive -LiteralPath 'D:\a\_temp\zig-x86_64-windows-0.16.0.zip' -DestinationPath 'D:\a\_temp\a42d8c3a-90fb-402b-91ee-6bf63eb6bc86' -Force } else { throw $_ } } ;"
+2026-10-13T19:29:59.2026128Z Extract took 6138 ms
+2026-10-13T19:29:59.2804165Z [command]D:\a\_temp\a42d8c3a-90fb-402b-91ee-6bf63eb6bc86\zig-x86_64-windows-0.16.0\zig.exe version
+2026-10-13T19:29:59.5335554Z 0.16.0
+2026-10-13T19:29:59.5390805Z Resolved Zig version 0.16.0
+2026-10-13T19:29:59.5760905Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T19:29:59.5761620Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T19:29:59.5762068Z [36;1m$taskReceipt = 'verification/native-sdk-constructor-values-candidate'[0m
+2026-10-13T19:29:59.5762611Z [36;1mNew-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null[0m
+2026-10-13T19:29:59.5763184Z [36;1mif ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }[0m
+2026-10-13T19:29:59.5763767Z [36;1mif ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }[0m
+2026-10-13T19:29:59.5764329Z [36;1m$taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)[0m
+2026-10-13T19:29:59.5764852Z [36;1m$taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)[0m
+2026-10-13T19:29:59.5765355Z [36;1m$taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }[0m
+2026-10-13T19:29:59.5765877Z [36;1m$taskToolRoot = Split-Path -Parent $taskZig[0m
+2026-10-13T19:29:59.5766190Z [36;1m$taskZigEnv = (& zig env) -join "`n"[0m
+2026-10-13T19:29:59.5766581Z [36;1m$taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')[0m
+2026-10-13T19:29:59.5767110Z [36;1mif (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }[0m
+2026-10-13T19:29:59.5767598Z [36;1m$taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json[0m
+2026-10-13T19:29:59.5768232Z [36;1m$taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })[0m
+2026-10-13T19:29:59.5769567Z [36;1m$taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })[0m
+2026-10-13T19:29:59.5770549Z [36;1m$taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"[0m
+2026-10-13T19:29:59.5771092Z [36;1m$taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"[0m
+2026-10-13T19:29:59.5772749Z [36;1m[ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='ReleaseSafe'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Ordinary constructor initialization phase, public live getters, events and tool-name matcher; runtime builder and full factory remain unfinished'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"[0m
+2026-10-13T19:29:59.6174551Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-13T19:29:59.6174967Z env:
+2026-10-13T19:29:59.6175219Z   ZIG_GLOBAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:29:59.6175879Z   ZIG_LOCAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:29:59.6176255Z   EXPECTED_HEAD: 12330248ab4d17ea592c036ed425824555c5b611
+2026-10-13T19:29:59.6177183Z ##[endgroup]
+2026-10-13T19:30:05.0991864Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T19:30:05.0992330Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T19:30:05.0993323Z [36;1m& zig build build-native-sdk-constructor-assembly -Doptimize=ReleaseSafe -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile.log[0m
+2026-10-13T19:30:05.0994464Z [36;1mif ($LASTEXITCODE -ne 0) { throw 'Constructor/getter cold compilation failed' }[0m
+2026-10-13T19:30:05.1064029Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-13T19:30:05.1064864Z env:
+2026-10-13T19:30:05.1065203Z   ZIG_GLOBAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:30:05.1065580Z   ZIG_LOCAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:30:05.1065886Z ##[endgroup]
+2026-10-13T19:52:05.2360800Z ##[error]The action 'Compile ordinary constructor getter event and matcher artifacts' has timed out after 22 minutes.
+2026-10-13T19:52:05.4790461Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T19:52:05.4791342Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T19:52:05.4792150Z [36;1m$taskReceipt = 'verification/native-sdk-constructor-values-candidate'[0m
+2026-10-13T19:52:05.4793659Z [36;1mforeach ($taskKind in @('inputs','tools')) {[0m
+2026-10-13T19:52:05.4794622Z [36;1m  $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)[0m
+2026-10-13T19:52:05.4796669Z [36;1m  $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)[0m
+2026-10-13T19:52:05.4798963Z [36;1m  [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"[0m
+2026-10-13T19:52:05.4800867Z [36;1m  if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }[0m
+2026-10-13T19:52:05.4801791Z [36;1m}[0m
+2026-10-13T19:52:05.4948563Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-13T19:52:05.4949000Z env:
+2026-10-13T19:52:05.4949334Z   ZIG_GLOBAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:52:05.4949757Z   ZIG_LOCAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:52:05.4950407Z ##[endgroup]
+2026-10-13T19:52:31.5588582Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-13T19:52:31.5589472Z with:
+2026-10-13T19:52:31.5590610Z   name: native-sdk-constructor-values-candidate-windows-latest-ReleaseSafe-12330248ab4d17ea592c036ed425824555c5b611
+2026-10-13T19:52:31.5591930Z   retention-days: 14
+2026-10-13T19:52:31.5592578Z   path: verification/native-sdk-constructor-values-candidate/
+2026-10-13T19:52:31.5593292Z   if-no-files-found: warn
+2026-10-13T19:52:31.5593793Z   compression-level: 6
+2026-10-13T19:52:31.5594237Z   overwrite: false
+2026-10-13T19:52:31.5594669Z   include-hidden-files: false
+2026-10-13T19:52:31.5595181Z env:
+2026-10-13T19:52:31.5595675Z   ZIG_GLOBAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:52:31.5596862Z   ZIG_LOCAL_CACHE_DIR: D:\a\pi-zig\pi-zig\.zig-cache
+2026-10-13T19:52:31.5597593Z ##[endgroup]
+2026-10-13T19:52:32.6940619Z (node:6424) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-13T19:52:32.6942068Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-13T19:52:32.7090857Z With the provided path, there will be 5 files uploaded
+2026-10-13T19:52:32.7097231Z Artifact name is valid!
+2026-10-13T19:52:32.7099580Z Root directory input is valid!
+2026-10-13T19:52:33.0961802Z Beginning upload of artifact content to blob storage
+2026-10-13T19:52:33.2589711Z (node:6424) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-13T19:52:33.8858677Z Uploaded bytes 1070146
+2026-10-13T19:52:33.9575561Z Finished uploading artifact content to blob storage!
+2026-10-13T19:52:33.9576847Z SHA256 digest of uploaded artifact zip is df4001172908a91d3d9f086302f6b46b0619fd0c4bfe5c624a92abea4deb26f3
+2026-10-13T19:52:33.9579468Z Finalizing artifact upload
+2026-10-13T19:52:34.2964908Z Artifact native-sdk-constructor-values-candidate-windows-latest-ReleaseSafe-12330248ab4d17ea592c036ed425824555c5b611.zip successfully finalized. Artifact ID 11844003137
+2026-10-13T19:52:34.2967943Z Artifact native-sdk-constructor-values-candidate-windows-latest-ReleaseSafe-12330248ab4d17ea592c036ed425824555c5b611 has been successfully uploaded! Final size is 1070146 bytes. Artifact ID is 11844003137
+2026-10-13T19:52:34.2982058Z Artifact download URL: https://github.com/adybag14-cyber/pi-zig/actions/runs/38455195412/artifacts/11844003137
+2026-10-13T19:52:34.5501808Z Post job cleanup.
+2026-10-13T19:52:35.6361472Z Post job cleanup.
+2026-10-13T19:52:36.1969994Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-13T19:52:36.3210142Z git version 2.55.0.windows.5
+2026-10-13T19:52:36.3293651Z Temporarily overriding HOME='D:\a\_temp\eee70d95-3576-47da-9742-426b311c8bab' before making global git config changes
+2026-10-13T19:52:36.3294880Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T19:52:36.3306527Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\pi-zig\pi-zig
+2026-10-13T19:52:36.3718499Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T19:52:36.4111105Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-13T19:52:37.1746705Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T19:52:37.2047382Z http.https://github.com/.extraheader
+2026-10-13T19:52:37.2102156Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-13T19:52:37.2462369Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-13T19:52:37.8844992Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T19:52:37.9197408Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-13T19:52:38.5766746Z Cleaning up orphan processes
+2026-10-13T19:52:38.6089604Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02, mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
