@@ -1,4 +1,4 @@
-name: Native session control and cleanup diagnostic
+name: Native session control cleanup and settings ownership qualification
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
         mode: [Debug, ReleaseSafe]
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 35
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -50,15 +50,22 @@ jobs:
           $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
           $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
           $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
-          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Original idle cancellation disposal and AI cleanup registry; allocation sweeps unresolved at initial local Debug; no qualification or activation yet'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Original idle cancellation disposal and AI cleanup registry, plus unchanged settings ownership regression; full session and Pi qualification remain incomplete'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
       - name: Compile ordinary session control and cleanup artifact
         shell: pwsh
         timeout-minutes: 22
         run: |
           $ErrorActionPreference = 'Stop'
           & zig build build-native-sdk-session-control -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-control-candidate/compile.log
-          if ($LASTEXITCODE -ne 0) { throw 'Session prompt cold compilation failed' }
-      - name: Trace original session control and cleanup allocation failure graphs
+          if ($LASTEXITCODE -ne 0) { throw 'Session control cold compilation failed' }
+      - name: Compile unchanged settings ownership regression artifact
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-sdk-settings-ownership -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-control-candidate/compile-settings.log
+          if ($LASTEXITCODE -ne 0) { throw 'Settings ownership cold compilation failed' }
+      - name: Exercise original session control cleanup and existing settings ownership graphs
         id: runtime
         shell: pwsh
         timeout-minutes: 5
@@ -66,15 +73,17 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
           $taskReceipt = 'verification/native-sdk-session-control-candidate'
-          & zig build test-native-sdk-session-control -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
-          if ($LASTEXITCODE -ne 0) { throw 'Session prompt runtime failed' }
+          & zig build test-native-sdk-session-control test-sdk-settings-ownership -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Session control or settings ownership runtime failed' }
           $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
-          if ($taskLog -notmatch '(?m)Build Summary:.*\b12/12 tests passed') { throw 'All12 session prompt tests must execute' }
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b22/22 tests passed') { throw 'All22 session control and settings ownership tests must execute' }
           $taskPattern = '(?ms)^test-native-sdk-session-control success\r?\n[^\r\n]*run test 12 pass \(12 total\)'
-          if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw 'Session prompt artifact execution changed' }
+          if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw 'Session control artifact execution changed' }
+          $taskSettingsPattern = '(?ms)^test-sdk-settings-ownership success\r?\n[^\r\n]*run test 10 pass \(10 total\)'
+          if ([regex]::Matches($taskLog,$taskSettingsPattern).Count -ne 1) { throw 'Settings ownership artifact execution changed' }
           $taskFixture = Get-Content src/extensions/fixtures/sdk-session-control-e622.json -Raw | ConvertFrom-Json
           if (@($taskFixture.rows).Count -ne 35 -or $taskFixture.factoryCount -ne 35) { throw 'Original35 factory cases must remain complete' }
-          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=12;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=22;control_tests=12;settings_ownership_tests=10;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
       - name: Verify frozen inputs after terminal execution
         if: ${{ always() && steps.freeze.outcome == 'success' }}
         shell: pwsh

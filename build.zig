@@ -2435,6 +2435,7 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-native-sdk-factory-provider", &.{"test-native-sdk-factory-provider"});
     addCompileOnlyGroup(b, "build-native-sdk-image-process", &.{"test-native-sdk-image-process"});
     addCompileOnlyGroup(b, "build-native-sdk-constructor-assembly", &.{ "test-native-sdk-constructor-phase", "test-native-sdk-session-values", "test-native-sdk-session-events", "test-native-sdk-tool-name-matcher" });
+    addCompileOnlyGroup(b, "build-sdk-settings-ownership", &.{"test-sdk-settings-ownership"});
     addCompileOnlyGroup(b, "build-native-sdk-constructor-phase", &.{"test-native-sdk-constructor-phase"});
     addCompileOnlyGroup(b, "build-native-sdk-session-values", &.{"test-native-sdk-session-values"});
     addCompileOnlyGroup(b, "build-native-sdk-session-events", &.{"test-native-sdk-session-events"});

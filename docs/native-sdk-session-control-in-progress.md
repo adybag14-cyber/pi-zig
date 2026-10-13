@@ -1,38 +1,44 @@
-# Native session control and shared AI cleanup - in progress
+# Native session control and shared AI cleanup
 
-This private implementation ports 19 original AgentSession idle, cancellation,
-disposal, queue-mode, settings and transcript-control methods, plus pi-ai's
-registerSessionResourceCleanup and cleanupSessionResources. The cleanup registry
-is shared within an Engine and retains original ordinary function construction,
-live Set iteration, unregistration and AggregateError callback identities.
+Implementation 4a965b8b1f6ebbb72480ccee0e763204fb0949cc ports 19 ordinary
+AgentSession idle, cancellation, disposal, queue-mode, settings and transcript
+control methods, plus the shared pi-ai resource cleanup registry. Registry
+functions preserve ordinary construction, live Set iteration, unregistering
+and AggregateError identities. Native callbacks retain raw thrown values until
+the actual VM catch or final host boundary; they do not call guest toString
+prematurely from inside cleanup or disposal catches.
 
-The e6220e1 fixture contains 33 genuine upstream factory sessions. It exercises
-shared idle promises and the ambient Promise constructor, live callback reads,
-real Agent queues, cancellation order, disposal and cleanup callbacks, settings,
-real transcript projection, original method/function descriptors and aggregate
-errors. Unexpected TypeErrors reject capture; only the deliberately false abort
-controller compares the built-in error category. The first caller left fake
-compaction owners active after abort and produced unsettled top-level await;
-that negative is retained. Corrected caller-owned controllers clear their own
-fields, and the unchanged original methods then complete all 33 cases.
+The e6220e1 fixture uses 35 genuine upstream factory sessions. It covers shared
+idle promises and the ambient Promise constructor, live callback order, actual
+Agent queues, cancellation and disposal, settings, real transcript projection,
+original method/function descriptors, cleanup iteration/errors and two explicit
+no-toString cases. Unexpected TypeErrors reject capture; only the deliberately
+false abort controller observes the engine's TypeError category. Full original
+1945-source/31064-runtime/1774-Node posthashes show zero drift.
 
-First Windows Debug execution completed 10/12 selected tests. The complete
-33-case comparison and explicit garbage-collection test passed. BOTH allocation
-sweeps failed with SwallowedOutOfMemoryError and remain unresolved. They are
-retained unchanged, with first-failure allocator stack diagnostics added for
-investigation. This is not native control qualification. ReleaseSafe and
-cross-platform validation are pending.
+Windows Debug and ReleaseSafe each passed all 12 selected tests, including the
+complete 35-case comparator, explicit collection and both full native allocation
+failure sweeps. The unchanged existing settings ownership suite also passed
+10/10 in Debug, including real file merge and lock cleanup. All 4821 committed
+input blobs match the ReleaseSafe snapshot; native source and 19546 compiler
+file posthashes show zero drift. Runtime guards remain 120 seconds per test,
+10000 ms host awaits and 300 seconds outer. Cold compilation is separately
+bounded at 1320 seconds per artifact.
 
-The failed Debug run retained full 4811 source and 19546 compiler file preimages
-and zero-drift posthash receipts. Original source/runtime/Node full posthashes
-show zero drift over 1945/31064/1774 files. Local diagnostic retry was refused
-before launch when available RAM fell below the authorized admission threshold.
-The private candidate workflow provides bounded hosted diagnostics with the
-same 33 cases, both allocation sweeps, 120 second test limits, 10000 ms host
-awaits and 300 second runtime bound; cold compilation is separately bounded at
-1320 seconds. A run is successful only if all 12 selected tests pass.
+Preserved negatives explain the fixes: the first caller left its fake compaction
+owners active; initial Debug finished 10/12 due to swallowed native allocation
+failures; the narrowed Source35 run finished 11/12 and traced index376 to queued
+settings persistence. Fresh privately tagged native allocator errors now keep
+that queue rejected for flush instead of being recorded as ordinary storage
+errors. Ordinary errors and older thrown identities retain their existing
+handling. The allocation probe awaits the actual settings flush so every queued
+operation belongs to its verified ownership graph. Original expectations and
+deadlines were retained throughout. Low-memory admission failures are recorded
+separately from test outcomes.
 
-No public AgentSession factory activation, automatic provider-resource cleanup
-integration, full class assembly, bridge removal or complete Pi certification
-is claimed by this component. Successful full model runs and the remaining
-ordinary class/runtime dependencies still need integration and validation.
+The private Windows/Linux/macOS candidate includes both the 12-test control
+artifact and unchanged 10-test settings ownership regression in Debug and
+ReleaseSafe. Hosted qualification of this complete head remains pending.
+Automatic provider cleanup integration, complete session/runtime assembly,
+successful full model runs and complete Pi parity still need validation.
+No partial public factory activation or compatibility-bridge removal occurs.

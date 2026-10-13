@@ -1,0 +1,57 @@
+{
+  "implementation_commit": "4a965b8b1f6ebbb72480ccee0e763204fb0949cc",
+  "initial_control_commit": "2c1ecf3d878f41e4c1ce83836cd89d4e95925691",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "19 ordinary session control methods, shared AI resource cleanup APIs, raw guest catch semantics and fresh native allocation failure propagation through queued settings flush",
+  "source_cases": 35,
+  "original_factory_instances": 35,
+  "control_methods": 19,
+  "ai_cleanup_exports": 2,
+  "debug": {
+    "tests": 12,
+    "status": "passed",
+    "full_allocation_sweeps": 2,
+    "explicit_gc": true
+  },
+  "release_safe": {
+    "tests": 12,
+    "status": "passed",
+    "full_allocation_sweeps": 2,
+    "explicit_gc": true
+  },
+  "settings_ownership_regression": {
+    "mode": "Debug",
+    "tests": 10,
+    "status": "passed",
+    "real_file_merge": true,
+    "lock_cleanup": true
+  },
+  "source_files": 4821,
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "committed_blobs_verified": 4821,
+  "committed_byte_drift": 0,
+  "original_source_posthash": {
+    "source_files": 1945,
+    "runtime_files": 31064,
+    "node_distribution_files": 1774,
+    "drift": 0
+  },
+  "preserved_negatives": [
+    "InitialSource33 caller left fake compaction owners active and exited with unsettled top-level await",
+    "InitialDebug10/12 two swallowed allocation failures",
+    "Source35Debug11/12 traced storage global scope allocation index376",
+    "Misplaced generation field diagnostic retained before correct queued-save placement",
+    "Low-memory diagnostic admission rejected before launch"
+  ],
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "automatic_provider_cleanup_integrated": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending at qualified code plus mandatory settings regression"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "root-latest-sdk-settingsownership-debug-control-regression-20261013",
+  "pid": 49924,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-sdk-settings-ownership -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-13T21:43:13.3905959Z",
+  "launched_utc": "2026-10-13T21:43:13.3896746+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-native-session-factory-composition-20261013",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-13T21:44:33.5313831+00:00"
+}

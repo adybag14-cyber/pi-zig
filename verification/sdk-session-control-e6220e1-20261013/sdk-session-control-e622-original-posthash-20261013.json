@@ -1,6 +1,6 @@
 {
-  "observed_utc": "2026-10-13T21:10:04.7157368+00:00",
-  "scope": "Full posthash after original Source33 session control capture; observer calls original installer unchanged; no original constructor or method body replacement",
+  "observed_utc": "2026-10-13T21:39:51.8900612+00:00",
+  "scope": "Full posthash after original Source35 session control capture; observer calls original installer unchanged; no original constructor or method body replacement",
   "manifests": [
     {
       "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
@@ -22,5 +22,5 @@
     }
   ],
   "driver_sha256": "B5DD88D8A8969251684997ADF189F97E97658BD29A690B9579C8C000396CE617",
-  "input_sha256": "164A9F10A774886120D572AB19BFA83BA4B1298BDB59C61D46B7B137C769D28C"
+  "input_sha256": "71780AA82F430CC0F762C763BD25CCE289D685D788F902FD0A35A9448AA01F59"
 }
