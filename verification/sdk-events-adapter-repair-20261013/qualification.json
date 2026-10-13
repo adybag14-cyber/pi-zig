@@ -1,0 +1,12 @@
+{
+  "prior_head": "b7e165d8482e24cd01937729d251f4d9ecca5058",
+  "failed_run": 38386177222,
+  "debug_job": 115258416311,
+  "releasesafe_job": 115258416589,
+  "prior_result": "10/12 pass; both genuine event/hook comparators fail retrieving undefined AgentSession prototype",
+  "cause": "Schema installation registered canonical SDK before private fixture requested a fresh namespace",
+  "correction": "Spread already registered canonical SDK exports; preserve AgentSession constructor identity",
+  "source_cases_changed": 0,
+  "runtime_status": "pending qualification",
+  "public_activation": false
+}

@@ -34,9 +34,12 @@ fn exercise(gpa: std.mem.Allocator, comptime capture: enum { events, hooks }) !v
     defer group.deinit();
     const root_group = try group.add("session-events-root");
     try root_group.installSchemas();
-    const namespace = try sdk.object(engine);
+    // Schema installation already owns the SDK class and its constructors.
+    // Reuse that identity in the private candidate namespace, as Source imports
+    // reuse the original AgentSession module rather than reinstalling its class.
+    const installed = engine.native_module_values.get("@earendil-works/pi-coding-agent") orelse return error.NativeSdkModuleMissing;
+    const namespace = try @import("extensions/native_js_values.zig").spread(engine, installed);
     defer engine.freeValue(namespace);
-    try sdk.install(engine, namespace);
     try @import("extensions/native_agent_complete.zig").install(engine, namespace);
     const dependencies = try sdk.object(engine);
     defer engine.freeValue(dependencies);
