@@ -1,0 +1,1019 @@
+﻿2026-10-13T22:04:38.2636860Z Current runner version: '2.337.0'
+2026-10-13T22:04:38.2650640Z ##[group]Runner Image Provisioner
+2026-10-13T22:04:38.2651140Z Hosted Compute Agent
+2026-10-13T22:04:38.2651510Z Version: 20260828.587
+2026-10-13T22:04:38.2651910Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-10-13T22:04:38.2652380Z Build Date: 2026-08-28T16:44:25Z
+2026-10-13T22:04:38.2652840Z Worker ID: {bda267cc-8d55-420b-be6c-96655bac794e}
+2026-10-13T22:04:38.2653300Z Azure Region: westus
+2026-10-13T22:04:38.2653660Z ##[endgroup]
+2026-10-13T22:04:38.2654550Z ##[group]Operating System
+2026-10-13T22:04:38.2654930Z macOS
+2026-10-13T22:04:38.2655250Z 26.6.2
+2026-10-13T22:04:38.2655560Z 25G83
+2026-10-13T22:04:38.2655890Z ##[endgroup]
+2026-10-13T22:04:38.2656230Z ##[group]Runner Image
+2026-10-13T22:04:38.2656650Z Image: macos-26-arm64
+2026-10-13T22:04:38.2657060Z Version: 20260907.0351.1
+2026-10-13T22:04:38.2657910Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20260907.0351/images/macos/macos-26-arm64-Readme.md
+2026-10-13T22:04:38.2658930Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20260907.0351
+2026-10-13T22:04:38.2659590Z ##[endgroup]
+2026-10-13T22:04:38.2660290Z ##[group]GITHUB_TOKEN Permissions
+2026-10-13T22:04:38.2661270Z Contents: read
+2026-10-13T22:04:38.2661620Z Metadata: read
+2026-10-13T22:04:38.2661970Z ##[endgroup]
+2026-10-13T22:04:38.2663460Z Secret source: Actions
+2026-10-13T22:04:38.2664020Z Cache mode: write
+2026-10-13T22:04:38.2664550Z Prepare workflow directory
+2026-10-13T22:04:38.2904820Z Prepare all required actions
+2026-10-13T22:04:38.2939300Z Getting action download info
+2026-10-13T22:04:38.4390690Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-13T22:04:38.6957840Z Download action repository 'mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29' (SHA:d1434d08867e3ee9daa34448df10607b98908d29)
+2026-10-13T22:04:41.6177360Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-13T22:04:41.8121990Z Complete job name: qualify (Debug, macos-latest)
+2026-10-13T22:04:41.8512930Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-13T22:04:41.8513400Z with:
+2026-10-13T22:04:41.8513580Z   repository: adybag14-cyber/pi-zig
+2026-10-13T22:04:41.8517170Z   token: ***
+2026-10-13T22:04:41.8517430Z   ssh-strict: true
+2026-10-13T22:04:41.8517680Z   ssh-user: git
+2026-10-13T22:04:41.8517890Z   persist-credentials: true
+2026-10-13T22:04:41.8518120Z   clean: true
+2026-10-13T22:04:41.8518310Z   sparse-checkout-cone-mode: true
+2026-10-13T22:04:41.8518550Z   fetch-depth: 1
+2026-10-13T22:04:41.8518750Z   fetch-tags: false
+2026-10-13T22:04:41.8518960Z   show-progress: true
+2026-10-13T22:04:41.8519200Z   lfs: false
+2026-10-13T22:04:41.8519430Z   submodules: false
+2026-10-13T22:04:41.8519660Z   set-safe-directory: true
+2026-10-13T22:04:41.8519940Z   allow-unsafe-pr-checkout: false
+2026-10-13T22:04:41.8520460Z ##[endgroup]
+2026-10-13T22:04:42.1774700Z Syncing repository: adybag14-cyber/pi-zig
+2026-10-13T22:04:42.1776390Z ##[group]Getting Git version info
+2026-10-13T22:04:42.1776840Z Working directory is '/Users/runner/work/pi-zig/pi-zig'
+2026-10-13T22:04:42.1777460Z [command]/opt/homebrew/bin/git version
+2026-10-13T22:04:42.2291140Z git version 2.55.0
+2026-10-13T22:04:42.2301520Z ##[endgroup]
+2026-10-13T22:04:42.2308460Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/9cf21873-39b4-45cc-a342-574d4ec67ef0/.gitconfig'
+2026-10-13T22:04:42.2315890Z Temporarily overriding HOME='/Users/runner/work/_temp/9cf21873-39b4-45cc-a342-574d4ec67ef0' before making global git config changes
+2026-10-13T22:04:42.2316610Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T22:04:42.2319250Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig
+2026-10-13T22:04:42.2418760Z Deleting the contents of '/Users/runner/work/pi-zig/pi-zig'
+2026-10-13T22:04:42.2421940Z ##[group]Initializing the repository
+2026-10-13T22:04:42.2425130Z [command]/opt/homebrew/bin/git init /Users/runner/work/pi-zig/pi-zig
+2026-10-13T22:04:42.2683040Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-13T22:04:42.2685490Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-13T22:04:42.2686450Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-13T22:04:42.2686830Z hint: call:
+2026-10-13T22:04:42.2687060Z hint:
+2026-10-13T22:04:42.2687400Z hint: 	git config --global init.defaultBranch <name>
+2026-10-13T22:04:42.2687760Z hint:
+2026-10-13T22:04:42.2688150Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-13T22:04:42.2688930Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-13T22:04:42.2689320Z hint:
+2026-10-13T22:04:42.2689560Z hint: 	git branch -m <name>
+2026-10-13T22:04:42.2689890Z hint:
+2026-10-13T22:04:42.2690250Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-13T22:04:42.2690770Z Initialized empty Git repository in /Users/runner/work/pi-zig/pi-zig/.git/
+2026-10-13T22:04:42.2702220Z [command]/opt/homebrew/bin/git remote add origin https://github.com/adybag14-cyber/pi-zig
+2026-10-13T22:04:42.2804740Z ##[endgroup]
+2026-10-13T22:04:42.2806170Z ##[group]Disabling automatic garbage collection
+2026-10-13T22:04:42.2807150Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-10-13T22:04:42.2884490Z ##[endgroup]
+2026-10-13T22:04:42.2885570Z ##[group]Setting up auth
+2026-10-13T22:04:42.2887960Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T22:04:42.2967220Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T22:04:42.3905290Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T22:04:42.3974150Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T22:04:42.4918200Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T22:04:42.4976790Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T22:04:42.6258990Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-13T22:04:42.6329270Z ##[endgroup]
+2026-10-13T22:04:42.6330310Z ##[group]Fetching the repository
+2026-10-13T22:04:42.6331540Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +40e2985ea2157e54db28f591b9f10c2fc7400111:refs/remotes/origin/work/native-sdk-session-control-20261013
+2026-10-13T22:04:45.4044470Z From https://github.com/adybag14-cyber/pi-zig
+2026-10-13T22:04:45.4146250Z  * [new ref]         40e2985ea2157e54db28f591b9f10c2fc7400111 -> origin/work/native-sdk-session-control-20261013
+2026-10-13T22:04:45.4527150Z ##[endgroup]
+2026-10-13T22:04:45.4560390Z ##[group]Determining the checkout info
+2026-10-13T22:04:45.4564540Z ##[endgroup]
+2026-10-13T22:04:45.4565790Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-10-13T22:04:45.4575410Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-13T22:04:45.4587910Z ##[group]Checking out the ref
+2026-10-13T22:04:45.4588790Z [command]/opt/homebrew/bin/git checkout --progress --force -B work/native-sdk-session-control-20261013 refs/remotes/origin/work/native-sdk-session-control-20261013
+2026-10-13T22:04:46.4877790Z Updating files:  61% (2981/4842)
+2026-10-13T22:04:46.4985140Z Updating files:  62% (3003/4842)
+2026-10-13T22:04:46.5094580Z Updating files:  63% (3051/4842)
+2026-10-13T22:04:46.5257760Z Updating files:  64% (3099/4842)
+2026-10-13T22:04:46.5369300Z Updating files:  65% (3148/4842)
+2026-10-13T22:04:46.5437170Z Updating files:  66% (3196/4842)
+2026-10-13T22:04:46.5516060Z Updating files:  67% (3245/4842)
+2026-10-13T22:04:46.5615790Z Updating files:  68% (3293/4842)
+2026-10-13T22:04:46.5717560Z Updating files:  69% (3341/4842)
+2026-10-13T22:04:46.5789380Z Updating files:  70% (3390/4842)
+2026-10-13T22:04:46.5855520Z Updating files:  71% (3438/4842)
+2026-10-13T22:04:46.5954820Z Updating files:  72% (3487/4842)
+2026-10-13T22:04:46.6058710Z Updating files:  73% (3535/4842)
+2026-10-13T22:04:46.6170840Z Updating files:  74% (3584/4842)
+2026-10-13T22:04:46.6240740Z Updating files:  75% (3632/4842)
+2026-10-13T22:04:46.6312690Z Updating files:  76% (3680/4842)
+2026-10-13T22:04:46.6406840Z Updating files:  77% (3729/4842)
+2026-10-13T22:04:46.7886220Z Updating files:  78% (3777/4842)
+2026-10-13T22:04:46.8295330Z Updating files:  79% (3826/4842)
+2026-10-13T22:04:46.8370140Z Updating files:  80% (3874/4842)
+2026-10-13T22:04:46.8561880Z Updating files:  81% (3923/4842)
+2026-10-13T22:04:46.8664150Z Updating files:  82% (3971/4842)
+2026-10-13T22:04:46.8701370Z Updating files:  83% (4019/4842)
+2026-10-13T22:04:46.8750860Z Updating files:  84% (4068/4842)
+2026-10-13T22:04:46.8816800Z Updating files:  85% (4116/4842)
+2026-10-13T22:04:46.8897960Z Updating files:  86% (4165/4842)
+2026-10-13T22:04:46.8973010Z Updating files:  87% (4213/4842)
+2026-10-13T22:04:46.9038720Z Updating files:  88% (4261/4842)
+2026-10-13T22:04:46.9084780Z Updating files:  89% (4310/4842)
+2026-10-13T22:04:46.9150440Z Updating files:  90% (4358/4842)
+2026-10-13T22:04:46.9223470Z Updating files:  91% (4407/4842)
+2026-10-13T22:04:46.9273180Z Updating files:  92% (4455/4842)
+2026-10-13T22:04:46.9346640Z Updating files:  93% (4504/4842)
+2026-10-13T22:04:46.9407750Z Updating files:  94% (4552/4842)
+2026-10-13T22:04:46.9467960Z Updating files:  95% (4600/4842)
+2026-10-13T22:04:46.9549490Z Updating files:  96% (4649/4842)
+2026-10-13T22:04:46.9608340Z Updating files:  97% (4697/4842)
+2026-10-13T22:04:46.9662290Z Updating files:  98% (4746/4842)
+2026-10-13T22:04:46.9762080Z Updating files:  99% (4794/4842)
+2026-10-13T22:04:46.9762780Z Updating files: 100% (4842/4842)
+2026-10-13T22:04:46.9763040Z Updating files: 100% (4842/4842), done.
+2026-10-13T22:04:46.9847680Z Switched to a new branch 'work/native-sdk-session-control-20261013'
+2026-10-13T22:04:46.9854070Z branch 'work/native-sdk-session-control-20261013' set up to track 'origin/work/native-sdk-session-control-20261013'.
+2026-10-13T22:04:46.9870100Z ##[endgroup]
+2026-10-13T22:04:46.9980750Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-10-13T22:04:47.0065400Z 40e2985ea2157e54db28f591b9f10c2fc7400111
+2026-10-13T22:04:47.0392280Z ##[group]Run mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+2026-10-13T22:04:47.0392580Z with:
+2026-10-13T22:04:47.0392760Z   version: 0.16.0
+2026-10-13T22:04:47.0393050Z   use-cache: false
+2026-10-13T22:04:47.0393280Z   cache-size-limit: 2048
+2026-10-13T22:04:47.0393560Z ##[endgroup]
+2026-10-13T22:04:47.3812000Z Using tool-cache: false
+2026-10-13T22:04:47.3815510Z Fetching zig-aarch64-macos-0.16.0.tar.xz
+2026-10-13T22:04:47.4803010Z Cache hit for: setup-zig-tarball-zig-aarch64-macos-0.16.0
+2026-10-13T22:04:47.8715540Z Received 52241044 of 52241044 (100.0%), 153.8 MBs/sec
+2026-10-13T22:04:47.8716450Z Cache Size: ~50 MB (52241044 B)
+2026-10-13T22:04:47.8736710Z [command]/opt/homebrew/bin/gtar -xf /Users/runner/work/_temp/92c44e0f-eb88-44f4-b2c3-a3ec9adc7019/cache.tzst -P -C /Users/runner/work/pi-zig/pi-zig --delay-directory-restore --use-compress-program unzstd
+2026-10-13T22:04:47.9691450Z Cache restored successfully
+2026-10-13T22:04:47.9709730Z Fetch took 589 ms
+2026-10-13T22:04:47.9710450Z Extracting tarball zig-aarch64-macos-0.16.0.tar.xz
+2026-10-13T22:04:47.9921080Z [command]/usr/bin/tar xJ -C /Users/runner/work/_temp/eab83dfc-3293-4d8a-b5be-edc49b872f3e -f /Users/runner/work/_temp/zig-aarch64-macos-0.16.0.tar.xz
+2026-10-13T22:04:55.5629450Z Extract took 7590 ms
+2026-10-13T22:04:55.5804020Z [command]/Users/runner/work/_temp/eab83dfc-3293-4d8a-b5be-edc49b872f3e/zig-aarch64-macos-0.16.0/zig version
+2026-10-13T22:04:55.9027380Z 0.16.0
+2026-10-13T22:04:55.9039140Z Resolved Zig version 0.16.0
+2026-10-13T22:04:55.9267960Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T22:04:55.9269190Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T22:04:55.9269590Z [36;1m$taskReceipt = 'verification/native-sdk-session-control-candidate'[0m
+2026-10-13T22:04:55.9270110Z [36;1mNew-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null[0m
+2026-10-13T22:04:55.9270680Z [36;1mif ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }[0m
+2026-10-13T22:04:55.9271280Z [36;1mif ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }[0m
+2026-10-13T22:04:55.9271800Z [36;1m$taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)[0m
+2026-10-13T22:04:55.9272390Z [36;1m$taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)[0m
+2026-10-13T22:04:55.9272820Z [36;1m$taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }[0m
+2026-10-13T22:04:55.9273490Z [36;1m$taskToolRoot = Split-Path -Parent $taskZig[0m
+2026-10-13T22:04:55.9273850Z [36;1m$taskZigEnv = (& zig env) -join "`n"[0m
+2026-10-13T22:04:55.9274190Z [36;1m$taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')[0m
+2026-10-13T22:04:55.9274800Z [36;1mif (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }[0m
+2026-10-13T22:04:55.9275640Z [36;1m$taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json[0m
+2026-10-13T22:04:55.9276240Z [36;1m$taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })[0m
+2026-10-13T22:04:55.9277280Z [36;1m$taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })[0m
+2026-10-13T22:04:55.9278070Z [36;1m$taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"[0m
+2026-10-13T22:04:55.9278580Z [36;1m$taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"[0m
+2026-10-13T22:04:55.9279960Z [36;1m[ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='Debug'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Original idle cancellation disposal and AI cleanup registry, plus unchanged settings ownership regression; full session and Pi qualification remain incomplete'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"[0m
+2026-10-13T22:04:55.9309190Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+2026-10-13T22:04:55.9309480Z env:
+2026-10-13T22:04:55.9309740Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:04:55.9310160Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:04:55.9310490Z   EXPECTED_HEAD: 40e2985ea2157e54db28f591b9f10c2fc7400111
+2026-10-13T22:04:55.9310740Z ##[endgroup]
+2026-10-13T22:05:05.2449190Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T22:05:05.2451620Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T22:05:05.2453660Z [36;1m& zig build build-native-sdk-session-control -Doptimize=Debug -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-control-candidate/compile.log[0m
+2026-10-13T22:05:05.2454730Z [36;1mif ($LASTEXITCODE -ne 0) { throw 'Session control cold compilation failed' }[0m
+2026-10-13T22:05:05.2493850Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+2026-10-13T22:05:05.2494370Z env:
+2026-10-13T22:05:05.2495110Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:05:05.2495620Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:05:05.2505290Z ##[endgroup]
+2026-10-13T22:11:53.0427780Z [31;1mBuild Summary: 155/155 steps succeeded[0m
+2026-10-13T22:11:53.0433730Z [31;1mbuild-native-sdk-session-control success[0m
+2026-10-13T22:11:53.0441860Z [31;1m+- compile test Debug native success 1m MaxRSS:2G[0m
+2026-10-13T22:11:53.0444660Z [31;1m   +- WriteFile cached[0m
+2026-10-13T22:11:53.0446780Z [31;1m   +- compile lib pi-quickjs Debug native success 27s MaxRSS:888M[0m
+2026-10-13T22:11:53.0450150Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0452180Z [31;1m   |  +- compile lib pi-icu78-i18n Debug native success 38s MaxRSS:130M[0m
+2026-10-13T22:11:53.0463470Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0475350Z [31;1m   |  |  +- compile lib pi-icu78-common Debug native success 1m MaxRSS:118M[0m
+2026-10-13T22:11:53.0488390Z [31;1m   |  |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0493360Z [31;1m   |  |  |  +- compile lib pi-icu78-stubdata Debug native success 338ms MaxRSS:78M[0m
+2026-10-13T22:11:53.0497060Z [31;1m   |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)[0m
+2026-10-13T22:11:53.0509100Z [31;1m   |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:11:53.0511490Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0515110Z [31;1m   |  +- compile lib pi-native-yaml Debug native success 63ms MaxRSS:37M[0m
+2026-10-13T22:11:53.0524550Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0569440Z [31;1m   |  |  +- compile obj pi-yaml-0 ReleaseSafe native success 277ms MaxRSS:74M[0m
+2026-10-13T22:11:53.0587260Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0612950Z [31;1m   |  |  +- compile obj pi-yaml-1 ReleaseSafe native success 542ms MaxRSS:89M[0m
+2026-10-13T22:11:53.0677220Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0682200Z [31;1m   |  |  +- compile obj pi-yaml-2 ReleaseSafe native success 231ms MaxRSS:74M[0m
+2026-10-13T22:11:53.0684350Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0686350Z [31;1m   |  |  +- compile obj pi-yaml-3 ReleaseSafe native success 337ms MaxRSS:82M[0m
+2026-10-13T22:11:53.0687960Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0688660Z [31;1m   |  |  +- compile obj pi-yaml-4 ReleaseSafe native success 1s MaxRSS:123M[0m
+2026-10-13T22:11:53.0689770Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0690800Z [31;1m   |  |  +- compile obj pi-yaml-5 ReleaseSafe native success 208ms MaxRSS:76M[0m
+2026-10-13T22:11:53.0691360Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0833900Z [31;1m   |  |  +- compile obj pi-yaml-6 ReleaseSafe native success 273ms MaxRSS:76M[0m
+2026-10-13T22:11:53.0847630Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0854760Z [31;1m   |  |  +- compile obj pi-yaml-7 ReleaseSafe native success 184ms MaxRSS:72M[0m
+2026-10-13T22:11:53.0858550Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.0871240Z [31;1m   |  |  +- compile obj pi-yaml-8 ReleaseSafe native success 875ms MaxRSS:108M[0m
+2026-10-13T22:11:53.0983540Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1188920Z [31;1m   |  |  +- compile obj pi-yaml-9 ReleaseSafe native success 314ms MaxRSS:82M[0m
+2026-10-13T22:11:53.1294270Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1397970Z [31;1m   |  |  +- compile obj pi-yaml-10 ReleaseSafe native success 401ms MaxRSS:81M[0m
+2026-10-13T22:11:53.1460140Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1502290Z [31;1m   |  |  +- compile obj pi-yaml-11 ReleaseSafe native success 3s MaxRSS:204M[0m
+2026-10-13T22:11:53.1503440Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1504330Z [31;1m   |  |  +- compile obj pi-yaml-12 ReleaseSafe native success 299ms MaxRSS:79M[0m
+2026-10-13T22:11:53.1505330Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1506190Z [31;1m   |  |  +- compile obj pi-yaml-13 ReleaseSafe native success 514ms MaxRSS:89M[0m
+2026-10-13T22:11:53.1509030Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1517540Z [31;1m   |  |  +- compile obj pi-yaml-14 ReleaseSafe native success 269ms MaxRSS:75M[0m
+2026-10-13T22:11:53.1519850Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1522020Z [31;1m   |  |  +- compile obj pi-yaml-15 ReleaseSafe native success 1s MaxRSS:118M[0m
+2026-10-13T22:11:53.1523980Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1525530Z [31;1m   |  |  +- compile obj pi-yaml-16 ReleaseSafe native success 174ms MaxRSS:67M[0m
+2026-10-13T22:11:53.1527090Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1528810Z [31;1m   |  |  +- compile obj pi-yaml-17 ReleaseSafe native success 185ms MaxRSS:68M[0m
+2026-10-13T22:11:53.1530690Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1531560Z [31;1m   |  |  +- compile obj pi-yaml-18 ReleaseSafe native success 188ms MaxRSS:69M[0m
+2026-10-13T22:11:53.1532800Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1538170Z [31;1m   |  |  +- compile obj pi-yaml-19 ReleaseSafe native success 194ms MaxRSS:67M[0m
+2026-10-13T22:11:53.1539930Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1544460Z [31;1m   |  |  +- compile obj pi-yaml-20 ReleaseSafe native success 187ms MaxRSS:71M[0m
+2026-10-13T22:11:53.1548460Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1559090Z [31;1m   |  |  +- compile obj pi-yaml-21 ReleaseSafe native success 211ms MaxRSS:67M[0m
+2026-10-13T22:11:53.1566330Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1574130Z [31;1m   |  |  +- compile obj pi-yaml-22 ReleaseSafe native success 171ms MaxRSS:65M[0m
+2026-10-13T22:11:53.1577720Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1585080Z [31;1m   |  |  +- compile obj pi-yaml-23 ReleaseSafe native success 347ms MaxRSS:74M[0m
+2026-10-13T22:11:53.1590240Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1593820Z [31;1m   |  |  +- compile obj pi-yaml-24 ReleaseSafe native success 325ms MaxRSS:75M[0m
+2026-10-13T22:11:53.1610970Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1626890Z [31;1m   |  |  +- compile obj pi-yaml-25 ReleaseSafe native success 292ms MaxRSS:74M[0m
+2026-10-13T22:11:53.1628690Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1629820Z [31;1m   |  |  +- compile obj pi-yaml-26 ReleaseSafe native success 173ms MaxRSS:69M[0m
+2026-10-13T22:11:53.1635850Z [31;1m   |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1638170Z [31;1m   |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1643790Z [31;1m   |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1646510Z [31;1m   |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1649830Z [31;1m   |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1651470Z [31;1m   |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1653210Z [31;1m   |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1654660Z [31;1m   |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1656170Z [31;1m   |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1661070Z [31;1m   |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1663520Z [31;1m   |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1677000Z [31;1m   |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1678020Z [31;1m   |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1678970Z [31;1m   |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1679710Z [31;1m   |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1680580Z [31;1m   |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1681720Z [31;1m   |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1682860Z [31;1m   |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1685540Z [31;1m   |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1686360Z [31;1m   |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1687280Z [31;1m   |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1688200Z [31;1m   |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1688970Z [31;1m   |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1689760Z [31;1m   |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1692070Z [31;1m   |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1693560Z [31;1m   |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1695490Z [31;1m   |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)[0m
+2026-10-13T22:11:53.1696170Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1697180Z [31;1m   |  +- compile lib pi-sqlite Debug native success 7s MaxRSS:708M[0m
+2026-10-13T22:11:53.1698190Z [31;1m   |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:11:53.1699390Z [31;1m   |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)[0m
+2026-10-13T22:11:53.1700230Z [31;1m   |  +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:11:53.1700870Z [31;1m   +- WriteFile (reused)[0m
+2026-10-13T22:11:53.1701880Z [31;1m   +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:11:53.1702980Z [31;1m   +- compile lib pi-quickjs Debug native (+9 more reused dependencies)[0m
+2026-10-13T22:11:53.1704000Z [31;1m   +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:11:53.1704870Z [31;1m   +- WriteFile success[0m
+2026-10-13T22:11:53.1705890Z [31;1m   +- compile lib pi-photon Debug native success 326ms MaxRSS:195M[0m
+2026-10-13T22:11:53.1706550Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1707670Z [31;1m   |  +- compile obj pi-photon-photon_0 Debug native success 1s MaxRSS:209M[0m
+2026-10-13T22:11:53.1708970Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1710770Z [31;1m   |  +- compile obj pi-photon-photon_browser_0 Debug native success 1s MaxRSS:209M[0m
+2026-10-13T22:11:53.1712720Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1718030Z [31;1m   |  +- compile obj pi-photon-photon_1 Debug native success 1s MaxRSS:161M[0m
+2026-10-13T22:11:53.1724500Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1733320Z [31;1m   |  +- compile obj pi-photon-photon_browser_1 Debug native success 1s MaxRSS:161M[0m
+2026-10-13T22:11:53.1740260Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1746720Z [31;1m   |  +- compile obj pi-photon-photon_2 Debug native success 4s MaxRSS:292M[0m
+2026-10-13T22:11:53.1752450Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1758160Z [31;1m   |  +- compile obj pi-photon-photon_browser_2 Debug native success 4s MaxRSS:292M[0m
+2026-10-13T22:11:53.1765850Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1771570Z [31;1m   |  +- compile obj pi-photon-photon_3 Debug native success 3s MaxRSS:266M[0m
+2026-10-13T22:11:53.1776820Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1783840Z [31;1m   |  +- compile obj pi-photon-photon_browser_3 Debug native success 3s MaxRSS:266M[0m
+2026-10-13T22:11:53.1790250Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1809820Z [31;1m   |  +- compile obj pi-photon-photon_4 Debug native success 2s MaxRSS:234M[0m
+2026-10-13T22:11:53.1823580Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1830620Z [31;1m   |  +- compile obj pi-photon-photon_browser_4 Debug native success 3s MaxRSS:234M[0m
+2026-10-13T22:11:53.1833470Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1841690Z [31;1m   |  +- compile obj pi-photon-photon_5 Debug native success 2s MaxRSS:221M[0m
+2026-10-13T22:11:53.1848480Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1855150Z [31;1m   |  +- compile obj pi-photon-photon_browser_5 Debug native success 2s MaxRSS:221M[0m
+2026-10-13T22:11:53.1859200Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.1866390Z [31;1m   |  +- compile obj pi-photon-photon_6 Debug native success 2s MaxRSS:203M[0m
+2026-10-13T22:11:53.1870180Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2051130Z [31;1m   |  +- compile obj pi-photon-photon_browser_6 Debug native success 2s MaxRSS:203M[0m
+2026-10-13T22:11:53.2051970Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2054840Z [31;1m   |  +- compile obj pi-photon-photon_7 Debug native success 2s MaxRSS:204M[0m
+2026-10-13T22:11:53.2055380Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2055860Z [31;1m   |  +- compile obj pi-photon-photon_browser_7 Debug native success 2s MaxRSS:204M[0m
+2026-10-13T22:11:53.2056560Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2056960Z [31;1m   |  +- compile obj pi-photon-photon_8 Debug native success 5s MaxRSS:334M[0m
+2026-10-13T22:11:53.2057570Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2058080Z [31;1m   |  +- compile obj pi-photon-photon_browser_8 Debug native success 5s MaxRSS:334M[0m
+2026-10-13T22:11:53.2058820Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2059220Z [31;1m   |  +- compile obj pi-photon-photon_9 Debug native success 8s MaxRSS:466M[0m
+2026-10-13T22:11:53.2059680Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2060230Z [31;1m   |  +- compile obj pi-photon-photon_browser_9 Debug native success 7s MaxRSS:465M[0m
+2026-10-13T22:11:53.2060890Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2061250Z [31;1m   |  +- compile obj pi-photon-photon_10 Debug native success 19s MaxRSS:942M[0m
+2026-10-13T22:11:53.2061670Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2062280Z [31;1m   |  +- compile obj pi-photon-photon_browser_10 Debug native success 17s MaxRSS:932M[0m
+2026-10-13T22:11:53.2062910Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2063330Z [31;1m   |  +- compile obj pi-photon-photon_11 Debug native success 14s MaxRSS:725M[0m
+2026-10-13T22:11:53.2063820Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2064680Z [31;1m   |  +- compile obj pi-photon-photon_browser_11 Debug native success 14s MaxRSS:726M[0m
+2026-10-13T22:11:53.2067000Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2067670Z [31;1m   |  +- compile obj pi-photon-photon_12 Debug native success 6s MaxRSS:409M[0m
+2026-10-13T22:11:53.2068700Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2069300Z [31;1m   |  +- compile obj pi-photon-photon_browser_12 Debug native success 5s MaxRSS:409M[0m
+2026-10-13T22:11:53.2070240Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2070820Z [31;1m   |  +- compile obj pi-photon-photon_13 Debug native success 4s MaxRSS:285M[0m
+2026-10-13T22:11:53.2071370Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2072100Z [31;1m   |  +- compile obj pi-photon-photon_browser_13 Debug native success 4s MaxRSS:284M[0m
+2026-10-13T22:11:53.2072730Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2073950Z [31;1m   |  +- compile obj pi-photon-photon_14 Debug native success 5s MaxRSS:386M[0m
+2026-10-13T22:11:53.2074730Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2075720Z [31;1m   |  +- compile obj pi-photon-photon_browser_14 Debug native success 5s MaxRSS:386M[0m
+2026-10-13T22:11:53.2076300Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2079420Z [31;1m   |  +- compile obj pi-photon-photon_15 Debug native success 14s MaxRSS:501M[0m
+2026-10-13T22:11:53.2083270Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2089670Z [31;1m   |  +- compile obj pi-photon-photon_browser_15 Debug native success 15s MaxRSS:499M[0m
+2026-10-13T22:11:53.2095090Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2099690Z [31;1m   |  +- compile obj pi-photon-codec_imports Debug native success 253ms MaxRSS:64M[0m
+2026-10-13T22:11:53.2107880Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2111740Z [31;1m   |  +- compile obj pi-photon-browser_imports Debug native success 186ms MaxRSS:64M[0m
+2026-10-13T22:11:53.2132930Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2149230Z [31;1m   |  +- compile obj pi-photon-codec_alloc_guard Debug native success 229ms MaxRSS:66M[0m
+2026-10-13T22:11:53.2156520Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2162770Z [31;1m   |  +- compile obj pi-photon-photon_native Debug native success 281ms MaxRSS:64M[0m
+2026-10-13T22:11:53.2183880Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2189280Z [31;1m   |  +- compile obj pi-photon-photon_browser_native Debug native success 213ms MaxRSS:64M[0m
+2026-10-13T22:11:53.2195530Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2201680Z [31;1m   |  +- compile obj pi-photon-session_api Debug native success 223ms MaxRSS:68M[0m
+2026-10-13T22:11:53.2207650Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2210350Z [31;1m   |  +- compile obj pi-photon-session_browser_api Debug native success 322ms MaxRSS:68M[0m
+2026-10-13T22:11:53.2217590Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2226390Z [31;1m   |  +- compile obj pi-photon-wasm-rt-impl Debug native success 159ms MaxRSS:66M[0m
+2026-10-13T22:11:53.2241810Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2256080Z [31;1m   |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native success 203ms MaxRSS:65M[0m
+2026-10-13T22:11:53.2258990Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:11:53.2261620Z [31;1m   |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native success 161ms MaxRSS:64M[0m
+2026-10-13T22:11:53.2268710Z [31;1m   |  +- compile obj pi-photon-photon_0 Debug native (reused)[0m
+2026-10-13T22:11:53.2270810Z [31;1m   |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)[0m
+2026-10-13T22:11:53.2276910Z [31;1m   |  +- compile obj pi-photon-photon_1 Debug native (reused)[0m
+2026-10-13T22:11:53.2282790Z [31;1m   |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)[0m
+2026-10-13T22:11:53.2291560Z [31;1m   |  +- compile obj pi-photon-photon_2 Debug native (reused)[0m
+2026-10-13T22:11:53.2298770Z [31;1m   |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)[0m
+2026-10-13T22:11:53.2302950Z [31;1m   |  +- compile obj pi-photon-photon_3 Debug native (reused)[0m
+2026-10-13T22:11:53.2309580Z [31;1m   |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)[0m
+2026-10-13T22:11:53.2311950Z [31;1m   |  +- compile obj pi-photon-photon_4 Debug native (reused)[0m
+2026-10-13T22:11:53.2320170Z [31;1m   |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)[0m
+2026-10-13T22:11:53.2323210Z [31;1m   |  +- compile obj pi-photon-photon_5 Debug native (reused)[0m
+2026-10-13T22:11:53.2329400Z [31;1m   |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)[0m
+2026-10-13T22:11:53.2331840Z [31;1m   |  +- compile obj pi-photon-photon_6 Debug native (reused)[0m
+2026-10-13T22:11:53.2337230Z [31;1m   |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)[0m
+2026-10-13T22:11:53.2341130Z [31;1m   |  +- compile obj pi-photon-photon_7 Debug native (reused)[0m
+2026-10-13T22:11:53.2342870Z [31;1m   |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)[0m
+2026-10-13T22:11:53.2345990Z [31;1m   |  +- compile obj pi-photon-photon_8 Debug native (reused)[0m
+2026-10-13T22:11:53.2351660Z [31;1m   |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)[0m
+2026-10-13T22:11:53.2358090Z [31;1m   |  +- compile obj pi-photon-photon_9 Debug native (reused)[0m
+2026-10-13T22:11:53.2360880Z [31;1m   |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)[0m
+2026-10-13T22:11:53.2363570Z [31;1m   |  +- compile obj pi-photon-photon_10 Debug native (reused)[0m
+2026-10-13T22:11:53.2366720Z [31;1m   |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)[0m
+2026-10-13T22:11:53.2369440Z [31;1m   |  +- compile obj pi-photon-photon_11 Debug native (reused)[0m
+2026-10-13T22:11:53.2375450Z [31;1m   |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)[0m
+2026-10-13T22:11:53.2381200Z [31;1m   |  +- compile obj pi-photon-photon_12 Debug native (reused)[0m
+2026-10-13T22:11:53.2386790Z [31;1m   |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)[0m
+2026-10-13T22:11:53.2390850Z [31;1m   |  +- compile obj pi-photon-photon_13 Debug native (reused)[0m
+2026-10-13T22:11:53.2395650Z [31;1m   |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)[0m
+2026-10-13T22:11:53.2401030Z [31;1m   |  +- compile obj pi-photon-photon_14 Debug native (reused)[0m
+2026-10-13T22:11:53.2406000Z [31;1m   |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)[0m
+2026-10-13T22:11:53.2412340Z [31;1m   |  +- compile obj pi-photon-photon_15 Debug native (reused)[0m
+2026-10-13T22:11:53.2414770Z [31;1m   |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)[0m
+2026-10-13T22:11:53.2418050Z [31;1m   |  +- compile obj pi-photon-codec_imports Debug native (reused)[0m
+2026-10-13T22:11:53.2423830Z [31;1m   |  +- compile obj pi-photon-browser_imports Debug native (reused)[0m
+2026-10-13T22:11:53.2429650Z [31;1m   |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)[0m
+2026-10-13T22:11:53.2435550Z [31;1m   |  +- compile obj pi-photon-photon_native Debug native (reused)[0m
+2026-10-13T22:11:53.2441150Z [31;1m   |  +- compile obj pi-photon-photon_browser_native Debug native (reused)[0m
+2026-10-13T22:11:53.2447010Z [31;1m   |  +- compile obj pi-photon-session_api Debug native (reused)[0m
+2026-10-13T22:11:53.2449670Z [31;1m   |  +- compile obj pi-photon-session_browser_api Debug native (reused)[0m
+2026-10-13T22:11:53.2456010Z [31;1m   |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)[0m
+2026-10-13T22:11:53.2460770Z [31;1m   |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)[0m
+2026-10-13T22:11:53.2466460Z [31;1m   |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)[0m
+2026-10-13T22:11:53.2472750Z [31;1m   +- compile lib pi-photon Debug native (+126 more reused dependencies)[0m
+2026-10-13T22:11:53.2478680Z [31;1m   +- options success[0m
+2026-10-13T22:11:53.2486530Z [31;1m[0m
+2026-10-13T22:11:53.5372000Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T22:11:53.5372740Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T22:11:53.5373440Z [36;1m& zig build build-sdk-settings-ownership -Doptimize=Debug -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-control-candidate/compile-settings.log[0m
+2026-10-13T22:11:53.5374280Z [36;1mif ($LASTEXITCODE -ne 0) { throw 'Settings ownership cold compilation failed' }[0m
+2026-10-13T22:11:53.5399210Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+2026-10-13T22:11:53.5399500Z env:
+2026-10-13T22:11:53.5399810Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:11:53.5400210Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:11:53.5400480Z ##[endgroup]
+2026-10-13T22:12:36.6936310Z [31;1mBuild Summary: 155/155 steps succeeded[0m
+2026-10-13T22:12:36.6938990Z [31;1mbuild-sdk-settings-ownership success[0m
+2026-10-13T22:12:36.6944430Z [31;1m+- compile test Debug native success 31s MaxRSS:2G[0m
+2026-10-13T22:12:36.6948970Z [31;1m   +- WriteFile cached[0m
+2026-10-13T22:12:36.6952270Z [31;1m   +- compile lib pi-quickjs Debug native cached 78ms MaxRSS:30M[0m
+2026-10-13T22:12:36.6955900Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.6960040Z [31;1m   |  +- compile lib pi-icu78-i18n Debug native cached 122ms MaxRSS:31M[0m
+2026-10-13T22:12:36.6963970Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.6967780Z [31;1m   |  |  +- compile lib pi-icu78-common Debug native cached 108ms MaxRSS:31M[0m
+2026-10-13T22:12:36.6979650Z [31;1m   |  |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.6980140Z [31;1m   |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 138ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7018000Z [31;1m   |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)[0m
+2026-10-13T22:12:36.7027430Z [31;1m   |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:12:36.7028120Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7028750Z [31;1m   |  +- compile lib pi-native-yaml Debug native cached 74ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7029320Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7029890Z [31;1m   |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 118ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7030430Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7030920Z [31;1m   |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 102ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7031450Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7031990Z [31;1m   |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 84ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7033100Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7037180Z [31;1m   |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 105ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7040760Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7044770Z [31;1m   |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 120ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7049300Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7052320Z [31;1m   |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 157ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7055970Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7060070Z [31;1m   |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 146ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7063470Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7067740Z [31;1m   |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 111ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7215580Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7382160Z [31;1m   |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 125ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7500790Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7601050Z [31;1m   |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 136ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7666540Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7707390Z [31;1m   |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 129ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7755520Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7757410Z [31;1m   |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 126ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7758020Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7758980Z [31;1m   |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 157ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7759610Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7760380Z [31;1m   |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 145ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7761140Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7761720Z [31;1m   |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 117ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7762370Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7763250Z [31;1m   |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 78ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7764080Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7764740Z [31;1m   |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 105ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7765560Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7766200Z [31;1m   |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 127ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7766750Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7767580Z [31;1m   |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 105ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7769000Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7769680Z [31;1m   |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 137ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7771420Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7772030Z [31;1m   |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 127ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7777320Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7777920Z [31;1m   |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 110ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7778740Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7779600Z [31;1m   |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 125ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7780370Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7781020Z [31;1m   |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 86ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7781790Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7782440Z [31;1m   |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 118ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7782840Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7783590Z [31;1m   |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 115ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7784300Z [31;1m   |  |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7784930Z [31;1m   |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 99ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7785640Z [31;1m   |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7787860Z [31;1m   |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7788640Z [31;1m   |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7789360Z [31;1m   |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7789950Z [31;1m   |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7790910Z [31;1m   |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7791600Z [31;1m   |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7792320Z [31;1m   |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7793170Z [31;1m   |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7794150Z [31;1m   |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7794970Z [31;1m   |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7795630Z [31;1m   |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7796270Z [31;1m   |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7797120Z [31;1m   |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7797710Z [31;1m   |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7798560Z [31;1m   |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7799380Z [31;1m   |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7800050Z [31;1m   |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7800890Z [31;1m   |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7801690Z [31;1m   |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7802300Z [31;1m   |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7802940Z [31;1m   |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7803780Z [31;1m   |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7804380Z [31;1m   |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7805070Z [31;1m   |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7806390Z [31;1m   |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7807080Z [31;1m   |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)[0m
+2026-10-13T22:12:36.7808740Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7809980Z [31;1m   |  +- compile lib pi-sqlite Debug native cached 164ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7810810Z [31;1m   |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:12:36.7811740Z [31;1m   |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)[0m
+2026-10-13T22:12:36.7813140Z [31;1m   |  +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:12:36.7813870Z [31;1m   +- compile lib pi-quickjs Debug native (+9 more reused dependencies)[0m
+2026-10-13T22:12:36.7815240Z [31;1m   +- WriteFile cached[0m
+2026-10-13T22:12:36.7815750Z [31;1m   +- compile lib pi-photon Debug native cached 58ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7817020Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7817630Z [31;1m   |  +- compile obj pi-photon-photon_0 Debug native cached 76ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7818150Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7818990Z [31;1m   |  +- compile obj pi-photon-photon_browser_0 Debug native cached 58ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7819630Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7820190Z [31;1m   |  +- compile obj pi-photon-photon_1 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7820920Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7821490Z [31;1m   |  +- compile obj pi-photon-photon_browser_1 Debug native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7822010Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7822610Z [31;1m   |  +- compile obj pi-photon-photon_2 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7823190Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7823710Z [31;1m   |  +- compile obj pi-photon-photon_browser_2 Debug native cached 56ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7824270Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7826430Z [31;1m   |  +- compile obj pi-photon-photon_3 Debug native cached 79ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7826960Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7827920Z [31;1m   |  +- compile obj pi-photon-photon_browser_3 Debug native cached 56ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7828510Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7829080Z [31;1m   |  +- compile obj pi-photon-photon_4 Debug native cached 89ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7829500Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7830030Z [31;1m   |  +- compile obj pi-photon-photon_browser_4 Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7830530Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7831070Z [31;1m   |  +- compile obj pi-photon-photon_5 Debug native cached 66ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7831670Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7832330Z [31;1m   |  +- compile obj pi-photon-photon_browser_5 Debug native cached 64ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7833030Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7833590Z [31;1m   |  +- compile obj pi-photon-photon_6 Debug native cached 66ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7834080Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7834520Z [31;1m   |  +- compile obj pi-photon-photon_browser_6 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7835090Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7835590Z [31;1m   |  +- compile obj pi-photon-photon_7 Debug native cached 66ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7836000Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7836500Z [31;1m   |  +- compile obj pi-photon-photon_browser_7 Debug native cached 77ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7837060Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7837650Z [31;1m   |  +- compile obj pi-photon-photon_8 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7838460Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7838910Z [31;1m   |  +- compile obj pi-photon-photon_browser_8 Debug native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7839540Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7840080Z [31;1m   |  +- compile obj pi-photon-photon_9 Debug native cached 63ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7840600Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7841190Z [31;1m   |  +- compile obj pi-photon-photon_browser_9 Debug native cached 63ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7841700Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7842300Z [31;1m   |  +- compile obj pi-photon-photon_10 Debug native cached 58ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7843000Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7845960Z [31;1m   |  +- compile obj pi-photon-photon_browser_10 Debug native cached 68ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7849270Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7854140Z [31;1m   |  +- compile obj pi-photon-photon_11 Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7856320Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7859310Z [31;1m   |  +- compile obj pi-photon-photon_browser_11 Debug native cached 63ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7862490Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7865800Z [31;1m   |  +- compile obj pi-photon-photon_12 Debug native cached 103ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7868490Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7871830Z [31;1m   |  +- compile obj pi-photon-photon_browser_12 Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7874870Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7878120Z [31;1m   |  +- compile obj pi-photon-photon_13 Debug native cached 63ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7881000Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7884560Z [31;1m   |  +- compile obj pi-photon-photon_browser_13 Debug native cached 89ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7888260Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7891650Z [31;1m   |  +- compile obj pi-photon-photon_14 Debug native cached 108ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7895680Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7898010Z [31;1m   |  +- compile obj pi-photon-photon_browser_14 Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7900730Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7903660Z [31;1m   |  +- compile obj pi-photon-photon_15 Debug native cached 54ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7906590Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7909780Z [31;1m   |  +- compile obj pi-photon-photon_browser_15 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7912700Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7916680Z [31;1m   |  +- compile obj pi-photon-codec_imports Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7919510Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7923520Z [31;1m   |  +- compile obj pi-photon-browser_imports Debug native cached 81ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7925460Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7928940Z [31;1m   |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 74ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7932220Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7935550Z [31;1m   |  +- compile obj pi-photon-photon_native Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7938530Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7941850Z [31;1m   |  +- compile obj pi-photon-photon_browser_native Debug native cached 64ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7944360Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7956320Z [31;1m   |  +- compile obj pi-photon-session_api Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7962750Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7967390Z [31;1m   |  +- compile obj pi-photon-session_browser_api Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7970260Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7973580Z [31;1m   |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 69ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7977030Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7980310Z [31;1m   |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7982940Z [31;1m   |  +- WriteFile cached[0m
+2026-10-13T22:12:36.7986630Z [31;1m   |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:12:36.7989820Z [31;1m   |  +- compile obj pi-photon-photon_0 Debug native (reused)[0m
+2026-10-13T22:12:36.7993310Z [31;1m   |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)[0m
+2026-10-13T22:12:36.7996630Z [31;1m   |  +- compile obj pi-photon-photon_1 Debug native (reused)[0m
+2026-10-13T22:12:36.8000040Z [31;1m   |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)[0m
+2026-10-13T22:12:36.8003220Z [31;1m   |  +- compile obj pi-photon-photon_2 Debug native (reused)[0m
+2026-10-13T22:12:36.8006180Z [31;1m   |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)[0m
+2026-10-13T22:12:36.8009470Z [31;1m   |  +- compile obj pi-photon-photon_3 Debug native (reused)[0m
+2026-10-13T22:12:36.8013800Z [31;1m   |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)[0m
+2026-10-13T22:12:36.8015350Z [31;1m   |  +- compile obj pi-photon-photon_4 Debug native (reused)[0m
+2026-10-13T22:12:36.8018860Z [31;1m   |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)[0m
+2026-10-13T22:12:36.8022040Z [31;1m   |  +- compile obj pi-photon-photon_5 Debug native (reused)[0m
+2026-10-13T22:12:36.8025410Z [31;1m   |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)[0m
+2026-10-13T22:12:36.8029000Z [31;1m   |  +- compile obj pi-photon-photon_6 Debug native (reused)[0m
+2026-10-13T22:12:36.8032120Z [31;1m   |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)[0m
+2026-10-13T22:12:36.8037440Z [31;1m   |  +- compile obj pi-photon-photon_7 Debug native (reused)[0m
+2026-10-13T22:12:36.8044000Z [31;1m   |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)[0m
+2026-10-13T22:12:36.8049930Z [31;1m   |  +- compile obj pi-photon-photon_8 Debug native (reused)[0m
+2026-10-13T22:12:36.8057560Z [31;1m   |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)[0m
+2026-10-13T22:12:36.8061980Z [31;1m   |  +- compile obj pi-photon-photon_9 Debug native (reused)[0m
+2026-10-13T22:12:36.8063760Z [31;1m   |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)[0m
+2026-10-13T22:12:36.8066740Z [31;1m   |  +- compile obj pi-photon-photon_10 Debug native (reused)[0m
+2026-10-13T22:12:36.8070760Z [31;1m   |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)[0m
+2026-10-13T22:12:36.8074340Z [31;1m   |  +- compile obj pi-photon-photon_11 Debug native (reused)[0m
+2026-10-13T22:12:36.8079030Z [31;1m   |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)[0m
+2026-10-13T22:12:36.8082940Z [31;1m   |  +- compile obj pi-photon-photon_12 Debug native (reused)[0m
+2026-10-13T22:12:36.8085260Z [31;1m   |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)[0m
+2026-10-13T22:12:36.8088840Z [31;1m   |  +- compile obj pi-photon-photon_13 Debug native (reused)[0m
+2026-10-13T22:12:36.8092160Z [31;1m   |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)[0m
+2026-10-13T22:12:36.8095320Z [31;1m   |  +- compile obj pi-photon-photon_14 Debug native (reused)[0m
+2026-10-13T22:12:36.8099730Z [31;1m   |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)[0m
+2026-10-13T22:12:36.8101420Z [31;1m   |  +- compile obj pi-photon-photon_15 Debug native (reused)[0m
+2026-10-13T22:12:36.8104670Z [31;1m   |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)[0m
+2026-10-13T22:12:36.8108100Z [31;1m   |  +- compile obj pi-photon-codec_imports Debug native (reused)[0m
+2026-10-13T22:12:36.8111510Z [31;1m   |  +- compile obj pi-photon-browser_imports Debug native (reused)[0m
+2026-10-13T22:12:36.8115620Z [31;1m   |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)[0m
+2026-10-13T22:12:36.8118250Z [31;1m   |  +- compile obj pi-photon-photon_native Debug native (reused)[0m
+2026-10-13T22:12:36.8121830Z [31;1m   |  +- compile obj pi-photon-photon_browser_native Debug native (reused)[0m
+2026-10-13T22:12:36.8125290Z [31;1m   |  +- compile obj pi-photon-session_api Debug native (reused)[0m
+2026-10-13T22:12:36.8128530Z [31;1m   |  +- compile obj pi-photon-session_browser_api Debug native (reused)[0m
+2026-10-13T22:12:36.8157990Z [31;1m   |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)[0m
+2026-10-13T22:12:36.8159110Z [31;1m   |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)[0m
+2026-10-13T22:12:36.8159940Z [31;1m   |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)[0m
+2026-10-13T22:12:36.8160960Z [31;1m   +- compile lib pi-photon Debug native (+126 more reused dependencies)[0m
+2026-10-13T22:12:36.8161950Z [31;1m   +- options cached[0m
+2026-10-13T22:12:36.8163020Z [31;1m[0m
+2026-10-13T22:12:36.9759050Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T22:12:36.9759530Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T22:12:36.9759820Z [36;1m$PSNativeCommandUseErrorActionPreference = $false[0m
+2026-10-13T22:12:36.9760200Z [36;1m$taskReceipt = 'verification/native-sdk-session-control-candidate'[0m
+2026-10-13T22:12:36.9760990Z [36;1m& zig build test-native-sdk-session-control test-sdk-settings-ownership -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"[0m
+2026-10-13T22:12:36.9761830Z [36;1mif ($LASTEXITCODE -ne 0) { throw 'Session control or settings ownership runtime failed' }[0m
+2026-10-13T22:12:36.9762260Z [36;1m$taskLog = Get-Content "$taskReceipt/runtime.log" -Raw[0m
+2026-10-13T22:12:36.9762900Z [36;1mif ($taskLog -notmatch '(?m)Build Summary:.*\b22/22 tests passed') { throw 'All22 session control and settings ownership tests must execute' }[0m
+2026-10-13T22:12:36.9763670Z [36;1m$taskPattern = '(?ms)^test-native-sdk-session-control success\r?\n[^\r\n]*run test 12 pass \(12 total\)'[0m
+2026-10-13T22:12:36.9764300Z [36;1mif ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw 'Session control artifact execution changed' }[0m
+2026-10-13T22:12:36.9765010Z [36;1m$taskSettingsPattern = '(?ms)^test-sdk-settings-ownership success\r?\n[^\r\n]*run test 10 pass \(10 total\)'[0m
+2026-10-13T22:12:36.9765680Z [36;1mif ([regex]::Matches($taskLog,$taskSettingsPattern).Count -ne 1) { throw 'Settings ownership artifact execution changed' }[0m
+2026-10-13T22:12:36.9766350Z [36;1m$taskFixture = Get-Content src/extensions/fixtures/sdk-session-control-e622.json -Raw | ConvertFrom-Json[0m
+2026-10-13T22:12:36.9767070Z [36;1mif (@($taskFixture.rows).Count -ne 35 -or $taskFixture.factoryCount -ne 35) { throw 'Original35 factory cases must remain complete' }[0m
+2026-10-13T22:12:36.9768730Z [36;1m[ordered]@{head='40e2985ea2157e54db28f591b9f10c2fc7400111';status='passed';mode='Debug';platform='macos-latest';tests=22;control_tests=12;settings_ownership_tests=10;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"[0m
+2026-10-13T22:12:36.9794740Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+2026-10-13T22:12:36.9794990Z env:
+2026-10-13T22:12:36.9795220Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:12:36.9795570Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:12:36.9795850Z ##[endgroup]
+2026-10-13T22:14:50.0119130Z [31;1mtest-sdk-settings-ownership[0m
+2026-10-13T22:14:50.0149620Z [31;1m+- run test 9 pass, 1 timeout (10 total)[0m
+2026-10-13T22:14:50.0172170Z [31;1merror: 'native_sdk_settings_ownership_test.test.SDK settings every failed host allocation releases getters queues errors files and lock lease' timed out after 2m920.792us[0m
+2026-10-13T22:14:50.0191010Z [31;1mfailed command: ./.zig-cache/o/f9b0ce6ffe15ddad8de30c968f9691d0/test --cache-dir=./.zig-cache --seed=0x685be5a4 --listen=-[0m
+2026-10-13T22:14:50.0203890Z [31;1m[0m
+2026-10-13T22:15:23.7912130Z [31;1mBuild Summary: 157/159 steps succeeded (1 failed); 21/22 tests passed (1 timed out)[0m
+2026-10-13T22:15:23.7913590Z [31;1mtest-native-sdk-session-control success[0m
+2026-10-13T22:15:23.7930400Z [31;1m+- run test 12 pass (12 total) 32s MaxRSS:126M[0m
+2026-10-13T22:15:23.7948950Z [31;1m   +- compile test Debug native cached 242ms MaxRSS:32M[0m
+2026-10-13T22:15:23.7966890Z [31;1m      +- WriteFile cached[0m
+2026-10-13T22:15:23.7995850Z [31;1m      +- compile lib pi-quickjs Debug native cached 75ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8026860Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8067480Z [31;1m      |  +- compile lib pi-icu78-i18n Debug native cached 88ms MaxRSS:31M[0m
+2026-10-13T22:15:23.8113140Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8116440Z [31;1m      |  |  +- compile lib pi-icu78-common Debug native cached 89ms MaxRSS:31M[0m
+2026-10-13T22:15:23.8126730Z [31;1m      |  |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8128800Z [31;1m      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 79ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8139350Z [31;1m      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)[0m
+2026-10-13T22:15:23.8149900Z [31;1m      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:15:23.8164310Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8167560Z [31;1m      |  +- compile lib pi-native-yaml Debug native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8171970Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8175540Z [31;1m      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 75ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8179020Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8183150Z [31;1m      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 82ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8196860Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8207130Z [31;1m      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8437730Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8439720Z [31;1m      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8442730Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8448690Z [31;1m      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8451700Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8461750Z [31;1m      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 76ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8566720Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8699830Z [31;1m      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8840450Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.8903730Z [31;1m      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 99ms MaxRSS:30M[0m
+2026-10-13T22:15:23.8958400Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9046350Z [31;1m      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9201220Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9329700Z [31;1m      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 79ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9423380Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9618120Z [31;1m      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 86ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9681520Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9782400Z [31;1m      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9844770Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9850850Z [31;1m      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 75ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9861250Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9862590Z [31;1m      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 76ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9870100Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9870720Z [31;1m      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9871330Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9872100Z [31;1m      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 86ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9872620Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9874220Z [31;1m      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9876370Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9879000Z [31;1m      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 69ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9880220Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9880810Z [31;1m      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 87ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9881320Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9883360Z [31;1m      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 97ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9884880Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9885630Z [31;1m      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 85ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9887080Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9887520Z [31;1m      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 86ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9888060Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9888680Z [31;1m      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9889930Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9890470Z [31;1m      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9891010Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9892720Z [31;1m      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9893310Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9893800Z [31;1m      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 82ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9894740Z [31;1m      |  |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9895280Z [31;1m      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 78ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9895840Z [31;1m      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9896490Z [31;1m      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9897070Z [31;1m      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9920120Z [31;1m      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9921870Z [31;1m      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9923600Z [31;1m      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9926260Z [31;1m      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9963100Z [31;1m      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9963920Z [31;1m      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9965010Z [31;1m      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9965820Z [31;1m      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9966440Z [31;1m      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9966980Z [31;1m      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9967500Z [31;1m      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9967960Z [31;1m      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9968430Z [31;1m      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9968980Z [31;1m      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9969550Z [31;1m      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9970530Z [31;1m      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9971990Z [31;1m      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9972450Z [31;1m      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9973330Z [31;1m      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9973870Z [31;1m      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9974390Z [31;1m      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9974760Z [31;1m      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9975140Z [31;1m      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9975790Z [31;1m      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)[0m
+2026-10-13T22:15:23.9976250Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9976670Z [31;1m      |  +- compile lib pi-sqlite Debug native cached 78ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9977430Z [31;1m      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)[0m
+2026-10-13T22:15:23.9977920Z [31;1m      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)[0m
+2026-10-13T22:15:23.9978440Z [31;1m      |  +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:15:23.9978740Z [31;1m      +- WriteFile (reused)[0m
+2026-10-13T22:15:23.9979130Z [31;1m      +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:15:23.9979900Z [31;1m      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)[0m
+2026-10-13T22:15:23.9980470Z [31;1m      +- compile lib pi-sqlite Debug native (reused)[0m
+2026-10-13T22:15:23.9980930Z [31;1m      +- WriteFile cached[0m
+2026-10-13T22:15:23.9981360Z [31;1m      +- compile lib pi-photon Debug native cached 70ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9981760Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9982530Z [31;1m      |  +- compile obj pi-photon-photon_0 Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9983080Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9983540Z [31;1m      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 132ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9984020Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9984510Z [31;1m      |  +- compile obj pi-photon-photon_1 Debug native cached 140ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9985020Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9985570Z [31;1m      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 75ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9987020Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9987700Z [31;1m      |  +- compile obj pi-photon-photon_2 Debug native cached 124ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9988470Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9988970Z [31;1m      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 76ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9989720Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9990100Z [31;1m      |  +- compile obj pi-photon-photon_3 Debug native cached 69ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9990720Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9991310Z [31;1m      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 119ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9991890Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9992460Z [31;1m      |  +- compile obj pi-photon-photon_4 Debug native cached 67ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9993090Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9993570Z [31;1m      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 136ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9994060Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9994810Z [31;1m      |  +- compile obj pi-photon-photon_5 Debug native cached 124ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9995350Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9995980Z [31;1m      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 72ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9996480Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9997520Z [31;1m      |  +- compile obj pi-photon-photon_6 Debug native cached 118ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9998130Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9998670Z [31;1m      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 117ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9999190Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:23.9999550Z [31;1m      |  +- compile obj pi-photon-photon_7 Debug native cached 138ms MaxRSS:30M[0m
+2026-10-13T22:15:23.9999890Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0000530Z [31;1m      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 68ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0000900Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0001340Z [31;1m      |  +- compile obj pi-photon-photon_8 Debug native cached 145ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0001730Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0002240Z [31;1m      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 141ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0002830Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0003840Z [31;1m      |  +- compile obj pi-photon-photon_9 Debug native cached 160ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0005620Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0006870Z [31;1m      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 118ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0007940Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0008910Z [31;1m      |  +- compile obj pi-photon-photon_10 Debug native cached 118ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0009850Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0011080Z [31;1m      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 100ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0012510Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0013570Z [31;1m      |  +- compile obj pi-photon-photon_11 Debug native cached 160ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0014640Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0015900Z [31;1m      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 73ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0020290Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0021070Z [31;1m      |  +- compile obj pi-photon-photon_12 Debug native cached 134ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0021630Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0022220Z [31;1m      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 132ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0022840Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0023350Z [31;1m      |  +- compile obj pi-photon-photon_13 Debug native cached 67ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0023830Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0025150Z [31;1m      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0025670Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0026270Z [31;1m      |  +- compile obj pi-photon-photon_14 Debug native cached 79ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0026750Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0027290Z [31;1m      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 116ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0027900Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0028460Z [31;1m      |  +- compile obj pi-photon-photon_15 Debug native cached 145ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0028930Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0029520Z [31;1m      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 71ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0030110Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0030640Z [31;1m      |  +- compile obj pi-photon-codec_imports Debug native cached 120ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0031060Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0032110Z [31;1m      |  +- compile obj pi-photon-browser_imports Debug native cached 113ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0032780Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0033380Z [31;1m      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 108ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0033920Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0034390Z [31;1m      |  +- compile obj pi-photon-photon_native Debug native cached 140ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0034920Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0035430Z [31;1m      |  +- compile obj pi-photon-photon_browser_native Debug native cached 137ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0036080Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0036640Z [31;1m      |  +- compile obj pi-photon-session_api Debug native cached 112ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0039400Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0041740Z [31;1m      |  +- compile obj pi-photon-session_browser_api Debug native cached 104ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0045760Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0049180Z [31;1m      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 81ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0051970Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0054450Z [31;1m      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 130ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0056960Z [31;1m      |  +- WriteFile cached[0m
+2026-10-13T22:15:24.0060470Z [31;1m      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 138ms MaxRSS:30M[0m
+2026-10-13T22:15:24.0063040Z [31;1m      |  +- compile obj pi-photon-photon_0 Debug native (reused)[0m
+2026-10-13T22:15:24.0065720Z [31;1m      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)[0m
+2026-10-13T22:15:24.0068360Z [31;1m      |  +- compile obj pi-photon-photon_1 Debug native (reused)[0m
+2026-10-13T22:15:24.0070780Z [31;1m      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)[0m
+2026-10-13T22:15:24.0073260Z [31;1m      |  +- compile obj pi-photon-photon_2 Debug native (reused)[0m
+2026-10-13T22:15:24.0079480Z [31;1m      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)[0m
+2026-10-13T22:15:24.0081850Z [31;1m      |  +- compile obj pi-photon-photon_3 Debug native (reused)[0m
+2026-10-13T22:15:24.0084080Z [31;1m      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)[0m
+2026-10-13T22:15:24.0086710Z [31;1m      |  +- compile obj pi-photon-photon_4 Debug native (reused)[0m
+2026-10-13T22:15:24.0089230Z [31;1m      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)[0m
+2026-10-13T22:15:24.0091540Z [31;1m      |  +- compile obj pi-photon-photon_5 Debug native (reused)[0m
+2026-10-13T22:15:24.0094560Z [31;1m      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)[0m
+2026-10-13T22:15:24.0097380Z [31;1m      |  +- compile obj pi-photon-photon_6 Debug native (reused)[0m
+2026-10-13T22:15:24.0099770Z [31;1m      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)[0m
+2026-10-13T22:15:24.0102500Z [31;1m      |  +- compile obj pi-photon-photon_7 Debug native (reused)[0m
+2026-10-13T22:15:24.0104670Z [31;1m      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)[0m
+2026-10-13T22:15:24.0107150Z [31;1m      |  +- compile obj pi-photon-photon_8 Debug native (reused)[0m
+2026-10-13T22:15:24.0116980Z [31;1m      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)[0m
+2026-10-13T22:15:24.0129480Z [31;1m      |  +- compile obj pi-photon-photon_9 Debug native (reused)[0m
+2026-10-13T22:15:24.0139280Z [31;1m      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)[0m
+2026-10-13T22:15:24.0146910Z [31;1m      |  +- compile obj pi-photon-photon_10 Debug native (reused)[0m
+2026-10-13T22:15:24.0154700Z [31;1m      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)[0m
+2026-10-13T22:15:24.0162440Z [31;1m      |  +- compile obj pi-photon-photon_11 Debug native (reused)[0m
+2026-10-13T22:15:24.0169350Z [31;1m      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)[0m
+2026-10-13T22:15:24.0176430Z [31;1m      |  +- compile obj pi-photon-photon_12 Debug native (reused)[0m
+2026-10-13T22:15:24.0184280Z [31;1m      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)[0m
+2026-10-13T22:15:24.0234890Z [31;1m      |  +- compile obj pi-photon-photon_13 Debug native (reused)[0m
+2026-10-13T22:15:24.0236380Z [31;1m      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)[0m
+2026-10-13T22:15:24.0237560Z [31;1m      |  +- compile obj pi-photon-photon_14 Debug native (reused)[0m
+2026-10-13T22:15:24.0238930Z [31;1m      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)[0m
+2026-10-13T22:15:24.0240320Z [31;1m      |  +- compile obj pi-photon-photon_15 Debug native (reused)[0m
+2026-10-13T22:15:24.0241560Z [31;1m      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)[0m
+2026-10-13T22:15:24.0242810Z [31;1m      |  +- compile obj pi-photon-codec_imports Debug native (reused)[0m
+2026-10-13T22:15:24.0243920Z [31;1m      |  +- compile obj pi-photon-browser_imports Debug native (reused)[0m
+2026-10-13T22:15:24.0245040Z [31;1m      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)[0m
+2026-10-13T22:15:24.0246160Z [31;1m      |  +- compile obj pi-photon-photon_native Debug native (reused)[0m
+2026-10-13T22:15:24.0247330Z [31;1m      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)[0m
+2026-10-13T22:15:24.0248650Z [31;1m      |  +- compile obj pi-photon-session_api Debug native (reused)[0m
+2026-10-13T22:15:24.0249770Z [31;1m      |  +- compile obj pi-photon-session_browser_api Debug native (reused)[0m
+2026-10-13T22:15:24.0252240Z [31;1m      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)[0m
+2026-10-13T22:15:24.0255200Z [31;1m      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)[0m
+2026-10-13T22:15:24.0257680Z [31;1m      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)[0m
+2026-10-13T22:15:24.0259910Z [31;1m      +- compile lib pi-photon Debug native (+126 more reused dependencies)[0m
+2026-10-13T22:15:24.0261930Z [31;1m      +- options cached[0m
+2026-10-13T22:15:24.0264340Z [31;1mtest-sdk-settings-ownership transitive failure[0m
+2026-10-13T22:15:24.0266970Z [31;1m+- run test 9 pass, 1 timeout (10 total)[0m
+2026-10-13T22:15:24.0269720Z [31;1m   +- compile test Debug native cached 105ms MaxRSS:32M[0m
+2026-10-13T22:15:24.0272300Z [31;1m      +- WriteFile (reused)[0m
+2026-10-13T22:15:24.0274720Z [31;1m      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)[0m
+2026-10-13T22:15:24.0277010Z [31;1m      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)[0m
+2026-10-13T22:15:24.0279260Z [31;1m      +- WriteFile (reused)[0m
+2026-10-13T22:15:24.0281800Z [31;1m      +- compile lib pi-photon Debug native (+126 more reused dependencies)[0m
+2026-10-13T22:15:24.0284030Z [31;1m      +- compile lib pi-photon Debug native (+126 more reused dependencies)[0m
+2026-10-13T22:15:24.0286290Z [31;1m      +- options (reused)[0m
+2026-10-13T22:15:24.0288690Z [31;1m[0m
+2026-10-13T22:15:24.0291850Z [31;1merror: the following build command failed with exit code 1:[0m
+2026-10-13T22:15:24.0299160Z [31;1m.zig-cache/o/e4116218443784c3ae9adbb7657ec931/build /Users/runner/work/_temp/eab83dfc-3293-4d8a-b5be-edc49b872f3e/zig-aarch64-macos-0.16.0/zig /Users/runner/work/_temp/eab83dfc-3293-4d8a-b5be-edc49b872f3e/zig-aarch64-macos-0.16.0/lib /Users/runner/work/pi-zig/pi-zig .zig-cache .zig-cache --seed 0x685be5a4 -Z466735b81e05e9d4 test-native-sdk-session-control test-sdk-settings-ownership -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all[0m
+2026-10-13T22:15:24.1020120Z [31;1mException: [0m/Users/runner/work/_temp/762b3d8d-a470-4b3e-982b-49dac424177f.ps1:6[0m
+2026-10-13T22:15:24.1020840Z [31;1m[0m[36;1mLine |[0m
+2026-10-13T22:15:24.1023020Z [31;1m[0m[36;1m[36;1m   6 | [0m … DE -ne 0) { [36;1mthrow 'Session control or settings ownership runtime fail[0m …[0m
+2026-10-13T22:15:24.1023680Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+2026-10-13T22:15:24.1024310Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mSession control or settings ownership runtime failed[0m
+2026-10-13T22:15:24.1781220Z ##[error]Process completed with exit code 1.
+2026-10-13T22:15:24.1938400Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-10-13T22:15:24.1938950Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-10-13T22:15:24.1952160Z [36;1m$taskReceipt = 'verification/native-sdk-session-control-candidate'[0m
+2026-10-13T22:15:24.1953050Z [36;1mforeach ($taskKind in @('inputs','tools')) {[0m
+2026-10-13T22:15:24.1953480Z [36;1m  $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)[0m
+2026-10-13T22:15:24.1954290Z [36;1m  $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)[0m
+2026-10-13T22:15:24.1955420Z [36;1m  [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"[0m
+2026-10-13T22:15:24.1956180Z [36;1m  if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }[0m
+2026-10-13T22:15:24.1956970Z [36;1m}[0m
+2026-10-13T22:15:24.2047560Z shell: /usr/local/bin/pwsh -command ". '{0}'"
+2026-10-13T22:15:24.2047850Z env:
+2026-10-13T22:15:24.2048090Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:15:24.2048470Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:15:24.2048730Z ##[endgroup]
+2026-10-13T22:15:30.6431930Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-13T22:15:30.6432630Z with:
+2026-10-13T22:15:30.6433080Z   name: native-sdk-session-control-candidate-macos-latest-Debug-40e2985ea2157e54db28f591b9f10c2fc7400111
+2026-10-13T22:15:30.6433660Z   retention-days: 14
+2026-10-13T22:15:30.6434020Z   path: verification/native-sdk-session-control-candidate/
+2026-10-13T22:15:30.6434390Z   if-no-files-found: warn
+2026-10-13T22:15:30.6434700Z   compression-level: 6
+2026-10-13T22:15:30.6435020Z   overwrite: false
+2026-10-13T22:15:30.6435380Z   include-hidden-files: false
+2026-10-13T22:15:30.6435650Z env:
+2026-10-13T22:15:30.6436140Z   ZIG_GLOBAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:15:30.6436640Z   ZIG_LOCAL_CACHE_DIR: /Users/runner/work/pi-zig/pi-zig/.zig-cache
+2026-10-13T22:15:30.6437070Z ##[endgroup]
+2026-10-13T22:15:31.2233420Z (node:17684) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-13T22:15:31.2234440Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-13T22:15:31.2365160Z With the provided path, there will be 8 files uploaded
+2026-10-13T22:15:31.2392860Z Artifact name is valid!
+2026-10-13T22:15:31.2413590Z Root directory input is valid!
+2026-10-13T22:15:31.5042240Z Beginning upload of artifact content to blob storage
+2026-10-13T22:15:31.6666170Z (node:17684) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-13T22:15:31.7560730Z Uploaded bytes 1077831
+2026-10-13T22:15:31.7749580Z Finished uploading artifact content to blob storage!
+2026-10-13T22:15:31.7750930Z SHA256 digest of uploaded artifact zip is 359ecb7d242fa440d3a7cac17aba35410cbf5b969583b54145ddde5248f83da6
+2026-10-13T22:15:31.7751750Z Finalizing artifact upload
+2026-10-13T22:15:31.9586880Z Artifact native-sdk-session-control-candidate-macos-latest-Debug-40e2985ea2157e54db28f591b9f10c2fc7400111.zip successfully finalized. Artifact ID 11853524434
+2026-10-13T22:15:31.9590290Z Artifact native-sdk-session-control-candidate-macos-latest-Debug-40e2985ea2157e54db28f591b9f10c2fc7400111 has been successfully uploaded! Final size is 1077831 bytes. Artifact ID is 11853524434
+2026-10-13T22:15:31.9603180Z Artifact download URL: https://github.com/adybag14-cyber/pi-zig/actions/runs/38473565374/artifacts/11853524434
+2026-10-13T22:15:31.9947620Z Post job cleanup.
+2026-10-13T22:15:32.5040580Z Post job cleanup.
+2026-10-13T22:15:32.6275030Z [command]/opt/homebrew/bin/git version
+2026-10-13T22:15:32.6595410Z git version 2.55.0
+2026-10-13T22:15:32.6614700Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/72c6e3a9-e99e-4d22-8b21-f4e923ad8398/.gitconfig'
+2026-10-13T22:15:32.6622080Z Temporarily overriding HOME='/Users/runner/work/_temp/72c6e3a9-e99e-4d22-8b21-f4e923ad8398' before making global git config changes
+2026-10-13T22:15:32.6622920Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-13T22:15:32.6637010Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/pi-zig/pi-zig
+2026-10-13T22:15:32.6759980Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-13T22:15:32.6846670Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-13T22:15:32.8414690Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-13T22:15:32.8542400Z http.https://github.com/.extraheader
+2026-10-13T22:15:32.8569730Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-13T22:15:32.8683020Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-13T22:15:32.9919300Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-13T22:15:33.0037130Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-13T22:15:33.1123400Z Cleaning up orphan processes
+2026-10-13T22:15:36.1509070Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02, mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

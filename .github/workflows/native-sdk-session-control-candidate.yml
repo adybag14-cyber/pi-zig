@@ -20,7 +20,9 @@ jobs:
         mode: [Debug, ReleaseSafe]
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 100
+    env:
+      SETTINGS_ALLOCATION_SHARDS: ${{ matrix.os == 'macos-latest' && matrix.mode == 'Debug' && 8 || 1 }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -65,7 +67,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & zig build build-sdk-settings-ownership -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-control-candidate/compile-settings.log
           if ($LASTEXITCODE -ne 0) { throw 'Settings ownership cold compilation failed' }
-      - name: Exercise original session control cleanup and existing settings ownership graphs
+      - name: Exercise original session control and cleanup owner graphs
         id: runtime
         shell: pwsh
         timeout-minutes: 5
@@ -73,17 +75,49 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
           $taskReceipt = 'verification/native-sdk-session-control-candidate'
-          & zig build test-native-sdk-session-control test-sdk-settings-ownership -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
-          if ($LASTEXITCODE -ne 0) { throw 'Session control or settings ownership runtime failed' }
+          & zig build test-native-sdk-session-control -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Session control runtime failed' }
           $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
-          if ($taskLog -notmatch '(?m)Build Summary:.*\b22/22 tests passed') { throw 'All22 session control and settings ownership tests must execute' }
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b12/12 tests passed') { throw 'All12 session control tests must execute' }
           $taskPattern = '(?ms)^test-native-sdk-session-control success\r?\n[^\r\n]*run test 12 pass \(12 total\)'
           if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw 'Session control artifact execution changed' }
-          $taskSettingsPattern = '(?ms)^test-sdk-settings-ownership success\r?\n[^\r\n]*run test 10 pass \(10 total\)'
-          if ([regex]::Matches($taskLog,$taskSettingsPattern).Count -ne 1) { throw 'Settings ownership artifact execution changed' }
           $taskFixture = Get-Content src/extensions/fixtures/sdk-session-control-e622.json -Raw | ConvertFrom-Json
           if (@($taskFixture.rows).Count -ne 35 -or $taskFixture.factoryCount -ne 35) { throw 'Original35 factory cases must remain complete' }
-          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=22;control_tests=12;settings_ownership_tests=10;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';control_tests=12;source_cases=35;original_factory_instances=35;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/control-result.json"
+      - name: Exercise every original settings allocation index with unchanged file and lock assertions
+        shell: pwsh
+        timeout-minutes: 43
+        run: |
+          $ErrorActionPreference='Stop'
+          $taskReceipt='verification/native-sdk-session-control-candidate'
+          $taskZig=(Get-Command zig -CommandType Application|Select-Object -First 1).Source
+          $taskShards=[int]$env:SETTINGS_ALLOCATION_SHARDS
+          if($taskShards -notin @(1,8)){throw 'Unexpected settings allocation profile'}
+          $taskUniverse=$null;$taskPrevious=0;$taskIndices=[Collections.Generic.List[int]]::new()
+          foreach($taskShard in 0..($taskShards-1)){
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARD=[string]$taskShard
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS=[string]$taskShards
+            $taskBase="$taskReceipt/settings-shard-$taskShard"
+            & verification/sdk-session-control-e6220e1-20261013/run-native-owner.ps1 -Executable $taskZig -WorkingDirectory (Get-Location).Path -Arguments @('build','test-sdk-settings-ownership','-Doptimize=${{ matrix.mode }}','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase $taskBase -TimeoutSeconds 300
+            $taskLog=(Get-Content -LiteralPath "$taskBase.stderr.log" -Raw)+(Get-Content -LiteralPath "$taskBase.stdout.log" -Raw)
+            if($taskLog -notmatch '(?m)Build Summary:.*\b10/10 tests passed'){throw 'All10 original settings ownership tests must execute'}
+            $taskRange=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_RANGE sdk-settings-ownership (\d+)/(\d+) range=\[(\d+),(\d+)\) total=(\d+)\r?$'))
+            $taskBaseline=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_BASELINE sdk-settings-ownership total=(\d+)\r?$'))
+            if($taskRange.Count -ne 1 -or $taskBaseline.Count -ne 1){throw 'Missing or duplicated original allocation range/baseline'}
+            $taskActualShard=[int]$taskRange[0].Groups[1].Value;$taskActualShards=[int]$taskRange[0].Groups[2].Value
+            $taskStart=[int]$taskRange[0].Groups[3].Value;$taskEnd=[int]$taskRange[0].Groups[4].Value;$taskTotal=[int]$taskRange[0].Groups[5].Value
+            if($taskUniverse -eq $null){$taskUniverse=$taskTotal}
+            if($taskActualShard -ne $taskShard -or $taskActualShards -ne $taskShards -or $taskTotal -ne $taskUniverse -or [int]$taskBaseline[0].Groups[1].Value -ne $taskTotal -or $taskStart -ne [math]::Floor($taskTotal*$taskShard/$taskShards) -or $taskEnd -ne [math]::Floor($taskTotal*($taskShard+1)/$taskShards) -or $taskStart -ne $taskPrevious){throw 'Original allocation universe/range changed'}
+            $taskBegin=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_BEGIN sdk-settings-ownership (\d+)\r?$')|ForEach-Object{[int]$_.Groups[1].Value})
+            $taskDone=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE sdk-settings-ownership (\d+)\r?$')|ForEach-Object{[int]$_.Groups[1].Value})
+            if($taskBegin.Count -ne ($taskEnd-$taskStart) -or $taskDone.Count -ne $taskBegin.Count){throw 'Original allocation indices missing'}
+            for($taskIndex=0;$taskIndex -lt $taskDone.Count;$taskIndex++){if($taskBegin[$taskIndex] -ne ($taskStart+$taskIndex) -or $taskDone[$taskIndex] -ne ($taskStart+$taskIndex)){throw 'Original index gap or duplicate'};$taskIndices.Add($taskDone[$taskIndex])}
+            $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE sdk-settings-ownership $taskShard/$taskShards range=[$taskStart,$taskEnd) total=$taskTotal"
+            if([regex]::Matches($taskLog,[regex]::Escape($taskComplete)).Count -ne 1){throw 'Terminal allocation marker absent'}
+            $taskPrevious=$taskEnd
+          }
+          if($taskPrevious -ne $taskUniverse -or $taskIndices.Count -ne $taskUniverse -or @($taskIndices|Sort-Object -Unique).Count -ne $taskUniverse){throw 'Complete original allocation universe not covered'}
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';control_tests=12;settings_tests_each=10;settings_shards=$taskShards;settings_allocation_baseline=$taskUniverse;completed_settings_indices=$taskIndices.Count;missing=0;duplicates=0;source_cases=35;public_activation=$false;full_factory_qualified=$false;test_timeout_seconds=120;host_await_timeout_ms=10000;runtime_outer_seconds_each=300;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
       - name: Verify frozen inputs after terminal execution
         if: ${{ always() && steps.freeze.outcome == 'success' }}
         shell: pwsh

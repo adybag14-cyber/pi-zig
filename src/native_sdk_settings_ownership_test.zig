@@ -153,5 +153,5 @@ test "SDK settings every failed host allocation releases getters queues errors f
             };
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{path[0..count]});
+    try @import("test_support/exhaustive_allocation_shards.zig").check(.worker, "sdk-settings-ownership", Probe.run, .{path[0..count]});
 }
