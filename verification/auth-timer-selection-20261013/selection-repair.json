@@ -1,0 +1,38 @@
+{
+  "prior_head": "8fa83152c1d3791cd7583890caef1acef0537cbe",
+  "failed_run": 38386011711,
+  "debug_job": 115257870592,
+  "source_storage_result": "8/8 passed",
+  "prior_timer_result": "Zero selected tests; correctly rejected by required 22-test workflow",
+  "cause": "Timer module was imported only inside excluded AuthStorage tests",
+  "correction": "Dedicated root imports original timer and Engine modules independently",
+  "original_timer_controls": [
+    "native timers resolve real promises preserve arguments and retire cleared intervals",
+    "native timer callbacks retain original thrown values",
+    "native host promise deadlines bound a timer that never completes its await",
+    "pending timer timeout callback cycles survive repeated explicit GC and engine teardown",
+    "timed-out scheduler releases native callback ownership before cycle GC",
+    "native timer methods brand their receiver without retaining a different handle",
+    "native microtasks drain in order before a settled callback is published",
+    "native timer scheduling and interval ownership release every failed allocation",
+    "native timer handles support Node lifecycle methods identity and module aliases",
+    "native promise timer module resolves values and cancellation preserves causes",
+    "failed promise timer setup does not retain an unpublished scheduled callback",
+    "expired native timers refresh with retained arguments receiver and Node cancellation semantics",
+    "expired native timer refresh publishes no queue entry or id on allocation failure",
+    "expired native timer refresh limit failures preserve the handle and can be retried",
+    "expired native timer callback argument and handle cycles are garbage collected",
+    "native timer inputs preserve Node no-coercion cancellation and promise number validation",
+    "native promise delay rejection releases every failed native allocation",
+    "native timer waits dispatch owner controls and reselect after queue mutation",
+    "native timer owner control promise jobs run before an unrelated future timer"
+  ],
+  "original_identity_controls": [
+    "native allocation original identity survives cleanup OOM with scoped user and stale controls",
+    "native allocation original identity tags survive guest tampering proxies and u64 wrap",
+    "native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error"
+  ],
+  "expected_tests": 22,
+  "runtime_status": "pending hosted",
+  "public_activation": false
+}
