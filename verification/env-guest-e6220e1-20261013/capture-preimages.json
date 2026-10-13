@@ -1,0 +1,44 @@
+[
+  {
+    "original_capture_name": "env-connection-transport-source-e6220e1-20261013-pre.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-connection-values-source-pre-e6220e1-20261013.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-node-local-shape-source-pre-e6220e1-20261013.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-remote-basic-source-pre-e6220e1-20261013.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-remote-functional-source-e6220e1-20261013-pre.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-debug-connection-transport-promise-root-fix-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-connection-source-snapshot.json",
+    "sha256": "C308CFCBD2E227FABAD3B2E012598B3964DDFE67FCC771E8940A13CE911D9763",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-releasesafe-connection-real-transport-qualified-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-connection-source-snapshot.json",
+    "sha256": "C308CFCBD2E227FABAD3B2E012598B3964DDFE67FCC771E8940A13CE911D9763",
+    "byte_identical": true
+  }
+]

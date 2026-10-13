@@ -1,0 +1,100 @@
+{
+  "handshake": {
+    "commands": 1,
+    "commandThis": true,
+    "session": 1,
+    "protocol": 1,
+    "os": "windows",
+    "arch": "x86_64",
+    "features": [
+      "listFiles"
+    ],
+    "plain": true
+  },
+  "write": {
+    "trace": [
+      "onEvent",
+      "signal",
+      [
+        "add",
+        true,
+        "abort",
+        {
+          "once": true
+        }
+      ],
+      "onStart",
+      [
+        "start",
+        true,
+        2,
+        1
+      ],
+      "payload",
+      "signal",
+      "aborted",
+      "signal",
+      [
+        "remove",
+        true,
+        "abort",
+        true
+      ],
+      [
+        "add",
+        true,
+        "abort",
+        {
+          "once": true
+        }
+      ],
+      [
+        "remove",
+        true,
+        "abort",
+        true
+      ],
+      "aborted"
+    ],
+    "json": {},
+    "payload": [],
+    "plain": true,
+    "typed": true
+  },
+  "list": {
+    "json": {
+      "count": 1,
+      "truncated": false
+    },
+    "payload": "fa�.txt\u0000"
+  },
+  "exec": {
+    "json": {
+      "exitCode": 0
+    },
+    "text": "guest-output\r\n",
+    "streams": [
+      "stdout"
+    ],
+    "keys": [
+      "resolve",
+      "reject",
+      "onEvent"
+    ],
+    "same": true,
+    "typed": true,
+    "session": 1
+  },
+  "retained": true,
+  "remote": {
+    "name": "RemoteError",
+    "code": "EINVAL",
+    "lost": false,
+    "message": "unknown operation not-an-operation"
+  },
+  "closeOnStart": {
+    "name": "RemoteError",
+    "message": "Connection closed",
+    "lost": false
+  }
+}

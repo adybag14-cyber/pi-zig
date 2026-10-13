@@ -1,0 +1,240 @@
+{
+  "shape": {
+    "length": 1,
+    "name": "Connection",
+    "methods": {
+      "info": {
+        "enumerable": false,
+        "writable": true,
+        "configurable": true,
+        "length": 0,
+        "async": true
+      },
+      "session": {
+        "enumerable": false,
+        "writable": true,
+        "configurable": true,
+        "length": 0,
+        "async": true
+      },
+      "request": {
+        "enumerable": false,
+        "writable": true,
+        "configurable": true,
+        "length": 2,
+        "async": true
+      },
+      "close": {
+        "enumerable": false,
+        "writable": true,
+        "configurable": true,
+        "length": 0,
+        "async": false
+      },
+      "kill": {
+        "enumerable": false,
+        "writable": true,
+        "configurable": true,
+        "length": 2,
+        "async": false
+      }
+    },
+    "keys": []
+  },
+  "getter": {
+    "reads": 1,
+    "errors": [
+      {
+        "name": "RemoteError",
+        "message": "command getter",
+        "code": "spawn_error",
+        "lost": true,
+        "keys": [
+          "code",
+          "path",
+          "fields",
+          "name"
+        ],
+        "fields": {
+          "code": "spawn_error",
+          "message": "command getter",
+          "lost": true
+        }
+      },
+      {
+        "name": "RemoteError",
+        "message": "command getter",
+        "code": "spawn_error",
+        "lost": true,
+        "keys": [
+          "code",
+          "path",
+          "fields",
+          "name"
+        ],
+        "fields": {
+          "code": "spawn_error",
+          "message": "command getter",
+          "lost": true
+        }
+      }
+    ],
+    "same": true
+  },
+  "retry": {
+    "name": "RemoteError",
+    "message": "command getter",
+    "code": "spawn_error",
+    "lost": true,
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": {
+      "code": "spawn_error",
+      "message": "command getter",
+      "lost": true
+    }
+  },
+  "retryReads": 2,
+  "call": {
+    "name": "RemoteError",
+    "message": "plain reason",
+    "code": "spawn_error",
+    "lost": true,
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": {
+      "code": "spawn_error",
+      "message": "plain reason",
+      "lost": true
+    }
+  },
+  "callContext": {
+    "calls": 1,
+    "thisUndefined": true
+  },
+  "empty": {
+    "name": "RemoteError",
+    "message": "No daemon command",
+    "code": "spawn_error",
+    "lost": false,
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": {
+      "code": "spawn_error",
+      "message": "No daemon command"
+    }
+  },
+  "closed": {
+    "info": {
+      "name": "RemoteError",
+      "message": "Connection closed",
+      "code": "unknown",
+      "lost": false,
+      "keys": [
+        "code",
+        "path",
+        "fields",
+        "name"
+      ],
+      "fields": {
+        "code": "unknown",
+        "message": "Connection closed"
+      }
+    },
+    "session": {
+      "name": "RemoteError",
+      "message": "Connection closed",
+      "code": "unknown",
+      "lost": false,
+      "keys": [
+        "code",
+        "path",
+        "fields",
+        "name"
+      ],
+      "fields": {
+        "code": "unknown",
+        "message": "Connection closed"
+      }
+    },
+    "request": {
+      "name": "RemoteError",
+      "message": "Connection closed",
+      "code": "unknown",
+      "lost": false,
+      "keys": [
+        "code",
+        "path",
+        "fields",
+        "name"
+      ],
+      "fields": {
+        "code": "unknown",
+        "message": "Connection closed"
+      }
+    },
+    "stale": {
+      "name": "RemoteError",
+      "message": "pi-env connection lost",
+      "code": "unknown",
+      "lost": true,
+      "keys": [
+        "code",
+        "path",
+        "fields",
+        "name"
+      ],
+      "fields": {
+        "code": "unknown",
+        "message": "pi-env connection lost",
+        "lost": true
+      }
+    },
+    "closedCalls": 0
+  },
+  "closeDuringCommand": {
+    "name": "RemoteError",
+    "message": "Connection closed",
+    "code": "unknown",
+    "lost": false,
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": {
+      "code": "unknown",
+      "message": "Connection closed"
+    }
+  },
+  "optionsReference": {
+    "name": "RemoteError",
+    "message": "mutated",
+    "code": "spawn_error",
+    "lost": true,
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": {
+      "code": "spawn_error",
+      "message": "mutated",
+      "lost": true
+    }
+  }
+}

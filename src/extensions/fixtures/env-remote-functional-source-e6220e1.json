@@ -1,0 +1,232 @@
+{
+  "binary": {
+    "shape": {
+      "name": "RemoteBinaryReader",
+      "keys": [],
+      "methods": [
+        "constructor",
+        "info",
+        "read",
+        "scanLines",
+        "close"
+      ]
+    },
+    "info": {
+      "name": "data",
+      "path": "nested\\data",
+      "kind": "file",
+      "size": 13
+    },
+    "read": [
+      239,
+      187,
+      191,
+      97,
+      10,
+      98,
+      13,
+      10,
+      240,
+      159,
+      154,
+      128,
+      255
+    ],
+    "scan": {
+      "end": 7,
+      "firstLineBytes": 1,
+      "firstLineEnd": 4,
+      "lastLineStart": 5,
+      "newlines": 2,
+      "selectedBytes": 4,
+      "start": 0
+    }
+  },
+  "retained": [
+    239,
+    187,
+    191,
+    97,
+    10,
+    98,
+    13,
+    10,
+    240,
+    159,
+    154,
+    128,
+    255
+  ],
+  "closed": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "Binary reader is closed"
+    }
+  },
+  "closedAborted": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "aborted",
+      "message": "aborted"
+    }
+  },
+  "text": "﻿a\nb\r\n🚀�",
+  "lines": [
+    "a",
+    "b\r",
+    "🚀�"
+  ],
+  "limitedLines": [
+    "a"
+  ],
+  "zeroLines": [],
+  "textReader": {
+    "name": "RemoteTextLineReader",
+    "keys": [],
+    "lines": [
+      {
+        "text": "a",
+        "terminated": true
+      },
+      {
+        "text": "b\r",
+        "terminated": true
+      },
+      {
+        "text": "🚀�",
+        "terminated": false
+      },
+      null
+    ],
+    "closed": {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "invalid",
+        "message": "Text line reader is closed"
+      }
+    }
+  },
+  "large": {
+    "length": 1048593,
+    "sum": 133695291,
+    "first": [
+      3,
+      20,
+      37,
+      54,
+      71,
+      88,
+      105,
+      122,
+      139,
+      156
+    ],
+    "last": [
+      122,
+      139,
+      156,
+      173,
+      190,
+      207,
+      224,
+      241,
+      2,
+      19
+    ]
+  },
+  "truncated": [
+    3,
+    20,
+    37,
+    54,
+    71,
+    88
+  ],
+  "directory": {
+    "name": "RemoteDirReader",
+    "keys": [],
+    "entries": [
+      {
+        "name": "large",
+        "path": "large",
+        "kind": "file",
+        "size": 6
+      },
+      {
+        "name": "moved",
+        "path": "moved",
+        "kind": "file",
+        "size": 13
+      },
+      {
+        "name": "nested",
+        "path": "nested",
+        "kind": "directory",
+        "size": 0
+      }
+    ],
+    "closed": {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "invalid",
+        "message": "Directory reader is closed"
+      }
+    }
+  },
+  "list": [
+    {
+      "name": "large",
+      "path": "large",
+      "kind": "file",
+      "size": 6
+    },
+    {
+      "name": "moved",
+      "path": "moved",
+      "kind": "file",
+      "size": 13
+    },
+    {
+      "name": "nested",
+      "path": "nested",
+      "kind": "directory",
+      "size": 0
+    }
+  ],
+  "exists": [
+    true,
+    false
+  ],
+  "exec": {
+    "ok": true,
+    "value": {
+      "exitCode": 0
+    }
+  },
+  "output": [
+    {
+      "text": "native-env-functional\r\n",
+      "sameContext": true,
+      "stream": "stdout"
+    }
+  ],
+  "callback": {
+    "ok": false,
+    "error": {
+      "name": "ExecutionError",
+      "code": "callback_error",
+      "message": "[object Object]"
+    },
+    "cause": true
+  },
+  "temp": {
+    "kind": "file",
+    "empty": true,
+    "name": true
+  }
+}

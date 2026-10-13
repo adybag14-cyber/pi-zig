@@ -1,0 +1,13 @@
+const packet={cases:[]};
+const shape=result=>result.ok?result:{ok:false,error:{name:result.error.name,code:result.error.code,path:result.error.path,message:result.error.message,cause:result.error.cause?.name}};
+const trace=[];const options={};for(const key of ['hidden','gitignore','exclude','maxEntries','maxBytes','timeoutMs'])Object.defineProperty(options,key,{get(){trace.push(key);return key==='maxEntries'?7:undefined}});
+const connection={info(){trace.push('info');return Promise.resolve({features:['listFiles']})},get request(){trace.push('request-get');return function(op,json,options){trace.push(['request',op,json,Object.keys(options)]);return Promise.resolve({json:{truncated:1},payload:Buffer.from([102,97,0,120,122,0,108,255,0,102,98])})}}};
+packet.cases.push({name:'records-and-getters',value:shape(await listFilesOver(connection,'/root',options,{})),trace});
+let requests=0;const old={info:async()=>({}),request:async()=>{requests++;throw Error('must not request')}};packet.cases.push({name:'old',value:shape(await listFilesOver(old,'/old',undefined,{})),requests});
+const aborted=new AbortController();aborted.abort();packet.cases.push({name:'invalid-before-abort',value:shape(await listFilesOver(old,'/old',{maxEntries:-1},{abortSignal:aborted.signal}))});packet.cases.push({name:'pre-abort',value:shape(await listFilesOver(old,'/old',undefined,{abortSignal:aborted.signal}))});
+const post=new AbortController();const late={info:async()=>({features:['listFiles']}),request:async()=>{post.abort();return{json:{truncated:true},payload:Buffer.from('fa\0')}}};packet.cases.push({name:'post-abort',value:shape(await listFilesOver(late,'/late',{}, {abortSignal:post.signal}))});
+const remote=new RemoteError({code:'ENOENT',message:'missing',path:'/reported'});packet.cases.push({name:'remote-error',value:shape(await listFilesOver({info:async()=>{throw remote}},'/fallback',{},{}))});
+const existing=new FileError('invalid','same','/existing');const retained=await listFilesOver({info:async()=>{throw existing}},'/fallback',{},{});packet.cases.push({name:'file-error-identity',same:retained.error===existing,value:shape(retained)});
+packet.cases.push({name:'unknown-error',value:shape(await listFilesOver({info:async()=>{throw 7}},'/fallback',{},{}))});
+const fields={code:'unknown',message:'lost',lost:true};const error=new RemoteError(fields);packet.remote={keys:Object.keys(error),fields:error.fields===fields,lost:isConnectionLost(error),ordinary:isConnectionLost({fields}),truthy:isConnectionLost(new RemoteError({...fields,lost:1}))};
+packet.function={length:listFilesOver.length,name:listFilesOver.name,prototype:Object.getPrototypeOf(listFilesOver)===Object.getPrototypeOf(async()=>{}),constructable:Object.hasOwn(listFilesOver,'prototype')};

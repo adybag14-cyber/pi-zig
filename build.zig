@@ -670,6 +670,15 @@ pub fn build(b: *std.Build) void {
     run_list_files_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
     run_list_files_tests.setEnvironmentVariable("PI_TEST_SSH_FIXTURE", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env-process-fixture.exe" else "pi-env-process-fixture"));
     b.step("test-env-list-files", "Replay latest Pi listFiles daemon bytes, local/remote capabilities, cancellation and old-daemon fallback").dependOn(&run_list_files_tests.step);
+    const env_guest_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_env_guest_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Env guest"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, env_guest_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(env_guest_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const env_guest_run = b.addRunArtifact(env_guest_tests);
+    if (diagnostic_tests) env_guest_run.stdio = .inherit;
+    env_guest_run.step.dependOn(&install_env_daemon.step);
+    env_guest_run.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
+    b.step("test-native-env-guest", "Compare actual native Env module values and classes against unmodified latest Source").dependOn(&env_guest_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-env-guest", &.{ "test-native-env-guest", "test-env-list-files", "test-env" });
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);

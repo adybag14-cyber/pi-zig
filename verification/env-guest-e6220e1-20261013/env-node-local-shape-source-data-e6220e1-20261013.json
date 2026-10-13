@@ -1,0 +1,363 @@
+{
+  "local": {
+    "name": "LocalExecutionEnv",
+    "length": 1,
+    "own": {
+      "id": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "string"
+      },
+      "cwd": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "string"
+      },
+      "shellPath": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "undefined"
+      },
+      "shellEnv": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "undefined"
+      },
+      "watchOptions": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "object"
+      },
+      "activeChildPids": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "Set"
+      }
+    },
+    "methods": {
+      "listFiles": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      }
+    },
+    "nodeInstance": true,
+    "prototype": true,
+    "static": true
+  },
+  "node": {
+    "name": "NodeExecutionEnv",
+    "length": 1,
+    "own": {
+      "id": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "string"
+      },
+      "cwd": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "string"
+      },
+      "shellPath": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "undefined"
+      },
+      "shellEnv": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "undefined"
+      },
+      "watchOptions": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "object"
+      },
+      "activeChildPids": {
+        "enumerable": true,
+        "writable": true,
+        "configurable": true,
+        "valueKind": "Set"
+      }
+    },
+    "methods": {
+      "watch": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "absolutePath": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "joinPath": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "exec": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openTextLineReader": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readTextFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readTextLines": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readBinaryFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openBinaryReader": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "writeFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "appendFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "truncateFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "flushFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "renameFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "fileInfo": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "listDir": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openDirReader": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "canonicalPath": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "exists": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createDir": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "remove": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createTempDir": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createTempFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "cleanup": {
+        "length": 1,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      }
+    }
+  },
+  "constructorTrace": [
+    "connection",
+    "cwd",
+    "shellPath",
+    "shellEnv",
+    "watch"
+  ],
+  "paths": [
+    {
+      "input": "relative/../a",
+      "value": "C:\\work\\a"
+    },
+    {
+      "input": "~",
+      "value": "<home>"
+    },
+    {
+      "input": "~/a",
+      "value": "<home>\\a"
+    },
+    {
+      "input": "~\\a",
+      "value": "<home>\\a"
+    },
+    {
+      "input": "file:///C:/a%20b",
+      "value": "C:\\a b"
+    },
+    {
+      "input": "file://bad/path",
+      "value": "\\\\bad\\path\\"
+    },
+    {
+      "input": "C:\\a\\..\\b",
+      "value": "C:\\b"
+    }
+  ],
+  "join": {
+    "ok": true,
+    "value": "C:\\b"
+  },
+  "list": {
+    "ok": true,
+    "value": {
+      "entries": [
+        {
+          "path": "a",
+          "kind": "file"
+        }
+      ],
+      "truncated": false
+    }
+  },
+  "override": {
+    "ok": true,
+    "value": {
+      "entries": [
+        {
+          "path": "a",
+          "kind": "file"
+        }
+      ],
+      "truncated": false
+    }
+  },
+  "trace": [
+    "connection",
+    "cwd",
+    "shellPath",
+    "shellEnv",
+    "watch",
+    "info",
+    {
+      "op": "listFiles",
+      "json": {
+        "path": "C:\\work\\relative"
+      },
+      "options": {}
+    },
+    [
+      "absoluteOverride",
+      true,
+      "input",
+      true
+    ],
+    "info",
+    {
+      "op": "listFiles",
+      "json": {
+        "path": "C:\\virtual",
+        "hidden": false
+      },
+      "options": {}
+    }
+  ]
+}

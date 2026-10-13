@@ -1,0 +1,156 @@
+{
+  "file": {
+    "name": "FileError",
+    "message": "reason",
+    "keys": [
+      "code",
+      "path",
+      "name"
+    ],
+    "error": true,
+    "causeSame": true,
+    "properties": {
+      "message": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true
+      },
+      "cause": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true
+      },
+      "code": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      },
+      "path": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      },
+      "name": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      }
+    }
+  },
+  "execution": {
+    "name": "ExecutionError",
+    "message": "reason",
+    "keys": [
+      "code",
+      "spillPath",
+      "name"
+    ],
+    "error": true,
+    "causeSame": true,
+    "properties": {
+      "message": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true
+      },
+      "cause": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true
+      },
+      "code": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      },
+      "spillPath": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      },
+      "name": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true
+      }
+    }
+  },
+  "staticInheritance": [
+    true,
+    true
+  ],
+  "subclass": {
+    "trace": [
+      "FileError"
+    ],
+    "keys": [
+      "code",
+      "path"
+    ],
+    "nameUndefined": true,
+    "file": true,
+    "sub": true,
+    "error": true
+  },
+  "results": {
+    "ok": {
+      "ok": true,
+      "value": 7
+    },
+    "err": {
+      "ok": false,
+      "error": "error"
+    },
+    "throwIdentity": true,
+    "missing": true
+  },
+  "convert": [
+    {
+      "message": "text",
+      "ownMessage": true,
+      "error": true
+    },
+    {
+      "message": "7",
+      "ownMessage": true,
+      "error": true
+    },
+    {
+      "message": "",
+      "ownMessage": false,
+      "error": true
+    },
+    {
+      "message": "",
+      "ownMessage": false,
+      "error": true
+    },
+    {
+      "message": "{\"a\":1}",
+      "ownMessage": true,
+      "error": true
+    },
+    {
+      "message": "fallback",
+      "ownMessage": true,
+      "error": true
+    }
+  ],
+  "sameError": true,
+  "platformGetters": {
+    "gets": [
+      "os",
+      "os",
+      "arch",
+      "arch"
+    ],
+    "value": {
+      "platform": "linux",
+      "arch": "unknown"
+    }
+  },
+  "platformPrototypeKeys": {
+    "platform": true,
+    "arch": true
+  }
+}

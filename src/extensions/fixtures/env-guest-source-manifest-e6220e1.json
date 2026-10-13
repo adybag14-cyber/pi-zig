@@ -1,0 +1,107 @@
+{
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "version": "1.2.0",
+  "source_snapshot_tracked_files": 1902,
+  "node_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "official_rust_daemon_sha256": "0625ECD20A9D3AA5B3ECB3B7C2064296C43E0C8AF0D92040177867D4C541693D",
+  "source": [
+    {
+      "path": "packages/env/src/connection.ts",
+      "sha256": "99F27FFFFFE75E75F85F54CC9E2AD8721B4419405CE9A47B0BAE9421CD0192FA"
+    },
+    {
+      "path": "packages/env/src/list-files.ts",
+      "sha256": "8A06676D039A039BC5F91A15552AB69CD17524FBC1AD4C6949312EF73627C077"
+    },
+    {
+      "path": "packages/env/src/remote-env.ts",
+      "sha256": "21B96CD2C7ECB8907173711040403BB36C3AEE703E7660945C0411BB1F403F2C"
+    },
+    {
+      "path": "packages/env/src/watch.ts",
+      "sha256": "182B7B2987149D8BA2540804CDBA14DA3A0D3E7DC1FFD1D5A02983C0375A3EBF"
+    },
+    {
+      "path": "packages/env/src/errors.ts",
+      "sha256": "DAE50A29058370409148119D94990B990157DB7E03466071856E993276958F82"
+    },
+    {
+      "path": "packages/env/src/index.ts",
+      "sha256": "780C479F19421DF5108378350F5504E6F317F1D3D9A15FAE3B69B746AD910A75"
+    },
+    {
+      "path": "packages/durable/src/env/index.ts",
+      "sha256": "085266C93B7388CD70439B634CD376C876A6033B8FBC9EC337960A3A25003BE5"
+    },
+    {
+      "path": "packages/durable/src/env/node.ts",
+      "sha256": "8DA3592F9D0D99CE0E97FAAAB2AE123DD8070270ECE12036D5A6A10C69EA422B"
+    },
+    {
+      "path": "packages/durable/src/env/node-watch.ts",
+      "sha256": "F3A9B9D186489166FFB7AB6AB0032F46CA3E8D05943C1DB386BE1FD17106CEFA"
+    },
+    {
+      "path": "packages/durable/src/env/decode.ts",
+      "sha256": "3DB30EAE71F612B015B95E83B28D64B5330498A517119B5A01E210666CB5B032"
+    },
+    {
+      "path": "packages/durable/src/env/line-scan.ts",
+      "sha256": "EB60F69745262FFD55B1054FC3D63247A5AED95FF502332D093945345B244603"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "src/extensions/fixtures/env-values-source-e6220e1.json",
+      "sha256": "F24EA779E5DDEE9E42011FB0C34BD02CD2150264032BF9DF70115D5D5A9A6309"
+    },
+    {
+      "path": "src/extensions/fixtures/env-values-source-e6220e1.input.txt",
+      "sha256": "27E53F1F77B35914B4D60CF7DF45A9831175B0B9382498A19E6EC5B1C502A911"
+    },
+    {
+      "path": "src/extensions/fixtures/env-list-over-source-e6220e1.json",
+      "sha256": "F49DEB945DF4B8467B9A126C8665A25144168AE97AEB5B4EEF0D2051CBFBC32A"
+    },
+    {
+      "path": "src/extensions/fixtures/env-list-over-source-e6220e1.input.txt",
+      "sha256": "D186B676A4E74CD830A81051E596D46D7AA555D34CC29B6282A3676AE66B2A57"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-values-source-e6220e1.json",
+      "sha256": "30830BE3067D3C3997AD19A06A1253A01A2C19C25A752F1B4826AFC481A40F36"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-values-source-e6220e1.input.txt",
+      "sha256": "8C480C7811CE4FAF74AA9CAC0F4600E2F7A994B3702A637ECB4993959FE37ABB"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-transport-source-e6220e1.json",
+      "sha256": "4DA9657AF28EF453B46540D69E52D6D2B70982D41973E0D612F5DE5E5AC2F7FB"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-transport-source-e6220e1.input.txt",
+      "sha256": "B36FA34CA74F6742262EAAD7EDFEA32B0F345DE4502D1174F6FBE059855EDFFE"
+    },
+    {
+      "path": "src/extensions/fixtures/env-remote-basic-source-e6220e1.json",
+      "sha256": "A57815F841BB3462641DFC3F05CBF3670AFB3F194034969B38018E9B5193A59E"
+    },
+    {
+      "path": "src/extensions/fixtures/env-remote-basic-source-e6220e1.input.txt",
+      "sha256": "FD42E7E97EBF9CF6CCA60E20962C5F4EE942452BF8D50CBA74BCDD988B011BD1"
+    },
+    {
+      "path": "src/extensions/fixtures/env-remote-functional-source-e6220e1.json",
+      "sha256": "FEB8E542D4688B83A163CE7BFA3918C199F3BBBB4B75C845E80209988B559DFC"
+    },
+    {
+      "path": "src/extensions/fixtures/env-remote-functional-source-e6220e1.input.txt",
+      "sha256": "2BABBEB5C78BB10059290879DF6B718272EC99EE7B9664D7037DC931DA61FFA7"
+    }
+  ],
+  "reference_policy": "Unmodified official TS exports through Node24 --conditions=source. Filesystem/transport observer uses official unmodified Rust daemon. JS files are caller input only; product implementation is Zig/C.",
+  "public_guest_activation": false,
+  "full_env_package_qualified": false,
+  "scope": "Private Connection and RemoteExecutionEnv candidate; Node/Local Env and full public package qualification remain in progress."
+}

@@ -148,6 +148,12 @@ pub const Connection = struct {
         try self.input.writeStreamingAll(self.io, encoded);
     }
     pub fn begin(self: *Connection, value: anytype, payload: []const u8, expected_session: ?u64) !Ticket {
+        const ticket = try self.reserve(expected_session);
+        try self.transmit(ticket, value, payload);
+        return ticket;
+    }
+    /// The guest owner may register callbacks after admission and before the frame is written.
+    pub fn reserve(self: *Connection, expected_session: ?u64) !Ticket {
         try self.ready(60_000);
         self.mutex.lockUncancelable(self.io);
         if (!self.live) {
@@ -170,12 +176,15 @@ pub const Connection = struct {
         self.next_id += 1;
         self.mutex.unlock(self.io);
         const ticket: Ticket = .{ .connection = self, .session = self.session, .id = id };
-        self.send(.request, id, value, payload) catch |err| {
+        return ticket;
+    }
+    pub fn transmit(self: *Connection, ticket: Ticket, value: anytype, payload: []const u8) !void {
+        if (ticket.connection != self or ticket.session != self.session) return error.StaleDaemonSession;
+        self.send(.request, ticket.id, value, payload) catch |err| {
             self.release(ticket);
             self.fail(err);
             return err;
         };
-        return ticket;
     }
     pub fn ready(self: *Connection, timeout_ms: u64) !void {
         const deadline = Io.Clock.awake.now(self.io).addDuration(.fromMilliseconds(@intCast(@min(timeout_ms, std.math.maxInt(i64)))));

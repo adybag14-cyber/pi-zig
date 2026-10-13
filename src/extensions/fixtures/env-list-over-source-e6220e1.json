@@ -1,0 +1,151 @@
+{
+  "cases": [
+    {
+      "name": "records-and-getters",
+      "value": {
+        "ok": true,
+        "value": {
+          "entries": [
+            {
+              "path": "a",
+              "kind": "file"
+            },
+            {
+              "path": "�",
+              "kind": "symlink"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "trace": [
+        "maxEntries",
+        "maxBytes",
+        "timeoutMs",
+        "info",
+        "request-get",
+        "hidden",
+        "gitignore",
+        "exclude",
+        "maxEntries",
+        "maxBytes",
+        "timeoutMs",
+        [
+          "request",
+          "listFiles",
+          {
+            "path": "/root",
+            "maxEntries": 7
+          },
+          []
+        ]
+      ]
+    },
+    {
+      "name": "old",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "not_supported",
+          "path": "/old",
+          "message": "The pi-env daemon does not list files; update it"
+        }
+      },
+      "requests": 0
+    },
+    {
+      "name": "invalid-before-abort",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "invalid",
+          "path": "/old",
+          "message": "maxEntries must be a non-negative safe integer"
+        }
+      }
+    },
+    {
+      "name": "pre-abort",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "path": "/old",
+          "message": "aborted"
+        }
+      }
+    },
+    {
+      "name": "post-abort",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "path": "/late",
+          "message": "aborted"
+        }
+      }
+    },
+    {
+      "name": "remote-error",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "not_found",
+          "path": "/reported",
+          "message": "missing",
+          "cause": "RemoteError"
+        }
+      }
+    },
+    {
+      "name": "file-error-identity",
+      "same": true,
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "invalid",
+          "path": "/existing",
+          "message": "same"
+        }
+      }
+    },
+    {
+      "name": "unknown-error",
+      "value": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "unknown",
+          "path": "/fallback",
+          "message": "7",
+          "cause": "Error"
+        }
+      }
+    }
+  ],
+  "remote": {
+    "keys": [
+      "code",
+      "path",
+      "fields",
+      "name"
+    ],
+    "fields": true,
+    "lost": true,
+    "ordinary": false,
+    "truthy": false
+  },
+  "function": {
+    "length": 4,
+    "name": "listFilesOver",
+    "prototype": true,
+    "constructable": false
+  }
+}

@@ -68,3 +68,6 @@ src/durable/fixtures/durable-19cb534-provider-factory-native.input.txt -text whi
 # Genuine Env observers retain their captured JSON and terminal EOF bytes.
 src/env/fixtures/list-files-*.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 verification/env-list-files-e6220e1-20261013/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/env-guest-e6220e1-20261013/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/env-*-source-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/env-guest-source-manifest-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

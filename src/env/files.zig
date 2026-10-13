@@ -529,6 +529,17 @@ pub const Server = struct {
             };
         }
         if (std.mem.eql(u8, op, "readdir")) return self.readDirectory(json, context);
+        const path_operation = known: {
+            inline for (.{ "lstat", "open", "opendir", "write", "truncate", "fsync", "rename", "mkdir", "rm", "realpath", "mkdtemp" }) |name| if (std.mem.eql(u8, op, name)) break :known true;
+            break :known false;
+        };
+        if (!path_operation) {
+            const message = try std.fmt.allocPrint(gpa, "unknown operation {s}", .{op});
+            defer gpa.free(message);
+            var reply = try Reply.success(gpa, .{ .code = "EINVAL", .message = message });
+            reply.kind = .remote_error;
+            return reply;
+        }
         const path = try text(json, "path");
         if (!std.fs.path.isAbsolute(path)) return error.InvalidField;
         if (std.mem.eql(u8, op, "lstat")) {

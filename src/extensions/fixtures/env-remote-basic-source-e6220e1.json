@@ -1,0 +1,582 @@
+{
+  "shape": {
+    "name": "RemoteExecutionEnv",
+    "length": 1,
+    "keys": [
+      "id",
+      "cwd",
+      "connection"
+    ],
+    "values": {
+      "id": "remote:test",
+      "cwd": "C:\\work",
+      "sameConnection": true
+    },
+    "methods": {
+      "absolutePath": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "joinPath": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readTextFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readBinaryFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openBinaryReader": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openTextLineReader": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "readTextLines": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "writeFile": {
+        "length": 3,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "appendFile": {
+        "length": 3,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "truncateFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "flushFile": {
+        "length": 2,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "renameFile": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "fileInfo": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "listDir": {
+        "length": 2,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "listFiles": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "openDirReader": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "canonicalPath": {
+        "length": 2,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "exists": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createDir": {
+        "length": 3,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "remove": {
+        "length": 3,
+        "async": false,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createTempDir": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "createTempFile": {
+        "length": 2,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "watch": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "exec": {
+        "length": 3,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      },
+      "cleanup": {
+        "length": 1,
+        "async": true,
+        "enumerable": false,
+        "writable": true,
+        "configurable": true
+      }
+    }
+  },
+  "paths": [
+    {
+      "input": "relative/../a",
+      "result": {
+        "ok": true,
+        "value": "C:\\work\\a"
+      }
+    },
+    {
+      "input": "~",
+      "result": {
+        "ok": true,
+        "value": "C:\\home"
+      }
+    },
+    {
+      "input": "~/a",
+      "result": {
+        "ok": true,
+        "value": "C:\\home\\a"
+      }
+    },
+    {
+      "input": "~\\a",
+      "result": {
+        "ok": true,
+        "value": "C:\\home\\a"
+      }
+    },
+    {
+      "input": "D:relative",
+      "result": {
+        "ok": true,
+        "value": "D:\\drive-work\\relative"
+      }
+    },
+    {
+      "input": "file:///C:/a%20b",
+      "result": {
+        "ok": true,
+        "value": "C:\\a b"
+      }
+    },
+    {
+      "input": "file://bad/path",
+      "result": {
+        "ok": true,
+        "value": "\\\\bad\\path\\"
+      }
+    },
+    {
+      "input": "C:\\a\\..\\b",
+      "result": {
+        "ok": true,
+        "value": "C:\\b"
+      }
+    }
+  ],
+  "join": {
+    "ok": true,
+    "value": "C:\\b"
+  },
+  "operations": [
+    {
+      "name": "fileInfo",
+      "result": {
+        "ok": true,
+        "value": {
+          "name": "a",
+          "path": "C:\\work\\a",
+          "kind": "file",
+          "size": 7,
+          "mtimeMs": 10123
+        }
+      }
+    },
+    {
+      "name": "canonicalPath",
+      "result": {
+        "ok": true,
+        "value": "C:\\canonical"
+      }
+    },
+    {
+      "name": "exists",
+      "result": {
+        "ok": true,
+        "value": true
+      }
+    },
+    {
+      "name": "createDir",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "remove",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "truncateFile",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "truncateFile",
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "invalid",
+          "path": "C:\\work\\a",
+          "message": "File size must be a non-negative safe integer"
+        }
+      }
+    },
+    {
+      "name": "flushFile",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "renameFile",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "listFiles",
+      "result": {
+        "ok": true,
+        "value": {
+          "entries": [
+            {
+              "path": "a",
+              "kind": "file"
+            }
+          ],
+          "truncated": false
+        }
+      }
+    }
+  ],
+  "aborted": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "aborted",
+      "path": "C:\\work\\a",
+      "message": "aborted"
+    }
+  },
+  "mutableCwd": {
+    "ok": true,
+    "value": "D:\\changed\\next"
+  },
+  "unsupported": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "path": "D:\\changed\\a",
+      "message": "Unsupported file type"
+    }
+  },
+  "remoteError": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "not_found",
+      "path": "D:\\daemon",
+      "message": "missing",
+      "causeName": "RemoteError"
+    }
+  },
+  "trace": [
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "lstat",
+      {
+        "path": "C:\\work\\a"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "realpath",
+      {
+        "path": "C:\\work\\a"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "lstat",
+      {
+        "path": "C:\\work\\a"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "mkdir",
+      {
+        "path": "C:\\work\\nested",
+        "recursive": true
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "rm",
+      {
+        "path": "C:\\work\\a",
+        "recursive": false,
+        "force": false
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "truncate",
+      {
+        "path": "C:\\work\\a",
+        "size": 3
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "fsync",
+      {
+        "path": "C:\\work\\a"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "rename",
+      {
+        "path": "C:\\work\\a",
+        "to": "C:\\work\\b"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "listFiles",
+      {
+        "path": "C:\\work\\a"
+      },
+      {}
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "request",
+      true,
+      "lstat",
+      {
+        "path": "D:\\changed\\a"
+      },
+      null
+    ],
+    [
+      "info",
+      true
+    ],
+    [
+      "info",
+      true
+    ]
+  ]
+}
