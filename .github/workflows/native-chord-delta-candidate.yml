@@ -1,6 +1,11 @@
 name: Private native Chord delta candidate
 
 on:
+  workflow_call:
+    inputs:
+      expected_sha:
+        required: true
+        type: string
   push:
     branches: [work/chord-delta-e6220e1-20261013]
   workflow_dispatch:

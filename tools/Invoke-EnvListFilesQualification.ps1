@@ -12,7 +12,7 @@ if(!$taskReceipt.StartsWith($taskRoot+[IO.Path]::DirectorySeparatorChar,[StringC
 New-Item -ItemType Directory -Path $taskReceipt -Force|Out-Null
 $taskHead=(git rev-parse HEAD).Trim()
 if($taskHead -cne $ExpectedHead){throw 'Checkout head drift'}
-$taskZig=(Get-Command zig -CommandType Application).Source
+$taskZig=(Get-Command zig -CommandType Application|Select-Object -First 1).Source
 if((& $taskZig version).Trim() -cne '0.16.0'){throw 'Zig version drift'}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned official Windows Zig executable drift'}
 $taskSourceManifest='src/env/fixtures/list-files-source-manifest-e6220e1.json'

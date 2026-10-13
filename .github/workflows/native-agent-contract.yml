@@ -13,6 +13,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  cache-warming:
+    uses: ./.github/workflows/native-cache-warmer-candidate.yml
+  chord-delta:
+    uses: ./.github/workflows/native-chord-delta-candidate.yml
+    with:
+      expected_sha: ${{ github.sha }}
+  env-list-files:
+    uses: ./.github/workflows/native-env-list-files.yml
   platform:
     strategy:
       fail-fast: false
@@ -74,7 +82,7 @@ jobs:
           New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
           if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
           if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
-          $taskZig = (Get-Command zig).Source
+          $taskZig = (Get-Command zig -CommandType Application | Select-Object -First 1).Source
           $taskZigEnv = (& zig env) -join "`n"
           $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
           if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig 0.16 library directory' }
@@ -382,7 +390,7 @@ jobs:
           path: verification/native-agent-contract/**
 
   coverage:
-    needs: platform
+    needs: [platform, cache-warming, chord-delta, env-list-files]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -396,6 +404,9 @@ jobs:
         env:
           EXPECTED_HEAD: ${{ github.sha }}
           PLATFORM_RESULT: ${{ needs.platform.result }}
+          CACHE_WARMING_RESULT: ${{ needs.cache-warming.result }}
+          CHORD_DELTA_RESULT: ${{ needs.chord-delta.result }}
+          ENV_LIST_FILES_RESULT: ${{ needs.env-list-files.result }}
         run: |
           $ErrorActionPreference = 'Stop'
           $taskGraphs = @('agent-complete-metadata','agent-complete-runtime','agent-loop-changes','agent-loop-tools','agent-loop-owned-stream')
@@ -468,7 +479,9 @@ jobs:
               }
             }
           }
-          if ($env:PLATFORM_RESULT -cne 'success') { throw 'A required platform job failed' }
+          foreach ($taskRequired in @('PLATFORM_RESULT','CACHE_WARMING_RESULT','CHORD_DELTA_RESULT','ENV_LIST_FILES_RESULT')) {
+            if ([Environment]::GetEnvironmentVariable($taskRequired) -cne 'success') { throw "A required integration gate failed or skipped: $taskRequired" }
+          }
           $taskSummary | ConvertTo-Json -Depth 5 | Set-Content contract-results/complete-coverage.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()

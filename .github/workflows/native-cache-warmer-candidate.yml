@@ -1,6 +1,7 @@
 name: Native cache warmer latest Source qualification
 
 on:
+  workflow_call:
   push:
     branches: [work/native-session-factory-composition-20261013]
   workflow_dispatch:

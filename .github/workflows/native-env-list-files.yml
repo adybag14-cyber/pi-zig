@@ -1,6 +1,7 @@
 name: Native Env listFiles exact Source qualification
 
 on:
+  workflow_call:
   push:
     branches: [work/env-listfiles-e6220e1-20261013]
   workflow_dispatch:
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   windows:
-    if: github.ref_name == 'work/env-listfiles-e6220e1-20261013'
+    if: github.ref_name == 'work/env-listfiles-e6220e1-20261013' || github.ref_name == 'checkpoint/native-composition241-20261010'
     strategy:
       fail-fast: false
       matrix:
