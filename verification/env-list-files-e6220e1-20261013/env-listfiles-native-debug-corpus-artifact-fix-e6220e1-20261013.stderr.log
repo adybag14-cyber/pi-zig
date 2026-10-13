@@ -1,0 +1,21 @@
+1/11 env_test.test_0...OK
+2/11 env.root.test_0...OK
+3/11 env.list_files_test.test.listFiles daemon bytes match actual e6220e1 source across hierarchical ignores globals hidden bounds and errors...OK
+4/11 env.list_files_test.test.listFiles remote local capability retained directory paging and old daemon fallback use real native transport...OK
+5/11 env.list_files_test.test.listFiles nodePlatform maps the exact Source names and preserves unknown names...OK
+6/11 env.list_files_test.test.listFiles ignore parser and globs match seventy genuine Source daemon walks...OK
+7/11 env.list_files_test.test.listFiles owned walk and payload remain leak free at every allocation failure...OK
+8/11 env.list_files_test.test.listFiles ignore stacks global config and nested branches remain leak free at every allocation failure...OK
+9/11 env.list_files_test.test.listFiles links stay unfollowed while an explicit linked root can be listed...SKIP
+10/11 env.list_files_test.test.listFiles real daemon cancels an admitted walk and keeps subsequent bounded requests healthy...OK
+11/11 durable.list_ignore.test.listFiles ignore globs retain hierarchy, escapes, recursive separators, and classes...OK
+10 passed; 1 skipped; 0 failed.
+Build Summary: 7/7 steps succeeded
+test-env-list-files success
++- run test success 5s
+   +- compile test Debug native success 3s MaxRSS:398M
+   +- install pi-env cached
+   |  +- compile exe pi-env Debug native cached 52ms MaxRSS:19M
+   +- install pi-env-process-fixture cached
+      +- compile exe pi-env-process-fixture Debug native cached 3s MaxRSS:18M
+

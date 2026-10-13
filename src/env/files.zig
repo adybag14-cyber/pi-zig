@@ -437,6 +437,28 @@ pub const Server = struct {
         const io = self.filesystem.io;
         const op = try text(json, "op");
         if (context.aborted()) return Reply.failure(gpa, "aborted", error.Canceled, null);
+        if (std.mem.eql(u8, op, "listFiles")) {
+            const root = json.object.get("path") orelse return error.InvalidField;
+            if (root != .string) return error.InvalidField;
+            const path = root.string;
+            var options = try fs.ListFilesOptions.fromJson(json);
+            var excluded: std.ArrayList([]const u8) = .empty;
+            defer excluded.deinit(gpa);
+            if (json.object.get("exclude")) |field| if (field != .null) {
+                if (field != .array) return error.InvalidField;
+                for (field.array.items) |name| {
+                    if (name != .string) return error.InvalidField;
+                    try excluded.append(gpa, name.string);
+                }
+            };
+            options.exclude = excluded.items;
+            var result = try fs.listing.list(gpa, io, path, self.filesystem.home, options, context);
+            defer result.deinit(gpa);
+            var reply = try Reply.success(gpa, .{ .count = result.entries.len, .truncated = result.truncated });
+            errdefer reply.deinit();
+            reply.payload = try result.payload(gpa);
+            return reply;
+        }
         if (std.mem.eql(u8, op, "close")) {
             const id = try number(json, "handle");
             self.registry_mutex.lockUncancelable(io);

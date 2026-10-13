@@ -667,6 +667,15 @@ pub fn build(b: *std.Build) void {
     const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
     env_test_step.dependOn(&run_env_tests.step);
     test_step.dependOn(&run_env_tests.step);
+    const list_files_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_list_files_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"listFiles"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkDurable(b, list_files_tests.root_module);
+    const run_list_files_tests = b.addRunArtifact(list_files_tests);
+    if (diagnostic_tests) run_list_files_tests.stdio = .inherit;
+    run_list_files_tests.step.dependOn(&install_env_daemon.step);
+    run_list_files_tests.step.dependOn(&install_env_fixture.step);
+    run_list_files_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
+    run_list_files_tests.setEnvironmentVariable("PI_TEST_SSH_FIXTURE", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env-process-fixture.exe" else "pi-env-process-fixture"));
+    b.step("test-env-list-files", "Replay latest Pi listFiles daemon bytes, local/remote capabilities, cancellation and old-daemon fallback").dependOn(&run_list_files_tests.step);
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);

@@ -10,6 +10,10 @@ pub fn absoluteCwd(gpa: std.mem.Allocator, io: std.Io, input: []const u8) ![]u8 
 }
 pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, input: []const u8, home: ?[]const u8) ![]u8 {
     if (std.mem.indexOfScalar(u8, input, 0) != null) return error.InvalidPath;
+    return resolveListing(gpa, cwd, input, home);
+}
+/// listFiles leaves filesystem path validation to its daemon-compatible metadata operation.
+pub fn resolveListing(gpa: std.mem.Allocator, cwd: []const u8, input: []const u8, home: ?[]const u8) ![]u8 {
     var normalized: ?[]u8 = null;
     defer if (normalized) |path| gpa.free(path);
     if (home) |directory| {

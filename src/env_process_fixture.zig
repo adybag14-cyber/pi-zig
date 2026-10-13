@@ -3,6 +3,35 @@ const std = @import("std");
 pub fn main(init: std.process.Init) !void {
     const args = try init.minimal.args.toSlice(init.arena.allocator());
     const mode = if (args.len > 1) args[1] else "upload";
+    if (std.mem.eql(u8, mode, "old-daemon")) {
+        const frame = @import("env/frame.zig");
+        const gpa = init.arena.allocator();
+        var token: []const u8 = "";
+        for (args, 0..) |arg, index| if (std.mem.eql(u8, arg, "--token") and index + 1 < args.len) {
+            token = args[index + 1];
+        };
+        const greeting = try std.fmt.allocPrint(gpa, "PI-ENV {s}\n", .{token});
+        try std.Io.File.stdout().writeStreamingAll(init.io, greeting);
+        var input_buffer: [4096]u8 = undefined;
+        var input = std.Io.File.stdin().readerStreaming(init.io, &input_buffer);
+        while (true) {
+            var header: [4]u8 = undefined;
+            input.interface.readSliceAll(&header) catch |err| {
+                if (err == error.EndOfStream) return;
+                return err;
+            };
+            const length = std.mem.readInt(u32, &header, .big);
+            if (length > frame.maximum_frame) return error.InvalidFrameLength;
+            const bytes = try gpa.alloc(u8, length + 4);
+            @memcpy(bytes[0..4], &header);
+            try input.interface.readSliceAll(bytes[4..]);
+            var request = try frame.decode(gpa, bytes);
+            defer request.deinit();
+            const op = if (request.json.value == .object) request.json.value.object.get("op") else null;
+            const response = if (request.kind == .ping) try frame.encode(gpa, .ping, request.id, .{}, "") else if (op != null and op.? == .string and std.mem.eql(u8, op.?.string, "hello")) try frame.encode(gpa, .result, request.id, .{ .protocol = 1, .version = "1.1.0", .os = "linux", .arch = "x86_64", .home = "/", .cwd = "/", .driveCwds = .{} }, "") else try frame.encode(gpa, .remote_error, request.id, .{ .code = "EINVAL", .message = "unknown operation" }, "");
+            try std.Io.File.stdout().writeStreamingAll(init.io, response);
+        }
+    }
     if (std.mem.eql(u8, mode, "flood")) {
         const bytes = [_]u8{'x'} ** (64 * 1024);
         for (0..1024) |_| try std.Io.File.stdout().writeStreamingAll(init.io, &bytes);

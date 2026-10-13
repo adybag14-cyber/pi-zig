@@ -15,6 +15,7 @@ Chord delta source are unchanged from b78. The `packages/env` adapter implements
 | `LineScanner` / `LineScan` | No file-range scanner | One-pass offsets and decoded sizes in constant scanner memory |
 | `FileSystem.openBinaryReader` | CLI read loaded the whole file, capped at 32 MiB | Retained regular-file descriptor, bounded positional reads, opened-file metadata, scans, close |
 | `FileSystem.openDirReader` | CLI ls and extension readdir enumerated complete results | Native directory cursor and metadata only for returned entries; disappearing and unsupported entries skipped |
+| Optional `FileSystem.listFiles` (Pi 1.2.0, e6220e1) | No bounded recursive listing | Native sorted tree walk, gitignore hierarchy/global rules, limits/cancellation, local/remote adapters and old-daemon fallback; scoped contract in `../env/LIST_FILES_CONTRACT.md` |
 | `openTextLineReader` | No retained line reader | Positional chunk reads, streaming UTF-8, CR preserved, termination flag, no synthetic trailing empty line |
 | `absolutePath`, `fileInfo` | Multiple native path/stat call sites | Explicit local filesystem namespace, home/file-URL conveniences, owned values and expected failure results |
 | Local `ExecutionEnv` mutation/temp facade | Coding tools wrote directly | Read/write/append/truncate/flush/rename/list/canonical/existence/directory/remove/temp operations; shared filesystem/shell cwd and atomic cwd replacement |

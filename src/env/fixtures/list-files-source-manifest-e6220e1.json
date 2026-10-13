@@ -1,0 +1,74 @@
+{
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "oracle": "Official unmodified packages/env/daemon, Cargo --locked -j1; separately executed official Node24 source exports",
+  "source_binary_sha256": "0625ecd20a9d3aa5b3ecb3b7c2064296c43e0c8af0d92040177867d4c541693d",
+  "files": [
+    {
+      "path": "packages/env/src/list-files.ts",
+      "sha256": "8A06676D039A039BC5F91A15552AB69CD17524FBC1AD4C6949312EF73627C077"
+    },
+    {
+      "path": "packages/env/src/connection.ts",
+      "sha256": "99F27FFFFFE75E75F85F54CC9E2AD8721B4419405CE9A47B0BAE9421CD0192FA"
+    },
+    {
+      "path": "packages/env/src/remote-env.ts",
+      "sha256": "21B96CD2C7ECB8907173711040403BB36C3AEE703E7660945C0411BB1F403F2C"
+    },
+    {
+      "path": "packages/env/daemon/src/list.rs",
+      "sha256": "5DE06D0C6B37570700127F3A4EB786824EA33B1C3BB8823F706B102873DDAB69"
+    },
+    {
+      "path": "packages/env/daemon/src/main.rs",
+      "sha256": "900ADD38D41177A4CCA732C6AD3D93F326BD7F7F6576DDFF73E0BC60BCBC04E7"
+    },
+    {
+      "path": "packages/env/daemon/Cargo.toml",
+      "sha256": "AD4BAFF48D5EEA6601937E3E77BEC5100DFC26D5801DD69DA416EE129BD60254"
+    },
+    {
+      "path": "packages/env/daemon/Cargo.lock",
+      "sha256": "7A4506566F67B167CC7AB129BEF2B254BAA70C21497181B9DD0BDA2990F0D405"
+    },
+    {
+      "path": "packages/durable/src/env/index.ts",
+      "sha256": "085266C93B7388CD70439B634CD376C876A6033B8FBC9EC337960A3A25003BE5"
+    },
+    {
+      "path": "packages/durable/src/testing/env-conformance.ts",
+      "sha256": "E4D4B2AF46F2F210E44649242FC2B0EDEB2125FAE33FFA8E0FE3C580BB87607E"
+    },
+    {
+      "path": "packages/env/docs/protocol.md",
+      "sha256": "727E188C23032E0B0A1E8F09BC1B90E5F7F0F678B98331643BCB7BE463F18D74"
+    },
+    {
+      "path": "packages/env/docs/semantics.md",
+      "sha256": "0558BB45151EB9AA85039819260CC37BA8B38C5FC5958D75370A2ECE01364CF4"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "src/env/fixtures/list-files-e6220e1.json",
+      "sha256": "E04C4311FC0F6638A5DF23EB65B23543C6D825F8C7345FA6EBC04110A3DAC6AF"
+    },
+    {
+      "path": "src/env/fixtures/list-files-ignore-e6220e1.json",
+      "sha256": "7100BC47E8140FD10BDB217C269E604E57DD736F169D785E79E02EB91E76EEAF"
+    },
+    {
+      "path": "src/env/fixtures/list-files-errors-e6220e1.json",
+      "sha256": "360AD9FDFC619F8BFBB7630B70A9B9A128088E46131B8DDEB4DAFB6DC0CB115F"
+    },
+    {
+      "path": "src/env/fixtures/list-files-windows-edges-e6220e1.json",
+      "sha256": "FD9A19E453FBCB5A80D8284A052D0AFFA32CBE052A8D64211ADCA69D6A622543"
+    }
+  ],
+  "source_walk_cases": 20,
+  "source_ignore_cases": 89,
+  "source_error_cases": 6,
+  "source_windows_edge_cases": 6,
+  "public_guest_activation": false
+}

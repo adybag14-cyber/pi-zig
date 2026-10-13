@@ -1,0 +1,85 @@
+{
+  "localRemote": {
+    "ok": true,
+    "value": {
+      "entries": [
+        {
+          "path": "a",
+          "kind": "file"
+        },
+        {
+          "path": "b",
+          "kind": "file"
+        }
+      ],
+      "truncated": true
+    }
+  },
+  "invalid": [
+    {
+      "code": "invalid",
+      "message": "maxEntries must be a non-negative safe integer"
+    },
+    {
+      "code": "invalid",
+      "message": "maxBytes must be a non-negative safe integer"
+    },
+    {
+      "code": "invalid",
+      "message": "timeoutMs must be a non-negative safe integer"
+    },
+    {
+      "code": "invalid",
+      "message": "maxEntries must be a non-negative safe integer"
+    }
+  ],
+  "preAbort": "aborted",
+  "oldDaemon": {
+    "code": "not_supported",
+    "message": "The pi-env daemon does not list files; update it"
+  },
+  "platforms": [
+    {
+      "input": {
+        "os": "windows",
+        "arch": "aarch64"
+      },
+      "output": {
+        "platform": "win32",
+        "arch": "arm64"
+      }
+    },
+    {
+      "input": {
+        "os": "macos",
+        "arch": "x86_64"
+      },
+      "output": {
+        "platform": "darwin",
+        "arch": "x64"
+      }
+    },
+    {
+      "input": {
+        "os": "linux",
+        "arch": "x86"
+      },
+      "output": {
+        "platform": "linux",
+        "arch": "ia32"
+      }
+    },
+    {
+      "input": {
+        "os": "android",
+        "arch": "riscv64"
+      },
+      "output": {
+        "platform": "android",
+        "arch": "riscv64"
+      }
+    }
+  ],
+  "noUnsupportedRequest": true,
+  "invalidBeforeAbort": true
+}

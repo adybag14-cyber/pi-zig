@@ -1,0 +1,92 @@
+{
+  "fileLink": false,
+  "cases": [
+    {
+      "name": "links",
+      "path": "links",
+      "options": {},
+      "json": {
+        "count": 4,
+        "truncated": false
+      },
+      "payload": "ZGRpcgBmZGlyL2lubmVyLnR4dABsZGlyL2xvb3AAbGxpbmsA",
+      "records": [
+        "ddir",
+        "fdir/inner.txt",
+        "ldir/loop",
+        "llink"
+      ]
+    },
+    {
+      "name": "linked-root",
+      "path": "links/link",
+      "options": {},
+      "json": {
+        "count": 2,
+        "truncated": false
+      },
+      "payload": "ZmlubmVyLnR4dABsbG9vcAA=",
+      "records": [
+        "finner.txt",
+        "lloop"
+      ]
+    },
+    {
+      "name": "names",
+      "path": "names",
+      "options": {},
+      "json": {
+        "count": 2,
+        "truncated": false
+      },
+      "payload": "ZmF0dHJpYnV0ZS1oaWRkZW4AZmJhZC3vv70A",
+      "records": [
+        "fattribute-hidden",
+        "fbad-�"
+      ]
+    },
+    {
+      "name": "names-hidden-false",
+      "path": "names",
+      "options": {
+        "hidden": false
+      },
+      "json": {
+        "count": 1,
+        "truncated": false
+      },
+      "payload": "ZmJhZC3vv70A",
+      "records": [
+        "fbad-�"
+      ]
+    },
+    {
+      "name": "unicode-bound",
+      "path": "unicode",
+      "options": {
+        "maxBytes": 3
+      },
+      "json": {
+        "count": 0,
+        "truncated": true
+      },
+      "payload": "",
+      "records": []
+    },
+    {
+      "name": "unicode-exact",
+      "path": "unicode",
+      "options": {
+        "maxBytes": 4
+      },
+      "json": {
+        "count": 1,
+        "truncated": false
+      },
+      "payload": "ZsOpAA==",
+      "records": [
+        "fé"
+      ]
+    }
+  ]
+}

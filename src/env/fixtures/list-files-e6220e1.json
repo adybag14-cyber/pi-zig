@@ -1,0 +1,318 @@
+{
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "binary_sha256": "0625ecd20a9d3aa5b3ecb3b7c2064296c43e0c8af0d92040177867d4c541693d",
+  "files": {
+    "home/.gitconfig": "[core]\nexcludesFile = ~/global-ignore\n",
+    "home/global-ignore": "global.txt\n*.global\n",
+    "project/.git/HEAD": "ref: refs/heads/main\n",
+    "project/.git/info/exclude": "keep.txt\nexcluded.txt\n",
+    "project/.gitignore": "out/\n*.log\n!keep.txt\n!.visible\n# comment\n\\#literal\n\\!literal\ntrailing\\ \nrange[0-2].txt\nbrace{a,b}.txt\na/**/drop\n",
+    "project/.ignore": "ignored-by-dot-ignore\n",
+    "project/.hidden/x": "",
+    "project/.visible": "",
+    "project/.git-file": "",
+    "project/A.txt": "",
+    "project/a/b/c.txt": "",
+    "project/a/drop": "",
+    "project/a/n/drop": "",
+    "project/a/z.txt": "",
+    "project/b.txt": "",
+    "project/keep.txt": "",
+    "project/excluded.txt": "",
+    "project/out/x.js": "",
+    "project/global.txt": "",
+    "project/sub/global.txt": "",
+    "project/sub/.gitignore": "!keep.txt\n",
+    "project/sub/keep.txt": "",
+    "project/sub/drop.log": "",
+    "project/node_modules/m/i.js": "",
+    "project/#literal": "",
+    "project/!literal": "",
+    "project/trailing ": "",
+    "project/range1.txt": "",
+    "project/range4.txt": "",
+    "project/bracea.txt": "",
+    "project/bracec.txt": "",
+    "project/ignored-by-dot-ignore": "",
+    "project/nested/.git/HEAD": "ref: refs/heads/main\n",
+    "project/nested/keep.txt": "",
+    "project/nested/drop.log": "",
+    "plain/.gitignore": "*.log\n",
+    "plain/keep.log": "",
+    "plain/normal": "",
+    "jj/.jj/repo": "",
+    "jj/.gitignore": "*.log\n",
+    "jj/drop.log": "",
+    "jj/keep": "",
+    "bounds/a": "",
+    "bounds/b": "",
+    "bounds/c": ""
+  },
+  "directories": [
+    "project/empty",
+    "empty"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "path": "project",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 27,
+        "truncated": false
+      },
+      "payload": "Zi5naXQtZmlsZQBmLmdpdGlnbm9yZQBkLmhpZGRlbgBmLmhpZGRlbi94AGYuaWdub3JlAGYudmlzaWJsZQBmQS50eHQAZGEAZGEvYgBmYS9iL2MudHh0AGRhL24AZmEvei50eHQAZmIudHh0AGZicmFjZWMudHh0AGRlbXB0eQBmaWdub3JlZC1ieS1kb3QtaWdub3JlAGZrZWVwLnR4dABkbmVzdGVkAGZuZXN0ZWQvZHJvcC5sb2cAZm5lc3RlZC9rZWVwLnR4dABkbm9kZV9tb2R1bGVzAGRub2RlX21vZHVsZXMvbQBmbm9kZV9tb2R1bGVzL20vaS5qcwBmcmFuZ2U0LnR4dABkc3ViAGZzdWIvLmdpdGlnbm9yZQBmc3ViL2tlZXAudHh0AA=="
+    },
+    {
+      "name": "hidden",
+      "path": "project",
+      "options": {
+        "hidden": false
+      },
+      "kind": 2,
+      "json": {
+        "count": 21,
+        "truncated": false
+      },
+      "payload": "Zi52aXNpYmxlAGZBLnR4dABkYQBkYS9iAGZhL2IvYy50eHQAZGEvbgBmYS96LnR4dABmYi50eHQAZmJyYWNlYy50eHQAZGVtcHR5AGZpZ25vcmVkLWJ5LWRvdC1pZ25vcmUAZmtlZXAudHh0AGRuZXN0ZWQAZm5lc3RlZC9kcm9wLmxvZwBmbmVzdGVkL2tlZXAudHh0AGRub2RlX21vZHVsZXMAZG5vZGVfbW9kdWxlcy9tAGZub2RlX21vZHVsZXMvbS9pLmpzAGZyYW5nZTQudHh0AGRzdWIAZnN1Yi9rZWVwLnR4dAA="
+    },
+    {
+      "name": "no-ignore",
+      "path": "project",
+      "options": {
+        "gitignore": false
+      },
+      "kind": 2,
+      "json": {
+        "count": 40,
+        "truncated": false
+      },
+      "payload": "ZiFsaXRlcmFsAGYjbGl0ZXJhbABmLmdpdC1maWxlAGYuZ2l0aWdub3JlAGQuaGlkZGVuAGYuaGlkZGVuL3gAZi5pZ25vcmUAZi52aXNpYmxlAGZBLnR4dABkYQBkYS9iAGZhL2IvYy50eHQAZmEvZHJvcABkYS9uAGZhL24vZHJvcABmYS96LnR4dABmYi50eHQAZmJyYWNlYS50eHQAZmJyYWNlYy50eHQAZGVtcHR5AGZleGNsdWRlZC50eHQAZmdsb2JhbC50eHQAZmlnbm9yZWQtYnktZG90LWlnbm9yZQBma2VlcC50eHQAZG5lc3RlZABmbmVzdGVkL2Ryb3AubG9nAGZuZXN0ZWQva2VlcC50eHQAZG5vZGVfbW9kdWxlcwBkbm9kZV9tb2R1bGVzL20AZm5vZGVfbW9kdWxlcy9tL2kuanMAZG91dABmb3V0L3guanMAZnJhbmdlMS50eHQAZnJhbmdlNC50eHQAZHN1YgBmc3ViLy5naXRpZ25vcmUAZnN1Yi9kcm9wLmxvZwBmc3ViL2dsb2JhbC50eHQAZnN1Yi9rZWVwLnR4dABmdHJhaWxpbmcgAA=="
+    },
+    {
+      "name": "exclude",
+      "path": "project",
+      "options": {
+        "exclude": [
+          "node_modules",
+          "a",
+          "nested"
+        ]
+      },
+      "kind": 2,
+      "json": {
+        "count": 16,
+        "truncated": false
+      },
+      "payload": "Zi5naXQtZmlsZQBmLmdpdGlnbm9yZQBkLmhpZGRlbgBmLmhpZGRlbi94AGYuaWdub3JlAGYudmlzaWJsZQBmQS50eHQAZmIudHh0AGZicmFjZWMudHh0AGRlbXB0eQBmaWdub3JlZC1ieS1kb3QtaWdub3JlAGZrZWVwLnR4dABmcmFuZ2U0LnR4dABkc3ViAGZzdWIvLmdpdGlnbm9yZQBmc3ViL2tlZXAudHh0AA=="
+    },
+    {
+      "name": "subtree",
+      "path": "project/sub",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 2,
+        "truncated": false
+      },
+      "payload": "Zi5naXRpZ25vcmUAZmtlZXAudHh0AA=="
+    },
+    {
+      "name": "nested-repo",
+      "path": "project/nested",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 2,
+        "truncated": false
+      },
+      "payload": "ZmRyb3AubG9nAGZrZWVwLnR4dAA="
+    },
+    {
+      "name": "outside-repo",
+      "path": "plain",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 3,
+        "truncated": false
+      },
+      "payload": "Zi5naXRpZ25vcmUAZmtlZXAubG9nAGZub3JtYWwA"
+    },
+    {
+      "name": "jj-repo",
+      "path": "jj",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 4,
+        "truncated": false
+      },
+      "payload": "Zi5naXRpZ25vcmUAZC5qagBmLmpqL3JlcG8AZmtlZXAA"
+    },
+    {
+      "name": "empty",
+      "path": "empty",
+      "options": {},
+      "kind": 2,
+      "json": {
+        "count": 0,
+        "truncated": false
+      },
+      "payload": ""
+    },
+    {
+      "name": "entries2",
+      "path": "bounds",
+      "options": {
+        "maxEntries": 2
+      },
+      "kind": 2,
+      "json": {
+        "count": 2,
+        "truncated": true
+      },
+      "payload": "ZmEAZmIA"
+    },
+    {
+      "name": "entries3",
+      "path": "bounds",
+      "options": {
+        "maxEntries": 3
+      },
+      "kind": 2,
+      "json": {
+        "count": 3,
+        "truncated": false
+      },
+      "payload": "ZmEAZmIAZmMA"
+    },
+    {
+      "name": "entries0",
+      "path": "bounds",
+      "options": {
+        "maxEntries": 0
+      },
+      "kind": 2,
+      "json": {
+        "count": 0,
+        "truncated": true
+      },
+      "payload": ""
+    },
+    {
+      "name": "bytes6",
+      "path": "bounds",
+      "options": {
+        "maxBytes": 6
+      },
+      "kind": 2,
+      "json": {
+        "count": 2,
+        "truncated": true
+      },
+      "payload": "ZmEAZmIA"
+    },
+    {
+      "name": "bytes2",
+      "path": "bounds",
+      "options": {
+        "maxBytes": 2
+      },
+      "kind": 2,
+      "json": {
+        "count": 0,
+        "truncated": true
+      },
+      "payload": ""
+    },
+    {
+      "name": "timeout0",
+      "path": "bounds",
+      "options": {
+        "timeoutMs": 0
+      },
+      "kind": 2,
+      "json": {
+        "count": 0,
+        "truncated": true
+      },
+      "payload": ""
+    },
+    {
+      "name": "missing",
+      "path": "missing",
+      "options": {},
+      "kind": 3,
+      "json": {
+        "code": "ENOENT"
+      },
+      "payload": ""
+    },
+    {
+      "name": "file",
+      "path": "bounds/a",
+      "options": {},
+      "kind": 3,
+      "json": {
+        "code": "ENOTDIR"
+      },
+      "payload": ""
+    },
+    {
+      "name": "bad-count",
+      "path": "bounds",
+      "options": {
+        "maxEntries": -1
+      },
+      "kind": 3,
+      "json": {
+        "code": "EINVAL"
+      },
+      "payload": ""
+    },
+    {
+      "name": "fractional",
+      "path": "bounds",
+      "options": {
+        "timeoutMs": 1.5
+      },
+      "kind": 3,
+      "json": {
+        "code": "EINVAL"
+      },
+      "payload": ""
+    },
+    {
+      "name": "bad-exclude",
+      "path": "bounds",
+      "options": {
+        "exclude": [
+          4
+        ]
+      },
+      "kind": 3,
+      "json": {
+        "code": "EINVAL"
+      },
+      "payload": ""
+    }
+  ],
+  "hello": {
+    "arch": "x86_64",
+    "cwd": "C:\\Users\\adyba\\pi-upstream-env-oracle-e6220e1-20261013",
+    "driveCwds": {},
+    "features": [
+      "listFiles"
+    ],
+    "home": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-listfiles-oracle-tree-e6220e1-20261013\\home",
+    "os": "windows",
+    "pid": 35984,
+    "protocol": 1,
+    "separator": "\\",
+    "tmpdir": "C:\\Users\\adyba\\AppData\\Local\\Temp",
+    "version": "1.2.0"
+  },
+  "stderr": ""
+}
