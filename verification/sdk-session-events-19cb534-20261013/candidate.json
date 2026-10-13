@@ -1,0 +1,90 @@
+{
+  "status": "source_authoring_candidate",
+  "upstream": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "base": "397566c",
+  "inherited_conversion_commit": "66f339c",
+  "source_events": {
+    "status": "passed",
+    "cases": 28,
+    "actual_factory": true,
+    "actual_agent_prompt_cases": 1,
+    "bound_own_handler": true,
+    "runtime_files": 31064,
+    "tool_files": 1774,
+    "drift": 0
+  },
+  "source_utilities": {
+    "status": "passed",
+    "estimate_cases": 16,
+    "threshold_cases": 6,
+    "virtual_state_cases": 6,
+    "metadata_functions": 3,
+    "runtime_files": 31064,
+    "tool_files": 1774,
+    "driver_inputs": 3,
+    "drift": 0
+  },
+  "native_checks": {
+    "fmt": "passed",
+    "ast_check": "passed",
+    "diff_check": "passed",
+    "build": "not_run",
+    "runtime": "not_run",
+    "reason": "Fresh host free memory below unchanged required 16GiB; no native build/test process launched",
+    "required_step": "test-native-sdk-session-events"
+  },
+  "integration": {
+    "activation": "private_component_only",
+    "ordinary_session_fields": true,
+    "legacy_alias_contract": false,
+    "dependencies": "Private lexical record captured by native function data",
+    "required_dependencies": [
+      "normalizeToolResultImages",
+      "convertToLlm",
+      "getVirtualModelState",
+      "shouldCompact",
+      "estimateProjectedContextTokens"
+    ],
+    "native_fixture": "Actual native Agent, ExtensionRunner and SessionManager; caller instance fields; image dependency explicitly rejects if unexpectedly invoked",
+    "remaining": "Production factory composition and actual image normalizer supplied by root; expanded hook-path/runtime and allocation qualification pending",
+    "release_parity_certified": false
+  },
+  "inputs": [
+    {
+      "path": "src/extensions/native_sdk_session_events.zig",
+      "sha256": "D725A79525E74DD4BA2074C4948F7E5149CCEA84D7CA091713B55A7D77994589"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hooks.zig",
+      "sha256": "01937C98496A4B54BB1FA40D812525A1DD8F9E2E55EA6E8AF3A58C1583EDB676"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_estimate.zig",
+      "sha256": "4B70CBA14F8E9B9A0360A39CBF4E733E38F573200FC0355600F857D0AE47C775"
+    },
+    {
+      "path": "src/native_sdk_session_events_test.zig",
+      "sha256": "D3CEB3DF84F72CC7F4C3259DAF6979C7E0C6B711D20254DD43189D584B2B8F20"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-events-19cb.input.txt",
+      "sha256": "591ABB5EFFCB7A174E72FC53B04DFC5330DD008434EE5F68BE4299A9D8AC2147"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-events-19cb.json",
+      "sha256": "781455235795190CEACBD2B250E5A987CDD7A726DAD8B7EFBD8A846AB28EC61C"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-estimate-19cb.input.txt",
+      "sha256": "918AE4B751EDF94CB4B669F750A5B82F793153041AA28EAA04F41BDD8F575401"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-estimate-19cb.json",
+      "sha256": "C7DF03FA84A9262546CDCC01086B1290635337CB9571400CEA4992A1CCA8D333"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "C93F1118600F0006F50ED1662D0C46A58D30CCB920F22026C53D790BFBC2E01A"
+    }
+  ]
+}

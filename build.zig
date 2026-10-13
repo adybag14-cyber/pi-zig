@@ -1402,6 +1402,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, sdk_lifecycle_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_lifecycle_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-lifecycle", "Compare original custom ingestion run/finally and settlement component ordering without partial factory activation").dependOn(&b.addRunArtifact(sdk_lifecycle_tests).step);
+    const sdk_events_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_events_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session events"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_events_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_events_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-events", "Compare Source awaited extension/public/persistence ordering using actual native Agent runner and manager").dependOn(&b.addRunArtifact(sdk_events_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

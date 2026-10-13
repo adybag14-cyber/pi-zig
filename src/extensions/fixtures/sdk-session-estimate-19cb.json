@@ -1,0 +1,275 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Unmodified exported Source compaction and virtual-state utilities; caller messages/settings and getter failures are explicit inputs.",
+  "estimateRows": [
+    {
+      "id": "empty",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "user",
+      "result": {
+        "tokens": 2,
+        "usageTokens": 0,
+        "trailingTokens": 2,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "usage",
+      "result": {
+        "tokens": 12,
+        "usageTokens": 12,
+        "trailingTokens": 0,
+        "lastUsageIndex": 0
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "components",
+      "result": {
+        "tokens": 10,
+        "usageTokens": 10,
+        "trailingTokens": 0,
+        "lastUsageIndex": 0
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "error",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "aborted",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "zero",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "trailing",
+      "result": {
+        "tokens": 14,
+        "usageTokens": 12,
+        "trailingTokens": 2,
+        "lastUsageIndex": 0
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "invalidated",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "compaction-invalidated",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "missing-entry",
+      "result": {
+        "tokens": 0,
+        "usageTokens": 0,
+        "trailingTokens": 0,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "folded-system",
+      "result": {
+        "tokens": 6,
+        "usageTokens": 0,
+        "trailingTokens": 6,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "tools",
+      "result": {
+        "tokens": 20,
+        "usageTokens": 0,
+        "trailingTokens": 20,
+        "lastUsageIndex": null
+      },
+      "error": null,
+      "reads": []
+    },
+    {
+      "id": "getter-order",
+      "result": {
+        "tokens": 12,
+        "usageTokens": 12,
+        "trailingTokens": 0,
+        "lastUsageIndex": 0
+      },
+      "error": null,
+      "reads": [
+        "message.role",
+        "has.usage",
+        "message.stopReason",
+        "message.stopReason",
+        "message.usage",
+        "message.usage",
+        "message.usage"
+      ]
+    },
+    {
+      "id": "projection-error",
+      "error": [
+        "Error",
+        "projection marker"
+      ],
+      "reads": [
+        "projection.messages"
+      ]
+    },
+    {
+      "id": "branch-error",
+      "error": [
+        "Error",
+        "branch marker"
+      ],
+      "reads": [
+        "branch.findIndex"
+      ]
+    }
+  ],
+  "compactRows": [
+    {
+      "id": "disabled",
+      "result": false
+    },
+    {
+      "id": "equal",
+      "result": false
+    },
+    {
+      "id": "above",
+      "result": true
+    },
+    {
+      "id": "negative-window",
+      "result": true
+    },
+    {
+      "id": "string",
+      "result": true
+    },
+    {
+      "id": "nan",
+      "result": false
+    }
+  ],
+  "virtualRows": [
+    {
+      "id": "empty"
+    },
+    {
+      "id": "match",
+      "result": {
+        "n": 1
+      }
+    },
+    {
+      "id": "latest",
+      "result": {
+        "n": 2
+      }
+    },
+    {
+      "id": "other-provider"
+    },
+    {
+      "id": "other-model"
+    },
+    {
+      "id": "missing-data"
+    }
+  ],
+  "utilityMetadata": [
+    {
+      "name": "estimateProjectedContextTokens",
+      "length": 2,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "constructor": true,
+      "normalPrototype": true
+    },
+    {
+      "name": "shouldCompact",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "constructor": true,
+      "normalPrototype": true
+    },
+    {
+      "name": "getVirtualModelState",
+      "length": 3,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ],
+      "constructor": true,
+      "normalPrototype": true
+    }
+  ]
+}

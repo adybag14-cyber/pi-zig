@@ -1,0 +1,17 @@
+[
+  {
+    "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "files": 31064,
+    "drift": []
+  },
+  {
+    "manifest": "root-current8a-npm-tools-before.json",
+    "files": 1774,
+    "drift": []
+  },
+  {
+    "manifest": "sdk-session-events-driver-before.json",
+    "files": 1,
+    "drift": []
+  }
+]

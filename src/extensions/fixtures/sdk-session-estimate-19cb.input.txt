@@ -1,0 +1,34 @@
+const estimateRows=[];
+const usageValue=(totalTokens=12)=>({input:2,output:3,cacheRead:4,cacheWrite:1,totalTokens});
+const userValue={role:'user',content:[{type:'text',text:'hello'}],timestamp:1};
+const assistantValue={role:'assistant',content:[],usage:usageValue(),stopReason:'stop',timestamp:2};
+for(const id of ['empty','user','usage','components','error','aborted','zero','trailing','invalidated','compaction-invalidated','missing-entry','folded-system','tools','getter-order','projection-error','branch-error']){
+ const reads=[];let messages=id==='empty'?[]:id==='user'?[userValue]:[assistantValue];
+ if(id==='components')messages=[{...assistantValue,usage:usageValue(0)}];
+ if(id==='error'||id==='aborted')messages=[{...assistantValue,stopReason:id}];
+ if(id==='zero')messages=[{...assistantValue,usage:{input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0}}];
+ if(id==='trailing')messages.push(userValue);
+ if(id==='folded-system')messages=[{role:'system',content:'first',timestamp:1},{role:'system',content:'second',timestamp:2},userValue];
+ if(id==='tools')messages=[{role:'system',content:'',toolsAdded:[{name:'tool',description:'a tool',parameters:{type:'object'}}],timestamp:1},userValue];
+ const branch=messages.map((message,i)=>({type:'message',id:'entry'+i,message}));
+ const entries=branch.map(sourceEntry=>({sourceEntry,messages:[sourceEntry.message]}));
+ if(id==='invalidated')branch.push({type:'context_edit',id:'edit',targetId:'entry0',replacement:{content:'replacement'}});
+ if(id==='compaction-invalidated')branch.push({type:'compaction',id:'compact'});
+ if(id==='missing-entry')branch.length=0;
+ const projection={messages,entries};
+ if(id==='getter-order'){const original=messages[0];messages[0]=new Proxy(original,{get(target,key,receiver){reads.push('message.'+String(key));return Reflect.get(target,key,receiver)},has(target,key){reads.push('has.'+String(key));return Reflect.has(target,key)}});}
+ if(id==='projection-error')Object.defineProperty(projection,'messages',{get(){reads.push('projection.messages');throw Error('projection marker')}});
+ if(id==='branch-error')branch.findIndex=()=>{reads.push('branch.findIndex');throw Error('branch marker')};
+ let result,error=null;try{result=estimateProjectedContextTokens(projection,branch)}catch(cause){error=[cause.name,cause.message]}
+ estimateRows.push({id,result,error,reads});
+}
+const compactRows=[];
+for(const [id,tokens,window,settings]of[['disabled',100,50,{enabled:false,reserveTokens:0}],['equal',40,50,{enabled:true,reserveTokens:10}],['above',41,50,{enabled:true,reserveTokens:10}],['negative-window',0,-1,{enabled:true,reserveTokens:0}],['string',41,'50',{enabled:true,reserveTokens:'10'}],['nan',NaN,50,{enabled:true,reserveTokens:10}]])compactRows.push({id,result:shouldCompact(tokens,window,settings)});
+const virtualRows=[];
+for(const id of ['empty','match','latest','other-provider','other-model','missing-data']){
+ const entry=state=>({type:'custom',customType:'pi.virtual-model-state',data:{provider:'p',modelId:'m',state}});
+ const branch=id==='empty'?[]:[entry({n:1})];if(id==='latest')branch.push(entry({n:2}));if(id==='other-provider')branch[0].data.provider='other';if(id==='other-model')branch[0].data.modelId='other';if(id==='missing-data')branch[0].data=undefined;
+ virtualRows.push({id,result:getVirtualModelState(branch,'p','m')});
+}
+const utilityMetadata=[estimateProjectedContextTokens,shouldCompact,getVirtualModelState].map(fn=>({name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn),constructor:fn.prototype.constructor===fn,normalPrototype:Object.getPrototypeOf(fn)===Function.prototype}));
+globalThis.sdkSessionEstimateRows={estimateRows,compactRows,virtualRows,utilityMetadata};
