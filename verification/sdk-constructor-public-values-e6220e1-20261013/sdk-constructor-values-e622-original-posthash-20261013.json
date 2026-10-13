@@ -1,0 +1,27 @@
+{
+  "observed_utc": "2026-10-13T18:40:41.4391025+00:00",
+  "scope": "Posthash after original latest constructor66 and public getter43 captures; no original Source body changes",
+  "manifests": [
+    {
+      "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+      "files": 1945,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "constructor_driver_sha256": "DF48380A6687957A2F66CEAB0F44FC81B76E35B458245A2CD2A3B4179F4F1BB1",
+  "values_driver_sha256": "522F56A5B25A24BAA911FC94662ECF7C17AAC1FD743707949960B25DF06C7625",
+  "values_input_sha256": "F0B7B5D64F0B358B9489F4DBAAB87D6A9183DB7AA3238580304BFA63619CCAA6"
+}

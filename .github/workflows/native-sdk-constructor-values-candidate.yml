@@ -1,0 +1,102 @@
+name: Native ordinary session constructor and getter qualification
+
+on:
+  push:
+    branches: [work/native-sdk-constructor-values-20261013]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-sdk-constructor-values-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source and compiler
+        id: freeze
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-sdk-constructor-values-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)
+          $taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)
+          $taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }
+          $taskToolRoot = Split-Path -Parent $taskZig
+          $taskZigEnv = (& zig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Ordinary constructor initialization phase, public live getters, events and tool-name matcher; runtime builder and full factory remain unfinished'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+      - name: Compile ordinary constructor getter event and matcher artifacts
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-constructor-assembly -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile.log
+          if ($LASTEXITCODE -ne 0) { throw 'Constructor/getter cold compilation failed' }
+      - name: Exercise original constructor initialization live getters events and matcher graphs
+        id: runtime
+        shell: pwsh
+        timeout-minutes: 5
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-sdk-constructor-values-candidate'
+          & zig build test-native-sdk-constructor-phase test-native-sdk-session-values test-native-sdk-session-events test-native-sdk-tool-name-matcher -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Constructor/getter runtime failed' }
+          $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
+          $taskEvents = [regex]::Matches($taskLog, '(?m)^SDK_SESSION_EVENTS_TEST_INVENTORY=(\[[^\r\n]+\])')
+          if ($taskEvents.Count -ne 1) { throw 'Missing or duplicated actual event test inventory' }
+          $taskEventNames = @($taskEvents[0].Groups[1].Value | ConvertFrom-Json)
+          if ($taskEventNames.Count -ne 12 -or @($taskEventNames | Sort-Object -Unique).Count -ne 12) { throw 'Original event inventory changed' }
+          foreach ($taskRequired in @('match 28 genuine factory Source','constructor hooks match 16 genuine factory Source','compaction utilities match original Source')) {
+            if (@($taskEventNames | Where-Object { $_.Contains($taskRequired) }).Count -ne 1) { throw "Original event comparator missing: $taskRequired" }
+          }
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b37/37 tests passed') { throw 'All37 constructor/getter/event/matcher tests must execute' }
+          foreach ($taskSpec in @(@{target='test-native-sdk-constructor-phase';count=10},@{target='test-native-sdk-session-values';count=11},@{target='test-native-sdk-session-events';count=12},@{target='test-native-sdk-tool-name-matcher';count=4})) {
+            $taskPattern = '(?ms)^' + [regex]::Escape($taskSpec.target) + ' success\r?\n[^\r\n]*run test ' + $taskSpec.count + ' pass \(' + $taskSpec.count + ' total\)'
+            if ([regex]::Matches($taskLog,$taskPattern).Count -ne 1) { throw "Individual target execution changed: $($taskSpec.target)" }
+          }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=37;constructor_tests=10;public_values_tests=11;events_tests=12;matcher_tests=4;source_constructor_fields=66;source_public_values_cases=43;source_matcher_cases=27;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Verify frozen inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-sdk-constructor-values-candidate'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-sdk-constructor-values-candidate-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-constructor-values-candidate/

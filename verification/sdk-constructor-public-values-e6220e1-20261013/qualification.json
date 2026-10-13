@@ -1,0 +1,37 @@
+{
+  "implementation_commit": "071d00ca64f0a68fc8b632d5e0ed300839c8a4e6",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Ordinary constructor initialization before original runtime building; public getters/value methods; tool-name matcher; native session events regression",
+  "debug": {
+    "qualified_targets_tests": 37,
+    "aggregate_tests_passed": 47,
+    "aggregate_tests": 48,
+    "aggregate_timeout": "unchanged fullSource55 loadout allocation test at120s",
+    "aggregate_is_full_pass": false
+  },
+  "release_safe": {
+    "tests": 37,
+    "status": "passed",
+    "source_files": 4722,
+    "compiler_files": 19546,
+    "source_drift": 0,
+    "compiler_drift": 0
+  },
+  "source_cases": {
+    "constructor_own_fields": 66,
+    "public_getter_scenarios": 43,
+    "tool_matcher_scenarios": 27,
+    "event_scenarios": 28,
+    "hook_scenarios": 16
+  },
+  "committed_blobs_verified": 4722,
+  "committed_byte_drift": 0,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending",
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320
+}
