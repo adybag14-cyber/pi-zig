@@ -16358,6 +16358,7 @@ JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
     case 5: status = js_relational_slow(ctx, stack + 2, OP_lte); break;
     case 6: status = js_relational_slow(ctx, stack + 2, OP_gt); break;
     case 7: status = js_relational_slow(ctx, stack + 2, OP_gte); break;
+    case 8: status = js_binary_arith_slow(ctx, stack + 2, OP_mod); break;
     default:
         JS_FreeValue(ctx, stack[0]);
         JS_FreeValue(ctx, stack[1]);

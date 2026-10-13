@@ -1480,6 +1480,12 @@ pub fn build(b: *std.Build) void {
     session_control_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-control", "Compare original session cancellation idle disposal modes and shared resource cleanup with complete owner graphs").dependOn(&b.addRunArtifact(session_control_tests).step);
     b.step("build-native-sdk-session-control", "Compile ordinary session cancellation and disposal separately from runtime deadlines").dependOn(&session_control_tests.step);
+    const session_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_models_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session models"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_models_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_models_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_models_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-models", "Compare original ordinary session model selection thinking levels scoped cycles and complete owner graphs").dependOn(&b.addRunArtifact(session_models_tests).step);
+    b.step("build-native-sdk-session-models", "Compile model selection and thinking capability bodies separately from runtime deadlines").dependOn(&session_models_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

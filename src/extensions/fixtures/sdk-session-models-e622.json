@@ -1,0 +1,699 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "56b77918d46e28997fe87f84cf56433adb8d4a31837a73263a828681f8fc2d11",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 43,
+  "rows": [
+    {
+      "name": "session-method-metadata",
+      "value": {
+        "_emitModelSelect": {
+          "name": "_emitModelSelect",
+          "length": 3,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setModel": {
+          "name": "setModel",
+          "length": 1,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_addPersistedDefaultToNonEmptyScope": {
+          "name": "_addPersistedDefaultToNonEmptyScope",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "cycleModel": {
+          "name": "cycleModel",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_cycleScopedModel": {
+          "name": "_cycleScopedModel",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_cycleAvailableModel": {
+          "name": "_cycleAvailableModel",
+          "length": 2,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setThinkingLevel": {
+          "name": "setThinkingLevel",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "cycleThinkingLevel": {
+          "name": "cycleThinkingLevel",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "getAvailableThinkingLevels": {
+          "name": "getAvailableThinkingLevels",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "supportsThinking": {
+          "name": "supportsThinking",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_getThinkingLevelForModelSwitch": {
+          "name": "_getThinkingLevelForModelSwitch",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_clampThinkingLevel": {
+          "name": "_clampThinkingLevel",
+          "length": 2,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      },
+      "log": []
+    },
+    {
+      "name": "AI-function-metadata",
+      "value": {
+        "getSupportedThinkingLevels": {
+          "name": "getSupportedThinkingLevels",
+          "length": 1,
+          "ownPrototype": true,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        },
+        "clampThinkingLevel": {
+          "name": "clampThinkingLevel",
+          "length": 2,
+          "ownPrototype": true,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        },
+        "modelsAreEqual": {
+          "name": "modelsAreEqual",
+          "length": 2,
+          "ownPrototype": true,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        }
+      },
+      "log": []
+    },
+    {
+      "name": "AI-supported-false",
+      "value": [
+        "off"
+      ],
+      "log": []
+    },
+    {
+      "name": "AI-supported-true",
+      "value": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "high"
+      ],
+      "log": []
+    },
+    {
+      "name": "AI-supported-getter-order",
+      "value": [
+        "off",
+        "low",
+        "medium",
+        "high",
+        "max"
+      ],
+      "log": [
+        "reasoning",
+        "map",
+        "off",
+        "map",
+        "minimal",
+        "map",
+        "low",
+        "map",
+        "medium",
+        "map",
+        "high",
+        "map",
+        "xhigh",
+        "map",
+        "max"
+      ]
+    },
+    {
+      "name": "AI-supported-live-private-array",
+      "value": {
+        "first": [
+          "changed",
+          "minimal",
+          "low",
+          "medium",
+          "high"
+        ],
+        "second": [
+          "changed",
+          "minimal",
+          "low",
+          "medium",
+          "high"
+        ]
+      },
+      "log": [
+        [
+          "",
+          1,
+          false
+        ]
+      ]
+    },
+    {
+      "name": "AI-clamp-off",
+      "value": "off",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-minimal",
+      "value": "low",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-high",
+      "value": "high",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-xhigh",
+      "value": "max",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-max",
+      "value": "max",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-unknown",
+      "value": "off",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-null",
+      "value": "off",
+      "log": []
+    },
+    {
+      "name": "AI-clamp-none-supported",
+      "value": "off",
+      "log": []
+    },
+    {
+      "name": "AI-equality-type-and-getter-order",
+      "value": true,
+      "log": [
+        "a.type",
+        "b.type",
+        "a.id",
+        "b.id",
+        "a.provider",
+        "b.provider"
+      ]
+    },
+    {
+      "name": "AI-equality-distinct-types",
+      "value": false,
+      "log": []
+    },
+    {
+      "name": "AI-equality-falsy-and-primitives",
+      "value": [
+        false,
+        false,
+        true
+      ],
+      "log": []
+    },
+    {
+      "name": "session-no-model-levels",
+      "value": {
+        "levels": [
+          "off",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "supports": false,
+        "clamped": "off"
+      },
+      "log": []
+    },
+    {
+      "name": "thinking-clamp-and-persist-request",
+      "value": {
+        "model": "reasoning",
+        "thinking": "high",
+        "defaultThinking": "max",
+        "scoped": []
+      },
+      "log": [
+        [
+          "public",
+          {
+            "type": "thinking_level_changed",
+            "level": "high"
+          }
+        ],
+        {
+          "type": "thinking_level_select",
+          "level": "high",
+          "previousLevel": "off"
+        }
+      ]
+    },
+    {
+      "name": "thinking-no-change-no-event",
+      "value": {
+        "model": "plain",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": []
+    },
+    {
+      "name": "thinking-supported-custom-map",
+      "value": {
+        "first": "minimal",
+        "next": "low",
+        "model": "mapped",
+        "thinking": "low",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "thinking_level_select",
+          "level": "minimal",
+          "previousLevel": "off"
+        },
+        {
+          "type": "thinking_level_select",
+          "level": "low",
+          "previousLevel": "minimal"
+        }
+      ]
+    },
+    {
+      "name": "thinking-cycle-unsupported",
+      "value": "undefined",
+      "log": []
+    },
+    {
+      "name": "thinking-switch-default-precedence",
+      "value": [
+        "off",
+        "low",
+        "high",
+        null
+      ],
+      "log": []
+    },
+    {
+      "name": "set-model-default-not-persisted",
+      "value": {
+        "same": true,
+        "model": "selected",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "selected",
+          "previous": "fixture",
+          "source": "set"
+        }
+      ]
+    },
+    {
+      "name": "set-model-auth-falsy",
+      "thrown": {
+        "name": "Error",
+        "message": "No API key for fixture/unauthorized"
+      },
+      "log": []
+    },
+    {
+      "name": "set-model-auth-rejected-original",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "set-model-null-options",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "set-model-per-model-thinking",
+      "value": {
+        "model": "per-model",
+        "thinking": "low",
+        "defaultThinking": "high",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "thinking_level_select",
+          "level": "low",
+          "previousLevel": "off"
+        },
+        {
+          "type": "model_select",
+          "model": "per-model",
+          "previous": "fixture",
+          "source": "set"
+        }
+      ]
+    },
+    {
+      "name": "persist-default-expands-nonempty-scope",
+      "value": {
+        "model": "new",
+        "thinking": "off",
+        "defaultModel": "new",
+        "defaultProvider": "fixture",
+        "scoped": [
+          {
+            "id": "old"
+          },
+          {
+            "id": "new"
+          }
+        ],
+        "enabled": [
+          "fixture/old",
+          "fixture/new"
+        ]
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "new",
+          "previous": "fixture",
+          "source": "set"
+        }
+      ]
+    },
+    {
+      "name": "persist-default-deduplicates-case-pattern",
+      "value": {
+        "model": "new",
+        "thinking": "off",
+        "defaultModel": "new",
+        "defaultProvider": "fixture",
+        "scoped": [
+          {
+            "id": "old"
+          },
+          {
+            "id": "new"
+          }
+        ],
+        "enabled": [
+          "FIXTURE/NEW"
+        ]
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "new",
+          "previous": "fixture",
+          "source": "set"
+        }
+      ]
+    },
+    {
+      "name": "persist-default-empty-scope-stays-empty",
+      "value": {
+        "model": "new",
+        "thinking": "off",
+        "defaultModel": "new",
+        "defaultProvider": "fixture",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "new",
+          "previous": "fixture",
+          "source": "set"
+        }
+      ]
+    },
+    {
+      "name": "scope-deduplicates-qualified-identity",
+      "value": {
+        "model": "fixture",
+        "thinking": "off",
+        "scoped": [
+          {
+            "id": "same"
+          },
+          {
+            "id": "same"
+          }
+        ]
+      },
+      "log": []
+    },
+    {
+      "name": "cycle-available-undefined",
+      "value": {
+        "result": {
+          "id": "b",
+          "thinking": "off",
+          "isScoped": false
+        },
+        "model": "b",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "b",
+          "previous": "a",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-available-forward",
+      "value": {
+        "result": {
+          "id": "b",
+          "thinking": "off",
+          "isScoped": false
+        },
+        "model": "b",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "b",
+          "previous": "a",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-available-backward",
+      "value": {
+        "result": {
+          "id": "c",
+          "thinking": "off",
+          "isScoped": false
+        },
+        "model": "c",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "c",
+          "previous": "a",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-available-other",
+      "value": {
+        "result": {
+          "id": "c",
+          "thinking": "off",
+          "isScoped": false
+        },
+        "model": "c",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "c",
+          "previous": "a",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-available-current-not-found",
+      "value": {
+        "next": "b",
+        "model": "b",
+        "thinking": "off",
+        "defaultModel": "b",
+        "defaultProvider": "fixture",
+        "scoped": []
+      },
+      "log": [
+        {
+          "type": "model_select",
+          "model": "b",
+          "previous": "fixture",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-available-only-one",
+      "value": "undefined",
+      "log": []
+    },
+    {
+      "name": "cycle-scoped-filters-unavailable",
+      "value": {
+        "next": "b",
+        "thinking": "high",
+        "isScoped": true,
+        "model": "b",
+        "scoped": [
+          {
+            "id": "a",
+            "thinkingLevel": "low"
+          },
+          {
+            "id": "missing"
+          },
+          {
+            "id": "b",
+            "thinkingLevel": "high"
+          }
+        ]
+      },
+      "log": [
+        {
+          "type": "thinking_level_select",
+          "level": "high",
+          "previousLevel": "off"
+        },
+        {
+          "type": "model_select",
+          "model": "b",
+          "previous": "a",
+          "source": "cycle"
+        }
+      ]
+    },
+    {
+      "name": "cycle-scoped-one-available",
+      "value": "undefined",
+      "log": []
+    },
+    {
+      "name": "emit-same-qualified-model-skips",
+      "value": "undefined",
+      "log": []
+    },
+    {
+      "name": "emit-different-model-type",
+      "value": "undefined",
+      "log": [
+        {
+          "type": "model_select",
+          "model": "same",
+          "previous": "same",
+          "source": "restore"
+        }
+      ]
+    },
+    {
+      "name": "model-event-rejection-after-mutation",
+      "value": {
+        "model": "event-fail",
+        "thinking": "off",
+        "scoped": []
+      },
+      "log": []
+    }
+  ]
+}

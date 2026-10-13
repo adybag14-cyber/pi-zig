@@ -81,6 +81,7 @@ pub const Engine = struct {
     native_agent_default_stream: ?c.JSValue = null,
     native_agent_complete_cache: ?c.JSValue = null,
     native_ai_session_resources: ?c.JSValue = null,
+    native_ai_model_values: ?c.JSValue = null,
     native_provider_env_lookup: ?c.JSValue = null,
     native_cache_warmer_bindings: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
@@ -274,6 +275,7 @@ pub const Engine = struct {
         if (self.native_agent_default_stream) |value| self.freeValue(value);
         if (self.native_agent_complete_cache) |value| self.freeValue(value);
         if (self.native_ai_session_resources) |value| self.freeValue(value);
+        if (self.native_ai_model_values) |value| self.freeValue(value);
         if (self.native_provider_env_lookup) |value| self.freeValue(value);
         if (self.native_cache_warmer_bindings) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);

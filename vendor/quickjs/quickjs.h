@@ -786,7 +786,7 @@ static inline JSValue JS_NewUint64(JSContext *ctx, uint64_t val)
 
 JS_EXTERN JSValue JS_NewNumber(JSContext *ctx, double d);
 JS_EXTERN JSValue JS_NewBigInt64(JSContext *ctx, int64_t v);
-/* Local native-host operator ABI: add,sub,mul,div,lt,lte,gt,gte. */
+/* Local native-host operator ABI: add,sub,mul,div,lt,lte,gt,gte,mod. */
 JS_EXTERN JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
                                     JSValueConst left, JSValueConst right);
 JS_EXTERN JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value);
