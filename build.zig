@@ -1437,6 +1437,11 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, image_process_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(image_process_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-sdk-image-process", "Compare original SDK image normalization against linked Photon conversion native resize and complete iterator ownership").dependOn(&b.addRunArtifact(image_process_tests).step);
+    const sdk_loadout_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_loadout_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session loadout"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_loadout_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_loadout_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-session-loadout", "Compile the private Source55 loadout artifact without running tests").dependOn(&sdk_loadout_tests.step);
+    b.step("test-native-sdk-session-loadout", "Replay full latest Source loadout hooks and structured prompt sections with private native collaborators and exhaustive host allocation cleanup").dependOn(&b.addRunArtifact(sdk_loadout_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
@@ -1786,6 +1791,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, path_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-extension-path", "Compile the native cross-platform path test artifact without running tests").dependOn(&path_tests.step);
     const run_path_tests = b.addRunArtifact(path_tests);
     const path_test_step = b.step("test-extension-path", "Test native cross-platform extension path APIs");
     path_test_step.dependOn(&run_path_tests.step);
