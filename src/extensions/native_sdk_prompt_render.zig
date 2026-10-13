@@ -251,6 +251,44 @@ fn sections(scope: *Scope, input: c.JSValue) !c.JSValue {
     }
     return result;
 }
+pub fn buildSections(engine: *em.Engine, input: c.JSValue) !c.JSValue {
+    try initialize(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return c.JS_DupValue(engine.context, try sections(&scope, input));
+}
+
+/// Original diffSystemPromptSections: preserve entry order, ordinary property
+/// reads, undefined deletion tests, and null removals in the returned patch.
+pub fn diffSections(engine: *em.Engine, previous: c.JSValue, current: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const patch = try scope.object();
+    const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
+    const rows = try entries(&scope, current);
+    var iterator = try js.Iterator.init(engine, rows, symbol);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |entry| {
+        defer engine.freeValue(entry);
+        const pair = try js.pair(engine, entry, symbol);
+        defer for (pair) |value| engine.freeValue(value);
+        const old = try scope.own(try js.getKey(engine, previous, pair[0]));
+        if (!scope.equal(old, pair[1])) try js.setKey(engine, patch, pair[0], pair[1]);
+    }
+    const object = try scope.global("Object");
+    const names = try scope.invoke(object, "keys", &.{previous});
+    var removed = try js.Iterator.init(engine, names, symbol);
+    defer removed.deinit();
+    errdefer removed.closePreserving();
+    while (try removed.next()) |name| {
+        defer engine.freeValue(name);
+        if (c.JS_IsUndefined(try scope.own(try js.getKey(engine, current, name)))) try js.setKey(engine, patch, name, c.pi_js_null());
+    }
+    const keys = try scope.invoke(try scope.global("Object"), "keys", &.{patch});
+    return if (try scope.positive(try scope.get(keys, "length"))) c.JS_DupValue(engine.context, patch) else c.pi_js_undefined();
+}
+
 pub fn render(engine: *em.Engine, input: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

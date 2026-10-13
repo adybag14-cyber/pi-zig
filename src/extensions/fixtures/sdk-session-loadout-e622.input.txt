@@ -1,0 +1,62 @@
+const rows=[],receivers=[];
+const clone=value=>JSON.parse(JSON.stringify(value));
+const failure=(label)=>{const error=new Error(label);error.stack='loadout-fixture-stack';return error;};
+const summarizeTool=tool=>({name:tool.name,description:tool.description,keys:Object.keys(tool),symbol:tool[Symbol.for('loadout-marker')]});
+const summary=tools=>tools.map(summarizeTool);
+const configured=(scenario,trace)=>{
+ const tools=[{name:'read',description:'Read',parameters:{type:'object'},[Symbol.for('loadout-marker')]:'read-symbol'},{name:'bash',description:'Bash',parameters:{type:'object'}},{name:'alpha',description:'Alpha',parameters:{type:'object'}},{name:'beta',description:'Beta',parameters:{type:'object'}},{name:'hidden',description:'Hidden',parameters:{type:'object'}},{name:'deferred',description:'Deferred',parameters:{type:'object'}},{name:'code',description:'Code',parameters:{type:'object'}},{name:'mcp__server__direct',description:'MCP direct',parameters:{type:'object'}},{name:'mcp__server__deferred',description:'MCP deferred',parameters:{type:'object'}},{name:'list_mcp_resources',description:'MCP resources',parameters:{type:'object'}},{name:'tool_search',description:'Search',parameters:{type:'object'}}];
+ const definitions=new Map(tools.map(tool=>[tool.name,{definition:{...tool,...(tool.name==='hidden'?{exposure:'hidden'}:tool.name==='deferred'||tool.name==='mcp__server__deferred'?{exposure:'deferred'}:tool.name==='code'?{exposure:'codemode'}:{}),namespace:tool.name==='alpha'?'fixture-space':undefined},sourceInfo:{path:'<loadout-fixture>'}}]));
+ const guidelines=new Map([['alpha',[' Alpha rule ','same']],['beta',['same','Beta rule']]]);
+ return{tools,definitions,guidelines};
+};
+for(const scenario of ['empty','deduplicate-order','unknown-hidden','all-exposures','mcp-direct-filtered','mcp-deferred-search','mcp-deferred-no-search','mcp-resource-filtered','non-mcp-allowed-false','hook-descriptions','hook-last-wins','hook-hide','hook-null','hook-undefined','hook-description-undefined','hook-description-null','hook-throws','hook-throws-string','hook-partial-descriptions','hook-hidden-iterator-error','hook-getter-error','hook-callback-getter-error','hook-live-callbacks','hook-registry-mutation','callable-default','callable-explicit','prepare-first','prepare-unchanged','prepare-remove','prepare-explicit-messages','prepare-forced','prepare-hidden','prepare-options-accessors','prepare-current-replay']){
+ const trace=[],reports=[],{tools,definitions,guidelines}=configured(scenario,trace),session=await createLoadoutCaseReceiver();receivers.push(session);
+ Object.assign(session,{_toolRegistry:new Map(tools.map(tool=>[tool.name,tool])),_toolDefinitions:definitions,_toolPromptGuidelines:guidelines,_hiddenDeclarations:new Set(['old']),_pendingToolNames:new Set(),_allowedTools:undefined});
+ session.agent.state.tools=[tools[2]];session.agent.state.messages=[];session._extensionRunner.onError(report=>reports.push({extensionPath:report.extensionPath,event:report.event,error:report.error,stack:report.stack}));
+ let selected=['alpha','beta'],saved;
+ const setHook=(name,prepare)=>{definitions.get(name).definition.prepareLoadout=prepare;};
+ const observe=function(loadout){if(this!==definitions.get('alpha').definition)throw failure('hook receiver');trace.push({declared:summary(loadout.declared),callable:loadout.callable.map(t=>t.name),registered:loadout.registered.map(t=>t.name),exposure:loadout.getExposure('hidden'),missingExposure:loadout.getExposure('missing'),namespace:loadout.getNamespace('alpha'),missingNamespace:loadout.getNamespace('missing'),guidelines:loadout.getPromptGuidelines('alpha'),missingGuidelines:loadout.getPromptGuidelines('missing')});saved=loadout;};
+ if(scenario==='empty')selected=[];
+ if(scenario==='deduplicate-order')selected=['beta','alpha','beta','read','alpha'];
+ if(scenario==='unknown-hidden')selected=['missing','hidden','alpha'];
+ if(scenario==='all-exposures')selected=tools.map(t=>t.name);
+ if(scenario.startsWith('mcp-')||scenario==='non-mcp-allowed-false'){session._allowedTools=function(name){if(this!==session)throw failure('allowed receiver');trace.push(['allowed',name]);return false;};selected=scenario==='mcp-direct-filtered'?['mcp__server__direct']:scenario==='mcp-resource-filtered'?['list_mcp_resources']:scenario==='non-mcp-allowed-false'?['alpha']:['mcp__server__deferred'];if(scenario==='mcp-deferred-no-search')session._toolRegistry.delete('tool_search');}
+ if(scenario.startsWith('hook-')||scenario==='prepare-hidden')setHook('alpha',observe);
+ if(scenario==='hook-descriptions')setHook('alpha',function(loadout){observe.call(this,loadout);return{descriptions:{alpha:'Changed alpha',beta:'Changed beta',missing:'Ignored'}};});
+ if(scenario==='hook-last-wins'){setHook('alpha',function(loadout){observe.call(this,loadout);return{descriptions:{beta:'First'}};});setHook('beta',function(loadout){trace.push(['second-description',loadout.declared[1].description]);return{descriptions:{beta:'Last'}};});}
+ if(scenario==='hook-hide'||scenario==='prepare-hidden')setHook('alpha',function(loadout){observe.call(this,loadout);return{hiddenDeclarations:['alpha','alpha','not-registered']};});
+ if(scenario==='hook-null')setHook('alpha',()=>null);
+ if(scenario==='hook-undefined')setHook('alpha',()=>undefined);
+ if(scenario==='hook-description-undefined')setHook('alpha',()=>({descriptions:{alpha:undefined}}));
+ if(scenario==='hook-description-null')setHook('alpha',()=>({descriptions:{alpha:null}}));
+ if(scenario==='hook-throws')setHook('alpha',()=>{throw failure('hook failure');});
+ if(scenario==='hook-throws-string')setHook('alpha',()=>{throw 'hook string';});
+ if(scenario==='hook-partial-descriptions')setHook('alpha',()=>({descriptions:{alpha:'Kept before hidden getter'},get hiddenDeclarations(){throw failure('hidden getter');}}));
+ if(scenario==='hook-hidden-iterator-error')setHook('alpha',()=>({hiddenDeclarations:{*[Symbol.iterator](){yield 'alpha';throw failure('hidden iterator');}}}));
+ if(scenario==='hook-getter-error')Object.defineProperty(definitions.get('alpha').definition,'prepareLoadout',{get(){throw failure('hook discovery getter');}});
+ if(scenario==='hook-callback-getter-error'){let reads=0;Object.defineProperty(definitions.get('alpha').definition,'prepareLoadout',{get(){if(++reads===1)return()=>{};throw failure('hook invocation getter');}});}
+ if(scenario==='hook-live-callbacks')setHook('alpha',function(loadout){observe.call(this,loadout);definitions.get('alpha').definition.exposure='deferred';guidelines.set('alpha',['live']);trace.push(['live',loadout.getExposure('alpha'),loadout.getPromptGuidelines('alpha')]);globalThis.loadoutHeldCallback=loadout.getExposure;});
+ if(scenario==='hook-registry-mutation')setHook('alpha',function(loadout){observe.call(this,loadout);session._toolRegistry.delete('beta');trace.push(['registered-snapshot',loadout.registered.includes(tools[3])]);return{descriptions:{beta:'Retained selected beta'}};});
+ let result,error=null,identity;
+ try{
+  if(scenario==='callable-default'||scenario==='callable-explicit'){result=summary(scenario==='callable-default'?session._getCallableTools():session._getCallableTools(new Set(['beta'])));}
+  else if(scenario.startsWith('prepare-')){
+   const options=normalizeLoadoutOptions({cwd:'C:\\loadout\\fixture',selectedTools:selected,toolSnippets:{alpha:'Alpha snippet',beta:'Beta snippet'},toolGuidelines:{alpha:[' rule ','rule']},sections:{custom:'section'},...(scenario==='prepare-forced'?{forceSystemPrompt:'forced request only'}:{})});
+   if(scenario==='prepare-unchanged')session.agent.state.messages=[{role:'system',content:'',sections:buildLoadoutSections({...options,hiddenTools:[]}),timestamp:1}];
+   if(scenario==='prepare-remove')session.agent.state.messages=[{role:'system',content:'',sections:{preamble:'old',obsolete:'remove me'},timestamp:1}];
+   if(scenario==='prepare-current-replay')session.agent.state.messages=[{role:'system',content:'',sections:{old:'older',preamble:'old'},timestamp:1},{role:'assistant',content:[],timestamp:2},{role:'system',content:'',sections:{old:null,preamble:'new',extra:'extra'},timestamp:3}];
+   let messages;if(scenario==='prepare-explicit-messages')messages=[{role:'system',content:'',sections:{explicit:'remove'},timestamp:1}];
+   if(scenario==='prepare-options-accessors'){let requested=options.selectedTools;Object.defineProperty(options,'selectedTools',{enumerable:true,configurable:true,get(){trace.push(['selected-get']);return requested;},set(value){trace.push(['selected-set',value]);requested=value;}});}
+   const patch=session._preparePromptAndToolLoadout(options,messages);result={patch,options};
+  }else{const declared=session._applyToolLoadout(selected);identity=declared.map(tool=>tool===tools.find(t=>t.name===tool.name));result=summary(declared);}
+ }catch(cause){error={name:cause.name,message:cause.message};}
+ rows.push({scenario,error,result,identity,trace,reports,hidden:[...session._hiddenDeclarations],active:summary(session.agent.state.tools),savedKeys:saved?Object.keys(saved):undefined});
+}
+const sectionsRows=[];
+for(const [scenario,input]of [
+ ['defaults',{cwd:'C:\\work'}],['custom',{cwd:'/cwd',customPrompt:'custom prompt'}],['rules',{cwd:'/cwd',selectedTools:['bash','powershell','alpha'],toolGuidelines:{alpha:[' x ','x','  ']},promptGuidelines:[' x','y']}],['hidden-tools',{cwd:'/cwd',selectedTools:['read','bash'],hiddenTools:['read'],toolSnippets:{read:'Read',bash:'Shell'}}],['sections',{cwd:'/cwd',customPrompt:'custom',appendSystemPrompt:'append',contextFiles:[{path:'a"b',content:'instructions'}],sections:{z:'last',cwd:'override',empty:''}}],['skills-read',{cwd:'/cwd',selectedTools:['read'],skills:[{name:'A<&',description:'Description "quote"',filePath:'/skills/a',disableModelInvocation:false}]}],['skills-indirect',{cwd:'/cwd',selectedTools:['read'],hiddenTools:['read'],skills:[{name:'A',description:'D',filePath:'/skills/a'}]}],['skills-none',{cwd:'/cwd',selectedTools:[],skills:[{name:'A',description:'D',filePath:'/skills/a'}]}],['skills-disabled',{cwd:'/cwd',selectedTools:['bash'],skills:[{name:'A',description:'D',filePath:'/skills/a',disableModelInvocation:true}]}],['invalid-section',{cwd:'/cwd',sections:{'Bad tag':'text'}}],['reserved-section',{cwd:'/cwd',sections:{preamble:'forbidden'}}],['forced-sections',{cwd:'/cwd',forceSystemPrompt:'not a section override',customPrompt:'structured still'}]
+ ]){let value,error=null;try{value=buildLoadoutSections(input);}catch(cause){error={name:cause.name,message:cause.message};}sectionsRows.push({scenario,value,error});}
+const diffRows=[];
+for(const [scenario,previous,current]of [['same',{a:'one'},{a:'one'}],['add',{}, {b:'two',a:'one'}],['replace',{a:'old'},{a:'new'}],['remove',{a:'one',b:'two'}, {b:'two'}],['undefined',{a:'one'},{a:undefined}],['inherited',Object.assign(Object.create({a:'one'}),{b:'two'}),{a:'one'}],['numeric-order',{'10':'old','2':'keep'},{'10':'new','2':'keep','1':'added'}],['null-and-empty',{a:null,b:''},{a:null,b:''}],['current-getter',{a:'old'},Object.defineProperty({},'a',{enumerable:true,get(){return'new';}})]]){const patch=diffLoadoutSections(previous,current);diffRows.push({scenario,patch,keys:patch?Object.keys(patch):undefined});}
+const prototype=Object.getPrototypeOf(receivers[0]),metadata={};for(const name of ['_applyToolLoadout','_getToolExposure','_isActivatable','_getCallableTools','getActiveToolNames','getCallableToolNames','_preparePromptAndToolLoadout']){const descriptor=Object.getOwnPropertyDescriptor(prototype,name),value=descriptor.value;metadata[name]={name:value.name,length:value.length,enumerable:descriptor.enumerable,writable:descriptor.writable,configurable:descriptor.configurable,ownPrototype:Object.hasOwn(value,'prototype'),functionPrototype:Object.getPrototypeOf(value)===Function.prototype};}metadata.savedCallback={name:loadoutHeldCallback.name,length:loadoutHeldCallback.length,ownPrototype:Object.hasOwn(loadoutHeldCallback,'prototype')};
+globalThis.sdkSessionLoadoutRows={rows,sectionsRows,diffRows,metadata};globalThis.loadoutCaseReceivers=receivers;

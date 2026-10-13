@@ -1,0 +1,297 @@
+{
+  "status": "Source55_Windows_Debug_ReleaseSafe_GC_allGPA_qualified_private",
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_mode": "Node24 original TypeScript via official exports resolution; no Source class body rewrite",
+  "native_scope": "Private exact method bodies with actual native Agent, ExtensionRunner, SessionManager, transcript replay and full prompt sections; full native AgentSession factory/public activation remain separate.",
+  "original_source_count": 1902,
+  "hydrated_catalog_count": 43,
+  "source_runtime_manifest": {
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+    "sha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375"
+  },
+  "external_lock_records": 365,
+  "external_reused_or_platform_optional": 361,
+  "absent_extraneous_not_reused": [
+    "packages/agent/node_modules/@earendil-works/pi-ai/node_modules/typebox",
+    "packages/coding-agent/node_modules/@earendil-works/pi-agent-core/node_modules/typebox",
+    "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/@anthropic-ai/sdk",
+    "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/typebox"
+  ],
+  "workspaces": 16,
+  "loadout_cases": 34,
+  "sections_cases": 12,
+  "diff_cases": 9,
+  "case_total": 55,
+  "original_factory_instances": 34,
+  "observed_modules": 1338,
+  "official_export_mappings": 45,
+  "raw_capture": {
+    "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-frozen-20261013-output.json",
+    "sha256": "233982610ed0dcc178a9c3d37893f49a1036a0cec9d52ac109c9b8fecd6cac55"
+  },
+  "node": {
+    "version": "v24.14.0",
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs"
+    ]
+  },
+  "caller_input_sha256": "66548fbce8f849680545ddff61c7e82f032ede3519e64431e32bee9e8ab77abf",
+  "expected_fixture_sha256": "1719147916e25e3c84f16757dbb9c206fe9500ac2df889676441992d4e298b75",
+  "direct_source_files": [
+    {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "sha256": "e2bbf746779fbed5a8c36f023842bf271252d1fd6f17f5a32f70a0d1c63f0b65"
+    },
+    {
+      "path": "packages/coding-agent/src/core/sdk.ts",
+      "sha256": "61f398403c7510bec849583b2c46272df11ac5aa8d2e24b4ded97a108dd55b28"
+    },
+    {
+      "path": "packages/coding-agent/src/core/system-prompt.ts",
+      "sha256": "5e28c82634113d0cca7ff5da6fa94e27aaae80e461cd5664ced9dbcef6f89089"
+    },
+    {
+      "path": "packages/coding-agent/src/core/skills.ts",
+      "sha256": "8dcc644dbabbb34238f609ecf191c0da370d74873ccaccaf3c3cd0e7703d9431"
+    },
+    {
+      "path": "packages/coding-agent/src/config.ts",
+      "sha256": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e"
+    },
+    {
+      "path": "packages/coding-agent/src/core/mcp-servers.ts",
+      "sha256": "0aaad23b26f31f743bdd117754f4c871ea821279bf68f8ba5d71eccbb1602c6a"
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/runner.ts",
+      "sha256": "3cd6d1ad18e8e4c7adf722aed9291bc64f06e3a7d461755c21e3cba4819f4e5e"
+    },
+    {
+      "path": "packages/ai/src/utils/text.ts",
+      "sha256": "d37c1825855c7fc71669a545b5b266810242c1c7e58d57228c0c143f29c1c544"
+    },
+    {
+      "path": "packages/ai/src/utils/transcript.ts",
+      "sha256": "e0814f35bdcc93b017fa45589a6920e46b5480b88fba01ef93e5d2d4e815f0f2"
+    }
+  ],
+  "stable_double_capture_exact": true,
+  "measured_patch_timestamp_slots": [
+    {
+      "scenario": "prepare-first",
+      "before": 1791899569980,
+      "after": 1791910247737
+    },
+    {
+      "scenario": "prepare-remove",
+      "before": 1791899569980,
+      "after": 1791910247738
+    },
+    {
+      "scenario": "prepare-explicit-messages",
+      "before": 1791899569981,
+      "after": 1791910247738
+    },
+    {
+      "scenario": "prepare-forced",
+      "before": 1791899569981,
+      "after": 1791910247738
+    },
+    {
+      "scenario": "prepare-hidden",
+      "before": 1791899569981,
+      "after": 1791910247738
+    },
+    {
+      "scenario": "prepare-options-accessors",
+      "before": 1791899569981,
+      "after": 1791910247739
+    },
+    {
+      "scenario": "prepare-current-replay",
+      "before": 1791899569981,
+      "after": 1791910247739
+    }
+  ],
+  "public_activation": false,
+  "native_runs": [
+    {
+      "mode": "Debug",
+      "state": {
+        "name": "sdk-loadout-path-native-debug-allocator-boundary-20261013",
+        "pid": 45956,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-path test-native-sdk-session-loadout -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-13T17:46:32.4821316Z",
+        "launched_utc": "2026-10-13T17:46:32.4804286+00:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T17:48:57.9876312+00:00"
+      },
+      "state_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-debug-allocator-boundary-20261013.json",
+        "sha256": "02afba6de9e8dfb73499ebe83a58cf43cbf54d837f1250f7353997ec46aab347"
+      },
+      "posthash": {
+        "source": 4597,
+        "source_after": 4597,
+        "source_drift": 0,
+        "tools": 19546,
+        "tool_drift": 0,
+        "admitted_free_kib": 26440156,
+        "completed_utc": "2026-10-13T17:49:05.5131484+00:00"
+      },
+      "posthash_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-debug-allocator-boundary-20261013-posthash.json",
+        "sha256": "937f6247619d3ab0d1ceb8fc521961f104c17ca87f60770712325256e70c284c"
+      },
+      "source_before": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-debug-allocator-boundary-20261013-source-before.json",
+        "sha256": "30ff82d2cd15e16dfac0090b1c1b505e193670c74432b2e2c50b5145cb5d175b"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-debug-allocator-boundary-20261013.stderr.log",
+        "sha256": "49764f28204e0cd0ebf54147ce994bfc2e67f27423f7fa5fdffbc54565ea3013"
+      },
+      "steps": 159,
+      "tests": 18,
+      "path_tests": 7,
+      "loadout_tests": 11,
+      "source_cases": 55,
+      "full_std_testing_checkAllAllocationFailures": true,
+      "callback_receiver_GC": true
+    },
+    {
+      "mode": "ReleaseSafe",
+      "state": {
+        "name": "sdk-loadout-path-native-releasesafe-compiled-runtime-20261013",
+        "pid": 8136,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-path test-native-sdk-session-loadout -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+        "command_line_source": "live Win32_Process",
+        "created_utc": "2026-10-13T17:59:13.5361381Z",
+        "launched_utc": "2026-10-13T17:59:13.5345453+00:00",
+        "identity_captured": true,
+        "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+        "working_directory": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T18:00:15.3107540+00:00"
+      },
+      "state_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-releasesafe-compiled-runtime-20261013.json",
+        "sha256": "7034831df44ec74b90a42e9256921aba2f887b094eed9c6633686d5cc4c8af51"
+      },
+      "posthash": {
+        "source": 4597,
+        "source_after": 4597,
+        "source_drift": 0,
+        "tools": 19546,
+        "tool_drift": 0,
+        "admitted_free_kib": 28350664,
+        "completed_utc": "2026-10-13T18:00:21.8438101+00:00"
+      },
+      "posthash_receipt": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-releasesafe-compiled-runtime-20261013-posthash.json",
+        "sha256": "041b7cdd43d607517cecc3b9d7ba3d6f959e8a1f7ef03c7392851966379157be"
+      },
+      "source_before": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-releasesafe-compiled-runtime-20261013-source-before.json",
+        "sha256": "43ea5a0bfc72a4850a51c7e4937bbcf20d17b476dda71a9f98279ebe0c9dfdec"
+      },
+      "stderr": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-releasesafe-compiled-runtime-20261013.stderr.log",
+        "sha256": "d3cd8728d5a60d800b6aae4c1c84eab996417bf944682397ab179ccac4a5c4cc"
+      },
+      "steps": 159,
+      "tests": 18,
+      "path_tests": 7,
+      "loadout_tests": 11,
+      "source_cases": 55,
+      "full_std_testing_checkAllAllocationFailures": true,
+      "callback_receiver_GC": true
+    }
+  ],
+  "native_body_hashes": [
+    {
+      "path": "src/extensions/native_sdk_session_loadout.zig",
+      "sha256": "5ebcac712c3836b120d811bd390a990ed60e0bad7f99abbb9627bf908f70dfc5"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_render.zig",
+      "sha256": "955eb953620bb0d3134e01b56a6dfc8dff7877e58fd575f12dd49b0779afb853"
+    },
+    {
+      "path": "src/native_sdk_session_loadout_test.zig",
+      "sha256": "b2c11ee4069695f5f4fe1aa17fe5d023576390b800db1b5678d1cf6b4cbf11db"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-loadout-e622.input.txt",
+      "sha256": "66548fbce8f849680545ddff61c7e82f032ede3519e64431e32bee9e8ab77abf"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-loadout-e622.json",
+      "sha256": "1719147916e25e3c84f16757dbb9c206fe9500ac2df889676441992d4e298b75"
+    },
+    {
+      "path": "src/extensions/node_path.zig",
+      "sha256": "a4164d0125f30d66c0010ea495b8fa991e873a24934b780a93dd1166f56511e3"
+    }
+  ],
+  "path_dependency_repair_commit": "9704b9dd6e4a34ce80c717054b24fd88f896fbb0",
+  "host_await_timeout_ms": 10000,
+  "test_timeout_seconds": 120,
+  "runtime_outer_timeout_seconds": 300,
+  "native_backend": "default LLVM",
+  "native_parallelism": 1,
+  "native_factory_scope": "Caller case adapter uses an ordinary AgentSession prototype receiver with actual native Agent, ExtensionRunner, and SessionManager. Original Source capture uses 34 real unmodified factory instances. Full native AgentSession constructor/factory qualification is separate.",
+  "timestamp_comparison_scope": {
+    "field": "rows[scenario].result.patch.timestamp",
+    "scenarios": [
+      "prepare-first",
+      "prepare-remove",
+      "prepare-explicit-messages",
+      "prepare-forced",
+      "prepare-hidden",
+      "prepare-options-accessors",
+      "prepare-current-replay"
+    ],
+    "count": 7,
+    "native_bound": "Each raw timestamp must be an integer within native begin/end wall-clock bounds before comparing a null slot.",
+    "source_bound": "Each raw timestamp must be an integer within original Source capture begin/end bounds.",
+    "other_fields": "Every other field, row identity, property order, metadata and output is compared exactly."
+  },
+  "source_runtime_post": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-e622-runtime-nativequalification-post-20261013.json",
+    "sha256": "e6b5f0410823613c70c0a02a903c8dacaf69e8dca5d8535fca3d84e372068d57"
+  },
+  "original_runtime_tools_post": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-original-runtime-nativequalification-post-20261013.json",
+    "sha256": "3899043db61fd62030a8ccb7b4465a33e6bd10a982c35a541a2e92c9ad5501a9"
+  },
+  "cold_compile_negative": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-native-releasesafe-allocator-boundary-20261013.json",
+    "sha256": "be107e7736445ac17d8ed641f8ccaf430806acb3a441afd3b7644fc75288c620"
+  },
+  "compile_only": {
+    "outer_seconds": 1320,
+    "receipt": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-path-compile-releasesafe-allocator-boundary-20261013.json",
+      "sha256": "2f368903dd6c5d7d2faad842531a6d6efd02bc0501c3a729dbd57e045d1f7061"
+    },
+    "scope": "Compile only the same two native test artifacts; no test or host deadline changed."
+  },
+  "hosted_qualification": "pending Root intake and exact commit hosted runs"
+}
