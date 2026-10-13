@@ -1,0 +1,20 @@
+{
+  "source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_release": "v1.2.0",
+  "clipboard_source_sha256": "B75A97F581B55A8AC199F9B0E13907C568A5C9B192733606110007663CEAAFE9",
+  "codemode_source_sha256": "3938C223954116CD067DE277BCF4EF0FF77B6F61986E2E746DB82017B4B7BD36",
+  "codemode_genuine_capture": "latest12-codemode-original-capture-20261013",
+  "codemode_capture_status": "passed",
+  "codemode_capture_process_identity": "short-lived process exited before live CIM capture; owned Process handle exit0",
+  "codemode_source_cases": 20,
+  "clipboard_change": "Exact PI_CLIPBOARD_OSC52=1 opt-in, preserving native-before-terminal copy order and100000 encoded limit",
+  "clipboard_boundary_inputs": [
+    "",
+    "0",
+    "true",
+    "01",
+    "1"
+  ],
+  "native_status": "pending",
+  "certified_upstream_baseline_changed": false
+}

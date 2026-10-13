@@ -1,0 +1,149 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "sourceFile": "C:/Users/adyba/pi-upstream-contract-e6220e1-20261013/packages/codemode/src/source.ts",
+  "sourceSha256": "3938c223954116cd067de277bcf4ef0ff77b6f61986e2e746db82017b4b7bd36",
+  "rows": [
+    {
+      "input": "// count things\n// @options: {\"timeout_ms\": 1000}\nwhile (true) {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "\n  // @options: {\"timeout_ms\": 1000}\nwhile (true) {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "text(1)\r\n// @options: {\"timeout_ms\": 1}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "// @options: {\"timeout_ms\": 1}\ntext(1)\n// @options: {\"timeout_ms\": 2}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 3"
+      }
+    },
+    {
+      "input": "text(1)\n﻿ // @options: {}\ntext(2)",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "// @options: INVALID\n// @options: {}\ntext(1)",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "text(1)\n// @options: {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "text(1)\n// @optionsx: {}",
+      "result": {
+        "code": "text(1)\n// @optionsx: {}",
+        "options": {}
+      }
+    },
+    {
+      "input": "text(\"// @options: {}\")",
+      "result": {
+        "code": "text(\"// @options: {}\")",
+        "options": {}
+      }
+    },
+    {
+      "input": "/*\n// @options: {}\n*/",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "const text = `\n// @options: {}\n`;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "// @options: {}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {}
+      }
+    },
+    {
+      "input": "  // @options: {\"timeout_ms\": 2}\r\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 2
+        }
+      }
+    },
+    {
+      "input": "\n\t",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "input": "// @options: {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "input": "\r// @options: {}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {}
+      }
+    },
+    {
+      "input": "return 1;\n\r// @options: {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 2"
+      }
+    },
+    {
+      "input": "return 1;\n// other\n // @options: {}",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The // @options: line must be the first line of the input; found one on line 3"
+      }
+    },
+    {
+      "input": "// @options: {}\nreturn 1;\n",
+      "result": {
+        "code": "\nreturn 1;\n",
+        "options": {}
+      }
+    },
+    {
+      "input": "return 1;\r// @options: {}",
+      "result": {
+        "code": "return 1;\r// @options: {}",
+        "options": {}
+      }
+    }
+  ]
+}

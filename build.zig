@@ -27,6 +27,12 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     b.step("test-codemode-source", "Compare ECMAScript source directives with actual upstream results").dependOn(&b.addRunArtifact(codemode_source_tests).step);
+    const latest12_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/latest12_small_contracts_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "native codemode source", "Wayland copy", "latest Pi 1.2 selected inventory" },
+        .use_llvm = use_llvm,
+    });
+    b.step("test-latest12-small-contracts", "Replay latest directive placement and explicit remote clipboard opt-in").dependOn(&b.addRunArtifact(latest12_tests).step);
     const native_photon_library = @import("tools/build_photon.zig").library(b, target, optimize);
     const native_photon_link = b.addModule("native_photon_link", .{ .root_source_file = b.path("src/ai/photon_session.zig"), .target = target, .optimize = optimize, .link_libc = true });
     native_photon_link.addIncludePath(b.path("vendor/photon-native"));
@@ -2355,7 +2361,7 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-latest-foundation-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-extension-filesystem", "test-native-tui-alt-source", "test-native-tui-base-source" });
     addCompileOnlyGroup(b, "build-hosted-latest-application-components", &.{ "test-custom-editor-frontend", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured" });
     addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services", "test-native-models-stream-regressions" });
-    addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance", "test-exhaustive-allocation-coverage", "test-exhaustive-allocation-helper" });
+    addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance", "test-exhaustive-allocation-coverage", "test-exhaustive-allocation-helper", "test-latest12-small-contracts" });
     addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source", "test-native-chord-contract-source", "test-native-chord-clone-source", "test-native-chord-normalization-evaluate-source" });
     addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers", "test-native-sdk-session-lifecycle", "test-native-sdk-message-conversion", "test-native-sdk-session-prepare" });
     addCompileOnlyGroup(b, "build-hosted-sdk-query-components", &.{ "test-native-sdk-session-queries", "test-native-sdk-query-consumers" });

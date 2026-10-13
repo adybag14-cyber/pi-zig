@@ -323,7 +323,8 @@ jobs:
             @{target='test-native-sdk-session-prepare'; tests=11},
             @{target='test-native-sdk-session-events'; tests=12},
             @{target='test-native-auth-storage-persistent'; tests=8},
-            @{target='test-native-auth-timer-controls'; tests=24}
+            @{target='test-native-auth-timer-controls'; tests=24},
+            @{target='test-latest12-small-contracts'; tests=7}
           )
           $taskProof = @()
           foreach ($taskSlice in $taskSlices) {
@@ -424,7 +425,7 @@ jobs:
                   $taskLatest = Get-Content "$taskRoot/latest-result.json" -Raw | ConvertFrom-Json
                   if ($taskComponents.status -cne 'passed' -or $taskComponents.component_tests -ne 93 -or $taskLatest.status -cne 'passed' -or $taskLatest.tests -ne 207) { throw 'Platform component qualification is incomplete' }
                   $taskAdditional = Get-Content "$taskRoot/additional-result.json" -Raw | ConvertFrom-Json
-                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11; 'test-native-sdk-message-conversion'=12; 'test-native-sdk-session-prepare'=11; 'test-native-sdk-session-events'=12; 'test-native-auth-storage-persistent'=8; 'test-native-auth-timer-controls'=24}
+                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11; 'test-native-sdk-message-conversion'=12; 'test-native-sdk-session-prepare'=11; 'test-native-sdk-session-events'=12; 'test-native-auth-storage-persistent'=8; 'test-native-auth-timer-controls'=24; 'test-latest12-small-contracts'=7}
                   if ($taskAdditional.status -cne 'passed' -or $taskAdditional.slices.Count -ne $taskExpectedSlices.Count) { throw 'Current component slice qualification missing' }
                   foreach ($taskTarget in $taskExpectedSlices.Keys) {
                     $taskSlice = @($taskAdditional.slices | Where-Object target -CEQ $taskTarget)

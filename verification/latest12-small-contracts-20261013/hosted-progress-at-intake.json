@@ -1,0 +1,19 @@
+{
+  "candidate_head": "5e6802c6a06e3168d52c45ac51723cc774ba411f",
+  "run": 38404315962,
+  "tests_each_mode": 7,
+  "genuine_source_cases": 20,
+  "windows_debug": "passed",
+  "windows_releasesafe": "passed",
+  "linux_debug": "passed",
+  "linux_releasesafe": "passed",
+  "mac_debug": "queued",
+  "mac_releasesafe": "queued",
+  "overall_platform_status": "incomplete",
+  "main_additional_slices": 22,
+  "main_additional_tests": 251,
+  "main_workflow_powershell_blocks": 23,
+  "main_workflow_parser_errors": 0,
+  "certified_upstream_baseline_changed": false,
+  "checked_utc": "2026-10-13T13:35:07.8975875+00:00"
+}
