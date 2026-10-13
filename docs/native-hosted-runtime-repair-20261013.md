@@ -40,3 +40,21 @@ Zig syntax/format, preserved probe bodies, and complete range arithmetic. Local
 native execution of this increment was not admitted because free memory was
 below the established 16 GiB threshold. Hosted execution remains required; this
 change is neither a release nor a claim that the remaining timeouts are fixed.
+
+## Independent durable fixture case boundaries
+
+The next increment replaces the batched top-level await with one original
+10,000 ms await per complete independent fixture case. One Engine and module
+closure still own the whole batch. Each case includes its complete assertions,
+receipt, SQLite reopen/replay where applicable, and final disposal. No operation
+renews its deadline and no class implementation changes.
+
+The repair preserves all four original guest case bodies byte-for-byte after
+reversing only their loop/function boundaries. Genuine upstream full and
+case-boundary captures match all 19 stable rows, preserve 18 SQLite case paths,
+and compare 31,020 raw leaf pairs with explicit identity and bounded measurement
+slots. The seven relevant Source class files are unchanged at upstream e6220e1.
+Windows Debug and ReleaseSafe each passed 159 steps and 19 tests. The first cold
+attempts reached their 300-second outer bound; separately admitted warm attempts
+passed. Hosted macOS qualification remains pending on the published increment.
+Evidence is scoped in verification/durable-whole-case-boundaries-20261013.

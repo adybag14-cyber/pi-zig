@@ -1,0 +1,50 @@
+{
+  "runtime_origin_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "runtime_identity_authority": "durable-19cb534-reference-20261012-qualified.json and official31064built-runtime manifest",
+  "latest_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "paths": [
+    {
+      "path": "packages/durable/src/codemode/codemode.ts",
+      "original_sha256": "0539BE67968475CF63715AD44E97F4200D2767168EC825A87692A6B386AFD8AA",
+      "latest_sha256": "0539BE67968475CF63715AD44E97F4200D2767168EC825A87692A6B386AFD8AA",
+      "same": true
+    },
+    {
+      "path": "packages/durable/src/codemode/models.ts",
+      "original_sha256": "DA5CB2E31D63C80D07A3594126CAFC87F409BC65E7A8767C3A8E7B1EC06945EE",
+      "latest_sha256": "DA5CB2E31D63C80D07A3594126CAFC87F409BC65E7A8767C3A8E7B1EC06945EE",
+      "same": true
+    },
+    {
+      "path": "packages/durable/src/harness/harness.ts",
+      "original_sha256": "E0E6D839A294EDCF8F82355700AAEBAE867FD2538388F87932E0EB3D053BB319",
+      "latest_sha256": "E0E6D839A294EDCF8F82355700AAEBAE867FD2538388F87932E0EB3D053BB319",
+      "same": true
+    },
+    {
+      "path": "packages/codemode/src/runtime/host.ts",
+      "original_sha256": "E42461B611DE0898C672682EA7F707D4C5434B63C7F8A1C3DB20E3E2C7A7EC98",
+      "latest_sha256": "E42461B611DE0898C672682EA7F707D4C5434B63C7F8A1C3DB20E3E2C7A7EC98",
+      "same": true
+    },
+    {
+      "path": "packages/codemode/src/runtime/execution.ts",
+      "original_sha256": "9128D27FEA48FD9D3A4AD2141F756C8B810B51DB597C8A62A600F6DB5601CFF9",
+      "latest_sha256": "9128D27FEA48FD9D3A4AD2141F756C8B810B51DB597C8A62A600F6DB5601CFF9",
+      "same": true
+    },
+    {
+      "path": "packages/codemode/src/runtime/worker.ts",
+      "original_sha256": "777CA07455372094A1CB803E0C587F1AE0113AB34ECDE71D376100EF4E79F11F",
+      "latest_sha256": "777CA07455372094A1CB803E0C587F1AE0113AB34ECDE71D376100EF4E79F11F",
+      "same": true
+    },
+    {
+      "path": "packages/codemode/src/runtime/vm.ts",
+      "original_sha256": "5C0A1007C70C5F97A8583DF5274E4596C72C74D908FA2A65FFBD5EDF3E6639CB",
+      "latest_sha256": "5C0A1007C70C5F97A8583DF5274E4596C72C74D908FA2A65FFBD5EDF3E6639CB",
+      "same": true
+    }
+  ],
+  "changed": 0
+}

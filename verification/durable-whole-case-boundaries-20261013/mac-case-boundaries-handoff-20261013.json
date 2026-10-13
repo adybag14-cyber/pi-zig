@@ -1,0 +1,778 @@
+{
+  "status": "windows_debug_and_releasesafe_qualified",
+  "commit": "dc400ce61a3699ed71202a83f43db362a2f2e6f3",
+  "base": "76692817853747a62aaf8b3745cd839be6ff3cbb",
+  "worktree": "C:/Users/adyba/pi-zig-mac-case-boundaries-20261013",
+  "branch": "repair/mac-case-boundaries-20261013",
+  "committed_source_files": 4560,
+  "committed_source_drift": 0,
+  "worktree_clean": true,
+  "private_executable_remnants": 0,
+  "source_original_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "source_latest_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "stable_source_rows": 19,
+  "raw_source_leaf_pairs": 31020,
+  "genuine_sqlite_cases": 18,
+  "source_runtime_manifest": 31064,
+  "source_node_tool_manifest": 1774,
+  "native_tool_manifest": 19546,
+  "windows_debug": "159/159 steps;19/19 tests",
+  "windows_releasesafe": "159/159 steps;19/19 tests",
+  "whole_cases_each_mode": 18,
+  "cold_debug_status": "timed_out_outer300",
+  "cold_releasesafe_status": "timed_out_outer300",
+  "hosted_mac_status": "pending_root_production_matching_commit",
+  "source_classes_rewritten": false,
+  "test_inventory_added": 0,
+  "host_await_ms": 10000,
+  "test_timeout_seconds": 120,
+  "outer_timeout_seconds": 300,
+  "generated_utc": "2026-10-13T11:42:23.9575524+00:00",
+  "evidence_files": [
+    {
+      "name": "mac-case-boundaries-apply-native-20261013.mjs",
+      "bytes": 2957,
+      "sha256": "3DC13D710CE032F75F2E5781675C12859586BEA1105CCC2EEFBF9AE195A02A3D"
+    },
+    {
+      "name": "mac-case-boundaries-build-captures-20261013.mjs",
+      "bytes": 1443,
+      "sha256": "A6916ED80778FBD886D23D832CD478A5D450C2C435A2C90B2283D22A95812959"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-boundary-20261013-b.json",
+      "bytes": 1236,
+      "sha256": "A60BAE18040F4346C4638DD28627FCFED46DD9B7ABA2ECFC2C8C05FDE56A12B3"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-boundary-20261013-b.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-boundary-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-boundary-20261013-output.json",
+      "bytes": 1133820,
+      "sha256": "4BCE852C38C55ECF28634F38061F25A3243C523587BDA71F7B522F34CB5429D1"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-boundary-20261013.mjs",
+      "bytes": 7700,
+      "sha256": "BA820A6D42F3C89529FEC51337BBAB571138E96B7CCC802B8D9207F4EF57E0B0"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-full-20261013-b.json",
+      "bytes": 1224,
+      "sha256": "0D26919B126A9754860E768DA1E8ECD045D687E4ABD63A456A49E2535586A36A"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-full-20261013-b.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-full-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-full-20261013-output.json",
+      "bytes": 1133822,
+      "sha256": "F7710001985541AFF774EC8185F6F3FE7DE3F6D1FA3FD35E4B25F2D4985179FB"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-full-20261013.mjs",
+      "bytes": 7587,
+      "sha256": "6479B17CD559E23512007A008611EA49ED56BA3A6DF2F13B15ADDBDC230A35B9"
+    },
+    {
+      "name": "mac-case-boundaries-consumer4-raw-differences-20261013.json",
+      "bytes": 44787,
+      "sha256": "EC2DFCE8E988A92E2DC1A0B53A21A56EF52C4CC4952F13BAE49EF888DC3BE38E"
+    },
+    {
+      "name": "mac-case-boundaries-inspect-diffs-20261013.mjs",
+      "bytes": 1197,
+      "sha256": "CFE721FBF3FF16A4B8B606B38FE16FE17B086F1BBB71E731106A0E3CBBE9437B"
+    },
+    {
+      "name": "mac-case-boundaries-latest-source-class-identity-20261013.json",
+      "bytes": 2251,
+      "sha256": "BB2EF0DB41CD6E7E96D964FE37F0EF08710C3FE2D91673D81F344F7905B45F8C"
+    },
+    {
+      "name": "mac-case-boundaries-native-body-proof-20261013.json",
+      "bytes": 1630,
+      "sha256": "17FEF7FDFA48A2F6F42DA85B38F0B94B417E944C1438AF5833F888C8DB4C91C8"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-20261013-posthash.json",
+      "bytes": 201,
+      "sha256": "F974182538985A39F966569E2A184AB8550CFEA89B69F7117342F4AB272F0089"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-20261013-source-before.json",
+      "bytes": 713480,
+      "sha256": "7C2F4A3C03782F1EE60A825DC0463573C88BB2CCBC5621730E7F3C0BE356D4AF"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-20261013.json",
+      "bytes": 1014,
+      "sha256": "24DFCB47EBA86D219F0FE6636DF775BE2B490FC8CC12205295C3195A11A27C9E"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-20261013.stderr.log",
+      "bytes": 19983,
+      "sha256": "FA7C40C6AE432F9992766C26C5C289CA44702309DA82ED247015F60E9285ECA3"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-20261013.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-first-gone-20261013.json",
+      "bytes": 196,
+      "sha256": "7918A57BD56CBE5DE4F87E5EDDFCB01BA7DE6CDD33519D8D728F0D7BFD7E154D"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-20261013-posthash.json",
+      "bytes": 201,
+      "sha256": "8EDDA1EA83EE1319D852EDDF73A9DB4746BA532D21C04B75C7DF6A613E771427"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-20261013-source-before.json",
+      "bytes": 713480,
+      "sha256": "7C2F4A3C03782F1EE60A825DC0463573C88BB2CCBC5621730E7F3C0BE356D4AF"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-20261013.json",
+      "bytes": 1010,
+      "sha256": "9B91461A7D3043FEF34A1A3AEDAC84541098422AB0E0A2E5A45DC386064E94EF"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-20261013.stderr.log",
+      "bytes": 37786,
+      "sha256": "D11DED88A0202013B2F8215EF7938DF782C0CB54C22A27A9AD92073B9B41049F"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-20261013.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-native-debug-warm-phase-qualified-20261013.json",
+      "bytes": 2778,
+      "sha256": "335B974B5DFD400077BEAE953AE7CF5621399136D5563143F4F0D8EF4ED19639"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-20261013-posthash.json",
+      "bytes": 201,
+      "sha256": "2842764C2B636113F5158EE002227D9CC938DBE8B3FF01D91814E797C8FF8207"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-20261013-source-before.json",
+      "bytes": 713480,
+      "sha256": "7C2F4A3C03782F1EE60A825DC0463573C88BB2CCBC5621730E7F3C0BE356D4AF"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-20261013.json",
+      "bytes": 1027,
+      "sha256": "27DA8E4D1EA976B31C50B081896E2276DCC5EBAF5BB15A47192C81B03721B896"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-20261013.stderr.log",
+      "bytes": 19841,
+      "sha256": "B939FAAA1981001BA8E42FF1CDCD6DBBBEC2803FAD9574338AE6A31769FF9B9A"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-20261013.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-first-gone-20261013.json",
+      "bytes": 167,
+      "sha256": "F5787AD9309CAF8A60792E841578340F9D9C39702D5DA4F321B4F4BAA5F27775"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-20261013-posthash.json",
+      "bytes": 201,
+      "sha256": "63F1A12FA85015032C782C82B59CA5DF92391C5F28F6110A41863A1F5BAA327D"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-20261013-source-before.json",
+      "bytes": 713480,
+      "sha256": "7C2F4A3C03782F1EE60A825DC0463573C88BB2CCBC5621730E7F3C0BE356D4AF"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-20261013.json",
+      "bytes": 1022,
+      "sha256": "247ED8857FFF875C050EB8C47243ACF723172A4A8F77ED317BAD2A45C6E76BD5"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-20261013.stderr.log",
+      "bytes": 38304,
+      "sha256": "C8B164B7C2486C381213E70C6AB5D5A6768B3A11A4C9A1CF81B61FA8F6A05B9F"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-20261013.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-native-releasesafe-warm-phase-qualified-20261013.json",
+      "bytes": 2768,
+      "sha256": "5903F74ABEBDA094CE0B5DC6D7FDD8BB1896BACFBAC952429F28C47196B4B1A5"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-boundary-20261013-b.json",
+      "bytes": 1237,
+      "sha256": "37DEE9E7EC4549BC59C1B3720C48E39A7AD0844BAA47AF39200ED4AB429B23EA"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-boundary-20261013-b.stderr.log",
+      "bytes": 169,
+      "sha256": "80F31649375FE21E004EB1B0A2423D854E7A82AF7AC04539ECD68205CE4B50DB"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-boundary-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-boundary-20261013-output.json",
+      "bytes": 606504,
+      "sha256": "0E1D1A8B930935475539F59E82F2D06A7400796ADB343F4B625BBADAAF798772"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-boundary-20261013.mjs",
+      "bytes": 8102,
+      "sha256": "A00F4E8D45EDF07B5803C1E12434C43060C3FBEA7406114E98B4493E2AE6C7E8"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-full-20261013-b.json",
+      "bytes": 1225,
+      "sha256": "1AD82C03AF07046CE1D6514AF90D8E3E2BD52FC0A01437B4A0FC5AB08AE64D75"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-full-20261013-b.stderr.log",
+      "bytes": 169,
+      "sha256": "63B4154FCC7F5420954F444939C5B1A72BC45BB94A45199628EB7F9D2AB331C3"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-full-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-full-20261013-output.json",
+      "bytes": 606492,
+      "sha256": "29E1E34A8DD3D78AE49B8EDE0322D65DB65E95DA75007F07693414D7C75AAF5A"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-full-20261013.mjs",
+      "bytes": 7989,
+      "sha256": "5FE115330F6BF576A091D49D5A4259CE498DA6C6020A25316105EB8B4A2AFD74"
+    },
+    {
+      "name": "mac-case-boundaries-negative6-raw-differences-20261013.json",
+      "bytes": 27954,
+      "sha256": "423A39CB4B5E7C226F44012A1BF9C98686B1EDCBBBF2AEC46247392542994427"
+    },
+    {
+      "name": "mac-case-boundaries-observe-20261013.mjs",
+      "bytes": 1368,
+      "sha256": "17426486FEAA53E015BA32E2F22E41D6CD94ED3EDCA84EFE7EB19D6BB7876FC0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-0-20261012.jsonl",
+      "bytes": 161645,
+      "sha256": "05817ECE94BB5BF88794E2699ABBDFFBDAC7FDF8F21FE25364706917D5AF1D03"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-12292-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-0-20261012.jsonl",
+      "bytes": 165280,
+      "sha256": "2BD91819CBE3F1112F5711835981868EAB0A8477415EE7B5C13F674F3881114E"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-14664-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-2984-0-20261012.jsonl",
+      "bytes": 165278,
+      "sha256": "04B2B899196F67207834D34453594525A2BAB6C3EA7615F67AA53E5A19620901"
+    },
+    {
+      "name": "mac-case-boundaries-observed-2984-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-2984-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-2984-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-2984-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-0-20261012.jsonl",
+      "bytes": 161646,
+      "sha256": "8DB5202AD378F4272E72165DE8B7CB92225B3728367EC7D76C927D1503462244"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-10-20261012.jsonl",
+      "bytes": 1800,
+      "sha256": "8FC7EF2258166686844E17B6FF792A9A3524D974F071D0276E093ABA38098418"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-7-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E1A4DF36317C195A739E0A0E7794CF9957C3C365716BEBA4488DC359D4E30ECB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-8-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14E25E4F6D132B2F2DD5B26F6CD020FFF862C9D46499B5A1AC519E8DEEFEB01D"
+    },
+    {
+      "name": "mac-case-boundaries-observed-33272-9-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0F611826ADF429F6E2EF587154541405FC9FA92007B752E670FDEC402ADAC123"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-0-20261012.jsonl",
+      "bytes": 161642,
+      "sha256": "B7017141E231C9D8C3EF6345B232D4EB4F2C8D4D778CCD42CD47F4A6F71D84FC"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-10-20261012.jsonl",
+      "bytes": 1800,
+      "sha256": "8FC7EF2258166686844E17B6FF792A9A3524D974F071D0276E093ABA38098418"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-7-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E1A4DF36317C195A739E0A0E7794CF9957C3C365716BEBA4488DC359D4E30ECB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-8-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14E25E4F6D132B2F2DD5B26F6CD020FFF862C9D46499B5A1AC519E8DEEFEB01D"
+    },
+    {
+      "name": "mac-case-boundaries-observed-35680-9-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0F611826ADF429F6E2EF587154541405FC9FA92007B752E670FDEC402ADAC123"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-0-20261012.jsonl",
+      "bytes": 161641,
+      "sha256": "467279A6D995C03736F20E0CAC4DB6DE44EDDF63FAC2538D76A0FA1C17F50635"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-45972-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-0-20261012.jsonl",
+      "bytes": 165276,
+      "sha256": "DF2617171081CF1EDDC4ECB0BCC59349FA33C5E49EEF4CD2737D5B93D8CD04C4"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-5-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "14C378D1F17707CBB0B9641E256A16150EF4A2EE43B858ACF6729391EE817689"
+    },
+    {
+      "name": "mac-case-boundaries-observed-47400-6-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "5F6D1F56CEC95C33B0DD90D589D8BC6761561C891963640A233770AEFDB55D28"
+    },
+    {
+      "name": "mac-case-boundaries-observed-8652-0-20261012.jsonl",
+      "bytes": 165282,
+      "sha256": "1A8C972E7C247C4D57F2E56DEF2BE9CBCBBFA1CE0CDCB9938DC4DE4ACEAD2309"
+    },
+    {
+      "name": "mac-case-boundaries-observed-8652-1-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "C8F7476B8261B61DCBEBC7927E9802885796AB083AFEC76020E5B71DCBC4DBA0"
+    },
+    {
+      "name": "mac-case-boundaries-observed-8652-2-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "0710DF20131E8D0CE7368F3B0F3B855D0747D67E2A84ADB3E3E12F2BCD0A7299"
+    },
+    {
+      "name": "mac-case-boundaries-observed-8652-3-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "E18EC769E66C572B0F08FAA2930F060A1FBD36699EB23A1C62B39DDF981035E5"
+    },
+    {
+      "name": "mac-case-boundaries-observed-8652-4-20261012.jsonl",
+      "bytes": 1791,
+      "sha256": "4917888A6CD369F27D9FCF5D827F3BDF562F714516E29FA7FC1405309E4111AB"
+    },
+    {
+      "name": "mac-case-boundaries-qualify-native-phases-20261013.mjs",
+      "bytes": 1884,
+      "sha256": "A3EB53F8D987059315B1B6E55A839B962446D82E9C913F29E1DAD84F6F23161F"
+    },
+    {
+      "name": "mac-case-boundaries-qualify-native-rs-phases-20261013.mjs",
+      "bytes": 1896,
+      "sha256": "0A4FD83B6964D85B36B49079E4E1AEFDA6E72C94E04FCF2AED7D23591C172EB7"
+    },
+    {
+      "name": "mac-case-boundaries-qualify-source-20261013.mjs",
+      "bytes": 7714,
+      "sha256": "2AE317BAFB1F0B9EDC914357DDA91198BB6FEF697EE6C57013F99C0E77C18286"
+    },
+    {
+      "name": "mac-case-boundaries-qualify-sqlite-20261013.mjs",
+      "bytes": 1339,
+      "sha256": "4C1A4D54777D13B1185492E9A161C651FD7304B9A9621BD3F58B30BF648772EA"
+    },
+    {
+      "name": "mac-case-boundaries-raw-difference-inventory-20261013.json",
+      "bytes": 23483,
+      "sha256": "1C5F96E45C88455061883990C572423A1BFF91951EEC63E25630284DB5F94449"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-boundary-20261013-b.json",
+      "bytes": 1234,
+      "sha256": "B37F092733BA5E5A9A4129D49ADBC2E32FB64CA2CE8DDF42C5ED9ACCC48C5F9D"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-boundary-20261013-b.stderr.log",
+      "bytes": 169,
+      "sha256": "6CAD7068A4EA2F3FC9FC9BEF9F0DF763C55B78BC3685A289FF02B57F3F2F7CB5"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-boundary-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-boundary-20261013-output.json",
+      "bytes": 456984,
+      "sha256": "13931D43711820BF25280D0A83B84A8C78710E866FB5427AB9FBE5F198FA2261"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-boundary-20261013.mjs",
+      "bytes": 7242,
+      "sha256": "FB2C0BD96F0A26E285CB0000A521133DF809435F9B0F99998CBA562A0DADB8FC"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-full-20261013-b.json",
+      "bytes": 1222,
+      "sha256": "0ECAC838B52DFF395DC5D41C7750B2FC7F3BB0D381ED8E76F6B1B4E9CE10854D"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-full-20261013-b.stderr.log",
+      "bytes": 169,
+      "sha256": "97F9781BB925E675290ADF7BC10BC7A4457CE46341AF5A95C1C5BC40A99ABFF6"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-full-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-full-20261013-output.json",
+      "bytes": 456980,
+      "sha256": "9485861BAA1A03CDFD53CA89891E7CDB64D82243F4B957003140AB5DF1455E39"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-full-20261013.mjs",
+      "bytes": 7129,
+      "sha256": "E5D9C816934B52D7080FD0C4C8E38644EA0BEF289BABB63E10F2481FC6D2E765"
+    },
+    {
+      "name": "mac-case-boundaries-restart3-raw-differences-20261013.json",
+      "bytes": 17664,
+      "sha256": "8ADEE2A8FAD4C4CEB4B7A06BFCBEC97BBBA4BE52C1661FC7F641168E6117FE1C"
+    },
+    {
+      "name": "mac-case-boundaries-source-posthash-20261013.json",
+      "bytes": 317,
+      "sha256": "AE0ACD84D8258732CD31E00B67A750F163DAF6D6A630CADA96C1EC5DB8AD4A94"
+    },
+    {
+      "name": "mac-case-boundaries-source-prehash-20261013.json",
+      "bytes": 317,
+      "sha256": "AE0ACD84D8258732CD31E00B67A750F163DAF6D6A630CADA96C1EC5DB8AD4A94"
+    },
+    {
+      "name": "mac-case-boundaries-source-qualified-20261013.json",
+      "bytes": 243843,
+      "sha256": "036461BA6A6E9BEE6CD01BCB2EFC949B03CA6A106525DBB02A2ADFC42D034532"
+    },
+    {
+      "name": "mac-case-boundaries-source-sqlite-identities-20261013.json",
+      "bytes": 6697,
+      "sha256": "4C99488431FA9594767DFB86BA6AAE33776C5E0EC4616546BCD5F9DEDCB48C2F"
+    },
+    {
+      "name": "mac-case-boundaries-source6-boundary-20261013-b.json",
+      "bytes": 1231,
+      "sha256": "293AB0ED9F4FED4F7BB4649FE457069D9188A91378657962FF17207696BBBBAE"
+    },
+    {
+      "name": "mac-case-boundaries-source6-boundary-20261013-b.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-source6-boundary-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-source6-boundary-20261013-output.json",
+      "bytes": 590293,
+      "sha256": "E789F5D7A584992613F9BB7090F1FB91F949A34FEDEA7522433497FF666C10A1"
+    },
+    {
+      "name": "mac-case-boundaries-source6-boundary-20261013.mjs",
+      "bytes": 9530,
+      "sha256": "F08C4AB4C24664CBBF8DC2EC59371C6B3BA907D95E079C0836EAA44592736634"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013-b.json",
+      "bytes": 1219,
+      "sha256": "53E9011385A6C2B66BE0324CDC6C42BA0172787EFE34B6BC861BE512DE187E28"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013-b.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013-b.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013-output.json",
+      "bytes": 590285,
+      "sha256": "865C338AEE6FECF668AAE6737C12EBA143E258889E7C4A6F3006DFB5444A89C2"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013.json",
+      "bytes": 1251,
+      "sha256": "0DE3A6BC81DA680B86333180822B27DD0073A80E3752529BB4963461314E09EE"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013.mjs",
+      "bytes": 9417,
+      "sha256": "05CAC604E1733FEE5D95834942FA28BCEB1263B17755A1CF0A3515313B35D8CD"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013.stderr.log",
+      "bytes": 1324,
+      "sha256": "7358D31D310F0E2160157D8C25A5E9A95F2C5C74D754B02E76EB5C21E2E3B32D"
+    },
+    {
+      "name": "mac-case-boundaries-source6-full-20261013.stdout.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "mac-case-boundaries-source6-raw-differences-20261013.json",
+      "bytes": 29646,
+      "sha256": "9060FAE4FABC07B0C24206E50FBF6F5E9C797F691460B739A995A2C804F489B9"
+    },
+    {
+      "name": "mac-case-boundaries-verify-native-body-20261013.mjs",
+      "bytes": 2942,
+      "sha256": "2E8879820C0C9E3928F881D3C3A92322DC061F0FB2E6FD0A79FE881FEEB2647A"
+    },
+    {
+      "name": "Run-MacCaseBoundariesNative-20261013.ps1",
+      "bytes": 2771,
+      "sha256": "8A67759B8ECDBEC9F32DF9C59D062C2E816851C7D941B8BB6977BFDAC0A5F750"
+    },
+    {
+      "name": "Run-MacCaseBoundariesSource-20261013.ps1",
+      "bytes": 1985,
+      "sha256": "693EF218E79418115AAFE16E3E47AC30C717A9278C1CA872C05CB28705533F1B"
+    }
+  ]
+}

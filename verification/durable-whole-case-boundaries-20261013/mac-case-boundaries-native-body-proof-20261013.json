@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "sourceHead": "76692817853747a62aaf8b3745cd839be6ff3cbb",
+  "helper_has_no_tests": true,
+  "proof": [
+    {
+      "file": "src/durable/fixtures/durable-codemode-native-restart-harness.input.txt",
+      "original_sha256": "6dfa34af476401848519ecb6f4f7ff3a2cd05682da5b37d12209bb39cfe1ac15",
+      "boundary_sha256": "bc90f5af0648fc762e2d10d09896c15fb9a9351cd4d3d343b2ab2141edf804ae",
+      "exact_body_after_reversing_boundary_only": true
+    },
+    {
+      "file": "src/durable/fixtures/durable-codemode-native-replay-negatives-harness.input.txt",
+      "original_sha256": "fb4054b2be25508758e517320def98d21a087683d7fb20379616ed255c98b2c6",
+      "boundary_sha256": "5154613e303398d1ae0cddfc42851a6e42b010c0440a26c64ff3f6f1ad8f4fe3",
+      "exact_body_after_reversing_boundary_only": true
+    },
+    {
+      "file": "src/native_durable_codemode_journal_test.zig",
+      "test": "actual sandbox original Source6 commit ordering",
+      "original_guest_sha256": "4ab814bde900839323f69e79a5961e947b01dce793bce77af61bacb89b696c98",
+      "boundary_guest_sha256": "19f660a9d5f0a42f2c970c5c66280892f8cdd9c01a9cf85d87a87a4f0756f1ad",
+      "exact_body_after_reversing_boundary_only": true
+    },
+    {
+      "file": "src/native_durable_codemode_models_catalog_test.zig",
+      "test": "model calls Source usage errors hidden tools and four slots",
+      "original_guest_sha256": "3a81d7973985862f019d56d0ffd04d0402121f5f0da62bf700f57035cd1a1ffd",
+      "boundary_guest_sha256": "0ad8195a0f06f6700a7cfe8ca04e982890be4d1a675fc68ccc65bea4db084419",
+      "exact_body_after_reversing_boundary_only": true
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "status": "passed",
+  "sourceScope": "private5filechangeon7669281",
+  "groups": [
+    {
+      "name": "source6",
+      "wholeCases": 6,
+      "totalMs": 457,
+      "testReturnPendingJobs": false,
+      "cases": [
+        {
+          "index": 0,
+          "elapsedMs": 68,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 1,
+          "elapsedMs": 93,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 2,
+          "elapsedMs": 78,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 3,
+          "elapsedMs": 62,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 4,
+          "elapsedMs": 78,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 5,
+          "elapsedMs": 78,
+          "closedPendingJobs": false
+        }
+      ]
+    },
+    {
+      "name": "restart3",
+      "wholeCases": 3,
+      "totalMs": 695,
+      "testReturnPendingJobs": false,
+      "cases": [
+        {
+          "index": 0,
+          "elapsedMs": 226,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 1,
+          "elapsedMs": 314,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 2,
+          "elapsedMs": 154,
+          "closedPendingJobs": false
+        }
+      ]
+    },
+    {
+      "name": "replay-negative6",
+      "wholeCases": 6,
+      "totalMs": 842,
+      "testReturnPendingJobs": false,
+      "cases": [
+        {
+          "index": 0,
+          "elapsedMs": 139,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 1,
+          "elapsedMs": 126,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 2,
+          "elapsedMs": 125,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 3,
+          "elapsedMs": 140,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 4,
+          "elapsedMs": 172,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 5,
+          "elapsedMs": 140,
+          "closedPendingJobs": false
+        }
+      ]
+    },
+    {
+      "name": "consumer3",
+      "wholeCases": 3,
+      "totalMs": 411,
+      "testReturnPendingJobs": false,
+      "cases": [
+        {
+          "index": 0,
+          "elapsedMs": 84,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 1,
+          "elapsedMs": 78,
+          "closedPendingJobs": false
+        },
+        {
+          "index": 2,
+          "elapsedMs": 249,
+          "closedPendingJobs": false
+        }
+      ]
+    }
+  ],
+  "hostAwaitTimeoutMs": 10000,
+  "testTimeoutSeconds": 120,
+  "outerTimeoutSeconds": 300,
+  "summary": "159/159 steps succeeded; 19/19 tests passed"
+}
