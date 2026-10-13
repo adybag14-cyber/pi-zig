@@ -24,7 +24,12 @@ fn matches(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValu
     return c.pi_js_bool(context, @intFromBool(c.JS_IsStrictEqual(context, name, roots[0])));
 }
 pub fn expand(owner: *sdk.State, receiver: c.JSValue, input: c.JSValue) !c.JSValue {
-    const engine = owner.engine;
+    return expandImpl(owner.engine, owner, receiver, input);
+}
+pub fn expandSession(engine: *em.Engine, receiver: c.JSValue, input: c.JSValue) !c.JSValue {
+    return expandImpl(engine, null, receiver, input);
+}
+fn expandImpl(engine: *em.Engine, owner: ?*sdk.State, receiver: c.JSValue, input: c.JSValue) !c.JSValue {
     const prefix = try sdk.text(engine, "/skill:");
     defer engine.freeValue(prefix);
     const starts = try call(engine, input, "startsWith", &.{prefix});
@@ -63,13 +68,14 @@ pub fn expand(owner: *sdk.State, receiver: c.JSValue, input: c.JSValue) !c.JSVal
     const skill = try engine.checked(c.JS_Call(engine.context, find, skills, 1, &parameters));
     defer engine.freeValue(skill);
     if (c.JS_ToBool(engine.context, skill) != 1) return c.JS_DupValue(engine.context, input);
-    return expandKnown(owner, skill, arguments) catch |err| {
-        try emitError(owner, skill, err);
+    const generation = engine.native_allocation_generation;
+    return expandKnown(engine, skill, arguments) catch |err| {
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+        if (owner) |legacy| try emitError(legacy, skill, err) else try emitSessionError(engine, receiver, skill, err);
         return c.JS_DupValue(engine.context, input);
     };
 }
-fn expandKnown(owner: *sdk.State, skill: c.JSValue, arguments: c.JSValue) !c.JSValue {
-    const engine = owner.engine;
+fn expandKnown(engine: *em.Engine, skill: c.JSValue, arguments: c.JSValue) !c.JSValue {
     const path = try sdk.get(engine, skill, "filePath");
     defer engine.freeValue(path);
     const content = try @import("node_fs.zig").readUtf8(engine, path);
@@ -169,4 +175,18 @@ fn emitError(owner: *sdk.State, skill: c.JSValue, failure: anyerror) !void {
     var parameters = [_]c.JSValue{event};
     const ignored = try engine.checked(c.JS_Call(engine.context, callback, c.pi_js_undefined(), 1, &parameters));
     engine.freeValue(ignored);
+}
+fn emitSessionError(engine: *em.Engine, receiver: c.JSValue, skill: c.JSValue, failure: anyerror) !void {
+    const reason = @import("native_agent_async.zig").reason(engine, failure);
+    defer engine.freeValue(reason);
+    var scope: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    // Resolve the live runner and emitError before evaluating the event object.
+    const runner = try scope.get(receiver, "_extensionRunner");
+    const callback = try scope.get(runner, "emitError");
+    const event = try scope.object();
+    try scope.put(event, "extensionPath", try scope.get(skill, "filePath"));
+    try scope.put(event, "event", try scope.text("skill_expansion"));
+    try scope.put(event, "error", try scope.own(try @import("native_sdk_session_prompt_handlers.zig").errorMessage(engine, reason)));
+    _ = try scope.call(callback, runner, &.{event});
 }

@@ -1,0 +1,477 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "1ddd63c0467f1d2a4cb17a0c185b361609cfff7ffde398bcacb43a1e91245ece",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 35,
+  "rows": [
+    {
+      "name": "method-metadata",
+      "value": {
+        "_runInputHandlers": {
+          "name": "_runInputHandlers",
+          "length": 4,
+          "async": true,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_tryExecuteExtensionCommand": {
+          "name": "_tryExecuteExtensionCommand",
+          "length": 1,
+          "async": true,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_expandSkillCommand": {
+          "name": "_expandSkillCommand",
+          "length": 1,
+          "async": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      },
+      "log": []
+    },
+    {
+      "name": "input-continue",
+      "value": {
+        "text": "original",
+        "images": [
+          "old"
+        ]
+      },
+      "log": [
+        [
+          "has",
+          true,
+          "input"
+        ],
+        [
+          "emit",
+          true,
+          [
+            "original",
+            [
+              "old"
+            ],
+            "rpc",
+            "steer"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "input-handled",
+      "value": "undefined",
+      "log": [
+        [
+          "has",
+          true,
+          "input"
+        ],
+        [
+          "emit",
+          true,
+          [
+            "original",
+            [
+              "old"
+            ],
+            "rpc",
+            "steer"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "input-transform",
+      "value": {
+        "text": "changed",
+        "images": [
+          "new"
+        ]
+      },
+      "log": [
+        [
+          "has",
+          true,
+          "input"
+        ],
+        [
+          "emit",
+          true,
+          [
+            "original",
+            [
+              "old"
+            ],
+            "rpc",
+            "steer"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "input-unknown",
+      "value": {
+        "text": "original",
+        "images": [
+          "old"
+        ]
+      },
+      "log": [
+        [
+          "has",
+          true,
+          "input"
+        ],
+        [
+          "emit",
+          true,
+          [
+            "original",
+            [
+              "old"
+            ],
+            "rpc",
+            "steer"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "input-transform-images-null",
+      "value": {
+        "text": "changed",
+        "images": [
+          "old"
+        ]
+      },
+      "log": []
+    },
+    {
+      "name": "input-transform-images-undefined",
+      "value": {
+        "text": "changed",
+        "images": [
+          "old"
+        ]
+      },
+      "log": []
+    },
+    {
+      "name": "input-transform-images-false",
+      "value": {
+        "text": "changed",
+        "images": false
+      },
+      "log": []
+    },
+    {
+      "name": "input-transform-images-0",
+      "value": {
+        "text": "changed",
+        "images": 0
+      },
+      "log": []
+    },
+    {
+      "name": "input-transform-images-",
+      "value": {
+        "text": "changed",
+        "images": []
+      },
+      "log": []
+    },
+    {
+      "name": "input-no-handlers",
+      "value": {
+        "text": "original"
+      },
+      "log": [
+        "input"
+      ]
+    },
+    {
+      "name": "input-repeated-action-getter",
+      "value": {
+        "text": "changed",
+        "images": [
+          "old"
+        ]
+      },
+      "log": [
+        1,
+        2,
+        "text",
+        "images"
+      ]
+    },
+    {
+      "name": "input-live-runner",
+      "value": "undefined",
+      "log": [
+        [
+          "next",
+          true,
+          [
+            "original",
+            [
+              "old"
+            ],
+            "custom",
+            "followUp"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "input-rejection-identity",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "input-synchronous-error-identity",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "input-null-result",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "command-/missing",
+      "value": false,
+      "log": [
+        [
+          "command",
+          "missing"
+        ]
+      ]
+    },
+    {
+      "name": "command-/hello",
+      "value": true,
+      "log": [
+        [
+          "command",
+          "hello"
+        ],
+        "context",
+        [
+          "handler",
+          true,
+          "",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "command-/hello  a b ",
+      "value": true,
+      "log": [
+        [
+          "command",
+          "hello"
+        ],
+        "context",
+        [
+          "handler",
+          true,
+          " a b ",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "command-/hello\targ",
+      "value": false,
+      "log": [
+        [
+          "command",
+          "hello\targ"
+        ]
+      ]
+    },
+    {
+      "name": "command-failure-sync",
+      "value": true,
+      "log": [
+        [
+          "error",
+          true,
+          {
+            "extensionPath": "command:hello",
+            "event": "command",
+            "error": "handler failed"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "command-failure-async",
+      "value": true,
+      "log": [
+        [
+          "error",
+          true,
+          {
+            "extensionPath": "command:hello",
+            "event": "command",
+            "error": "handler failed"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "command-failure-getter",
+      "value": true,
+      "log": [
+        [
+          "error",
+          true,
+          {
+            "extensionPath": "command:hello",
+            "event": "command",
+            "error": "handler failed"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "command-failure-non-error",
+      "value": true,
+      "log": [
+        [
+          "error",
+          true,
+          {
+            "extensionPath": "command:hello",
+            "event": "command",
+            "error": "42"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "command-context-outside-catch",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "command-error-emitter-overrides",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "command-live-runner-after-handler",
+      "value": true,
+      "log": [
+        [
+          "next",
+          true,
+          {
+            "extensionPath": "command:hello",
+            "event": "command",
+            "error": "7"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "skill-ordinary-text",
+      "value": "hello",
+      "log": []
+    },
+    {
+      "name": "skill-unknown-passthrough",
+      "value": "/skill:missing args",
+      "log": [
+        [
+          "skills",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "skill-find-getter-order",
+      "value": "/skill:missing args",
+      "log": [
+        "find",
+        [
+          "find-this",
+          false
+        ],
+        "name"
+      ]
+    },
+    {
+      "name": "command-ambient-String",
+      "value": true,
+      "log": [
+        [
+          "String",
+          true,
+          19
+        ],
+        {
+          "extensionPath": "command:hello",
+          "event": "command",
+          "error": "converted"
+        }
+      ]
+    },
+    {
+      "name": "input-thenable",
+      "value": {
+        "text": "then-text",
+        "images": []
+      },
+      "log": [
+        "then"
+      ]
+    },
+    {
+      "name": "skill-file-",
+      "value": "<skill name=\"demo\" location=\"/skills/demo/SKILL.md\">\nReferences are relative to /skills/demo.\n\nA real skill body with $ARGUMENTS and Unicode λ.\n</skill>",
+      "log": [
+        "name",
+        "filePath",
+        "name",
+        "filePath",
+        "baseDir"
+      ]
+    },
+    {
+      "name": "skill-file-  quoted \"arguments\"  ",
+      "value": "<skill name=\"demo\" location=\"/skills/demo/SKILL.md\">\nReferences are relative to /skills/demo.\n\nA real skill body with $ARGUMENTS and Unicode λ.\n</skill>\n\nquoted \"arguments\"",
+      "log": [
+        "name",
+        "filePath",
+        "name",
+        "filePath",
+        "baseDir"
+      ]
+    },
+    {
+      "name": "skill-read-error-live-runner",
+      "value": "/skill:demo args",
+      "log": [
+        [
+          "error",
+          true,
+          {
+            "extensionPath": "/skills/demo/SKILL.md",
+            "event": "skill_expansion",
+            "error": "read path failed"
+          }
+        ]
+      ]
+    }
+  ]
+}

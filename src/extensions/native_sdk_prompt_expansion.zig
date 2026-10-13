@@ -143,7 +143,9 @@ fn replacement(engine: *em.Engine, args: c.JSValue, all: c.JSValue, captures: []
     return sdk.text(engine, "");
 }
 pub fn expandTemplate(owner: *sdk.State, input: c.JSValue, snapshot: c.JSValue) !c.JSValue {
-    const engine = owner.engine;
+    return expandTemplateWithEngine(owner.engine, input, snapshot);
+}
+pub fn expandTemplateWithEngine(engine: *em.Engine, input: c.JSValue, snapshot: c.JSValue) !c.JSValue {
     const slash = try sdk.text(engine, "/");
     defer engine.freeValue(slash);
     const begins = try sdk.invoke(engine, input, "startsWith", &.{slash});
