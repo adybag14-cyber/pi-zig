@@ -1,0 +1,101 @@
+{
+  "sdk_run": 38402661514,
+  "sdk_head": "c34e5247e3992ee0856e897a76852510f08e1577",
+  "sdk_modes": "Debug/ReleaseSafe12/12",
+  "auth_run": 38402661610,
+  "auth_head": "b9659bd41310018ae6d80c43a5fe619f33cfd4d2",
+  "auth_modes": "Debug/ReleaseSafe8/8+24/24",
+  "source_and_tool_drift": 0,
+  "integration_status": "pending hosted full matrix",
+  "production_factory_activation": false,
+  "additional_slices": [
+    {
+      "target": "test-native-durable-codemode-model-catalog",
+      "tests": 8
+    },
+    {
+      "target": "test-latest-catalog",
+      "tests": 60
+    },
+    {
+      "target": "test-maintenance",
+      "tests": 7
+    },
+    {
+      "target": "test-exhaustive-allocation-coverage",
+      "tests": 4
+    },
+    {
+      "target": "test-exhaustive-allocation-helper",
+      "tests": 3
+    },
+    {
+      "target": "test-native-chord-context-source",
+      "tests": 11
+    },
+    {
+      "target": "test-native-chord-resource-source",
+      "tests": 4
+    },
+    {
+      "target": "test-native-models-typed-services",
+      "tests": 12
+    },
+    {
+      "target": "test-native-models-stream-regressions",
+      "tests": 7
+    },
+    {
+      "target": "test-native-chord-contract-source",
+      "tests": 4
+    },
+    {
+      "target": "test-native-chord-clone-source",
+      "tests": 4
+    },
+    {
+      "target": "test-native-chord-normalization-evaluate-source",
+      "tests": 9
+    },
+    {
+      "target": "test-native-sdk-session-queries",
+      "tests": 11
+    },
+    {
+      "target": "test-native-sdk-query-consumers",
+      "tests": 11
+    },
+    {
+      "target": "test-native-sdk-send-user",
+      "tests": 11
+    },
+    {
+      "target": "test-native-sdk-session-lifecycle",
+      "tests": 11
+    },
+    {
+      "target": "test-native-sdk-message-conversion",
+      "tests": 12
+    },
+    {
+      "target": "test-native-sdk-session-prepare",
+      "tests": 11
+    },
+    {
+      "target": "test-native-sdk-session-events",
+      "tests": 12
+    },
+    {
+      "target": "test-native-auth-storage-persistent",
+      "tests": 8
+    },
+    {
+      "target": "test-native-auth-timer-controls",
+      "tests": 24
+    }
+  ],
+  "additional_tests": 244,
+  "workflow_powershell_blocks": 23,
+  "workflow_parser_errors": 0,
+  "shared_timer_change": "Native OutOfMemory now uses private original allocation identity; integrated graph qualification required"
+}

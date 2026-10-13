@@ -789,6 +789,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_journal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(codemode_journal_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-codemode-journal-core", "Exercise actual durable tool API document transactions and atomic CodeMode outcome store decisions").dependOn(&b.addRunArtifact(codemode_journal_tests).step);
+    const persistent_auth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_storage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native persistent AuthStorage"} });
+    linkQuickJs(b, persistent_auth_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(persistent_auth_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-auth-storage-persistent", "Replay original AuthStorage Source over real owned files and native directory locks").dependOn(&b.addRunArtifact(persistent_auth_tests).step);
+    const auth_timer_control_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_timer_controls_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "extensions.timers.", "native allocation original identity", "native authentication selected timer inventory" } });
+    linkQuickJs(b, auth_timer_control_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(auth_timer_control_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-auth-timer-controls", "Verify shared timer failure provenance and original native allocation identity controls").dependOn(&b.addRunArtifact(auth_timer_control_tests).step);
     const typed_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_models_typed_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Models actual Source9", "native Models actual Source10", "native Models actual Source6", "native Models actual typed services credential queues", "native Models actual Source streams10", "native Models actual streaming auth continuations", "native Models actual Source login8", "native Models actual login credential mutation", "native Models actual Source auth mutation3", "native Models actual Source provider factory7", "native Models actual provider factory catalog refresh" } });
     linkQuickJs(b, typed_models_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(typed_models_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -2353,6 +2361,8 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-sdk-query-components", &.{ "test-native-sdk-session-queries", "test-native-sdk-query-consumers" });
     addCompileOnlyGroup(b, "build-hosted-sdk-message-components", &.{ "test-native-sdk-send-user", "test-native-sdk-message-conversion" });
     addCompileOnlyGroup(b, "build-hosted-sdk-lifecycle-components", &.{ "test-native-sdk-session-lifecycle", "test-native-sdk-session-prepare" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-event-components", &.{"test-native-sdk-session-events"});
+    addCompileOnlyGroup(b, "build-hosted-auth-components", &.{ "test-native-auth-storage-persistent", "test-native-auth-timer-controls" });
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

@@ -1,0 +1,9 @@
+{
+  "head": "b9659bd41310018ae6d80c43a5fe619f33cfd4d2",
+  "tree": "acdd675813b51873a1bbf942fde3c7d4fabb8e64",
+  "mode": "ReleaseSafe",
+  "source_count": 4580,
+  "tool_count": 19543,
+  "public_activation": false,
+  "scope": "Candidate persistent authentication and shared timer provenance; complete SDK and class parity remain separate"
+}

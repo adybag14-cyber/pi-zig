@@ -261,6 +261,24 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & zig build build-hosted-sdk-lifecycle-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk-lifecycle.log
           if ($LASTEXITCODE -ne 0) { throw 'SDK lifecycle component compilation failed' }
+      - name: Compile original SDK event composition artifacts
+        id: compile_sdk_events
+        if: ${{ !cancelled() && steps.compile_sdk.outcome == 'success' && matrix.group == 0 }}
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-hosted-sdk-event-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk-events.log
+          if ($LASTEXITCODE -ne 0) { throw 'SDK event component compilation failed' }
+      - name: Compile original persistent authentication artifacts
+        id: compile_auth
+        if: ${{ !cancelled() && steps.compile_sdk_events.outcome == 'success' && matrix.group == 0 }}
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-hosted-auth-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-auth.log
+          if ($LASTEXITCODE -ne 0) { throw 'Persistent authentication component compilation failed' }
       - name: Exercise latest MCP application restoration and durable replay components
         if: ${{ !cancelled() && steps.compile_latest.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
@@ -275,7 +293,7 @@ jobs:
           if ((Get-Content "$taskReceipt/latest-components.log" -Raw) -notmatch '207/207 tests passed') { throw 'Latest component inventory changed; review exact execution and any platform skips' }
           [ordered]@{ status = 'passed'; tests = 207; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/latest-result.json"
       - name: Exercise current model catalogue Chord and SDK slices
-        if: ${{ !cancelled() && steps.compile_models.outcome == 'success' && steps.compile_catalog.outcome == 'success' && steps.compile_chord.outcome == 'success' && steps.compile_sdk.outcome == 'success' && matrix.group == 0 }}
+        if: ${{ !cancelled() && steps.compile_models.outcome == 'success' && steps.compile_catalog.outcome == 'success' && steps.compile_chord.outcome == 'success' && steps.compile_sdk.outcome == 'success' && steps.compile_sdk_events.outcome == 'success' && steps.compile_auth.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
         timeout-minutes: 15
         run: |
@@ -302,7 +320,10 @@ jobs:
             @{target='test-native-sdk-send-user'; tests=11},
             @{target='test-native-sdk-session-lifecycle'; tests=11},
             @{target='test-native-sdk-message-conversion'; tests=12},
-            @{target='test-native-sdk-session-prepare'; tests=11}
+            @{target='test-native-sdk-session-prepare'; tests=11},
+            @{target='test-native-sdk-session-events'; tests=12},
+            @{target='test-native-auth-storage-persistent'; tests=8},
+            @{target='test-native-auth-timer-controls'; tests=24}
           )
           $taskProof = @()
           foreach ($taskSlice in $taskSlices) {
@@ -403,7 +424,7 @@ jobs:
                   $taskLatest = Get-Content "$taskRoot/latest-result.json" -Raw | ConvertFrom-Json
                   if ($taskComponents.status -cne 'passed' -or $taskComponents.component_tests -ne 93 -or $taskLatest.status -cne 'passed' -or $taskLatest.tests -ne 207) { throw 'Platform component qualification is incomplete' }
                   $taskAdditional = Get-Content "$taskRoot/additional-result.json" -Raw | ConvertFrom-Json
-                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11; 'test-native-sdk-message-conversion'=12; 'test-native-sdk-session-prepare'=11}
+                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11; 'test-native-sdk-message-conversion'=12; 'test-native-sdk-session-prepare'=11; 'test-native-sdk-session-events'=12; 'test-native-auth-storage-persistent'=8; 'test-native-auth-timer-controls'=24}
                   if ($taskAdditional.status -cne 'passed' -or $taskAdditional.slices.Count -ne $taskExpectedSlices.Count) { throw 'Current component slice qualification missing' }
                   foreach ($taskTarget in $taskExpectedSlices.Keys) {
                     $taskSlice = @($taskAdditional.slices | Where-Object target -CEQ $taskTarget)

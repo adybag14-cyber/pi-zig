@@ -1,0 +1,294 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "fixture": "Actual original ReadOnlyAuthStorage and readStoredCredential on owned files only; fixture data, no host credential access.",
+  "rows": [
+    {
+      "name": "missing-no-write",
+      "readType": "undefined",
+      "list": [],
+      "exists": false
+    },
+    {
+      "name": "mutation-errors",
+      "failures": [
+        {
+          "name": "Error",
+          "message": "Read-only credential storage cannot modify auth.json"
+        },
+        {
+          "name": "Error",
+          "message": "Read-only credential storage cannot modify auth.json"
+        }
+      ],
+      "exists": false
+    },
+    {
+      "name": "valid-key-env-bom",
+      "value": {
+        "type": "api_key",
+        "key": "prefix-literal-fixture-$-!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      },
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ],
+      "raw": {
+        "type": "api_key",
+        "key": "prefix-${PI_AUTH_FIXTURE_KEY}-$$-$!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      }
+    },
+    {
+      "name": "oauth-cloned",
+      "differentIdentity": true,
+      "value": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": {
+          "deep": 2
+        }
+      },
+      "raw": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": {
+          "deep": 2
+        }
+      }
+    },
+    {
+      "name": "cached-snapshot",
+      "cached": {
+        "type": "api_key",
+        "key": "prefix-literal-fixture-$-!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      },
+      "fresh": {
+        "type": "api_key",
+        "key": "external-new"
+      }
+    },
+    {
+      "name": "preabort-no-file-read",
+      "sameReasons": [
+        true,
+        true
+      ],
+      "exists": false
+    },
+    {
+      "name": "invalid-root",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json: expected an object"
+      }
+    },
+    {
+      "name": "invalid-credential",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-key",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-env",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-oauth",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "malformed-wrap-and-raw-best-effort",
+      "failure": {
+        "name": "Error",
+        "message": "Failed to read auth.json: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "rawType": "undefined"
+    }
+  ],
+  "raw": [
+    {
+      "name": "missing-no-write",
+      "readType": "undefined",
+      "list": [],
+      "exists": false
+    },
+    {
+      "name": "mutation-errors",
+      "failures": [
+        {
+          "name": "Error",
+          "message": "Read-only credential storage cannot modify auth.json"
+        },
+        {
+          "name": "Error",
+          "message": "Read-only credential storage cannot modify auth.json"
+        }
+      ],
+      "exists": false
+    },
+    {
+      "name": "valid-key-env-bom",
+      "value": {
+        "type": "api_key",
+        "key": "prefix-literal-fixture-$-!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      },
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ],
+      "raw": {
+        "type": "api_key",
+        "key": "prefix-${PI_AUTH_FIXTURE_KEY}-$$-$!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      }
+    },
+    {
+      "name": "oauth-cloned",
+      "differentIdentity": true,
+      "value": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": {
+          "deep": 2
+        }
+      },
+      "raw": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": {
+          "deep": 2
+        }
+      }
+    },
+    {
+      "name": "cached-snapshot",
+      "cached": {
+        "type": "api_key",
+        "key": "prefix-literal-fixture-$-!",
+        "env": {
+          "PI_AUTH_FIXTURE_KEY": "literal-fixture"
+        },
+        "extra": {
+          "deep": 1
+        }
+      },
+      "fresh": {
+        "type": "api_key",
+        "key": "external-new"
+      }
+    },
+    {
+      "name": "preabort-no-file-read",
+      "sameReasons": [
+        true,
+        true
+      ],
+      "exists": false
+    },
+    {
+      "name": "invalid-root",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json: expected an object"
+      }
+    },
+    {
+      "name": "invalid-credential",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-key",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-env",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "invalid-oauth",
+      "failure": {
+        "name": "Error",
+        "message": "Invalid auth.json credential for provider \"fixture\""
+      }
+    },
+    {
+      "name": "malformed-wrap-and-raw-best-effort",
+      "failure": {
+        "name": "Error",
+        "message": "Failed to read auth.json: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "rawType": "undefined"
+    }
+  ]
+}

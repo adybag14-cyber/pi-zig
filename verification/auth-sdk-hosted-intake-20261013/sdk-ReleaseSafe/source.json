@@ -1,0 +1,9 @@
+{
+  "head": "c34e5247e3992ee0856e897a76852510f08e1577",
+  "tree": "273e05bf8bb4c69793b77f1011da65a0c96c628e",
+  "mode": "ReleaseSafe",
+  "source_count": 4592,
+  "tool_count": 19543,
+  "public_activation": false,
+  "scope": "Candidate session event and constructor hook composition; complete SDK and class parity remain separate"
+}

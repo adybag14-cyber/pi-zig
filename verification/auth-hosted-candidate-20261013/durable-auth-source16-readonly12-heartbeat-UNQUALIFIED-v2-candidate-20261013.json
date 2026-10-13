@@ -1,0 +1,101 @@
+{
+  "status": "UNQUALIFIED_CANDIDATE",
+  "base": "cfc0b8e973c5cb829a20a1caddda07bb6b662108",
+  "patch": "durable-auth-source16-readonly12-heartbeat-native-oom-UNQUALIFIED-v2-cfc0b8e-20261013.patch",
+  "patch_sha256": "D535738AD89A0CB2BF7A8822FB0A213FC3887164DA0EEBA492F14FD35ABA63E5",
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "zig": "0.16.0",
+  "zig_windows_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "inputs": [
+    {
+      "path": "build.zig",
+      "sha256": "261AFC5243325B51BA03831349E883B93AF071152BC5A5508FB99DCAF265A21E"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-heartbeat-native.input.txt",
+      "sha256": "81095D2E774E14668384F65B26BD7C62727DD2F4B5FC6CFBF85E8649322443A6"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-heartbeat-source.json",
+      "sha256": "43308B502C7E1851CF98243A296F33454C92DA74505A45EB0203EB467F2821F5"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-locks-multipath-native.input.txt",
+      "sha256": "4FDCEA218DABAEDEA47E472F453BA784C27FF66F1630BCBB5CC19FCCAECB3E62"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-locks-multipath-source.json",
+      "sha256": "2676AB8C2453CF75D18A3CE05E309AB53F115DB4A246A450A8568F08EABABD1B"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-readonly-native.input.txt",
+      "sha256": "61A3E06D7F133DCA5A3745BD98B582DC12B0295750EA8CB3AAB80CF1EFF717CE"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-readonly-source.json",
+      "sha256": "1140E69938BD2ED324F50040F625F42E00E02F69B07904C59F21A92E7F0FBDB5"
+    },
+    {
+      "path": "src/extensions/native_auth_file_backend.zig",
+      "sha256": "05FA38BAC0A3A659F5F09415CBD09BE17F7BD1CF79E7D3C453F12EED2AC9B0DA"
+    },
+    {
+      "path": "src/extensions/native_auth_file_io.zig",
+      "sha256": "7E1B23F5565B9DD9596C1F924E715B1CD5229E529115AAA3AE281EF2EDD785B1"
+    },
+    {
+      "path": "src/extensions/native_auth_readonly.zig",
+      "sha256": "D13749DE0494EC0D7D19DEF358EBE966E3EC26EF3CD23A6A74A7AB02853D159A"
+    },
+    {
+      "path": "src/extensions/native_auth_storage.zig",
+      "sha256": "0E22A7BB41C05D1FC2074A2A5DD986ABB2C4263C766A842903D3440AC6EEB32F"
+    },
+    {
+      "path": "src/extensions/timers.zig",
+      "sha256": "EC5D370C5839E593A1F0F96351DED08AD2A4A3C8B9AEE65BD09907CAD40AB8C4"
+    },
+    {
+      "path": "src/native_auth_storage_test.zig",
+      "sha256": "4A468E1EB1126DF6595775C1725F2EC51F2E0B95BA126BC14BBDEFDAD1F016AD"
+    }
+  ],
+  "known": [
+    "Source8 persistence previous Debug and ReleaseSafe qualified at base",
+    "Source8 held-locks/multipath actual original qualified",
+    "Source12 readonly actual original qualified, native body proof passed",
+    "Source2 heartbeat actual original qualified Node19692 completed2026-10-13T09:35:43.484Z",
+    "All7changed Zig files passed scoped fmt and AST checks; Source CRLF preserved with cr-at-eol whitespace gate"
+  ],
+  "not_qualified": [
+    "Candidate native source uncompiled",
+    "Last actual native Debug attempt FAILED3/4 atGPAindex96 before timer-tag fix",
+    "No standard persistent GPA success yet",
+    "Readonly native Source12 unexecuted",
+    "Heartbeat native owner timer replay unexecuted",
+    "Shared timer failure provenance control target unexecuted",
+    "No full ABI or public activation claim"
+  ],
+  "native_targets": [
+    "test-native-auth-storage-persistent",
+    "test-native-auth-timer-controls"
+  ],
+  "native_bounds": [
+    "fresh16GiB physical admission",
+    "default LLVM",
+    "-j1",
+    "--test-timeout120s",
+    "outer300s",
+    "host await10s unchanged"
+  ],
+  "expected_persistent_inventory": "7 named tests plus imported json.Owned =8; must verify from actual output",
+  "expected_control_inventory": "19 imported timer tests plus3original-native-allocation identity tests =22; must verify actual output",
+  "gaps": [
+    "Read coalescing/all-reader cancellation",
+    "Persistent class/prototype and default-path full ABI",
+    "Command-backed key execution",
+    "EPERM retries/error wording beyond exercised cases",
+    "Cross-process peer and ACL certification"
+  ],
+  "created_utc": "2026-10-13T09:44:47.5054287+00:00"
+}

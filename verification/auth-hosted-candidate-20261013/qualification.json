@@ -1,0 +1,19 @@
+{
+  "candidate": true,
+  "runtime_qualified": false,
+  "public_activation": false,
+  "source8_base_sha256": "828C1672FC02741FF19896DEE7A57F25181A9E8B7094D8A803846746A8F66848",
+  "candidate_increment_sha256": "D535738AD89A0CB2BF7A8822FB0A213FC3887164DA0EEBA492F14FD35ABA63E5",
+  "expected_storage_tests": 8,
+  "expected_timer_identity_tests": 22,
+  "native_test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "local_runtime": "Not admitted below16GiB; latest preceding native attempt failed before timer tag repair",
+  "hosted_runtime": "Pending exact-head Debug and ReleaseSafe qualification",
+  "remaining_requirements": [
+    "Terminal selected test inventories and zero input/tool drift",
+    "Persistent class ABI/default paths/command keys/full coalescing and cancellation",
+    "Peer process and platform ACL qualification",
+    "SDK integration after native parity"
+  ]
+}
