@@ -1,0 +1,45 @@
+{
+  "implementation_commit": "66cc9270f35cd1c2b2d96ee921106cf782f446cf",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Four ordinary session methods: getLastAssistantText/createReplacedSessionContext/hasExtensionHandlers/getUserMessagesForForking; private prototype only",
+  "source_cases": 34,
+  "original_factory_instances_each": 34,
+  "original_captures": 2,
+  "raw_repeat_equal": true,
+  "debug": {
+    "gc": true,
+    "full_allocation_sweep": true,
+    "status": "passed",
+    "tests": 11
+  },
+  "release_safe": {
+    "gc": true,
+    "full_allocation_sweep": true,
+    "status": "passed",
+    "tests": 11
+  },
+  "source_files": 4872,
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "committed_blobs_verified": 4872,
+  "committed_byte_drift": 0,
+  "original_source_posthash": {
+    "drift": 0,
+    "source_files": 1945,
+    "runtime_files": 31064,
+    "node_distribution_files": 1774
+  },
+  "caller_fixture": "Original Agent copies state.messages assignment through slice; utility fixture explicitly supplies caller-owned writable messages data descriptor after original factory, keeping Source utility methods unchanged",
+  "preserved_negatives": [
+    "First original capture custom slice object copied by Agent setter and later lacked slice; strict unexpected TypeError failed"
+  ],
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending"
+}
