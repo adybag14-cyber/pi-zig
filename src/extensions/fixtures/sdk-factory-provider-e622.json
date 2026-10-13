@@ -1,0 +1,452 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "52c35173d7b2fc49c6251ac9744b92d2a16b66befdf2ec04015cd46a226dab03",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 18,
+  "rows": [
+    {
+      "name": "request-default",
+      "value": {
+        "keys": [
+          "timeoutMs",
+          "websocketConnectTimeoutMs",
+          "maxRetries",
+          "maxRetryDelayMs",
+          "transformHeaders"
+        ],
+        "timeoutMs": 500,
+        "websocketConnectTimeoutMs": 900,
+        "maxRetries": 3,
+        "maxRetryDelayMs": 700,
+        "trace": [
+          "retry",
+          "idle",
+          "websocket"
+        ],
+        "warmed": false,
+        "sameModel": true,
+        "sameContext": true,
+        "result": {
+          "fixture": "stream"
+        },
+        "headers": {
+          "existing": "yes"
+        }
+      }
+    },
+    {
+      "name": "request-empty",
+      "value": {
+        "keys": [
+          "timeoutMs",
+          "websocketConnectTimeoutMs",
+          "maxRetries",
+          "maxRetryDelayMs",
+          "transformHeaders"
+        ],
+        "timeoutMs": 500,
+        "websocketConnectTimeoutMs": 900,
+        "maxRetries": 3,
+        "maxRetryDelayMs": 700,
+        "trace": [
+          "retry",
+          "idle",
+          "websocket"
+        ],
+        "warmed": false,
+        "sameModel": true,
+        "sameContext": true,
+        "result": {
+          "fixture": "stream"
+        },
+        "headers": {
+          "existing": "yes"
+        }
+      }
+    },
+    {
+      "name": "request-explicit-zero",
+      "value": {
+        "keys": [
+          "timeoutMs",
+          "websocketConnectTimeoutMs",
+          "maxRetries",
+          "maxRetryDelayMs",
+          "transformHeaders"
+        ],
+        "timeoutMs": 0,
+        "websocketConnectTimeoutMs": 0,
+        "maxRetries": 0,
+        "maxRetryDelayMs": 0,
+        "trace": [
+          "retry",
+          "idle"
+        ],
+        "warmed": false,
+        "sameModel": true,
+        "sameContext": true,
+        "result": {
+          "fixture": "stream"
+        },
+        "headers": {
+          "existing": "yes"
+        }
+      }
+    },
+    {
+      "name": "request-nullish",
+      "value": {
+        "keys": [
+          "timeoutMs",
+          "websocketConnectTimeoutMs",
+          "maxRetries",
+          "maxRetryDelayMs",
+          "transformHeaders"
+        ],
+        "timeoutMs": 500,
+        "websocketConnectTimeoutMs": 900,
+        "maxRetries": 3,
+        "maxRetryDelayMs": 700,
+        "trace": [
+          "retry",
+          "idle",
+          "websocket"
+        ],
+        "warmed": false,
+        "sameModel": true,
+        "sameContext": true,
+        "result": {
+          "fixture": "stream"
+        },
+        "headers": {
+          "existing": "yes"
+        }
+      }
+    },
+    {
+      "name": "request-explicit",
+      "value": {
+        "keys": [
+          "timeoutMs",
+          "websocketConnectTimeoutMs",
+          "maxRetries",
+          "maxRetryDelayMs",
+          "custom",
+          "transformHeaders"
+        ],
+        "timeoutMs": 20,
+        "websocketConnectTimeoutMs": 30,
+        "maxRetries": 4,
+        "maxRetryDelayMs": 50,
+        "custom": "retained",
+        "trace": [
+          "retry",
+          "idle"
+        ],
+        "warmed": false,
+        "sameModel": true,
+        "sameContext": true,
+        "result": {
+          "fixture": "stream"
+        },
+        "headers": {
+          "existing": "yes"
+        }
+      }
+    },
+    {
+      "name": "null-options-reject",
+      "value": true
+    },
+    {
+      "name": "live-options-getters",
+      "value": {
+        "trace": [
+          "retry",
+          "idle",
+          "timeout",
+          "sessionId",
+          "timeout",
+          "websocket",
+          "sessionId",
+          "sessionId"
+        ],
+        "symbols": [
+          [
+            "request",
+            "symbol"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "idle-timeout-fallback",
+      "value": {
+        "timeout": 42
+      }
+    },
+    {
+      "name": "header-runner-snapshot",
+      "value": {
+        "headers": {
+          "runner": "first",
+          "x-opencode-session": "after",
+          "x-opencode-client": "pi",
+          "x": "value"
+        },
+        "calls": [
+          [
+            "first-has",
+            "before_provider_headers"
+          ],
+          [
+            "first-headers",
+            {
+              "x-opencode-session": "after",
+              "x-opencode-client": "pi",
+              "x": "value"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "cache-prefix-identity",
+      "value": {
+        "checks": [
+          true,
+          true,
+          true,
+          false,
+          false,
+          false
+        ],
+        "sameConfigured": true,
+        "sameModel": true,
+        "sameContext": true,
+        "closure": {
+          "name": "",
+          "length": 0,
+          "prototype": false
+        }
+      }
+    },
+    {
+      "name": "cache-live-every",
+      "value": {
+        "value": true,
+        "seen": {
+          "thisSame": true,
+          "name": "",
+          "length": 2
+        }
+      }
+    },
+    {
+      "name": "callbacks-without-runner",
+      "value": {
+        "samePayload": true,
+        "sameContext": true
+      }
+    },
+    {
+      "name": "absent-response-await-order",
+      "value": [
+        "response",
+        "peer"
+      ]
+    },
+    {
+      "name": "callbacks-active",
+      "value": {
+        "payload": {
+          "changed": true
+        },
+        "context": [
+          {
+            "role": "user",
+            "content": "changed"
+          }
+        ],
+        "calls": [
+          [
+            "has",
+            "before_provider_request"
+          ],
+          [
+            "payload",
+            {
+              "x": 1
+            }
+          ],
+          [
+            "context",
+            [
+              {
+                "role": "user",
+                "content": "original"
+              }
+            ]
+          ],
+          [
+            "has",
+            "after_provider_response"
+          ],
+          [
+            "emit",
+            {
+              "type": "after_provider_response",
+              "status": 201,
+              "headers": {
+                "h": "v"
+              }
+            },
+            [
+              "type",
+              "status",
+              "headers"
+            ]
+          ],
+          [
+            "has",
+            "provider_stream_event"
+          ],
+          [
+            "emit",
+            {
+              "data": {
+                "chunk": "x"
+              },
+              "type": "provider_stream_event",
+              "provider": "fixture",
+              "api": "openai-completions",
+              "model": "fixture"
+            },
+            [
+              "data",
+              "type",
+              "provider",
+              "api",
+              "model"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "response-callee-before-argument-getters",
+      "value": [
+        "has",
+        "emit-get",
+        "status",
+        "headers",
+        [
+          "emit",
+          {
+            "type": "after_provider_response",
+            "status": 202,
+            "headers": {
+              "x": "v"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "name": "dynamic-payload-runner",
+      "value": {
+        "first": {
+          "runner": "first"
+        },
+        "second": {
+          "runner": "second"
+        }
+      }
+    },
+    {
+      "name": "payload-original-throw-identity",
+      "value": true
+    },
+    {
+      "name": "stream-event-original-rejection-identity",
+      "value": true
+    },
+    {
+      "name": "warming-decision-fallback",
+      "value": "warm"
+    },
+    {
+      "name": "warming-decision-sync-nullish",
+      "value": "warm"
+    },
+    {
+      "name": "warming-decision-promise-before-coalesce",
+      "value": {}
+    },
+    {
+      "name": "warming-decision-override",
+      "value": "stop"
+    },
+    {
+      "name": "warming-mode-live",
+      "value": {
+        "first": "streaming",
+        "second": "off"
+      }
+    },
+    {
+      "name": "callback-metadata",
+      "value": [
+        {
+          "key": "onPayload",
+          "name": "transformProviderPayload",
+          "length": 1,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "onResponse",
+          "name": "handleProviderResponse",
+          "length": 1,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "onProviderStreamEvent",
+          "name": "handleProviderStreamEvent",
+          "length": 2,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "transformContext",
+          "name": "transformContext",
+          "length": 1,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "streamFn",
+          "name": "streamFn",
+          "length": 3,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "getCacheMode",
+          "name": "",
+          "length": 0,
+          "prototype": false,
+          "async": false
+        },
+        {
+          "key": "decideCacheWarming",
+          "name": "",
+          "length": 1,
+          "prototype": false,
+          "async": true
+        }
+      ]
+    }
+  ]
+}

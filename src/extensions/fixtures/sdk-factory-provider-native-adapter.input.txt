@@ -1,0 +1,14 @@
+// Test adapter: actual native collaborators; caller-owned provider/runner inputs.
+// This exercises private factory callbacks, not the public factory assembly.
+globalThis.createProviderCallbackCase=async()=>{
+ const model={id:'fixture',name:'fixture',provider:'fixture',api:'openai-completions',baseUrl:'https://fixture.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:10000,maxTokens:1000};
+ const models={streamSimple(){throw Error('Caller must provide its observed stream')}};
+ const manager=providerSDK.SessionManager.inMemory(),settings=providerSDK.SettingsManager.inMemory({retry:{enabled:false},compaction:{enabled:false},cacheWarming:'off'});
+ const agent=new providerSDK.Agent({initialState:{model,thinkingLevel:'off',systemPrompt:'',messages:[],tools:[]},streamFn(){throw Error('Bootstrap stream must not run')}});
+ const runnerRef={},warmer=new cacheWarmerAPI.CacheWarmer(models,manager,()=>settings.getCacheWarmingMode());
+ const nativeCallbacks=createFactoryProviderCallbacks(settings,models,manager,runnerRef,{value:agent},warmer);
+ const callbacks={onPayload:nativeCallbacks.onPayload,onResponse:nativeCallbacks.onResponse,onProviderStreamEvent:nativeCallbacks.onProviderStreamEvent,transformContext:nativeCallbacks.transformContext,streamFn:nativeCallbacks.streamFn,getCacheMode:nativeCallbacks.getCacheMode,decideCacheWarming:nativeCallbacks.decideCacheWarming};
+ Object.assign(agent,{streamFunction:callbacks.streamFn,onPayload:callbacks.onPayload,onResponse:callbacks.onResponse,onProviderStreamEvent:callbacks.onProviderStreamEvent,transformContext:callbacks.transformContext});
+ warmer.getMode=callbacks.getCacheMode;warmer.decide=callbacks.decideCacheWarming;
+ return{agent,settings,manager,models,model,runnerRef,warmer,callbacks,dispose(){warmer.cancel()}};
+};

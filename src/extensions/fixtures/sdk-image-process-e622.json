@@ -1,0 +1,386 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "cbd23bcbdf25ea87c034570b3741e701e9237445223676443c23e9171d0d12fe",
+  "scope": "Original image-process and tool-result-images modules with original Photon/resize dependencies, caller-owned bytes/options/content; no replacement Source bodies",
+  "pngBase64": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+  "rows": [
+    {
+      "name": "process-image/png-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/png-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-IMAGE/PNG; charset=binary-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-IMAGE/PNG; charset=binary-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/jpg-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/jpeg",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/jpg-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/jpeg",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/jpeg-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/jpeg",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/jpeg-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/jpeg",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/gif-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/gif",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/gif-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/gif",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/webp-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/webp",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/webp-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/webp",
+        "hints": []
+      }
+    },
+    {
+      "name": "process-image/bmp-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": [
+          "[Image converted from image/bmp to image/png.]"
+        ]
+      }
+    },
+    {
+      "name": "process-image/bmp-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": [
+          "[Image converted from image/bmp to image/png.]"
+        ]
+      }
+    },
+    {
+      "name": "process-application/octet-stream-false",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": [
+          "[Image converted from application/octet-stream to image/png.]"
+        ]
+      }
+    },
+    {
+      "name": "process-application/octet-stream-true",
+      "value": {
+        "ok": true,
+        "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+        "mimeType": "image/png",
+        "hints": [
+          "[Image converted from application/octet-stream to image/png.]"
+        ]
+      }
+    },
+    {
+      "name": "invalid-image/png-false",
+      "value": {
+        "ok": true,
+        "data": "AQID",
+        "mimeType": "image/png",
+        "hints": []
+      }
+    },
+    {
+      "name": "invalid-image/png-true",
+      "value": {
+        "ok": false,
+        "message": "[Image omitted: could not be resized below the inline image size limit.]"
+      }
+    },
+    {
+      "name": "invalid-image/unknown-false",
+      "value": {
+        "ok": false,
+        "message": "[Image omitted: could not be converted to a supported inline image format.]"
+      }
+    },
+    {
+      "name": "invalid-image/unknown-true",
+      "value": {
+        "ok": false,
+        "message": "[Image omitted: could not be converted to a supported inline image format.]"
+      }
+    },
+    {
+      "name": "normalize-empty",
+      "value": {
+        "sameArray": true,
+        "sameBlocks": [],
+        "content": []
+      }
+    },
+    {
+      "name": "normalize-text",
+      "value": {
+        "sameArray": true,
+        "sameBlocks": [
+          true
+        ],
+        "content": [
+          {
+            "type": "text",
+            "text": "hello"
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-png",
+      "value": {
+        "sameArray": true,
+        "sameBlocks": [
+          true
+        ],
+        "content": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+            "mimeType": "image/png",
+            "extra": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-alias",
+      "value": {
+        "sameArray": false,
+        "sameBlocks": [
+          false
+        ],
+        "content": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+            "mimeType": "image/png"
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-unknown",
+      "value": {
+        "sameArray": true,
+        "sameBlocks": [
+          true
+        ],
+        "content": [
+          {
+            "type": "image",
+            "data": "AQID",
+            "mimeType": "image/unknown"
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-mixed",
+      "value": {
+        "sameArray": false,
+        "sameBlocks": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "content": [
+          {
+            "type": "text",
+            "text": "first"
+          },
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "[Image converted from image/bmp to image/png.]"
+          },
+          {
+            "type": "text",
+            "text": "last"
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-resize",
+      "value": {
+        "sameArray": false,
+        "sameBlocks": [
+          false,
+          false
+        ],
+        "content": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAAFElEQVR4AQEJAPb/AIN4ged4fIPxFD0EzEXctpoAAAAASUVORK5CYII=",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "[Image: original 8x5, displayed at 2x1. Multiply coordinates by 4.00 to map to original image.]"
+          }
+        ]
+      }
+    },
+    {
+      "name": "normalize-live-getters",
+      "value": {
+        "same": true,
+        "trace": [
+          "type",
+          "auto",
+          "type",
+          "data",
+          "mime",
+          "resize",
+          "data",
+          "mime"
+        ]
+      }
+    },
+    {
+      "name": "normalize-invalid-input",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "normalize-invalid-input",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "normalize-invalid-input",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "normalize-invalid-input",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "iterator-closed",
+      "value": true
+    },
+    {
+      "name": "iterator-original-error",
+      "value": true
+    },
+    {
+      "name": "invalid-mime-await-order",
+      "value": [
+        "peer",
+        "process"
+      ]
+    },
+    {
+      "name": "image-function-metadata",
+      "value": [
+        {
+          "name": "processImage",
+          "length": 3,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "name": "normalizeToolResultImages",
+          "length": 2,
+          "prototype": false,
+          "async": true
+        }
+      ]
+    }
+  ]
+}

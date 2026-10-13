@@ -1,0 +1,672 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "782e8335273374568114b2a20dbf5381c6115e12a179e042a61000cd43b4cd45",
+  "rows": [
+    {
+      "name": "telemetry-false-undefined",
+      "value": false
+    },
+    {
+      "name": "telemetry-false-",
+      "value": false
+    },
+    {
+      "name": "telemetry-false-0",
+      "value": false
+    },
+    {
+      "name": "telemetry-false-1",
+      "value": true
+    },
+    {
+      "name": "telemetry-false-true",
+      "value": true
+    },
+    {
+      "name": "telemetry-false-TRUE",
+      "value": true
+    },
+    {
+      "name": "telemetry-false-yes",
+      "value": true
+    },
+    {
+      "name": "telemetry-false-YeS",
+      "value": true
+    },
+    {
+      "name": "telemetry-false-false",
+      "value": false
+    },
+    {
+      "name": "telemetry-false-no",
+      "value": false
+    },
+    {
+      "name": "telemetry-true-undefined",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-",
+      "value": false
+    },
+    {
+      "name": "telemetry-true-0",
+      "value": false
+    },
+    {
+      "name": "telemetry-true-1",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-true",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-TRUE",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-yes",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-YeS",
+      "value": true
+    },
+    {
+      "name": "telemetry-true-false",
+      "value": false
+    },
+    {
+      "name": "telemetry-true-no",
+      "value": false
+    },
+    {
+      "name": "telemetry-raw-setting",
+      "value": "caller-value"
+    },
+    {
+      "name": "telemetry-live-lowercase",
+      "value": {
+        "result": true,
+        "calls": 2
+      }
+    },
+    {
+      "name": "headers-false-openrouter-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-openrouter-https://other.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://openrouter.ai/api-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://openrouter.ai/api-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://evil.invalid/path/openrouter.ai-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://evil.invalid/path/openrouter.ai-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://OPENROUTER.AI-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://OPENROUTER.AI-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-nvidia-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-nvidia-https://other.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-HTTPS://INTEGRATE.API.NVIDIA.COM:443/v1-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-HTTPS://INTEGRATE.API.NVIDIA.COM:443/v1-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://integrate.api.nvidia.com.evil.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://integrate.api.nvidia.com.evil.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-cloudflare-workers-ai-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-cloudflare-workers-ai-https://other.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-cloudflare-ai-gateway-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-cloudflare-ai-gateway-https://other.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://api.cloudflare.com/client/v4-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://api.cloudflare.com/client/v4-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://gateway.ai.cloudflare.com/v1-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://gateway.ai.cloudflare.com/v1-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-opencode-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-opencode-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-false-opencode-go-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-opencode-go-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-false-custom-https://opencode.ai/api-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://opencode.ai/api-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-false-custom-https://sub.opencode.ai-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-https://sub.opencode.ai-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-not a URL-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-false-custom-not a URL-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-openrouter-https://other.invalid-undefined",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-openrouter-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://openrouter.ai/api-undefined",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://openrouter.ai/api-session-fixture",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://evil.invalid/path/openrouter.ai-undefined",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://evil.invalid/path/openrouter.ai-session-fixture",
+      "value": {
+        "result": {
+          "HTTP-Referer": "https://pi.dev",
+          "X-OpenRouter-Title": "pi",
+          "X-OpenRouter-Categories": "cli-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://OPENROUTER.AI-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-https://OPENROUTER.AI-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-nvidia-https://other.invalid-undefined",
+      "value": {
+        "result": {
+          "X-BILLING-INVOKE-ORIGIN": "Pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-nvidia-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "X-BILLING-INVOKE-ORIGIN": "Pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-HTTPS://INTEGRATE.API.NVIDIA.COM:443/v1-undefined",
+      "value": {
+        "result": {
+          "X-BILLING-INVOKE-ORIGIN": "Pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-HTTPS://INTEGRATE.API.NVIDIA.COM:443/v1-session-fixture",
+      "value": {
+        "result": {
+          "X-BILLING-INVOKE-ORIGIN": "Pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://integrate.api.nvidia.com.evil.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-https://integrate.api.nvidia.com.evil.invalid-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-cloudflare-workers-ai-https://other.invalid-undefined",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-cloudflare-workers-ai-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-cloudflare-ai-gateway-https://other.invalid-undefined",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-cloudflare-ai-gateway-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://api.cloudflare.com/client/v4-undefined",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://api.cloudflare.com/client/v4-session-fixture",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://gateway.ai.cloudflare.com/v1-undefined",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://gateway.ai.cloudflare.com/v1-session-fixture",
+      "value": {
+        "result": {
+          "User-Agent": "pi-coding-agent"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-opencode-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-opencode-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-opencode-go-https://other.invalid-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-opencode-go-https://other.invalid-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://opencode.ai/api-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-https://opencode.ai/api-session-fixture",
+      "value": {
+        "result": {
+          "x-opencode-session": "session-fixture",
+          "x-opencode-client": "pi"
+        },
+        "undefined": false
+      }
+    },
+    {
+      "name": "headers-true-custom-https://sub.opencode.ai-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-https://sub.opencode.ai-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-not a URL-undefined",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "headers-true-custom-not a URL-session-fixture",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "merge-order",
+      "value": {
+        "HTTP-Referer": "override",
+        "X-OpenRouter-Title": "pi",
+        "X-OpenRouter-Categories": "cli-agent",
+        "x": "second"
+      }
+    },
+    {
+      "name": "assign-prototype-setter",
+      "value": {
+        "keys": [
+          "x"
+        ],
+        "inherited": "yes",
+        "ownProto": false
+      }
+    },
+    {
+      "name": "symbol-only-undefined",
+      "value": true
+    },
+    {
+      "name": "live-header-getter",
+      "value": {
+        "result": {
+          "x": "value"
+        },
+        "seen": [
+          "x"
+        ],
+        "symbols": [
+          [
+            "retained",
+            "symbol"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "model-getter-order",
+      "value": {
+        "trace": [
+          "provider",
+          "provider",
+          "baseUrl",
+          "setting",
+          "provider",
+          "baseUrl",
+          "provider",
+          "baseUrl",
+          "provider",
+          "provider",
+          "baseUrl",
+          "baseUrl"
+        ],
+        "undefined": true
+      }
+    },
+    {
+      "name": "live-object-assign",
+      "value": {
+        "result": {
+          "x": 1,
+          "y": 2
+        },
+        "calls": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "guest-error-identity",
+      "value": true
+    },
+    {
+      "name": "environment-disables"
+    },
+    {
+      "name": "environment-enables",
+      "value": {
+        "X-BILLING-INVOKE-ORIGIN": "Pi"
+      }
+    },
+    {
+      "name": "function-metadata",
+      "value": [
+        {
+          "name": "mergeProviderAttributionHeaders",
+          "length": 3,
+          "prototype": true
+        },
+        {
+          "name": "isInstallTelemetryEnabled",
+          "length": 1,
+          "prototype": true
+        }
+      ]
+    }
+  ]
+}
