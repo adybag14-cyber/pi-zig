@@ -1,0 +1,14 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-session-estimate-19cb-source.mjs",
+    "sha256": "19A85881920E3B61446DFB06F241867531361AD39430EE76548A9F2F3E440D8D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-session-events-20261012\\src\\extensions\\fixtures\\sdk-session-estimate-19cb.input.txt",
+    "sha256": "918AE4B751EDF94CB4B669F750A5B82F793153041AA28EAA04F41BDD8F575401"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-SessionEstimate19cb-Qualified-20261013.ps1",
+    "sha256": "5A903E8B24DD575CE162B686BBAE9FBE26B13AE579E34C3496B8F132B2FB2DDC"
+  }
+]
