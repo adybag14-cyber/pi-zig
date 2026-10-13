@@ -1,0 +1,278 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "originalDriverSha256": "d5a660483d503b444aff108ee875dba4daff39f45ed34befaa60ad653336a503",
+  "originalBodySha256": "8b0a4eff9b6cbb57ed206917713c3c4c41f4eee943315256353c2940749408a7",
+  "originalBody": "rows.push({name:'initial',exists:fs.existsSync(file),text:text(),missingType:typeof await store.read('fixture'),list:await store.list()});\r\nconst credential={type:'api_key',key:'fixture-literal-key',env:{REGION:'fixture-region'},extra:{retained:true}},written=await store.modify('fixture',async()=>credential),read=await store.read('fixture');rows.push({name:'write-key-env-extra',writtenIdentity:written===credential,readIdentity:read===credential,value:read,text:text(),list:await store.list()});\r\nconst second=AuthStorage.create(file),oauth={type:'oauth',access:'fixture-access',refresh:'fixture-refresh',expires:1700000000000,extra:'preserved'};await second.modify('oauth',async()=>oauth);rows.push({name:'second-store-read-latest',value:await store.read('oauth'),text:text(),list:await store.list()});\r\nlet current;const fileBefore=text(),kept=await store.modify('fixture',async value=>{current=value;return undefined});rows.push({name:'undefined-keeps-current',returnedIdentity:kept===current,value:kept,unchangedBytes:fileBefore===text()});\r\nfs.writeFileSync(file,'\\ufeff'+JSON.stringify({fixture:{type:'api_key',key:'external-fixture-key',env:{ZONE:'new'}},oauth}));rows.push({name:'external-bom-reload',value:await store.read('fixture'),second:await second.read('fixture'),list:await store.list()});\r\nfs.writeFileSync(file,'{');const fallback=await store.read('fixture');let failure;try{await store.read('fixture',{signal:new AbortController().signal})}catch(error){failure={name:error.name,message:error.message}}rows.push({name:'malformed-best-effort-vs-signalled',fallback,failure});\r\nfs.writeFileSync(file,JSON.stringify({fixture:credential,oauth},null,2));store.reload();await store.delete('fixture');rows.push({name:'delete-preserves-sibling',missingType:typeof await store.read('fixture'),sibling:await store.read('oauth'),text:text(),list:await store.list()});\r\nconst controller=new AbortController(),reason={fixture:'preabort'};controller.abort(reason);const original=text(),errors=[];for(const method of['read','list','modify','delete'])try{if(method==='read')await store.read('oauth',{signal:controller.signal});else if(method==='list')await store.list({signal:controller.signal});else if(method==='modify')await store.modify('oauth',async()=>{throw Error('preaborted callback invoked')},{signal:controller.signal});else await store.delete('oauth',{signal:controller.signal});throw Error('missing cancellation')}catch(error){if(error!==reason)throw error;errors.push(method)}rows.push({name:'preabort-no-writes',errors,unchangedBytes:original===text()});raw.push(...rows);\r\n",
+  "rows": [
+    {
+      "name": "initial",
+      "exists": true,
+      "text": "{}",
+      "missingType": "undefined",
+      "list": []
+    },
+    {
+      "name": "write-key-env-extra",
+      "writtenIdentity": true,
+      "readIdentity": false,
+      "value": {
+        "type": "api_key",
+        "key": "fixture-literal-key",
+        "env": {
+          "REGION": "fixture-region"
+        },
+        "extra": {
+          "retained": true
+        }
+      },
+      "text": "{\n  \"fixture\": {\n    \"type\": \"api_key\",\n    \"key\": \"fixture-literal-key\",\n    \"env\": {\n      \"REGION\": \"fixture-region\"\n    },\n    \"extra\": {\n      \"retained\": true\n    }\n  }\n}",
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        }
+      ]
+    },
+    {
+      "name": "second-store-read-latest",
+      "value": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": "preserved"
+      },
+      "text": "{\n  \"fixture\": {\n    \"type\": \"api_key\",\n    \"key\": \"fixture-literal-key\",\n    \"env\": {\n      \"REGION\": \"fixture-region\"\n    },\n    \"extra\": {\n      \"retained\": true\n    }\n  },\n  \"oauth\": {\n    \"type\": \"oauth\",\n    \"access\": \"fixture-access\",\n    \"refresh\": \"fixture-refresh\",\n    \"expires\": 1700000000000,\n    \"extra\": \"preserved\"\n  }\n}",
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "undefined-keeps-current",
+      "returnedIdentity": true,
+      "value": {
+        "type": "api_key",
+        "key": "fixture-literal-key",
+        "env": {
+          "REGION": "fixture-region"
+        },
+        "extra": {
+          "retained": true
+        }
+      },
+      "unchangedBytes": true
+    },
+    {
+      "name": "external-bom-reload",
+      "value": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "second": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "malformed-best-effort-vs-signalled",
+      "fallback": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "failure": {
+        "name": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    },
+    {
+      "name": "delete-preserves-sibling",
+      "missingType": "undefined",
+      "sibling": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": "preserved"
+      },
+      "text": "{\n  \"oauth\": {\n    \"type\": \"oauth\",\n    \"access\": \"fixture-access\",\n    \"refresh\": \"fixture-refresh\",\n    \"expires\": 1700000000000,\n    \"extra\": \"preserved\"\n  }\n}",
+      "list": [
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "preabort-no-writes",
+      "errors": [
+        "read",
+        "list",
+        "modify",
+        "delete"
+      ],
+      "unchangedBytes": true
+    }
+  ],
+  "raw": [
+    {
+      "name": "initial",
+      "exists": true,
+      "text": "{}",
+      "missingType": "undefined",
+      "list": []
+    },
+    {
+      "name": "write-key-env-extra",
+      "writtenIdentity": true,
+      "readIdentity": false,
+      "value": {
+        "type": "api_key",
+        "key": "fixture-literal-key",
+        "env": {
+          "REGION": "fixture-region"
+        },
+        "extra": {
+          "retained": true
+        }
+      },
+      "text": "{\n  \"fixture\": {\n    \"type\": \"api_key\",\n    \"key\": \"fixture-literal-key\",\n    \"env\": {\n      \"REGION\": \"fixture-region\"\n    },\n    \"extra\": {\n      \"retained\": true\n    }\n  }\n}",
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        }
+      ]
+    },
+    {
+      "name": "second-store-read-latest",
+      "value": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": "preserved"
+      },
+      "text": "{\n  \"fixture\": {\n    \"type\": \"api_key\",\n    \"key\": \"fixture-literal-key\",\n    \"env\": {\n      \"REGION\": \"fixture-region\"\n    },\n    \"extra\": {\n      \"retained\": true\n    }\n  },\n  \"oauth\": {\n    \"type\": \"oauth\",\n    \"access\": \"fixture-access\",\n    \"refresh\": \"fixture-refresh\",\n    \"expires\": 1700000000000,\n    \"extra\": \"preserved\"\n  }\n}",
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "undefined-keeps-current",
+      "returnedIdentity": true,
+      "value": {
+        "type": "api_key",
+        "key": "fixture-literal-key",
+        "env": {
+          "REGION": "fixture-region"
+        },
+        "extra": {
+          "retained": true
+        }
+      },
+      "unchangedBytes": true
+    },
+    {
+      "name": "external-bom-reload",
+      "value": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "second": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "list": [
+        {
+          "providerId": "fixture",
+          "type": "api_key"
+        },
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "malformed-best-effort-vs-signalled",
+      "fallback": {
+        "type": "api_key",
+        "key": "external-fixture-key",
+        "env": {
+          "ZONE": "new"
+        }
+      },
+      "failure": {
+        "name": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    },
+    {
+      "name": "delete-preserves-sibling",
+      "missingType": "undefined",
+      "sibling": {
+        "type": "oauth",
+        "access": "fixture-access",
+        "refresh": "fixture-refresh",
+        "expires": 1700000000000,
+        "extra": "preserved"
+      },
+      "text": "{\n  \"oauth\": {\n    \"type\": \"oauth\",\n    \"access\": \"fixture-access\",\n    \"refresh\": \"fixture-refresh\",\n    \"expires\": 1700000000000,\n    \"extra\": \"preserved\"\n  }\n}",
+      "list": [
+        {
+          "providerId": "oauth",
+          "type": "oauth"
+        }
+      ]
+    },
+    {
+      "name": "preabort-no-writes",
+      "errors": [
+        "read",
+        "list",
+        "modify",
+        "delete"
+      ],
+      "unchangedBytes": true
+    }
+  ]
+}

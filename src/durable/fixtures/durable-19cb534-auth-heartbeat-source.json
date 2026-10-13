@@ -1,0 +1,46 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "fixture": "Actual original FileAuthStorageBackend heartbeat renewal and mtime compromise over owned files; native callback release is externally controlled, Source outcomes compared exactly.",
+  "rows": [
+    {
+      "name": "live-heartbeat-renews",
+      "callbackCount": 2,
+      "mtimeAdvanced": true,
+      "result": "live-result",
+      "unlocked": true,
+      "text": "{\"live\":true}"
+    },
+    {
+      "name": "mtime-compromise-blocks-write",
+      "result": "compromised",
+      "failure": {
+        "name": "Error",
+        "message": "Unable to update lock within the stale threshold",
+        "code": "ECOMPROMISED"
+      },
+      "lockRetained": true,
+      "text": "{}"
+    }
+  ],
+  "raw": [
+    {
+      "name": "live-heartbeat-renews",
+      "callbackCount": 2,
+      "mtimeAdvanced": true,
+      "result": "live-result",
+      "unlocked": true,
+      "text": "{\"live\":true}"
+    },
+    {
+      "name": "mtime-compromise-blocks-write",
+      "result": "compromised",
+      "failure": {
+        "name": "Error",
+        "message": "Unable to update lock within the stale threshold",
+        "code": "ECOMPROMISED"
+      },
+      "lockRetained": true,
+      "text": "{}"
+    }
+  ]
+}

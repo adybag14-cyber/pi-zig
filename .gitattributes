@@ -64,3 +64,4 @@ src/extensions/fixtures/chord-evaluate-original-19cb.input.txt whitespace=cr-at-
 src/extensions/fixtures/chord-normalization-evaluator-original-19cb.input.txt whitespace=cr-at-eol
 verification/chord-evaluate-19cb534-20261012/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/durable/fixtures/durable-19cb534-provider-factory-native.input.txt -text whitespace=cr-at-eol
+src/durable/fixtures/durable-19cb534-auth-*.input.txt -text whitespace=cr-at-eol

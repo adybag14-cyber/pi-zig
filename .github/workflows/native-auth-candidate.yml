@@ -1,0 +1,83 @@
+name: Native authentication candidate qualification
+
+on:
+  push:
+    branches: [checkpoint/native-auth-candidate-20261013]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-auth-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source and compiler
+        id: freeze
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-auth-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $taskZig = (Get-Command zig).Source
+          $taskZigEnv = (& zig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskTools = @($taskZig; Get-ChildItem -LiteralPath $taskLib -File -Recurse | ForEach-Object FullName) | Sort-Object -Unique | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} }
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Candidate persistent authentication and shared timer provenance; complete SDK and class parity remain separate'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+      - name: Exercise real files heartbeat readonly storage and allocation failures
+        id: runtime
+        shell: pwsh
+        timeout-minutes: 30
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-auth-candidate'
+          foreach ($taskSlice in @(@{target='test-native-auth-storage-persistent'; tests=8}, @{target='test-native-auth-timer-controls'; tests=22})) {
+            $taskLog = "$taskReceipt/$($taskSlice.target).log"
+            & zig build $taskSlice.target -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath $taskLog
+            if ($LASTEXITCODE -ne 0) { throw "Candidate runtime failed: $($taskSlice.target)" }
+            $taskCount = $taskSlice.tests
+            if ((Get-Content -LiteralPath $taskLog -Raw) -notmatch "(?m)Build Summary:.*\b$taskCount/$taskCount tests passed") { throw "Candidate selected inventory differs: $($taskSlice.target)" }
+          }
+          [ordered]@{head='${{ github.sha }}'; status='passed'; mode='${{ matrix.mode }}'; storage_tests=8; timer_identity_tests=22; public_activation=$false; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+      - name: Verify frozen inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-auth-candidate'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-auth-candidate-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-auth-candidate/

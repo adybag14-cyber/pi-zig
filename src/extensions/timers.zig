@@ -70,7 +70,7 @@ fn cleanup(engine: *engine_mod.Engine) void {
 
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(context, "Native timer: %s", @as([*:0]const u8, @errorName(err)));
 }
 

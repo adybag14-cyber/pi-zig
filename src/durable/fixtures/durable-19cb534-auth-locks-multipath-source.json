@@ -1,0 +1,204 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "original_driver_sha256": "8be97c9a27598caac1ea8772b408f51be61fc3d08d464a374ad728d42802b0ad",
+  "rows": [
+    {
+      "name": "held-serialization",
+      "blocked": true,
+      "first": "one",
+      "second": "{\"one\":1}",
+      "order": [
+        "first-enter",
+        "first-exit",
+        "second-enter"
+      ],
+      "text": "{\"one\":1,\"two\":2}",
+      "lock": false
+    },
+    {
+      "name": "waiting-abort",
+      "sameReason": true,
+      "calls": 0,
+      "heldLock": true,
+      "unchanged": true,
+      "lock": false
+    },
+    {
+      "name": "active-abort-no-write",
+      "sameReason": true,
+      "calls": 1,
+      "unchanged": true,
+      "lock": false
+    },
+    {
+      "name": "rejected-callback-releases",
+      "sameReason": true,
+      "unchanged": true,
+      "lock": false,
+      "next": "after-reject"
+    },
+    {
+      "name": "sync-throw-releases",
+      "sameReason": true,
+      "unchanged": true,
+      "lock": false,
+      "next": "after-sync"
+    },
+    {
+      "name": "external-fresh-lock-abort",
+      "sameReason": true,
+      "calls": 0,
+      "unchanged": true,
+      "externalRetained": true
+    },
+    {
+      "name": "external-stale-takeover",
+      "result": "{\"one\":1,\"two\":2}",
+      "text": "{\"stale\":true}",
+      "lock": false
+    },
+    {
+      "name": "alternating-multiple-paths",
+      "initial": {
+        "a": {
+          "type": "api_key",
+          "key": "fixture-a"
+        },
+        "b": {
+          "type": "api_key",
+          "key": "fixture-b"
+        },
+        "wrongA": "undefined",
+        "wrongB": "undefined"
+      },
+      "a": {
+        "type": "api_key",
+        "key": "external-a-longer"
+      },
+      "b": {
+        "type": "api_key",
+        "key": "external-b-longer"
+      },
+      "aAgain": {
+        "type": "api_key",
+        "key": "external-a-longer"
+      },
+      "bAgain": {
+        "type": "api_key",
+        "key": "external-b-longer"
+      },
+      "listA": [
+        {
+          "providerId": "a",
+          "type": "api_key"
+        }
+      ],
+      "listB": [
+        {
+          "providerId": "b",
+          "type": "api_key"
+        }
+      ]
+    }
+  ],
+  "raw": [
+    {
+      "name": "held-serialization",
+      "blocked": true,
+      "first": "one",
+      "second": "{\"one\":1}",
+      "order": [
+        "first-enter",
+        "first-exit",
+        "second-enter"
+      ],
+      "text": "{\"one\":1,\"two\":2}",
+      "lock": false
+    },
+    {
+      "name": "waiting-abort",
+      "sameReason": true,
+      "calls": 0,
+      "heldLock": true,
+      "unchanged": true,
+      "lock": false
+    },
+    {
+      "name": "active-abort-no-write",
+      "sameReason": true,
+      "calls": 1,
+      "unchanged": true,
+      "lock": false
+    },
+    {
+      "name": "rejected-callback-releases",
+      "sameReason": true,
+      "unchanged": true,
+      "lock": false,
+      "next": "after-reject"
+    },
+    {
+      "name": "sync-throw-releases",
+      "sameReason": true,
+      "unchanged": true,
+      "lock": false,
+      "next": "after-sync"
+    },
+    {
+      "name": "external-fresh-lock-abort",
+      "sameReason": true,
+      "calls": 0,
+      "unchanged": true,
+      "externalRetained": true
+    },
+    {
+      "name": "external-stale-takeover",
+      "result": "{\"one\":1,\"two\":2}",
+      "text": "{\"stale\":true}",
+      "lock": false
+    },
+    {
+      "name": "alternating-multiple-paths",
+      "initial": {
+        "a": {
+          "type": "api_key",
+          "key": "fixture-a"
+        },
+        "b": {
+          "type": "api_key",
+          "key": "fixture-b"
+        },
+        "wrongA": "undefined",
+        "wrongB": "undefined"
+      },
+      "a": {
+        "type": "api_key",
+        "key": "external-a-longer"
+      },
+      "b": {
+        "type": "api_key",
+        "key": "external-b-longer"
+      },
+      "aAgain": {
+        "type": "api_key",
+        "key": "external-a-longer"
+      },
+      "bAgain": {
+        "type": "api_key",
+        "key": "external-b-longer"
+      },
+      "listA": [
+        {
+          "providerId": "a",
+          "type": "api_key"
+        }
+      ],
+      "listB": [
+        {
+          "providerId": "b",
+          "type": "api_key"
+        }
+      ]
+    }
+  ]
+}
