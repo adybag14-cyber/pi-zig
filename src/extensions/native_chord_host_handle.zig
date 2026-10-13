@@ -84,8 +84,11 @@ fn notify(engine: *h.Engine, data: [*c]c.JSValue, shape: bool) !c.JSValue {
 fn statusChanged(s: *Scope, receiver: c.JSValue, bindings: c.JSValue) !void {
     const owned = try h.actor(s, receiver, bindings, .HandleImpl);
     const listeners = try s.get(owned.data, "statusListeners");
+    try notifyStatus(s, bindings, listeners, try s.get(receiver, "status"), try s.get(receiver, "error"), try s.get(try s.get(receiver, "record"), "host"));
+}
+pub fn notifyStatus(s: *Scope, bindings: c.JSValue, listeners: c.JSValue, status: c.JSValue, failure: c.JSValue, host: c.JSValue) !void {
     if (c.JS_IsStrictEqual(s.engine.context, try s.get(listeners, "size"), c.JS_NewInt32(s.engine.context, 0))) return;
-    var captures = [_]c.JSValue{ try h.snapshot(s, listeners), try s.get(receiver, "status"), try s.get(receiver, "error"), try s.get(try s.get(receiver, "record"), "host") };
+    var captures = [_]c.JSValue{ try h.snapshot(s, listeners), status, failure, host };
     const task = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, notification, "", 0, 0, 4, &captures)));
     try @import("native_chord_publish.zig").enqueue(s.engine, bindings, task);
 }
@@ -264,7 +267,7 @@ fn proxy(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue,
     const engine = h.Engine.fromContext(context.?);
     return proxyValue(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined(), operation != 0, data[0]) catch |err| @import("native_durable.zig").reject(engine, err);
 }
-fn proxyValue(engine: *h.Engine, target: c.JSValue, property: c.JSValue, has: bool, bindings: c.JSValue) !c.JSValue {
+pub fn proxyValue(engine: *h.Engine, target: c.JSValue, property: c.JSValue, has: bool, bindings: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const base = try h.invoke(&s, try s.get(bindings, "handleBase"), "has", &.{property});

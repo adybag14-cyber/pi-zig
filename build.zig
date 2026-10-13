@@ -707,6 +707,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_wire_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_wire_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-wire-source", "Replay actual Source frame TypeBox schemas error vocabulary metadata GC and all allocation failures").dependOn(&b.addRunArtifact(chord_wire_tests).step);
+    const chord_apply_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_apply_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord apply"} });
+    linkQuickJs(b, chord_apply_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_apply_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-apply-source", "Replay actual Source decoded operations immutable batch sharing path safety descriptors GC and all allocator failures").dependOn(&b.addRunArtifact(chord_apply_tests).step);
     const chord_protocol_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_protocol_candidate_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord protocol compiled inventory", "native Chord codec", "native Chord wire" } });
     linkQuickJs(b, chord_protocol_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_protocol_tests.root_module, sqlite_lib_dir, sqlite_library);

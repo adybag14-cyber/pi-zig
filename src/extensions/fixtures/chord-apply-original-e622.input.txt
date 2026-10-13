@@ -1,0 +1,34 @@
+const cases=[],info=error=>({name:error.name,message:error.message,path:error.path,segment:error.segment,pathClass:error instanceof api.PathError,unsafeClass:error instanceof api.UnsafePathError}),outcome=fn=>{try{return{value:fn()}}catch(error){return{error:info(error)}}};
+{
+ const kept={same:true},before={a:{n:1,text:'abc'},xs:[1,2,3],kept},operations=[['s',['a','n'],2],['a',['a','text'],'def'],['t',['a','text'],2],['p',['xs'],1,1,[{inserted:true}]],['m',['xs'],[2,0,1]]],after=api.applyImmutable(before,operations);cases.push({name:'immutable touched containers copied once with shared untouched and inserted values',before,after,identity:[after!==before,after.a!==before.a,after.xs!==before.xs,after.kept===kept,after.xs[2]===operations[3][4][0]]});
+ const mutable={a:{n:1,text:'abc'},xs:[1,2,3]},returned=api.apply(mutable,operations);cases.push({name:'mutable replay retains root and mutates valid targets',mutable,same:mutable===returned});
+}
+{
+ const base={xs:[{n:1}],kept:{n:2}},inserted={n:3},after=api.applyImmutableBatches(base,[[['p',['xs'],1,0,[inserted]]],[['s',['xs',0,'n'],4],['s',['added'],true]]]);cases.push({name:'append-copy and owned final-result batches preserve transferred payloads',base,after,identity:[after.kept===base.kept,after.xs[1]===inserted,after.xs[0]!==base.xs[0]]});
+}
+{
+ const adopted={n:1},operations=[['r',adopted]],after=api.applyImmutable(undefined,operations),second=api.apply(undefined,operations);cases.push({name:'replacement adopts batch payload for every consumer',same:[after===adopted,second===adopted,after===second],after});
+ const untouched={n:1};cases.push({name:'empty replay preserves root identity',same:[api.applyImmutable(untouched,[])===untouched,api.applyImmutableBatches(untouched,[])===untouched,api.apply(untouched,[])===untouched]});
+}
+{
+ const base=Object.create(null);base.keep={alive:true};base.n=1;const after=api.applyImmutable(base,[['s',['n'],2]]);cases.push({name:'null prototype and untouched identity survive immutable shallow copy',value:after,nullPrototype:Object.getPrototypeOf(after)===null,same:after.keep===base.keep,descriptor:Object.getOwnPropertyDescriptor(after,'n')});
+}
+{
+ const log=[],proto={set n(value){log.push(['inherited setter',value])},get hidden(){log.push('inherited getter');return{n:9}}},base=Object.create(proto);base.keep={alive:true};Object.defineProperty(base,'n',{enumerable:true,configurable:true,get(){log.push('own getter');return 1}});const after=api.applyImmutable(base,[['s',['n'],2]]);const rejected=outcome(()=>api.applyImmutable(base,[['s',['hidden','n'],3]]));cases.push({name:'copy invokes own enumerable getters and blocks inherited walks and setters',after,log,rejected,prototype:Object.getPrototypeOf(after)===Object.prototype,descriptor:Object.getOwnPropertyDescriptor(after,'n')});
+}
+{
+ const before=[0,1,2],after=api.applyImmutable(before,[['p',[],1,1,[3,4]],['m',[],[3,0,2,1]]]);cases.push({name:'root array splice and permutation',before,after});
+ const beforeSparse=[];beforeSparse.length=2;beforeSparse[1]=7;const afterSparse=api.applyImmutable(beforeSparse,[['s',[1],8]]);cases.push({name:'general immutable array copy preserves untouched holes',before:beforeSparse,after:afterSparse,holes:[0 in beforeSparse,0 in afterSparse]});
+}
+{
+ const ops=[['s',['n'],2],['a',['text'],'x']],before=Object.freeze({n:1,text:'a'});cases.push({name:'immutable replay accepts frozen prior revisions',before,after:api.applyImmutable(before,ops)});
+ const log=[],stream={*[Symbol.iterator](){try{yield[['s',['n'],3]];throw new Error('batch failure')}finally{log.push('closed')}}};cases.push({name:'batch iterator abrupt completion closes stream and preserves prior root',outcome:outcome(()=>api.applyImmutableBatches(before,stream)),log,before});
+}
+for(const [name,value,ops] of [
+ ['missing ancestor',{},[['s',['missing','n'],1]]],['primitive root',1,[['s',['n'],2]]],['array string key',[1],[['s',['0'],2]]],['array gap',[1],[['s',[3],2]]],['delete at end',[1],[['d',[1]]]],['delete gap',[1],[['d',[2]]]],['append nonstring',{n:1},[['a',['n'],'x']]],['truncate missing',{},[['t',['n'],1]]],['splice object',{},[['p',[],0,0,[]]]],['move wrong length',[1,2],[['m',[],[0]]]],['root scalar op',{},[['s',[],1]]],['reserved',{},[['s',['__proto__','polluted'],1]]],['bad path id',{},[['s',0,1]]],['short wire op',{},[['d']]],['invalid append',{},[['a',['x'],1]]],['invalid truncate',{},[['t',['x'],-1]]],['bad permutation',[1,2],[['m',[],[0,0]]]],['bad splice index',[],[['p',[],-1,0,[]]]],['bad splice remove',[],[['p',[],0,-1,[]]]],['bad splice items',[],[['p',[],0,0,{}]]],['unknown verb',{},[['other',['x'],1]]]
+]){cases.push({name:'immutable negative '+name,outcome:outcome(()=>api.applyImmutable(value,ops))})}
+{
+ const array=[1];api.apply(array,[['s',[1],2],['d',[0]]]);cases.push({name:'array set permits exactly one-past-end and deletion shifts',array});
+ const text={s:'a😀bc'};api.apply(text,[['t',['s'],2],['a',['s'],'!']]);cases.push({name:'truncate counts UTF16 units including split surrogate',text});
+}
+globalThis.chordApplyCases=cases;

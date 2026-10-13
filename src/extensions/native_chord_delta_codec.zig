@@ -57,7 +57,7 @@ fn reference(s: *Scope, bindings: c.JSValue, value: c.JSValue) !void {
     if (!try array(s, value)) return fail(s, "path is not an array");
     try safePath(s, bindings, value);
 }
-fn permutation(s: *Scope, value: c.JSValue) !void {
+pub fn permutation(s: *Scope, value: c.JSValue) !void {
     if (!try array(s, value)) return fail(s, "m permutation is not an array");
     const seen = try s.keep(try js.builtin(s.engine, "Uint8Array", &.{try s.get(value, "length")}));
     var iterator = try js.Iterator.init(s.engine, value, try h.iteratorSymbol(s));
@@ -277,5 +277,6 @@ pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     inline for (.{ .{ "encoder", Method.encoder, 0 }, .{ "decoder", Method.decoder, 0 }, .{ "assertSafePath", Method.safe_path, 1 }, .{ "assertValidWireOp", Method.valid_wire, 1 } }) |entry| {
         try js.define(engine, api, entry[0], try @import("native_node_function.zig").create(engine, entry[0], entry[2], declared, &.{ errors, c.JS_NewInt32(engine.context, @intFromEnum(entry[1])) }));
     }
+    try @import("native_chord_delta_apply.zig").install(engine, api);
     try h.field(&s, bindings, "DeltaCodec", api);
 }

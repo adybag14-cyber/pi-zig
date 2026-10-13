@@ -1,0 +1,481 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "immutable touched containers copied once with shared untouched and inserted values",
+      "before": {
+        "a": {
+          "n": 1,
+          "text": "abc"
+        },
+        "xs": [
+          1,
+          2,
+          3
+        ],
+        "kept": {
+          "same": true
+        }
+      },
+      "after": {
+        "a": {
+          "n": 2,
+          "text": "cdef"
+        },
+        "xs": [
+          3,
+          1,
+          {
+            "inserted": true
+          }
+        ],
+        "kept": {
+          "same": true
+        }
+      },
+      "identity": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "mutable replay retains root and mutates valid targets",
+      "mutable": {
+        "a": {
+          "n": 2,
+          "text": "cdef"
+        },
+        "xs": [
+          3,
+          1,
+          {
+            "inserted": true
+          }
+        ]
+      },
+      "same": true
+    },
+    {
+      "name": "append-copy and owned final-result batches preserve transferred payloads",
+      "base": {
+        "xs": [
+          {
+            "n": 1
+          }
+        ],
+        "kept": {
+          "n": 2
+        }
+      },
+      "after": {
+        "xs": [
+          {
+            "n": 4
+          },
+          {
+            "n": 3
+          }
+        ],
+        "kept": {
+          "n": 2
+        },
+        "added": true
+      },
+      "identity": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "replacement adopts batch payload for every consumer",
+      "same": [
+        true,
+        true,
+        true
+      ],
+      "after": {
+        "n": 1
+      }
+    },
+    {
+      "name": "empty replay preserves root identity",
+      "same": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "null prototype and untouched identity survive immutable shallow copy",
+      "value": {
+        "keep": {
+          "alive": true
+        },
+        "n": 2
+      },
+      "nullPrototype": true,
+      "same": true,
+      "descriptor": {
+        "value": 2,
+        "writable": true,
+        "enumerable": true,
+        "configurable": true
+      }
+    },
+    {
+      "name": "copy invokes own enumerable getters and blocks inherited walks and setters",
+      "after": {
+        "keep": {
+          "alive": true
+        },
+        "n": 2
+      },
+      "log": [
+        "own getter",
+        "own getter"
+      ],
+      "rejected": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: [\"hidden\"]",
+          "path": [
+            "hidden"
+          ],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      },
+      "prototype": true,
+      "descriptor": {
+        "value": 2,
+        "writable": true,
+        "enumerable": true,
+        "configurable": true
+      }
+    },
+    {
+      "name": "root array splice and permutation",
+      "before": [
+        0,
+        1,
+        2
+      ],
+      "after": [
+        2,
+        0,
+        4,
+        3
+      ]
+    },
+    {
+      "name": "general immutable array copy preserves untouched holes",
+      "before": [
+        null,
+        7
+      ],
+      "after": [
+        null,
+        8
+      ],
+      "holes": [
+        false,
+        false
+      ]
+    },
+    {
+      "name": "immutable replay accepts frozen prior revisions",
+      "before": {
+        "n": 1,
+        "text": "a"
+      },
+      "after": {
+        "n": 2,
+        "text": "ax"
+      }
+    },
+    {
+      "name": "batch iterator abrupt completion closes stream and preserves prior root",
+      "outcome": {
+        "error": {
+          "name": "Error",
+          "message": "batch failure",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      },
+      "log": [
+        "closed"
+      ],
+      "before": {
+        "n": 1,
+        "text": "a"
+      }
+    },
+    {
+      "name": "immutable negative missing ancestor",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: [\"missing\"]",
+          "path": [
+            "missing"
+          ],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative primitive root",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: []",
+          "path": [],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative array string key",
+      "outcome": {
+        "error": {
+          "name": "UnsafePathError",
+          "message": "unsafe path segment: 0",
+          "segment": "0",
+          "pathClass": false,
+          "unsafeClass": true
+        }
+      }
+    },
+    {
+      "name": "immutable negative array gap",
+      "outcome": {
+        "error": {
+          "name": "UnsafePathError",
+          "message": "unsafe path segment: 3",
+          "segment": 3,
+          "pathClass": false,
+          "unsafeClass": true
+        }
+      }
+    },
+    {
+      "name": "immutable negative delete at end",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: [1]",
+          "path": [
+            1
+          ],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative delete gap",
+      "outcome": {
+        "error": {
+          "name": "UnsafePathError",
+          "message": "unsafe path segment: 2",
+          "segment": 2,
+          "pathClass": false,
+          "unsafeClass": true
+        }
+      }
+    },
+    {
+      "name": "immutable negative append nonstring",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: [\"n\"]",
+          "path": [
+            "n"
+          ],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative truncate missing",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: [\"n\"]",
+          "path": [
+            "n"
+          ],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative splice object",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: []",
+          "path": [],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative move wrong length",
+      "outcome": {
+        "error": {
+          "name": "PathError",
+          "message": "unresolvable path: []",
+          "path": [],
+          "pathClass": true,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative root scalar op",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "path is empty",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative reserved",
+      "outcome": {
+        "error": {
+          "name": "UnsafePathError",
+          "message": "unsafe path segment: __proto__",
+          "segment": "__proto__",
+          "pathClass": false,
+          "unsafeClass": true
+        }
+      }
+    },
+    {
+      "name": "immutable negative bad path id",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "path is not an array",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative short wire op",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "d arity",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative invalid append",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "a shape",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative invalid truncate",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "t shape",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative bad permutation",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "m permutation is not a bijection",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative bad splice index",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "p index",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative bad splice remove",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "p remove",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative bad splice items",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "p items",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "immutable negative unknown verb",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "unknown op verb: other",
+          "pathClass": false,
+          "unsafeClass": false
+        }
+      }
+    },
+    {
+      "name": "array set permits exactly one-past-end and deletion shifts",
+      "array": [
+        2
+      ]
+    },
+    {
+      "name": "truncate counts UTF16 units including split surrogate",
+      "text": {
+        "s": "\ude00bc!"
+      }
+    }
+  ]
+}
