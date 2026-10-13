@@ -650,7 +650,13 @@ pub const Engine = struct {
                 // identity. Reject errors born before this host boundary,
                 // including a previously caught native error rethrown later.
                 const distance = tagged -% generation;
-                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation) return error.OutOfMemory;
+                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation) {
+                    // A private native delivery may need to escape a promise
+                    // reaction first. Its trusted host classification ends
+                    // that propagation without changing the retained value.
+                    c.JS_ClearUncatchableError(self.context, exception);
+                    return error.OutOfMemory;
+                }
             }
         }
         return err;
