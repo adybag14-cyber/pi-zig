@@ -12,4 +12,6 @@ test "native Chord protocol compiled inventory records actual selected tests" {
 comptime {
     _ = @import("native_chord_codec_source_test.zig");
     _ = @import("native_chord_wire_source_test.zig");
+    _ = @import("native_chord_apply_source_test.zig");
+    _ = @import("native_chord_remote_source_test.zig");
 }

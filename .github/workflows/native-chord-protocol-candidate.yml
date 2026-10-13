@@ -1,4 +1,4 @@
-name: Private native Chord protocol candidate
+name: Private native Chord protocol and remote candidate
 
 on:
   workflow_call:
@@ -67,8 +67,10 @@ jobs:
           $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
           $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
           $taskFixtures = @(
-            @{ name = 'codec'; file = 'src/extensions/fixtures/chord-codec-original-e622.json'; input = 'src/extensions/fixtures/chord-codec-original-e622.input.txt'; hash = '0006FC91ED2DB611A738159BEEEA58650A140EBF63CA93A46A20602A51ADEA94'; input_hash = '8F98B9FE3A1A94BF3AFD26E241D5987C905BA20A84EDC94E2E1B47DA6939D37C'; cases = 41; negative = 37 },
-            @{ name = 'wire'; file = 'src/extensions/fixtures/chord-wire-original-e622.json'; input = 'src/extensions/fixtures/chord-wire-original-e622.input.txt'; hash = '3C089203F7D1CDAB1DC43666F015573572E0D9EBD5F3F43928266F32CD452059'; input_hash = 'D6E6D1198391C132CBD2C1F1A01B92D9E735B46A2AE47B0FD59C1B85B71DE993'; cases = 69; negative = 30 }
+            @{ name = 'codec'; file = 'src/extensions/fixtures/chord-codec-original-e622.json'; input = 'src/extensions/fixtures/chord-codec-original-e622.input.txt'; hash = '0006FC91ED2DB611A738159BEEEA58650A140EBF63CA93A46A20602A51ADEA94'; input_hash = '8F98B9FE3A1A94BF3AFD26E241D5987C905BA20A84EDC94E2E1B47DA6939D37C'; cases = 41; negative = 37; capture = 'verification/chord-composition-20261013/codec-original-capture-qualified.json' },
+            @{ name = 'wire'; file = 'src/extensions/fixtures/chord-wire-original-e622.json'; input = 'src/extensions/fixtures/chord-wire-original-e622.input.txt'; hash = '3C089203F7D1CDAB1DC43666F015573572E0D9EBD5F3F43928266F32CD452059'; input_hash = 'D6E6D1198391C132CBD2C1F1A01B92D9E735B46A2AE47B0FD59C1B85B71DE993'; cases = 69; negative = 30; capture = 'verification/chord-composition-20261013/wire-original-capture-qualified.json' },
+            @{ name = 'apply'; file = 'src/extensions/fixtures/chord-apply-original-e622.json'; input = 'src/extensions/fixtures/chord-apply-original-e622.input.txt'; hash = 'FAB8DDC3490A55CE5A0E1886510AB1E1C95423C2DFC184C86D47B8041DD1E76C'; input_hash = '087370AFD765953325B483602DD13E93F6520E0F358FAE878EB0B2806D9C11CE'; cases = 34; negative = 23; capture = 'verification/chord-apply-20261013/chord-apply-original-e622-capture-qualified-20261013.json' },
+            @{ name = 'remote'; file = 'src/extensions/fixtures/chord-remote-original-e622.json'; input = 'src/extensions/fixtures/chord-remote-original-e622.input.txt'; hash = '70BDF9732FB5152A86E5563F25AF91035A4180D884EEA291D6F684F276C27A80'; input_hash = 'AAF6FA77FD4761267D7F6826CCB7A303D31D7EC6570D695324534600BE25CA7E'; cases = 30; negative = 9; capture = 'verification/chord-remote-20261013/chord-remote-original-e622-capture-qualified-20261013.json' }
           )
           $taskInventory = @()
           foreach ($taskFixture in $taskFixtures) {
@@ -78,19 +80,19 @@ jobs:
             if ((Get-FileHash -LiteralPath $taskFixture.input).Hash -cne $taskFixture.input_hash) { throw 'Caller input hash changed' }
             $taskNegative = if ($taskFixture.name -ceq 'wire') { @($taskOriginal.cases | Where-Object { $_.valid -ceq $false }).Count } else { @($taskOriginal.cases | Where-Object { ($_ | ConvertTo-Json -Depth 100) -match '"error"\s*:' }).Count }
             if (@($taskOriginal.cases).Count -ne $taskFixture.cases -or $taskNegative -ne $taskFixture.negative) { throw 'Original positive or negative case inventory changed' }
-            $taskCapture = Get-Content "verification/chord-composition-20261013/$($taskFixture.name)-original-capture-qualified.json" -Raw | ConvertFrom-Json
+            $taskCapture = Get-Content -LiteralPath $taskFixture.capture -Raw | ConvertFrom-Json
             if ($taskCapture.source -cne $taskOriginal.source -or $taskCapture.inputs -ne 34783 -or $taskCapture.prehash_drift -ne 0 -or $taskCapture.posthash_drift -ne 0 -or $taskCapture.driver_posthash_drift -ne 0 -or $taskCapture.job.status -cne 'passed') { throw 'Original Source capture was not qualified' }
             $taskInventory += [ordered]@{ name = $taskFixture.name; cases = $taskFixture.cases; negative = $taskNegative; input_sha256 = $taskFixture.input_hash; oracle_sha256 = $taskFixture.hash; source = $taskOriginal.source; original_capture = $taskCapture; case_names = @($taskOriginal.cases.name) }
           }
           $taskInventory | ConvertTo-Json -Depth 8 | Set-Content "$taskReceipt/original-inventory.json"
-          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; platform = '${{ matrix.os }}'; host_os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; runner_image = $env:ImageOS; runner_image_version = $env:ImageVersion; runner_architecture = $env:RUNNER_ARCH; zig = $taskZig; zig_version = '0.16.0'; zig_sha256 = (Get-FileHash -LiteralPath $taskZig).Hash; compiler_distribution = $taskToolRoot; source_count = $taskInputs.Count; tool_count = $taskTools.Count; source_manifest_sha256 = (Get-FileHash "$taskReceipt/inputs.json").Hash; tool_manifest_sha256 = (Get-FileHash "$taskReceipt/tools.json").Hash; previous_local_lifecycle_checkpoint = '1e4a595b74c1baf59e7fdba26592417e75f44387'; candidate_status = 'New protocol Source port; first native qualification is this diagnostic'; public_activation = $false; scope = 'Private Chord stream codec and frame wire schema/error qualification. Complete remote connection/reload/loader/manager and Pi qualification remain separate.' } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/source.json"
+          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; platform = '${{ matrix.os }}'; host_os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; runner_image = $env:ImageOS; runner_image_version = $env:ImageVersion; runner_architecture = $env:RUNNER_ARCH; zig = $taskZig; zig_version = '0.16.0'; zig_sha256 = (Get-FileHash -LiteralPath $taskZig).Hash; compiler_distribution = $taskToolRoot; source_count = $taskInputs.Count; tool_count = $taskTools.Count; source_manifest_sha256 = (Get-FileHash "$taskReceipt/inputs.json").Hash; tool_manifest_sha256 = (Get-FileHash "$taskReceipt/tools.json").Hash; previous_local_lifecycle_checkpoint = '1e4a595b74c1baf59e7fdba26592417e75f44387'; candidate_status = 'Local Windows Debug and ReleaseSafe qualified; hosted matrix pending'; public_activation = $false; scope = 'Private Chord stream codec, frame schema/errors, decoded delta applier and actual remote hold/readable lifecycle. Complete connection/relay/reload/loader/manager and Pi qualification remain separate.' } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/source.json"
       - name: Compile candidate before the runtime deadline
         shell: pwsh
         timeout-minutes: 22
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
-          $taskFmt = @('build.zig','src/extensions/native_chord_host.zig','src/extensions/native_chord_delta_codec.zig','src/extensions/native_chord_wire.zig','src/native_chord_codec_source_test.zig','src/native_chord_wire_source_test.zig','src/native_chord_protocol_candidate_test.zig')
+          $taskFmt = @('build.zig','src/extensions/native_chord_host.zig','src/extensions/native_chord_delta_codec.zig','src/extensions/native_chord_wire.zig','src/native_chord_codec_source_test.zig','src/native_chord_wire_source_test.zig','src/native_chord_protocol_candidate_test.zig','src/extensions/native_chord_delta_apply.zig','src/extensions/native_chord_remote.zig','src/extensions/native_chord_remote_readable.zig','src/native_chord_apply_source_test.zig','src/native_chord_remote_source_test.zig')
           & zig fmt --check @taskFmt
           if ($LASTEXITCODE -ne 0) { throw 'Native formatting failed' }
           & zig build build-native-chord-protocol-candidate -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-chord-protocol-candidate/compile.log
@@ -150,7 +152,13 @@ jobs:
             'native Chord codec stream dictionaries retain path identities through explicit GC',
             'native Chord codec constructors validation errors and streams release every induced allocation failure',
             'native Chord wire genuine Source frame schemas error vocabulary and metadata',
-            'native Chord wire actual schema error graph every induced allocation failure'
+            'native Chord wire actual schema error graph every induced allocation failure',
+            'native Chord apply genuine Source34cases including23negative path and descriptor transactions',
+            'native Chord apply retained immutable revisions preserve transferred paths through GC',
+            'native Chord apply immutable mutable error and descriptor graph every induced allocation failure',
+            'native Chord remote actual Source30 lifecycle dispatch reconnect and9negative outcomes',
+            'native Chord remote private handle readable channels and caller survive GC',
+            'native Chord remote complete handle subscribed state dispatch and reconnect allocation sweep'
           )
           if (@($taskCompiled | Sort-Object -Unique).Count -ne $taskCompiled.Count) { throw 'Duplicate compiled test name' }
           $taskNamed = @($taskCompiled | Where-Object { $_ -match '\.test\.' })
@@ -158,7 +166,7 @@ jobs:
           if ($taskNamed.Count -ne $taskWanted.Count) { throw 'Unmapped named compiled test; review the actual inventory' }
           $taskComplete = 'run test ' + $taskCompiled.Count + ' pass (' + $taskCompiled.Count + ' total)'
           if (($taskOut + "`n" + $taskErr).IndexOf($taskComplete, [StringComparison]::Ordinal) -lt 0) { throw 'Compiled tests did not all execute successfully' }
-          [ordered]@{ head = $taskSource.head; mode = $taskSource.mode; platform = $taskSource.platform; status = 'passed'; compiled_count = $taskCompiled.Count; named_count = $taskNamed.Count; selected_names = $taskWanted; compiled_names = $taskCompiled; codec_cases = 41; codec_negative = 37; wire_cases = 69; wire_negative = 30; gc = 'passed'; all_gpa_failures = 'passed'; test_timeout_seconds = 120; outer_timeout_seconds = 300; public_activation = $false; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content "$taskReceipt/result.json"
+          [ordered]@{ head = $taskSource.head; mode = $taskSource.mode; platform = $taskSource.platform; status = 'passed'; compiled_count = $taskCompiled.Count; named_count = $taskNamed.Count; selected_names = $taskWanted; compiled_names = $taskCompiled; codec_cases = 41; codec_negative = 37; wire_cases = 69; wire_negative = 30; apply_cases = 34; apply_negative = 23; remote_cases = 30; remote_negative = 9; gc = 'passed'; all_gpa_failures = 'passed'; test_timeout_seconds = 120; outer_timeout_seconds = 300; public_activation = $false; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content "$taskReceipt/result.json"
       - name: Require every frozen source and compiler byte afterward
         if: always()
         shell: pwsh
@@ -221,7 +229,7 @@ jobs:
               $taskResult = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
               $taskOwner = Get-Content "$taskRoot/runtime-owner.json" -Raw | ConvertFrom-Json
               if ($taskSource.head -cne $env:EXPECTED_HEAD -or $taskResult.head -cne $env:EXPECTED_HEAD -or $taskResult.mode -cne $taskMode -or $taskResult.platform -cne $taskOs -or $taskResult.status -cne 'passed' -or $taskOwner.status -cne 'passed' -or $taskOwner.exit_code -ne 0) { throw 'Missing or inconsistent terminal candidate qualification' }
-              if ($taskResult.named_count -ne 6 -or $taskResult.codec_cases -ne 41 -or $taskResult.codec_negative -ne 37 -or $taskResult.wire_cases -ne 69 -or $taskResult.wire_negative -ne 30 -or $taskResult.gc -cne 'passed' -or $taskResult.all_gpa_failures -cne 'passed' -or $taskOwner.test_timeout_seconds -ne 120 -or $taskOwner.outer_timeout_seconds -ne 300 -or $taskOwner.host_await_guards_changed -or $taskSource.public_activation) { throw 'Candidate inventory or guards changed' }
+              if ($taskResult.named_count -ne 12 -or $taskResult.codec_cases -ne 41 -or $taskResult.codec_negative -ne 37 -or $taskResult.wire_cases -ne 69 -or $taskResult.wire_negative -ne 30 -or $taskResult.apply_cases -ne 34 -or $taskResult.apply_negative -ne 23 -or $taskResult.remote_cases -ne 30 -or $taskResult.remote_negative -ne 9 -or $taskResult.gc -cne 'passed' -or $taskResult.all_gpa_failures -cne 'passed' -or $taskOwner.test_timeout_seconds -ne 120 -or $taskOwner.outer_timeout_seconds -ne 300 -or $taskOwner.host_await_guards_changed -or $taskSource.public_activation) { throw 'Candidate inventory or guards changed' }
               foreach ($taskKind in @('inputs','tools')) {
                 $taskPost = Get-Content "$taskRoot/$taskKind-posthash.json" -Raw | ConvertFrom-Json
                 if (!$taskPost.count -or $taskPost.drift_count -ne 0 -or @($taskPost.drift).Count) { throw 'Missing or changed matrix inputs' }

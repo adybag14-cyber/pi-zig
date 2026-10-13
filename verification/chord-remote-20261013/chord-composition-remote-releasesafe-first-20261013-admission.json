@@ -1,0 +1,11 @@
+{
+  "measured_utc": "2026-10-13T20:29:35.4678075+00:00",
+  "free_physical_kib": 25502772,
+  "required_kib": 16777216,
+  "coordinated_concurrent_jobs": 1,
+  "observed_native_build_roots": 0,
+  "selected_zig_inventory": [],
+  "owner_powershell_gc": true,
+  "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+  "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+}
