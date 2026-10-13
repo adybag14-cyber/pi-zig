@@ -1,0 +1,43 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "manifest_files": [
+    "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+    "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "root-current8a-npm-tools-before.json"
+  ],
+  "inputs": 34783,
+  "prehash_drift": 0,
+  "posthash_drift": 0,
+  "driver_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordFullHostClosed-e622-20261013.mjs",
+      "sha256": "82CB4C62C4964AC74545E36E8CBBD5CB4FC267189B933BCCFEA2E45FF91D75CB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-e622-source-observe-20261013.mjs",
+      "sha256": "01F6C6B2ECFDCCFCA3C5B76D5AB51E7C88A0DE37A8CC2E7BC3E88B2503F9810C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-full-host-closed-original-e622.input.txt",
+      "sha256": "961C869338A2FE494E0B7D64AD948F9EA3BA52B8C618FFBCEDE52073C9F7B366"
+    }
+  ],
+  "driver_posthash_drift": 0,
+  "job": {
+    "name": "chord-full-host-closed-original-e622-capture-first-20261013",
+    "pid": 39036,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordFullHostClosed-e622-20261013.mjs",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-13T22:28:27.6530852Z",
+    "launched_utc": "2026-10-13T23:28:27.6490858+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-13T23:28:29.3865126+01:00"
+  },
+  "completed_utc": "2026-10-13T22:28:39.1681275+00:00"
+}

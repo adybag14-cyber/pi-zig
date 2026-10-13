@@ -1,0 +1,24 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "latest actual Host accept connect retain no already-closed connection",
+      "bothClosed": true,
+      "connections": [
+        0,
+        0
+      ],
+      "upstreamOpen": false,
+      "timers": 0,
+      "errors": []
+    },
+    {
+      "name": "latest actual Host constructor upstream uses closed connection guard",
+      "beforeClosed": true,
+      "connections": 0,
+      "upstreamOpen": false,
+      "timers": 0,
+      "errors": []
+    }
+  ]
+}

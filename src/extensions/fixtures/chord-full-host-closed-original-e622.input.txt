@@ -1,0 +1,12 @@
+const cases=[],flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve()};
+const originalInterval=globalThis.setInterval;let intervals=0;
+globalThis.setInterval=function(...args){intervals++;return Reflect.apply(originalInterval,this,args)};
+try{
+ const [accepted,upstream]=api.memoryLinkPair();accepted.close('already closed');await flush();
+ const errors=[],server=api.createHost({name:'closed-server',onError(error){errors.push({code:error?.code,message:error?.message})}}),client=api.createHost({name:'closed-client',kind:'client',onError(error){errors.push({code:error?.code,message:error?.message})}});
+ const before=intervals;server.accept(accepted,{principal:{user:'caller'}});client.connect(upstream);await flush();
+ cases.push({name:'latest actual Host accept connect retain no already-closed connection',bothClosed:accepted.closed&&upstream.closed,connections:[server.connections.size,client.connections.size],upstreamOpen:client.upstream.open,timers:intervals-before,errors});await client.close();await server.close();
+ const [a,b]=api.memoryLinkPair();a.close('constructor closed');await flush();const failures=[],beforeConstructor=intervals,created=api.createHost({name:'constructor-client',kind:'client',upstream:b,onError(error){failures.push({code:error?.code,message:error?.message})}});await flush();
+ cases.push({name:'latest actual Host constructor upstream uses closed connection guard',beforeClosed:b.closed,connections:created.connections.size,upstreamOpen:created.upstream.open,timers:intervals-beforeConstructor,errors:failures});await created.close();
+}finally{globalThis.setInterval=originalInterval}
+globalThis.chordFullHostClosedCases=cases;

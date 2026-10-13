@@ -1,0 +1,9 @@
+# Source-only Host routing assembly
+
+The qualified Connection26 checkpoint remains separate from the next Host integration. `native_chord_host_routing.zig` now contains concrete native remote-address construction with ordered coercions, longest-prefix route selection, live route iteration, remote acquisition, synchronized direct children, relay forwarding and authorization checks before and after resolution and synchronization. Its asynchronous state retains actual JS values and checks the original authorization generation after each await.
+
+`native_chord_host_connections.zig` contains the Source accept/connect algorithms, the latest `connection.open` admission guard, foreign-root/root-link cleanup on close, remote forgetting, route registration and peer epoch fencing. Parent-loss and child-reconciliation operations are mandatory typed native dependencies with no default or empty callback. They must be connected to the actual reload/cluster implementation before Host method installation; these files are currently unimported and fmt/AST-only.
+
+The actual fullHost8 original oracle is supplemented by two actual Host closed-link cases in `chord-full-host-closed-original-e622.input.txt` and its matching JSON. The original Node39036 capture ran `2026-10-13T22:28:27.6530852Z` through `2026-10-13T22:28:29.3865126Z`, with34783 Source/runtime/tool files and caller/resolver hashes unchanged. Both real link ends are closed before accept/connect or constructor-upstream admission. Actual Source retains zero connections, exposes a closed upstream and creates no keepalive timer. These are original Source expectations; native fullHost8+closed2 replay, GC and complete GPA remain outstanding.
+
+No Host connection API or public Chord package is activated. Cluster/reload, nodeLoader, manager and the remaining full Pi graph are still required.
