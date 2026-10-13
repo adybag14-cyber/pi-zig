@@ -1,0 +1,7 @@
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-e622-source-observe-20261013.mjs","sha256":"01f6c6b2ecfdccfca3c5b76d5ab51e7c88a0de37a8cc2e7bc3e88b2503f9810c"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordCodec-e622-20261013.mjs","sha256":"e03034f65bfe2d4123969da58eeedaf7eb86de7c7daf323ded2bd506c7e5f30d"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013\\packages\\chord\\src\\delta\\index.ts","sha256":"5dc82a4c50b04d8a99fbde0470f5149a1836be73bbafb42ce7e5e028f50c81eb"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013\\packages\\chord\\src\\delta\\diff.ts","sha256":"928696add33868b9655f856c2d52f596a220249db3ee907c8b8c5b497bf7ccde"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013\\packages\\chord\\src\\delta\\tracker.ts","sha256":"68bd2d7b9c0538366b079004ddd5dc9180cedd67d129f5c8de6c9ef6380e2c54"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013\\packages\\chord\\src\\json.ts","sha256":"d3a115dde2afa8e79c987b0fb188ec0bdba03939192859a20198a23b2892bb60"}
+{"kind":"observed-module","path":"C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013\\packages\\chord\\src\\delta\\apply-immutable-trusted.ts","sha256":"b3c1849d8792d1d8848bcd2df564ea131c54722a0ad16b5f76ecc398ab22efed"}

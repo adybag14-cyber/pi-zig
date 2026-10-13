@@ -1,0 +1,243 @@
+name: Private native Chord protocol candidate
+
+on:
+  workflow_call:
+    inputs:
+      expected_sha:
+        required: true
+        type: string
+  push:
+    branches: [work/chord-full-composition-main5c45f3-20261013]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Full reviewed candidate commit SHA
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-chord-protocol-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source, full compiler and original case inventory
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          EVENT_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-chord-protocol-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ($env:EXPECTED_HEAD -cnotmatch '^[0-9a-f]{40}$') { throw 'Expected head must be a full lowercase SHA' }
+          if ($env:EXPECTED_HEAD -cne $env:EVENT_HEAD -or (git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Candidate checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Pinned Zig baseline changed' }
+          if ((git status --porcelain).Count) { throw 'Candidate checkout is not clean' }
+          $taskZigInfo = [IO.FileInfo]::new((Get-Command zig).Source)
+          $taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)
+          $taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }
+          $taskToolRoot = Split-Path -Parent $taskZig
+          $taskEnvironment = (& $taskZig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskEnvironment, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot resolve compiler library inputs' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          if (!(Test-Path -LiteralPath $taskLib -PathType Container)) { throw 'Missing compiler library tree' }
+          if (!$taskLib.StartsWith($taskToolRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected compiler distribution layout' }
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{ path = $_; sha256 = (Get-FileHash -LiteralPath $_).Hash } })
+          $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{ path = $_.FullName; sha256 = (Get-FileHash -LiteralPath $_.FullName).Hash } })
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          $taskFixtures = @(
+            @{ name = 'codec'; file = 'src/extensions/fixtures/chord-codec-original-e622.json'; input = 'src/extensions/fixtures/chord-codec-original-e622.input.txt'; hash = '0006FC91ED2DB611A738159BEEEA58650A140EBF63CA93A46A20602A51ADEA94'; input_hash = '8F98B9FE3A1A94BF3AFD26E241D5987C905BA20A84EDC94E2E1B47DA6939D37C'; cases = 41; negative = 37 },
+            @{ name = 'wire'; file = 'src/extensions/fixtures/chord-wire-original-e622.json'; input = 'src/extensions/fixtures/chord-wire-original-e622.input.txt'; hash = '3C089203F7D1CDAB1DC43666F015573572E0D9EBD5F3F43928266F32CD452059'; input_hash = 'D6E6D1198391C132CBD2C1F1A01B92D9E735B46A2AE47B0FD59C1B85B71DE993'; cases = 69; negative = 30 }
+          )
+          $taskInventory = @()
+          foreach ($taskFixture in $taskFixtures) {
+            if ((Get-FileHash -LiteralPath $taskFixture.file).Hash -cne $taskFixture.hash) { throw 'Original Source oracle bytes changed' }
+            $taskOriginal = Get-Content -LiteralPath $taskFixture.file -Raw | ConvertFrom-Json
+            if ($taskOriginal.source -cne 'e6220e1316f86af818a0ccbfe1c09d7e918b41cf') { throw 'Source identity changed' }
+            if ((Get-FileHash -LiteralPath $taskFixture.input).Hash -cne $taskFixture.input_hash) { throw 'Caller input hash changed' }
+            $taskNegative = if ($taskFixture.name -ceq 'wire') { @($taskOriginal.cases | Where-Object { $_.valid -ceq $false }).Count } else { @($taskOriginal.cases | Where-Object { ($_ | ConvertTo-Json -Depth 100) -match '"error"\s*:' }).Count }
+            if (@($taskOriginal.cases).Count -ne $taskFixture.cases -or $taskNegative -ne $taskFixture.negative) { throw 'Original positive or negative case inventory changed' }
+            $taskCapture = Get-Content "verification/chord-composition-20261013/$($taskFixture.name)-original-capture-qualified.json" -Raw | ConvertFrom-Json
+            if ($taskCapture.source -cne $taskOriginal.source -or $taskCapture.inputs -ne 34783 -or $taskCapture.prehash_drift -ne 0 -or $taskCapture.posthash_drift -ne 0 -or $taskCapture.driver_posthash_drift -ne 0 -or $taskCapture.job.status -cne 'passed') { throw 'Original Source capture was not qualified' }
+            $taskInventory += [ordered]@{ name = $taskFixture.name; cases = $taskFixture.cases; negative = $taskNegative; input_sha256 = $taskFixture.input_hash; oracle_sha256 = $taskFixture.hash; source = $taskOriginal.source; original_capture = $taskCapture; case_names = @($taskOriginal.cases.name) }
+          }
+          $taskInventory | ConvertTo-Json -Depth 8 | Set-Content "$taskReceipt/original-inventory.json"
+          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; platform = '${{ matrix.os }}'; host_os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; runner_image = $env:ImageOS; runner_image_version = $env:ImageVersion; runner_architecture = $env:RUNNER_ARCH; zig = $taskZig; zig_version = '0.16.0'; zig_sha256 = (Get-FileHash -LiteralPath $taskZig).Hash; compiler_distribution = $taskToolRoot; source_count = $taskInputs.Count; tool_count = $taskTools.Count; source_manifest_sha256 = (Get-FileHash "$taskReceipt/inputs.json").Hash; tool_manifest_sha256 = (Get-FileHash "$taskReceipt/tools.json").Hash; previous_local_lifecycle_checkpoint = '1e4a595b74c1baf59e7fdba26592417e75f44387'; candidate_status = 'New protocol Source port; first native qualification is this diagnostic'; public_activation = $false; scope = 'Private Chord stream codec and frame wire schema/error qualification. Complete remote connection/reload/loader/manager and Pi qualification remain separate.' } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/source.json"
+      - name: Compile candidate before the runtime deadline
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskFmt = @('build.zig','src/extensions/native_chord_host.zig','src/extensions/native_chord_delta_codec.zig','src/extensions/native_chord_wire.zig','src/native_chord_codec_source_test.zig','src/native_chord_wire_source_test.zig','src/native_chord_protocol_candidate_test.zig')
+          & zig fmt --check @taskFmt
+          if ($LASTEXITCODE -ne 0) { throw 'Native formatting failed' }
+          & zig build build-native-chord-protocol-candidate -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-chord-protocol-candidate/compile.log
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate compilation failed' }
+      - name: Run every selected test with unchanged120s guard and300s outer deadline
+        shell: pwsh
+        timeout-minutes: 6
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-chord-protocol-candidate'
+          $taskSource = Get-Content "$taskReceipt/source.json" -Raw | ConvertFrom-Json
+          $taskStart = [Diagnostics.ProcessStartInfo]::new()
+          $taskStart.FileName = $taskSource.zig
+          $taskStart.WorkingDirectory = (Get-Location).Path
+          $taskStart.UseShellExecute = $false
+          $taskStart.CreateNoWindow = $true
+          $taskStart.RedirectStandardOutput = $true
+          $taskStart.RedirectStandardError = $true
+          $taskArguments = @('build','test-native-chord-protocol-candidate','-Doptimize=${{ matrix.mode }}','-j1','--test-timeout','120s','--summary','all')
+          foreach ($taskArgument in $taskArguments) { $taskStart.ArgumentList.Add($taskArgument) }
+          $taskProcess = [Diagnostics.Process]::Start($taskStart)
+          $taskCreated = $taskProcess.StartTime.ToUniversalTime()
+          $taskLive = if ($IsWindows) { Get-CimInstance Win32_Process -Filter "ProcessId = $($taskProcess.Id)" } else { $null }
+          $taskRecord = [ordered]@{ status = 'running'; pid = $taskProcess.Id; created_utc = $taskCreated.ToString('o'); executable = $taskStart.FileName; executable_sha256 = $taskSource.zig_sha256; argv = $taskArguments; command_line = if ($taskLive) { $taskLive.CommandLine } else { $taskStart.FileName + ' ' + ($taskArguments -join ' ') }; identity_source = 'Retained kernel Process handle and exact native ProcessStartInfo argv; live CIM on Windows when available'; test_timeout_seconds = 120; outer_timeout_seconds = 300; host_await_guards_changed = $false; jobs = 1; llvm = 'default' }
+          $taskRecord | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/runtime-owner.json"
+          $taskStdout = $taskProcess.StandardOutput.ReadToEndAsync()
+          $taskStderr = $taskProcess.StandardError.ReadToEndAsync()
+          $taskFinished = $taskProcess.WaitForExit(300000)
+          if (!$taskFinished -and !$taskProcess.HasExited) {
+            if ($taskStart.FileName -match 'codex' -or $taskProcess.StartTime.ToUniversalTime() -ne $taskCreated -or $taskProcess.MainModule.FileName -cne $taskStart.FileName) { throw 'Runtime timeout owner identity changed; refusing termination' }
+            if ($IsWindows) {
+              $taskCurrent = Get-CimInstance Win32_Process -Filter "ProcessId = $($taskProcess.Id)"
+              if (!$taskCurrent -or $taskCurrent.ExecutablePath -cne $taskStart.FileName -or [Math]::Abs((([DateTimeOffset]$taskCurrent.CreationDate).UtcDateTime - $taskCreated).Ticks) -gt 10 -or ($taskLive -and $taskCurrent.CommandLine -cne $taskLive.CommandLine)) { throw 'Runtime timeout Windows identity changed; refusing termination' }
+            }
+            $taskProcess.Kill($true)
+            if (!$taskProcess.WaitForExit(10000)) { throw 'Owned runtime did not settle within10s after termination' }
+          }
+          $taskOut = $taskStdout.GetAwaiter().GetResult()
+          $taskErr = $taskStderr.GetAwaiter().GetResult()
+          [IO.File]::WriteAllText((Join-Path (Get-Location) "$taskReceipt/stdout.log"), $taskOut)
+          [IO.File]::WriteAllText((Join-Path (Get-Location) "$taskReceipt/stderr.log"), $taskErr)
+          [IO.File]::WriteAllText((Join-Path (Get-Location) "$taskReceipt/tests.log"), $taskOut + "`n" + $taskErr)
+          $taskRecord.status = if (!$taskFinished) { 'timed_out' } elseif ($taskProcess.ExitCode -eq 0) { 'passed' } else { 'failed' }
+          $taskRecord.exit_code = $taskProcess.ExitCode
+          $taskRecord.completed_utc = [DateTimeOffset]::UtcNow.ToString('o')
+          $taskRecord | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/runtime-owner.json"
+          $taskProcess.Dispose()
+          Write-Output $taskOut
+          Write-Output $taskErr
+          if ($taskRecord.status -cne 'passed') { throw "Candidate runtime terminal: $($taskRecord.status)" }
+          $taskMarkers = [regex]::Matches($taskOut + "`n" + $taskErr, 'CHORD_PROTOCOL_COMPILED_TEST_INVENTORY=(\[[^\r\n]*\])')
+          if ($taskMarkers.Count -ne 1) { throw 'Missing or duplicated actual compiled test inventory' }
+          $taskCompiled = @($taskMarkers[0].Groups[1].Value | ConvertFrom-Json)
+          $taskWanted = @(
+            'native Chord protocol compiled inventory records actual selected tests',
+            'native Chord codec genuine Source41cases including37negative dictionary and wire transactions',
+            'native Chord codec stream dictionaries retain path identities through explicit GC',
+            'native Chord codec constructors validation errors and streams release every induced allocation failure',
+            'native Chord wire genuine Source frame schemas error vocabulary and metadata',
+            'native Chord wire actual schema error graph every induced allocation failure'
+          )
+          if (@($taskCompiled | Sort-Object -Unique).Count -ne $taskCompiled.Count) { throw 'Duplicate compiled test name' }
+          $taskNamed = @($taskCompiled | Where-Object { $_ -match '\.test\.' })
+          foreach ($taskName in $taskWanted) { if (@($taskNamed | Where-Object { $_.EndsWith('.test.' + $taskName, [StringComparison]::Ordinal) }).Count -ne 1) { throw "Missing or ambiguous selected test: $taskName" } }
+          if ($taskNamed.Count -ne $taskWanted.Count) { throw 'Unmapped named compiled test; review the actual inventory' }
+          $taskComplete = 'run test ' + $taskCompiled.Count + ' pass (' + $taskCompiled.Count + ' total)'
+          if (($taskOut + "`n" + $taskErr).IndexOf($taskComplete, [StringComparison]::Ordinal) -lt 0) { throw 'Compiled tests did not all execute successfully' }
+          [ordered]@{ head = $taskSource.head; mode = $taskSource.mode; platform = $taskSource.platform; status = 'passed'; compiled_count = $taskCompiled.Count; named_count = $taskNamed.Count; selected_names = $taskWanted; compiled_names = $taskCompiled; codec_cases = 41; codec_negative = 37; wire_cases = 69; wire_negative = 30; gc = 'passed'; all_gpa_failures = 'passed'; test_timeout_seconds = 120; outer_timeout_seconds = 300; public_activation = $false; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 6 | Set-Content "$taskReceipt/result.json"
+      - name: Require every frozen source and compiler byte afterward
+        if: always()
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-chord-protocol-candidate'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskManifest = "$taskReceipt/$taskKind.json"
+            if (!(Test-Path -LiteralPath $taskManifest)) { throw "Missing $taskKind freeze" }
+            $taskRows = @(Get-Content -LiteralPath $taskManifest -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path -PathType Leaf) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ count = $taskRows.Count; drift_count = $taskDrift.Count; drift = $taskDrift; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Frozen $taskKind changed" }
+          }
+          $taskFrozenSource = @(Get-Content "$taskReceipt/inputs.json" -Raw | ConvertFrom-Json)
+          $taskFrozenTools = @(Get-Content "$taskReceipt/tools.json" -Raw | ConvertFrom-Json)
+          $taskSource = Get-Content "$taskReceipt/source.json" -Raw | ConvertFrom-Json
+          $taskSourceNamesChanged = @(Compare-Object @($taskFrozenSource.path | Sort-Object) @(git ls-files | Sort-Object))
+          $taskToolNamesChanged = @(Compare-Object @($taskFrozenTools.path | Sort-Object) @(Get-ChildItem -LiteralPath $taskSource.compiler_distribution -File -Recurse | ForEach-Object FullName | Sort-Object))
+          $taskUnexpected = @(git ls-files --others --exclude-standard | Where-Object { !$_.StartsWith('verification/native-chord-protocol-candidate/', [StringComparison]::Ordinal) })
+          [ordered]@{ tracked_inventory_changes = $taskSourceNamesChanged.Count; tool_inventory_changes = $taskToolNamesChanged.Count; unexpected_untracked = $taskUnexpected; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/inventory-posthash.json"
+          if ($taskSourceNamesChanged.Count -or $taskToolNamesChanged.Count -or $taskUnexpected.Count) { throw 'Source or compiler inventory changed during qualification' }
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Candidate head changed during qualification' }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked candidate bytes changed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-protocol-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/native-chord-protocol-candidate/**
+
+  coverage:
+    needs: platform
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: native-chord-protocol-*-${{ github.sha }}
+          path: chord-protocol-results
+      - name: Require all six exact-head platform and mode qualifications
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
+          PLATFORM_RESULT: ${{ needs.platform.result }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:PLATFORM_RESULT -cne 'success') { throw 'A candidate matrix job did not pass' }
+          $taskSummary = @()
+          $taskSourceCount = $null
+          foreach ($taskOs in @('windows-latest','ubuntu-latest','macos-latest')) {
+            foreach ($taskMode in @('Debug','ReleaseSafe')) {
+              $taskRoot = "chord-protocol-results/native-chord-protocol-$taskOs-$taskMode-$env:EXPECTED_HEAD"
+              $taskSource = Get-Content "$taskRoot/source.json" -Raw | ConvertFrom-Json
+              $taskResult = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
+              $taskOwner = Get-Content "$taskRoot/runtime-owner.json" -Raw | ConvertFrom-Json
+              if ($taskSource.head -cne $env:EXPECTED_HEAD -or $taskResult.head -cne $env:EXPECTED_HEAD -or $taskResult.mode -cne $taskMode -or $taskResult.platform -cne $taskOs -or $taskResult.status -cne 'passed' -or $taskOwner.status -cne 'passed' -or $taskOwner.exit_code -ne 0) { throw 'Missing or inconsistent terminal candidate qualification' }
+              if ($taskResult.named_count -ne 6 -or $taskResult.codec_cases -ne 41 -or $taskResult.codec_negative -ne 37 -or $taskResult.wire_cases -ne 69 -or $taskResult.wire_negative -ne 30 -or $taskResult.gc -cne 'passed' -or $taskResult.all_gpa_failures -cne 'passed' -or $taskOwner.test_timeout_seconds -ne 120 -or $taskOwner.outer_timeout_seconds -ne 300 -or $taskOwner.host_await_guards_changed -or $taskSource.public_activation) { throw 'Candidate inventory or guards changed' }
+              foreach ($taskKind in @('inputs','tools')) {
+                $taskPost = Get-Content "$taskRoot/$taskKind-posthash.json" -Raw | ConvertFrom-Json
+                if (!$taskPost.count -or $taskPost.drift_count -ne 0 -or @($taskPost.drift).Count) { throw 'Missing or changed matrix inputs' }
+              }
+              $taskInventoryPost = Get-Content "$taskRoot/inventory-posthash.json" -Raw | ConvertFrom-Json
+              if ($taskInventoryPost.tracked_inventory_changes -or $taskInventoryPost.tool_inventory_changes -or @($taskInventoryPost.unexpected_untracked).Count) { throw 'Matrix source or compiler inventory changed' }
+              if ($null -eq $taskSourceCount) { $taskSourceCount = $taskSource.source_count } elseif ($taskSourceCount -ne $taskSource.source_count) { throw 'Cross-platform source inventory differs' }
+              $taskSummary += [ordered]@{ platform = $taskOs; mode = $taskMode; head = $taskResult.head; compiled_tests = $taskResult.compiled_count; named_tests = $taskResult.named_count; status = 'passed'; source_count = $taskSource.source_count; tool_count = $taskSource.tool_count; public_activation = $false }
+            }
+          }
+          $taskSummary | ConvertTo-Json -Depth 5 | Set-Content chord-protocol-results/qualification.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-chord-protocol-coverage-${{ github.sha }}
+          retention-days: 14
+          path: chord-protocol-results/qualification.json
+
+

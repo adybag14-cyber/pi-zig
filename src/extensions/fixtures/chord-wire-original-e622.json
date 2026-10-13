@@ -1,0 +1,434 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "valid frame 0",
+      "type": "hello",
+      "valid": true
+    },
+    {
+      "name": "valid frame 1",
+      "type": "hello",
+      "valid": true
+    },
+    {
+      "name": "valid frame 2",
+      "type": "hold",
+      "valid": true
+    },
+    {
+      "name": "valid frame 3",
+      "type": "release",
+      "valid": true
+    },
+    {
+      "name": "valid frame 4",
+      "type": "shape",
+      "valid": true
+    },
+    {
+      "name": "valid frame 5",
+      "type": "gone",
+      "valid": true
+    },
+    {
+      "name": "valid frame 6",
+      "type": "call",
+      "valid": true
+    },
+    {
+      "name": "valid frame 7",
+      "type": "result",
+      "valid": true
+    },
+    {
+      "name": "valid frame 8",
+      "type": "cancel",
+      "valid": true
+    },
+    {
+      "name": "valid frame 9",
+      "type": "sub",
+      "valid": true
+    },
+    {
+      "name": "valid frame 10",
+      "type": "unsub",
+      "valid": true
+    },
+    {
+      "name": "valid frame 11",
+      "type": "state",
+      "valid": true
+    },
+    {
+      "name": "valid frame 12",
+      "type": "state",
+      "valid": true
+    },
+    {
+      "name": "valid frame 13",
+      "type": "ping",
+      "valid": true
+    },
+    {
+      "name": "valid frame 14",
+      "type": "pong",
+      "valid": true
+    },
+    {
+      "name": "valid frame 15",
+      "type": "bye",
+      "valid": true
+    },
+    {
+      "name": "valid frame 16",
+      "type": "root_end",
+      "valid": true
+    },
+    {
+      "name": "valid frame 17",
+      "type": "invalidate",
+      "valid": true
+    },
+    {
+      "name": "valid frame 18",
+      "type": "prepare",
+      "valid": true
+    },
+    {
+      "name": "valid frame 19",
+      "type": "vote",
+      "valid": true
+    },
+    {
+      "name": "valid frame 20",
+      "type": "commit",
+      "valid": true
+    },
+    {
+      "name": "valid frame 21",
+      "type": "retire",
+      "valid": true
+    },
+    {
+      "name": "valid frame 22",
+      "type": "abort",
+      "valid": true
+    },
+    {
+      "name": "invalid frame 0",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 1",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 2",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 3",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 4",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 5",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 6",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 7",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 8",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 9",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 10",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 11",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 12",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 13",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 14",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 15",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 16",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 17",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 18",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 19",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 20",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 21",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 22",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 23",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 24",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 25",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 26",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 27",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 28",
+      "valid": false
+    },
+    {
+      "name": "invalid frame 29",
+      "valid": false
+    },
+    {
+      "name": "structural schema admits extra fields and unknown payloads",
+      "valid": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "wire error ChordError: gone: missing",
+      "wire": {
+        "code": "gone",
+        "message": "gone: missing"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "gone",
+        "message": "gone: missing",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error ChordError: invalid/state: bad state",
+      "wire": {
+        "code": "invalid",
+        "message": "invalid/state: bad state",
+        "reason": "state"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "invalid",
+        "message": "invalid/state: bad state",
+        "reason": "state",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error Error: plain failure",
+      "wire": {
+        "code": "unavailable",
+        "message": "plain failure"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: plain failure",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error RangeError: range failure",
+      "wire": {
+        "code": "unavailable",
+        "message": "range failure"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: range failure",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error undefined",
+      "wire": {
+        "code": "unavailable",
+        "message": "undefined"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: undefined",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error null",
+      "wire": {
+        "code": "unavailable",
+        "message": "null"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: null",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error plain text",
+      "wire": {
+        "code": "unavailable",
+        "message": "plain text"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: plain text",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error 13",
+      "wire": {
+        "code": "unavailable",
+        "message": "13"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: 13",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire error Symbol(symbol)",
+      "wire": {
+        "code": "unavailable",
+        "message": "Symbol(symbol)"
+      },
+      "round": {
+        "name": "ChordError",
+        "code": "unavailable",
+        "message": "unavailable: Symbol(symbol)",
+        "retryable": false
+      },
+      "same": true
+    },
+    {
+      "name": "wire prefix invalid/state: underlying",
+      "code": "invalid",
+      "message": "invalid/state: underlying",
+      "reason": "state"
+    },
+    {
+      "name": "wire prefix CUSTOM: unchanged",
+      "code": "CUSTOM",
+      "message": "CUSTOM: CUSTOM: unchanged"
+    },
+    {
+      "name": "wire prefix already stripped",
+      "code": "gone",
+      "message": "gone: already stripped"
+    },
+    {
+      "name": "wire prefix invalid: prefix stripped despite differing code",
+      "code": "aborted",
+      "message": "aborted: prefix stripped despite differing code"
+    },
+    {
+      "name": "wire error fields preserve Source getter order and repeated reason read",
+      "wire": {
+        "code": "invalid",
+        "message": "original",
+        "reason": "changed"
+      },
+      "log": [
+        "reason",
+        "code",
+        "message",
+        "reason"
+      ]
+    },
+    {
+      "name": "wire export declaration and arrow metadata",
+      "functions": [
+        {
+          "name": "toWireError",
+          "length": 1,
+          "prototype": true
+        },
+        {
+          "name": "fromWireError",
+          "length": 1,
+          "prototype": false
+        },
+        {
+          "name": "isFrame",
+          "length": 1,
+          "prototype": false
+        }
+      ]
+    }
+  ]
+}

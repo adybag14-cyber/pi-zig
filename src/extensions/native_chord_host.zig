@@ -602,6 +602,10 @@ fn createHost(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, values: 
 /// Internal actual Host factory for Source qualification; no module install.
 pub const Classes = struct { exports: c.JSValue, bindings: c.JSValue };
 pub fn classes(engine: *h.Engine) !Classes {
+    const generation = engine.native_allocation_generation;
+    return createClasses(engine) catch |err| return engine.nativeAllocationError(err, generation);
+}
+fn createClasses(engine: *h.Engine) !Classes {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     try @import("abort_signal.zig").install(engine);
@@ -628,6 +632,8 @@ pub fn classes(engine: *h.Engine) !Classes {
     try @import("native_chord_publish.zig").initialize(engine, bindings);
     try @import("native_chord_cells.zig").install(engine, bindings);
     try @import("native_chord_links.zig").install(engine, bindings);
+    try @import("native_chord_delta_codec.zig").install(engine, bindings);
+    try @import("native_chord_wire.zig").install(engine, bindings);
     inline for (.{ "Decls", "ExposedImpl" }, 0..) |name, index| {
         const prototype = try s.record();
         try js.define(engine, bindings, name, try @import("native_class.zig").constructor(engine, name, @intCast(index), prototype, simpleConstruct, &.{c.pi_js_bool(engine.context, @intCast(index))}));

@@ -1,0 +1,23 @@
+const cases=[],describe=error=>({name:error.name,message:error.message,path:error.path,segment:error.segment,isPath:error instanceof api.PathError,isUnsafe:error instanceof api.UnsafePathError}),attempt=fn=>{try{return{value:fn()??null}}catch(error){return{error:describe(error)}}};
+{
+ const encoder=api.encoder(),decoder=api.decoder(),path=['value'],replacement=['r',{value:0}];const batches=[[['s',path,1],['a',path,'x']],[['s',path,2]],[['t',path,1]],[replacement,['s',path,3]],[['s',path,4]]],wire=[],decoded=[];for(const batch of batches){const next=encoder.encode(batch);wire.push(next);decoded.push(decoder.decode(next))}cases.push({name:'second-use definitions batch omission and recovery reset',wire,decoded,identities:[wire[0][0][1]===path,wire[3][0]===replacement,decoded[3][0]===replacement,decoded[0][0][1]===path,decoded[0][1][1]===path]});
+}
+{
+ const path=[],items=[{n:1}],permutation=[1,0],ops=[['p',path,0,0,items],['m',path,permutation]],wire=api.encoder().encode(ops),decoded=api.decoder().decode(wire);cases.push({name:'root array splices and moves preserve path and payload references',wire,decoded,identities:[decoded[0][1]===path,decoded[0][4]===items,decoded[1][2]===permutation]});
+}
+{
+ const decoder=api.decoder(),path=['child'];decoder.decode([['#',7,path]]);const first=decoder.decode([['s',7,1]]);cases.push({name:'definitions cross batches while omitted paths do not',first,same:first[0][1]===path,short:attempt(()=>decoder.decode([['s',2]]))});decoder.decode([['r',{}]]);cases.push({name:'replacement forgets old decoder ids',outcome:attempt(()=>decoder.decode([['s',7,2]]))});
+}
+{
+ const encoder=api.encoder();encoder.encode([['s',['x'],1]]);const broken={*[Symbol.iterator](){yield ['s',['x'],2];throw new Error('stream failure')}};const first=attempt(()=>encoder.encode(broken));cases.push({name:'encoder retains dictionary changes preceding input failure',first,next:encoder.encode([['s',['x'],3]])});
+}
+const invalid=[null,[],['r'],['s'],['s','string-path',1],['s',-1,1],['s',1.5,1],['d',[],1],['a',['x'],2],['a'],['t',['x'],-1],['t',1.5],['p',[],0,0],['p',[],0,-1,[]],['p',[],-1,0,[]],['p',[],0,0,{}],['m',[],[0,0]],['m',[],[1]],['m',[],{}],['#',-1,[]],['#',0,'x'],['unknown'],['s',['__proto__','polluted'],1],['s',['constructor'],1],['s',['prototype'],1],['s',[-1],1],['s',[1.5],1]];
+for(const op of invalid)cases.push({name:'wire negative '+JSON.stringify(op),outcome:attempt(()=>api.decoder().decode([op]))});
+for(const op of [['s',[],1],['d',[]],['a',[],'x'],['t',[],1],['s',9,1],['d'],['m',[0]]])cases.push({name:'decoder unresolved path '+JSON.stringify(op),outcome:attempt(()=>api.decoder().decode([op]))});
+{
+ const encoder=api.encoder(),decoder=api.decoder(),symbols=Object.getOwnPropertySymbols(encoder),base=Object.getPrototypeOf(api.PathError.prototype);cases.push({name:'actual codec export and error class metadata',functions:['encoder','decoder','assertSafePath','assertValidWireOp'].map(name=>({name:api[name].name,length:api[name].length,prototype:Object.hasOwn(api[name],'prototype')})),methods:[encoder.encode.name,encoder.encode.length,Object.hasOwn(encoder.encode,'prototype'),decoder.decode.name,decoder.decode.length,Object.hasOwn(decoder.decode,'prototype')],own:[Object.keys(encoder),Object.keys(decoder)],symbols:symbols.length,errorBase:base===Error.prototype,errorCtor:Object.getPrototypeOf(api.PathError)===Error,errors:[describe(new api.PathError(['a'])),describe(new api.UnsafePathError('constructor'))]});
+}
+{
+ const log=[],op=['r',1];op[Symbol.iterator]=function(){log.push('iterator');return{next(){log.push('next');return{value:'r',done:false}},return(){log.push('return');return{done:true}}}};cases.push({name:'wire validator destructuring closes a custom tuple iterator',outcome:attempt(()=>api.assertValidWireOp(op)),log});
+}
+globalThis.chordCodecCases=cases;
