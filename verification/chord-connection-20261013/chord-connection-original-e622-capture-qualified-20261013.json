@@ -1,0 +1,43 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "manifest_files": [
+    "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+    "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "root-current8a-npm-tools-before.json"
+  ],
+  "inputs": 34783,
+  "prehash_drift": 0,
+  "posthash_drift": 0,
+  "driver_inputs": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordConnection-e622-20261013.mjs",
+      "sha256": "FAD656C532CD9998F20AA51612C0CD62424EB419678C2BA3C5D6404914A8E82C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-e622-source-observe-20261013.mjs",
+      "sha256": "01F6C6B2ECFDCCFCA3C5B76D5AB51E7C88A0DE37A8CC2E7BC3E88B2503F9810C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-connection-original-e622.input.txt",
+      "sha256": "1435024EF83E9A83E81185B0E2B5E5EE40474E1971AD2CAC29AF579F3516EF21"
+    }
+  ],
+  "driver_posthash_drift": 0,
+  "job": {
+    "name": "chord-connection-original-e622-capture-actual-microtask-flush-20261013",
+    "pid": 51408,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordConnection-e622-20261013.mjs",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-13T21:46:09.2124229Z",
+    "launched_utc": "2026-10-13T22:46:09.207394+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-13T22:46:10.9070348+01:00"
+  },
+  "completed_utc": "2026-10-13T21:46:21.5340540+00:00"
+}

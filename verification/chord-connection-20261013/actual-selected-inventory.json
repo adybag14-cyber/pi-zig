@@ -1,0 +1,19 @@
+{
+  "COMPILED": [
+    "native_chord_connection_source_test.test.native Chord connection compiled inventory records actual selected Source GC and allocation gates",
+    "native_chord_connection_source_test.test.native Chord connection actual Source21 constructor protocol control and12negative outcomes",
+    "native_chord_connection_source_test.test.native Chord connection latest Source2 already closed ends notify once and initialize no keepalive",
+    "native_chord_connection_source_test.test.native Chord connection unresolved calls subscriptions timer and channels survive GC",
+    "native_chord_connection_source_test.test.native Chord connection complete constructor call subscription timer and teardown allocation sweep",
+    "native_chord_connection_source_test.test.native Chord connection private delivery OOM escapes then trusted classification clears only its propagation flag",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "BOUNDARY": [
+    "native_chord_connection_boundary_test.test.native Chord connection boundary inventory records actual selected identity and weakref tests",
+    "extensions.native_tui_alt_source_test.test.Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions",
+    "native_weakref_test.test.native WeakRef constructor deref and symbol kept objects match actual V8 job microtask and event-loop fixture",
+    "native_weakref_test.test.native WeakRef kept cycle is a GC root through nested C callbacks and releases at the host checkpoint",
+    "native_weakref_test.test.native WeakRef partial kept roots release after C heap exhaustion and keep runtime reusable",
+    "extensions.native_durable_storage.test_0"
+  ]
+}

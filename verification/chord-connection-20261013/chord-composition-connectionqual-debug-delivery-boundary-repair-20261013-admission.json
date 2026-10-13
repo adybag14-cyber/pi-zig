@@ -1,0 +1,26 @@
+{
+  "measured_utc": "2026-10-13T22:21:40.8720845+00:00",
+  "free_physical_kib": 16141888,
+  "required_kib": 16777216,
+  "coordinated_concurrent_jobs": 1,
+  "observed_native_build_roots": 1,
+  "selected_zig_inventory": [
+    {
+      "ProcessId": 10952,
+      "ParentProcessId": 58360,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-session-models -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-13T22:19:09.0831950Z"
+    },
+    {
+      "ProcessId": 30552,
+      "ParentProcessId": 2512,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe test -cflags -std=gnu11 -- C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\durable\\process_probe.c .zig-cache\\o\\3ef7b3ce292ed845687df8a3de6d8888\\pi-quickjs.lib .zig-cache\\o\\42cd5fda067d4b39cc76af044e056fc0\\pi-sqlite.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\quickjs -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\libfyaml -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d --dep native_icu_api --dep native_photon_link --dep native_vm_identity --dep catalog_tool -Mroot=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\native_sdk_session_models_test.zig -OReleaseSafe -Mnative_icu_api=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions\\icu\\native_icu_api.zig .zig-cache\\o\\6f60e9be21719e9bd4e294eb31967b21\\pi-photon.lib -OReleaseSafe -I C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\vendor\\photon-native -I .zig-cache\\o\\2fb5824d4233e9fe32370ab196a5b16d -Mnative_photon_link=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\ai\\photon_session.zig -Mnative_vm_identity=.zig-cache\\c\\815d10fbaaaa4b28bfd6d3631ac390a4\\options.zig -OReleaseSafe -Mcatalog_tool=C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\tools\\catalog.zig .zig-cache\\o\\c246168e7edd5fd2cd181791db32bb6b\\pi-icu78-i18n.lib .zig-cache\\o\\60af8d0b4887ab0d367b8413caab51a9\\pi-native-yaml.lib .zig-cache\\o\\42cd5fda067d4b39cc76af044e056fc0\\pi-sqlite.lib .zig-cache\\o\\adab80ee1c19844cd6ba34a1d580dde1\\pi-icu78-common.lib -ladvapi32 .zig-cache\\o\\eff42f00226999810b0b110150358f60\\pi-icu78-stubdata.lib -lc++ -lc --test-filter \"native SDK session models\" --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name test --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "created_utc": "2026-10-13T22:19:35.4055580Z"
+    }
+  ],
+  "owner_powershell_gc": true,
+  "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+  "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+}

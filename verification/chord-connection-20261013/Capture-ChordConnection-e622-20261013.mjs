@@ -1,0 +1,11 @@
+import { Connection } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/connection.ts';
+import { RemoteHandle } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/remote.ts';
+import { remote,method } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/contract.ts';
+import { memoryLinkPair } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/link.ts';
+import { encoder } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/delta/index.ts';
+import {readFileSync,writeFileSync} from 'node:fs';
+const input=readFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-connection-original-e622.input.txt','utf8');
+await new Function('api','return(async()=>{'+input+'})()')({Connection,RemoteHandle,remote,method,memoryLinkPair,encoder});
+const cases=globalThis.chordConnectionCases;
+writeFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-connection-original-e622-20261013.json',JSON.stringify({source:'e6220e1316f86af818a0ccbfe1c09d7e918b41cf',cases},null,2)+'\n');
+console.log(JSON.stringify({cases:cases.length,negative:cases.filter(row=>JSON.stringify(row).includes('"error":')||Object.hasOwn(row,'error')||JSON.stringify(row).includes('"reports":[{')).length}));

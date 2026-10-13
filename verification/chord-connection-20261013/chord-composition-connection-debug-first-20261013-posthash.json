@@ -1,0 +1,27 @@
+{
+  "source": 4925,
+  "source_after": 4925,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admission": {
+    "measured_utc": "2026-10-13T21:53:30.3826395+00:00",
+    "free_physical_kib": 19228984,
+    "required_kib": 16777216,
+    "coordinated_concurrent_jobs": 1,
+    "observed_native_build_roots": 1,
+    "selected_zig_inventory": [
+      {
+        "ProcessId": 48744,
+        "ParentProcessId": 51168,
+        "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-env-guest test-env-list-files test-env -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T21:52:51.3828770Z"
+      }
+    ],
+    "owner_powershell_gc": true,
+    "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+    "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+  },
+  "completed_utc": "2026-10-13T21:54:07.9034905+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "head": "497f98dfb6db3c37dfab0bf4548fe2bfae6baa5e",
+  "tree": "93ef319e16b1c976abff5c88b503152cd2bf5753",
+  "release_safe_source_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-composition-connectionqual-releasesafe-delivery-boundary-repair-20261013-source-before.json",
+  "manifest_sha256": "640C0B56BD785C21FBE4D37F66443A6E3CCF6A417DB2E64A7CFC2F1DC2A96821",
+  "committed_blobs_checked": 4928,
+  "committed_byte_drift": 0,
+  "drift": [],
+  "reader_pid": 51988,
+  "reader_created_utc": "2026-10-13T22:36:17.9308692Z",
+  "reader_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "reader_executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+  "reader_command": "git cat-file --batch",
+  "reader_exit_code": 0,
+  "completed_utc": "2026-10-13T22:36:21.1948340+00:00"
+}

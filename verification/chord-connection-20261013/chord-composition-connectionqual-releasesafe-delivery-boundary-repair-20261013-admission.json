@@ -1,0 +1,19 @@
+{
+  "measured_utc": "2026-10-13T22:31:52.4176584+00:00",
+  "free_physical_kib": 19605836,
+  "required_kib": 16777216,
+  "coordinated_concurrent_jobs": 1,
+  "observed_native_build_roots": 1,
+  "selected_zig_inventory": [
+    {
+      "ProcessId": 60492,
+      "ParentProcessId": 7844,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-tool-visual-preview -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-13T22:31:40.4237970Z"
+    }
+  ],
+  "owner_powershell_gc": true,
+  "policy": "Root explicit sole8GiB calibration; second16GiB; max2; default LLVM -j1 test120 host10 outer300",
+  "calibration_evidence": "root-rs-install-compile-20261013.stderr.log"
+}
