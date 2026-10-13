@@ -6,7 +6,14 @@ const js = t.js;
 const c = t.c;
 const Scope = t.Scope;
 pub fn getArray(node: *t.Node) !*t.Array {
-    if (node.array == null) node.array = .{ .pieces = try t.tree.Tree.init(node.context.engine().gpa, try @import("native_values.zig").length(node.context.engine(), node.base)) };
+    if (node.array == null) {
+        // Finish every fallible operation before publishing an optional payload.
+        // GC may inspect the node after an induced failure on this host boundary.
+        const engine = node.context.engine();
+        const length = try @import("native_values.zig").length(engine, node.base);
+        const pieces = try t.tree.Tree.init(engine.gpa, length);
+        node.array = .{ .pieces = pieces };
+    }
     return &node.array.?;
 }
 pub fn entry(node: *t.Node, piece: t.tree.Piece, source_index: usize) !c.JSValue {

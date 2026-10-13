@@ -61,3 +61,25 @@ test "native Chord tracker all native allocation failures release full proxy gra
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
+
+test "native Chord tracker failed array initialization leaves no published storage graph" {
+    const tracker = @import("extensions/native_chord_delta_tracker.zig");
+    for (0..2) |offset| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try setup(failing.allocator());
+        defer engine.deinit();
+        const change = try engine.eval("globalThis.failedArrayChange=nativeDeltaTracker.track([1,2,3]).beginChange()", "tracker-array-init-regression", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(change);
+        const binding = try tracker.bindings(engine);
+        const instance = try tracker.getInstance(engine, change, binding, .change);
+        const context = try tracker.contextOf(engine, instance.data.change.context, binding);
+        const node = context.root.?;
+        try std.testing.expect(node.array == null);
+        failing.fail_index = failing.alloc_index + offset;
+        try std.testing.expectError(error.OutOfMemory, @import("extensions/native_chord_delta_tracker_array.zig").getArray(node));
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expect(failing.has_induced_failure);
+        try std.testing.expect(node.array == null);
+        c.JS_RunGC(engine.runtime);
+    }
+}
