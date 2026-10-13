@@ -32,6 +32,14 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
         try put(engine, env, key, try engine.checked(c.JS_NewStringLen(engine.context, field.value_ptr.ptr, field.value_ptr.len)));
     }
     try put(engine, process, "env", c.JS_DupValue(engine.context, env));
+    // Expose the actual linked runtimes. Provider environment lookup and guest
+    // libraries use the versions object for optional runtime feature detection.
+    const versions = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(versions);
+    const version_flags = c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE;
+    if (c.JS_DefinePropertyValueStr(engine.context, versions, "zig", try engine.checked(c.JS_NewString(engine.context, builtin.zig_version_string)), version_flags) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, versions, "quickjs", try engine.checked(c.JS_NewString(engine.context, c.JS_GetVersion())), version_flags) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, process, "versions", c.JS_DupValue(engine.context, versions), version_flags) < 0) return error.JavaScriptException;
     try put(engine, process, "cwd", try engine.checked(c.JS_NewCFunction(engine.context, currentDirectory, "cwd", 0)));
     const platform = if (builtin.os.tag == .windows) "win32" else @tagName(builtin.os.tag);
     try put(engine, process, "platform", try engine.checked(c.JS_NewString(engine.context, platform)));

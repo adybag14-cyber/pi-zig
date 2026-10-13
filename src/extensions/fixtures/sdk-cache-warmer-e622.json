@@ -1,0 +1,1026 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Original latest CacheWarmer class, calculateCost and provider-env functions; caller-owned deterministic clock/timer/model/manager inputs; no Source body rewriting",
+  "rows": [
+    {
+      "name": "cost-base",
+      "value": {
+        "cost": {
+          "input": 0.001,
+          "output": 0.0002,
+          "cacheRead": 0.000019999999999999998,
+          "cacheWrite": 0.000375,
+          "total": 0.001595
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-hour-write",
+      "value": {
+        "cost": {
+          "input": 0.001,
+          "output": 0.0002,
+          "cacheRead": 0.000019999999999999998,
+          "cacheWrite": 0.000465,
+          "total": 0.0016850000000000003
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-unbounded-hour-write",
+      "value": {
+        "cost": {
+          "input": 0.001,
+          "output": 0.0002,
+          "cacheRead": 0.000019999999999999998,
+          "cacheWrite": 0.000675,
+          "total": 0.0018950000000000002
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-empty",
+      "value": {
+        "cost": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "total": 0
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-threshold-equal",
+      "value": {
+        "cost": {
+          "input": 0.0005,
+          "output": 0.0002,
+          "cacheRead": 0.000019999999999999998,
+          "cacheWrite": 0.000375,
+          "total": 0.001095
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-unsorted",
+      "value": {
+        "cost": {
+          "input": 0.02,
+          "output": 0.0008,
+          "cacheRead": 0.00007999999999999999,
+          "cacheWrite": 0.0015,
+          "total": 0.02238
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-duplicate-threshold",
+      "value": {
+        "cost": {
+          "input": 0.01,
+          "output": 0.0004,
+          "cacheRead": 0.000039999999999999996,
+          "cacheWrite": 0.00075,
+          "total": 0.01119
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-iterable",
+      "value": {
+        "cost": {
+          "input": 0.01,
+          "output": 0.0004,
+          "cacheRead": 0.000039999999999999996,
+          "cacheWrite": 0.00075,
+          "total": 0.01119
+        },
+        "sameObject": true,
+        "sameStored": true
+      }
+    },
+    {
+      "name": "cost-live-getters",
+      "value": {
+        "cost": {
+          "input": 0.001,
+          "output": 0.0002,
+          "cacheRead": 0.000019999999999999998,
+          "cacheWrite": 0.000375,
+          "total": 0.001595
+        },
+        "trace": [
+          "model-cost",
+          "model-cost",
+          "tiers",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost",
+          "cost"
+        ]
+      }
+    },
+    {
+      "name": "cost-function-metadata",
+      "value": {
+        "name": "calculateCost",
+        "length": 2,
+        "prototype": true
+      }
+    },
+    {
+      "name": "env-scoped-undefined",
+      "value": "process"
+    },
+    {
+      "name": "env-scoped-",
+      "value": "process"
+    },
+    {
+      "name": "env-scoped-0",
+      "value": "process"
+    },
+    {
+      "name": "env-scoped-false",
+      "value": "process"
+    },
+    {
+      "name": "env-scoped-override",
+      "value": "override"
+    },
+    {
+      "name": "env-missing"
+    },
+    {
+      "name": "env-bun-first",
+      "value": "second"
+    },
+    {
+      "name": "env-bun-cached",
+      "value": {
+        "x": "second",
+        "y": "a=b",
+        "reads": 1
+      }
+    },
+    {
+      "name": "delay--1",
+      "value": {
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-0",
+      "value": {
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-9999",
+      "value": {
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-10000",
+      "value": {
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-10001",
+      "value": {
+        "result": 1,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-11000",
+      "value": {
+        "result": 1000,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-20000",
+      "value": {
+        "result": 10000,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-60000",
+      "value": {
+        "result": 50000,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-300000",
+      "value": {
+        "result": 270000,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-Infinity",
+      "value": {
+        "result": null,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-NaN",
+      "value": {
+        "result": null,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "delay-20000",
+      "value": {
+        "result": 10000,
+        "negativeZero": false
+      }
+    },
+    {
+      "name": "ttl-default",
+      "value": 20000
+    },
+    {
+      "name": "ttl-long",
+      "value": 300000
+    },
+    {
+      "name": "ttl-none"
+    },
+    {
+      "name": "ttl-scoped-long",
+      "value": 300000
+    },
+    {
+      "name": "ttl-scoped-short",
+      "value": 20000
+    },
+    {
+      "name": "ttl-missing-tier"
+    },
+    {
+      "name": "replay-no-reasoning",
+      "value": true
+    },
+    {
+      "name": "replay-other-api",
+      "value": true
+    },
+    {
+      "name": "replay-anthropic-budget",
+      "value": false
+    },
+    {
+      "name": "replay-adaptive",
+      "value": true
+    },
+    {
+      "name": "replay-truthy-adaptive",
+      "value": false
+    },
+    {
+      "name": "replay-off",
+      "value": true
+    },
+    {
+      "name": "class-metadata",
+      "value": {
+        "name": "CacheWarmer",
+        "length": 3,
+        "own": [
+          "run",
+          "inactive",
+          "models",
+          "sessionManager",
+          "getMode",
+          "decide",
+          "onWarmed"
+        ],
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 3,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "status",
+            "length": 0,
+            "kind": "get",
+            "enumerable": false,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "start",
+            "length": 2,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "onAgentSettled",
+            "length": 0,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "onModeChanged",
+            "length": 0,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "cancel",
+            "length": 0,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "clearRun",
+            "length": 0,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "stop",
+            "length": 2,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "schedule",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "refresh",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": true
+          },
+          {
+            "name": "refreshDeadlineMissed",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "validateRun",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "getModeStopReason",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          },
+          {
+            "name": "evaluate",
+            "length": 1,
+            "kind": "method",
+            "enumerable": false,
+            "writable": true,
+            "configurable": true,
+            "async": false
+          }
+        ],
+        "decide": {
+          "name": "decide",
+          "length": 1,
+          "prototype": false,
+          "async": true
+        },
+        "status": {
+          "state": "inactive",
+          "reason": "waiting for first request"
+        },
+        "sameInactive": true
+      }
+    },
+    {
+      "name": "start-disabled",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache warming disabled"
+        },
+        "hasRun": false
+      }
+    },
+    {
+      "name": "start-unsafe",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "request cannot be replayed safely"
+        },
+        "hasRun": false
+      }
+    },
+    {
+      "name": "start-missing-ttl",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache lifetime unavailable"
+        },
+        "hasRun": false
+      }
+    },
+    {
+      "name": "start-short-ttl",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache lifetime unavailable"
+        },
+        "hasRun": false
+      }
+    },
+    {
+      "name": "start-too-long",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "one-hour safety limit reached"
+        },
+        "hasRun": false
+      }
+    },
+    {
+      "name": "start-no-economics",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache economics unavailable"
+        },
+        "hasRun": true
+      }
+    },
+    {
+      "name": "scheduled",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 110000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "delay": 10000,
+        "unref": 1,
+        "started": 100000,
+        "deadline": 115000
+      }
+    },
+    {
+      "name": "context-changed",
+      "value": {
+        "state": "inactive",
+        "reason": "conversation context changed"
+      }
+    },
+    {
+      "name": "cancelled",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "inactive"
+        },
+        "aborted": true
+      }
+    },
+    {
+      "name": "settled-streaming",
+      "value": {
+        "state": "inactive",
+        "reason": "agent run settled"
+      }
+    },
+    {
+      "name": "settled-always",
+      "value": {
+        "state": "scheduled",
+        "nextWarmAt": 110000,
+        "decision": {
+          "phase": "idle",
+          "warmCost": 2.00002,
+          "missCost": 23,
+          "continuationProbability": 0.15,
+          "expectedSavings": 1.4499799999999996,
+          "economicsAvailable": true,
+          "action": "warm"
+        },
+        "extensionOverride": false
+      }
+    },
+    {
+      "name": "mode-off",
+      "value": {
+        "state": "inactive",
+        "reason": "cache warming disabled"
+      }
+    },
+    {
+      "name": "mode-streaming-idle",
+      "value": {
+        "state": "inactive",
+        "reason": "agent run settled"
+      }
+    },
+    {
+      "name": "refresh-success",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ],
+          [
+            "usage",
+            [
+              "cache_warm",
+              "fixture",
+              "actual",
+              {
+                "cost": {
+                  "total": 0.1
+                }
+              },
+              null
+            ]
+          ],
+          [
+            "warmed",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-extension-stop",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "stopped by extension",
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": true
+        },
+        "calls": []
+      }
+    },
+    {
+      "name": "refresh-fallback-guest-error",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ],
+          [
+            "usage",
+            [
+              "cache_warm",
+              "fixture",
+              "actual",
+              {
+                "cost": {
+                  "total": 0.1
+                }
+              },
+              null
+            ]
+          ],
+          [
+            "warmed",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-stream-throw",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-result-reject",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-aborted-message",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-error-message",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-warmed-throw",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ],
+          [
+            "usage",
+            [
+              "cache_warm",
+              "fixture",
+              "actual",
+              {
+                "cost": {
+                  "total": 0.1
+                }
+              },
+              null
+            ]
+          ],
+          [
+            "warmed",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-forced-warm",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache economics unavailable"
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ],
+          [
+            "usage",
+            [
+              "cache_warm",
+              "fixture",
+              "actual",
+              {
+                "cost": {
+                  "total": 0.1
+                }
+              },
+              "extension override"
+            ]
+          ],
+          [
+            "warmed",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "missed-deadline",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "cache refresh deadline missed"
+        },
+        "calls": []
+      }
+    },
+    {
+      "name": "cancel-during-decision",
+      "value": {
+        "status": {
+          "state": "inactive",
+          "reason": "inactive"
+        },
+        "calls": [],
+        "aborted": true
+      }
+    },
+    {
+      "name": "timer-callback",
+      "value": {
+        "status": {
+          "state": "scheduled",
+          "nextWarmAt": 120000,
+          "decision": {
+            "phase": "streaming",
+            "warmCost": 2.00002,
+            "missCost": 23,
+            "continuationProbability": 1,
+            "expectedSavings": 20.99998,
+            "economicsAvailable": true,
+            "action": "warm"
+          },
+          "extensionOverride": false
+        },
+        "calls": [
+          [
+            "stream",
+            {
+              "sameModel": true,
+              "sameContext": true,
+              "maxTokens": 1,
+              "maxRetries": 0,
+              "custom": "preserved",
+              "aborted": false
+            }
+          ],
+          [
+            "usage",
+            [
+              "cache_warm",
+              "fixture",
+              "actual",
+              {
+                "cost": {
+                  "total": 0.1
+                }
+              },
+              null
+            ]
+          ],
+          [
+            "warmed",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "idle-age-limit",
+      "value": {
+        "state": "inactive",
+        "reason": "30-minute idle safety limit reached"
+      }
+    },
+    {
+      "name": "retired-timers",
+      "value": 0
+    }
+  ]
+}
