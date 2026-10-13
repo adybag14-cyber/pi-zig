@@ -102,6 +102,9 @@ pub const ExecutionEnv = struct {
     pub fn listDir(self: *const ExecutionEnv, path: []const u8, context: types.Context) !types.Result([]types.FileInfo) {
         return self.fs.listDir(path, context);
     }
+    pub fn listFiles(self: *const ExecutionEnv, path: []const u8, options: filesystem.ListFilesOptions, context: types.Context) !types.Result(filesystem.FileListing) {
+        return self.fs.listFiles(path, options, context);
+    }
     pub fn canonicalPath(self: *const ExecutionEnv, path: []const u8, context: types.Context) !types.Result([]u8) {
         return self.fs.canonicalPath(path, context);
     }

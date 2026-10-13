@@ -1,0 +1,64 @@
+[
+  {
+    "name": "empty",
+    "input": {
+      "path": ""
+    },
+    "kind": 3,
+    "code": "ENOENT"
+  },
+  {
+    "name": "wildcard",
+    "input": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-listfiles-oracle-tree-e6220e1-20261013\\bounds\\?"
+    },
+    "kind": 3,
+    "code": "ENOENT"
+  },
+  {
+    "name": "nul",
+    "input": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-listfiles-oracle-tree-e6220e1-20261013\\bounds\u0000"
+    },
+    "kind": 3,
+    "code": "UNKNOWN"
+  },
+  {
+    "name": "path-null",
+    "input": {
+      "path": null
+    },
+    "kind": 3,
+    "code": "EINVAL"
+  },
+  {
+    "name": "null-options",
+    "input": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-listfiles-oracle-tree-e6220e1-20261013\\bounds",
+      "maxEntries": null,
+      "maxBytes": null,
+      "timeoutMs": null,
+      "exclude": null
+    },
+    "kind": 2,
+    "json": {
+      "count": 3,
+      "truncated": false
+    },
+    "payload": "ZmEAZmIAZmMA"
+  },
+  {
+    "name": "wrong-bools",
+    "input": {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-listfiles-oracle-tree-e6220e1-20261013\\bounds",
+      "hidden": 7,
+      "gitignore": "false"
+    },
+    "kind": 2,
+    "json": {
+      "count": 3,
+      "truncated": false
+    },
+    "payload": "ZmEAZmIAZmMA"
+  }
+]

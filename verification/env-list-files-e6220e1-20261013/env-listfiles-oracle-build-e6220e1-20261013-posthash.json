@@ -1,0 +1,9 @@
+{
+  "source": 1902,
+  "source_after": 1902,
+  "source_drift": 0,
+  "tool_sha256": "86478E53F769379D7F0EBFA7C9AA97CB76CA92233F79AA2CC0DBEE2EFAAC73C7",
+  "tool_drift": false,
+  "admitted_free_kib": 23615500,
+  "completed_utc": "2026-10-13T11:31:32.7742429+00:00"
+}

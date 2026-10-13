@@ -8,6 +8,7 @@ pub const connection = @import("connection.zig");
 pub const terminal_request = @import("terminal_request.zig");
 pub const terminal = @import("terminal.zig");
 pub const info = @import("info.zig");
+pub const nodePlatform = info.nodePlatform;
 pub const daemon_output = @import("daemon_output.zig");
 pub const lazy_connection = @import("lazy_connection.zig");
 pub const ssh_remote = @import("ssh_remote.zig");
@@ -15,6 +16,7 @@ pub const ssh_connection = @import("ssh_connection.zig");
 pub const remote_path = @import("remote_path.zig");
 pub const remote_env = @import("remote_env.zig");
 pub const RemoteExecutionEnv = remote_env.RemoteExecutionEnv;
+pub const LocalExecutionEnv = @import("local_env.zig").LocalExecutionEnv;
 test {
     _ = frame;
     _ = ssh;
@@ -37,6 +39,7 @@ test {
     _ = @import("file_workers_test.zig");
     _ = @import("../durable/watch.zig");
     _ = @import("watch_test.zig");
+    _ = @import("list_files_test.zig");
 }
 test "native environment contracts match independent captured upstream Node bytes and arguments" {
     const std = @import("std");

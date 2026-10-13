@@ -494,6 +494,54 @@ pub const RemoteExecutionEnv = struct {
         }
         return .{ .value = try infos.toOwnedSlice(self.gpa) };
     }
+    pub fn listFiles(self: *const RemoteExecutionEnv, path: []const u8, options: fs.ListFilesOptions, context: types.Context) !types.Result(fs.FileListing) {
+        const resolved = self.resolvePath(path) catch |err| return types.fromError(fs.FileListing, self.gpa, err, path);
+        defer self.gpa.free(resolved);
+        return self.listFilesOver(resolved, options, context);
+    }
+    pub fn listFilesOver(self: *const RemoteExecutionEnv, resolved: []const u8, options: fs.ListFilesOptions, context: types.Context) !types.Result(fs.FileListing) {
+        if (options.invalidMessage()) |message| return types.failure(fs.FileListing, self.gpa, .invalid, resolved, null, message);
+        if (context.aborted()) return types.failure(fs.FileListing, self.gpa, .aborted, resolved, null, "aborted");
+        var hello = self.info() catch |err| return types.fromError(fs.FileListing, self.gpa, err, resolved);
+        defer hello.deinit();
+        var supported = false;
+        if (hello.json.value.object.get("features")) |features| if (features == .array) {
+            for (features.array.items) |feature| if (feature == .string and std.mem.eql(u8, feature.string, "listFiles")) {
+                supported = true;
+                break;
+            };
+        };
+        if (!supported) return types.failure(fs.FileListing, self.gpa, .not_supported, resolved, null, "The pi-env daemon does not list files; update it");
+        var ticket = self.connection.begin(.{ .op = "listFiles", .path = resolved, .hidden = options.hidden, .gitignore = options.gitignore, .exclude = options.exclude, .maxEntries = options.maxEntries, .maxBytes = options.maxBytes, .timeoutMs = options.timeoutMs }, "", null) catch |err| return types.fromError(fs.FileListing, self.gpa, err, resolved);
+        defer ticket.deinit();
+        var reply = final(ticket, context) catch |err| return types.fromError(fs.FileListing, self.gpa, err, resolved);
+        defer reply.deinit();
+        if (context.aborted()) return types.failure(fs.FileListing, self.gpa, .aborted, resolved, null, "aborted");
+        if (try checked(fs.FileListing, self.gpa, reply, resolved)) |failure| return failure;
+        var entries: std.ArrayList(fs.FileListEntry) = .empty;
+        errdefer {
+            for (entries.items) |entry| self.gpa.free(entry.path);
+            entries.deinit(self.gpa);
+        }
+        var start: usize = 0;
+        while (start < reply.payload.len) {
+            const end = std.mem.indexOfScalarPos(u8, reply.payload, start, 0) orelse break;
+            const kind: ?types.FileKind = switch (reply.payload[start]) {
+                'f' => .file,
+                'd' => .directory,
+                'l' => .symlink,
+                else => null,
+            };
+            if (kind) |value| {
+                const owned = try fs.listing.decodePath(self.gpa, reply.payload[start + 1 .. end]);
+                errdefer self.gpa.free(owned);
+                try entries.append(self.gpa, .{ .path = owned, .kind = value });
+            }
+            start = end + 1;
+        }
+        const truncated = reply.json.value.object.get("truncated");
+        return .{ .value = .{ .entries = try entries.toOwnedSlice(self.gpa), .truncated = truncated != null and truncated.? == .bool and truncated.?.bool } };
+    }
     pub fn createTempDir(self: *const RemoteExecutionEnv, prefix: ?[]const u8, context: types.Context) !types.Result([]u8) {
         if (context.aborted()) return types.failure([]u8, self.gpa, .aborted, null, null, "aborted");
         var info_reply = self.info() catch |err| return types.fromError([]u8, self.gpa, err, null);

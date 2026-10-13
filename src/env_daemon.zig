@@ -74,7 +74,8 @@ pub fn main(init: std.process.Init) !void {
                 try output.send(.result, request.id, .{
                     .protocol = frame.protocol,
                     .version = @import("env/info.zig").version,
-                    .os = if (builtin.os.tag == .macos) "darwin" else @tagName(builtin.os.tag),
+                    .os = @tagName(builtin.os.tag),
+                    .features = [_][]const u8{"listFiles"},
                     .arch = @tagName(builtin.cpu.arch),
                     .home = home,
                     .tmpdir = tmpdir,

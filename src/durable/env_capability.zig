@@ -242,6 +242,7 @@ pub const FileSystem = struct {
         renameFile: *const fn (*anyopaque, []const u8, []const u8, types.Context) anyerror!types.Result(void),
         fileInfo: *const fn (*anyopaque, []const u8, types.Context) anyerror!types.Result(types.FileInfo),
         listDir: *const fn (*anyopaque, []const u8, types.Context) anyerror!types.Result([]types.FileInfo),
+        listFiles: *const fn (*anyopaque, []const u8, filesystem.ListFilesOptions, types.Context) anyerror!types.Result(filesystem.FileListing),
         canonicalPath: *const fn (*anyopaque, []const u8, types.Context) anyerror!types.Result([]u8),
         exists: *const fn (*anyopaque, []const u8, types.Context) anyerror!types.Result(bool),
         createDir: *const fn (*anyopaque, []const u8, filesystem.CreateDirOptions, types.Context) anyerror!types.Result(void),
@@ -326,6 +327,11 @@ pub const FileSystem = struct {
             fn listDir(raw: *anyopaque, path: []const u8, context: types.Context) !types.Result([]types.FileInfo) {
                 return cast(raw).listDir(path, context);
             }
+            fn listFiles(raw: *anyopaque, path: []const u8, options: filesystem.ListFilesOptions, context: types.Context) !types.Result(filesystem.FileListing) {
+                const owner = cast(raw);
+                if (@hasDecl(T, "listFiles")) return owner.listFiles(path, options, context);
+                return types.failure(filesystem.FileListing, allocatorOf(owner), .not_supported, path, null, "The environment does not list files");
+            }
             fn canonicalPath(raw: *anyopaque, path: []const u8, context: types.Context) !types.Result([]u8) {
                 return cast(raw).canonicalPath(path, context);
             }
@@ -352,7 +358,7 @@ pub const FileSystem = struct {
             fn cleanup(raw: *anyopaque, context: types.Context) void {
                 if (@hasDecl(T, "cleanup")) cast(raw).cleanup(context);
             }
-            const table: VTable = .{ .id = @This().id, .cwd = @This().cwd, .setCwd = @This().setCwd, .absolutePath = @This().absolutePath, .joinPath = @This().joinPath, .readTextFile = @This().readTextFile, .readBinaryFile = @This().readBinaryFile, .readTextLines = @This().readTextLines, .openBinaryReader = @This().openBinaryReader, .openTextLineReader = @This().openTextLineReader, .openDirReader = @This().openDirReader, .writeFile = @This().writeFile, .appendFile = @This().appendFile, .truncateFile = @This().truncateFile, .flushFile = @This().flushFile, .renameFile = @This().renameFile, .fileInfo = @This().fileInfo, .listDir = @This().listDir, .canonicalPath = @This().canonicalPath, .exists = @This().exists, .createDir = @This().createDir, .remove = @This().remove, .createTempDir = @This().createTempDir, .createTempFile = @This().createTempFile, .watch = @This().watch, .cleanup = @This().cleanup };
+            const table: VTable = .{ .id = @This().id, .cwd = @This().cwd, .setCwd = @This().setCwd, .absolutePath = @This().absolutePath, .joinPath = @This().joinPath, .readTextFile = @This().readTextFile, .readBinaryFile = @This().readBinaryFile, .readTextLines = @This().readTextLines, .openBinaryReader = @This().openBinaryReader, .openTextLineReader = @This().openTextLineReader, .openDirReader = @This().openDirReader, .writeFile = @This().writeFile, .appendFile = @This().appendFile, .truncateFile = @This().truncateFile, .flushFile = @This().flushFile, .renameFile = @This().renameFile, .fileInfo = @This().fileInfo, .listDir = @This().listDir, .listFiles = @This().listFiles, .canonicalPath = @This().canonicalPath, .exists = @This().exists, .createDir = @This().createDir, .remove = @This().remove, .createTempDir = @This().createTempDir, .createTempFile = @This().createTempFile, .watch = @This().watch, .cleanup = @This().cleanup };
         };
         return .{ .gpa = allocatorOf(provider), .io = ioOf(provider), .context = provider, .vtable = &Methods.table };
     }
@@ -409,6 +415,9 @@ pub const FileSystem = struct {
     }
     pub fn listDir(self: *const FileSystem, path: []const u8, context: types.Context) !types.Result([]types.FileInfo) {
         return self.vtable.listDir(self.context, path, context);
+    }
+    pub fn listFiles(self: *const FileSystem, path: []const u8, options: filesystem.ListFilesOptions, context: types.Context) !types.Result(filesystem.FileListing) {
+        return self.vtable.listFiles(self.context, path, options, context);
     }
     pub fn canonicalPath(self: *const FileSystem, path: []const u8, context: types.Context) !types.Result([]u8) {
         return self.vtable.canonicalPath(self.context, path, context);
@@ -509,6 +518,9 @@ pub const ExecutionEnv = struct {
     }
     pub fn listDir(self: *const ExecutionEnv, path: []const u8, context: types.Context) !types.Result([]types.FileInfo) {
         return self.fs.listDir(path, context);
+    }
+    pub fn listFiles(self: *const ExecutionEnv, path: []const u8, options: filesystem.ListFilesOptions, context: types.Context) !types.Result(filesystem.FileListing) {
+        return self.fs.listFiles(path, options, context);
     }
     pub fn canonicalPath(self: *const ExecutionEnv, path: []const u8, context: types.Context) !types.Result([]u8) {
         return self.fs.canonicalPath(path, context);

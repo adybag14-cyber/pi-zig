@@ -7,6 +7,10 @@ const scan = @import("line_scan.zig");
 const paths = @import("path.zig");
 const watching = @import("watch.zig");
 const temp_resources = @import("temporary.zig");
+pub const listing = @import("list_files.zig");
+pub const ListFilesOptions = listing.Options;
+pub const FileListEntry = listing.Entry;
+pub const FileListing = listing.Listing;
 pub const Context = types.Context;
 pub const Result = types.Result;
 pub const OpenBinaryOptions = struct { noFollow: bool = false };
@@ -466,6 +470,13 @@ pub const FileSystem = struct {
         const canonical = std.Io.Dir.cwd().realPathFileAlloc(self.io, path, self.gpa) catch |err| return types.fromError([]u8, self.gpa, err, path);
         defer self.gpa.free(canonical);
         return .{ .value = try self.gpa.dupe(u8, canonical) };
+    }
+    pub fn listFiles(self: *const FileSystem, input: []const u8, options: ListFilesOptions, context: Context) !Result(FileListing) {
+        const path = paths.resolveListing(self.gpa, self.cwd, input, self.home) catch |err| return types.fromError(FileListing, self.gpa, err, input);
+        defer self.gpa.free(path);
+        if (options.invalidMessage()) |message| return types.failure(FileListing, self.gpa, .invalid, path, null, message);
+        if (context.aborted()) return types.failure(FileListing, self.gpa, .aborted, path, null, "aborted");
+        return .{ .value = listing.list(self.gpa, self.io, path, self.home, options, context) catch |err| return types.fromError(FileListing, self.gpa, err, path) };
     }
     pub fn listDir(self: *const FileSystem, input: []const u8, context: Context) !Result([]types.FileInfo) {
         const location = try self.resolved(input, context);

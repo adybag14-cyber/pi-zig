@@ -1,6 +1,10 @@
 //! Platform handshake metadata derived from the validated catalog pin.
 const std = @import("std");
 pub const version = @import("../ai/catalog_generated.zig").upstream_version;
+pub const NodePlatform = struct { platform: []const u8, arch: []const u8 };
+pub fn nodePlatform(info: anytype) NodePlatform {
+    return .{ .platform = if (std.mem.eql(u8, info.os, "windows")) "win32" else if (std.mem.eql(u8, info.os, "macos")) "darwin" else info.os, .arch = if (std.mem.eql(u8, info.arch, "x86_64")) "x64" else if (std.mem.eql(u8, info.arch, "aarch64")) "arm64" else if (std.mem.eql(u8, info.arch, "x86")) "ia32" else info.arch };
+}
 fn addDrive(gpa: std.mem.Allocator, object: *std.json.ObjectMap, name: []const u8, value: []const u8) !void {
     if (name.len != 3 or name[0] != '=' or !std.ascii.isAlphabetic(name[1]) or name[2] != ':') return;
     const key = try gpa.dupe(u8, name[1..]);

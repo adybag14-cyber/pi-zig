@@ -64,7 +64,7 @@ pub const Pool = struct {
         const request = job.pending.frame;
         const json = request.json.value;
         const op = if (json == .object) json.object.get("op") else null;
-        const is_scan = op != null and op.? == .string and std.mem.eql(u8, op.?.string, "scanLines");
+        const is_scan = op != null and op.? == .string and (std.mem.eql(u8, op.?.string, "scanLines") or std.mem.eql(u8, op.?.string, "listFiles"));
         var reply = try self.server.dispatch(json, request.payload, .{ .abort_flag = if (is_scan) &job.pending.aborted else null });
         defer reply.deinit();
         try self.output.sendJson(reply.kind, request.id, reply.json, reply.payload);

@@ -1,0 +1,44 @@
+name: Native Env listFiles exact Source qualification
+
+on:
+  push:
+    branches: [work/env-listfiles-e6220e1-20261013]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-env-list-files-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    if: github.ref_name == 'work/env-listfiles-e6220e1-20261013'
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Qualify frozen Source fixtures and actual compiler-selected test bodies
+        timeout-minutes: 7
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          & ./tools/Invoke-EnvListFilesQualification.ps1 -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -OuterSeconds 300
+          if($LASTEXITCODE -ne 0){throw 'Native Env component qualification failed'}
+      - name: Retain Source, tool, process, inventory and terminal evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-env-list-files-windows-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          include-hidden-files: true
+          path: verification/env-list-files/**
