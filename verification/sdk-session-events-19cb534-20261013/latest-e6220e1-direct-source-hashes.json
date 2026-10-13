@@ -1,0 +1,92 @@
+{
+  "old_source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "latest_source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "checked_utc": "2026-10-13T10:05:00.8700226+00:00",
+  "scope": "Exact direct Source dependencies of session events hooks and utilities; latest built-runtime recapture still required",
+  "files": [
+    {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "old_sha256": "E2BBF746779FBED5A8C36F023842BF271252D1FD6F17F5A32F70A0D1C63F0B65",
+      "latest_sha256": "E2BBF746779FBED5A8C36F023842BF271252D1FD6F17F5A32F70A0D1C63F0B65",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/sdk.ts",
+      "old_sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+      "latest_sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/messages.ts",
+      "old_sha256": "5397E3C96C9504266E4EE8B6E88D5098B3280EE7DBB0C687B74708C62A06C8D4",
+      "latest_sha256": "5397E3C96C9504266E4EE8B6E88D5098B3280EE7DBB0C687B74708C62A06C8D4",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/usage-totals.ts",
+      "old_sha256": "8B18DD04D65E90AF9B331CD5AA23D7891AAB8A296F38A6026CE17A098D674EE9",
+      "latest_sha256": "8B18DD04D65E90AF9B331CD5AA23D7891AAB8A296F38A6026CE17A098D674EE9",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/virtual-models.ts",
+      "old_sha256": "DD836E0623B57BBA55FA99B73738427E089A80599A45ACC86D7B28219FA26519",
+      "latest_sha256": "DD836E0623B57BBA55FA99B73738427E089A80599A45ACC86D7B28219FA26519",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/compaction/compaction.ts",
+      "old_sha256": "D5AEBD41333957B57FA3F1BEE2A18B3C00B5D47BB1B4AF6F913CF8CD791099C8",
+      "latest_sha256": "D5AEBD41333957B57FA3F1BEE2A18B3C00B5D47BB1B4AF6F913CF8CD791099C8",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/settings-manager.ts",
+      "old_sha256": "754FC0EE6289FDA207136F9B5A389CAB6EF4DE2E35CC69C8010967CA9D371624",
+      "latest_sha256": "754FC0EE6289FDA207136F9B5A389CAB6EF4DE2E35CC69C8010967CA9D371624",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/session-manager.ts",
+      "old_sha256": "450D82C529933214E088B8422F00061815E617F352F6C834689787A314064BFF",
+      "latest_sha256": "450D82C529933214E088B8422F00061815E617F352F6C834689787A314064BFF",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/runner.ts",
+      "old_sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E",
+      "latest_sha256": "3CD6D1AD18E8E4C7ADF722AED9291BC64F06E3A7D461755C21E3CBA4819F4E5E",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/loader.ts",
+      "old_sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+      "latest_sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+      "same": true
+    },
+    {
+      "path": "packages/coding-agent/src/core/system-prompt.ts",
+      "old_sha256": "5E28C82634113D0CCA7FF5DA6FA94E27AAAE80E461CD5664CED9DBCEF6F89089",
+      "latest_sha256": "5E28C82634113D0CCA7FF5DA6FA94E27AAAE80E461CD5664CED9DBCEF6F89089",
+      "same": true
+    },
+    {
+      "path": "packages/agent/src/agent.ts",
+      "old_sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+      "latest_sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+      "same": true
+    },
+    {
+      "path": "packages/ai/src/utils/text.ts",
+      "old_sha256": "D37C1825855C7FC71669A545B5B266810242C1C7E58D57228C0C143F29C1C544",
+      "latest_sha256": "D37C1825855C7FC71669A545B5B266810242C1C7E58D57228C0C143F29C1C544",
+      "same": true
+    },
+    {
+      "path": "packages/ai/src/utils/transcript.ts",
+      "old_sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2",
+      "latest_sha256": "E0814F35BDCC93B017FA45589A6920E46B5480B88FBA01EF93E5D2D4E815F0F2",
+      "same": true
+    }
+  ]
+}
