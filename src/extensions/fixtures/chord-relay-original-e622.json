@@ -1,0 +1,602 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "actual relay class own fields prototype getters and method metadata",
+      "constructors": [
+        [
+          "RelayHold",
+          4
+        ],
+        [
+          "RelayCall",
+          4
+        ]
+      ],
+      "own": [
+        "origin",
+        "frame",
+        "principal",
+        "client",
+        "generation",
+        "down",
+        "downId",
+        "closed",
+        "calls",
+        "subs"
+      ],
+      "prototype": [
+        "constructor",
+        "originId",
+        "current",
+        "ready",
+        "open",
+        "subscribe",
+        "unsubscribe",
+        "close"
+      ],
+      "callPrototype": [
+        "constructor",
+        "finish",
+        "cancel"
+      ],
+      "methods": [
+        [
+          "ready",
+          0,
+          false
+        ],
+        [
+          "open",
+          1,
+          false
+        ],
+        [
+          "subscribe",
+          2,
+          false
+        ],
+        [
+          "unsubscribe",
+          1,
+          false
+        ],
+        [
+          "close",
+          2,
+          false
+        ]
+      ],
+      "callMethods": [
+        [
+          "finish",
+          2,
+          false
+        ],
+        [
+          "cancel",
+          2,
+          false
+        ]
+      ],
+      "identities": [
+        true,
+        true,
+        true
+      ],
+      "originId": 7,
+      "current": true
+    },
+    {
+      "name": "current fences origin authorization generation and closure",
+      "values": [
+        true,
+        false,
+        false,
+        true,
+        false
+      ]
+    },
+    {
+      "name": "opening forwards queued subscriptions then settles every ready waiter",
+      "identities": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "downId": 41,
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            },
+            "client": true
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 42,
+            "hold": 41,
+            "member": "count"
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 43,
+            "hold": 41,
+            "member": "status"
+          }
+        ]
+      ],
+      "subs": [
+        [
+          10,
+          {
+            "member": "count",
+            "downId": 42
+          }
+        ],
+        [
+          11,
+          {
+            "member": "status",
+            "downId": 43
+          }
+        ]
+      ],
+      "downSubs": [
+        [
+          42,
+          true,
+          10
+        ],
+        [
+          43,
+          true,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "live unsubscribe drops both maps and forwards only when requested",
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 42,
+            "hold": 41,
+            "member": "count"
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "unsub",
+            "id": 42
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 43,
+            "hold": 41,
+            "member": "count"
+          }
+        ]
+      ],
+      "sizes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "closing unresolved hold rejects all waiters with original identity",
+      "identities": [
+        true,
+        true
+      ],
+      "closed": true,
+      "sizes": [
+        0,
+        0,
+        0
+      ],
+      "ready": {
+        "error": {
+          "name": "ChordError",
+          "code": "gone",
+          "message": "gone: relayed hold closed"
+        }
+      }
+    },
+    {
+      "name": "actual relay call registration identities",
+      "own": [
+        "relay",
+        "originId",
+        "downId"
+      ],
+      "same": [
+        true,
+        true
+      ],
+      "prototype": true
+    },
+    {
+      "name": "call settles once and removes both registrations",
+      "log": [
+        [
+          "resolve",
+          {
+            "n": 2
+          }
+        ]
+      ],
+      "sizes": [
+        0,
+        0
+      ],
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "name": "cancel forwards once and retains rejection identity",
+      "log": [
+        [
+          "reject",
+          true
+        ]
+      ],
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "cancel",
+            "id": 80
+          }
+        ]
+      ],
+      "sizes": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "queued call cancellation without a downstream mapping",
+      "log": [
+        "without route"
+      ],
+      "sent": [],
+      "size": 0
+    },
+    {
+      "name": "close cancels calls unsubs releases hold and reports origin once",
+      "log": [
+        "gone"
+      ],
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 42,
+            "hold": 41,
+            "member": "count"
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 43,
+            "hold": 41,
+            "member": "status"
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "cancel",
+            "id": 80
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "unsub",
+            "id": 42
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "unsub",
+            "id": 43
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "release",
+            "id": 41
+          }
+        ],
+        [
+          "origin",
+          {
+            "t": "gone",
+            "id": 7,
+            "error": {
+              "code": "gone",
+              "message": "gone: route revoked"
+            }
+          }
+        ]
+      ],
+      "sizes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "downstream loss settles locally and sends no downstream teardown",
+      "log": [
+        "down closed"
+      ],
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 42,
+            "hold": 41,
+            "member": "count"
+          }
+        ],
+        [
+          "origin",
+          {
+            "t": "gone",
+            "id": 7,
+            "error": {
+              "code": "unavailable",
+              "message": "down closed"
+            }
+          }
+        ]
+      ],
+      "sizes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "opening traverses live subscription map through forwarding reentrancy",
+      "sent": [
+        [
+          "down",
+          {
+            "t": "hold",
+            "id": 41,
+            "at": "dest",
+            "token": {
+              "name": "x"
+            },
+            "input": {
+              "n": 1
+            },
+            "principal": {
+              "user": "alice"
+            }
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 42,
+            "hold": 41,
+            "member": "first"
+          }
+        ],
+        [
+          "down",
+          {
+            "t": "sub",
+            "id": 43,
+            "hold": 41,
+            "member": "added"
+          }
+        ]
+      ],
+      "subs": [
+        [
+          10,
+          {
+            "member": "first",
+            "downId": 42
+          }
+        ],
+        [
+          11,
+          {
+            "member": "added",
+            "downId": 43
+          }
+        ]
+      ]
+    },
+    {
+      "name": "thrown settlement still removes call and fences repeat finish",
+      "first": {
+        "error": {}
+      },
+      "second": {},
+      "log": [
+        "resolve"
+      ],
+      "sizes": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "terminal borrowed relay open",
+      "result": {},
+      "receiver": {
+        "closed": true
+      }
+    },
+    {
+      "name": "terminal borrowed relay close",
+      "result": {},
+      "receiver": {
+        "closed": true
+      }
+    },
+    {
+      "name": "closed borrowed ready returns original rejected promise",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "gone",
+          "message": "gone: relayed hold closed"
+        }
+      }
+    },
+    {
+      "name": "borrowed call finish",
+      "error": "TypeError"
+    },
+    {
+      "name": "borrowed call cancel",
+      "error": "TypeError"
+    },
+    {
+      "name": "current retains falsy origin open value",
+      "value": 0
+    },
+    {
+      "name": "current observes separate origin accesses",
+      "value": true,
+      "log": [
+        "origin",
+        "origin",
+        "origin",
+        "origin"
+      ]
+    }
+  ]
+}

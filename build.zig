@@ -715,6 +715,10 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_remote_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_remote_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-remote-source", "Replay actual Source remote hold calls loading reconnect subscribed state reentrancy GC and every allocation failure").dependOn(&b.addRunArtifact(chord_remote_tests).step);
+    const chord_relay_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_relay_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord relay"} });
+    linkQuickJs(b, chord_relay_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_relay_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-relay-source", "Replay actual Source RelayHold RelayCall forwarding ownership generation settlement GC and every allocation failure").dependOn(&b.addRunArtifact(chord_relay_tests).step);
     const chord_protocol_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_protocol_candidate_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord protocol compiled inventory", "native Chord codec", "native Chord wire", "native Chord apply", "native Chord remote" } });
     linkQuickJs(b, chord_protocol_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_protocol_tests.root_module, sqlite_lib_dir, sqlite_library);

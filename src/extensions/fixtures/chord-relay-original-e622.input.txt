@@ -1,0 +1,52 @@
+const cases=[],info=error=>({name:error?.name,code:error?.code,message:error?.message});
+const attempt=fn=>{try{return {value:fn()}}catch(error){return {error:info(error)}}};
+const outcome=async fn=>{try{return {value:await fn()}}catch(error){return {error:info(error)}}};
+function fixture(client=false){
+ const sent=[],origin={generation:2,open:true,served:new Map(),relaySubs:new Map(),send(frame){sent.push(['origin',frame])}},frame={t:'hold',id:7,at:'dest',token:{name:'x'},input:{n:1}},principal={user:'alice'},relay=new api.RelayHold(origin,frame,principal,client);
+ let next=40;const down={relayedHolds:new Map(),relayedCalls:new Map(),relayedSubs:new Map(),nextId(){return ++next},send(frame){sent.push(['down',frame])}};
+ origin.served.set(7,{kind:'relay',relay});return {origin,frame,principal,relay,down,sent};
+}
+{
+ const f=fixture(),r=f.relay,p=api.RelayHold.prototype,q=api.RelayCall.prototype;cases.push({name:'actual relay class own fields prototype getters and method metadata',constructors:[[api.RelayHold.name,api.RelayHold.length],[api.RelayCall.name,api.RelayCall.length]],own:Object.keys(r),prototype:Object.getOwnPropertyNames(p),callPrototype:Object.getOwnPropertyNames(q),methods:['ready','open','subscribe','unsubscribe','close'].map(name=>[p[name].name,p[name].length,Object.hasOwn(p[name],'prototype')]),callMethods:['finish','cancel'].map(name=>[q[name].name,q[name].length,Object.hasOwn(q[name],'prototype')]),identities:[r.origin===f.origin,r.frame===f.frame,r.principal===f.principal],originId:r.originId,current:r.current});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,values=[r.current];f.origin.open=false;values.push(r.current);f.origin.open=true;f.origin.generation=3;values.push(r.current);f.origin.generation=2;values.push(r.current);r.closed=true;values.push(r.current);cases.push({name:'current fences origin authorization generation and closure',values});
+}
+{
+ const f=fixture(true),r=f.relay,wait=r.ready(),wait2=r.ready();r.subscribe(10,'count');r.subscribe(11,'status');r.open(f.down);cases.push({name:'opening forwards queued subscriptions then settles every ready waiter',identities:[await wait===f.down,await wait2===f.down,await r.ready()===f.down,f.down.relayedHolds.get(r.downId)===r],downId:r.downId,sent:f.sent,subs:[...r.subs],downSubs:[...f.down.relayedSubs].map(([id,value])=>[id,value.relay===r,value.originSubId])});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay;r.open(f.down);r.subscribe(10,'count');r.unsubscribe(10);r.unsubscribe(10);r.subscribe(11,'count');r.unsubscribe(11,false);cases.push({name:'live unsubscribe drops both maps and forwards only when requested',sent:f.sent,sizes:[r.subs.size,f.origin.relaySubs.size,f.down.relayedSubs.size]});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,marker={failure:1},a=r.ready(),b=r.ready();r.close(marker,{releaseDown:true,notify:false});let x,y;try{await a}catch(value){x=value}try{await b}catch(value){y=value}cases.push({name:'closing unresolved hold rejects all waiters with original identity',identities:[x===marker,y===marker],closed:r.closed,sizes:[f.origin.served.size,r.calls.size,r.subs.size],again:r.close('late',{releaseDown:true,notify:true}),ready:await outcome(()=>r.ready())});
+}
+{
+ const f=fixture(),r=f.relay,log=[];r.open(f.down);const call=new api.RelayCall(r,20,80,{resolve(value){log.push(['resolve',value])},reject(error){log.push(['reject',error])}});cases.push({name:'actual relay call registration identities',own:Object.keys(call),same:[r.calls.get(20)===call,f.down.relayedCalls.get(80)===call],prototype:Object.getPrototypeOf(call)===api.RelayCall.prototype});call.finish(undefined,{n:2});call.finish('late');call.cancel('later',true);cases.push({name:'call settles once and removes both registrations',log,sizes:[r.calls.size,f.down.relayedCalls.size],sent:f.sent});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,log=[],marker={cancel:1};r.open(f.down);const call=new api.RelayCall(r,20,80,{resolve(value){log.push(['resolve',value])},reject(error){log.push(['reject',error===marker])}});call.cancel(marker,true);call.cancel(marker,true);cases.push({name:'cancel forwards once and retains rejection identity',log,sent:f.sent,sizes:[r.calls.size,f.down.relayedCalls.size]});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,log=[];const call=new api.RelayCall(r,20,80,{resolve(value){log.push(value)},reject(error){log.push(error)}});call.cancel('without route',true);cases.push({name:'queued call cancellation without a downstream mapping',log,sent:f.sent,size:r.calls.size});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,log=[];r.open(f.down);r.subscribe(10,'count');r.subscribe(11,'status');new api.RelayCall(r,20,80,{resolve(){},reject(error){log.push(error.code)}});r.close(new api.ChordError('gone','route revoked'),{releaseDown:true,notify:true});r.open(f.down);r.close('late',{releaseDown:true,notify:true});cases.push({name:'close cancels calls unsubs releases hold and reports origin once',log,sent:f.sent,sizes:[r.calls.size,r.subs.size,f.origin.served.size,f.origin.relaySubs.size,f.down.relayedHolds.size,f.down.relayedCalls.size,f.down.relayedSubs.size]});
+}
+{
+ const f=fixture(),r=f.relay,log=[];r.open(f.down);r.subscribe(10,'count');new api.RelayCall(r,20,80,{resolve(){},reject(error){log.push(error)}});r.close('down closed',{releaseDown:false,notify:true});cases.push({name:'downstream loss settles locally and sends no downstream teardown',log,sent:f.sent,sizes:[r.calls.size,r.subs.size,f.down.relayedHolds.size,f.down.relayedCalls.size,f.down.relayedSubs.size]});
+}
+{
+ const f=fixture(),r=f.relay;r.subscribe(10,'first');const original=f.down.send;f.down.send=frame=>{original(frame);if(frame.t==='sub'&&frame.member==='first')r.subscribe(11,'added')};r.open(f.down);cases.push({name:'opening traverses live subscription map through forwarding reentrancy',sent:f.sent,subs:[...r.subs]});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const f=fixture(),r=f.relay,log=[];r.open(f.down);const call=new api.RelayCall(r,20,80,{resolve(){log.push('resolve');throw 'settle failed'},reject(){log.push('reject')}});cases.push({name:'thrown settlement still removes call and fences repeat finish',first:attempt(()=>call.finish(undefined,1)),second:attempt(()=>call.finish(undefined,2)),log,sizes:[r.calls.size,f.down.relayedCalls.size]});r.close(null,{releaseDown:false,notify:false});
+}
+{
+ const p=api.RelayHold.prototype;for(const method of ['open','close']){const receiver={closed:true};cases.push({name:'terminal borrowed relay '+method,result:attempt(()=>p[method].call(receiver,null,{})),receiver})}cases.push({name:'closed borrowed ready returns original rejected promise',result:await outcome(()=>p.ready.call({closed:true}))});
+ for(const method of ['finish','cancel']){let error;try{api.RelayCall.prototype[method].call({})}catch(value){error=value}cases.push({name:'borrowed call '+method,error:error?.name})}
+}
+{
+ const f=fixture(),r=f.relay,log=[];f.origin.open=0;cases.push({name:'current retains falsy origin open value',value:r.current});f.origin.open=true;Object.defineProperty(r,'origin',{get(){log.push('origin');return f.origin},configurable:true});const value=r.current;cases.push({name:'current observes separate origin accesses',value,log});r.close(null,{releaseDown:false,notify:false});
+}
+globalThis.chordRelayCases=cases;
