@@ -135,7 +135,7 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
                 c.JS_FreeValue(context, result);
                 const engine = engine_mod.Engine.fromContext(context.?);
                 return @import("native_typebox_errors.zig").invalidLiteral(engine, first) catch |err| {
-                    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
                     return engine.throwCaptured();
                 };
             }
@@ -158,7 +158,7 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
             defer active.deinit(engine.gpa);
             const copied = cloneMemory(engine, first, &active) catch |err| {
                 c.JS_FreeValue(context, result);
-                if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
                 return engine.throwCaptured();
             };
             defer engine.freeValue(copied);
@@ -169,7 +169,7 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
             const engine = engine_mod.Engine.fromContext(context.?);
             c.JS_FreeValue(context, result);
             return record(engine, first, if (argc > 1) argv[1] else c.pi_js_undefined(), if (argc > 2) argv[2] else c.pi_js_undefined()) catch |err| {
-                if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
                 return engine.throwCaptured();
             };
         },
