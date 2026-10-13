@@ -44,7 +44,7 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     defer scope.deinit();
     const prototype = try scope.object();
     const constructor = try scope.own(try engine.checked(c.JS_NewCFunction2(engine.context, construct, "ReadOnlyAuthStorage", 0, c.JS_CFUNC_constructor, 0)));
-    c.JS_SetConstructor(engine.context, constructor, prototype);
+    if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return js.capture(engine);
     inline for (std.meta.fields(Method)) |field| {
         const function = try engine.checked(c.pi_js_function_magic(engine.context, dispatch, field.name, switch (@as(Method, @enumFromInt(field.value))) {
             .load => 0,

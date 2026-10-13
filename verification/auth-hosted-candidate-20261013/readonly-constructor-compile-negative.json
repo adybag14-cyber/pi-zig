@@ -1,0 +1,10 @@
+{
+  "run": 38380090345,
+  "head": "87903eccbb15f34c429b10fdf1cad7aba8ce65a1",
+  "debug_job": 115238063256,
+  "releasesafe_job": 115238063601,
+  "failure": "native_auth_readonly.zig47 ignored JS_SetConstructor c_int result",
+  "repair": "Check negative result and capture original VM exception",
+  "runtime_executed": false,
+  "qualification": "Compilation rejected before runtime; new native results remain pending"
+}
