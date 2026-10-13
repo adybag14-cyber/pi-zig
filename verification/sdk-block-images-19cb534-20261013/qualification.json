@@ -1,0 +1,75 @@
+{
+  "qualification": "Focused component Source and Windows Debug/ReleaseSafe qualified; integrated hosted pending",
+  "source_capture_head": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "latest_sdk_source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "latest_sdk_source_identical": true,
+  "source_cases": 19,
+  "debug_tests": "23/23",
+  "releasesafe_tests": "23/23",
+  "conversion_target_tests": 12,
+  "lifecycle_target_tests": 11,
+  "public_conversion_allocation_indices": 14,
+  "blocked_image_allocation_indices": 44,
+  "first_releasesafe_attempt": "outer300 timeout preserved",
+  "warm_releasesafe": "passed",
+  "source_files": 4563,
+  "tool_files": 19546,
+  "source_and_tool_drift": 0,
+  "production_factory_activation": false,
+  "relevant_component_hashes": [
+    {
+      "path": "src/extensions/native_sdk_block_images.zig",
+      "validated_sha256": "EF8C8810A52FA5B893AFA2F91D1A9DCF0D2201F0F4E59D52680234468F16C060",
+      "integration_sha256": "EF8C8810A52FA5B893AFA2F91D1A9DCF0D2201F0F4E59D52680234468F16C060",
+      "match": true
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "validated_sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "integration_sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "match": true
+    },
+    {
+      "path": "src/extensions/native_sdk_messages.zig",
+      "validated_sha256": "29ECA485D92C1ADBEFCBD82D99B5A7644AD514EDC93F56217777EF1AC9F49C7E",
+      "integration_sha256": "29ECA485D92C1ADBEFCBD82D99B5A7644AD514EDC93F56217777EF1AC9F49C7E",
+      "match": true
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "validated_sha256": "2D1BA986CE900D2A440B0245A35507ACE2FAB78EDE92B0A928EC14D7AE47669F",
+      "integration_sha256": "2D1BA986CE900D2A440B0245A35507ACE2FAB78EDE92B0A928EC14D7AE47669F",
+      "match": true
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "validated_sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "integration_sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "match": true
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "validated_sha256": "A90C273F1604D53C11C3817EEE1E7E71688C1D27D30116C70D92A504CD585D78",
+      "integration_sha256": "A90C273F1604D53C11C3817EEE1E7E71688C1D27D30116C70D92A504CD585D78",
+      "match": true
+    },
+    {
+      "path": "src/native_sdk_message_conversion_test.zig",
+      "validated_sha256": "AD73F94713E44BE550CC341A8E6434DDA22A0F76D68918DD681C6718CC41C07A",
+      "integration_sha256": "AD73F94713E44BE550CC341A8E6434DDA22A0F76D68918DD681C6718CC41C07A",
+      "match": true
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-block-images-19cb.json",
+      "validated_sha256": "936B83ABA02FB2D7EE69849AF10BCA0F168D636F7C320800A7B5C45DFB363EEA",
+      "integration_sha256": "936B83ABA02FB2D7EE69849AF10BCA0F168D636F7C320800A7B5C45DFB363EEA",
+      "match": true
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-block-images-19cb.input.txt",
+      "validated_sha256": "EA90934F94CEA3D999F1CE41A38D6A58BB36174591C7A010F3CA88A86D5CE4E2",
+      "integration_sha256": "EA90934F94CEA3D999F1CE41A38D6A58BB36174591C7A010F3CA88A86D5CE4E2",
+      "match": true
+    }
+  ]
+}

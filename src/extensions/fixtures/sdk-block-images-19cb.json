@@ -1,0 +1,600 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Actual original SDK factory converter closure; real Source settings/session/agent construction, caller message collections",
+  "rows": [
+    {
+      "name": "dynamic-false",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              }
+            ],
+            "timestamp": 1
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "dynamic-true",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              },
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              }
+            ],
+            "timestamp": 1
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "dynamic-false",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              }
+            ],
+            "timestamp": 1
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-user",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ],
+            "timestamp": 2,
+            "details": {
+              "retain": true
+            }
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-toolResult",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "toolResult",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ],
+            "timestamp": 2,
+            "details": {
+              "retain": true
+            }
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-assistant",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ],
+            "timestamp": 2,
+            "details": {
+              "retain": true
+            }
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-system",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ],
+            "timestamp": 2,
+            "details": {
+              "retain": true
+            }
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "role-custom",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ],
+            "timestamp": 2
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "no-images-no-dedupe",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ]
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "existing-placeholders",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "break"
+              },
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              }
+            ]
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "string-content",
+      "trace": [],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": "unchanged"
+          },
+          {
+            "role": "toolResult",
+            "content": "unchanged"
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          },
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          [],
+          []
+        ]
+      }
+    },
+    {
+      "name": "sparse-inherited",
+      "trace": [],
+      "error": {
+        "name": "TypeError",
+        "same": false
+      }
+    },
+    {
+      "name": "spread-symbol-getter",
+      "trace": [
+        "spread-extra"
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              }
+            ],
+            "extra": "metadata"
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          [
+            [
+              "retained",
+              "symbol-value"
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "live-some-false",
+      "trace": [
+        [
+          "some",
+          true,
+          1,
+          "",
+          false
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image",
+                "data": "fixture",
+                "mimeType": "image/png"
+              }
+            ]
+          }
+        ],
+        "identity": [
+          {
+            "message": true,
+            "content": true
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "live-map-filter",
+      "trace": [
+        [
+          "map",
+          true,
+          1,
+          "",
+          false
+        ],
+        [
+          "filter",
+          true,
+          3,
+          "",
+          false
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Image reading is disabled."
+              },
+              {
+                "type": "text",
+                "text": "keep"
+              }
+            ]
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "some-getter-error",
+      "trace": [
+        "some-get"
+      ],
+      "error": {
+        "same": true
+      }
+    },
+    {
+      "name": "filter-live-index-coercion",
+      "trace": [
+        "map",
+        "index-coerce",
+        "index-coerce",
+        [
+          "previous",
+          "type"
+        ],
+        "index-coerce",
+        [
+          "previous",
+          "text"
+        ]
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": [
+              false
+            ]
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "custom-filter-value",
+      "trace": [
+        "some",
+        "map",
+        "filter"
+      ],
+      "value": {
+        "result": [
+          {
+            "role": "user",
+            "content": "custom-filter-result"
+          }
+        ],
+        "identity": [
+          {
+            "message": false,
+            "content": false
+          }
+        ],
+        "symbols": [
+          []
+        ]
+      }
+    },
+    {
+      "name": "wrapper-function",
+      "nameValue": "convertToLlmWithBlockImages",
+      "length": 1,
+      "hasPrototype": false
+    }
+  ]
+}
