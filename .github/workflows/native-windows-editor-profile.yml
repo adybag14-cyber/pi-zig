@@ -1,0 +1,99 @@
+name: Native Windows physical editor startup qualification
+
+on:
+  workflow_call:
+  push:
+    branches: [work/native-windows-editor-profile-20261013]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-windows-editor-profile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Freeze exact source and compiler
+        id: freeze
+        shell: pwsh
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-windows-editor-profile'
+          New-Item -ItemType Directory -Path $taskReceipt -Force | Out-Null
+          if ((git rev-parse HEAD).Trim() -cne $env:EXPECTED_HEAD) { throw 'Checkout head mismatch' }
+          if ((& zig version).Trim() -cne '0.16.0') { throw 'Unexpected Zig version' }
+          $taskZigInfo = [IO.FileInfo]::new((Get-Command zig | Select-Object -First 1).Source)
+          $taskZigTarget = $taskZigInfo.ResolveLinkTarget($true)
+          $taskZig = if ($taskZigTarget) { $taskZigTarget.FullName } else { $taskZigInfo.FullName }
+          $taskToolRoot = Split-Path -Parent $taskZig
+          $taskZigEnv = (& zig env) -join "`n"
+          $taskLibMatch = [regex]::Match($taskZigEnv, '\.lib_dir = ("(?:[^"\\]|\\.)*")')
+          if (!$taskLibMatch.Success) { throw 'Cannot identify the Zig library directory' }
+          $taskLib = $taskLibMatch.Groups[1].Value | ConvertFrom-Json
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskTools = @(Get-ChildItem -LiteralPath $taskToolRoot -File -Recurse | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName; sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
+          $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
+          [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Real custom editor startup command ownership and physical fatal/raw restoration regression'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
+      - name: Build and stage the real CLI before the runtime budget
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-windows-editor-profile/compile-cli.log
+          if ($LASTEXITCODE -ne 0) { throw 'Real CLI cold build/staging failed' }
+      - name: Compile editor and fatal protocol artifacts before the runtime budget
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-windows-editor-profile -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-windows-editor-profile/compile.log
+          if ($LASTEXITCODE -ne 0) { throw 'Physical editor cold compilation failed' }
+      - name: Exercise every physical custom editor and fatal restoration test
+        id: runtime
+        shell: pwsh
+        timeout-minutes: 5
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-windows-editor-profile'
+          & zig build test-custom-editor-frontend -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime.log"
+          if ($LASTEXITCODE -ne 0) { throw 'Physical editor runtime failed' }
+          $taskLog = Get-Content "$taskReceipt/runtime.log" -Raw
+          if ($taskLog -notmatch '(?m)Build Summary:.*\b24/24 tests passed') { throw 'All four physical editor tests and twenty fatal controls must execute successfully' }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';tests=24;custom_editor_tests=4;fatal_controls=20;test_timeout_seconds=120;physical_child_startup_ms=90000;fatal_exit_ms=5000;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Verify frozen inputs after terminal execution
+        if: ${{ always() && steps.freeze.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-windows-editor-profile'
+          foreach ($taskKind in @('inputs','tools')) {
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskRows.Count; drift=$taskDrift; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Candidate frozen $taskKind changed" }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-windows-editor-profile-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-windows-editor-profile/

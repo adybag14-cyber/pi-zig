@@ -733,7 +733,9 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, ">", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
+    // A custom editor need not render the default prompt glyph. The actual
+    // registered command below proves this autocomplete owner accepts input.
+    try observed.acknowledgeStartup(&child, "Type a prompt and press Enter.", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.sendEditorRow(&child, "%", "%");
     try observed.wait(&child, "→ Plugin One", 0);
@@ -794,7 +796,9 @@ test "real custom editor fatal diagnostic getter runs after physical raw restora
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, ">", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
+    // A custom editor need not render the default prompt glyph. The actual
+    // registered command below proves this autocomplete owner accepts input.
+    try observed.acknowledgeStartup(&child, "Type a prompt and press Enter.", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     // The getter record and exact diagnostic prove input consumption without
     // requiring a transient editor frame after fatal shutdown has started.
