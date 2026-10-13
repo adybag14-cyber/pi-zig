@@ -1,0 +1,38 @@
+// Source-only genuine factory capture; no Source class or method is rewritten.
+import{readFileSync,writeFileSync}from'node:fs';
+import{createHash}from'node:crypto';
+import{pathToFileURL}from'node:url';
+import{join,dirname,resolve}from'node:path';
+const root=resolve(process.env.PI_LOADOUT_SOURCE_ROOT),input=resolve(process.argv[2]),output=resolve(process.argv[3]);
+if(process.versions.node!=='24.14.0')throw Error('Pinned Node24.14.0 required');
+const owner={pid:process.pid,platform:process.platform,architecture:process.arch,executable:process.execPath,argv:process.argv,execArgv:process.execArgv,startedUtc:new Date().toISOString()};
+writeFileSync(output+'.owner.json',JSON.stringify(owner,null,2)+'\n');
+const core=pathToFileURL(join(root,'packages/coding-agent/src/core/')).href;
+const {createAgentSession}=await import(core+'sdk.ts'),{AgentSession}=await import(core+'agent-session.ts'),{SessionManager}=await import(core+'session-manager.ts'),{SettingsManager}=await import(core+'settings-manager.ts'),{createExtensionRuntime}=await import(core+'extensions/loader.ts');
+const {VERSION}=await import(core+'../config.ts');
+if(VERSION!=='1.2.0')throw Error('Original latest package metadata absent');
+const prompt=await import(core+'system-prompt.ts');
+globalThis.normalizeLoadoutOptions=prompt.normalizeBuildSystemPromptOptions;
+globalThis.buildLoadoutSections=prompt.buildSystemPromptSections;
+globalThis.diffLoadoutSections=prompt.diffSystemPromptSections;
+let factories=0;
+const cwd=dirname(output);
+globalThis.createLoadoutCaseReceiver=async()=>{
+ const runtime=createExtensionRuntime(),resources={getExtensions:()=>({extensions:[],errors:[],runtime}),getSkills:()=>({skills:[],diagnostics:[]}),getPrompts:()=>({prompts:[],diagnostics:[]}),getThemes:()=>({themes:[],diagnostics:[]}),getAgentsFiles:()=>({agentsFiles:[]}),getSystemPrompt:()=>undefined,getSystemPromptSource:()=>undefined,getAppendSystemPrompt:()=>[],getAppendSystemPromptSources:()=>[],extendResources(){},async reload(){}};
+ const model={id:'fixture',name:'fixture',provider:'fixture',api:'openai-completions',baseUrl:'https://fixture.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:10000,maxTokens:1000};
+ const modelRuntime={getModel:(p,id)=>p==='fixture'&&id==='fixture'?model:undefined,getModels:()=>[model],getAvailableSnapshot:()=>[model],hasConfiguredAuth:()=>true,getError:()=>undefined};
+ const{session}=await createAgentSession({cwd,agentDir:join(cwd,'owned-agentdir'),sessionManager:SessionManager.inMemory(),settingsManager:SettingsManager.inMemory({retry:{enabled:false},compaction:{enabled:false},cacheWarming:'off'}),resourceLoader:resources,modelRuntime,model,noTools:'all'});
+ if(!(session instanceof AgentSession)||!Object.hasOwn(session,'_handleAgentEvent'))throw Error('Original latest factory identity absent');
+ factories++;return session;
+};
+const began=Date.now();
+await import('data:text/javascript,'+encodeURIComponent(readFileSync(input,'utf8')));
+const raw=JSON.parse(JSON.stringify(sdkSessionLoadoutRows));
+const ended=Date.now();
+for(const receiver of loadoutCaseReceivers)receiver.dispose();
+if(factories!==34||raw.rows.length!==34||raw.sectionsRows.length!==12||raw.diffRows.length!==9)throw Error('Source55 inventory changed');
+const observed=readFileSync(process.env.PI_LOADOUT_MODULE_LOG,'utf8').trim().split('\n').map(JSON.parse);
+for(const row of observed.filter(r=>r.kind==='observed-module'))if(createHash('sha256').update(readFileSync(row.path)).digest('hex')!==row.sha256)throw Error('Source module drift '+row.path);
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+writeFileSync(output,JSON.stringify({source:'e6220e1316f86af818a0ccbfe1c09d7e918b41cf',sourceMode:'unmodified TypeScript Source via audited official export resolution',platform:process.platform,node:{version:process.version,executable:process.execPath,executableSha256:hash(process.execPath),execArgv:process.execArgv},owner,packageDirectory:process.env.PI_PACKAGE_DIR,callerInputSha256:hash(input),factories,timeBounds:{began,ended},raw,observedModules:observed},null,2)+'\n');
+console.log(JSON.stringify({sourceCases:55,factories,platform:process.platform,modules:observed.filter(r=>r.kind==='observed-module').length}));

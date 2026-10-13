@@ -1,0 +1,155 @@
+name: Private SDK loadout genuine POSIX Source capture
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-loadout-source-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: earendil-works/pi
+          ref: e6220e1316f86af818a0ccbfe1c09d7e918b41cf
+          path: source-latest
+          persist-credentials: false
+      - name: Execute unchanged latest Source with pinned Node and dependencies
+        id: capture
+        shell: pwsh
+        timeout-minutes: 16
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskRoot = (Get-Location).Path
+          $taskSource = Join-Path $taskRoot 'source-latest'
+          $taskReceipt = Join-Path $taskRoot 'verification/native-sdk-loadout-posix-candidate'
+          New-Item -ItemType Directory -Path $taskReceipt | Out-Null
+          if ((git -C $taskSource rev-parse HEAD).Trim() -cne 'e6220e1316f86af818a0ccbfe1c09d7e918b41cf') { throw 'Original Source head changed' }
+          if ((git rev-parse HEAD).Trim() -cne '${{ github.sha }}') { throw 'Candidate head changed' }
+          $taskSourceRows = @(git -C $taskSource ls-files | Sort-Object | ForEach-Object { [ordered]@{path=(Join-Path $taskSource $_); relative=$_; sha256=(Get-FileHash -LiteralPath (Join-Path $taskSource $_)).Hash} })
+          if ($taskSourceRows.Count -ne 1902) { throw 'Original Source inventory changed' }
+          $taskSourceRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/source-before.json"
+          $taskOwnRows = @(git ls-files | Sort-Object | ForEach-Object { [ordered]@{path=$_; sha256=(Get-FileHash -LiteralPath $_).Hash} })
+          $taskOwnRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/candidate-before.json"
+          $taskKernel = (& uname -s).Trim()
+          $taskMachine = (& uname -m).Trim()
+          $taskPlatform = switch ($taskKernel) { Linux {'linux'} Darwin {'darwin'} default {throw 'Unexpected Source OS'} }
+          $taskArchitecture = switch ($taskMachine) { x86_64 {'x64'} arm64 {'arm64'} aarch64 {'arm64'} default {throw 'Unexpected Source architecture'} }
+          if ($taskPlatform -eq 'linux') {
+            $taskAvailableKiB = [long]([regex]::Match((Get-Content /proc/meminfo -Raw), '(?m)^MemAvailable:\s+(\d+)').Groups[1].Value)
+          } else {
+            $taskVm = (& vm_stat) -join "`n"
+            $taskPage = [long]([regex]::Match($taskVm, 'page size of (\d+) bytes').Groups[1].Value)
+            $taskAvailablePages = 0L
+            foreach ($taskKind in @('Pages free','Pages inactive','Pages speculative')) { $taskAvailablePages += [long]([regex]::Match($taskVm, "(?m)^${taskKind}:\s+(\d+)").Groups[1].Value) }
+            $taskAvailableKiB = ($taskAvailablePages * $taskPage) / 1024
+          }
+          if ($taskAvailableKiB -lt 2MB) { throw 'Source fresh2GiB admission failed' }
+          $taskArchive = "node-v24.14.0-$taskPlatform-$taskArchitecture.tar.xz"
+          $taskSums = Get-Content 'verification/source-oracles/NODE-v24.14.0-OFFICIAL-SHASUMS256.txt'
+          $taskMatch = @($taskSums | Where-Object { $_ -match "^[0-9a-f]{64}\s+$([regex]::Escape($taskArchive))$" })
+          if ($taskMatch.Count -ne 1) { throw 'Official Node archive pin missing' }
+          $taskExpected = ($taskMatch[0] -split '\s+')[0]
+          $taskArchivePath = Join-Path $env:RUNNER_TEMP $taskArchive
+          Invoke-WebRequest "https://nodejs.org/dist/v24.14.0/$taskArchive" -OutFile $taskArchivePath
+          if ((Get-FileHash -LiteralPath $taskArchivePath).Hash.ToLowerInvariant() -cne $taskExpected) { throw 'Official Node archive mismatch' }
+          & tar -xJf $taskArchivePath -C $env:RUNNER_TEMP
+          if ($LASTEXITCODE) { throw 'Official Node extraction failed' }
+          $taskNodeRoot = Join-Path $env:RUNNER_TEMP ($taskArchive -replace '\.tar\.xz$','')
+          $taskNode = Join-Path $taskNodeRoot 'bin/node'
+          if ((& $taskNode --version).Trim() -cne 'v24.14.0') { throw 'Pinned Node version mismatch' }
+          $env:PATH = (Join-Path $taskNodeRoot 'bin') + [IO.Path]::PathSeparator + $env:PATH
+          $env:NODE_OPTIONS = ''
+          $env:NODE_PATH = ''
+          $taskLockHash = (Get-FileHash -LiteralPath "$taskSource/package-lock.json").Hash
+          Push-Location $taskSource
+          & $taskNode --max-old-space-size=256 (Join-Path $taskNodeRoot 'lib/node_modules/npm/bin/npm-cli.js') ci --ignore-scripts --no-audit --no-fund 2>&1 | Tee-Object "$taskReceipt/npm-ci.log"
+          $taskNpmExit = $LASTEXITCODE
+          Pop-Location
+          if ($taskNpmExit) { throw 'Exact-lock Source dependency installation failed' }
+          if ((Get-FileHash -LiteralPath "$taskSource/package-lock.json").Hash -cne $taskLockHash) { throw 'Source lockfile changed' }
+          $taskRevision = (Get-Content "$taskSource/nix/model-catalog.json" -Raw | ConvertFrom-Json).revision
+          if ($taskRevision -cne 'sha256-439c53478c84ed27a58f8b54e1c3bd45810e5a969515b4e3666a3898d51ee22f') { throw 'Original model catalog pin changed' }
+          Invoke-WebRequest "https://pi.dev/api/models/revisions/$taskRevision`?types=chat,image,classifier" -OutFile "$taskReceipt/models.all.json"
+          if ('sha256-' + (Get-FileHash "$taskReceipt/models.all.json").Hash.ToLowerInvariant() -cne $taskRevision) { throw 'Typed catalog revision mismatch' }
+          & $taskNode --max-old-space-size=256 --experimental-transform-types "$taskSource/packages/ai/scripts/hydrate-model-catalog.ts" "$taskReceipt/models.all.json"
+          if ($LASTEXITCODE) { throw 'Original official hydrator failed' }
+          $taskData = @(Get-ChildItem -LiteralPath "$taskSource/packages/ai/src/providers/data" -File | Sort-Object Name | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          if ($taskData.Count -ne 43) { throw 'Hydrated Source data inventory changed' }
+          $taskData | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/hydrated-before.json"
+          $taskDependencyRows = @(Get-ChildItem -LiteralPath $taskSource -File -Recurse | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskDependencyRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/dependencies-before.json"
+          $taskNodeRows = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse | Where-Object { !$_.LinkType } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskNodeRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/node-before.json"
+          $taskPackage = '/tmp/pi-sdk-loadout-source-fixture/packages/coding-agent'
+          if (Test-Path -LiteralPath $taskPackage) { throw 'Refuse existing caller package directory' }
+          New-Item -ItemType Directory -Path $taskPackage | Out-Null
+          Copy-Item -LiteralPath "$taskSource/packages/coding-agent/package.json" -Destination "$taskPackage/package.json"
+          if ((Get-FileHash "$taskPackage/package.json").Hash -cne (Get-FileHash "$taskSource/packages/coding-agent/package.json").Hash) { throw 'Caller package metadata drift' }
+          @([ordered]@{path="$taskPackage/package.json";sha256=(Get-FileHash "$taskPackage/package.json").Hash}) | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/package-before.json"
+          $env:PI_PACKAGE_DIR = $taskPackage
+          $env:PI_LOADOUT_SOURCE_ROOT = $taskSource
+          $taskHelpers = Join-Path $taskRoot 'verification/sdk-session-loadout-e6220e1-20261013'
+          $taskResolverUri = ([Uri](Join-Path $taskHelpers 'source-observe.mjs')).AbsoluteUri
+          foreach ($taskCapture in @('first','second')) {
+            $env:PI_LOADOUT_MODULE_LOG = "$taskReceipt/modules-$taskCapture.jsonl"
+            & "$taskHelpers/run-source-capture.ps1" -Executable $taskNode -WorkingDirectory $taskRoot -Arguments @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',$taskResolverUri,"$taskHelpers/source-capture.mjs","$taskRoot/src/extensions/fixtures/sdk-session-loadout-e622.input.txt","$taskReceipt/source-$taskCapture.json") -ReceiptBase "$taskReceipt/capture-$taskCapture"
+          }
+          & $taskNode --max-old-space-size=256 "$taskHelpers/source-compare.mjs" "$taskReceipt/source-first.json" "$taskReceipt/source-second.json" "$taskReceipt/sdk-session-loadout-e622-posix.json" | Tee-Object "$taskReceipt/qualification.json"
+          if ($LASTEXITCODE) { throw 'Source double capture comparison failed' }
+          [ordered]@{head='${{ github.sha }}';source_head='e6220e1316f86af818a0ccbfe1c09d7e918b41cf';platform=$taskPlatform;architecture=$taskArchitecture;node_sha256=(Get-FileHash $taskNode).Hash;node_archive_sha256=$taskExpected;source_count=1902;hydrated_count=43;dependency_files=$taskDependencyRows.Count;node_files=$taskNodeRows.Count;cases=55;factories=34;public_activation=$false;native_qualification=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
+      - name: Verify retained original and candidate Source inputs
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskReceipt = 'verification/native-sdk-loadout-posix-candidate'
+          foreach ($taskKind in @('source','candidate','hydrated','dependencies','node','package')) {
+            if (!(Test-Path "$taskReceipt/$taskKind-before.json")) { continue }
+            $taskRows = @(Get-Content "$taskReceipt/$taskKind-before.json" -Raw | ConvertFrom-Json)
+            $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
+            $taskSetDrift = @()
+            if ($taskKind -eq 'dependencies') {
+              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest' -File -Recurse | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | ForEach-Object FullName | Sort-Object)
+              $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
+            } elseif ($taskKind -eq 'node') {
+              $taskNodePath = $taskRows | Where-Object { $_.path -match '/bin/node$' } | Select-Object -ExpandProperty path
+              $taskNodeRoot = Split-Path (Split-Path $taskNodePath)
+              $taskCurrent = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse | Where-Object { !$_.LinkType } | ForEach-Object FullName | Sort-Object)
+              $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
+            } elseif ($taskKind -eq 'hydrated') {
+              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest/packages/ai/src/providers/data' -File | ForEach-Object FullName | Sort-Object)
+              $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
+            }
+            [ordered]@{count=$taskRows.Count;drift=$taskDrift;file_set_drift=$taskSetDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
+            if ($taskDrift.Count) { throw "Frozen $taskKind changed" }
+            if ($taskSetDrift.Count) { throw "Frozen $taskKind file inventory changed" }
+          }
+          foreach ($taskCapture in @('first','second')) {
+            $taskLog = "$taskReceipt/modules-$taskCapture.jsonl"
+            if (!(Test-Path -LiteralPath $taskLog)) { continue }
+            $taskModules = @(Get-Content -LiteralPath $taskLog | ForEach-Object { $_ | ConvertFrom-Json } | Where-Object kind -CEQ 'observed-module')
+            $taskDrift = @($taskModules | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash.ToLowerInvariant() -cne $_.sha256 } | ForEach-Object path)
+            [ordered]@{count=$taskModules.Count;drift=$taskDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/modules-$taskCapture-posthash.json"
+            if ($taskDrift.Count) { throw 'Observed Source module changed' }
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: sdk-loadout-genuine-source-${{ matrix.os }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-sdk-loadout-posix-candidate/
