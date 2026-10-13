@@ -47,7 +47,32 @@ fn subscribe(s: *Scope, set: c.JSValue, listener: c.JSValue) !c.JSValue {
 }
 fn statusChanged(s: *Scope, receiver: c.JSValue, bindings: c.JSValue) !void {
     const data = (try h.actor(s, receiver, bindings, .RemoteHandle)).data;
-    try @import("native_chord_host_handle.zig").notifyStatus(s, bindings, try s.get(data, "statusListeners"), try s.get(receiver, "status"), try s.get(receiver, "error"), try s.get(receiver, "host"));
+    const listeners = try s.get(data, "statusListeners");
+    const status = try s.get(receiver, "status");
+    const failure = try s.get(receiver, "error");
+    if (!try h.flag(s, listeners, "size")) return;
+    var captures = [_]c.JSValue{ try h.snapshot(s, listeners), status, failure, receiver };
+    const task = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, statusNotification, "", 0, 0, 4, &captures)));
+    try @import("native_chord_publish.zig").enqueue(s.engine, bindings, task);
+}
+fn statusNotification(ctx: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = h.Engine.fromContext(ctx.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    return notifyStatus(engine, captures) catch |err| @import("native_durable.zig").reject(engine, err);
+}
+fn notifyStatus(engine: *h.Engine, captures: [*c]c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    for (0..try h.length(&s, captures[0])) |index| {
+        const result = js.call(engine, try s.at(captures[0], index), c.pi_js_undefined(), &.{ captures[1], captures[2] }) catch |err| {
+            if (err != error.JavaScriptException) return err;
+            _ = try h.invoke(&s, try s.get(captures[3], "host"), "report", &.{engine.captured_exception orelse return err});
+            continue;
+        };
+        engine.freeValue(result);
+    }
+    return c.pi_js_undefined();
 }
 fn terminal(s: *Scope, receiver: c.JSValue) !bool {
     const status = try s.get(receiver, "status");
@@ -82,13 +107,13 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         try js.setKey(engine, receiver, try s.text("binding"), binding);
         return c.pi_js_undefined();
     }
-    const data = (try h.actor(&s, receiver, bindings, .RemoteHandle)).data;
-    if (method == .on_status) return subscribe(&s, try s.get(data, "statusListeners"), h.arg(args, 0));
-    if (method == .member) return member(&s, receiver, data, bindings, h.arg(args, 0));
+    if (method == .on_status) return subscribe(&s, try s.get((try h.actor(&s, receiver, bindings, .RemoteHandle)).data, "statusListeners"), h.arg(args, 0));
+    if (method == .member) return member(&s, receiver, bindings, h.arg(args, 0));
     if (try terminal(&s, receiver)) return c.pi_js_undefined();
     if (method == .release) {
         try js.setKey(engine, receiver, try s.text("status"), try s.text("released"));
         try statusChanged(&s, receiver, bindings);
+        const data = (try h.actor(&s, receiver, bindings, .RemoteHandle)).data;
         const failure = try h.errorValue(&s, bindings, "released", &.{ try s.text("handle "), try s.get(receiver, "address"), try s.text(" released") }, c.pi_js_undefined());
         try settle(&s, data, "reject", failure);
         _ = try h.invoke(&s, try s.get(data, "live"), "reject", &.{failure});
@@ -101,6 +126,7 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         try js.setKey(engine, receiver, try s.text("shape"), h.arg(args, 0));
         const loading = try s.equal(try s.get(receiver, "status"), "loading");
         try js.setKey(engine, receiver, try s.text("status"), try s.text("live"));
+        const data = (try h.actor(&s, receiver, bindings, .RemoteHandle)).data;
         if (loading) {
             try statusChanged(&s, receiver, bindings);
             try settle(&s, data, "resolve", c.pi_js_undefined());
@@ -122,12 +148,14 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
         try js.setKey(engine, receiver, try s.text("error"), h.arg(args, 0));
         try statusChanged(&s, receiver, bindings);
         try js.setKey(engine, receiver, try s.text("binding"), c.pi_js_undefined());
+        const data = (try h.actor(&s, receiver, bindings, .RemoteHandle)).data;
         try settle(&s, data, "reject", h.arg(args, 0));
         _ = try h.invoke(&s, try s.get(data, "live"), "reject", &.{h.arg(args, 0)});
         try readables(&s, data, "stop");
         _ = try h.invoke(&s, try s.get(receiver, "host"), "forgetRemote", &.{receiver});
     } else {
         try js.setKey(engine, receiver, try s.text("binding"), c.pi_js_undefined());
+        const data = (try h.actor(&s, receiver, bindings, .RemoteHandle)).data;
         try readables(&s, data, "detach");
         if (try s.equal(try s.get(receiver, "status"), "live")) {
             try js.setKey(engine, receiver, try s.text("status"), try s.text("loading"));
@@ -143,7 +171,7 @@ fn selectDescription(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     if (magic == 1) return c.pi_js_bool(engine.context, @intFromBool(!c.JS_IsUndefined(value)));
     return js.getKey(engine, value, captures[0]) catch |err| @import("native_durable.zig").reject(engine, err);
 }
-fn member(s: *Scope, receiver: c.JSValue, data: c.JSValue, bindings: c.JSValue, name: c.JSValue) !c.JSValue {
+fn member(s: *Scope, receiver: c.JSValue, bindings: c.JSValue, name: c.JSValue) !c.JSValue {
     const variants = try s.builtin("Object", "values", &.{try s.get(try s.get(try s.get(receiver, "contract"), "description"), "variants")});
     var captures = [_]c.JSValue{name};
     const selector = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, selectDescription, "", 1, 0, 1, &captures)));
@@ -152,6 +180,7 @@ fn member(s: *Scope, receiver: c.JSValue, data: c.JSValue, bindings: c.JSValue, 
     const description = try h.invoke(s, described, "find", &.{present});
     const kind = if (h.nullish(description)) c.pi_js_undefined() else try s.get(description, "kind");
     if (try s.equal(kind, "method")) {
+        const data = (try h.actor(s, receiver, bindings, .RemoteHandle)).data;
         const callers = try s.get(data, "callers");
         var function = try h.invoke(s, callers, "get", &.{name});
         if (c.JS_IsUndefined(function)) {
@@ -161,7 +190,8 @@ fn member(s: *Scope, receiver: c.JSValue, data: c.JSValue, bindings: c.JSValue, 
         }
         return s.result(function);
     }
-    if (try s.equal(kind, "state")) {
+    if (try s.equal(if (h.nullish(description)) c.pi_js_undefined() else try s.get(description, "kind"), "state")) {
+        const data = (try h.actor(s, receiver, bindings, .RemoteHandle)).data;
         const values = try s.get(data, "readables");
         var value = try h.invoke(s, values, "get", &.{name});
         if (c.JS_IsUndefined(value)) {
@@ -214,9 +244,14 @@ fn asyncCall(engine: *h.Engine, receiver: c.JSValue, bindings: c.JSValue, name: 
     try h.field(&s, work, "ctx", ctx);
     const returned = callLoop(engine, work, c.pi_js_undefined(), false, 0) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
     defer engine.freeValue(returned);
-    return h.resolved(engine, returned);
+    return @import("native_durable.zig").resolvedPromise(engine, returned);
 }
-fn callLoop(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!c.JSValue {
+fn callDescription(s: *Scope, receiver: c.JSValue, kind: c.JSValue, name: c.JSValue) !c.JSValue {
+    const variants = try s.get(try s.get(try s.get(receiver, "contract"), "description"), "variants");
+    const variant = try s.key(variants, kind);
+    return if (h.nullish(variant)) c.pi_js_undefined() else try s.key(variant, name);
+}
+fn callLoop(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     if (rejected) return h.throwValue(&s, value);
@@ -226,23 +261,29 @@ fn callLoop(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool
     const name = try s.get(work, "name");
     const ctx = try s.get(work, "ctx");
     var steps: usize = 0;
+    var resumed = stage == 1;
     while (true) {
         steps +|= 1;
         if (engine.cancelled.load(.acquire) or (steps % 256 == 0 and blk: {
             engine.interrupts +|= 1;
             break :blk engine.interrupts > engine.options.interrupt_budget;
         })) _ = try engine.checked(c.JS_ThrowInternalError(engine.context, "interrupted"));
-        if (try terminal(&s, receiver)) return h.throwValue(&s, if (try s.equal(try s.get(receiver, "status"), "gone")) try s.get(receiver, "error") else try h.errorValue(&s, bindings, "released", &.{ try s.text("handle "), try s.get(receiver, "address"), try s.text(" released") }, c.pi_js_undefined()));
-        if (try s.equal(try s.get(receiver, "status"), "loading")) return h.wait(callLoop, engine, work, try s.keep(try @import("native_chord_host_record_call.zig").raceSignal(engine, bindings, try s.get(try s.get(data, "live"), "promise"), try s.get(ctx, "signal"))), 0);
+        if (!resumed) {
+            if (try terminal(&s, receiver)) return h.throwValue(&s, if (try s.equal(try s.get(receiver, "status"), "gone")) try s.get(receiver, "error") else try h.errorValue(&s, bindings, "released", &.{ try s.text("handle "), try s.get(receiver, "address"), try s.text(" released") }, c.pi_js_undefined()));
+            if (try s.equal(try s.get(receiver, "status"), "loading")) return h.wait(callLoop, engine, work, try s.keep(try @import("native_chord_host_record_call.zig").raceSignal(engine, bindings, try s.get(try s.get(data, "live"), "promise"), try s.get(ctx, "signal"))), 1);
+        }
+        resumed = false;
         const binding = try s.get(receiver, "binding");
         if (c.JS_IsUndefined(binding)) continue;
         const shape = try s.get(receiver, "shape");
         const kind = if (h.nullish(shape)) c.pi_js_undefined() else try s.get(shape, "kind");
-        const variants = try s.get(try s.get(try s.get(receiver, "contract"), "description"), "variants");
-        const variant = try s.key(variants, kind);
-        const description = if (h.nullish(variant)) c.pi_js_undefined() else try s.key(variant, name);
-        if (c.JS_IsUndefined(kind) or h.nullish(description) or !try s.equal(try s.get(description, "kind"), "method")) return h.throwValue(&s, try h.errorValue(&s, bindings, "not_in_variant", &.{ try s.get(receiver, "address"), try s.text(": "), name, try s.text(" is not a method of variant "), kind }, c.pi_js_undefined()));
-        const sent = try @import("native_chord_host_record_schema.zig").clean(&s, try s.get(description, "args"), try s.get(work, "args"));
+        const valid = !c.JS_IsUndefined(kind) and valid: {
+            const description = try callDescription(&s, receiver, kind, name);
+            break :valid !h.nullish(description) and try s.equal(try s.get(description, "kind"), "method");
+        };
+        if (!valid) return h.throwValue(&s, try h.errorValue(&s, bindings, "not_in_variant", &.{ try s.get(receiver, "address"), try s.text(": "), name, try s.text(" is not a method of variant "), kind }, c.pi_js_undefined()));
+        const description = try callDescription(&s, receiver, kind, name);
+        const sent = if (!h.nullish(description) and try s.equal(try s.get(description, "kind"), "method")) try @import("native_chord_host_record_schema.zig").clean(&s, try s.get(description, "args"), try s.get(work, "args")) else try s.get(work, "args");
         const root = try s.record();
         try h.field(&s, root, "rootId", try s.get(ctx, "rootId"));
         try h.field(&s, root, "epoch", try s.get(ctx, "epoch"));

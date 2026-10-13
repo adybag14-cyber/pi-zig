@@ -48,13 +48,12 @@ fn receive(engine: *h.Engine, receiver: c.JSValue, bindings: c.JSValue, frame: c
         return c.pi_js_undefined();
     }
     const first_ops = try s.get(frame, "ops");
-    const has_snap = try js.hasKey(engine, frame, try s.text("snap"));
-    if (c.JS_IsUndefined(first_ops) and !has_snap and !try js.hasKey(engine, frame, try s.text("reset"))) return c.pi_js_undefined();
+    if (c.JS_IsUndefined(first_ops) and !try js.hasKey(engine, frame, try s.text("snap")) and !try js.hasKey(engine, frame, try s.text("reset"))) return c.pi_js_undefined();
     const event = try s.record();
     const codec = try s.get(bindings, "DeltaCodec");
     const operations = try s.get(frame, "ops");
     if (!c.JS_IsUndefined(operations)) {
-        const decoded = try h.invoke(&s, try s.get(data, "decoder"), "decode", &.{operations});
+        const decoded = try h.invoke(&s, try s.get(data, "decoder"), "decode", &.{try s.get(frame, "ops")});
         const next = try h.invoke(&s, codec, "applyImmutable", &.{ try s.get(data, "value"), decoded });
         try h.field(&s, data, "value", next);
         try h.field(&s, event, "type", try s.text("ops"));
@@ -98,7 +97,8 @@ fn invoke(engine: *h.Engine, receiver: c.JSValue, args: []const c.JSValue, metho
     }
     if (method == .stop) {
         inline for (.{ "values", "events" }) |name| _ = try h.invoke(&s, try s.get(data, name), "clear", &.{});
-        return js.invoke(engine, receiver, "bind", &.{});
+        _ = try h.invoke(&s, receiver, "bind", &.{});
+        return c.pi_js_undefined();
     }
     var value_count: f64 = 0;
     var event_count: f64 = 0;

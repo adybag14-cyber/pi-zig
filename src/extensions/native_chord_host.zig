@@ -646,6 +646,7 @@ fn createClasses(engine: *h.Engine) !Classes {
     try @import("native_chord_host_record.zig").install(engine, bindings);
     try @import("native_chord_host_readable.zig").install(engine, bindings);
     try @import("native_chord_host_handle.zig").install(engine, bindings);
+    try @import("native_chord_remote.zig").install(engine, bindings);
     const api = try s.record();
     try js.spreadInto(engine, api, contracts);
     inline for (.{ "ChordError", "isChordError", "forbidden", "invalid" }) |name| try h.field(&s, api, name, try s.get(resource_classes.exports, name));

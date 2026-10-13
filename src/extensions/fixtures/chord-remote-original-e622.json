@@ -1,0 +1,696 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "actual remote class own order prototype and methods",
+      "constructor": [
+        "RemoteHandle",
+        2
+      ],
+      "own": [
+        "record",
+        "host",
+        "contract",
+        "at",
+        "input",
+        "principal",
+        "owner",
+        "address",
+        "proxy",
+        "ready",
+        "status",
+        "error",
+        "shape",
+        "binding",
+        "shapeListeners"
+      ],
+      "prototype": [
+        "constructor",
+        "kind",
+        "onShape",
+        "onStatus",
+        "release",
+        "bound",
+        "shaped",
+        "gone",
+        "detached",
+        "member"
+      ],
+      "methods": [
+        [
+          "onShape",
+          1,
+          false
+        ],
+        [
+          "onStatus",
+          1,
+          false
+        ],
+        [
+          "release",
+          0,
+          false
+        ],
+        [
+          "bound",
+          2,
+          false
+        ],
+        [
+          "shaped",
+          1,
+          false
+        ],
+        [
+          "gone",
+          1,
+          false
+        ],
+        [
+          "detached",
+          0,
+          false
+        ],
+        [
+          "member",
+          1,
+          false
+        ]
+      ],
+      "kind": [
+        "get kind",
+        false
+      ],
+      "identities": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "name": "stable late-bound members and get-only proxy",
+      "values": [
+        null,
+        "loading",
+        null,
+        null,
+        null
+      ],
+      "identities": [
+        true,
+        true,
+        true,
+        false,
+        true
+      ],
+      "readableOwn": [],
+      "readablePrototype": [
+        "constructor",
+        "value",
+        "subscribe",
+        "events",
+        "bind",
+        "detach",
+        "stop"
+      ]
+    },
+    {
+      "name": "ready settles once and shape callbacks publish every live shape",
+      "status": [
+        [
+          "live",
+          null
+        ]
+      ],
+      "shapes": [
+        "active",
+        "idle"
+      ],
+      "binding": [
+        true,
+        4
+      ],
+      "kind": "idle",
+      "offReturns": [
+        true,
+        true
+      ]
+    },
+    {
+      "name": "listener removals and repeated release",
+      "status": [
+        [
+          "live",
+          null
+        ]
+      ],
+      "shapes": [
+        "active",
+        "idle"
+      ],
+      "log": [
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "method cleans cloned args and forwards actual root signal",
+      "result": 12,
+      "args": {
+        "n": 2,
+        "extra": "drop"
+      },
+      "log": [
+        [
+          "call",
+          4,
+          "run",
+          {
+            "n": 2,
+            "extra": "drop"
+          },
+          {
+            "rootId": "root",
+            "epoch": 7
+          },
+          true
+        ],
+        [
+          "root",
+          true
+        ],
+        [
+          "call",
+          4,
+          "run",
+          {
+            "n": 3
+          },
+          {
+            "rootId": "root",
+            "epoch": 7
+          },
+          true
+        ],
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "omitted context invokes host root",
+      "rootResult": 13,
+      "log": [
+        [
+          "call",
+          4,
+          "run",
+          {
+            "n": 2,
+            "extra": "drop"
+          },
+          {
+            "rootId": "root",
+            "epoch": 7
+          },
+          true
+        ],
+        [
+          "root",
+          true
+        ],
+        [
+          "call",
+          4,
+          "run",
+          {
+            "n": 3
+          },
+          {
+            "rootId": "root",
+            "epoch": 7
+          },
+          true
+        ],
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "factory caller rejects synchronously",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "not_ready",
+          "message": "not_ready: peer/RemoteTest:1.run called inside a factory"
+        }
+      },
+      "log": [
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "method absent from live variant rejects asynchronously",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "not_in_variant",
+          "message": "not_in_variant: peer/RemoteTest:1: run is not a method of variant idle"
+        }
+      }
+    },
+    {
+      "name": "released method rejection",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "released",
+          "message": "released: handle peer/RemoteTest:1 released"
+        }
+      }
+    },
+    {
+      "name": "gone retains original error identity and terminal shape guards",
+      "identities": [
+        true,
+        true,
+        true
+      ],
+      "status": "gone",
+      "binding": 9,
+      "log": [
+        [
+          "forget",
+          "gone"
+        ]
+      ]
+    },
+    {
+      "name": "release rejects unready hold and drops binding once",
+      "error": {
+        "name": "ChordError",
+        "code": "released",
+        "message": "released: handle peer/RemoteTest:1 released"
+      },
+      "log": [
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ],
+      "status": "released"
+    },
+    {
+      "name": "remote readable snapshots resets and shared dictionary operations",
+      "events": [
+        {
+          "type": "snap"
+        },
+        {
+          "type": "reset",
+          "value": {
+            "n": 1
+          }
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "s",
+              [
+                "n"
+              ],
+              2
+            ]
+          ],
+          "value": {
+            "n": 2
+          }
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "s",
+              [
+                "n"
+              ],
+              3
+            ]
+          ],
+          "value": {
+            "n": 3
+          }
+        }
+      ],
+      "values": [
+        null,
+        {
+          "n": 1
+        },
+        {
+          "n": 2
+        },
+        {
+          "n": 3
+        }
+      ],
+      "value": {
+        "n": 3
+      },
+      "log": [
+        [
+          "sub",
+          4,
+          "count",
+          31
+        ],
+        [
+          "unsub",
+          31
+        ],
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "last unsubscribe forgets stale value and unsubscribes once",
+      "log": [
+        [
+          "sub",
+          4,
+          "count",
+          31
+        ],
+        [
+          "unsub",
+          31
+        ],
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "detach retains value and reconnect resets decoder before new feed",
+      "retained": {
+        "n": 1
+      },
+      "values": [
+        null,
+        {
+          "n": 1
+        },
+        {
+          "n": 9
+        }
+      ],
+      "value": {
+        "n": 9
+      },
+      "status": "live",
+      "log": [
+        [
+          "sub",
+          4,
+          "count",
+          31
+        ],
+        [
+          "sub",
+          5,
+          "count",
+          32
+        ],
+        [
+          "unsub",
+          32
+        ],
+        [
+          "release",
+          5
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "event callback reentrancy takes value listener snapshot afterward",
+      "events": [
+        "snap",
+        "reset"
+      ],
+      "values": [
+        [
+          "first",
+          null
+        ],
+        [
+          "late",
+          5
+        ],
+        [
+          "first",
+          5
+        ],
+        [
+          "late",
+          5
+        ]
+      ]
+    },
+    {
+      "name": "callback failures preserve identity and wire failures report without state mutation",
+      "reports": [
+        "same",
+        "same",
+        "same",
+        "same",
+        {
+          "name": "ChordError",
+          "code": "gone",
+          "message": "gone: wire failed"
+        }
+      ],
+      "value": 1
+    },
+    {
+      "name": "status transition callbacks survive failures and reconnect",
+      "status": [
+        "live",
+        "loading",
+        "live",
+        "released"
+      ],
+      "reports": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "log": [
+        [
+          "release",
+          5
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "loading caller resumes against current binding",
+      "result": 18,
+      "log": [
+        [
+          "call",
+          4,
+          "run",
+          {
+            "n": 8
+          },
+          {
+            "rootId": "root",
+            "epoch": 7
+          },
+          true
+        ],
+        [
+          "release",
+          4
+        ],
+        [
+          "forget",
+          "released"
+        ]
+      ]
+    },
+    {
+      "name": "loading caller races signal with original reason",
+      "same": false,
+      "error": {
+        "name": "ChordError",
+        "code": "aborted",
+        "message": "aborted: call aborted"
+      }
+    },
+    {
+      "name": "terminal borrowed release",
+      "result": {},
+      "receiver": {
+        "status": "released"
+      }
+    },
+    {
+      "name": "terminal borrowed shaped",
+      "result": {},
+      "receiver": {
+        "status": "released"
+      }
+    },
+    {
+      "name": "terminal borrowed gone",
+      "result": {},
+      "receiver": {
+        "status": "released"
+      }
+    },
+    {
+      "name": "terminal borrowed detached",
+      "result": {},
+      "receiver": {
+        "status": "released"
+      }
+    },
+    {
+      "name": "live borrowed release",
+      "error": "TypeError",
+      "receiver": {
+        "status": "released",
+        "address": "borrowed"
+      }
+    },
+    {
+      "name": "live borrowed shaped",
+      "error": "TypeError",
+      "receiver": {
+        "status": "live",
+        "address": "borrowed",
+        "shape": {
+          "kind": "active",
+          "members": [
+            "run",
+            "count"
+          ]
+        }
+      }
+    },
+    {
+      "name": "live borrowed gone",
+      "error": "TypeError",
+      "receiver": {
+        "status": "gone",
+        "address": "borrowed",
+        "error": {
+          "kind": "active",
+          "members": [
+            "run",
+            "count"
+          ]
+        }
+      }
+    },
+    {
+      "name": "live borrowed detached",
+      "error": "TypeError",
+      "receiver": {
+        "status": "loading",
+        "address": "borrowed"
+      }
+    },
+    {
+      "name": "missing member borrowed receiver avoids private access",
+      "result": {}
+    },
+    {
+      "name": "state sink exact ops getter and has short circuit order",
+      "log": [
+        [
+          "get",
+          "error"
+        ],
+        [
+          "get",
+          "ops"
+        ],
+        [
+          "get",
+          "ops"
+        ],
+        [
+          "get",
+          "ops"
+        ]
+      ],
+      "value": {
+        "n": 2
+      }
+    },
+    {
+      "name": "member maps every variant before finding first description",
+      "log": [
+        "a",
+        "b"
+      ],
+      "callable": "function"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+const cases=[];
+const info=error=>({name:error?.name,code:error?.code,message:error?.message,reason:error?.reason});
+const attempt=fn=>{try{return {value:fn()}}catch(error){return {error:info(error)}}};
+const outcome=async fn=>{try{return {value:await fn()}}catch(error){return {error:info(error)}}};
+const shape={kind:'active',members:['run','count']},signal=new AbortController().signal;
+const contract={name:'RemoteTest',scope:'remote',version:1,description:{variants:{active:{run:{kind:'method',args:{type:'object',properties:{n:{type:'number'}},required:['n'],additionalProperties:false}},count:{kind:'state',value:{type:'object'}}},idle:{count:{kind:'state',value:{type:'object'}}}}}};
+function fixture(custom={}){
+ const log=[],reports=[],ctx={rootId:'root',epoch:7,signal},host={inFactory:0,report(error){reports.push(error)},root(fn,options){log.push(['root',options.signal===undefined]);return Promise.resolve(fn(ctx))},forgetRemote(handle){log.push(['forget',handle.status])},...custom};
+ const fields={contract,at:'peer',input:{key:1},principal:{user:'a'},owner:{tag:'owner'},address:'peer/RemoteTest:1'};
+ const handle=new api.RemoteHandle(host,fields),sinks=new Map();let next=30;
+ const channel={release(id){log.push(['release',id])},call(id,name,args,root,passedSignal){log.push(['call',id,name,args,root,passedSignal===signal]);return Promise.resolve(args.n+10)},sub(id,name,sink){const sub=++next;log.push(['sub',id,name,sub]);sinks.set(sub,sink);return sub},unsub(id){log.push(['unsub',id]);sinks.delete(id)}};
+ return {handle,host,channel,sinks,log,reports,ctx,fields};
+}
+{
+ const f=fixture(),h=f.handle,p=api.RemoteHandle.prototype;
+ cases.push({name:'actual remote class own order prototype and methods',constructor:[api.RemoteHandle.name,api.RemoteHandle.length],own:Object.keys(h),prototype:Object.getOwnPropertyNames(p),methods:['onShape','onStatus','release','bound','shaped','gone','detached','member'].map(name=>[p[name].name,p[name].length,Object.hasOwn(p[name],'prototype')]),kind:[Object.getOwnPropertyDescriptor(p,'kind').get.name,Object.getOwnPropertyDescriptor(p,'kind').enumerable],identities:[h.host===f.host,h.contract===contract,h.input===f.fields.input,h.owner===f.fields.owner,h.record===undefined,api.holdsByProxy.get(h.proxy)===h]});h.release();
+}
+{
+ const f=fixture(),h=f.handle,run=h.member('run'),read=h.member('count');
+ cases.push({name:'stable late-bound members and get-only proxy',values:[h.kind,h.status,h.member('missing'),h.proxy.then,h.proxy[Symbol.iterator]],identities:[run===h.proxy.run,read===h.proxy.count,h.proxy.release!==h.proxy.release,'run' in h.proxy,'release' in h.proxy],readableOwn:Object.keys(read),readablePrototype:Object.getOwnPropertyNames(Object.getPrototypeOf(read))});h.release();
+}
+{
+ const f=fixture(),h=f.handle,status=[],shapes=[],off=h.onShape(value=>shapes.push(value.kind)),offStatus=h.onStatus((state,error)=>status.push([state,error]));
+ h.bound(f.channel,4);h.shaped(shape);await h.ready;h.shaped({kind:'idle',members:['count']});cases.push({name:'ready settles once and shape callbacks publish every live shape',status,shapes,binding:[h.binding.channel===f.channel,h.binding.id],kind:h.kind,offReturns:[off(),offStatus()]});h.release();cases.push({name:'listener removals and repeated release',status,shapes,log:f.log,again:h.release()});
+}
+{
+ const f=fixture(),h=f.handle;h.bound(f.channel,4);h.shaped(shape);const args={n:2,extra:'drop'},result=await h.proxy.run(args,f.ctx);cases.push({name:'method cleans cloned args and forwards actual root signal',result,args,log:f.log});const rootResult=await h.proxy.run({n:3});cases.push({name:'omitted context invokes host root',rootResult,log:f.log});h.release();
+}
+{
+ const f=fixture(),h=f.handle;h.bound(f.channel,4);h.shaped(shape);f.host.inFactory=1;cases.push({name:'factory caller rejects synchronously',result:attempt(()=>h.proxy.run({n:1})),log:f.log});f.host.inFactory=0;h.shaped({kind:'idle'});cases.push({name:'method absent from live variant rejects asynchronously',result:await outcome(()=>h.proxy.run({n:1},f.ctx))});h.release();cases.push({name:'released method rejection',result:await outcome(()=>h.proxy.run({n:1},f.ctx))});
+}
+{
+ const f=fixture(),h=f.handle,marker={sentinel:1};h.gone(marker);let received;try{await h.ready}catch(error){received=error}let called;try{await h.proxy.run({n:1},f.ctx)}catch(error){called=error}h.bound(f.channel,9);h.shaped(shape);h.detached();h.gone({other:1});h.release();cases.push({name:'gone retains original error identity and terminal shape guards',identities:[received===marker,called===marker,h.error===marker],status:h.status,shape:h.shape,binding:h.binding?.id,log:f.log});
+}
+{
+ const f=fixture(),h=f.handle;h.bound(f.channel,4);h.release();let error;try{await h.ready}catch(value){error=value}cases.push({name:'release rejects unready hold and drops binding once',error:info(error),log:f.log,binding:h.binding,status:h.status});
+}
+{
+ const f=fixture(),h=f.handle,read=h.proxy.count,events=[],values=[];const ev=read.events(event=>events.push(event)),off=read.subscribe(value=>values.push(value));
+ h.bound(f.channel,4);h.shaped(shape);const sink=[...f.sinks.values()][0];sink({snap:{n:1}});const encoder=api.encoder();sink({ops:encoder.encode([['s',['n'],2]])});sink({ops:encoder.encode([['s',['n'],3]])});sink({});cases.push({name:'remote readable snapshots resets and shared dictionary operations',events,values,value:read.value,log:f.log});off();ev();cases.push({name:'last unsubscribe forgets stale value and unsubscribes once',value:read.value,log:f.log});h.release();
+}
+{
+ const f=fixture(),h=f.handle,read=h.proxy.count,values=[];const off=read.subscribe(value=>values.push(value));h.bound(f.channel,4);h.shaped(shape);[...f.sinks.values()][0]({snap:{n:1}});h.detached();const retained=read.value;h.bound(f.channel,5);h.shaped(shape);[...f.sinks.values()].at(-1)({snap:{n:9}});cases.push({name:'detach retains value and reconnect resets decoder before new feed',retained,values,value:read.value,status:h.status,log:f.log});off();h.release();
+}
+{
+ const f=fixture(),h=f.handle,read=h.proxy.count,events=[],values=[];let added=false;const late=value=>values.push(['late',value]);read.events(event=>{events.push(event.type);if(event.type==='reset'&&!added){added=true;read.subscribe(late)}});read.subscribe(value=>values.push(['first',value]));h.bound(f.channel,4);h.shaped(shape);[...f.sinks.values()][0]({snap:5});cases.push({name:'event callback reentrancy takes value listener snapshot afterward',events,values});h.release();
+}
+{
+ const f=fixture(),h=f.handle,read=h.proxy.count,marker={callback:1};read.subscribe(()=>{throw marker});read.events(()=>{throw marker});h.bound(f.channel,4);h.shaped(shape);[...f.sinks.values()][0]({snap:1});[...f.sinks.values()][0]({error:{code:'gone',message:'wire failed'}});cases.push({name:'callback failures preserve identity and wire failures report without state mutation',reports:f.reports.map(error=>error===marker?'same':info(error)),value:read.value});h.release();
+}
+{
+ const f=fixture(),h=f.handle,status=[],marker={status:1};h.onStatus(state=>{status.push(state);throw marker});h.onShape(()=>{throw marker});h.bound(f.channel,4);h.shaped(shape);h.detached();h.bound(f.channel,5);h.shaped(shape);h.release();cases.push({name:'status transition callbacks survive failures and reconnect',status,reports:f.reports.map(error=>error===marker),log:f.log});
+}
+{
+ const f=fixture(),h=f.handle;const pending=h.proxy.run({n:8},f.ctx);h.bound(f.channel,4);h.shaped(shape);cases.push({name:'loading caller resumes against current binding',result:await pending,log:f.log});h.release();
+}
+{
+ const f=fixture(),h=f.handle,controller=new AbortController(),reason={cancel:1};const pending=h.proxy.run({n:1},{...f.ctx,signal:controller.signal});controller.abort(reason);let actual;try{await pending}catch(error){actual=error}cases.push({name:'loading caller races signal with original reason',same:actual===reason,error:info(actual)});h.release();
+}
+{
+ const p=api.RemoteHandle.prototype;
+ for(const method of ['release','shaped','gone','detached']){const receiver={status:'released'};cases.push({name:'terminal borrowed '+method,result:attempt(()=>p[method].call(receiver,shape)),receiver})}
+ for(const method of ['release','shaped','gone','detached']){const receiver={status:'loading',address:'borrowed'};let error;try{p[method].call(receiver,shape)}catch(value){error=value}cases.push({name:'live borrowed '+method,error:error?.name,receiver})}
+ const receiver={contract:{description:{variants:{a:{}}}}};cases.push({name:'missing member borrowed receiver avoids private access',result:attempt(()=>p.member.call(receiver,'missing'))});
+}
+{
+ const f=fixture(),h=f.handle,log=[],read=h.proxy.count;read.subscribe(()=>{});h.bound(f.channel,4);h.shaped(shape);const sink=[...f.sinks.values()][0];sink({snap:{n:1}});const frame=new Proxy({ops:[['s',['n'],2]]},{get(target,key){log.push(['get',String(key)]);return Reflect.get(target,key)},has(target,key){log.push(['has',String(key)]);return Reflect.has(target,key)}});sink(frame);cases.push({name:'state sink exact ops getter and has short circuit order',log,value:read.value});h.release();
+}
+{
+ const f=fixture(),h=f.handle,log=[];h.contract={description:{variants:{a:{get run(){log.push('a');return {kind:'method',args:{}}}},b:{get run(){log.push('b');return undefined}}}}};const run=h.member('run');cases.push({name:'member maps every variant before finding first description',log,callable:typeof run});h.release();
+}
+globalThis.chordRemoteCases=cases;
