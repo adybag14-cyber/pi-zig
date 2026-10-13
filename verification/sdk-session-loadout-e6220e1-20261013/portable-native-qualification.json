@@ -1,0 +1,561 @@
+{
+  "status": "all6_native_platform_mode_jobs_Source55_GC_all_original_allocation_indices_qualified",
+  "run": 38476625733,
+  "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+  "source_reference": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "jobs": [
+    {
+      "os": "macos-latest",
+      "mode": "Debug",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 16,
+      "baseline": 3033,
+      "completed_indices": 3033,
+      "ranges": [
+        [
+          0,
+          189
+        ],
+        [
+          189,
+          379
+        ],
+        [
+          379,
+          568
+        ],
+        [
+          568,
+          758
+        ],
+        [
+          758,
+          947
+        ],
+        [
+          947,
+          1137
+        ],
+        [
+          1137,
+          1326
+        ],
+        [
+          1326,
+          1516
+        ],
+        [
+          1516,
+          1706
+        ],
+        [
+          1706,
+          1895
+        ],
+        [
+          1895,
+          2085
+        ],
+        [
+          2085,
+          2274
+        ],
+        [
+          2274,
+          2464
+        ],
+        [
+          2464,
+          2653
+        ],
+        [
+          2653,
+          2843
+        ],
+        [
+          2843,
+          3033
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:40:39.4507840+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:40:42.2542030+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 2260,
+        "executable": "/Users/runner/work/_temp/b0646d61-02fc-402e-b31c-afc0d8dd5305/zig-aarch64-macos-0.16.0/zig",
+        "executable_sha256": "E6CD688D25664983833AAE272F501D4BCEEAE304875B8F1741209D15FD13A4EC",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "/Users/runner/work/_temp/b0646d61-02fc-402e-b31c-afc0d8dd5305/zig-aarch64-macos-0.16.0/zig build build-native-sdk-session-loadout -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:18:34.9379302Z",
+        "launched_utc": "2026-10-13T22:18:34.9336420+00:00",
+        "working_directory": "/Users/runner/work/pi-zig/pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:26:52.6765410+00:00"
+      },
+      "result_sha256": "acadf79372b1c788fd8c930eac8be29aefeab2c93a423a4fba8f9de5d58669a1",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-macos-latest-Debug-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    },
+    {
+      "os": "macos-latest",
+      "mode": "ReleaseSafe",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 8,
+      "baseline": 3033,
+      "completed_indices": 3033,
+      "ranges": [
+        [
+          0,
+          379
+        ],
+        [
+          379,
+          758
+        ],
+        [
+          758,
+          1137
+        ],
+        [
+          1137,
+          1516
+        ],
+        [
+          1516,
+          1895
+        ],
+        [
+          1895,
+          2274
+        ],
+        [
+          2274,
+          2653
+        ],
+        [
+          2653,
+          3033
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:49:40.6516560+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:49:43.1232390+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 7809,
+        "executable": "/Users/runner/work/_temp/f86af027-befd-4c57-b2a6-977d06cd13f1/zig-aarch64-macos-0.16.0/zig",
+        "executable_sha256": "E6CD688D25664983833AAE272F501D4BCEEAE304875B8F1741209D15FD13A4EC",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=ReleaseSafe",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "/Users/runner/work/_temp/f86af027-befd-4c57-b2a6-977d06cd13f1/zig-aarch64-macos-0.16.0/zig build build-native-sdk-session-loadout -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:34:47.3075730Z",
+        "launched_utc": "2026-10-13T22:34:47.3048630+00:00",
+        "working_directory": "/Users/runner/work/pi-zig/pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:44:19.3037620+00:00"
+      },
+      "result_sha256": "befaa4c092ed95674bc1f4a3549a3edd5cbc7f89a45602fb66f6100c66873128",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-macos-latest-ReleaseSafe-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    },
+    {
+      "os": "ubuntu-latest",
+      "mode": "Debug",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 8,
+      "baseline": 3033,
+      "completed_indices": 3033,
+      "ranges": [
+        [
+          0,
+          379
+        ],
+        [
+          379,
+          758
+        ],
+        [
+          758,
+          1137
+        ],
+        [
+          1137,
+          1516
+        ],
+        [
+          1516,
+          1895
+        ],
+        [
+          1895,
+          2274
+        ],
+        [
+          2274,
+          2653
+        ],
+        [
+          2653,
+          3033
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:30:33.8536404+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:30:36.6441289+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 2474,
+        "executable": "/home/runner/work/_temp/817d0b5e-cb91-4ffa-962c-71ecedcdffcf/zig-x86_64-linux-0.16.0/zig",
+        "executable_sha256": "2317BBB91798556D9D0F38AABDAC23DB83F0979B25F767259AE474546724087C",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "/home/runner/work/_temp/817d0b5e-cb91-4ffa-962c-71ecedcdffcf/zig-x86_64-linux-0.16.0/zig build build-native-sdk-session-loadout -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:16:40.1524395Z",
+        "launched_utc": "2026-10-13T22:16:40.1577989+00:00",
+        "working_directory": "/home/runner/work/pi-zig/pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:25:49.7103298+00:00"
+      },
+      "result_sha256": "ea590168c2d807e34ed1670ab1e7d1d37130f4e2cc7e0ec424f662733d53d70b",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-ubuntu-latest-Debug-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    },
+    {
+      "os": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 8,
+      "baseline": 3033,
+      "completed_indices": 3033,
+      "ranges": [
+        [
+          0,
+          379
+        ],
+        [
+          379,
+          758
+        ],
+        [
+          758,
+          1137
+        ],
+        [
+          1137,
+          1516
+        ],
+        [
+          1516,
+          1895
+        ],
+        [
+          1895,
+          2274
+        ],
+        [
+          2274,
+          2653
+        ],
+        [
+          2653,
+          3033
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:30:44.3458351+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:30:47.2204886+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 2521,
+        "executable": "/home/runner/work/_temp/39123620-9ed7-4d4c-b1b0-4a3f14e4b1fa/zig-x86_64-linux-0.16.0/zig",
+        "executable_sha256": "2317BBB91798556D9D0F38AABDAC23DB83F0979B25F767259AE474546724087C",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=ReleaseSafe",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "/home/runner/work/_temp/39123620-9ed7-4d4c-b1b0-4a3f14e4b1fa/zig-x86_64-linux-0.16.0/zig build build-native-sdk-session-loadout -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:16:40.9688151Z",
+        "launched_utc": "2026-10-13T22:16:40.9660686+00:00",
+        "working_directory": "/home/runner/work/pi-zig/pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:28:33.3108044+00:00"
+      },
+      "result_sha256": "cfb849c866e0886e52a63cf013c7faafcec9ed62091ea41ff51990d87e6de7d8",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-ubuntu-latest-ReleaseSafe-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    },
+    {
+      "os": "windows-latest",
+      "mode": "Debug",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 8,
+      "baseline": 3034,
+      "completed_indices": 3034,
+      "ranges": [
+        [
+          0,
+          379
+        ],
+        [
+          379,
+          758
+        ],
+        [
+          758,
+          1137
+        ],
+        [
+          1137,
+          1517
+        ],
+        [
+          1517,
+          1896
+        ],
+        [
+          1896,
+          2275
+        ],
+        [
+          2275,
+          2654
+        ],
+        [
+          2654,
+          3034
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:32:10.4578482+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:32:13.5779170+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 6652,
+        "executable": "D:\\a\\_temp\\1fdfa848-c7ba-4c06-9993-8d955cc2d8e7\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "\"D:\\a\\_temp\\1fdfa848-c7ba-4c06-9993-8d955cc2d8e7\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-session-loadout -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:16:59.0712074Z",
+        "launched_utc": "2026-10-13T22:16:59.0657939+00:00",
+        "working_directory": "D:\\a\\pi-zig\\pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:28:23.5357307+00:00"
+      },
+      "result_sha256": "a0a409355f0a30d05246c88001d6e07e9352a241fbbe31e42f7f217885ca548c",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-windows-latest-Debug-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    },
+    {
+      "os": "windows-latest",
+      "mode": "ReleaseSafe",
+      "head": "3253c83d9df4f396b4f11f0168d3860daa7d43c5",
+      "shards": 8,
+      "baseline": 3034,
+      "completed_indices": 3034,
+      "ranges": [
+        [
+          0,
+          379
+        ],
+        [
+          379,
+          758
+        ],
+        [
+          758,
+          1137
+        ],
+        [
+          1137,
+          1517
+        ],
+        [
+          1517,
+          1896
+        ],
+        [
+          1896,
+          2275
+        ],
+        [
+          2275,
+          2654
+        ],
+        [
+          2654,
+          3034
+        ]
+      ],
+      "missing": 0,
+      "duplicates": 0,
+      "tests_each": 11,
+      "source_cases": 55,
+      "GC_each": true,
+      "full_posthashes": {
+        "inputs": {
+          "count": 4604,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:28:13.6960690+00:00"
+        },
+        "tools": {
+          "count": 19543,
+          "drift": [],
+          "completed_utc": "2026-10-13T22:28:16.2935140+00:00"
+        }
+      },
+      "compile_only": {
+        "pid": 2548,
+        "executable": "D:\\a\\_temp\\064fde40-723f-41df-bca2-afce81f6c205\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "argv": [
+          "build",
+          "build-native-sdk-session-loadout",
+          "-Doptimize=ReleaseSafe",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "\"D:\\a\\_temp\\064fde40-723f-41df-bca2-afce81f6c205\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-session-loadout -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T22:16:40.6314023Z",
+        "launched_utc": "2026-10-13T22:16:40.6269459+00:00",
+        "working_directory": "D:\\a\\pi-zig\\pi-zig",
+        "outer_seconds": 1320,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:26:35.9035797+00:00"
+      },
+      "result_sha256": "b06b608077744867bc91371e4bde1fbadf8d1c0ffe1e67721bf40ccad2700e63",
+      "artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-portable-ci38476625733-completed-artifacts\\native-sdk-loadout-windows-latest-ReleaseSafe-3253c83d9df4f396b4f11f0168d3860daa7d43c5"
+    }
+  ],
+  "host10000": true,
+  "test120": true,
+  "outer300_each_runtime": true,
+  "compile1320_each": true,
+  "defaultLLVM_j1": true,
+  "public_activation": false,
+  "prior_negative_retained": {
+    "run": 38464796971,
+    "job": 115528786911,
+    "failure": "MacDebug8 partition5 original120s timeout, full55functional+GC passed, no deadline raise; same complete universe partitioned16"
+  }
+}
