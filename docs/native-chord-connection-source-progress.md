@@ -1,0 +1,9 @@
+# Source-only Connection implementation progress
+
+The connection port is being assembled from the actual latest `connection.ts` algorithms. No native Connection constructor is registered or installed by this checkpoint, and no successful placeholder callback is supplied.
+
+`native_chord_connection_consumer.zig` implements real JS-value operations for open/name, synchronization waiters, interpreter ToNumeric/increment IDs, hold/release, subscriptions, per-call Promise capabilities, cancellation/listener removal, root forwarding and generation revocation. The future owner supplies its actual private actor state; the appended `Connection` actor kind does not itself register a class.
+
+`native_chord_connection_dispatch.zig` implements FrameSchema validation and all21 Source frame variants, including peer hello checks, malformed/protocol refusal, remote/relayed hold replies, call results, state forwarding, root-end and parent-only reload controls. Provider hold/call/sub/unsub/drop operations are required native function pointers; there are no default or empty handlers. `native_chord_connection_lifetime.zig` implements the full Source closed callback, preserving snapshot versus live iterations, aborting incoming calls, rejecting pending calls/votes/synchronization waiters, closing relays, detaching or disposing remotes, and notifying the real Host. The private async relay-call orchestration is already preserved separately as unimported source.
+
+These three modules pass fmt and AST checks only. Actual provider handlers, owner construction/keepalive/closed guards, Host connection/routing methods, cluster/reload/loader/manager integration, original full8 replay, GC and complete allocator qualification remain required before full native composition can be claimed. The earlier applier, remote and relay Debug/ReleaseSafe receipts retain their independent scope; this source work does not extend those qualifications or activate a package.
