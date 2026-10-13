@@ -1474,6 +1474,12 @@ pub fn build(b: *std.Build) void {
     session_prompt_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-prompt", "Compare original public prompt preflight and ordinary queue methods with retained owner graphs").dependOn(&b.addRunArtifact(session_prompt_tests).step);
     b.step("build-native-sdk-session-prompt", "Compile public prompt and queue bodies separately from runtime deadlines").dependOn(&session_prompt_tests.step);
+    const session_control_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_control_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session control"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_control_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_control_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_control_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-control", "Compare original session cancellation idle disposal modes and shared resource cleanup with complete owner graphs").dependOn(&b.addRunArtifact(session_control_tests).step);
+    b.step("build-native-sdk-session-control", "Compile ordinary session cancellation and disposal separately from runtime deadlines").dependOn(&session_control_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

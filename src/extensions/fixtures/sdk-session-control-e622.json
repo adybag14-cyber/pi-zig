@@ -1,0 +1,578 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "164a9f10a774886120d572ab19bfa83ba4b1298bdb59c61d46b7b137c769d28c",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 33,
+  "rows": [
+    {
+      "name": "method-metadata",
+      "value": {
+        "_getIdleWaitPromise": {
+          "name": "_getIdleWaitPromise",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_resolveIdleWaitIfIdle": {
+          "name": "_resolveIdleWaitIfIdle",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_disconnectFromAgent": {
+          "name": "_disconnectFromAgent",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "dispose": {
+          "name": "dispose",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "refreshContext": {
+          "name": "refreshContext",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "clearQueue": {
+          "name": "clearQueue",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "abort": {
+          "name": "abort",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "waitForIdle": {
+          "name": "waitForIdle",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "syncQueueModesFromSettings": {
+          "name": "syncQueueModesFromSettings",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setSteeringMode": {
+          "name": "setSteeringMode",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setFollowUpMode": {
+          "name": "setFollowUpMode",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "abortCompaction": {
+          "name": "abortCompaction",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "abortBranchSummary": {
+          "name": "abortBranchSummary",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "abortRetry": {
+          "name": "abortRetry",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "abortBash": {
+          "name": "abortBash",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "_flushPendingBashMessages": {
+          "name": "_flushPendingBashMessages",
+          "length": 0,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setSessionName": {
+          "name": "setSessionName",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setAutoRetryEnabled": {
+          "name": "setAutoRetryEnabled",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        "setAutoCompactionEnabled": {
+          "name": "setAutoCompactionEnabled",
+          "length": 1,
+          "async": false,
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      },
+      "log": []
+    },
+    {
+      "name": "idle-cached-promise",
+      "value": {
+        "same": true,
+        "active": false,
+        "settled": true,
+        "promiseCleared": true,
+        "resolveCleared": true
+      },
+      "log": [
+        "settled"
+      ]
+    },
+    {
+      "name": "idle-ambient-constructor",
+      "value": true,
+      "log": [
+        [
+          "constructor",
+          "",
+          1
+        ]
+      ]
+    },
+    {
+      "name": "idle-existing-falsy-promise",
+      "value": true,
+      "log": []
+    },
+    {
+      "name": "idle-existing-truthy-value",
+      "value": true,
+      "log": []
+    },
+    {
+      "name": "wait-immediate-idle",
+      "value": true,
+      "log": [
+        "idle"
+      ]
+    },
+    {
+      "name": "wait-shared-until-idle",
+      "value": true,
+      "log": [
+        true
+      ]
+    },
+    {
+      "name": "idle-resolve-live-fields",
+      "value": 2,
+      "log": [
+        [
+          "get-resolve",
+          1
+        ],
+        [
+          "get-resolve",
+          2
+        ],
+        [
+          "set-resolve",
+          true
+        ],
+        [
+          "resolve-this",
+          true,
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "disconnect-once",
+      "value": true,
+      "log": [
+        true
+      ]
+    },
+    {
+      "name": "disconnect-error-retains-field",
+      "value": true,
+      "log": []
+    },
+    {
+      "name": "clear-real-queues",
+      "value": {
+        "result": {
+          "steering": [
+            "one",
+            "two"
+          ],
+          "followUp": [
+            "later"
+          ]
+        },
+        "copied": true,
+        "pending": 0,
+        "agentQueued": false
+      },
+      "log": [
+        {
+          "type": "queue_update",
+          "steering": [],
+          "followUp": []
+        }
+      ]
+    },
+    {
+      "name": "clear-custom-iterators",
+      "value": {
+        "steering": [
+          "s"
+        ],
+        "followUp": [
+          "f"
+        ]
+      },
+      "log": [
+        "steering",
+        "followUp"
+      ]
+    },
+    {
+      "name": "clear-iterator-original-error",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "modes-and-settings",
+      "value": {
+        "first": [
+          "all",
+          "one-at-a-time",
+          "all",
+          "one-at-a-time"
+        ],
+        "second": [
+          "one-at-a-time",
+          "all"
+        ]
+      },
+      "log": []
+    },
+    {
+      "name": "mode-live-agent-before-settings",
+      "value": "undefined",
+      "log": [
+        "steering-read",
+        [
+          "first-set",
+          "all"
+        ],
+        "followup-read",
+        [
+          "next-set",
+          "one-at-a-time"
+        ]
+      ]
+    },
+    {
+      "name": "setting-toggles",
+      "value": [
+        false,
+        false
+      ],
+      "log": []
+    },
+    {
+      "name": "controller-nullish-noops",
+      "value": "undefined",
+      "log": []
+    },
+    {
+      "name": "controller-falsy-field",
+      "thrown": {
+        "name": "TypeError"
+      },
+      "log": []
+    },
+    {
+      "name": "compaction-live-second-controller",
+      "value": "undefined",
+      "log": [
+        [
+          "first",
+          true
+        ],
+        [
+          "second",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "bash-snapshot-before-callbacks",
+      "value": 2,
+      "log": [
+        "first",
+        "second"
+      ]
+    },
+    {
+      "name": "abort-idle-order",
+      "value": {
+        "requested": false,
+        "beforeSettle": false
+      },
+      "log": [
+        "retry",
+        "manual",
+        "auto",
+        "branch"
+      ]
+    },
+    {
+      "name": "abort-active-waits",
+      "value": {
+        "before": {
+          "requested": true,
+          "beforeSettle": true,
+          "settled": false
+        },
+        "settled": true
+      },
+      "log": [
+        "idle"
+      ]
+    },
+    {
+      "name": "abort-controller-error",
+      "thrown": "original-marker",
+      "log": []
+    },
+    {
+      "name": "session-name-event-identity",
+      "value": "A display name",
+      "log": [
+        [
+          "public",
+          {
+            "type": "session_info_changed",
+            "name": "A display name"
+          }
+        ],
+        [
+          "extension",
+          true,
+          {
+            "type": "session_info_changed",
+            "name": "A display name"
+          }
+        ]
+      ]
+    },
+    {
+      "name": "dispose-cleanup-order",
+      "value": {
+        "listeners": 0,
+        "disconnected": true
+      },
+      "log": [
+        "retry",
+        "manual",
+        "auto",
+        "branch",
+        "bash",
+        [
+          "invalidate",
+          true
+        ],
+        [
+          "disconnect",
+          true
+        ],
+        [
+          "cancel",
+          true
+        ],
+        [
+          "cleanup",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "dispose-abort-error-still-cleans",
+      "value": 0,
+      "log": [
+        "retry",
+        "invalidate"
+      ]
+    },
+    {
+      "name": "resource-function-metadata",
+      "value": {
+        "registerSessionResourceCleanup": {
+          "name": "registerSessionResourceCleanup",
+          "length": 1,
+          "ownPrototype": true,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        },
+        "cleanupSessionResources": {
+          "name": "cleanupSessionResources",
+          "length": 1,
+          "ownPrototype": true,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        }
+      },
+      "log": []
+    },
+    {
+      "name": "resource-register-deduplicates",
+      "value": {
+        "name": "",
+        "length": 0,
+        "ownPrototype": false,
+        "return": true
+      },
+      "log": [
+        [
+          true,
+          "id"
+        ]
+      ]
+    },
+    {
+      "name": "resource-live-set-iteration",
+      "value": "undefined",
+      "log": [
+        [
+          "first",
+          "live"
+        ],
+        [
+          "third",
+          "live"
+        ]
+      ]
+    },
+    {
+      "name": "resource-aggregate-original-identities",
+      "thrown": {
+        "name": "AggregateError",
+        "message": "Failed to cleanup session resources",
+        "errors": [
+          "original-marker",
+          17
+        ]
+      },
+      "log": [
+        "errors"
+      ]
+    },
+    {
+      "name": "resource-constructible-functions",
+      "value": {
+        "offType": "function",
+        "instance": true
+      },
+      "log": [
+        true
+      ]
+    },
+    {
+      "name": "flush-bash-real-projection",
+      "value": {
+        "pending": 0,
+        "messages": [
+          {
+            "role": "bashExecution",
+            "command": "echo hello",
+            "output": "hello",
+            "exitCode": 0
+          }
+        ]
+      },
+      "log": []
+    },
+    {
+      "name": "refresh-real-projection",
+      "value": [
+        {
+          "role": "user",
+          "content": "canonical"
+        }
+      ],
+      "log": []
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "observed_utc": "2026-10-13T21:10:04.7157368+00:00",
+  "scope": "Full posthash after original Source33 session control capture; observer calls original installer unchanged; no original constructor or method body replacement",
+  "manifests": [
+    {
+      "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+      "files": 1945,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "files": 31064,
+      "drift": 0,
+      "changed": []
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "files": 1774,
+      "drift": 0,
+      "changed": []
+    }
+  ],
+  "driver_sha256": "B5DD88D8A8969251684997ADF189F97E97658BD29A690B9579C8C000396CE617",
+  "input_sha256": "164A9F10A774886120D572AB19BFA83BA4B1298BDB59C61D46B7B137C769D28C"
+}

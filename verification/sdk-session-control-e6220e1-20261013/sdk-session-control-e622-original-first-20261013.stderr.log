@@ -1,0 +1,8 @@
+(node:2648) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Warning: Detected unsettled top-level await at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-session-control-e622-source-capture-20261013.mjs:20
+try{const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));writeFileSync(process.argv[2],JSON.stringify({sourceHead:'e6220e1316f86af818a0ccbfe1c09d7e918b41cf',inputSha256:createHash('sha256').update(input).digest('hex'),scope:'Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs',factoryCount:sessions.length,rows:sessionControlRows},null,2));}
+                                                     ^
+
+
+
