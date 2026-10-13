@@ -1,6 +1,8 @@
 name: Private native SDK loadout portable candidate
 
 on:
+  push:
+    branches: [checkpoint/native-sdk-loadout-portable-candidate-20261013]
   workflow_dispatch:
 
 permissions:
