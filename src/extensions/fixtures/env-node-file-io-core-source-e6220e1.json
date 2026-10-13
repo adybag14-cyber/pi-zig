@@ -1,0 +1,362 @@
+{
+  "info": {
+    "size": 6,
+    "isFile": true,
+    "isDirectory": false,
+    "isSymbolicLink": false,
+    "mtimeType": "number"
+  },
+  "read": {
+    "bytesRead": 3,
+    "same": true,
+    "bytes": [
+      98,
+      99,
+      100
+    ]
+  },
+  "truncate": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "EPERM: operation not permitted, ftruncate",
+      "code": "EPERM",
+      "errno": -4048,
+      "syscall": "ftruncate",
+      "keys": [
+        "errno",
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "sync": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "EPERM: operation not permitted, fsync",
+      "code": "EPERM",
+      "errno": -4048,
+      "syscall": "fsync",
+      "keys": [
+        "errno",
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "closedFd": 3,
+  "pending": [
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        97,
+        98
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        98,
+        99
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        99,
+        100
+      ]
+    },
+    {
+      "bytesRead": 2,
+      "same": true,
+      "bytes": [
+        100,
+        101
+      ]
+    }
+  ],
+  "afterClose": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "read",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "statAfterClose": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "fstat",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "truncateAfterClose": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "ftruncate",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "syncAfterClose": {
+    "ok": false,
+    "error": {
+      "name": "Error",
+      "message": "file closed",
+      "code": "EBADF",
+      "syscall": "fsync",
+      "keys": [
+        "code",
+        "syscall"
+      ]
+    }
+  },
+  "closeAgain": {
+    "ok": true
+  }
+}

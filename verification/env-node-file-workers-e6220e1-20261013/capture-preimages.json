@@ -1,0 +1,38 @@
+[
+  {
+    "original": "env-node-fs-native-debug-file-worker-core-source-compile-first-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-8822908c2c0e.json",
+    "sha256": "8822908C2C0EC457591B4853B48A154F6927A87BF3660DC778C64EF9A4A418A4",
+    "byte_identical": true
+  },
+  {
+    "original": "env-node-fs-native-debug-file-worker-core-source-runtime-first-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-25160a1c671c.json",
+    "sha256": "25160A1C671CF1B20711CF0F9240E19011C07F5AE41CD0551E30B5CDBF29796C",
+    "byte_identical": true
+  },
+  {
+    "original": "env-node-fs-native-debug-file-worker-core-source-compile-ref-retirement-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-f5daaed563e3.json",
+    "sha256": "F5DAAED563E3FA6F016F521A8C123D07A735D3CA91C2121F1D9FF5A2692560A8",
+    "byte_identical": true
+  },
+  {
+    "original": "env-node-fs-native-debug-file-worker-core-source-runtime-ref-retirement-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-f5daaed563e3.json",
+    "sha256": "F5DAAED563E3FA6F016F521A8C123D07A735D3CA91C2121F1D9FF5A2692560A8",
+    "byte_identical": true
+  },
+  {
+    "original": "env-node-fs-native-releasesafe-file-worker-core-source-compile-ref-retirement-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-f5daaed563e3.json",
+    "sha256": "F5DAAED563E3FA6F016F521A8C123D07A735D3CA91C2121F1D9FF5A2692560A8",
+    "byte_identical": true
+  },
+  {
+    "original": "env-node-fs-native-releasesafe-file-worker-core-source-runtime-ref-retirement-e6220e1-20261013-source-before.json",
+    "canonical": "source-snapshot-f5daaed563e3.json",
+    "sha256": "F5DAAED563E3FA6F016F521A8C123D07A735D3CA91C2121F1D9FF5A2692560A8",
+    "byte_identical": true
+  }
+]

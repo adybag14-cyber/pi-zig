@@ -176,6 +176,7 @@ pub const Engine = struct {
     native_env_dir_reader_class: c.JSClassID = 0,
     native_env_text_reader_class: c.JSClassID = 0,
     native_env_watcher_class: c.JSClassID = 0,
+    native_env_node_file_class: c.JSClassID = 0,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,

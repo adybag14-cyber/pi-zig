@@ -15,6 +15,34 @@ test "native Env guest actual compiled inventory" {
 fn fixtureValue(engine: *em.Engine, comptime source: []const u8) !c.JSValue {
     return engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "native-env-source.json"));
 }
+test "native Env guest native file workers retain Source pending reads buffer identity and close outcomes" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsFileHandleReference;
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(std.testing.io, .{ .sub_path = "file", .data = "abcdef" });
+    const raw_file = try tmp.dir.openFile(std.testing.io, "file", .{});
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bindings = scope.object() catch |err| {
+        raw_file.close(std.testing.io);
+        return err;
+    };
+    // create consumes the real native file on every outcome.
+    const file = try scope.own(try @import("extensions/native_env_node_file_io.zig").create(&scope, raw_file, false, bindings));
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "file", file);
+    try scope.put(global, "fileIoSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-file-io-core-source-e6220e1.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-file-io-core-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(fileIoSource))throw Error(JSON.stringify({actual:packet,expected:fileIoSource}));export const proof=true;", "native-env-file-io-core-source.mjs") catch |err| {
+        std.debug.print("Native Env file worker Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
 fn nodeReaderModule(engine: *em.Engine) !c.JSValue {
     try @import("extensions/text_encoding.zig").install(engine);
     try @import("extensions/node_path.zig").install(engine, std.testing.io);

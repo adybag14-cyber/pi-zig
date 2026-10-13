@@ -1,0 +1,26 @@
+{
+  "node": "v24.14.0",
+  "uv": "1.51.0",
+  "rows": [
+    {
+      "name": "internal/fs/promises",
+      "file": "env-node-builtin-internal-fs-promises-24-20261013.js",
+      "bytes": 35405
+    },
+    {
+      "name": "internal/fs/utils",
+      "file": "env-node-builtin-internal-fs-utils-24-20261013.js",
+      "bytes": 28023
+    },
+    {
+      "name": "internal/fs/read/context",
+      "file": "env-node-builtin-internal-fs-read-context-24-20261013.js",
+      "bytes": 3046
+    },
+    {
+      "name": "internal/errors",
+      "file": "env-node-builtin-internal-errors-24-20261013.js",
+      "bytes": 71331
+    }
+  ]
+}
