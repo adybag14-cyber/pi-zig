@@ -2,16 +2,26 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const js = @import("extensions/native_js_values.zig");
 fn setup(gpa: std.mem.Allocator) !*em.Engine {
+    return setupInner(gpa, false);
+}
+fn setupInner(gpa: std.mem.Allocator, probe: bool) !*em.Engine {
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     errdefer engine.deinit();
     engine.native_io = std.testing.io;
-    const classes = try @import("extensions/native_chord_host.zig").classes(engine);
+    const classes = @import("extensions/native_chord_host.zig").classes(engine) catch |err| {
+        if (probe and err != error.OutOfMemory) diagnostic(gpa, engine, "setup", err);
+        return err;
+    };
     defer engine.freeValue(classes.bindings);
     defer engine.freeValue(classes.exports);
     const root = em.c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(root);
     try js.define(engine, root, "nativeCodecApi", try js.get(engine, classes.bindings, "DeltaCodec"));
     return engine;
+}
+fn diagnostic(gpa: std.mem.Allocator, engine: *em.Engine, stage: []const u8, err: anyerror) void {
+    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+    std.debug.print("CHORD_CODEC_GPA_FAILURE stage={s} index={d} error={s} native_generation={d} diagnostic={s}\n{f}\n", .{ stage, failing.fail_index, @errorName(err), engine.native_allocation_generation, engine.last_error orelse "none", std.debug.FormatStackTrace{ .stack_trace = failing.getStackTrace() } });
 }
 test "native Chord codec genuine Source41cases including37negative dictionary and wire transactions" {
     const engine = try setup(std.testing.allocator);
@@ -43,12 +53,16 @@ test "native Chord codec stream dictionaries retain path identities through expl
 test "native Chord codec constructors validation errors and streams release every induced allocation failure" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
-            const engine = try setup(gpa);
+            const engine = try setupInner(gpa, true);
             defer engine.deinit();
             const generation = engine.native_allocation_generation;
             const result = engine.evalModule(
                 \\const api=nativeCodecApi,encoder=api.encoder(),decoder=api.decoder(),first=decoder.decode(encoder.encode([['s',['n'],1],['t',['n'],0]])),second=decoder.decode(encoder.encode([['s',['n'],2]]));if(first[0][1]!==first[1][1]||second[0][2]!==2)throw Error('codec allocation changed');let error;try{decoder.decode([['s',['__proto__'],true]])}catch(value){error=value}if(!(error instanceof api.UnsafePathError)||error.segment!=='__proto__')throw error??Error('missing path error');
-            , "chord-codec-allocation.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            , "chord-codec-allocation.mjs") catch |err| {
+                const mapped = engine.nativeAllocationError(err, generation);
+                if (mapped != error.OutOfMemory) diagnostic(gpa, engine, "stream", mapped);
+                return mapped;
+            };
             engine.freeValue(result);
         }
     };
