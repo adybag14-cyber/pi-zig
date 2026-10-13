@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "head": "3a7145ef55064f4bf43d12b1af43849f23b141c9",
+  "tree": "767911629ddb15b4b17769268e747345350382fb",
+  "release_safe_source_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-delta-full-tracker-native-releasesafe-first-20261013-source-before.json",
+  "manifest_sha256": "1A4EFB78C6BE0DE223572C64597657B2693938D04C2F73566B8D708E1D2B32FC",
+  "committed_blobs_checked": 4376,
+  "committed_byte_drift": 0,
+  "drift": [],
+  "reader_pid": 2404,
+  "reader_created_utc": "2026-10-13T14:02:33.5787718Z",
+  "reader_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "reader_executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+  "reader_command": "git cat-file --batch",
+  "reader_exit_code": 0,
+  "completed_utc": "2026-10-13T14:02:36.0992792+00:00"
+}

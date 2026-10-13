@@ -1,0 +1,11 @@
+{
+  "source": 4376,
+  "source_after": 4376,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admitted_free_kib": 12008708,
+  "threshold_kib": 8388608,
+  "admission_policy": "single-job8GiB/concurrent16GiB calibrated Root authorization",
+  "completed_utc": "2026-10-13T13:46:38.9775081+00:00"
+}

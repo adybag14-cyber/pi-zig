@@ -692,6 +692,13 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_delta_tracker_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_delta_tracker_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-delta-tracker-source", "Replay full original Tracker Change Prepared proxy graph mutations failure states and ownership").dependOn(&b.addRunArtifact(chord_delta_tracker_tests).step);
+    const chord_delta_candidate_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_delta_candidate_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord delta compiled inventory", "native Chord diff", "native Chord tracker" } });
+    linkQuickJs(b, chord_delta_candidate_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_delta_candidate_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-delta-candidate", "Compile the private Chord delta candidate before its bounded runtime gate").dependOn(&chord_delta_candidate_tests.step);
+    const chord_delta_candidate_run = b.addRunArtifact(chord_delta_candidate_tests);
+    chord_delta_candidate_run.has_side_effects = true;
+    b.step("test-native-chord-delta-candidate", "Run unchanged full delta suites with actual compiler test inventory").dependOn(&chord_delta_candidate_run.step);
     const chord_normalization_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_normalization_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord normalization workers"} });
     linkQuickJs(b, chord_normalization_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_normalization_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -1,0 +1,53 @@
+{
+  "implementation_head": "3a7145ef55064f4bf43d12b1af43849f23b141c9",
+  "implementation_tree": "767911629ddb15b4b17769268e747345350382fb",
+  "source_count": 4376,
+  "compiler_count": 19546,
+  "debug_tests": 9,
+  "release_safe_tests": 9,
+  "committed_byte_drift": 0,
+  "public_activation": false,
+  "scope": "Private native Chord delta. Full Host/Cell/Derived and full Pi remain separate.",
+  "artifacts": [
+    {
+      "path": "committed-rs-bytes.json",
+      "sha256": "28FFBC2D3E5D74231523E5B226C9A93C03B398BA765C241A9F7F2422E5AC8687"
+    },
+    {
+      "path": "debug-owner.json",
+      "sha256": "608DFF434A269FDF4DD36EAFE6A28A932EE3674394A3A941801148D6CCEF93D5"
+    },
+    {
+      "path": "debug-posthash.json",
+      "sha256": "752A4A9B9FA78D0C76B9D928AC196E7AE1002D0372FB65C10BE3E5570B0E783B"
+    },
+    {
+      "path": "debug-tests.log",
+      "sha256": "6050E656A961370E69A7ED730132BAB76424AA1EB84EB394400ED47F53B62127"
+    },
+    {
+      "path": "local-compiler19546.json",
+      "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+    },
+    {
+      "path": "local-source4376.json",
+      "sha256": "1A4EFB78C6BE0DE223572C64597657B2693938D04C2F73566B8D708E1D2B32FC"
+    },
+    {
+      "path": "original-capture-qualified.json",
+      "sha256": "A1A370315AC1FB4F5756C9A89F290B00266BD145A925CB25CB44E44312859D6F"
+    },
+    {
+      "path": "release-safe-owner.json",
+      "sha256": "58CAFADCFA94A5EA6D89E97150EF2B560EAB70B3B6A6A052185CBF9E5274DCF0"
+    },
+    {
+      "path": "release-safe-posthash.json",
+      "sha256": "839A9B40395A719BDB04690B42198415F3AEFABC0209B9FDD69988A5272183C2"
+    },
+    {
+      "path": "release-safe-tests.log",
+      "sha256": "F2B992F0FB07A14707859502750D4D024F910D91E7692D2C635EB91317729A06"
+    }
+  ]
+}
