@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const em = @import("extensions/engine.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const json = @import("durable/backend/json.zig");
@@ -18,7 +19,7 @@ fn setup(engine: *em.Engine) !void {
     engine.native_io = std.testing.io;
     var environment: std.process.Environ.Map = .init(engine.gpa);
     defer environment.deinit();
-    try environment.put("PI_PACKAGE_DIR", "C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/coding-agent");
+    try environment.put("PI_PACKAGE_DIR", if (builtin.os.tag == .windows) "C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/coding-agent" else "/tmp/pi-sdk-loadout-source-fixture/packages/coding-agent");
     try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-session-loadout"});
     try @import("extensions/native_stream.zig").install(engine);
     const namespace = try sdk.object(engine);
@@ -120,7 +121,7 @@ fn exercise(gpa: std.mem.Allocator, print_raw: bool) !void {
     if (print_raw) std.debug.print("SDK_SESSION_LOADOUT_RAW={s}\n", .{encoded});
     var actual = try json.Owned.parse(gpa, encoded);
     defer actual.deinit();
-    var expected = try json.Owned.parse(gpa, @embedFile("extensions/fixtures/sdk-session-loadout-e622.json"));
+    var expected = try json.Owned.parse(gpa, if (builtin.os.tag == .windows) @embedFile("extensions/fixtures/sdk-session-loadout-e622.json") else @embedFile("extensions/fixtures/sdk-session-loadout-e622-posix.json"));
     defer expected.deinit();
     try compare(&actual.value, &expected.value, began, ended);
     const cleared = try engine.eval("delete globalThis.loadoutHeldCallback;delete globalThis.loadoutCaseReceivers;delete globalThis.sdkSessionLoadoutRows;delete globalThis.createLoadoutCaseReceiver;delete globalThis.loadoutNative;", "loadout-clear.js", c.JS_EVAL_TYPE_GLOBAL);

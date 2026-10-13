@@ -1,0 +1,260 @@
+{
+  "status": "genuine_Linux_and_macOS_Source55_qualified_native_portable_pending",
+  "run": 38455886663,
+  "job": 115507701295,
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "candidate": "e942f8ae917a7214f005e4d65a39b7ba94a0819b",
+  "raw_first": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-posix-ci38455886663-ubuntu-artifact\\source-first.json",
+    "sha256": "e143b6bbf177fd1d5eaad73954474e6ca827e217ea7061fc31f8530cc6caf7df"
+  },
+  "raw_second": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-posix-ci38455886663-ubuntu-artifact\\source-second.json",
+    "sha256": "b48ab66001a367fa16b4cd399d9ece0ef365a541e2501049127d4ffef5e5612c"
+  },
+  "fixture_sha256": "36c7c610b8f24e3b8256311e3a83ddb182b4965a75735e8dc314025873b6913c",
+  "caller_fixture_sha256": "66548fbce8f849680545ddff61c7e82f032ede3519e64431e32bee9e8ab77abf",
+  "node": {
+    "binary_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+    "archive_sha256": "41cd79bb7877c81605a9e68ec4c91547774f46a40c67a17e34d7179ef11729df"
+  },
+  "Source55_double_capture": {
+    "status": "Source55_double_capture_exact",
+    "platform": "linux",
+    "cases": 55,
+    "factories": 34,
+    "timestampSlots": [
+      {
+        "scenario": "prepare-first",
+        "first": 1791921335239,
+        "second": 1791921337050
+      },
+      {
+        "scenario": "prepare-remove",
+        "first": 1791921335240,
+        "second": 1791921337051
+      },
+      {
+        "scenario": "prepare-explicit-messages",
+        "first": 1791921335241,
+        "second": 1791921337051
+      },
+      {
+        "scenario": "prepare-forced",
+        "first": 1791921335241,
+        "second": 1791921337052
+      },
+      {
+        "scenario": "prepare-hidden",
+        "first": 1791921335242,
+        "second": 1791921337052
+      },
+      {
+        "scenario": "prepare-options-accessors",
+        "first": 1791921335242,
+        "second": 1791921337052
+      },
+      {
+        "scenario": "prepare-current-replay",
+        "first": 1791921335242,
+        "second": 1791921337053
+      }
+    ],
+    "fixtureSha256": "36c7c610b8f24e3b8256311e3a83ddb182b4965a75735e8dc314025873b6913c"
+  },
+  "full_posthashes": {
+    "source": {
+      "count": 1902,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:38.7147524+00:00"
+    },
+    "candidate": {
+      "count": 4603,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:40.4761142+00:00"
+    },
+    "hydrated": {
+      "count": 43,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:40.5055269+00:00"
+    },
+    "dependencies": {
+      "count": 26280,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:45.5912755+00:00"
+    },
+    "node": {
+      "count": 4559,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:46.5561875+00:00"
+    },
+    "package": {
+      "count": 1,
+      "drift": [],
+      "file_set_drift": [],
+      "completed_utc": "2026-10-13T19:55:46.5577006+00:00"
+    },
+    "modules-first": {
+      "count": 1338,
+      "drift": [],
+      "completed_utc": "2026-10-13T19:55:46.7930807+00:00"
+    },
+    "modules-second": {
+      "count": 1338,
+      "drift": [],
+      "completed_utc": "2026-10-13T19:55:47.0257011+00:00"
+    }
+  },
+  "caller_package_directory": "/tmp/pi-sdk-loadout-source-fixture/packages/coding-agent",
+  "Windows_original_fixture_unchanged": true,
+  "native_comparison": "Select genuine platform oracle; no docs/path error or wall-time suppression added. Existing seven generated timestamps remain integer-bounded before comparison.",
+  "macOS_Source_status": "terminal success job115507700494 at2026-10-13T20:18:43Z; genuine Source55 double capture; native qualification pending",
+  "native_status": "unqualified; candidate gates pending",
+  "public_activation": false,
+  "macOS": {
+    "run": 38455886663,
+    "job": 115507700494,
+    "result": {
+      "head": "e942f8ae917a7214f005e4d65a39b7ba94a0819b",
+      "source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "node_sha256": "20A18709F0154D668F1BD6F6EA8C2A7AE001447B4B2C339732F22E57A8767A55",
+      "node_archive_sha256": "448f01d4dfa5a21d280cfbacf00abc22b51aad52f38db0f4886e0e5d00df541d",
+      "source_count": 1902,
+      "hydrated_count": 43,
+      "dependency_files": 26275,
+      "node_files": 4559,
+      "cases": 55,
+      "factories": 34,
+      "public_activation": false,
+      "native_qualification": false,
+      "completed_utc": "2026-10-13T20:18:13.7814380+00:00"
+    },
+    "double_capture": {
+      "status": "Source55_double_capture_exact",
+      "platform": "darwin",
+      "cases": 55,
+      "factories": 34,
+      "timestampSlots": [
+        {
+          "scenario": "prepare-first",
+          "first": 1791922691350,
+          "second": 1791922693313
+        },
+        {
+          "scenario": "prepare-remove",
+          "first": 1791922691350,
+          "second": 1791922693313
+        },
+        {
+          "scenario": "prepare-explicit-messages",
+          "first": 1791922691350,
+          "second": 1791922693313
+        },
+        {
+          "scenario": "prepare-forced",
+          "first": 1791922691351,
+          "second": 1791922693313
+        },
+        {
+          "scenario": "prepare-hidden",
+          "first": 1791922691351,
+          "second": 1791922693313
+        },
+        {
+          "scenario": "prepare-options-accessors",
+          "first": 1791922691351,
+          "second": 1791922693314
+        },
+        {
+          "scenario": "prepare-current-replay",
+          "first": 1791922691351,
+          "second": 1791922693314
+        }
+      ],
+      "fixtureSha256": "a51c11847bc56a2d952509131ac6c08cd346153f417b2fa36bdad46ab7d92405"
+    },
+    "raw_captures": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-posix-ci38455886663-macos-artifact\\sdk-loadout-genuine-source-macos-latest-e942f8ae917a7214f005e4d65a39b7ba94a0819b\\source-first.json",
+        "sha256": "562ef71fc2235b5059cbf7b787cd4993b3ca83659864ce4f4d0f56328c2e85ba"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loadout-posix-ci38455886663-macos-artifact\\sdk-loadout-genuine-source-macos-latest-e942f8ae917a7214f005e4d65a39b7ba94a0819b\\source-second.json",
+        "sha256": "1c6ff12b60275709f7f06bab31e92959fab9cfba375c7b2eab3b99b34efdbcb8"
+      }
+    ],
+    "fixture_sha256": "a51c11847bc56a2d952509131ac6c08cd346153f417b2fa36bdad46ab7d92405",
+    "full_posthashes": {
+      "candidate-posthash": {
+        "count": 4603,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:18.2593790+00:00"
+      },
+      "dependencies-posthash": {
+        "count": 26275,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:28.0476290+00:00"
+      },
+      "hydrated-posthash": {
+        "count": 43,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:18.2803320+00:00"
+      },
+      "modules-first-posthash": {
+        "count": 1338,
+        "drift": [],
+        "completed_utc": "2026-10-13T20:18:34.8357290+00:00"
+      },
+      "modules-second-posthash": {
+        "count": 1338,
+        "drift": [],
+        "completed_utc": "2026-10-13T20:18:35.0959010+00:00"
+      },
+      "node-posthash": {
+        "count": 4559,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:33.8892400+00:00"
+      },
+      "package-posthash": {
+        "count": 1,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:33.9274050+00:00"
+      },
+      "source-posthash": {
+        "count": 1902,
+        "drift": [],
+        "file_set_drift": [],
+        "completed_utc": "2026-10-13T20:18:15.4457440+00:00"
+      }
+    }
+  },
+  "POSIX_cross_platform_comparison": {
+    "status": "all55rows_and_metadata_exact_order_equal",
+    "varying_source_receipt_slots": [
+      "sourceTimeBounds.began",
+      "sourceTimeBounds.ended",
+      "rows[26].result.patch.timestamp",
+      "rows[28].result.patch.timestamp",
+      "rows[29].result.patch.timestamp",
+      "rows[30].result.patch.timestamp",
+      "rows[31].result.patch.timestamp",
+      "rows[32].result.patch.timestamp",
+      "rows[33].result.patch.timestamp"
+    ],
+    "patch_timestamps_integer_bounded": true,
+    "other_differences": 0,
+    "native_uses": "unchanged genuine Linux fixture; macOS independently produces exact same stable contents"
+  }
+}

@@ -1,0 +1,2528 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Original latest AgentSession factory Source55; platform-specific genuine capture.",
+  "sourceMode": "unmodified TypeScript Source via audited official export resolution",
+  "sourceTimeBounds": {
+    "began": 1791921337030,
+    "ended": 1791921337054
+  },
+  "sourceFactories": 34,
+  "rows": [
+    {
+      "scenario": "empty",
+      "error": null,
+      "result": [],
+      "identity": [],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": []
+    },
+    {
+      "scenario": "deduplicate-order",
+      "error": null,
+      "result": [
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "read",
+          "description": "Read",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ],
+          "symbol": "read-symbol"
+        }
+      ],
+      "identity": [
+        true,
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "read",
+          "description": "Read",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ],
+          "symbol": "read-symbol"
+        }
+      ]
+    },
+    {
+      "scenario": "unknown-hidden",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "all-exposures",
+      "error": null,
+      "result": [
+        {
+          "name": "read",
+          "description": "Read",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ],
+          "symbol": "read-symbol"
+        },
+        {
+          "name": "bash",
+          "description": "Bash",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "deferred",
+          "description": "Deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Code",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__direct",
+          "description": "MCP direct",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "list_mcp_resources",
+          "description": "MCP resources",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "tool_search",
+          "description": "Search",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "read",
+          "description": "Read",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ],
+          "symbol": "read-symbol"
+        },
+        {
+          "name": "bash",
+          "description": "Bash",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "deferred",
+          "description": "Deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Code",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__direct",
+          "description": "MCP direct",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "list_mcp_resources",
+          "description": "MCP resources",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "tool_search",
+          "description": "Search",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "mcp-direct-filtered",
+      "error": null,
+      "result": [],
+      "identity": [],
+      "trace": [
+        [
+          "allowed",
+          "mcp__server__direct"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": []
+    },
+    {
+      "scenario": "mcp-deferred-search",
+      "error": null,
+      "result": [
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true
+      ],
+      "trace": [
+        [
+          "allowed",
+          "mcp__server__deferred"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "mcp-deferred-no-search",
+      "error": null,
+      "result": [],
+      "identity": [],
+      "trace": [
+        [
+          "allowed",
+          "mcp__server__deferred"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": []
+    },
+    {
+      "scenario": "mcp-resource-filtered",
+      "error": null,
+      "result": [],
+      "identity": [],
+      "trace": [
+        [
+          "allowed",
+          "list_mcp_resources"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": []
+    },
+    {
+      "scenario": "non-mcp-allowed-false",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true
+      ],
+      "trace": [
+        [
+          "allowed",
+          "alpha"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-descriptions",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Changed alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Changed beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        false,
+        false
+      ],
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        }
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Changed alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Changed beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "hook-last-wins",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Last",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        false
+      ],
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        },
+        [
+          "second-description",
+          "Beta"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Last",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "hook-hide",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        }
+      ],
+      "reports": [],
+      "hidden": [
+        "alpha",
+        "not-registered"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "hook-null",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-undefined",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-description-undefined",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-description-null",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": null,
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        false,
+        true
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": null,
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-throws",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [
+        {
+          "extensionPath": "<loadout-fixture>",
+          "event": "prepare_loadout",
+          "error": "hook failure",
+          "stack": "loadout-fixture-stack"
+        }
+      ],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-throws-string",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [
+        {
+          "extensionPath": "<loadout-fixture>",
+          "event": "prepare_loadout",
+          "error": "hook string"
+        }
+      ],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-partial-descriptions",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Kept before hidden getter",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        false,
+        true
+      ],
+      "trace": [],
+      "reports": [
+        {
+          "extensionPath": "<loadout-fixture>",
+          "event": "prepare_loadout",
+          "error": "hidden getter",
+          "stack": "loadout-fixture-stack"
+        }
+      ],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Kept before hidden getter",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-hidden-iterator-error",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [
+        {
+          "extensionPath": "<loadout-fixture>",
+          "event": "prepare_loadout",
+          "error": "hidden iterator",
+          "stack": "loadout-fixture-stack"
+        }
+      ],
+      "hidden": [
+        "alpha"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-getter-error",
+      "error": {
+        "name": "Error",
+        "message": "hook discovery getter"
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [
+        "old"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-callback-getter-error",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [],
+      "reports": [
+        {
+          "extensionPath": "<loadout-fixture>",
+          "event": "prepare_loadout",
+          "error": "hook invocation getter",
+          "stack": "loadout-fixture-stack"
+        }
+      ],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hook-live-callbacks",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        true
+      ],
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        },
+        [
+          "live",
+          "deferred",
+          [
+            "live"
+          ]
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "hook-registry-mutation",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Retained selected beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "identity": [
+        true,
+        false
+      ],
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        },
+        [
+          "registered-snapshot",
+          true
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Retained selected beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "callable-default",
+      "error": null,
+      "result": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "deferred",
+          "description": "Deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Code",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [
+        "old"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "callable-explicit",
+      "error": null,
+      "result": [
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "deferred",
+          "description": "Deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "code",
+          "description": "Code",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "mcp__server__deferred",
+          "description": "MCP deferred",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "trace": [],
+      "reports": [],
+      "hidden": [
+        "old"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-first",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>"
+          },
+          "timestamp": 1791921337050
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-unchanged",
+      "error": null,
+      "result": {
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-remove",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>",
+            "obsolete": null
+          },
+          "timestamp": 1791921337051
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-explicit-messages",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>",
+            "explicit": null
+          },
+          "timestamp": 1791921337051
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-forced",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>"
+          },
+          "timestamp": 1791921337052
+        },
+        "options": {
+          "forceSystemPrompt": "forced request only",
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-hidden",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>"
+          },
+          "timestamp": 1791921337052
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [
+            "alpha",
+            "not-registered"
+          ],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [
+        {
+          "declared": [
+            {
+              "name": "alpha",
+              "description": "Alpha",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            },
+            {
+              "name": "beta",
+              "description": "Beta",
+              "keys": [
+                "name",
+                "description",
+                "parameters"
+              ]
+            }
+          ],
+          "callable": [
+            "alpha",
+            "beta",
+            "deferred",
+            "code",
+            "mcp__server__deferred"
+          ],
+          "registered": [
+            "read",
+            "bash",
+            "alpha",
+            "beta",
+            "hidden",
+            "deferred",
+            "code",
+            "mcp__server__direct",
+            "mcp__server__deferred",
+            "list_mcp_resources",
+            "tool_search"
+          ],
+          "exposure": "hidden",
+          "missingExposure": "direct",
+          "namespace": "fixture-space",
+          "guidelines": [
+            " Alpha rule ",
+            "same"
+          ],
+          "missingGuidelines": []
+        }
+      ],
+      "reports": [],
+      "hidden": [
+        "alpha",
+        "not-registered"
+      ],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ],
+      "savedKeys": [
+        "declared",
+        "callable",
+        "registered",
+        "getExposure",
+        "getNamespace",
+        "getPromptGuidelines"
+      ]
+    },
+    {
+      "scenario": "prepare-options-accessors",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>"
+          },
+          "timestamp": 1791921337052
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [
+        [
+          "selected-get"
+        ],
+        [
+          "selected-set",
+          [
+            "alpha",
+            "beta"
+          ]
+        ],
+        [
+          "selected-get"
+        ],
+        [
+          "selected-get"
+        ]
+      ],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "prepare-current-replay",
+      "error": null,
+      "result": {
+        "patch": {
+          "role": "system",
+          "content": "",
+          "sections": {
+            "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+            "tools": "<tools>\n- alpha: Alpha snippet\n- beta: Beta snippet\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+            "rules": "<rules>\n- rule\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+            "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+            "cwd": "<cwd>\nC:/loadout/fixture\n</cwd>",
+            "custom": "<custom>\nsection\n</custom>",
+            "extra": null
+          },
+          "timestamp": 1791921337053
+        },
+        "options": {
+          "selectedTools": [
+            "alpha",
+            "beta"
+          ],
+          "hiddenTools": [],
+          "toolSnippets": {
+            "alpha": "Alpha snippet",
+            "beta": "Beta snippet"
+          },
+          "toolGuidelines": {
+            "alpha": [
+              " rule ",
+              "rule"
+            ]
+          },
+          "promptGuidelines": [],
+          "appendSystemPrompt": "",
+          "sections": {
+            "custom": "section"
+          },
+          "cwd": "C:\\loadout\\fixture",
+          "contextFiles": [],
+          "skills": []
+        }
+      },
+      "trace": [],
+      "reports": [],
+      "hidden": [],
+      "active": [
+        {
+          "name": "alpha",
+          "description": "Alpha",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        },
+        {
+          "name": "beta",
+          "description": "Beta",
+          "keys": [
+            "name",
+            "description",
+            "parameters"
+          ]
+        }
+      ]
+    }
+  ],
+  "sectionsRows": [
+    {
+      "scenario": "defaults",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash for file operations like ls, rg, find\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\nC:/work\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "custom",
+      "value": {
+        "preamble": "custom prompt",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "rules",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- x\n- y\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "hidden-tools",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- bash: Shell\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash for file operations like ls, rg, find\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "sections",
+      "value": {
+        "preamble": "custom",
+        "addendum": "<addendum>\nappend\n</addendum>",
+        "project_context": "<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"a\"b\">\ninstructions\n</project_instructions>\n</project_context>",
+        "cwd": "<cwd>\noverride\n</cwd>",
+        "z": "<z>\nlast\n</z>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "skills-read",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>A&lt;&amp;</name>\n    <description>Description &quot;quote&quot;</description>\n    <location>/skills/a</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "skills-indirect",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>A</name>\n    <description>D</description>\n    <location>/skills/a</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "skills-none",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "skills-disabled",
+      "value": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash for file operations like ls, rg, find\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/README.md\n- Additional docs: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/docs\n- Examples: /tmp/pi-sdk-loadout-source-fixture/packages/coding-agent/examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    },
+    {
+      "scenario": "invalid-section",
+      "error": {
+        "name": "Error",
+        "message": "Invalid system prompt section name: Bad tag"
+      }
+    },
+    {
+      "scenario": "reserved-section",
+      "error": {
+        "name": "Error",
+        "message": "Invalid system prompt section name: preamble"
+      }
+    },
+    {
+      "scenario": "forced-sections",
+      "value": {
+        "preamble": "structured still",
+        "cwd": "<cwd>\n/cwd\n</cwd>"
+      },
+      "error": null
+    }
+  ],
+  "diffRows": [
+    {
+      "scenario": "same"
+    },
+    {
+      "scenario": "add",
+      "patch": {
+        "b": "two",
+        "a": "one"
+      },
+      "keys": [
+        "b",
+        "a"
+      ]
+    },
+    {
+      "scenario": "replace",
+      "patch": {
+        "a": "new"
+      },
+      "keys": [
+        "a"
+      ]
+    },
+    {
+      "scenario": "remove",
+      "patch": {
+        "a": null
+      },
+      "keys": [
+        "a"
+      ]
+    },
+    {
+      "scenario": "undefined",
+      "patch": {
+        "a": null
+      },
+      "keys": [
+        "a"
+      ]
+    },
+    {
+      "scenario": "inherited",
+      "patch": {
+        "b": null
+      },
+      "keys": [
+        "b"
+      ]
+    },
+    {
+      "scenario": "numeric-order",
+      "patch": {
+        "1": "added",
+        "10": "new"
+      },
+      "keys": [
+        "1",
+        "10"
+      ]
+    },
+    {
+      "scenario": "null-and-empty"
+    },
+    {
+      "scenario": "current-getter",
+      "patch": {
+        "a": "new"
+      },
+      "keys": [
+        "a"
+      ]
+    }
+  ],
+  "metadata": {
+    "_applyToolLoadout": {
+      "name": "_applyToolLoadout",
+      "length": 1,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "_getToolExposure": {
+      "name": "_getToolExposure",
+      "length": 1,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "_isActivatable": {
+      "name": "_isActivatable",
+      "length": 1,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "_getCallableTools": {
+      "name": "_getCallableTools",
+      "length": 0,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "getActiveToolNames": {
+      "name": "getActiveToolNames",
+      "length": 0,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "getCallableToolNames": {
+      "name": "getCallableToolNames",
+      "length": 0,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "_preparePromptAndToolLoadout": {
+      "name": "_preparePromptAndToolLoadout",
+      "length": 1,
+      "enumerable": false,
+      "writable": true,
+      "configurable": true,
+      "ownPrototype": false,
+      "functionPrototype": true
+    },
+    "savedCallback": {
+      "name": "getExposure",
+      "length": 1,
+      "ownPrototype": false
+    }
+  }
+}
