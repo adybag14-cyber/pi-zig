@@ -1411,6 +1411,11 @@ pub fn build(b: *std.Build) void {
     sdk_loadout_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-loadout", "Compile the private Source55 loadout artifact without running tests").dependOn(&sdk_loadout_tests.step);
     b.step("test-native-sdk-session-loadout", "Replay full latest Source loadout hooks and structured prompt sections with private native collaborators and exhaustive host allocation cleanup").dependOn(&b.addRunArtifact(sdk_loadout_tests).step);
+    const sdk_visual_preview_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_visual_preview_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK tool visual preview"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_visual_preview_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_visual_preview_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-tool-visual-preview", "Compile the private actual VisualLinePreview Source comparator without execution").dependOn(&sdk_visual_preview_tests.step);
+    b.step("test-native-sdk-tool-visual-preview", "Compare original visual wrapping cache callback metadata and complete failure allocator cleanup").dependOn(&b.addRunArtifact(sdk_visual_preview_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

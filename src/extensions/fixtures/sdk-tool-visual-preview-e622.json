@@ -1,0 +1,871 @@
+{
+  "rows": [
+    {
+      "name": "empty",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "changed ",
+        "resource",
+        "with    ",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "changed    ",
+        "resource   ",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [],
+      "optionsSame": true
+    },
+    {
+      "name": "short",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "one     "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "changed ",
+        "resource",
+        "with    ",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "changed    ",
+        "resource   ",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [],
+      "optionsSame": true
+    },
+    {
+      "name": "exact",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "one     ",
+        "two     "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[3 hi\u001b[0m...\u001b[0m",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "[2 hidden]",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [
+        3,
+        2
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "end",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[2 hi\u001b[0m...\u001b[0m",
+        "three   ",
+        "four    "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[3 hi\u001b[0m...\u001b[0m",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "[2 hidden]",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [
+        2,
+        3,
+        2
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "start",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "one     ",
+        "two     ",
+        "[2 hi\u001b[0m...\u001b[0m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "changed ",
+        "resource",
+        "[3 hi\u001b[0m...\u001b[0m"
+      ],
+      "wider": [
+        "changed    ",
+        "resource   ",
+        "[2 hidden]"
+      ],
+      "calls": [
+        2,
+        3,
+        2
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "wrap-end",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[\u001b[0m...\u001b[0m",
+        "mnop",
+        "qrst"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[\u001b[0m...\u001b[0m",
+        "line",
+        "s   "
+      ],
+      "wider": [
+        "[4 h\u001b[0m...\u001b[0m",
+        "more   ",
+        "lines  "
+      ],
+      "calls": [
+        3,
+        6,
+        4
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "wrap-start",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "abcd",
+        "efgh",
+        "[\u001b[0m...\u001b[0m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "chan",
+        "ged ",
+        "[\u001b[0m...\u001b[0m"
+      ],
+      "wider": [
+        "changed",
+        "resourc",
+        "[4 h\u001b[0m...\u001b[0m"
+      ],
+      "calls": [
+        3,
+        6,
+        4
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "unicode",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[\u001b[0m...\u001b[0m",
+        "\u754c  ",
+        "c\ud83d\ude42d"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[\u001b[0m...\u001b[0m",
+        "line",
+        "s   "
+      ],
+      "wider": [
+        "[4 h\u001b[0m...\u001b[0m",
+        "more   ",
+        "lines  "
+      ],
+      "calls": [
+        2,
+        6,
+        4
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "ansi",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "\u001b[31mred  ",
+        "\u001b[31mlong ",
+        "[4\u001b[0m...\u001b[0m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "chang",
+        "ed   ",
+        "[5\u001b[0m...\u001b[0m"
+      ],
+      "wider": [
+        "changed ",
+        "resource",
+        "[3 hi\u001b[0m...\u001b[0m"
+      ],
+      "calls": [
+        4,
+        5,
+        3
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "trailing-empty",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[2 hi\u001b[0m...\u001b[0m",
+        "        "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[4 hi\u001b[0m...\u001b[0m",
+        "lines   "
+      ],
+      "wider": [
+        "[3 hidden]",
+        "lines      "
+      ],
+      "calls": [
+        2,
+        4,
+        3
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "zero-end",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[3 hi\u001b[0m...\u001b[0m",
+        "a       ",
+        "b       ",
+        "c       "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[5 hi\u001b[0m...\u001b[0m",
+        "changed ",
+        "resource",
+        "with    ",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "[4 hidden]",
+        "changed    ",
+        "resource   ",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [
+        3,
+        5,
+        4
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "zero-start",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[3 hi\u001b[0m...\u001b[0m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[5 hi\u001b[0m...\u001b[0m"
+      ],
+      "wider": [
+        "[4 hidden]"
+      ],
+      "calls": [
+        3,
+        5,
+        4
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "negative-end",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "[4 hi\u001b[0m...\u001b[0m",
+        "b       ",
+        "c       "
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "[6 hi\u001b[0m...\u001b[0m",
+        "resource",
+        "with    ",
+        "more    ",
+        "lines   "
+      ],
+      "wider": [
+        "[5 hidden]",
+        "resource   ",
+        "with more  ",
+        "lines      "
+      ],
+      "calls": [
+        4,
+        6,
+        5
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "fraction",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "a       ",
+        "[2.5 \u001b[0m...\u001b[0m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "changed ",
+        "[3.5 \u001b[0m...\u001b[0m"
+      ],
+      "wider": [
+        "changed    ",
+        "[2.5 hid\u001b[0m...\u001b[0m"
+      ],
+      "calls": [
+        2.5,
+        3.5,
+        2.5
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "narrow-hint",
+      "before": [
+        {
+          "key": "options",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "object"
+        },
+        {
+          "key": "cachedWidth",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        },
+        {
+          "key": "cachedLines",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "type": "undefined"
+        }
+      ],
+      "first": [
+        "\u001b[0m.\u001b[0m",
+        "m"
+      ],
+      "same": true,
+      "retainedSame": true,
+      "invalidated": {},
+      "next": [
+        "\u001b[0m.\u001b[0m",
+        "s"
+      ],
+      "wider": [
+        "[\u001b[0m...\u001b[0m",
+        "s   "
+      ],
+      "calls": [
+        12,
+        27,
+        7
+      ],
+      "optionsSame": true
+    },
+    {
+      "name": "direct-start-0",
+      "result": {
+        "visualLines": [
+          "one long",
+          "line    "
+        ],
+        "skippedCount": 2
+      }
+    },
+    {
+      "name": "direct-start-1",
+      "result": {
+        "visualLines": [
+          " one    ",
+          " long   "
+        ],
+        "skippedCount": 3
+      }
+    },
+    {
+      "name": "direct-start-2",
+      "result": {
+        "visualLines": [
+          "  one   ",
+          "  long  "
+        ],
+        "skippedCount": 4
+      }
+    },
+    {
+      "name": "direct-end-0",
+      "result": {
+        "visualLines": [
+          "two     ",
+          "three   "
+        ],
+        "skippedCount": 2
+      }
+    },
+    {
+      "name": "direct-end-1",
+      "result": {
+        "visualLines": [
+          " two    ",
+          " three  "
+        ],
+        "skippedCount": 3
+      }
+    },
+    {
+      "name": "direct-end-2",
+      "result": {
+        "visualLines": [
+          "  thre  ",
+          "  e     "
+        ],
+        "skippedCount": 4
+      }
+    },
+    {
+      "name": "throw-hint",
+      "same": true
+    },
+    {
+      "name": "getters-and-cache",
+      "trace": [
+        "text",
+        "max",
+        "keep",
+        "hint",
+        "call:2"
+      ],
+      "output": [
+        "visible",
+        "c       "
+      ]
+    }
+  ],
+  "prototype": [
+    {
+      "key": "constructor",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "type": "function",
+      "name": "VisualLinePreview",
+      "length": 1,
+      "ownPrototype": true
+    },
+    {
+      "key": "render",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "type": "function",
+      "name": "render",
+      "length": 1,
+      "ownPrototype": false
+    },
+    {
+      "key": "invalidate",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "type": "function",
+      "name": "invalidate",
+      "length": 0,
+      "ownPrototype": false
+    }
+  ],
+  "constructor": [
+    {
+      "key": "length",
+      "enumerable": false,
+      "configurable": true,
+      "writable": false,
+      "type": "number"
+    },
+    {
+      "key": "name",
+      "enumerable": false,
+      "configurable": true,
+      "writable": false,
+      "type": "string"
+    },
+    {
+      "key": "prototype",
+      "enumerable": false,
+      "configurable": false,
+      "writable": false,
+      "type": "object"
+    }
+  ]
+}

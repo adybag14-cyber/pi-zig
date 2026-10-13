@@ -1,0 +1,373 @@
+{
+  "status": "Windows_Debug_ReleaseSafe_Source23_GC_all4562allocation_indices_qualified",
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Unchanged original VisualLinePreview and truncateToVisualLines with actual latest TUI Text; no Source body rewrites",
+  "Source_body_rewrites": 0,
+  "cases": 23,
+  "normalization": "none; raw rows and property order exact across original captures",
+  "captures": [
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-first-20261013-output.json",
+        "sha256": "159e24d1b746a736e3c1e48f89d01d531106c803de965b1bcdca0104a9924244"
+      },
+      "owner": {
+        "pid": 57796,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+        "argv": [
+          "--max-old-space-size=256",
+          "--conditions=source",
+          "--experimental-transform-types",
+          "--import",
+          "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-capture-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-first-20261013-output.json",
+          "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.input.txt"
+        ],
+        "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-capture-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-first-20261013-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.input.txt",
+        "created_utc": "2026-10-13T22:05:50.9634992Z",
+        "launched_utc": "2026-10-13T22:05:50.9596623+00:00",
+        "working_directory": "C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:05:57.4938367+00:00"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 53
+    },
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-second-20261013-output.json",
+        "sha256": "dbc713431717b66817c2e8a936827402e409d2952134ab4580d6981c26bbb7ed"
+      },
+      "owner": {
+        "pid": 39564,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+        "argv": [
+          "--max-old-space-size=256",
+          "--conditions=source",
+          "--experimental-transform-types",
+          "--import",
+          "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-capture-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-second-20261013-output.json",
+          "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.input.txt"
+        ],
+        "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-capture-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-strict-second-20261013-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.input.txt",
+        "created_utc": "2026-10-13T22:05:57.7832890Z",
+        "launched_utc": "2026-10-13T22:05:57.7820785+00:00",
+        "working_directory": "C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:06:03.5211595+00:00"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 53
+    }
+  ],
+  "input": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.input.txt",
+    "sha256": "e49d626bb13846036723f7955d8ed491c4293938987232a8a1995580bac3b5b7"
+  },
+  "fixture": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-visual-preview-e622.json",
+    "sha256": "f1defa91c97811429423729f29cbdc1bf503247aada33ba8682985c9e169133b"
+  },
+  "prior_negatives_retained": {
+    "native_compile_shadowing": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-debug-first-shard0-of8-20261013.process.json",
+    "native_gold_conversion_encoding": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-debug-sole8-names-fixed-shard0-of8-20261013.process.json",
+    "rejected_fresh16_before_launch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-debug-names-fixed-shard0-of8-20261013-admission.json",
+    "unexpected_error_tag_erased_by_old_caller": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-debug-all-tagged-debug-shard7-of8-20261013.process.json"
+  },
+  "native_status": "both modes all8 complete; full23+metadata everytrial; all16 full source manifests identical and zero source/tool drift",
+  "public_activation": false,
+  "native_runs": [
+    {
+      "mode": "Debug",
+      "owner": {
+        "pid": 51320,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "argv": [
+          "build",
+          "test-native-sdk-tool-visual-preview",
+          "-Doptimize=Debug",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--summary",
+          "all"
+        ],
+        "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-sdk-tool-visual-preview -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+        "created_utc": "2026-10-13T21:30:57.8893520Z",
+        "launched_utc": "2026-10-13T21:30:57.8875152+00:00",
+        "working_directory": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T21:31:51.9933569+00:00"
+      },
+      "posthash": {
+        "source": 4621,
+        "source_after": 4621,
+        "source_drift": 0,
+        "tools": 19546,
+        "tool_drift": 0,
+        "admitted_free_kib": 12778964,
+        "completed_utc": "2026-10-13T21:32:00.8314861+00:00"
+      },
+      "tests": 11,
+      "source_cases": 23,
+      "GPA_baseline": 4562,
+      "GPA_shard": 0,
+      "GPA_shards": 8,
+      "GPA_range": [
+        0,
+        570
+      ],
+      "complete_universe": false
+    }
+  ],
+  "previous_captures_preserved": [
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-utf8-first-20261013-output.json",
+        "sha256": "5db5cbb371471827b817f57c4d6be9604470aa7e9450191717536ee64d7c70c9"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-utf8-first-20261013.process.json",
+        "sha256": "45ecc27b5f9a8d53e0d1258905e2fd3bd6691fe733ecad752fb3ef6a42db5033"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 53
+    },
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-utf8-second-20261013-output.json",
+        "sha256": "6f886c1ea14ee27ebe0335be60a93c7120b62d94c5ace4c9066f4d03985b6bc6"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-visual-preview-e622-source-utf8-second-20261013.process.json",
+        "sha256": "58bb78e30cfd613d4724e1fbeb2a49e7b2b11e1348080b086cdd51bb42b012dd"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 53
+    }
+  ],
+  "strict_negative_fixture": "Expected caller marker remains mandatory; every unexpected thrown value is rethrown unchanged. Original raw23 rows and property order remain byte-equivalent after stronger routing, genuine Source classes unchanged.",
+  "allocation_packet": {
+    "path": "verification/sdk-tool-visual-preview-e6220e1-20261013/allocation-partitions-qualification.json",
+    "sha256": "46732b2d05b381aefa3abc8c43f430acc8eccfcb250e52da1dce115b06fb6a70"
+  },
+  "native_text_hostOOM_repair_commit": "31bdb48be039c14002240fece7bb7bf42872d340",
+  "compile_only": {
+    "pid": 61872,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "argv": [
+      "build",
+      "build-native-sdk-tool-visual-preview",
+      "-Doptimize=ReleaseSafe",
+      "-j1",
+      "--test-timeout",
+      "120s",
+      "--summary",
+      "all"
+    ],
+    "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-tool-visual-preview -Doptimize=ReleaseSafe -j1 --test-timeout 120s --summary all",
+    "created_utc": "2026-10-13T22:38:44.2685104Z",
+    "launched_utc": "2026-10-13T22:38:44.2667730+00:00",
+    "working_directory": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+    "outer_seconds": 1320,
+    "settle_seconds": 10,
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-13T22:41:54.8026980+00:00"
+  },
+  "compile_only_post": {
+    "source": 4624,
+    "source_after": 4624,
+    "source_drift": 0,
+    "tools": 19546,
+    "tool_drift": 0,
+    "admitted_free_kib": 18178580,
+    "completed_utc": "2026-10-13T22:42:01.8567839+00:00"
+  },
+  "hosted_qualification": "pending; these are private Windows local component gates",
+  "qualified_body_hashes": {
+    "src/native_sdk_visual_preview_test.zig": "38d83dc9c085fed289dd996f001e51ae7aa12a247a2b33435754dc9315d2a267",
+    "src/extensions/native_sdk_visual_line_preview.zig": "4afa350702fd2c96c005419bc0e9b47e2b9e0317865d056d00c4539ae9aa99db",
+    "src/extensions/native_text_component.zig": "9c8908badef3385f7ee089f5f6027be7da44a0253f8b9cfd32fdebb9e1cb1b03",
+    "src/extensions/native_sdk_prompt_scope.zig": "769c676b062df4ef2c273ab9cedd755642cc6f5110920327dc7cb379aae8013e",
+    "src/extensions/native_js_values.zig": "2f07d08ecebc70e4adc73ee4110ff2de2a60bae7c985b62065a4f5b93074d4a6",
+    "src/extensions/native_tui.zig": "673a2949aaad5c8544feedab20d1ddfd543dc00b9a50a324fc3f1a5f1be3b5d7",
+    "src/extensions/engine.zig": "a90c273f1604d53c11c3817eee1e7e71688c1d27d30116c70d92a504cd585d78",
+    "src/test_support/exhaustive_allocation_shards.zig": "ffc5daa8967afdde6ea32516591f54b53184789f80c8fc671c7b225d8fb361bc",
+    "src/extensions/fixtures/sdk-tool-visual-preview-e622.input.txt": "e49d626bb13846036723f7955d8ed491c4293938987232a8a1995580bac3b5b7",
+    "src/extensions/fixtures/sdk-tool-visual-preview-e622.json": "f1defa91c97811429423729f29cbdc1bf503247aada33ba8682985c9e169133b"
+  },
+  "post_qualification_packet_changes": "Only qualification receipts/docs and receipt-verifier copies. Qualified Zig/native Text/test/caller/golden bytes unchanged. Runtime registry/listing/shell WIP is not included or activated. Build packet includes only selected Visual aliases; the qualified worktree had an additional unselected listing alias, recorded separately."
+}

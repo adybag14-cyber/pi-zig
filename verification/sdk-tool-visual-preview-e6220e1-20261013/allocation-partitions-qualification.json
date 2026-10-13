@@ -1,0 +1,390 @@
+{
+  "status": "Windows_Debug_ReleaseSafe_Source23_visual_preview_GC_all_allocation_indices_qualified",
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "same_Probe": true,
+  "full_Source23_and_metadata_per_trial": true,
+  "full_source_inputs_equal_across_all16": true,
+  "source_inputs": 4624,
+  "product_repair": "native Text genuine hostOOM tagged at its callback boundary",
+  "caller_negative_repair": "unexpected exceptions rethrown unchanged; genuine Original23 rows remain exact",
+  "baseline_total": 4562,
+  "modes": {
+    "debug": {
+      "status": "all8_terminal_complete",
+      "baseline_total": 4562,
+      "indices_complete": 4562,
+      "missing": 0,
+      "duplicates": 0,
+      "ranges": [
+        {
+          "shard": 0,
+          "start": 0,
+          "end": 570,
+          "count": 570,
+          "pid": 57652,
+          "created_utc": "2026-10-13T22:30:03.4998438Z",
+          "completed_utc": "2026-10-13T22:30:16.8123370+00:00",
+          "state_sha256": "be6717d43435308d67bbafd866dacc021de31f8388eaf54f354154f47ef9d62c",
+          "stderr_sha256": "4445858e3b2766f339edeef954269b8834447382e7fb2a4ac96447d44ccde975",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "2881cbe519fde2d8a0c640bbf49625c5bdeb11bc451856279184125f916c42d0",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 21012340,
+            "completed_utc": "2026-10-13T22:30:26.7413515+00:00"
+          }
+        },
+        {
+          "shard": 1,
+          "start": 570,
+          "end": 1140,
+          "count": 570,
+          "pid": 53220,
+          "created_utc": "2026-10-13T22:30:34.8194484Z",
+          "completed_utc": "2026-10-13T22:30:49.2071164+00:00",
+          "state_sha256": "f80406f87fd6020aef6d00f3afe24bd196de330c0d89a0e04eff03209e8c7154",
+          "stderr_sha256": "bba1487cf45496eb7ee61c0c96493e6fbe78f11ccc2cda7319581e47c1fbfe8f",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "b59f30bb0022dde4599fcc25a93e42b103b5d3cd89d0c3de872da3a3b8a68429",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 21601732,
+            "completed_utc": "2026-10-13T22:30:56.5224502+00:00"
+          }
+        },
+        {
+          "shard": 2,
+          "start": 1140,
+          "end": 1710,
+          "count": 570,
+          "pid": 54956,
+          "created_utc": "2026-10-13T22:31:04.9080764Z",
+          "completed_utc": "2026-10-13T22:31:22.0335418+00:00",
+          "state_sha256": "ba62f42ad045ad17a167f912a5ab30da2404fa5c293670454b3f81b50a80854e",
+          "stderr_sha256": "d90b6539b3458b83d30209a894a4a135065d142acd45b30a2131b5232c8977f7",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "a84cb00531b5f31c584c750b4561a8b49538cc7e22564a39249a0d8632a13233",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 21063460,
+            "completed_utc": "2026-10-13T22:31:29.8490063+00:00"
+          }
+        },
+        {
+          "shard": 3,
+          "start": 1710,
+          "end": 2281,
+          "count": 571,
+          "pid": 60492,
+          "created_utc": "2026-10-13T22:31:40.4237973Z",
+          "completed_utc": "2026-10-13T22:32:04.3046313+00:00",
+          "state_sha256": "f1a6506fef5a31adf216d3c55f0ff331fd9b17909cb11244efad142f597efd42",
+          "stderr_sha256": "024a3b05b0b94a77880bd9986e95792c4f061224f854455180d9347ec660d42f",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "d69fac07428fd4cf0d54d0f4a20a8d5c84e7e442dae750cb0ce894db5ce08bde",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 19328444,
+            "completed_utc": "2026-10-13T22:32:14.5781024+00:00"
+          }
+        },
+        {
+          "shard": 4,
+          "start": 2281,
+          "end": 2851,
+          "count": 570,
+          "pid": 62312,
+          "created_utc": "2026-10-13T22:32:27.4832261Z",
+          "completed_utc": "2026-10-13T22:32:57.1240473+00:00",
+          "state_sha256": "529219e71213669e649c4780ca92d2d504603c71622780b7b32ad4989cac7958",
+          "stderr_sha256": "f9ba16e8ae521dfe2fbe1ddfc101779d1bdcd8e811f25a14a91c7166d9097a8b",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "7339da1e37e04ef7ec80c5039db0e2e7949cec7978d4c70dc8eb8779586cc6c0",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 18389048,
+            "completed_utc": "2026-10-13T22:33:05.7400461+00:00"
+          }
+        },
+        {
+          "shard": 5,
+          "start": 2851,
+          "end": 3421,
+          "count": 570,
+          "pid": 17468,
+          "created_utc": "2026-10-13T22:33:16.9401395Z",
+          "completed_utc": "2026-10-13T22:33:51.4978714+00:00",
+          "state_sha256": "2170a961ae2ce61da9000ec7c92de25b70dd1a37b76a1992e178ea3879d3cd69",
+          "stderr_sha256": "5296b3f68a223785f319560271400a6df8e293953596e0d7da357cabfc9b85eb",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "05883dbae3f35af640e5b4ecca7565c768cd43eb4a1b8b8d07b72530877ece88",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 19213772,
+            "completed_utc": "2026-10-13T22:34:00.7306418+00:00"
+          }
+        },
+        {
+          "shard": 6,
+          "start": 3421,
+          "end": 3991,
+          "count": 570,
+          "pid": 7816,
+          "created_utc": "2026-10-13T22:34:12.2404572Z",
+          "completed_utc": "2026-10-13T22:34:51.4157316+00:00",
+          "state_sha256": "257587f578290b8701f8e804cab924ce75a036c337c80952a16dd82c80388cb2",
+          "stderr_sha256": "c94dbb56bae9f1b2cfb0060462bedd101dbdc202342ad397b2bfa89d550bff4a",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "507b37a36a8b78ad01814c62a59a575810ded58593fee1a6aa1cb1ade67679e1",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 18480148,
+            "completed_utc": "2026-10-13T22:35:01.4711594+00:00"
+          }
+        },
+        {
+          "shard": 7,
+          "start": 3991,
+          "end": 4562,
+          "count": 571,
+          "pid": 55560,
+          "created_utc": "2026-10-13T22:37:49.4877406Z",
+          "completed_utc": "2026-10-13T22:38:23.6130417+00:00",
+          "state_sha256": "21725c4c07c2f5c347f06a63987bf32cde3ae590656e8efebfe97a31fc078634",
+          "stderr_sha256": "ffa9f2f24842bad9948fed1df16cb0cbe2ea8907403316d2cf77edb4ea21a19a",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "a9c17ffafb80f4e1a35145498ff3eb1c2e7cfe37782b7216855482b91f27df18",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 18926552,
+            "completed_utc": "2026-10-13T22:38:33.5973806+00:00"
+          }
+        }
+      ]
+    },
+    "releasesafe": {
+      "status": "all8_terminal_complete",
+      "baseline_total": 4562,
+      "indices_complete": 4562,
+      "missing": 0,
+      "duplicates": 0,
+      "ranges": [
+        {
+          "shard": 0,
+          "start": 0,
+          "end": 570,
+          "count": 570,
+          "pid": 45884,
+          "created_utc": "2026-10-13T22:42:10.6337947Z",
+          "completed_utc": "2026-10-13T22:42:18.8470937+00:00",
+          "state_sha256": "bcf075dee3d4924830c0bb105946b7c0fe97925fde2a0a87e0ce7784035ab524",
+          "stderr_sha256": "07fa91bc8200594b567d1e75932f86cefa4024e9200fbbf85d4876628e5e6c02",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "8a6a97f6ff6d147e1180418bc816cef3cec9d6e09678ea9089e4ff5de272aae0",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 20101432,
+            "completed_utc": "2026-10-13T22:42:27.8364435+00:00"
+          }
+        },
+        {
+          "shard": 1,
+          "start": 570,
+          "end": 1140,
+          "count": 570,
+          "pid": 21080,
+          "created_utc": "2026-10-13T22:42:36.9140306Z",
+          "completed_utc": "2026-10-13T22:42:45.9044540+00:00",
+          "state_sha256": "b1ddbd4e37a96b03238a8d86d741c0b80599e284c7e4d7fd5914c4c42932adba",
+          "stderr_sha256": "51b5075f57254a3d9eba1e3f8ff5b162b22d3ff7037cc5d1e431780a6b2bf6c3",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "90b625488a44fba6ad774b76bb3465f8bc32a80f654a87290ccf934e20ec3a6c",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 19701472,
+            "completed_utc": "2026-10-13T22:42:56.0945183+00:00"
+          }
+        },
+        {
+          "shard": 2,
+          "start": 1140,
+          "end": 1710,
+          "count": 570,
+          "pid": 54928,
+          "created_utc": "2026-10-13T22:43:07.5098278Z",
+          "completed_utc": "2026-10-13T22:43:19.3627480+00:00",
+          "state_sha256": "c4e8aaed1f5c1c2457936193dccae00c26bdd17a08fe40fd81c6be28730a4044",
+          "stderr_sha256": "46b4d9fbab648053c6d734ccff94bb7a5685a8e7e2eac3befbd0be1117c9d7e5",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "075e703bad06356dbddfd236610f994a1b6126b0e301cb5a99612b2dcc654553",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 17498884,
+            "completed_utc": "2026-10-13T22:43:26.7690131+00:00"
+          }
+        },
+        {
+          "shard": 3,
+          "start": 1710,
+          "end": 2281,
+          "count": 571,
+          "pid": 4144,
+          "created_utc": "2026-10-13T22:43:34.9016855Z",
+          "completed_utc": "2026-10-13T22:43:47.2955877+00:00",
+          "state_sha256": "a2185b039e9f4b447216ec34c6ebfffda6f89652663ebfaf093d85e177b25431",
+          "stderr_sha256": "10f13601f9a8e5d1ac582a1383a000ecf293faf9656dc7ef3129bbfcac8ff8de",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "fb2dc0c9a6bae9ffd333bc1dc6ef8dfa0f9b1af797f13a8cd17427e18736ed13",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 20427452,
+            "completed_utc": "2026-10-13T22:43:55.8833143+00:00"
+          }
+        },
+        {
+          "shard": 4,
+          "start": 2281,
+          "end": 2851,
+          "count": 570,
+          "pid": 32144,
+          "created_utc": "2026-10-13T22:44:06.0693940Z",
+          "completed_utc": "2026-10-13T22:44:18.2928036+00:00",
+          "state_sha256": "a5f6d7c817637cbc22dde94bcbafb6e1eea8ab166c1e4549703af81f87572b66",
+          "stderr_sha256": "a3ca9c24439942592b57d9d235b9148709ce5a820722719cd0f3019cf820e792",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "645ee591087f26c1d71b070f7eac33c391f98e6e9f89225a2ec1309c9715636b",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 20565556,
+            "completed_utc": "2026-10-13T22:44:25.4331881+00:00"
+          }
+        },
+        {
+          "shard": 5,
+          "start": 2851,
+          "end": 3421,
+          "count": 570,
+          "pid": 8332,
+          "created_utc": "2026-10-13T22:44:34.0053744Z",
+          "completed_utc": "2026-10-13T22:44:49.2483589+00:00",
+          "state_sha256": "b2f52575d72444a23b10f070bb8b60e14493438c5a1122732ba273c4fb2ef728",
+          "stderr_sha256": "29e523bc09ae15e7bc4b1bf9822c7a3600d5277355e85635886abb4351a8f046",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "63693c413e11dc8173bf82132af2dbf82e7f9c17ae332a86760c08af2c2502fe",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 20485192,
+            "completed_utc": "2026-10-13T22:44:58.3098019+00:00"
+          }
+        },
+        {
+          "shard": 6,
+          "start": 3421,
+          "end": 3991,
+          "count": 570,
+          "pid": 27940,
+          "created_utc": "2026-10-13T22:45:08.5667786Z",
+          "completed_utc": "2026-10-13T22:45:27.5333692+00:00",
+          "state_sha256": "d58b770ef54d6f34bcf3c3568db31f3bf96f67c4e9a2ebae09dcab98550f4d75",
+          "stderr_sha256": "a313cf16ef7bff01e92b72ca203054fa3f093edbd8994410192efd250bf008cd",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "743ff98509ff2876b5fadfd05dd28176a0f8a2895f24c05507bf8ddac79e4fb1",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 18412384,
+            "completed_utc": "2026-10-13T22:45:37.5870631+00:00"
+          }
+        },
+        {
+          "shard": 7,
+          "start": 3991,
+          "end": 4562,
+          "count": 571,
+          "pid": 61180,
+          "created_utc": "2026-10-13T22:45:48.5067996Z",
+          "completed_utc": "2026-10-13T22:46:09.2816533+00:00",
+          "state_sha256": "58d39a749c1e923e4304a1109db95ca2b01fa55127573af4f2516b99b09aafdf",
+          "stderr_sha256": "733454c42b40cc1712ca75574a32bf0e34d3889677dfdd3ef08329ab693ee843",
+          "source_before_sha256": "190182166a09b2ba23fbdfdb5d057d486428a423c712ba040e4c74bc4ea727ef",
+          "posthash_sha256": "88ea437884e68d3c5faab9885b3a9f1bb191869eceeee5aa2913b34469cd4fa6",
+          "post": {
+            "source": 4624,
+            "source_after": 4624,
+            "source_drift": 0,
+            "tools": 19546,
+            "tool_drift": 0,
+            "admitted_free_kib": 18734472,
+            "completed_utc": "2026-10-13T22:46:19.2543760+00:00"
+          }
+        }
+      ]
+    }
+  },
+  "host_await_ms": 10000,
+  "test_timeout_seconds": 120,
+  "outer_seconds_each": 300,
+  "backend": "default LLVM",
+  "j": 1,
+  "public_activation": false,
+  "hosted_qualification": "pending; these are Windows local component receipts"
+}

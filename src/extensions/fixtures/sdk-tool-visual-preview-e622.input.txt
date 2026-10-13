@@ -1,0 +1,38 @@
+const visualRows=[];
+const metadata=object=>Reflect.ownKeys(object).map(key=>{const d=Object.getOwnPropertyDescriptor(object,key);return {key,enumerable:d.enumerable,configurable:d.configurable,writable:d.writable,type:typeof d.value,...(typeof d.value==='function'?{name:d.value.name,length:d.value.length,ownPrototype:Object.hasOwn(d.value,'prototype')}:{} )};});
+const inputs=[
+ {name:'empty',text:'',max:5,width:8,keep:'end'},
+ {name:'short',text:'one',max:5,width:8,keep:'end'},
+ {name:'exact',text:'one\ntwo',max:2,width:8,keep:'end'},
+ {name:'end',text:'one\ntwo\nthree\nfour',max:2,width:8,keep:'end'},
+ {name:'start',text:'one\ntwo\nthree\nfour',max:2,width:8,keep:'start'},
+ {name:'wrap-end',text:'abcdefghijklmnopqrst',max:2,width:4,keep:'end'},
+ {name:'wrap-start',text:'abcdefghijklmnopqrst',max:2,width:4,keep:'start'},
+ {name:'unicode',text:'\u754ca\ud83d\ude42b\u754cc\ud83d\ude42d',max:2,width:4,keep:'end'},
+ {name:'ansi',text:'\x1b[31mred long line\x1b[39m\nsecond\nthird',max:2,width:5,keep:'start'},
+ {name:'trailing-empty',text:'a\n\n',max:1,width:8,keep:'end'},
+ {name:'zero-end',text:'a\nb\nc',max:0,width:8,keep:'end'},
+ {name:'zero-start',text:'a\nb\nc',max:0,width:8,keep:'start'},
+ {name:'negative-end',text:'a\nb\nc',max:-1,width:8,keep:'end'},
+ {name:'fraction',text:'a\nb\nc\nd',max:1.5,width:8,keep:'start'},
+ {name:'narrow-hint',text:'abcdefghijklm',max:1,width:1,keep:'end'},
+];
+for(const input of inputs){
+ const calls=[],options={text:input.text,maxVisualLines:input.max,keep:input.keep,formatHint:hidden=>{calls.push(hidden);return `[${hidden} hidden]`;}};
+ const preview=new VisualLinePreview(options),before=metadata(preview),first=preview.render(input.width),cached=preview.render(input.width),same=first===cached;
+ options.text='changed\nresource\nwith more lines';
+ const retained=preview.render(input.width),retainedSame=retained===first;
+ preview.invalidate();const invalidated={width:preview.cachedWidth,lines:preview.cachedLines};const next=preview.render(input.width),wider=preview.render(input.width+3);
+ visualRows.push({name:input.name,before,first,same,retainedSame,invalidated,next,wider,calls,optionsSame:preview.options===options});
+}
+for(const keep of ['start','end'])for(const padding of [0,1,2])visualRows.push({name:`direct-${keep}-${padding}`,result:truncateToVisualLines('one long line\ntwo\nthree',2,8,padding,keep)});
+{
+ const marker={identity:'hint'},preview=new VisualLinePreview({text:'a\nb\nc',maxVisualLines:1,keep:'end',formatHint(){throw marker;}});let same=false;
+ try{preview.render(8);}catch(error){if(error!==marker)throw error;same=true;}if(!same)throw Error('original hint rejection identity absent');
+ visualRows.push({name:'throw-hint',same,width:preview.cachedWidth,lines:preview.cachedLines});
+}
+{
+ const trace=[],options={get text(){trace.push('text');return'a\nb\nc'},get maxVisualLines(){trace.push('max');return 1},get keep(){trace.push('keep');return'end'},get formatHint(){trace.push('hint');return hidden=>{trace.push(`call:${hidden}`);return'visible';}}},preview=new VisualLinePreview(options);
+ const output=preview.render(8);preview.render(8);visualRows.push({name:'getters-and-cache',trace,output});
+}
+globalThis.sdkVisualPreviewRows={rows:visualRows,prototype:metadata(VisualLinePreview.prototype),constructor:metadata(VisualLinePreview)};
