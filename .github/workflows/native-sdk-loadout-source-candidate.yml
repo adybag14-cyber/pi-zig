@@ -106,7 +106,8 @@ jobs:
           $env:PI_PACKAGE_DIR = $taskPackage
           $env:PI_LOADOUT_SOURCE_ROOT = $taskSource
           $taskHelpers = Join-Path $taskRoot 'verification/sdk-session-loadout-e6220e1-20261013'
-          $taskResolverUri = ([Uri](Join-Path $taskHelpers 'source-observe.mjs')).AbsoluteUri
+          $taskResolverUri = (& $taskNode --input-type=commonjs -e "process.stdout.write(require('node:url').pathToFileURL(process.argv[1]).href)" (Join-Path $taskHelpers 'source-observe.mjs')) -join ''
+          if ($LASTEXITCODE -or !$taskResolverUri.StartsWith('file:///')) { throw 'Source resolver file URL unavailable' }
           foreach ($taskCapture in @('first','second')) {
             $env:PI_LOADOUT_MODULE_LOG = "$taskReceipt/modules-$taskCapture.jsonl"
             & "$taskHelpers/run-source-capture.ps1" -Executable $taskNode -WorkingDirectory $taskRoot -Arguments @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',$taskResolverUri,"$taskHelpers/source-capture.mjs","$taskRoot/src/extensions/fixtures/sdk-session-loadout-e622.input.txt","$taskReceipt/source-$taskCapture.json") -ReceiptBase "$taskReceipt/capture-$taskCapture"
