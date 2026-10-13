@@ -1,0 +1,23 @@
+{
+  "source_job": "cache-warmer-e622-original-first-20261013",
+  "source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_cases": 70,
+  "verified": [
+    {
+      "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+      "count": 1945,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    }
+  ],
+  "checked_utc": "2026-10-13T14:12:31.1904179+00:00"
+}
