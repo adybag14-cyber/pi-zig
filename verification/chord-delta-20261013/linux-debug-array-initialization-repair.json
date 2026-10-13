@@ -1,0 +1,14 @@
+{
+  "negative_run": 38414917806,
+  "negative_linux_debug_job": 115356681252,
+  "negative_candidate_head": "9c4d26ea24c756bac86e82ec9c24db209ad15618",
+  "five_other_modes": "passed",
+  "failure": "Linux Debug whole allocation sweep GC marked array payload after fallible optional aggregate initialization",
+  "correction": "Complete length and identity-piece initialization before publishing optional Array",
+  "regression": "Fail both first tree allocations, require no published array storage, then run GC",
+  "source_oracles_changed": false,
+  "native_debug": "10/10 passed",
+  "fixed_implementation_head": "b7ac507c736668842174bcf2c270d1699a79c6ac",
+  "hosted_status": "pending corrected candidate",
+  "public_activation": false
+}

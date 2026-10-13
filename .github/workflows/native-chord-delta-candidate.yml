@@ -80,7 +80,7 @@ jobs:
           $taskProjectionData = Get-Content -LiteralPath $taskProjection -Raw | ConvertFrom-Json
           if (@($taskProjectionData.cases).Count -ne 7 -or $taskProjectionData.fullFixtureSha256.ToUpperInvariant() -cne $taskFixtures[1].hash) { throw 'Structural projection lost its full-oracle binding' }
           $taskInventory | ConvertTo-Json -Depth 8 | Set-Content "$taskReceipt/original-inventory.json"
-          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; platform = '${{ matrix.os }}'; host_os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; runner_image = $env:ImageOS; runner_image_version = $env:ImageVersion; runner_architecture = $env:RUNNER_ARCH; zig = $taskZig; zig_version = '0.16.0'; zig_sha256 = (Get-FileHash -LiteralPath $taskZig).Hash; compiler_distribution = $taskToolRoot; source_count = $taskInputs.Count; tool_count = $taskTools.Count; source_manifest_sha256 = (Get-FileHash "$taskReceipt/inputs.json").Hash; tool_manifest_sha256 = (Get-FileHash "$taskReceipt/tools.json").Hash; qualified_implementation = '3a7145ef55064f4bf43d12b1af43849f23b141c9'; public_activation = $false; scope = 'Private Chord delta revision diff and full tracker proxy/lifecycle qualification. Host/Cell/Derived composition and complete Pi qualification remain separate.' } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/source.json"
+          [ordered]@{ head = $env:EXPECTED_HEAD; tree = (git rev-parse 'HEAD^{tree}').Trim(); mode = '${{ matrix.mode }}'; platform = '${{ matrix.os }}'; host_os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; runner_image = $env:ImageOS; runner_image_version = $env:ImageVersion; runner_architecture = $env:RUNNER_ARCH; zig = $taskZig; zig_version = '0.16.0'; zig_sha256 = (Get-FileHash -LiteralPath $taskZig).Hash; compiler_distribution = $taskToolRoot; source_count = $taskInputs.Count; tool_count = $taskTools.Count; source_manifest_sha256 = (Get-FileHash "$taskReceipt/inputs.json").Hash; tool_manifest_sha256 = (Get-FileHash "$taskReceipt/tools.json").Hash; qualified_implementation = 'b7ac507c736668842174bcf2c270d1699a79c6ac'; public_activation = $false; scope = 'Private Chord delta revision diff and full tracker proxy/lifecycle qualification. Host/Cell/Derived composition and complete Pi qualification remain separate.' } | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/source.json"
       - name: Compile candidate before the runtime deadline
         shell: pwsh
         timeout-minutes: 22
@@ -150,6 +150,7 @@ jobs:
             'native Chord tracker full original Source60 classes proxies mutations and23negative cases',
             'native Chord tracker retained graph and shared class identities survive collection',
             'native Chord tracker all native allocation failures release full proxy graph',
+            'native Chord tracker failed array initialization leaves no published storage graph',
             'native Chord tracker piece plans match seven genuine original tracker structural batches',
             'native Chord tracker canonical array index and clamp controls',
             'native Chord tracker piece tree retains base identity through splice reverse and plan',
@@ -224,7 +225,7 @@ jobs:
               $taskResult = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
               $taskOwner = Get-Content "$taskRoot/runtime-owner.json" -Raw | ConvertFrom-Json
               if ($taskSource.head -cne $env:EXPECTED_HEAD -or $taskResult.head -cne $env:EXPECTED_HEAD -or $taskResult.mode -cne $taskMode -or $taskResult.platform -cne $taskOs -or $taskResult.status -cne 'passed' -or $taskOwner.status -cne 'passed' -or $taskOwner.exit_code -ne 0) { throw 'Missing or inconsistent terminal candidate qualification' }
-              if ($taskResult.named_count -ne 10 -or $taskResult.diff_cases -ne 108 -or $taskResult.diff_negative -ne 3 -or $taskResult.tracker_cases -ne 60 -or $taskResult.tracker_negative -ne 23 -or $taskResult.gc -cne 'passed' -or $taskResult.all_gpa_failures -cne 'passed' -or $taskOwner.test_timeout_seconds -ne 120 -or $taskOwner.outer_timeout_seconds -ne 300 -or $taskOwner.host_await_guards_changed -or $taskSource.public_activation) { throw 'Candidate inventory or guards changed' }
+              if ($taskResult.named_count -ne 11 -or $taskResult.diff_cases -ne 108 -or $taskResult.diff_negative -ne 3 -or $taskResult.tracker_cases -ne 60 -or $taskResult.tracker_negative -ne 23 -or $taskResult.gc -cne 'passed' -or $taskResult.all_gpa_failures -cne 'passed' -or $taskOwner.test_timeout_seconds -ne 120 -or $taskOwner.outer_timeout_seconds -ne 300 -or $taskOwner.host_await_guards_changed -or $taskSource.public_activation) { throw 'Candidate inventory or guards changed' }
               foreach ($taskKind in @('inputs','tools')) {
                 $taskPost = Get-Content "$taskRoot/$taskKind-posthash.json" -Raw | ConvertFrom-Json
                 if (!$taskPost.count -or $taskPost.drift_count -ne 0 -or @($taskPost.drift).Count) { throw 'Missing or changed matrix inputs' }
