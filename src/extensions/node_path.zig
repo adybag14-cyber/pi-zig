@@ -43,19 +43,29 @@ fn rootMode(path: []const u8, flavor: Flavor, namespace_device: bool) Root {
     return .{ .end = 1, .absolute = true };
 }
 
-fn writeCanonical(writer: *std.Io.Writer, text: []const u8, flavor: Flavor) !void {
-    for (text) |byte| try writer.writeByte(if (isSep(flavor, byte)) separator(flavor) else byte);
+// These helpers accept only an allocating writer. Its drain can fail only when
+// capacity allocation fails; preserve that allocator error at this boundary.
+fn writeByte(output: *std.Io.Writer.Allocating, byte: u8) std.mem.Allocator.Error!void {
+    output.writer.writeByte(byte) catch return error.OutOfMemory;
 }
 
-fn writeDevice(writer: *std.Io.Writer, text: []const u8, flavor: Flavor) !void {
-    if (flavor != .win32 or text.len < 2 or !isSep(flavor, text[0]) or !isSep(flavor, text[1])) return writeCanonical(writer, text, flavor);
-    try writer.writeAll("\\\\");
+fn writeAll(output: *std.Io.Writer.Allocating, text: []const u8) std.mem.Allocator.Error!void {
+    output.writer.writeAll(text) catch return error.OutOfMemory;
+}
+
+fn writeCanonical(output: *std.Io.Writer.Allocating, text: []const u8, flavor: Flavor) std.mem.Allocator.Error!void {
+    for (text) |byte| try writeByte(output, if (isSep(flavor, byte)) separator(flavor) else byte);
+}
+
+fn writeDevice(output: *std.Io.Writer.Allocating, text: []const u8, flavor: Flavor) std.mem.Allocator.Error!void {
+    if (flavor != .win32 or text.len < 2 or !isSep(flavor, text[0]) or !isSep(flavor, text[1])) return writeCanonical(output, text, flavor);
+    try writeAll(output, "\\\\");
     var parts = std.mem.splitAny(u8, text[2..], "/\\");
     var first = true;
     while (parts.next()) |part| {
         if (part.len == 0) continue;
-        if (!first) try writer.writeByte('\\');
-        try writer.writeAll(part);
+        if (!first) try writeByte(output, '\\');
+        try writeAll(output, part);
         first = false;
     }
 }
@@ -67,7 +77,7 @@ fn reservedDevice(path: []const u8) bool {
     return false;
 }
 
-pub fn normalize(gpa: std.mem.Allocator, path: []const u8, flavor: Flavor) ![]u8 {
+pub fn normalize(gpa: std.mem.Allocator, path: []const u8, flavor: Flavor) std.mem.Allocator.Error![]u8 {
     if (path.len == 0) return gpa.dupe(u8, ".");
     var parsed = rootMode(path, flavor, true);
     if (flavor == .win32) {
@@ -92,15 +102,15 @@ pub fn normalize(gpa: std.mem.Allocator, path: []const u8, flavor: Flavor) ![]u8
     }
     var output: std.Io.Writer.Allocating = .init(gpa);
     defer output.deinit();
-    try writeDevice(&output.writer, parsed.device, flavor);
-    if (parsed.absolute) try output.writer.writeByte(separator(flavor));
+    try writeDevice(&output, parsed.device, flavor);
+    if (parsed.absolute) try writeByte(&output, separator(flavor));
     for (parts.items, 0..) |part, index| {
-        if (index > 0) try output.writer.writeByte(separator(flavor));
-        try output.writer.writeAll(part);
+        if (index > 0) try writeByte(&output, separator(flavor));
+        try writeAll(&output, part);
     }
-    if (parts.items.len == 0 and !parsed.absolute) try output.writer.writeByte('.');
+    if (parts.items.len == 0 and !parsed.absolute) try writeByte(&output, '.');
     if (parts.items.len > 0 or !parsed.absolute) {
-        if (isSep(flavor, path[path.len - 1])) try output.writer.writeByte(separator(flavor));
+        if (isSep(flavor, path[path.len - 1])) try writeByte(&output, separator(flavor));
     }
     if (flavor == .win32 and !parsed.absolute and parsed.device.len == 0 and std.mem.indexOfScalar(u8, path, ':') != null) {
         const normalized = output.written();
@@ -114,14 +124,14 @@ pub fn normalize(gpa: std.mem.Allocator, path: []const u8, flavor: Flavor) ![]u8
     return output.toOwnedSlice();
 }
 
-pub fn join(gpa: std.mem.Allocator, paths: []const []const u8, flavor: Flavor) ![]u8 {
+pub fn join(gpa: std.mem.Allocator, paths: []const []const u8, flavor: Flavor) std.mem.Allocator.Error![]u8 {
     var output: std.Io.Writer.Allocating = .init(gpa);
     defer output.deinit();
     var first: ?[]const u8 = null;
     for (paths) |path| {
         if (path.len == 0) continue;
-        if (first == null) first = path else try output.writer.writeByte(separator(flavor));
-        try output.writer.writeAll(path);
+        if (first == null) first = path else try writeByte(&output, separator(flavor));
+        try writeAll(&output, path);
     }
     var joined = output.written();
     if (flavor == .win32 and first != null) {
@@ -136,7 +146,7 @@ pub fn join(gpa: std.mem.Allocator, paths: []const []const u8, flavor: Flavor) !
     return normalize(gpa, joined, flavor);
 }
 
-pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, paths: []const []const u8, flavor: Flavor) ![]u8 {
+pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, paths: []const []const u8, flavor: Flavor) std.mem.Allocator.Error![]u8 {
     var tail: std.ArrayList([]const u8) = .empty;
     defer tail.deinit(gpa);
     var absolute = false;
@@ -171,13 +181,13 @@ pub fn resolve(gpa: std.mem.Allocator, cwd: []const u8, paths: []const []const u
     }
     var output: std.Io.Writer.Allocating = .init(gpa);
     defer output.deinit();
-    try writeDevice(&output.writer, device, flavor);
-    if (absolute) try output.writer.writeByte(separator(flavor));
+    try writeDevice(&output, device, flavor);
+    if (absolute) try writeByte(&output, separator(flavor));
     var count = tail.items.len;
     while (count > 0) {
         count -= 1;
-        try output.writer.writeAll(tail.items[count]);
-        if (count > 0) try output.writer.writeByte(separator(flavor));
+        try writeAll(&output, tail.items[count]);
+        if (count > 0) try writeByte(&output, separator(flavor));
     }
     const result = try normalize(gpa, output.written(), flavor);
     errdefer gpa.free(result);
@@ -472,4 +482,33 @@ test "native path cwd resolution uses an owned descriptor rather than the cwd se
     const path = try engine.toString(result);
     defer engine.gpa.free(path);
     try std.testing.expect(root(path, native).absolute);
+}
+
+test "native path allocating writes preserve OutOfMemory through every capacity failure" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            // Long paths force repeated writer growth beyond the initial capacity.
+            const long = "segment/" ** 100;
+            inline for (.{ Flavor.posix, Flavor.win32 }) |flavor| {
+                const normalized = try normalize(gpa, long ++ "../leaf/", flavor);
+                defer gpa.free(normalized);
+                try std.testing.expect(normalized.len > 256);
+                const joined = try join(gpa, &.{ long, "..", "leaf/" }, flavor);
+                defer gpa.free(joined);
+                try std.testing.expectEqualStrings(normalized, joined);
+                const resolved = try resolve(gpa, if (flavor == .win32) "C:\\cwd" else "/cwd", &.{ long, "..", "leaf/" }, flavor);
+                defer gpa.free(resolved);
+                try std.testing.expect(root(resolved, flavor).absolute);
+                try std.testing.expect(!isSep(flavor, resolved[resolved.len - 1]));
+            }
+            inline for (.{ "\\\\server\\share\\a\\..\\leaf", "CON:leaf", "a:b/", "" }) |path| {
+                const normalized = try normalize(gpa, path, .win32);
+                defer gpa.free(normalized);
+            }
+            const other_drive = try resolve(gpa, "C:\\cwd", &.{"d:leaf"}, .win32);
+            defer gpa.free(other_drive);
+            try std.testing.expectEqualStrings("d:\\leaf", other_drive);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
 }
