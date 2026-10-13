@@ -1,0 +1,51 @@
+{
+  "implementation_commit": "4a47deb67e4f943e202f8c9c4b9d31c04727ddb2",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "12 ordinary session model and thinking methods plus 3 shared AI model value helpers; private prototype assembly only",
+  "source_cases": 43,
+  "original_factory_instances": 43,
+  "debug": {
+    "tests": 11,
+    "status": "passed",
+    "receipt": "root-latest-sdk-models-debug-source43-names-fixed-20261013.json",
+    "gc": true,
+    "full_allocation_sweep": true
+  },
+  "release_safe": {
+    "tests": 11,
+    "status": "passed",
+    "receipt": "root-latest-sdk-models-releasesafe-source43-20261013.json",
+    "gc": true,
+    "full_allocation_sweep": true
+  },
+  "source_files": 4847,
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "committed_blobs_verified": 4847,
+  "committed_byte_drift": 0,
+  "original_source_posthash": {
+    "runtime_files": 31064,
+    "drift": 0,
+    "node_distribution_files": 1774,
+    "source_files": 1945
+  },
+  "quickjs_binary_operator": {
+    "implementation": "actual QuickJS OP_mod interpreter semantics",
+    "new_case": 8,
+    "existing_cases_0_through_7": "unchanged",
+    "operation": "remainder"
+  },
+  "preserved_negatives": [
+    "First Debug compile rejected local emit shadow",
+    "Second Debug compile rejected local selected shadow"
+  ],
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending"
+}

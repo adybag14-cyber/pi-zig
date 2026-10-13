@@ -1,0 +1,9 @@
+{
+  "commit": "4a47deb67e4f943e202f8c9c4b9d31c04727ddb2",
+  "snapshot": "root-latest-sdk-models-releasesafe-source43-20261013-source-before.json",
+  "snapshot_sha256": "4B7FDD4120CFEC991831C6F59B5A6C9F9067093A1E7D1B3FBB580245DE7ED8EB",
+  "frozen_source_files": 4847,
+  "committed_blobs": 4847,
+  "sha256_and_git_blob_drift": [],
+  "completed_utc": "2026-10-13T22:30:25.0246837+00:00"
+}
