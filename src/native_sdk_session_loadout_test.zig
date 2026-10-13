@@ -166,5 +166,5 @@ test "native SDK session loadout releases every failed full Source packet host a
             };
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+    try @import("test_support/exhaustive_allocation_shards.zig").check(.worker, "sdk-session-loadout", Probe.run, .{});
 }
