@@ -21,6 +21,8 @@ jobs:
         mode: [Debug, ReleaseSafe]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 75
+    env:
+      PI_LOADOUT_ALLOCATION_SHARDS: ${{ matrix.os == 'macos-latest' && matrix.mode == 'Debug' && '16' || '8' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -47,7 +49,7 @@ jobs:
           $taskTools=@($taskZig;Get-ChildItem -LiteralPath $taskLib -File -Recurse -Force|Where-Object{!$_.LinkType}|ForEach-Object FullName)|Sort-Object -Unique|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}}
           $taskInputs|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/inputs.json"
           $taskTools|ConvertTo-Json -Depth 4|Set-Content "$taskReceipt/tools.json"
-          [ordered]@{head='${{ github.sha }}';tree=(git rev-parse 'HEAD^{tree}').Trim();os='${{ matrix.os }}';mode='${{ matrix.mode }}';source_count=$taskInputs.Count;tools_count=@($taskTools).Count;source_cases=55;public_activation=$false}|ConvertTo-Json|Set-Content "$taskReceipt/source.json"
+          [ordered]@{head='${{ github.sha }}';tree=(git rev-parse 'HEAD^{tree}').Trim();os='${{ matrix.os }}';mode='${{ matrix.mode }}';allocation_shards=[int]$env:PI_LOADOUT_ALLOCATION_SHARDS;source_count=$taskInputs.Count;tools_count=@($taskTools).Count;source_cases=55;public_activation=$false}|ConvertTo-Json|Set-Content "$taskReceipt/source.json"
       - name: Compile the unchanged native artifact without execution
         shell: pwsh
         timeout-minutes: 23
@@ -63,9 +65,11 @@ jobs:
           $taskZig=(Get-Command zig).Source
           $taskReceipt='verification/native-sdk-loadout-portable-candidate'
           $taskUniverse=$null;$taskPrevious=0;$taskIndices=[Collections.Generic.List[int]]::new()
-          foreach($taskShard in 0..7){
+          $taskShardCount=[int]$env:PI_LOADOUT_ALLOCATION_SHARDS
+          if($taskShardCount -notin @(8,16)){throw'Unexpected allocation partition profile'}
+          foreach($taskShard in 0..($taskShardCount-1)){
             $env:PI_EXHAUSTIVE_ALLOCATION_SHARD=[string]$taskShard
-            $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS='8'
+            $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS=[string]$taskShardCount
             $taskBase="$taskReceipt/shard-$taskShard"
             & verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1 -Executable $taskZig -WorkingDirectory (Get-Location).Path -Arguments @('build','test-native-sdk-session-loadout','-Doptimize=${{ matrix.mode }}','-j1','--test-timeout','120s','--summary','all') -ReceiptBase $taskBase -TimeoutSeconds 300
             $taskLog=Get-Content -LiteralPath "$taskBase.stderr.log" -Raw
@@ -77,17 +81,17 @@ jobs:
             $taskBaseline=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_BASELINE sdk-session-loadout total=(\d+)$'))
             if($taskBaseline.Count -ne 1 -or [long]$taskBaseline[0].Groups[1].Value -ne $taskTotal){throw'Original baseline marker missing or changed'}
             if($null -eq $taskUniverse){$taskUniverse=$taskTotal}
-            if($taskValues[0] -ne $taskShard -or $taskValues[1] -ne 8 -or $taskTotal -ne $taskUniverse -or $taskStart -ne $taskPrevious -or $taskStart -ne [math]::Floor($taskTotal*$taskShard/8) -or $taskEnd -ne [math]::Floor($taskTotal*($taskShard+1)/8)){throw'Allocation universe gap/overlap/change'}
+            if($taskValues[0] -ne $taskShard -or $taskValues[1] -ne $taskShardCount -or $taskTotal -ne $taskUniverse -or $taskStart -ne $taskPrevious -or $taskStart -ne [math]::Floor($taskTotal*$taskShard/$taskShardCount) -or $taskEnd -ne [math]::Floor($taskTotal*($taskShard+1)/$taskShardCount)){throw'Allocation universe gap/overlap/change'}
             $taskBegin=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_BEGIN sdk-session-loadout (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
             $taskDone=@([regex]::Matches($taskLog,'(?m)^EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE sdk-session-loadout (\d+)$')|ForEach-Object{[int]$_.Groups[1].Value})
             if($taskBegin.Count -ne ($taskEnd-$taskStart) -or $taskDone.Count -ne $taskBegin.Count){throw'Original allocation indices missing'}
             for($taskIndex=0;$taskIndex -lt $taskDone.Count;$taskIndex++){if($taskBegin[$taskIndex] -ne ($taskStart+$taskIndex) -or $taskDone[$taskIndex] -ne ($taskStart+$taskIndex)){throw'Index gap or duplicate'};$taskIndices.Add($taskDone[$taskIndex])}
-            $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE sdk-session-loadout $taskShard/8 range=[$taskStart,$taskEnd) total=$taskTotal"
+            $taskComplete="EXHAUSTIVE_ALLOCATION_COMPLETE sdk-session-loadout $taskShard/$taskShardCount range=[$taskStart,$taskEnd) total=$taskTotal"
             if([regex]::Matches($taskLog,[regex]::Escape($taskComplete)).Count -ne 1){throw'Exact terminal partition marker absent'}
             $taskPrevious=$taskEnd
           }
           if($taskPrevious -ne $taskUniverse -or $taskIndices.Count -ne $taskUniverse -or @($taskIndices|Sort-Object -Unique).Count -ne $taskUniverse){throw'Complete allocation universe did not pass'}
-          [ordered]@{head='${{ github.sha }}';os='${{ matrix.os }}';mode='${{ matrix.mode }}';status='passed';source_cases=55;tests_each=11;shards=8;baseline=$taskUniverse;completed_indices=$taskIndices.Count;missing=0;duplicates=0;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+          [ordered]@{head='${{ github.sha }}';os='${{ matrix.os }}';mode='${{ matrix.mode }}';status='passed';source_cases=55;tests_each=11;shards=$taskShardCount;baseline=$taskUniverse;completed_indices=$taskIndices.Count;missing=0;duplicates=0;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
       - name: Verify full frozen Source and tool inputs after terminal execution
         if: ${{ always() && steps.freeze.outcome == 'success' }}
         shell: pwsh
