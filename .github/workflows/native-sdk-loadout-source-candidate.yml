@@ -1,6 +1,8 @@
 name: Private SDK loadout genuine POSIX Source capture
 
 on:
+  push:
+    branches: [checkpoint/native-sdk-loadout-source-candidate-20261013]
   workflow_dispatch:
 
 permissions:
