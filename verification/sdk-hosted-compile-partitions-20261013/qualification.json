@@ -1,0 +1,37 @@
+{
+  "negative_run": 38378872459,
+  "negative_job": 115234010596,
+  "negative_head": "76692817853747a62aaf8b3745cd839be6ff3cbb",
+  "failure": "Combined SDK compilation exceeded22minutes",
+  "subsequent_latest_runtime": "207/207 passed",
+  "groups": {
+    "build-hosted-sdk-components": [
+      "test-native-sdk-send-user",
+      "test-native-sdk-session-queries",
+      "test-native-sdk-query-consumers",
+      "test-native-sdk-session-lifecycle",
+      "test-native-sdk-message-conversion",
+      "test-native-sdk-session-prepare"
+    ],
+    "build-hosted-sdk-lifecycle-components": [
+      "test-native-sdk-session-lifecycle",
+      "test-native-sdk-session-prepare"
+    ],
+    "build-hosted-sdk-message-components": [
+      "test-native-sdk-send-user",
+      "test-native-sdk-message-conversion"
+    ],
+    "build-hosted-sdk-query-components": [
+      "test-native-sdk-session-queries",
+      "test-native-sdk-query-consumers"
+    ]
+  },
+  "partition_disjoint": true,
+  "partition_complete": true,
+  "runtime_inventory_changed": false,
+  "step_timeout_minutes": 22,
+  "job_timeout_minutes": 120,
+  "workflow_powershell_blocks": 21,
+  "workflow_parse_errors": 0,
+  "qualification": "static; hosted required"
+}

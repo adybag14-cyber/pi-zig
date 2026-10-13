@@ -2346,6 +2346,9 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance", "test-exhaustive-allocation-coverage", "test-exhaustive-allocation-helper" });
     addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source", "test-native-chord-contract-source", "test-native-chord-clone-source", "test-native-chord-normalization-evaluate-source" });
     addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers", "test-native-sdk-session-lifecycle", "test-native-sdk-message-conversion", "test-native-sdk-session-prepare" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-query-components", &.{ "test-native-sdk-session-queries", "test-native-sdk-query-consumers" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-message-components", &.{ "test-native-sdk-send-user", "test-native-sdk-message-conversion" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-lifecycle-components", &.{ "test-native-sdk-session-lifecycle", "test-native-sdk-session-prepare" });
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

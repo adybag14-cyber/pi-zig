@@ -58,3 +58,11 @@ Windows Debug and ReleaseSafe each passed 159 steps and 19 tests. The first cold
 attempts reached their 300-second outer bound; separately admitted warm attempts
 passed. Hosted macOS qualification remains pending on the published increment.
 Evidence is scoped in verification/durable-whole-case-boundaries-20261013.
+
+The Windows ReleaseSafe job at 7669281 passed its 207-test latest runtime gate
+but exceeded the 22-minute combined SDK compilation budget. Three disjoint
+compile-only groups now own the same six SDK targets: queries, messages and
+lifecycle/preparation. The original combined alias remains available, runtime
+coverage is unchanged, each step retains 22 minutes, and the job retains its
+120-minute cap. Static partition and workflow parser evidence is retained in
+verification/sdk-hosted-compile-partitions-20261013; hosted qualification is pending.

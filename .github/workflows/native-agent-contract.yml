@@ -234,15 +234,33 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & zig build build-hosted-chord-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-chord.log
           if ($LASTEXITCODE -ne 0) { throw 'Chord context component compilation failed' }
-      - name: Compile SDK message artifacts before the runtime budget
-        id: compile_sdk
+      - name: Compile SDK query artifacts before the runtime budget
+        id: compile_sdk_queries
         if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
         timeout-minutes: 22
         run: |
           $ErrorActionPreference = 'Stop'
-          & zig build build-hosted-sdk-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk.log
+          & zig build build-hosted-sdk-query-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk-queries.log
+          if ($LASTEXITCODE -ne 0) { throw 'SDK query component compilation failed' }
+      - name: Compile SDK message artifacts before the runtime budget
+        id: compile_sdk_messages
+        if: ${{ !cancelled() && steps.compile_sdk_queries.outcome == 'success' && matrix.group == 0 }}
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-hosted-sdk-message-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk-messages.log
           if ($LASTEXITCODE -ne 0) { throw 'SDK message component compilation failed' }
+      - name: Compile SDK lifecycle artifacts before the runtime budget
+        id: compile_sdk
+        if: ${{ !cancelled() && steps.compile_sdk_messages.outcome == 'success' && matrix.group == 0 }}
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-hosted-sdk-lifecycle-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-sdk-lifecycle.log
+          if ($LASTEXITCODE -ne 0) { throw 'SDK lifecycle component compilation failed' }
       - name: Exercise latest MCP application restoration and durable replay components
         if: ${{ !cancelled() && steps.compile_latest.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
