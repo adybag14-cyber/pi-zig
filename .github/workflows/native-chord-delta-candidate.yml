@@ -1,6 +1,8 @@
 name: Private native Chord delta candidate
 
 on:
+  push:
+    branches: [work/chord-delta-e6220e1-20261013]
   workflow_dispatch:
     inputs:
       expected_sha:
@@ -35,7 +37,7 @@ jobs:
       - name: Freeze exact source, full compiler and original case inventory
         shell: pwsh
         env:
-          EXPECTED_HEAD: ${{ inputs.expected_sha }}
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
           EVENT_HEAD: ${{ github.sha }}
         run: |
           $ErrorActionPreference = 'Stop'
@@ -164,7 +166,7 @@ jobs:
         if: always()
         shell: pwsh
         env:
-          EXPECTED_HEAD: ${{ inputs.expected_sha }}
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
         run: |
           $ErrorActionPreference = 'Stop'
           $taskReceipt = 'verification/native-chord-delta-candidate'
@@ -208,7 +210,7 @@ jobs:
       - name: Require all six exact-head platform and mode qualifications
         shell: pwsh
         env:
-          EXPECTED_HEAD: ${{ inputs.expected_sha }}
+          EXPECTED_HEAD: ${{ inputs.expected_sha || github.sha }}
           PLATFORM_RESULT: ${{ needs.platform.result }}
         run: |
           $ErrorActionPreference = 'Stop'
