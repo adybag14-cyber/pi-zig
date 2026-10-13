@@ -1456,6 +1456,12 @@ pub fn build(b: *std.Build) void {
     linkSqlite(session_values_tests.root_module, sqlite_lib_dir, sqlite_library);
     session_values_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-values", "Compare original ordinary AgentSession getters routes metadata and complete native owner graphs").dependOn(&b.addRunArtifact(session_values_tests).step);
+    const prompt_images_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_prompt_images_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session prompt images"}, .use_llvm = use_llvm });
+    linkQuickJs(b, prompt_images_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(prompt_images_tests.root_module, sqlite_lib_dir, sqlite_library);
+    prompt_images_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-prompt-images", "Compare original prompt-image preprocessing with native codec limits hints and complete owner lifetimes").dependOn(&b.addRunArtifact(prompt_images_tests).step);
+    b.step("build-native-sdk-session-prompt-images", "Compile prompt-image normalization independently of its original runtime deadline").dependOn(&prompt_images_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

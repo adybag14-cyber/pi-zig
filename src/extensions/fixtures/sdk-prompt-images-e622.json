@@ -1,0 +1,204 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "0bc2c416e5f4ff1989a380f0ed1283c1ac73abb59c631228101cd9548dcd57f7",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 15,
+  "rows": [
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "empty-prompt-images",
+      "value": {
+        "images": [],
+        "hints": []
+      }
+    },
+    {
+      "name": "png",
+      "value": {
+        "result": {
+          "images": [
+            {
+              "type": "image",
+              "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+              "mimeType": "image/png"
+            }
+          ],
+          "hints": []
+        },
+        "identity": false,
+        "keys": [
+          [
+            "type",
+            "data",
+            "mimeType"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "alias",
+      "value": {
+        "result": {
+          "images": [
+            {
+              "type": "image",
+              "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+              "mimeType": "image/png"
+            }
+          ],
+          "hints": []
+        },
+        "identity": false,
+        "keys": [
+          [
+            "type",
+            "data",
+            "mimeType"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "convert",
+      "value": {
+        "result": {
+          "images": [
+            {
+              "type": "image",
+              "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+              "mimeType": "image/png"
+            }
+          ],
+          "hints": [
+            "[Image converted from image/bmp to image/png.]"
+          ]
+        },
+        "identity": false,
+        "keys": [
+          [
+            "type",
+            "data",
+            "mimeType"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "invalid-convert",
+      "value": {
+        "result": {
+          "images": [],
+          "hints": [
+            "[Image omitted: could not be converted to a supported inline image format.]"
+          ]
+        },
+        "identity": false,
+        "keys": []
+      }
+    },
+    {
+      "name": "invalid-resize",
+      "value": {
+        "result": {
+          "images": [],
+          "hints": [
+            "[Image omitted: could not be resized below the inline image size limit.]"
+          ]
+        },
+        "identity": false,
+        "keys": []
+      }
+    },
+    {
+      "name": "model-resize-profile",
+      "value": {
+        "images": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAAFElEQVR4AQEJAPb/AIN4ged4fIPxFD0EzEXctpoAAAAASUVORK5CYII=",
+            "mimeType": "image/png"
+          }
+        ],
+        "hints": [
+          "[Image: original 8x5, displayed at 2x1. Multiply coordinates by 4.00 to map to original image.]"
+        ]
+      }
+    },
+    {
+      "name": "live-image-and-profile-getters",
+      "value": {
+        "trace": [
+          "data",
+          "mime",
+          "auto",
+          "limits",
+          "images",
+          "resize"
+        ],
+        "result": {
+          "images": [
+            {
+              "type": "image",
+              "data": "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAsElEQVR4AQGlAFr/ABc8Yf+r0PX/P2SJQNP4Hf9njLH/+yBF/4+02f8jSG3/ALfcAf9LcJX/3wQp/3OYvf8HLFH/m8DlQC9Uef/D6A3/AFd8of/rEDX/f6TJ/xM4Xf+nzPH/O2CF/8/0Gf9jiK3/APccQUCLsNX/H0Rp/7PY/f9HbJH/2wAl/2+Uuf8DKE3/AJe84f8rUHX/v+QJ/1N4nUDnDDH/e6DF/w80Wf+jyO3/wnNfzaUk6xEAAAAASUVORK5CYII=",
+              "mimeType": "image/png"
+            }
+          ],
+          "hints": []
+        }
+      }
+    },
+    {
+      "name": "iterator-original-error",
+      "value": {
+        "same": true,
+        "closed": 1
+      }
+    },
+    {
+      "name": "prompt-image-method-metadata",
+      "value": {
+        "name": "_normalizePromptImages",
+        "length": 1,
+        "prototype": false,
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "async": true
+      }
+    }
+  ]
+}
