@@ -20,7 +20,7 @@ jobs:
         mode: [Debug, ReleaseSafe]
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 35
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
@@ -51,13 +51,34 @@ jobs:
           $taskInputs | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/inputs.json"
           $taskTools | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/tools.json"
           [ordered]@{head=$env:EXPECTED_HEAD; tree=(git rev-parse 'HEAD^{tree}').Trim(); mode='${{ matrix.mode }}'; source_count=$taskInputs.Count; tool_count=@($taskTools).Count; public_activation=$false; scope='Ordinary constructor initialization phase, public live getters, events and tool-name matcher; runtime builder and full factory remain unfinished'} | ConvertTo-Json | Set-Content "$taskReceipt/source.json"
-      - name: Compile ordinary constructor getter event and matcher artifacts
+      - name: Compile ordinary constructor artifact
         shell: pwsh
         timeout-minutes: 22
         run: |
           $ErrorActionPreference = 'Stop'
-          & zig build build-native-sdk-constructor-assembly -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile.log
-          if ($LASTEXITCODE -ne 0) { throw 'Constructor/getter cold compilation failed' }
+          & zig build build-native-sdk-constructor-phase -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile-constructor.log
+          if ($LASTEXITCODE -ne 0) { throw 'Constructor cold compilation failed' }
+      - name: Compile ordinary public getter artifact
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-session-values -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile-values.log
+          if ($LASTEXITCODE -ne 0) { throw 'Public getter cold compilation failed' }
+      - name: Compile ordinary session event artifact
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-session-events -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile-events.log
+          if ($LASTEXITCODE -ne 0) { throw 'Session event cold compilation failed' }
+      - name: Compile tool-name matcher artifact
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-native-sdk-tool-name-matcher -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-constructor-values-candidate/compile-matcher.log
+          if ($LASTEXITCODE -ne 0) { throw 'Tool-name matcher cold compilation failed' }
       - name: Exercise original constructor initialization live getters events and matcher graphs
         id: runtime
         shell: pwsh
