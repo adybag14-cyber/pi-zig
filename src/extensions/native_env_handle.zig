@@ -50,6 +50,8 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, _: 
 }
 pub fn create(scope: *Scope, bindings: c.JSValue) !c.JSValue {
     const prototype = try scope.object();
+    const constructor = try @import("native_class.zig").constructor(scope.engine, "Handle", 4, prototype, construct, &.{});
+    _ = try scope.own(constructor);
     var constants = [_]c.JSValue{bindings};
     inline for (.{ .{ "request", Method.request, 1 }, .{ "pread", Method.pread, 2 }, .{ "close", Method.close, 0 } }) |method| {
         const function = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, dispatch, method[0], method[2], @intFromEnum(method[1]), 1, &constants)));
@@ -59,5 +61,5 @@ pub fn create(scope: *Scope, bindings: c.JSValue) !c.JSValue {
         }
         if (c.JS_DefinePropertyValueStr(scope.engine.context, prototype, method[0], c.JS_DupValue(scope.engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(scope.engine);
     }
-    return scope.own(try @import("native_class.zig").constructor(scope.engine, "Handle", 4, prototype, construct, &.{}));
+    return constructor;
 }

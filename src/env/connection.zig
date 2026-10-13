@@ -186,6 +186,22 @@ pub const Connection = struct {
             return err;
         };
     }
+    /// Guest JSON.stringify has already produced well-formed protocol bytes.
+    pub fn transmitJson(self: *Connection, ticket: Ticket, json: []const u8, payload: []const u8) !void {
+        if (ticket.connection != self or ticket.session != self.session) return error.StaleDaemonSession;
+        self.sendJson(ticket.id, json, payload) catch |err| {
+            self.release(ticket);
+            self.fail(err);
+            return err;
+        };
+    }
+    fn sendJson(self: *Connection, id: u32, json: []const u8, payload: []const u8) !void {
+        const encoded = try wire.encodeJson(record_allocator, .request, id, json, payload);
+        defer record_allocator.free(encoded);
+        self.write_mutex.lockUncancelable(self.io);
+        defer self.write_mutex.unlock(self.io);
+        try self.input.writeStreamingAll(self.io, encoded);
+    }
     pub fn ready(self: *Connection, timeout_ms: u64) !void {
         const deadline = Io.Clock.awake.now(self.io).addDuration(.fromMilliseconds(@intCast(@min(timeout_ms, std.math.maxInt(i64)))));
         while (true) {

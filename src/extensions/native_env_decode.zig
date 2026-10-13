@@ -53,7 +53,8 @@ pub fn create(engine: *js.Engine) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const prototype = try scope.object();
+    const constructor = try scope.own(try @import("native_class.zig").constructor(engine, "StreamDecoder", 0, prototype, construct, &.{}));
     const function = try engine.checked(c.JS_NewCFunction(engine.context, invoke, "decode", 1));
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "decode", function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    return @import("native_class.zig").constructor(engine, "StreamDecoder", 0, prototype, construct, &.{});
+    return c.JS_DupValue(engine.context, constructor);
 }

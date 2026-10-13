@@ -240,6 +240,12 @@ pub fn install(scope: *Scope, bindings: c.JSValue) !void {
             if (c.JS_NewClass(scope.engine.runtime, id.*, &definition) < 0) return error.OutOfMemory;
         }
         const prototype = try scope.object();
+        const name: [:0]const u8 = switch (kind) {
+            .binary => "RemoteBinaryReader",
+            .directory => "RemoteDirReader",
+            .text => "RemoteTextLineReader",
+        };
+        const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, name, 1, prototype, construct, &.{ bindings, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) }));
         inline for (std.meta.fields(Method)) |field| {
             const operation: Method = @enumFromInt(field.value);
             const selected = operation == .close or switch (kind) {
@@ -259,12 +265,6 @@ pub fn install(scope: *Scope, bindings: c.JSValue) !void {
                 if (c.JS_DefinePropertyValueStr(scope.engine.context, prototype, field.name, c.JS_DupValue(scope.engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(scope.engine);
             }
         }
-        const name: [:0]const u8 = switch (kind) {
-            .binary => "RemoteBinaryReader",
-            .directory => "RemoteDirReader",
-            .text => "RemoteTextLineReader",
-        };
-        const constructor = try scope.own(try @import("native_class.zig").constructor(scope.engine, name, 1, prototype, construct, &.{ bindings, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) }));
         try scope.put(bindings, name, constructor);
     }
 }

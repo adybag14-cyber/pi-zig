@@ -1,0 +1,23 @@
+{
+  "pid": 1912,
+  "created_utc": "2026-10-13T19:19:29.3711052Z",
+  "executable": "D:\\a\\_temp\\30258456-cf01-4ca3-a1d6-fbd4d41e1276\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "argv": [
+    "build",
+    "test-native-env-guest",
+    "test-env-list-files",
+    "test-env",
+    "-Doptimize=ReleaseSafe",
+    "-Duse-llvm=true",
+    "-Ddiagnostic-tests=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "command_line": "\"D:\\a\\_temp\\30258456-cf01-4ca3-a1d6-fbd4d41e1276\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-env-guest test-env-list-files test-env -Doptimize=ReleaseSafe -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+  "status": "failed",
+  "exit_code": 1,
+  "completed_utc": "2026-10-13T19:20:18.1207317+00:00"
+}

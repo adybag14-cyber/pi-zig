@@ -3,6 +3,24 @@ const std = @import("std");
 const wire = @import("frame.zig");
 const Io = std.Io;
 const Item = struct { encoded: []u8, payload_bytes: usize };
+/// The official daemon's serde_json 1.0.151 uses BTreeMap object ordering.
+/// Apply that ordering only when this daemon serializes a wire reply/event.
+fn rustObjectOrder(value: *std.json.Value) void {
+    switch (value.*) {
+        .object => |*object| {
+            for (object.values()) |*child| rustObjectOrder(child);
+            const Order = struct {
+                keys: []const []const u8,
+                pub fn lessThan(self: @This(), left: usize, right: usize) bool {
+                    return std.mem.lessThan(u8, self.keys[left], self.keys[right]);
+                }
+            };
+            object.sort(Order{ .keys = object.keys() });
+        },
+        .array => |*array| for (array.items) |*child| rustObjectOrder(child),
+        else => {},
+    }
+}
 pub const Output = struct {
     io: Io,
     allocator: std.mem.Allocator = std.heap.page_allocator,
@@ -49,15 +67,27 @@ pub const Output = struct {
         self.queued.set(self.io);
     }
     pub fn send(self: *Output, kind: wire.Kind, id: u32, value: anytype, payload: []const u8) !void {
-        try self.queue(try wire.encode(self.allocator, kind, id, value, payload), payload.len, payload.len > 64 * 1024);
+        const json = try std.json.Stringify.valueAlloc(self.allocator, value, .{ .emit_null_optional_fields = false });
+        defer self.allocator.free(json);
+        try self.sendJson(kind, id, json, payload);
     }
     /// All records of one command, including its terminal result, share the
     /// bulk FIFO so priority replies cannot overtake that command's output.
     pub fn sendBulk(self: *Output, kind: wire.Kind, id: u32, value: anytype, payload: []const u8) !void {
-        try self.queue(try wire.encode(self.allocator, kind, id, value, payload), payload.len, true);
+        const json = try std.json.Stringify.valueAlloc(self.allocator, value, .{ .emit_null_optional_fields = false });
+        defer self.allocator.free(json);
+        try self.queue(try self.rustFrame(kind, id, json, payload), payload.len, true);
     }
     pub fn sendJson(self: *Output, kind: wire.Kind, id: u32, json: []const u8, payload: []const u8) !void {
-        try self.queue(try wire.encodeJson(self.allocator, kind, id, json, payload), payload.len, payload.len > 64 * 1024);
+        try self.queue(try self.rustFrame(kind, id, json, payload), payload.len, payload.len > 64 * 1024);
+    }
+    fn rustFrame(self: *Output, kind: wire.Kind, id: u32, json: []const u8, payload: []const u8) ![]u8 {
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.allocator, json, .{});
+        defer parsed.deinit();
+        rustObjectOrder(&parsed.value);
+        const ordered = try std.json.Stringify.valueAlloc(self.allocator, parsed.value, .{});
+        defer self.allocator.free(ordered);
+        return wire.encodeJson(self.allocator, kind, id, ordered, payload);
     }
     pub fn waitForRoom(self: *Output, abort: *const std.atomic.Value(bool), killed: *const std.atomic.Value(bool)) !void {
         while (true) {
