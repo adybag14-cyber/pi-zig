@@ -733,7 +733,7 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
+    try observed.acknowledgeStartup(&child, ">", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.sendEditorRow(&child, "%", "%");
     try observed.wait(&child, "→ Plugin One", 0);
@@ -794,7 +794,7 @@ test "real custom editor fatal diagnostic getter runs after physical raw restora
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
+    try observed.acknowledgeStartup(&child, ">", "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     // The getter record and exact diagnostic prove input consumption without
     // requiring a transient editor frame after fatal shutdown has started.
@@ -821,7 +821,9 @@ test "real custom editor focus modal handoff retained draft default restoration 
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, "/owned-ready\r", "OWNED_FIXTURE_READY:OWNER_INSTALLED");
+    // session_start replaces the default editor before admission. Its rendered
+    // owner is the startup marker even when no transient default prompt paints.
+    try observed.acknowledgeStartup(&child, "OWNED_WIDTH:100 FOCUS:true", "/owned-ready\r", "OWNED_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "OWNED_WIDTH:100 FOCUS:true", 0);
     try observed.sendEditorRow(&child, "focus-draft Ω", "focus-draft Ω");
     try observed.send(&child, "\x07", "FOCUS:false");
@@ -854,7 +856,7 @@ test "real native renderer mailbox updates idle durable tool slots resizes and p
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
+    try observed.acknowledgeStartup(&child, ">", "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "run-render\r", "ROW_RESULT:early:100:partial:seed:true");
     try std.testing.expect(!try observed.screen.contains("turn-complete"));
@@ -903,7 +905,7 @@ test "real native renderer idle original error keeps canonical result draft and 
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.acknowledgeStartup(&child, "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
+    try observed.acknowledgeStartup(&child, ">", "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "render-error\r", "ERROR_RESULT:100");
     const initial_result_frame = observed.screen.frames;
@@ -1376,8 +1378,8 @@ const Observer = struct {
     fn waitStartupCommand(self: *Observer, child: *pty.Session, after_frame: usize) !void {
         return self.waitStartupMarker(child, "FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK", after_frame);
     }
-    fn acknowledgeStartup(self: *Observer, child: *pty.Session, command: []const u8, marker: []const u8) !void {
-        try self.waitInitialStartup(child, ">");
+    fn acknowledgeStartup(self: *Observer, child: *pty.Session, editor_marker: []const u8, command: []const u8, marker: []const u8) !void {
+        try self.waitInitialStartup(child, editor_marker);
         try std.testing.expect(try self.screen.contains("pi (pi-zig)"));
         const frame = self.screen.frames;
         try child.send(command);

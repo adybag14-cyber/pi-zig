@@ -1,0 +1,38 @@
+{
+  "base": "10f79e3",
+  "body_proof": [
+    {
+      "path": "src/native_durable_codemode_journal_test.zig",
+      "original_sha256": "46cbe10ced424ed7bf91a90ad5255eea7f9b6738acaf890f7fa5a38284d128ca",
+      "restored_sha256": "46cbe10ced424ed7bf91a90ad5255eea7f9b6738acaf890f7fa5a38284d128ca",
+      "equal": true
+    },
+    {
+      "path": "src/native_durable_codemode_models_catalog_test.zig",
+      "original_sha256": "7347f717aa45a126fc6187aedcf2ff5cb0f0674aaa4e526662c366b236e4b34e",
+      "restored_sha256": "7347f717aa45a126fc6187aedcf2ff5cb0f0674aaa4e526662c366b236e4b34e",
+      "equal": true
+    },
+    {
+      "path": "src/durable/fixtures/durable-codemode-native-restart-harness.input.txt",
+      "original_sha256": "4cb54588d4fb8f6a8842ddd83d490fe101c3b2e57c53238054be568d4d6e9b19",
+      "restored_sha256": "4cb54588d4fb8f6a8842ddd83d490fe101c3b2e57c53238054be568d4d6e9b19",
+      "equal": true
+    },
+    {
+      "path": "src/durable/fixtures/durable-codemode-native-replay-negatives-harness.input.txt",
+      "original_sha256": "acc2463452c50c0c7e0ecf23ac836f5d8d35a21f30ae4cfa737a0a884aecda10",
+      "restored_sha256": "acc2463452c50c0c7e0ecf23ac836f5d8d35a21f30ae4cfa737a0a884aecda10",
+      "equal": true
+    },
+    {
+      "path": "src/native_codemode_run_test.zig",
+      "equal": true
+    }
+  ],
+  "matrix_jobs": 36,
+  "mac_groups": 16,
+  "global_ranges": 64,
+  "workflow_blocks": 19,
+  "native_runtime_status": "not run locally; memory admission rejected before Zig launch"
+}

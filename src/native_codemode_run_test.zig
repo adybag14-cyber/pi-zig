@@ -148,7 +148,7 @@ test "native CodeMode controlled run releases every failed owner allocation thro
             try std.testing.expectEqual(@as(f64, 7), try json.asNumber(run.core.result.value.object.get("value").?.object.get("value").?));
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Lifecycle.exercise, .{});
+    try @import("test_support/exhaustive_allocation_shards.zig").check(.codemode, "codemode-controlled-run", Lifecycle.exercise, .{});
 }
 
 test "native CodeMode controlled run retains all eleven actual latest properties abort and callback outcomes" {

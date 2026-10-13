@@ -157,10 +157,13 @@ test "native durable CodeMode journal real tool API actual sandbox original Sour
     var source_cases = try json.Owned.parse(std.testing.allocator, @embedFile("durable/fixtures/durable-ee-codemode-journal-programs-source.json"));
     defer source_cases.deinit();
     try sdk.put(engine, global, "journalSourceFixture", try durable.jsValue(engine, source_cases.value));
+    var latency_probe: @import("native_latency_probe.zig").Probe = .{};
+    try latency_probe.install(engine);
+    defer latency_probe.detach(engine);
     const proof = engine.evalModule(
         \\import * as M from'@earendil-works/pi-durable';import{CodemodeSandbox}from'@earendil-works/pi-codemode';import{BACKGROUND_CONTEXT as ctx}from'@earendil-works/chord/context';
         \\const cases=journalSourceFixture.cases;
-        \\for(const input of cases){const documents=new Map(),madeCalls=new Map(),deliveries=[],starts=[];let launched=0,globalCalls=0,requests=0,atomic=false;const require=(value,message)=>{if(!value)throw Error(input.name+': '+message)};
+        \\let caseIndex=0;for(const input of cases){nativeLatencyMark('case-begin',caseIndex);const documents=new Map(),madeCalls=new Map(),deliveries=[],starts=[];let launched=0,globalCalls=0,requests=0,atomic=false;const require=(value,message)=>{if(!value)throw Error(input.name+': '+message)};
         \\const activeRun=()=>documents.get('pi.codemode.run'),activeJournal=()=>documents.get('pi.codemode.journal');const durableIssued=()=>Math.max(activeJournal()?.firstIssued??0,...(activeJournal()?.entries??[]).map(entry=>entry.issuedAfter??0));
         \\globalThis.journalDraft={version:2,startedAt:Date.now(),seed:456,tools:[{name:'echo',jsName:'echo',description:'echo'}],namespaces:[],globals:[{name:'probeGlobal',spread:false}],maxOutputTokens:4096};
         \\const sandbox=globalThis.journalSandbox=new CodemodeSandbox({memoryLimitBytes:67108864});const originalStart=sandbox.start.bind(sandbox);sandbox.start=(code,options)=>{require(activeRun()?.start!==undefined,'start must precede VM');require(activeRun().start.seed===options.seed&&activeRun().start.startedAt===options.startedAt,'stored clock and seed');starts.push(code);const run=originalStart(code,{...options,onCall(call){madeCalls.set(call.id,call);options.onCall(call)}});const deliver=run.deliver.bind(run);run.deliver=(seq,at,id,outcome)=>{const entry=activeJournal()?.entries[seq-1];require(entry?.id===id&&entry.at===at,'journal must precede delivery');deliveries.push(id);return deliver(seq,at,id,outcome)};return run};
@@ -170,7 +173,7 @@ test "native durable CodeMode journal real tool API actual sandbox original Sour
         \\const codemode=nativeCreateCodemodeTool({sandbox,models:false,globals:journalGlobals});const registry=M.createRegistry();registry.install(M.defineExtension({name:'journal-call',tools:[echo,codemode]}));
         \\const usage={input:0,output:0,cacheRead:0,cacheWrite:0,totalTokens:0,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};const models={getModel:()=>({id:'held',maxTokens:100,contextWindow:100000}),streamSimple:()=>{requests++;const result={role:'assistant',provider:'held',model:'held',content:requests===1?[{type:'toolCall',id:'c1',name:'codemode',arguments:{code:input.code}}]:[{type:'text',text:'done'}],stopReason:requests===1?'toolUse':'stop',usage,timestamp:123};return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>result}}};
         \\const harness=await M.Harness.open(new M.MemoryStorage(),{models,registry,settings:{compaction:{enabled:false},retry:{enabled:false}}},ctx);const stop=harness.subscribeCommits(publication=>{for(const change of publication.changes)if(change.type==='document'&&change.value!==null)documents.set(change.record.kind,JSON.parse(JSON.stringify(change.value)));if(publication.changes.some(change=>change.type==='document'&&change.record.kind==='pi.codemode.run'&&change.value?.result)&&publication.changes.some(change=>change.type==='document'&&change.record.kind==='pi.codemode.store'&&change.value?.values.kept))atomic=true});
-        \\try{const root=await harness.root(ctx,{agent:{model:{provider:'held',modelId:'held'}}});harness.resume();require((await(await root.submit({type:'input',content:'go'},ctx)).wait(ctx)).status==='done','generation complete');require(starts.length===1&&launched===(input.calls??0)&&globalCalls===(input.globals??0),'actual execution counts');require(activeRun()?.result!==undefined&&activeRun().result.isError===!!input.error,'stored script outcome');for(const key of['tools','namespaces','globals','maxOutputTokens'])require(JSON.stringify(activeRun().start[key])===JSON.stringify(journalSourceFixture.startData[key]),'actual Source start '+key);require(deliveries.length===(input.calls??0)+(input.globals??0),'delivery count');require((activeJournal()?.entries??[]).filter(entry=>entry.global!==undefined).length===(input.globals??0),'global journal');require(!input.store||atomic,'atomic successful writes');require(documents.get('pi.codemode.store')?.values.ignored===undefined,'failed write absent')}finally{stop();await harness.close(ctx);await sandbox.close()}}
+        \\nativeLatencyMark('open',caseIndex);try{const root=await harness.root(ctx,{agent:{model:{provider:'held',modelId:'held'}}});harness.resume();nativeLatencyMark('submit-wait',caseIndex);require((await(await root.submit({type:'input',content:'go'},ctx)).wait(ctx)).status==='done','generation complete');nativeLatencyMark('receipt',caseIndex);require(starts.length===1&&launched===(input.calls??0)&&globalCalls===(input.globals??0),'actual execution counts');require(activeRun()?.result!==undefined&&activeRun().result.isError===!!input.error,'stored script outcome');for(const key of['tools','namespaces','globals','maxOutputTokens'])require(JSON.stringify(activeRun().start[key])===JSON.stringify(journalSourceFixture.startData[key]),'actual Source start '+key);require(deliveries.length===(input.calls??0)+(input.globals??0),'delivery count');require((activeJournal()?.entries??[]).filter(entry=>entry.global!==undefined).length===(input.globals??0),'global journal');require(!input.store||atomic,'atomic successful writes');require(documents.get('pi.codemode.store')?.values.ignored===undefined,'failed write absent')}finally{nativeLatencyMark('close-begin',caseIndex);stop();await harness.close(ctx);await sandbox.close();nativeLatencyMark('case-end',caseIndex++)}}
         \\export const proof=true;
     , "native-codemode-journal-source6") catch |err| {
         std.debug.print("CodeMode real journal Source6 {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "none" });
@@ -210,6 +213,9 @@ test "native durable CodeMode journal real tool API original restart3 and host c
     var fixture = try json.Owned.parse(std.testing.allocator, @embedFile("durable/fixtures/durable-148622-codemode-restart-source.json"));
     defer fixture.deinit();
     try sdk.put(engine, global, "journalRestartFixture", try durable.jsValue(engine, fixture.value));
+    var latency_probe: @import("native_latency_probe.zig").Probe = .{};
+    try latency_probe.install(engine);
+    defer latency_probe.detach(engine);
     const proof = engine.evalModule(@embedFile("durable/fixtures/durable-codemode-native-restart-harness.input.txt"), "native-codemode-journal-restart3") catch |err| {
         std.debug.print("Native journal restart {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "none" });
         @import("extensions/native_durable_tasks.zig").printFailureDiagnostics(engine);
@@ -273,6 +279,9 @@ test "native durable CodeMode journal real tool API Source replay negatives6 ref
     var fixture = try json.Owned.parse(std.testing.allocator, @embedFile("durable/fixtures/durable-19cb534-codemode-replay-negatives-source.json"));
     defer fixture.deinit();
     try sdk.put(engine, global, "journalReplayNegativesFixture", try durable.jsValue(engine, fixture.value));
+    var latency_probe: @import("native_latency_probe.zig").Probe = .{};
+    try latency_probe.install(engine);
+    defer latency_probe.detach(engine);
     const proof = engine.evalModule(@embedFile("durable/fixtures/durable-codemode-native-replay-negatives-harness.input.txt"), "native-codemode-journal-replay-negatives6") catch |err| {
         std.debug.print("Native journal replay negatives {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "none" });
         @import("extensions/native_durable_tasks.zig").printFailureDiagnostics(engine);

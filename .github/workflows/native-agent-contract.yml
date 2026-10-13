@@ -22,22 +22,38 @@ jobs:
           - {os: windows-latest, mode: ReleaseSafe, group: 0, groups: 1}
           - {os: ubuntu-latest, mode: Debug, group: 0, groups: 1}
           - {os: ubuntu-latest, mode: ReleaseSafe, group: 0, groups: 1}
-          - {os: macos-latest, mode: Debug, group: 0, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 1, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 2, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 3, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 4, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 5, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 6, groups: 8}
-          - {os: macos-latest, mode: Debug, group: 7, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 0, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 1, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 2, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 3, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 4, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 5, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 6, groups: 8}
-          - {os: macos-latest, mode: ReleaseSafe, group: 7, groups: 8}
+          - {os: macos-latest, mode: Debug, group: 0, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 1, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 2, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 3, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 4, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 5, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 6, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 7, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 0, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 1, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 2, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 3, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 4, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 5, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 6, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 7, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 8, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 9, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 10, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 11, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 12, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 13, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 14, groups: 16}
+          - {os: macos-latest, mode: Debug, group: 15, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 8, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 9, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 10, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 11, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 12, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 13, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 14, groups: 16}
+          - {os: macos-latest, mode: ReleaseSafe, group: 15, groups: 16}
     runs-on: ${{ matrix.os }}
     # Overall cold-build/job envelope; individual runtime guards stay unchanged.
     timeout-minutes: 120
@@ -148,7 +164,7 @@ jobs:
             $taskLog = "$taskReceipt/exhaustive-range-$taskRange.log"
             & zig build test-hosted-exhaustive-allocation -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath $taskLog
             if ($LASTEXITCODE -ne 0) { throw "Original exhaustive allocation range $taskRange failed" }
-            if ((Get-Content -LiteralPath $taskLog -Raw) -notmatch '18/18 tests passed') { throw 'Original exhaustive probe inventory changed' }
+            if ((Get-Content -LiteralPath $taskLog -Raw) -notmatch '24/24 tests passed') { throw 'Original exhaustive probe inventory changed' }
           }
           Remove-Item Env:PI_EXHAUSTIVE_ALLOCATION_SHARD, Env:PI_EXHAUSTIVE_ALLOCATION_SHARDS
       - name: Compile integrated CodeMode artifacts before the runtime budget
@@ -173,14 +189,23 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Integrated component gate failed' }
           if ((Get-Content "$taskReceipt/components.log" -Raw) -notmatch '93/93 tests passed') { throw 'Integrated component coverage changed; review actual inventory' }
           [ordered]@{ status = 'passed'; component_tests = 93; completed_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content "$taskReceipt/result.json"
-      - name: Compile latest MCP application and restoration artifacts before the runtime budget
-        id: compile_latest
+      - name: Compile latest durable and TUI artifacts before the runtime budget
+        id: compile_latest_foundation
         if: ${{ !cancelled() && steps.compile_agent.outcome == 'success' && matrix.group == 0 }}
         shell: pwsh
         timeout-minutes: 22
         run: |
           $ErrorActionPreference = 'Stop'
-          & zig build build-hosted-latest-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-latest.log
+          & zig build build-hosted-latest-foundation-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-latest-foundation.log
+          if ($LASTEXITCODE -ne 0) { throw 'latest durable and TUI component compilation failed' }
+      - name: Compile latest MCP application and restoration artifacts before the runtime budget
+        id: compile_latest
+        if: ${{ !cancelled() && steps.compile_latest_foundation.outcome == 'success' && matrix.group == 0 }}
+        shell: pwsh
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & zig build build-hosted-latest-application-components -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-agent-contract/compile-latest.log
           if ($LASTEXITCODE -ne 0) { throw 'latest MCP application and restoration component compilation failed' }
       - name: Compile default CodeMode model artifacts before the runtime budget
         id: compile_models
@@ -257,7 +282,9 @@ jobs:
             @{target='test-native-sdk-session-queries'; tests=11},
             @{target='test-native-sdk-query-consumers'; tests=11},
             @{target='test-native-sdk-send-user'; tests=11},
-            @{target='test-native-sdk-session-lifecycle'; tests=11}
+            @{target='test-native-sdk-session-lifecycle'; tests=11},
+            @{target='test-native-sdk-message-conversion'; tests=10},
+            @{target='test-native-sdk-session-prepare'; tests=11}
           )
           $taskProof = @()
           foreach ($taskSlice in $taskSlices) {
@@ -289,7 +316,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Complete allocation checker regressions failed' }
           & zig build maintenance -j1 -- verify-exhaustive-allocation-group $taskReceipt $taskRanges $taskGroup $taskGroups 2>&1 | Tee-Object -FilePath "$taskReceipt/exhaustive-validation.log"
           if ($LASTEXITCODE -ne 0) { throw 'Original allocation coverage omitted duplicated or changed a failure index' }
-          [ordered]@{status='passed'; graphs=6; global_ranges=$taskRanges; group=$taskGroup; groups=$taskGroups; canonical_range0='Core/latest actual logs only'; duplicated_failure_indices=0; unlimited_baselines='One original full probe per graph per canonical range; not counted as failure-index coverage'; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/exhaustive-result.json"
+          [ordered]@{status='passed'; graphs=7; global_ranges=$taskRanges; group=$taskGroup; groups=$taskGroups; canonical_range0='Core/latest actual logs only'; duplicated_failure_indices=0; unlimited_baselines='One original full probe per graph per canonical range; not counted as failure-index coverage'; completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 5 | Set-Content "$taskReceipt/exhaustive-result.json"
       - name: Verify every source and compiler posthash
         if: always()
         shell: pwsh
@@ -335,7 +362,7 @@ jobs:
           $taskSummary = @()
           foreach ($taskOs in @('windows-latest','ubuntu-latest','macos-latest')) {
             foreach ($taskMode in @('Debug','ReleaseSafe')) {
-              $taskGroups = if ($taskOs -eq 'macos-latest') { 8 } else { 1 }
+              $taskGroups = if ($taskOs -eq 'macos-latest') { 16 } else { 1 }
               $taskRanges = if ($taskOs -eq 'macos-latest') { 64 } else { 8 }
               $taskAll = @()
               $taskExhaustiveAll = @()
@@ -351,14 +378,14 @@ jobs:
                 }
                 $taskAll += @(Get-Content "$taskRoot/allocation-coverage.json" -Raw | ConvertFrom-Json)
                 $taskExhaustiveResult = Get-Content "$taskRoot/exhaustive-result.json" -Raw | ConvertFrom-Json
-                if ($taskExhaustiveResult.status -cne 'passed' -or $taskExhaustiveResult.graphs -ne 6 -or $taskExhaustiveResult.global_ranges -ne $taskExhaustiveRanges -or $taskExhaustiveResult.group -ne $taskGroup -or $taskExhaustiveResult.groups -ne $taskGroups -or $taskExhaustiveResult.duplicated_failure_indices -ne 0) { throw 'Original exhaustive allocation group qualification missing' }
+                if ($taskExhaustiveResult.status -cne 'passed' -or $taskExhaustiveResult.graphs -ne 7 -or $taskExhaustiveResult.global_ranges -ne $taskExhaustiveRanges -or $taskExhaustiveResult.group -ne $taskGroup -or $taskExhaustiveResult.groups -ne $taskGroups -or $taskExhaustiveResult.duplicated_failure_indices -ne 0) { throw 'Original exhaustive allocation group qualification missing' }
                 $taskExhaustiveAll += @(Get-Content "$taskRoot/exhaustive-coverage.json" -Raw | ConvertFrom-Json)
                 if ($taskGroup -eq 0) {
                   $taskComponents = Get-Content "$taskRoot/result.json" -Raw | ConvertFrom-Json
                   $taskLatest = Get-Content "$taskRoot/latest-result.json" -Raw | ConvertFrom-Json
                   if ($taskComponents.status -cne 'passed' -or $taskComponents.component_tests -ne 93 -or $taskLatest.status -cne 'passed' -or $taskLatest.tests -ne 207) { throw 'Platform component qualification is incomplete' }
                   $taskAdditional = Get-Content "$taskRoot/additional-result.json" -Raw | ConvertFrom-Json
-                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11}
+                  $taskExpectedSlices = @{'test-native-durable-codemode-model-catalog'=8; 'test-latest-catalog'=60; 'test-maintenance'=7; 'test-exhaustive-allocation-coverage'=4; 'test-exhaustive-allocation-helper'=3; 'test-native-chord-context-source'=11; 'test-native-chord-resource-source'=4; 'test-native-models-typed-services'=12; 'test-native-models-stream-regressions'=7; 'test-native-chord-contract-source'=4; 'test-native-chord-clone-source'=4; 'test-native-chord-normalization-evaluate-source'=9; 'test-native-sdk-session-queries'=11; 'test-native-sdk-query-consumers'=11; 'test-native-sdk-send-user'=11; 'test-native-sdk-session-lifecycle'=11; 'test-native-sdk-message-conversion'=10; 'test-native-sdk-session-prepare'=11}
                   if ($taskAdditional.status -cne 'passed' -or $taskAdditional.slices.Count -ne $taskExpectedSlices.Count) { throw 'Current component slice qualification missing' }
                   foreach ($taskTarget in $taskExpectedSlices.Keys) {
                     $taskSlice = @($taskAdditional.slices | Where-Object target -CEQ $taskTarget)
@@ -382,8 +409,8 @@ jobs:
                 if ($taskPrevious -ne $taskTotal) { throw 'Incomplete graph universe' }
                 $taskSummary += [ordered]@{ os = $taskOs; mode = $taskMode; graph = $taskGraph; total = $taskTotal; ranges = $taskRanges; complete = $true }
               }
-              if ($taskExhaustiveAll.Count -ne 6 * $taskExhaustiveRanges) { throw 'Missing or duplicated original allocation partition' }
-              foreach ($taskGraph in @('codemode-host','codemode-workers','codemode-discovery','codemode-adapter','codemode-vm-owner','tui-alt')) {
+              if ($taskExhaustiveAll.Count -ne 7 * $taskExhaustiveRanges) { throw 'Missing or duplicated original allocation partition' }
+              foreach ($taskGraph in @('codemode-host','codemode-workers','codemode-discovery','codemode-adapter','codemode-vm-owner','tui-alt','codemode-controlled-run')) {
                 $taskRows = @($taskExhaustiveAll | Where-Object graph -CEQ $taskGraph | Sort-Object range)
                 if ($taskRows.Count -ne $taskExhaustiveRanges) { throw "Original allocation graph coverage missing: $taskGraph" }
                 $taskTotal = [long]$taskRows[0].total

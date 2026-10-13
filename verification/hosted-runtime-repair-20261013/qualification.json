@@ -1,0 +1,43 @@
+{
+  "failed_run": 38312256078,
+  "failed_head": "397566c75da460e076697867b0dd3107f9f5de5d",
+  "failed_jobs": [
+    {
+      "id": 115022838309,
+      "platform": "Windows ReleaseSafe",
+      "failure": "Custom editor startup expected default > after owned editor replacement"
+    },
+    {
+      "id": 115022838649,
+      "platform": "macOS Debug group0",
+      "failure": "Controlled run full allocation sweep120s; journal/model promise10s"
+    },
+    {
+      "id": 115022838745,
+      "platform": "Linux ReleaseSafe",
+      "failure": "Combined latest compile22min"
+    },
+    {
+      "id": 115022838800,
+      "platform": "macOS Debug group7",
+      "failure": "Eight late Agent ranges exceeded28min step"
+    }
+  ],
+  "native_test_guard_seconds": 120,
+  "host_promise_guard_seconds": 10,
+  "job_cap_minutes": 120,
+  "mac_groups": 16,
+  "mac_ranges": 64,
+  "exhaustive_graphs": 7,
+  "core_tests": 93,
+  "latest_tests": 207,
+  "additional_slices": 18,
+  "additional_execution_inventory": 198,
+  "candidate_runtime_qualification": "pending hosted execution",
+  "local_runtime_qualification": "not admitted below16GiB; no local runtime pass claimed",
+  "scope_limits": [
+    "Diagnostic phases identify runtime progress; they do not establish a fix for the macOS promise timeouts.",
+    "New controlled-run total must come from actual unlimited and induced-failure execution.",
+    "The imported Windows19 phase proof predates Source6 additional marks and does not qualify the complete new tree."
+  ]
+}

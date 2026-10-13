@@ -2327,11 +2327,11 @@ pub fn build(b: *std.Build) void {
     const agent_coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/agent_allocation_coverage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     b.step("test-agent-allocation-coverage", "Check each platform group's actual Agent runtime marker ingestion").dependOn(&b.addRunArtifact(agent_coverage_tests).step);
     const exhaustive_coverage_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("tools/exhaustive_allocation_coverage_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
-    b.step("test-exhaustive-allocation-coverage", "Verify every original failure index and fixed baseline across all eight groups").dependOn(&b.addRunArtifact(exhaustive_coverage_tests).step);
+    b.step("test-exhaustive-allocation-coverage", "Verify every original failure index and fixed baseline across every platform group").dependOn(&b.addRunArtifact(exhaustive_coverage_tests).step);
     const exhaustive_helper_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/exhaustive_allocation_helper_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     b.step("test-exhaustive-allocation-helper", "Keep the original failing allocator behavior and complete nondivisible partitions").dependOn(&b.addRunArtifact(exhaustive_helper_tests).step);
-    const exhaustive_targets = [_][]const u8{ "test-codemode-allocation", "test-native-codemode-worker-allocation", "test-native-tui-alt-allocation-source" };
-    const exhaustive_run = b.step("test-hosted-exhaustive-allocation", "Execute all six original CodeMode worker and TUI failure probes in a bounded range");
+    const exhaustive_targets = [_][]const u8{ "test-codemode-allocation", "test-native-codemode-worker-allocation", "test-native-tui-alt-allocation-source", "test-native-codemode-run" };
+    const exhaustive_run = b.step("test-hosted-exhaustive-allocation", "Execute all seven original CodeMode worker and TUI failure probes in a bounded range");
     for (exhaustive_targets) |name| exhaustive_run.dependOn(&b.top_level_steps.get(name).?.step);
     addCompileOnlyGroup(b, "build-hosted-exhaustive-allocation", &exhaustive_targets);
 
@@ -2340,10 +2340,12 @@ pub fn build(b: *std.Build) void {
     // the nested fatal-application checks and process-fixture dependencies.
     addCompileOnlyGroup(b, "build-hosted-core-components", &.{ "test-native-codemode-sandbox", "test-native-codemode-run", "test-native-codemode-vm-worker", "test-native-codemode-controlled-binding", "test-native-durable-148622-wait-cycle", "test-native-durable-json-dto", "test-native-physical-stdio", "test-codemode-inline", "test-codemode-allocation", "test-durable-scheduler", "test-durable-json-clone" });
     addCompileOnlyGroup(b, "build-hosted-latest-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-custom-editor-frontend", "test-extension-filesystem", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured", "test-native-tui-alt-source", "test-native-tui-base-source" });
+    addCompileOnlyGroup(b, "build-hosted-latest-foundation-components", &.{ "test-native-durable-codemode-outcome", "test-native-durable-codemode-journal-core", "test-extension-filesystem", "test-native-tui-alt-source", "test-native-tui-base-source" });
+    addCompileOnlyGroup(b, "build-hosted-latest-application-components", &.{ "test-custom-editor-frontend", "test-print-mode-process", "test-mcp-runtime", "test-mcp-configured" });
     addCompileOnlyGroup(b, "build-hosted-model-components", &.{ "test-native-durable-codemode-model-catalog", "test-native-models-typed-services", "test-native-models-stream-regressions" });
     addCompileOnlyGroup(b, "build-hosted-catalog-components", &.{ "test-latest-catalog", "test-maintenance", "test-exhaustive-allocation-coverage", "test-exhaustive-allocation-helper" });
     addCompileOnlyGroup(b, "build-hosted-chord-components", &.{ "test-native-chord-context-source", "test-native-chord-resource-source", "test-native-chord-contract-source", "test-native-chord-clone-source", "test-native-chord-normalization-evaluate-source" });
-    addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers", "test-native-sdk-session-lifecycle" });
+    addCompileOnlyGroup(b, "build-hosted-sdk-components", &.{ "test-native-sdk-send-user", "test-native-sdk-session-queries", "test-native-sdk-query-consumers", "test-native-sdk-session-lifecycle", "test-native-sdk-message-conversion", "test-native-sdk-session-prepare" });
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

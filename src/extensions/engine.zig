@@ -40,12 +40,22 @@ pub const SourceLoader = struct {
 /// Values and source returned by the loader are owned by its caller.
 pub const ModuleInput = union(enum) { source: []u8, exports: c.JSValue };
 
+/// Optional owner-thread diagnostic counters. No VM value or worker pointer is
+/// retained, and ordinary engines do not allocate or install a probe.
+pub const ProgressProbe = struct {
+    context_entries: u64 = 0,
+    control_pumps: u64 = 0,
+    job_attempts: u64 = 0,
+    empty_job_polls: u64 = 0,
+};
+
 pub const Engine = struct {
     gpa: std.mem.Allocator,
     runtime: *c.JSRuntime,
     native_memory_owner: *anyopaque,
     context: *c.JSContext,
     options: Options,
+    progress_probe: ?*ProgressProbe = null,
     interrupts: u64 = 0,
     cancelled: std.atomic.Value(bool) = .init(false),
     last_error: ?[]u8 = null,
@@ -309,7 +319,9 @@ pub const Engine = struct {
     }
 
     pub fn fromContext(context: *c.JSContext) *Engine {
-        return @ptrCast(@alignCast(c.JS_GetContextOpaque(context).?));
+        const engine: *Engine = @ptrCast(@alignCast(c.JS_GetContextOpaque(context).?));
+        if (engine.progress_probe) |probe| probe.context_entries +%= 1;
+        return engine;
     }
 
     pub fn beginInvocation(self: *Engine) void {
@@ -720,6 +732,7 @@ pub const Engine = struct {
 
     /// Return a new owned result without consuming the caller's promise/value.
     pub fn pumpControls(self: *Engine) !bool {
+        if (self.progress_probe) |probe| probe.control_pumps +%= 1;
         self.refreshUiDeadline();
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
@@ -761,6 +774,7 @@ pub const Engine = struct {
         var jobs: usize = 0;
         while (jobs < limit and c.JS_IsJobPending(self.runtime)) {
             var context: ?*c.JSContext = null;
+            if (self.progress_probe) |probe| probe.job_attempts +%= 1;
             if (c.JS_ExecutePendingJob(self.runtime, &context) < 0) {
                 self.captureException(context orelse self.context);
                 return error.JavaScriptException;
@@ -806,12 +820,14 @@ pub const Engine = struct {
             if (c.JS_PromiseState(self.context, value) != c.JS_PROMISE_PENDING and !c.JS_IsJobPending(self.runtime)) break;
             if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
             var context: ?*c.JSContext = null;
+            if (self.progress_probe) |probe| probe.job_attempts +%= 1;
             const status = c.JS_ExecutePendingJob(self.runtime, &context);
             if (status < 0) {
                 self.captureException(context orelse self.context);
                 return error.JavaScriptException;
             }
             if (status == 0) {
+                if (self.progress_probe) |probe| probe.empty_job_polls +%= 1;
                 // The promise may span another timer/I/O turn. The current
                 // job's complete microtask checkpoint ends before that turn.
                 self.finishJob();

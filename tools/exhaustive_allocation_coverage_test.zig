@@ -17,23 +17,25 @@ fn fixture(gpa: std.mem.Allocator, range: usize, shards: usize, delta: usize) ![
     return output.toOwnedSlice();
 }
 
-test "exhaustive runtime ingestion covers all six graphs and every index across eight groups" {
+test "exhaustive runtime ingestion covers all seven graphs and every index across eight and sixteen groups" {
     const gpa = std.testing.allocator;
-    var ends: [graphs.len]usize = @splat(0);
-    for (0..8) |group| {
-        var state = try coverage.State.init(64, group, 8);
-        while (state.next < state.end) {
-            const range = state.next;
-            const log = try fixture(gpa, range, 64, 0);
-            defer gpa.free(log);
-            const rows = try state.ingest(gpa, log, range);
-            for (rows, 0..) |row, graph| {
-                try std.testing.expectEqual(ends[graph], row.start);
-                ends[graph] = row.end;
+    for ([_]usize{ 8, 16 }) |groups| {
+        var ends: [graphs.len]usize = @splat(0);
+        for (0..groups) |group| {
+            var state = try coverage.State.init(64, group, groups);
+            while (state.next < state.end) {
+                const range = state.next;
+                const log = try fixture(gpa, range, 64, 0);
+                defer gpa.free(log);
+                const rows = try state.ingest(gpa, log, range);
+                for (rows, 0..) |row, graph| {
+                    try std.testing.expectEqual(ends[graph], row.start);
+                    ends[graph] = row.end;
+                }
             }
         }
+        for (ends, 0..) |end, graph| try std.testing.expectEqual(@as(usize, 127 + graph * 11), end);
     }
-    for (ends, 0..) |end, graph| try std.testing.expectEqual(@as(usize, 127 + graph * 11), end);
     var full = try coverage.State.init(1, 0, 1);
     const log = try fixture(gpa, 0, 1, 0);
     defer gpa.free(log);
