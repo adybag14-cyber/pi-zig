@@ -1,0 +1,1 @@
+const state=await createProviderCallbackCase();const constructorRows=constructorSnapshots;if(constructorRows.length!==1)throw Error('one actual constructor snapshot required');globalThis.constructorRows=constructorRows;state.dispose();

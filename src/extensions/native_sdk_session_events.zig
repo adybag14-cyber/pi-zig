@@ -37,13 +37,19 @@ pub fn attachWithDependencies(engine: *em.Engine, session: c.JSValue, dependenci
     try @import("native_sdk_session_hooks.zig").validateDependencies(engine, dependencies);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    var roots = [_]c.JSValue{session};
-    const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, handleCallback, "_handleAgentEvent", 1, 0, roots.len, &roots)));
-    const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
+    const function = try scope.own(try createHandleAgentEvent(engine, session));
     try scope.set(session, "_handleAgentEvent", function);
     try scope.set(session, "_unsubscribeAgent", try scope.invoke(try scope.get(session, "agent"), "subscribe", &.{function}));
     try @import("native_sdk_session_hooks.zig").attachWithDependencies(engine, session, dependencies);
+}
+pub fn createHandleAgentEvent(engine: *em.Engine, session: c.JSValue) !c.JSValue {
+    var roots = [_]c.JSValue{session};
+    const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, handleCallback, "_handleAgentEvent", 1, 0, roots.len, &roots));
+    errdefer engine.freeValue(function);
+    const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
+    defer engine.freeValue(parent);
+    if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
+    return function;
 }
 
 fn methodCallback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {

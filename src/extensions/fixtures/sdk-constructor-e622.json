@@ -1,0 +1,517 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "58c5411cf7218416b05584a4b90b850e26943d257cc09ef8f3c7f42f9d3c414c",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 1,
+  "rows": [
+    [
+      {
+        "key": "agent",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "sessionManager",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "settingsManager",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_scopedModels",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_unsubscribeAgent",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "function",
+        "name": "",
+        "length": 0,
+        "prototype": false,
+        "async": false
+      },
+      {
+        "key": "_eventListeners",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_isAgentRunActive",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_agentRunAbortRequested",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_idleWaitPromise",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_resolveIdleWait",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_steeringMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_followUpMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_pendingNextTurnMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_pendingCustomMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_compactionAbortController",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_autoCompactionAbortController",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_overflowRecoveryAttempted",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_branchSummaryAbortController",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_retryAbortController",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_retryAttempt",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "number",
+        "value": 0
+      },
+      {
+        "key": "_failedResponse",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_bashAbortControllers",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Set",
+        "values": []
+      },
+      {
+        "key": "_pendingBashMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_extensionRunner",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_turnIndex",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "number",
+        "value": 0
+      },
+      {
+        "key": "_entryIdsByMessage",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "WeakMap"
+      },
+      {
+        "key": "_boundaryDispatchedMessages",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "WeakSet"
+      },
+      {
+        "key": "_lastAssistantMessage",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_lastAssistantToolResults",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_lastActivityOutcome",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "string",
+        "value": "completed"
+      },
+      {
+        "key": "_isBeforeSettle",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_abortDuringBeforeSettle",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_isEmittingAgentSettled",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_deferredSettledActions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_resourceLoader",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_customTools",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_baseToolDefinitions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Map",
+        "size": 0
+      },
+      {
+        "key": "_cwd",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "string",
+        "value": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003"
+      },
+      {
+        "key": "_extensionRunnerRef",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_initialActiveToolNames",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_pendingToolNames",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Set",
+        "values": []
+      },
+      {
+        "key": "_usesDefaultTools",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": false
+      },
+      {
+        "key": "_defaultToolModifiers",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Array",
+        "length": 0
+      },
+      {
+        "key": "_allowedTools",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "function",
+        "name": "",
+        "length": 1,
+        "prototype": false,
+        "async": false
+      },
+      {
+        "key": "_allowlistFiltersMcp",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "boolean",
+        "value": true
+      },
+      {
+        "key": "_excludedTools",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_baseToolsOverride",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_sessionStartEvent",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_extensionUIContext",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_extensionMode",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "string",
+        "value": "print"
+      },
+      {
+        "key": "_extensionCommandContextActions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_extensionAbortHandler",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_extensionShutdownHandler",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_extensionErrorListener",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_extensionErrorUnsubscriber",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_modelRuntime",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_cacheWarmer",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "object"
+      },
+      {
+        "key": "_toolRegistry",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Map",
+        "size": 0
+      },
+      {
+        "key": "_nestedToolCalls",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_hiddenDeclarations",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Set",
+        "values": []
+      },
+      {
+        "key": "_toolDefinitions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Map",
+        "size": 0
+      },
+      {
+        "key": "_toolPromptSnippets",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Map",
+        "size": 0
+      },
+      {
+        "key": "_toolPromptGuidelines",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "Map",
+        "size": 0
+      },
+      {
+        "key": "_baseSystemPromptOptions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_runSystemPromptOptions",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "undefined"
+      },
+      {
+        "key": "_handleAgentEvent",
+        "writable": true,
+        "enumerable": true,
+        "configurable": true,
+        "type": "function",
+        "name": "_handleAgentEvent",
+        "length": 1,
+        "prototype": false,
+        "async": true
+      }
+    ]
+  ]
+}

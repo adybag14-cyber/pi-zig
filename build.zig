@@ -1442,6 +1442,20 @@ pub fn build(b: *std.Build) void {
     sdk_loadout_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-session-loadout", "Compile the private Source55 loadout artifact without running tests").dependOn(&sdk_loadout_tests.step);
     b.step("test-native-sdk-session-loadout", "Replay full latest Source loadout hooks and structured prompt sections with private native collaborators and exhaustive host allocation cleanup").dependOn(&b.addRunArtifact(sdk_loadout_tests).step);
+    const tool_matcher_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_tool_name_matcher_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK tool-name matcher"}, .use_llvm = use_llvm });
+    linkQuickJs(b, tool_matcher_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(tool_matcher_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-sdk-tool-name-matcher", "Compare original constructor tool-name wildcard matching live collections and complete callback ownership").dependOn(&b.addRunArtifact(tool_matcher_tests).step);
+    const constructor_phase_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_constructor_phase_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK constructor initialization phase"}, .use_llvm = use_llvm });
+    linkQuickJs(b, constructor_phase_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(constructor_phase_tests.root_module, sqlite_lib_dir, sqlite_library);
+    constructor_phase_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-constructor-phase", "Compare actual Source constructor field config subscription and native hook phase before runtime building").dependOn(&b.addRunArtifact(constructor_phase_tests).step);
+    const session_values_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_public_values_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session public values"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_values_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_values_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_values_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-values", "Compare original ordinary AgentSession getters routes metadata and complete native owner graphs").dependOn(&b.addRunArtifact(session_values_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
@@ -2396,6 +2410,7 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-native-sdk-provider-attribution", &.{"test-native-sdk-provider-attribution"});
     addCompileOnlyGroup(b, "build-native-sdk-factory-provider", &.{"test-native-sdk-factory-provider"});
     addCompileOnlyGroup(b, "build-native-sdk-image-process", &.{"test-native-sdk-image-process"});
+    addCompileOnlyGroup(b, "build-native-sdk-constructor-assembly", &.{ "test-native-sdk-constructor-phase", "test-native-sdk-session-values", "test-native-sdk-session-events", "test-native-sdk-tool-name-matcher" });
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

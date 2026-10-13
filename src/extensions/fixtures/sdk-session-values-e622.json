@@ -1,0 +1,615 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "f0b7b5d64f0b358b9489f4dbaab87d6a9183db7aa3238580304bfa63619ccaa6",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 1,
+  "rows": [
+    {
+      "name": "getter-metadata",
+      "value": [
+        {
+          "key": "modelRuntime",
+          "name": "get modelRuntime",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "state",
+          "name": "get state",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "cacheWarmingStatus",
+          "name": "get cacheWarmingStatus",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "model",
+          "name": "get model",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "thinkingLevel",
+          "name": "get thinkingLevel",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "routedModel",
+          "name": "get routedModel",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "isStreaming",
+          "name": "get isStreaming",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "isIdle",
+          "name": "get isIdle",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "systemPrompt",
+          "name": "get systemPrompt",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "retryAttempt",
+          "name": "get retryAttempt",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "isCompacting",
+          "name": "get isCompacting",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "messages",
+          "name": "get messages",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "steeringMode",
+          "name": "get steeringMode",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "followUpMode",
+          "name": "get followUpMode",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "sessionFile",
+          "name": "get sessionFile",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "sessionId",
+          "name": "get sessionId",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "sessionName",
+          "name": "get sessionName",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "scopedModels",
+          "name": "get scopedModels",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "promptTemplates",
+          "name": "get promptTemplates",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "pendingMessageCount",
+          "name": "get pendingMessageCount",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "resourceLoader",
+          "name": "get resourceLoader",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "autoCompactionEnabled",
+          "name": "get autoCompactionEnabled",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "isRetrying",
+          "name": "get isRetrying",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "autoRetryEnabled",
+          "name": "get autoRetryEnabled",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "isBashRunning",
+          "name": "get isBashRunning",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "hasPendingBashMessages",
+          "name": "get hasPendingBashMessages",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        },
+        {
+          "key": "extensionRunner",
+          "name": "get extensionRunner",
+          "length": 0,
+          "enumerable": false,
+          "configurable": true,
+          "set": false,
+          "prototype": false
+        }
+      ]
+    },
+    {
+      "name": "live-reference-getters",
+      "value": {
+        "state": true,
+        "model": true,
+        "modelRuntime": true,
+        "messages": true,
+        "scoped": true,
+        "resource": true,
+        "runner": true
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "undefined"
+        },
+        "idle": true
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "null"
+        },
+        "idle": true
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "boolean",
+          "value": false
+        },
+        "idle": true
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "number",
+          "value": 0
+        },
+        "idle": true
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "object",
+          "value": {}
+        },
+        "idle": false
+      }
+    },
+    {
+      "name": "run-state",
+      "value": {
+        "streaming": {
+          "type": "boolean",
+          "value": true
+        },
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_autoCompactionAbortController",
+        "type": "undefined",
+        "compacting": false,
+        "idle": true
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_autoCompactionAbortController",
+        "type": "null",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_autoCompactionAbortController",
+        "type": "boolean",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_autoCompactionAbortController",
+        "type": "object",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_compactionAbortController",
+        "type": "undefined",
+        "compacting": false,
+        "idle": true
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_compactionAbortController",
+        "type": "null",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_compactionAbortController",
+        "type": "boolean",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_compactionAbortController",
+        "type": "object",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_branchSummaryAbortController",
+        "type": "undefined",
+        "compacting": false,
+        "idle": true
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_branchSummaryAbortController",
+        "type": "null",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_branchSummaryAbortController",
+        "type": "boolean",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "compaction-state",
+      "value": {
+        "field": "_branchSummaryAbortController",
+        "type": "object",
+        "compacting": true,
+        "idle": false
+      }
+    },
+    {
+      "name": "retry-state",
+      "value": {
+        "type": "undefined",
+        "retrying": false
+      }
+    },
+    {
+      "name": "retry-state",
+      "value": {
+        "type": "null",
+        "retrying": true
+      }
+    },
+    {
+      "name": "retry-state",
+      "value": {
+        "type": "boolean",
+        "retrying": true
+      }
+    },
+    {
+      "name": "retry-state",
+      "value": {
+        "type": "object",
+        "retrying": true
+      }
+    },
+    {
+      "name": "warming-status",
+      "value": {
+        "type": "undefined"
+      }
+    },
+    {
+      "name": "warming-status",
+      "value": {
+        "type": "undefined"
+      }
+    },
+    {
+      "name": "warming-status",
+      "value": {
+        "type": "object",
+        "value": {
+          "state": "fixture"
+        }
+      }
+    },
+    {
+      "name": "queues-and-bash",
+      "value": {
+        "pending": 3,
+        "steering": true,
+        "followUp": true,
+        "bash": true,
+        "pendingBash": true,
+        "retry": 3
+      }
+    },
+    {
+      "name": "pending-vm-addition",
+      "value": "a2"
+    },
+    {
+      "name": "prompt-base",
+      "value": "base"
+    },
+    {
+      "name": "prompt-run",
+      "value": "run"
+    },
+    {
+      "name": "prompt-nullish",
+      "value": "base"
+    },
+    {
+      "name": "set-scoped-reference",
+      "value": true
+    },
+    {
+      "name": "settings-getters",
+      "value": {
+        "compaction": "c",
+        "retry": "r"
+      }
+    },
+    {
+      "name": "settings-call-order",
+      "value": [
+        "compaction",
+        "retry",
+        [
+          "mode",
+          "always"
+        ],
+        [
+          "changed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "manager-and-prompts",
+      "value": {
+        "file": "file",
+        "id": "id",
+        "name": "name",
+        "prompts": true
+      }
+    },
+    {
+      "name": "physical-has-no-route",
+      "value": {
+        "type": "undefined"
+      }
+    },
+    {
+      "name": "route-lookup",
+      "value": {
+        "provider": "first",
+        "id": "one"
+      }
+    },
+    {
+      "name": "routed-latest-success",
+      "value": {
+        "same": true,
+        "thinking": "low"
+      }
+    },
+    {
+      "name": "routed-preserves-falsy",
+      "value": {
+        "type": "boolean",
+        "value": false
+      }
+    },
+    {
+      "name": "routed-no-response",
+      "value": {
+        "type": "undefined"
+      }
+    },
+    {
+      "name": "all-tools",
+      "value": {
+        "info": {
+          "name": "tool",
+          "description": "description",
+          "parameters": {
+            "type": "object"
+          },
+          "promptGuidelines": [
+            "g"
+          ],
+          "exposure": "deferred",
+          "namespace": "ns",
+          "annotations": {
+            "readOnlyHint": true
+          },
+          "reachesTools": [
+            "other"
+          ],
+          "sourceInfo": {
+            "path": "fixture"
+          }
+        },
+        "sameSource": true,
+        "sameSchema": true,
+        "copiedAnnotations": true,
+        "definitionSame": true,
+        "missing": {
+          "type": "undefined"
+        }
+      }
+    },
+    {
+      "name": "getter-original-error-identity",
+      "value": true
+    }
+  ]
+}
