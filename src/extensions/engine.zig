@@ -70,6 +70,7 @@ pub const Engine = struct {
     native_agent_core_cache: ?c.JSValue = null,
     native_agent_default_stream: ?c.JSValue = null,
     native_agent_complete_cache: ?c.JSValue = null,
+    native_chord_delta_tracker_bindings: ?c.JSValue = null,
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -260,6 +261,7 @@ pub const Engine = struct {
         if (self.native_agent_core_cache) |value| self.freeValue(value);
         if (self.native_agent_default_stream) |value| self.freeValue(value);
         if (self.native_agent_complete_cache) |value| self.freeValue(value);
+        if (self.native_chord_delta_tracker_bindings) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_constructor) |value| self.freeValue(value);
         if (self.native_sdk_reserved_shortcuts) |value| self.freeValue(value);
         if (self.native_sdk_prompt_section_regex) |value| self.freeValue(value);

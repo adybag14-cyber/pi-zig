@@ -64,7 +64,10 @@ fn sourceStructural(cases: []const std.json.Value, name: []const u8) ![]u8 {
     return error.MissingOriginalTrackerCase;
 }
 test "native Chord tracker piece plans match seven genuine original tracker structural batches" {
-    const parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/chord-delta-tracker-original-19cb.json"), .{});
+    // The full retained tracker oracle includes lone UTF16 surrogates, which
+    // ECMAScript JSON permits and std.json rejects. This captured projection
+    // retains seven genuine structural cases and the full oracle's SHA256.
+    const parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/chord-delta-tracker-pieces-original-19cb.json"), .{});
     defer parsed.deinit();
     const cases = parsed.value.object.get("cases").?.array.items;
     const names = [_][]const u8{ "push-pop", "shift-unshift", "splice", "array-length-grow", "array-length-shrink", "array-reverse", "array-sort" };
