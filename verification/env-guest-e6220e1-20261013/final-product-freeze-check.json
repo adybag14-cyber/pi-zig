@@ -1,0 +1,10 @@
+{
+  "completed_utc": "2026-10-13T20:11:52.0651466+00:00",
+  "checked_product_inputs": 2258,
+  "qualified_close_snapshot_sha256": "349B2A8E5276F6ECA25B790FF29E5302EF17E05CE791486656F433E00CB4C7A1",
+  "product_drift": 0,
+  "metadata_added_after_runtime": true,
+  "next_hosted_run_requires_committed_head": true,
+  "public_guest_activation": false,
+  "full_env_package_qualified": false
+}

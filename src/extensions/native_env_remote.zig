@@ -232,6 +232,7 @@ pub fn create(engine: *js.Engine, shared: c.JSValue) !c.JSValue {
     try @import("native_env_remote_reader_values.zig").install(&scope, bindings);
     try scope.put(bindings, "RemoteWatcher", try @import("native_env_remote_watch.zig").create(&scope, bindings));
     const prototype = try scope.object();
+    const constructor = try scope.own(try classes.constructor(engine, "RemoteExecutionEnv", 1, prototype, construct, &.{bindings}));
     inline for (std.meta.fields(Method)) |field| {
         const operation: Method = @enumFromInt(field.value);
         const length: c_int = switch (operation) {
@@ -250,5 +251,5 @@ pub fn create(engine: *js.Engine, shared: c.JSValue) !c.JSValue {
         }
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
-    return classes.constructor(engine, "RemoteExecutionEnv", 1, prototype, construct, &.{bindings});
+    return c.JS_DupValue(engine.context, constructor);
 }

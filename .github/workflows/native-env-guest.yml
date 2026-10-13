@@ -35,14 +35,14 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference='Stop'
-          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash '26B2970C99C6B2631C301F41ABFB897EFDD64A5DA9439936F488EB40F6F43E67' -OuterSeconds 1320 -Receipt 'verification/env-guest/compile'
+          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Compile -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash 'C405FEBEBBE4DB73C58EC1BBAD204BCA32DB8C9DF4ED44F9B7E91138E76B7956' -OuterSeconds 1320 -Receipt 'verification/env-guest/compile'
           if($LASTEXITCODE -ne 0){throw 'Private Env guest compile-only phase failed'}
       - name: Run private guest Source comparators and mandatory original Env gates
         timeout-minutes: 7
         shell: pwsh
         run: |
           $ErrorActionPreference='Stop'
-          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash '26B2970C99C6B2631C301F41ABFB897EFDD64A5DA9439936F488EB40F6F43E67' -OuterSeconds 300 -Receipt 'verification/env-guest/run'
+          & ./tools/Invoke-EnvGuestQualification.ps1 -Phase Run -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}' -ExpectedSourceManifestHash 'A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6' -ExpectedGuestManifestHash 'C405FEBEBBE4DB73C58EC1BBAD204BCA32DB8C9DF4ED44F9B7E91138E76B7956' -OuterSeconds 300 -Receipt 'verification/env-guest/run'
           if($LASTEXITCODE -ne 0){throw 'Private Env guest qualification failed'}
       - name: Retain frozen Source tools process actual inventory and terminal result
         if: always()

@@ -183,6 +183,41 @@ test "native Env guest RemoteExecutionEnv retained readers chunk pipelines and e
     defer environ.deinit();
     const daemon = environ.get("PI_TEST_ENV_DAEMON") orelse return error.MissingRequiredNativeEnvDaemon;
     const command = environ.get("ComSpec") orelse return error.MissingRequiredWindowsCommand;
+    // The admitted worker schedules exposed an actual writeChunk reorder; replay the unchanged Source caller.
+    for (0..3) |_| {
+        var tmp = std.testing.tmpDir(.{});
+        defer tmp.cleanup();
+        var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+        const root = root_buffer[0..try tmp.dir.realPath(io, &root_buffer)];
+        const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10_000 });
+        defer engine.deinit();
+        engine.native_io = io;
+        try @import("extensions/node_buffer.zig").install(engine);
+        const exports = try values.exports(engine);
+        defer engine.freeValue(exports);
+        try js.define(engine, exports, "Connection", try @import("extensions/native_env_connection.zig").create(engine, exports));
+        try js.define(engine, exports, "RemoteExecutionEnv", try @import("extensions/native_env_remote.zig").create(engine, exports));
+        try engine.registerValueModule("@earendil-works/pi-env", exports);
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        inline for (.{ .{ "daemonPath", daemon }, .{ "treePath", root }, .{ "commandPath", command } }) |entry| try js.define(engine, global, entry[0], try engine.checked(c.JS_NewStringLen(engine.context, entry[1].ptr, entry[1].len)));
+        try js.define(engine, global, "functionalSource", try fixtureValue(engine, @embedFile("extensions/fixtures/env-remote-functional-source-e6220e1.json")));
+        const result = engine.evalModule("import{Connection,RemoteExecutionEnv}from'@earendil-works/pi-env';\n" ++
+            @embedFile("extensions/fixtures/env-remote-functional-source-e6220e1.input.txt") ++
+            "\nif(JSON.stringify(packet)!==JSON.stringify(functionalSource))throw Error(JSON.stringify({actual:packet,expected:functionalSource}));export const proof=true;", "native-env-remote-functional-source.mjs") catch |err| {
+            std.debug.print("Native Env Source RemoteExecutionEnv real reader failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+            return err;
+        };
+        engine.freeValue(result);
+        c.JS_RunGC(engine.runtime);
+    }
+}
+test "native Env guest closing queued frames shares Source rejection detaches listeners and preserves retained callbacks" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var environ = try std.process.Environ.createMap(std.testing.environ, gpa);
+    defer environ.deinit();
+    const daemon = environ.get("PI_TEST_ENV_DAEMON") orelse return error.MissingRequiredNativeEnvDaemon;
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
@@ -190,20 +225,18 @@ test "native Env guest RemoteExecutionEnv retained readers chunk pipelines and e
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10_000 });
     defer engine.deinit();
     engine.native_io = io;
-    try @import("extensions/node_buffer.zig").install(engine);
     const exports = try values.exports(engine);
     defer engine.freeValue(exports);
     try js.define(engine, exports, "Connection", try @import("extensions/native_env_connection.zig").create(engine, exports));
-    try js.define(engine, exports, "RemoteExecutionEnv", try @import("extensions/native_env_remote.zig").create(engine, exports));
     try engine.registerValueModule("@earendil-works/pi-env", exports);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    inline for (.{ .{ "daemonPath", daemon }, .{ "treePath", root }, .{ "commandPath", command } }) |entry| try js.define(engine, global, entry[0], try engine.checked(c.JS_NewStringLen(engine.context, entry[1].ptr, entry[1].len)));
-    try js.define(engine, global, "functionalSource", try fixtureValue(engine, @embedFile("extensions/fixtures/env-remote-functional-source-e6220e1.json")));
-    const result = engine.evalModule("import{Connection,RemoteExecutionEnv}from'@earendil-works/pi-env';\n" ++
-        @embedFile("extensions/fixtures/env-remote-functional-source-e6220e1.input.txt") ++
-        "\nif(JSON.stringify(packet)!==JSON.stringify(functionalSource))throw Error(JSON.stringify({actual:packet,expected:functionalSource}));export const proof=true;", "native-env-remote-functional-source.mjs") catch |err| {
-        std.debug.print("Native Env Source RemoteExecutionEnv real reader failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+    inline for (.{ .{ "daemonPath", daemon }, .{ "treePath", root } }) |entry| try js.define(engine, global, entry[0], try engine.checked(c.JS_NewStringLen(engine.context, entry[1].ptr, entry[1].len)));
+    try js.define(engine, global, "closeSource", try fixtureValue(engine, @embedFile("extensions/fixtures/env-connection-close-source-e6220e1.json")));
+    const result = engine.evalModule("import{Connection,isConnectionLost}from'@earendil-works/pi-env';\n" ++
+        @embedFile("extensions/fixtures/env-connection-close-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(closeSource))throw Error(JSON.stringify({actual:packet,expected:closeSource}));export const proof=true;", "native-env-connection-close-source.mjs") catch |err| {
+        std.debug.print("Native Env Source queued-close failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
     engine.freeValue(result);

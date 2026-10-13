@@ -1,0 +1,24 @@
+{
+  "actual_compiled_tests": 11,
+  "named_source_tests": 10,
+  "inventory": [
+    "native_env_guest_test.test.native Env guest actual compiled inventory",
+    "native_env_guest_test.test.native Env guest shared Error Result and platform values match original e6220e1 descriptors and live getters",
+    "native_env_guest_test.test.native Env guest listing continuations preserve Source virtual calls validation cancellation and error identity",
+    "native_env_guest_test.test.native Env guest error constructors and closures survive collection with original live causes",
+    "native_env_guest_test.test.native Env guest shared constructors results and platform helpers release every host allocation failure",
+    "native_env_guest_test.test.native Env guest Connection class matches original lazy starts failure sharing retries and close ordering",
+    "native_env_guest_test.test.native Env guest real Connection transport matches Source daemon writes events signal getters and close from callback",
+    "native_env_guest_test.test.native Env guest RemoteExecutionEnv complete class shape and virtual path filesystem calls match Source",
+    "native_env_guest_test.test.native Env guest RemoteExecutionEnv retained readers chunk pipelines and exec match original real Source daemon",
+    "native_env_guest_test.test.native Env guest closing queued frames shares Source rejection detaches listeners and preserves retained callbacks",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "passed": 11,
+  "failed": 0,
+  "skipped": 0,
+  "source_manifest_sha256": "C405FEBEBBE4DB73C58EC1BBAD204BCA32DB8C9DF4ED44F9B7E91138E76B7956",
+  "public_guest_activation": false,
+  "full_env_package_qualified": false,
+  "scope": "Private Connection and RemoteExecutionEnv candidate; Node/Local Env and full public package qualification remain in progress."
+}

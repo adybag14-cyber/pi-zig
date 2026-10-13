@@ -305,6 +305,7 @@ pub fn create(scope: *Scope, bindings: c.JSValue) !c.JSValue {
         if (c.JS_NewClass(engine.runtime, engine.native_env_watcher_class, &definition) < 0) return error.OutOfMemory;
     }
     const prototype = try scope.object();
+    const constructor = try scope.own(try @import("native_class.zig").constructor(engine, "RemoteWatcher", 4, prototype, construct, &.{bindings}));
     const getter = try engine.checked(c.JS_NewCFunction2(engine.context, @ptrCast(&mode), "get mode", 0, c.JS_CFUNC_getter, 0));
     const atom = c.JS_NewAtom(engine.context, "mode");
     defer c.JS_FreeAtom(engine.context, atom);
@@ -313,7 +314,6 @@ pub fn create(scope: *Scope, bindings: c.JSValue) !c.JSValue {
     const async_prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
     if (c.JS_SetPrototype(engine.context, close_function, async_prototype) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "close", c.JS_DupValue(engine.context, close_function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    const constructor = try scope.own(try @import("native_class.zig").constructor(engine, "RemoteWatcher", 4, prototype, construct, &.{bindings}));
     var data = [_]c.JSValue{constructor};
     const open_function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, open, "open", 3, 0, 1, &data)));
     if (c.JS_SetPrototype(engine.context, open_function, async_prototype) < 0) return js.capture(engine);

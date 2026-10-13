@@ -1,0 +1,16 @@
+{
+  "close": {
+    "total": 33,
+    "rejected": 33,
+    "same": true,
+    "errors": [
+      "RemoteError:Connection closed:false"
+    ],
+    "added": 32,
+    "removed": 32
+  },
+  "retained": {
+    "callbacks": 32,
+    "removed": 32
+  }
+}

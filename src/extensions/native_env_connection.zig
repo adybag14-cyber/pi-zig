@@ -24,9 +24,22 @@ const State = struct {
     log_offset: usize = 0,
     close_reason: ?c.JSValue = null,
     jobs: std.ArrayList(*Job) = .empty,
+    wire_issued: u64 = 0,
+    wire_next: std.atomic.Value(u64) = .init(0),
+    wire_epoch: std.atomic.Value(u32) = .init(0),
+    wire_stopping: std.atomic.Value(bool) = .init(false),
+    fn stopWrites(self: *State) void {
+        self.wire_stopping.store(true, .release);
+        self.wakeWrites();
+    }
+    fn wakeWrites(self: *State) void {
+        _ = self.wire_epoch.fetchAdd(1, .release);
+        self.engine.native_io.?.futexWake(u32, &self.wire_epoch.raw, std.math.maxInt(u32));
+    }
     fn stop(raw: *anyopaque) void {
         const self: *State = @ptrCast(@alignCast(raw));
         self.closed = true;
+        self.stopWrites();
         self.hub = null;
         if (self.inner) |client| client.fail(error.ConnectionClosed);
         for (self.jobs.items) |job| Job.cancel(&job.task);
@@ -120,6 +133,7 @@ const Job = struct {
     terminal_settled: bool = false,
     lease: c.JSValue,
     starting: bool = false,
+    wire_sequence: u64 = 0,
     fn client(self: *Job) ?*native.Connection {
         const address = self.client_address.load(.acquire);
         return if (address == 0) null else @ptrFromInt(address);
@@ -145,9 +159,20 @@ const Job = struct {
             }
             self.ticket = try client_ptr.begin(.{ .op = "hello", .protocol = 1 }, "", null);
         } else {
-            const parsed = try std.json.parseFromSlice(std.json.Value, self.connection.engine.gpa, self.json, .{});
-            defer parsed.deinit();
-            try self.client().?.transmit(self.ticket.?, parsed.value, self.payload);
+            // Source #send writes frames in the owner's call order. Worker scheduling must not reorder writeChunk.
+            while (true) {
+                const observed = self.connection.wire_epoch.load(.acquire);
+                if (self.connection.wire_stopping.load(.acquire)) return error.ConnectionClosed;
+                if (self.connection.wire_next.load(.acquire) == self.wire_sequence) break;
+                try io.futexWait(u32, &self.connection.wire_epoch.raw, observed);
+            }
+            {
+                defer {
+                    self.connection.wire_next.store(self.wire_sequence + 1, .release);
+                    self.connection.wakeWrites();
+                }
+                try self.client().?.transmitJson(self.ticket.?, self.json, self.payload);
+            }
         }
         var canceled = false;
         var killed = false;
@@ -182,7 +207,7 @@ const Job = struct {
     fn cancel(task: *io_owner.Task) void {
         const self: *Job = @fieldParentPtr("task", task);
         self.abort_requested.store(true, .release);
-        if (self.client()) |client_ptr| if (self.connection.closed) client_ptr.fail(error.ConnectionClosed);
+        if (self.client()) |client_ptr| if (self.connection.wire_stopping.load(.acquire)) client_ptr.fail(error.ConnectionClosed);
     }
     fn poll(task: *io_owner.Task) anyerror!bool {
         const self: *Job = @fieldParentPtr("task", task);
@@ -524,7 +549,12 @@ fn requestJob(scope: *Scope, receiver: c.JSValue, op: c.JSValue, json: c.JSValue
         return created.promise;
     }
     // Every fallible owner-side getter completes before transferring the task to a worker.
-    try job.task.hub.submit(&job.task);
+    job.wire_sequence = owner.wire_issued;
+    owner.wire_issued += 1;
+    job.task.hub.submit(&job.task) catch |err| {
+        owner.wire_issued -= 1;
+        return err;
+    };
     return created.promise;
 }
 
@@ -557,6 +587,7 @@ fn advance(engine: *js.Engine, captures: c.JSValue, value: c.JSValue, rejected: 
 }
 fn close(scope: *Scope, owner: *State) !void {
     owner.closed = true;
+    owner.stopWrites();
     if (owner.close_reason == null) owner.close_reason = c.JS_DupValue(scope.engine.context, try errorObject(scope, owner.bindings, "unknown", try scope.text("Connection closed"), false));
     for (owner.jobs.items) |job| {
         if (!job.terminal_settled) {
@@ -657,6 +688,7 @@ pub fn create(engine: *js.Engine, shared: c.JSValue) !c.JSValue {
     try scope.put(bindings, "promise_resolve", promises.resolve);
     try scope.put(bindings, "promise_then", promises.then_function);
     const prototype = try scope.object();
+    const constructor = try scope.own(try classes.constructor(engine, "Connection", 1, prototype, construct, &.{bindings}));
     inline for (std.meta.fields(Method)) |field| {
         const method: Method = @enumFromInt(field.value);
         const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, if (method == .request or method == .kill) 2 else 0, @intCast(field.value), 0, null)));
@@ -666,5 +698,5 @@ pub fn create(engine: *js.Engine, shared: c.JSValue) !c.JSValue {
         }
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
-    return classes.constructor(engine, "Connection", 1, prototype, construct, &.{bindings});
+    return c.JS_DupValue(engine.context, constructor);
 }

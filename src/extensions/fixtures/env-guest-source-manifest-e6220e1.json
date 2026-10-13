@@ -48,6 +48,14 @@
     {
       "path": "packages/durable/src/env/line-scan.ts",
       "sha256": "EB60F69745262FFD55B1054FC3D63247A5AED95FF502332D093945345B244603"
+    },
+    {
+      "path": "packages/env/daemon/src/frame.rs",
+      "sha256": "3C09016A2AE85EEE379AFBE4B57D858DEDFE48FC1D1F57BCBF675E845D1796B6"
+    },
+    {
+      "path": "packages/env/daemon/Cargo.toml",
+      "sha256": "AD4BAFF48D5EEA6601937E3E77BEC5100DFC26D5801DD69DA416EE129BD60254"
     }
   ],
   "fixtures": [
@@ -98,10 +106,26 @@
     {
       "path": "src/extensions/fixtures/env-remote-functional-source-e6220e1.input.txt",
       "sha256": "2BABBEB5C78BB10059290879DF6B718272EC99EE7B9664D7037DC931DA61FFA7"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-close-source-e6220e1.json",
+      "sha256": "8C9371BC0D2F3F5C3C37ABE533D32A64A5FD339C92131EE560F75CAE13929177"
+    },
+    {
+      "path": "src/extensions/fixtures/env-connection-close-source-e6220e1.input.txt",
+      "sha256": "29F79B998E1154A73D2A275AA7F2B938B1ECDA34CB4EA5C145F0978A9CC41923"
     }
   ],
   "reference_policy": "Unmodified official TS exports through Node24 --conditions=source. Filesystem/transport observer uses official unmodified Rust daemon. JS files are caller input only; product implementation is Zig/C.",
   "public_guest_activation": false,
   "full_env_package_qualified": false,
-  "scope": "Private Connection and RemoteExecutionEnv candidate; Node/Local Env and full public package qualification remain in progress."
+  "scope": "Private Connection and RemoteExecutionEnv candidate; Node/Local Env and full public package qualification remain in progress.",
+  "serde_json_order": {
+    "crate": "serde_json",
+    "version": "1.0.151",
+    "features": "default; preserve_order not enabled",
+    "source": "src/map.rs",
+    "source_sha256": "B5A2FD1EE865E6CFD83EF2DA0A2E1057F892465AC7EDE8A78A11354A60526F33",
+    "scope": "Daemon wire replies/events only; BTreeMap object order"
+  }
 }

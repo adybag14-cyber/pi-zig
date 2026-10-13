@@ -1,0 +1,18 @@
+{
+  "head": "71e1eabe5bb87ff737038639fed686cd610d1682",
+  "tree": "7fbfea77055c28d421403ffacfd891bcb33827d6",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "mode": "ReleaseSafe",
+  "phase": "Run",
+  "source_count": 4669,
+  "tool_count": 19546,
+  "source_manifest_sha256": "A856D7422FC9F730AF84740E529647F93F728A096EF984E5C3E10AE685F1B3A6",
+  "guest_manifest_sha256": "26B2970C99C6B2631C301F41ABFB897EFDD64A5DA9439936F488EB40F6F43E67",
+  "zig": "D:\\a\\_temp\\30258456-cf01-4ca3-a1d6-fbd4d41e1276\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "outer_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_timeout_seconds": 10,
+  "public_guest_activation": false,
+  "full_env_package_qualified": false,
+  "scope": "Private Connection and RemoteExecutionEnv guest candidate plus original typed Env gates; Node/Local and full public package remain unqualified."
+}

@@ -1,60 +1,20 @@
 {
-  "completed_utc": "2026-10-13T18:45:47.7427415+00:00",
+  "completed_utc": "2026-10-13T20:10:10.3232687+00:00",
   "kind": "syntax-only; no native build or VM execution",
   "files": [
     {
-      "path": "src\\extensions\\native_env_values.zig",
-      "sha256": "6BC0A4830A95D9481630C6361E3F51630EC790F78B03A3DE4243872493AF6A29",
+      "path": "src\\extensions\\native_env_connection.zig",
+      "sha256": "23AD1C548C4048AB6F7D007D312C8CE4DF227C17722940F440DD27A767B0F378",
       "exit_code": 0
     },
     {
-      "path": "src\\extensions\\native_env_remote_write.zig",
-      "sha256": "051F2C671BB444EA810084948DB094BA0A41719FF9695DD035B286F0FAD852D2",
+      "path": "src\\extensions\\native_env_decode.zig",
+      "sha256": "EFD75AA273E42B2D02AD9B642B7428DF79715BED4056EB137092384F1632EF98",
       "exit_code": 0
     },
     {
-      "path": "src\\extensions\\native_env_remote_watch.zig",
-      "sha256": "F4882AE11EB434E61BEF1F7A409B4C6A978D3B1024B7E1FDF58026F18525A4B2",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_reader_values.zig",
-      "sha256": "2C4502F73823A078B80FE082D3A84F328DC5840D0157E4FC0807BC05D48D8510",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_readers.zig",
-      "sha256": "F2F6F294B99623E484EEBB84A8C400C1C4A39F719FC46EDCA68E9A5AAEE6AFD9",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_range.zig",
-      "sha256": "74D439C8C028FFFF54FC54FCC31E6DE4A2D948596048DCA3C2F250BE3DA32B3F",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_path.zig",
-      "sha256": "811B2FA35C0BE6E3D92D516FA9C0EF7075E6D21B7623E0890130B965F1D9ECC9",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_helpers.zig",
-      "sha256": "A01E01B9D7705A7F4F8F7BA8636B2696E634FD92836ACE21C53B7EA62B707B20",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote_exec.zig",
-      "sha256": "EC4BDFE589592E57FFDC9FF5C9851033DA8599E1094DCF22BE4E8BE74884672B",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_remote.zig",
-      "sha256": "53B12CB3C1AA6D0BEC62BBB637A3F77F8F86417E3351E9AAE1E0006254CF78CB",
-      "exit_code": 0
-    },
-    {
-      "path": "src\\extensions\\native_env_list_files.zig",
-      "sha256": "0B78F385097A2A108108EB8FDE49F0D33371E1972FE5F480D5EEF1CA4A9346E4",
+      "path": "src\\extensions\\native_env_handle.zig",
+      "sha256": "64D1E32E178728456612629BFEA42AED91E0D25BFED57C27B3BAA4BDAEDB1957",
       "exit_code": 0
     },
     {
@@ -63,20 +23,74 @@
       "exit_code": 0
     },
     {
-      "path": "src\\extensions\\native_env_handle.zig",
-      "sha256": "618CCF846B7E76FC296FA33BA40047AB5CC8D779E13ED6974BA0C44702C2C497",
+      "path": "src\\extensions\\native_env_list_files.zig",
+      "sha256": "0B78F385097A2A108108EB8FDE49F0D33371E1972FE5F480D5EEF1CA4A9346E4",
       "exit_code": 0
     },
     {
-      "path": "src\\extensions\\native_env_decode.zig",
-      "sha256": "FF15518D3A4C8BAFFB641618DD4F80C5D3179425D5419654F68F1FF08A5A9646",
+      "path": "src\\extensions\\native_env_remote_exec.zig",
+      "sha256": "EC4BDFE589592E57FFDC9FF5C9851033DA8599E1094DCF22BE4E8BE74884672B",
       "exit_code": 0
     },
     {
-      "path": "src\\extensions\\native_env_connection.zig",
-      "sha256": "9F722BF267277B20BB853411E6A47B24345EB5CB9323B474E42950B823F6A9FC",
+      "path": "src\\extensions\\native_env_remote_helpers.zig",
+      "sha256": "A01E01B9D7705A7F4F8F7BA8636B2696E634FD92836ACE21C53B7EA62B707B20",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_path.zig",
+      "sha256": "811B2FA35C0BE6E3D92D516FA9C0EF7075E6D21B7623E0890130B965F1D9ECC9",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_range.zig",
+      "sha256": "74D439C8C028FFFF54FC54FCC31E6DE4A2D948596048DCA3C2F250BE3DA32B3F",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_reader_values.zig",
+      "sha256": "F052C4AE5F46B97D01D1DC95F612C232B2ED7437B50859F9D66857AA016F7241",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_readers.zig",
+      "sha256": "F2F6F294B99623E484EEBB84A8C400C1C4A39F719FC46EDCA68E9A5AAEE6AFD9",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_watch.zig",
+      "sha256": "F0E985DAF59798F4B2064CBB8104EABACF56FDA19B7F14109EFCC2BFD301A165",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote_write.zig",
+      "sha256": "051F2C671BB444EA810084948DB094BA0A41719FF9695DD035B286F0FAD852D2",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_remote.zig",
+      "sha256": "890E3AD7FEE409BF6296A75B868FCCEA318044D5788401AC50044A3370BDC9DF",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\extensions\\native_env_values.zig",
+      "sha256": "6BC0A4830A95D9481630C6361E3F51630EC790F78B03A3DE4243872493AF6A29",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\env\\connection.zig",
+      "sha256": "D73B2AE27E475BE92B8D20DD0BA1BC79FFCD47DA0B607676DB15B8EEAD26A461",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\env\\daemon_output.zig",
+      "sha256": "8007064327FF6DDD324BD034948D10E9052AE680DE08E39AE78DB61139C08F93",
+      "exit_code": 0
+    },
+    {
+      "path": "src\\native_env_guest_test.zig",
+      "sha256": "4B47F59AC99284A1EC9DE9FC52DC5D45CCF6FE9C93D3BCEFEF0460DC86D293E0",
       "exit_code": 0
     }
-  ],
-  "count": 15
+  ]
 }

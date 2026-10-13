@@ -40,5 +40,41 @@
     "canonical": "qualified-connection-source-snapshot.json",
     "sha256": "C308CFCBD2E227FABAD3B2E012598B3964DDFE67FCC771E8940A13CE911D9763",
     "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-debug-source-object-orders-fix-e6220e1-20261013-source-before.json",
+    "canonical": "negative-object-order-repair-source-snapshot.json",
+    "sha256": "3E79C991ECA2A75A61999B96721253DD7BE0205DFE0D7EE83407280599C386DB",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-debug-source-frame-send-order-fix-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-ordered-frame-source-snapshot.json",
+    "sha256": "997B0C619DA5859873A4AAC062218BABFE4A0F95E8B4A2143B9CF57DCFB50BE4",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-releasesafe-source-frame-send-order-qualified-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-ordered-frame-source-snapshot.json",
+    "sha256": "997B0C619DA5859873A4AAC062218BABFE4A0F95E8B4A2143B9CF57DCFB50BE4",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-debug-ordered-gate-source-close-lifetimes-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-close-source-snapshot.json",
+    "sha256": "349B2A8E5276F6ECA25B790FF29E5302EF17E05CE791486656F433E00CB4C7A1",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-guest-native-releasesafe-ordered-gate-source-close-lifetimes-e6220e1-20261013-source-before.json",
+    "canonical": "qualified-close-source-snapshot.json",
+    "sha256": "349B2A8E5276F6ECA25B790FF29E5302EF17E05CE791486656F433E00CB4C7A1",
+    "byte_identical": true
+  },
+  {
+    "original_capture_name": "env-connection-close-source-pre-e6220e1-20261013.json",
+    "canonical": "official-upstream-source-snapshot.json",
+    "sha256": "3CA3CF0DCFC8D8B6354168E1AEB6E40B3C8484709A58813FCDB6A729B243AF3E",
+    "byte_identical": true
   }
 ]

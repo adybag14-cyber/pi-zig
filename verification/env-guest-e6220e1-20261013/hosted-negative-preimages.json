@@ -1,0 +1,66 @@
+[
+  {
+    "mode": "Debug",
+    "phase": "compile",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-Debug-71e1eabe5bb87ff737038639fed686cd610d1682\\compile\\inputs-before.json",
+    "canonical": "hosted-negative-71e1eab-inputs-before.json",
+    "sha256": "1C90FD57EB7FE7A41B085759158974ED9A60988642617E428DAA99530D665E3F",
+    "byte_identical": true
+  },
+  {
+    "mode": "Debug",
+    "phase": "compile",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-Debug-71e1eabe5bb87ff737038639fed686cd610d1682\\compile\\tools-before.json",
+    "canonical": "hosted-negative-71e1eab-tools-before.json",
+    "sha256": "0342B2C5011534A0105876D91B55145929509A41E2FF1AF63CF7EE43B11C28E2",
+    "byte_identical": true
+  },
+  {
+    "mode": "Debug",
+    "phase": "run",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-Debug-71e1eabe5bb87ff737038639fed686cd610d1682\\run\\inputs-before.json",
+    "canonical": "hosted-negative-71e1eab-inputs-before.json",
+    "sha256": "1C90FD57EB7FE7A41B085759158974ED9A60988642617E428DAA99530D665E3F",
+    "byte_identical": true
+  },
+  {
+    "mode": "Debug",
+    "phase": "run",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-Debug-71e1eabe5bb87ff737038639fed686cd610d1682\\run\\tools-before.json",
+    "canonical": "hosted-negative-71e1eab-tools-before.json",
+    "sha256": "0342B2C5011534A0105876D91B55145929509A41E2FF1AF63CF7EE43B11C28E2",
+    "byte_identical": true
+  },
+  {
+    "mode": "ReleaseSafe",
+    "phase": "compile",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-ReleaseSafe-71e1eabe5bb87ff737038639fed686cd610d1682\\compile\\inputs-before.json",
+    "canonical": "hosted-negative-71e1eab-inputs-before.json",
+    "sha256": "1C90FD57EB7FE7A41B085759158974ED9A60988642617E428DAA99530D665E3F",
+    "byte_identical": true
+  },
+  {
+    "mode": "ReleaseSafe",
+    "phase": "compile",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-ReleaseSafe-71e1eabe5bb87ff737038639fed686cd610d1682\\compile\\tools-before.json",
+    "canonical": "hosted-negative-71e1eab-ReleaseSafe-compile-tools-before.json",
+    "sha256": "02EACD532BE0E9541312A416AB404751284DF1844142EB5195C14C7FE2E871DE",
+    "byte_identical": true
+  },
+  {
+    "mode": "ReleaseSafe",
+    "phase": "run",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-ReleaseSafe-71e1eabe5bb87ff737038639fed686cd610d1682\\run\\inputs-before.json",
+    "canonical": "hosted-negative-71e1eab-inputs-before.json",
+    "sha256": "1C90FD57EB7FE7A41B085759158974ED9A60988642617E428DAA99530D665E3F",
+    "byte_identical": true
+  },
+  {
+    "mode": "ReleaseSafe",
+    "phase": "run",
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-guest-hosted-71e1eab-38451683802-20261013\\private-native-env-guest-windows-ReleaseSafe-71e1eabe5bb87ff737038639fed686cd610d1682\\run\\tools-before.json",
+    "canonical": "hosted-negative-71e1eab-ReleaseSafe-run-tools-before.json",
+    "sha256": "02EACD532BE0E9541312A416AB404751284DF1844142EB5195C14C7FE2E871DE",
+    "byte_identical": true
+  }
+]
