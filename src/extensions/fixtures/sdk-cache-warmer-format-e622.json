@@ -1,0 +1,168 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "01b3319cbc663abd1dc6539935862343022d37cd7df9e6bd41d888e2a545bb80",
+  "rows": [
+    {
+      "name": "status-unknown",
+      "value": "Inactive (unknown reason)"
+    },
+    {
+      "name": "status-empty-reason",
+      "value": "Inactive ()"
+    },
+    {
+      "name": "status-disabled",
+      "value": "Inactive (cache warming disabled)"
+    },
+    {
+      "name": "status-no-economics",
+      "value": "Inactive (cache economics unavailable)"
+    },
+    {
+      "name": "status-forced-no-economics",
+      "value": "Stopped (extension override, cache economics unavailable)"
+    },
+    {
+      "name": "status-stopped",
+      "value": "Stopped (100% continuation probability while agent is running, expected savings -$0.123 < $0.050 -> stop)"
+    },
+    {
+      "name": "status-refreshing",
+      "value": "Warming cache (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "status-forced-refreshing",
+      "value": "Warming cache (extension override, 100% continuation probability while agent is running, expected savings $0.900 >= $0.050)"
+    },
+    {
+      "name": "status-idle",
+      "value": "Decision in 1m 1s (15% continuation probability, expected savings $0.051 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time--1",
+      "value": "Decision now (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-0",
+      "value": "Decision now (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-1",
+      "value": "Decision in 1s (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-999",
+      "value": "Decision in 1s (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-1000",
+      "value": "Decision in 1s (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-60001",
+      "value": "Decision in 1m 1s (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-3600000",
+      "value": "Decision in 1h (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-3661001",
+      "value": "Decision in 1h 1m 2s (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-7200000",
+      "value": "Decision in 2h (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-Infinity",
+      "value": "Decision in Infinityh (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "time-NaN",
+      "value": "Decision in NaNs (100% continuation probability while agent is running, expected savings $0.900 >= $0.050 -> warm)"
+    },
+    {
+      "name": "usage-0",
+      "value": "Cache warmed: $0.000"
+    },
+    {
+      "name": "usage-0.1",
+      "value": "Cache warmed: $0.100"
+    },
+    {
+      "name": "usage-0.123",
+      "value": "Cache warmed: $0.123"
+    },
+    {
+      "name": "usage-0.1234",
+      "value": "Cache warmed: $0.1234"
+    },
+    {
+      "name": "usage-0.123456",
+      "value": "Cache warmed: $0.123456"
+    },
+    {
+      "name": "usage-0.9999999",
+      "value": "Cache warmed: $1.000"
+    },
+    {
+      "name": "usage--0.1",
+      "value": "Cache warmed: $-0.100"
+    },
+    {
+      "name": "usage-1e+21",
+      "value": "Cache warmed: $1e+21"
+    },
+    {
+      "name": "usage-NaN",
+      "value": "Cache warmed: $NaN"
+    },
+    {
+      "name": "usage-Infinity",
+      "value": "Cache warmed: $Infinity"
+    },
+    {
+      "name": "usage-note",
+      "value": "Cache warmed (extension override): $0.100"
+    },
+    {
+      "name": "literal-regexp",
+      "value": "Cache warmed: $0.100"
+    },
+    {
+      "name": "live-usage-methods",
+      "value": {
+        "text": "Cache warmed: $custom",
+        "seen": [
+          [
+            "toFixed",
+            6
+          ],
+          [
+            "replace",
+            "(\\.\\d{3}\\d*?)0+$",
+            "",
+            0,
+            "$1"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "function-metadata",
+      "value": [
+        {
+          "name": "formatCacheWarmingStatus",
+          "length": 1,
+          "prototype": true
+        },
+        {
+          "name": "formatCacheWarmingUsage",
+          "length": 1,
+          "prototype": true
+        }
+      ]
+    }
+  ]
+}

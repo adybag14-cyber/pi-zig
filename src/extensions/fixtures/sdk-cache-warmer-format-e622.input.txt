@@ -1,0 +1,18 @@
+const {formatCacheWarmingStatus,formatCacheWarmingUsage}=cacheWarmerAPI;
+const cacheWarmerFormattingRows=[];const push=(name,value)=>cacheWarmerFormattingRows.push({name,value});
+const decision={phase:'streaming',warmCost:.1,missCost:1,continuationProbability:1,expectedSavings:.9,economicsAvailable:true,action:'warm'};
+for(const[name,status]of[
+ ['unknown',{state:'inactive'}],['empty-reason',{state:'inactive',reason:''}],['disabled',{state:'inactive',reason:'cache warming disabled'}],
+ ['no-economics',{state:'inactive',reason:'cache economics unavailable',decision:{...decision,economicsAvailable:false}}],
+ ['forced-no-economics',{state:'inactive',extensionOverride:true,decision:{...decision,economicsAvailable:false}}],
+ ['stopped',{state:'inactive',decision:{...decision,expectedSavings:-.123456,action:'stop'}}],
+ ['refreshing',{state:'refreshing',decision}],['forced-refreshing',{state:'refreshing',decision,extensionOverride:true}],
+ ['idle',{state:'scheduled',nextWarmAt:1061000,decision:{...decision,phase:'idle',continuationProbability:.15,expectedSavings:.051}}]
+])push('status-'+name,formatCacheWarmingStatus(status,1000000));
+for(const difference of[-1,0,1,999,1000,60001,3600000,3661001,7200000,Infinity,NaN])push('time-'+String(difference),formatCacheWarmingStatus({state:'scheduled',nextWarmAt:1000000+difference,decision},1000000));
+for(const total of[0,.1,.123,.1234,.123456,.9999999,-.1,1000000000000000000000,NaN,Infinity])push('usage-'+String(total),formatCacheWarmingUsage({usage:{cost:{total}}}));
+push('usage-note',formatCacheWarmingUsage({note:'extension override',usage:{cost:{total:.1}}}));
+{const saved=globalThis.RegExp;globalThis.RegExp=()=>{throw Error('A literal must use its intrinsic constructor')};try{push('literal-regexp',formatCacheWarmingUsage({usage:{cost:{total:.1}}}));}finally{globalThis.RegExp=saved;}}
+{const seen=[];const total={toFixed(digits){seen.push(['toFixed',digits]);return{replace(pattern,replacement){seen.push(['replace',pattern.source,pattern.flags,pattern.lastIndex,replacement]);return 'custom'}}}};push('live-usage-methods',{text:formatCacheWarmingUsage({usage:{cost:{total}}}),seen});}
+push('function-metadata',[formatCacheWarmingStatus,formatCacheWarmingUsage].map(fn=>({name:fn.name,length:fn.length,prototype:Object.hasOwn(fn,'prototype')})));
+globalThis.cacheWarmerFormattingRows=cacheWarmerFormattingRows;
