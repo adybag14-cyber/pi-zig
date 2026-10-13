@@ -3,6 +3,7 @@ param(
     [Parameter(Mandatory)][string]$ExpectedHead,
     [Parameter(Mandatory)][string]$ExpectedSourceManifestHash,
     [Parameter(Mandatory)][string]$ExpectedGuestManifestHash,
+    [string]$ExpectedNodeReaderManifestHash,
     [ValidateSet('Compile','Run')][string]$Phase='Run',
     [string]$Receipt='verification/env-guest',
     [int]$OuterSeconds=300
@@ -28,12 +29,19 @@ if((Get-FileHash -LiteralPath $taskGuestManifest).Hash -cne $ExpectedGuestManife
 $taskGuestOriginal=Get-Content -LiteralPath $taskGuestManifest -Raw|ConvertFrom-Json
 if($taskGuestOriginal.upstream -cne 'e6220e1316f86af818a0ccbfe1c09d7e918b41cf' -or $taskGuestOriginal.public_guest_activation -or $taskGuestOriginal.full_env_package_qualified){throw 'Guest Source identity or activation boundary drift'}
 foreach($taskFixture in $taskGuestOriginal.fixtures){if((Get-FileHash -LiteralPath $taskFixture.path).Hash -cne $taskFixture.sha256){throw "Original guest capture drift: $($taskFixture.path)"}}
+if($ExpectedNodeReaderManifestHash){
+    $taskNodeManifest='src/extensions/fixtures/env-node-readers-source-manifest-e6220e1.json'
+    if((Get-FileHash -LiteralPath $taskNodeManifest).Hash -cne $ExpectedNodeReaderManifestHash){throw 'Original Node reader Source manifest drift'}
+    $taskNodeOriginal=Get-Content -LiteralPath $taskNodeManifest -Raw|ConvertFrom-Json
+    if($taskNodeOriginal.upstream -cne $taskOriginal.upstream -or $taskNodeOriginal.source_snapshot_tracked_files -ne 1902 -or $taskNodeOriginal.public_guest_activation -or $taskNodeOriginal.full_env_package_qualified -or $taskNodeOriginal.fixtures.Count -ne 8){throw 'Node reader Source identity, inventory or activation boundary drift'}
+    foreach($taskFixture in $taskNodeOriginal.fixtures){if((Get-FileHash -LiteralPath $taskFixture.path).Hash -cne $taskFixture.sha256){throw "Original Node reader capture drift: $($taskFixture.path)"}}
+}
 $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
 $taskToolRoot=Split-Path -Parent $taskZig
 $taskTools=@(Get-ChildItem -LiteralPath $taskToolRoot -Recurse -File -Force|Sort-Object FullName|ForEach-Object{[ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})
 $taskInputs|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'inputs-before.json') -Encoding utf8NoBOM
 $taskTools|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'tools-before.json') -Encoding utf8NoBOM
-[ordered]@{head=$taskHead;tree=(git rev-parse 'HEAD^{tree}').Trim();upstream=$taskOriginal.upstream;mode=$Mode;phase=$Phase;source_count=$taskInputs.Count;tool_count=$taskTools.Count;source_manifest_sha256=$ExpectedSourceManifestHash;guest_manifest_sha256=$ExpectedGuestManifestHash;zig=$taskZig;outer_seconds=$OuterSeconds;test_timeout_seconds=120;host_timeout_seconds=10;public_guest_activation=$false;full_env_package_qualified=$false;scope='Private Connection and RemoteExecutionEnv guest candidate plus original typed Env gates; Node/Local and full public package remain unqualified.'}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'source.json') -Encoding utf8NoBOM
+[ordered]@{head=$taskHead;tree=(git rev-parse 'HEAD^{tree}').Trim();upstream=$taskOriginal.upstream;mode=$Mode;phase=$Phase;source_count=$taskInputs.Count;tool_count=$taskTools.Count;source_manifest_sha256=$ExpectedSourceManifestHash;guest_manifest_sha256=$ExpectedGuestManifestHash;node_reader_manifest_sha256=$ExpectedNodeReaderManifestHash;zig=$taskZig;outer_seconds=$OuterSeconds;test_timeout_seconds=120;host_timeout_seconds=10;public_guest_activation=$false;full_env_package_qualified=$false;scope='Private Connection and RemoteExecutionEnv guest candidate plus original typed Env gates; Node/Local and full public package remain unqualified.'}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'source.json') -Encoding utf8NoBOM
 $taskStart=[Diagnostics.ProcessStartInfo]::new()
 $taskStart.FileName=$taskZig
 $taskStart.WorkingDirectory=$taskRoot
@@ -113,6 +121,11 @@ if($taskGuestMarkers.Count -ne 1){throw 'Missing or duplicate actual guest compi
 $taskGuestInventory=@($taskGuestMarkers[0].Groups[1].Value|ConvertFrom-Json)
 if(!$taskGuestInventory.Count -or @($taskGuestInventory|Sort-Object -Unique).Count -ne $taskGuestInventory.Count){throw 'Empty or duplicate actual guest test names'}
 $taskGuestWanted=@(foreach($taskMatch in [regex]::Matches([IO.File]::ReadAllText((Join-Path $taskRoot 'src/native_env_guest_test.zig')),'(?m)^test "([^"\r\n]+)"')){$taskMatch.Groups[1].Value})
+if($ExpectedNodeReaderManifestHash){
+    foreach($taskRequired in @('native Env guest Node public reader values and LineScanner match original Source virtual files','native Env guest public decoder exports preserve Source BOM globals and function values','native Env guest Node reader scan and text continuations release every host allocation failure')){
+        if(@($taskGuestWanted|Where-Object{$_ -ceq $taskRequired}).Count -ne 1){throw "Mandatory Node reader Source comparator missing: $taskRequired"}
+    }
+}
 foreach($taskName in $taskGuestWanted){if(@($taskGuestInventory|Where-Object{$_.EndsWith('.test.'+$taskName,[StringComparison]::Ordinal)}).Count -ne 1){throw "Guest Source body absent or duplicated: $taskName"}}
 foreach($taskName in $taskGuestInventory){
     if(!$taskName.Contains('.test.native Env guest ',[StringComparison]::Ordinal) -and !$taskName.EndsWith('.test_0',[StringComparison]::Ordinal)){throw "Unmapped guest compiler-selected body: $taskName"}
@@ -121,4 +134,4 @@ foreach($taskName in $taskGuestInventory){
     if([regex]::Matches($taskLog,$taskPattern).Count -ne 1){throw "Missing terminal or skipped mandatory guest body: $taskName"}
 }
 if(!$taskLog.Contains("All $($taskGuestInventory.Count) tests passed.",[StringComparison]::Ordinal)){throw 'Incomplete guest selected execution'}
-[ordered]@{actual_compiled_tests=$taskGuestInventory.Count;named_source_tests=$taskGuestWanted.Count;inventory=$taskGuestInventory;passed=$taskGuestInventory.Count;failed=0;skipped=0;source_manifest_sha256=$ExpectedGuestManifestHash;public_guest_activation=$false;full_env_package_qualified=$false;scope=$taskGuestOriginal.scope}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskReceipt 'guest-coverage.json') -Encoding utf8NoBOM
+[ordered]@{actual_compiled_tests=$taskGuestInventory.Count;named_source_tests=$taskGuestWanted.Count;inventory=$taskGuestInventory;passed=$taskGuestInventory.Count;failed=0;skipped=0;source_manifest_sha256=$ExpectedGuestManifestHash;node_reader_manifest_sha256=$ExpectedNodeReaderManifestHash;public_guest_activation=$false;full_env_package_qualified=$false;scope=if($ExpectedNodeReaderManifestHash){$taskNodeOriginal.scope}else{$taskGuestOriginal.scope}}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskReceipt 'guest-coverage.json') -Encoding utf8NoBOM

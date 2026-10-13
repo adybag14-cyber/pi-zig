@@ -30,8 +30,9 @@ fn construct(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, con
     var class_id: u32 = undefined;
     if (c.JS_ToUint32(engine.context, &class_id, constants[0]) < 0) return js.capture(engine);
     const value = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, try scope.get(target, "prototype"), class_id)));
+    const scanner = try scan.LineScanner.init(.{ .startLine = @intFromFloat(start_number), .endLine = if (infinity) null else @intFromFloat(end_number) });
     const state = try engine.gpa.create(State);
-    state.* = .{ .engine = engine, .scanner = try scan.LineScanner.init(.{ .startLine = @intFromFloat(start_number), .endLine = if (infinity) null else @intFromFloat(end_number) }) };
+    state.* = .{ .engine = engine, .scanner = scanner };
     _ = c.JS_SetOpaque(value, state);
     return c.JS_DupValue(engine.context, value);
 }

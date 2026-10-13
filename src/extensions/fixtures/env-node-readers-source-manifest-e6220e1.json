@@ -49,10 +49,19 @@
     {
       "path": "src/extensions/fixtures/env-node-reader-values-source-e6220e1.json",
       "sha256": "D2547D6ED3978062DABD31E05655585EC80F9CC05426D785C914B4DF9061B482"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-reader-gpa-source-e6220e1.input.txt",
+      "sha256": "7243EDF2D2CC14F3787524C7471BEF7C459BA57912547471E19ABC517DC1ADA4"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-reader-gpa-source-e6220e1.json",
+      "sha256": "166378DB25B679EE1489E5FD7597BB789BC3890C079A1AE32FBD58996CD981C3"
     }
   ],
   "public_guest_activation": false,
   "full_env_package_qualified": false,
   "scope": "Private Windows Node binary/text reader values and getter order, standard LineScanner values, and public decoder helpers. Native Node/Local filesystem, exec, watcher and complete FileHandle/Stats graphs remain pending.",
-  "reference_policy": "Unmodified original Node24 --conditions=source exports. JS is caller input only; product implementation is Zig/C."
+  "reference_policy": "Unmodified original Node24 --conditions=source exports. JS is caller input only; product implementation is Zig/C.",
+  "pending_allocation_gate": "New Source-derived gate; native outcome unqualified until actual runtime terminal."
 }

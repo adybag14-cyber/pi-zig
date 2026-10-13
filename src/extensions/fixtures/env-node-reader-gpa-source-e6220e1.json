@@ -1,0 +1,34 @@
+{
+  "scan": {
+    "newlines": 1,
+    "start": 0,
+    "end": 1,
+    "firstLineEnd": 1,
+    "lastLineStart": 0,
+    "selectedBytes": 1,
+    "firstLineBytes": 1
+  },
+  "info": {
+    "name": "file",
+    "path": "gpa/file",
+    "kind": "file",
+    "size": 3,
+    "mtimeMs": 0
+  },
+  "read": [
+    97,
+    10,
+    98
+  ],
+  "lines": [
+    {
+      "text": "a",
+      "terminated": true
+    },
+    {
+      "text": "b",
+      "terminated": false
+    },
+    null
+  ]
+}

@@ -15,10 +15,7 @@ test "native Env guest actual compiled inventory" {
 fn fixtureValue(engine: *em.Engine, comptime source: []const u8) !c.JSValue {
     return engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "native-env-source.json"));
 }
-test "native Env guest Node public reader values and LineScanner match original Source virtual files" {
-    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
-    defer engine.deinit();
-    engine.native_io = std.testing.io;
+fn nodeReaderModule(engine: *em.Engine) !c.JSValue {
     try @import("extensions/text_encoding.zig").install(engine);
     try @import("extensions/node_path.zig").install(engine, std.testing.io);
     const shared = try values.exports(engine);
@@ -40,7 +37,17 @@ test "native Env guest Node public reader values and LineScanner match original 
     try scope.put(internal, "LineScanner", scanner);
     try scope.put(internal, "NodeBinaryReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .binary)));
     try scope.put(internal, "NodeTextLineReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .text)));
+    return c.JS_DupValue(engine.context, internal);
+}
+test "native Env guest Node public reader values and LineScanner match original Source virtual files" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const internal = try nodeReaderModule(engine);
+    defer engine.freeValue(internal);
     try engine.registerValueModule("native-env-node-readers-test", internal);
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try scope.put(global, "nodeReaderSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-reader-values-source-e6220e1.json"))));
     const result = engine.evalModule("import{NodeBinaryReader,NodeTextLineReader,LineScanner}from'native-env-node-readers-test';\n" ++
@@ -59,6 +66,26 @@ test "native Env guest Node public reader values and LineScanner match original 
     };
     engine.freeValue(getter_result);
     c.JS_RunGC(engine.runtime);
+}
+fn allocationNodeReaders(gpa: std.mem.Allocator) !void {
+    const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const internal = try nodeReaderModule(engine);
+    defer engine.freeValue(internal);
+    try engine.registerValueModule("native-env-node-readers-test", internal);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "nodeReaderGpaSource", try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-reader-gpa-source-e6220e1.json")));
+    const generation = engine.native_allocation_generation;
+    const result = engine.evalModule("import{NodeBinaryReader,NodeTextLineReader}from'native-env-node-readers-test';\n" ++
+        @embedFile("extensions/fixtures/env-node-reader-gpa-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeReaderGpaSource))throw Error(JSON.stringify({actual:packet,expected:nodeReaderGpaSource}));export const proof=true;", "native-env-node-reader-gpa-source.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+test "native Env guest Node reader scan and text continuations release every host allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationNodeReaders, .{});
 }
 test "native Env guest public decoder exports preserve Source BOM globals and function values" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });

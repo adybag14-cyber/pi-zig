@@ -58,6 +58,7 @@ fn failure(scope: *Scope, saved: c.JSValue, reason: c.JSValue) !c.JSValue {
     return errors.failed(scope, try scope.get(saved, "bindings"), reason, try scope.get(try scope.get(saved, "self"), "path"));
 }
 fn caught(scope: *Scope, saved: c.JSValue, err: anyerror) !c.JSValue {
+    if (err == error.OutOfMemory) return err;
     _ = @import("native_durable.zig").reject(scope.engine, err);
     return failure(scope, saved, try scope.own(c.JS_GetException(scope.engine.context)));
 }
@@ -198,7 +199,9 @@ fn start(scope: *Scope, saved: c.JSValue, args: []const c.JSValue, method: Metho
             return binaryPump(scope, saved);
         },
         .scanLines => {
-            const scanner = makeScanner(scope, bindings, h.arg(args, 0)) catch {
+            const generation = scope.engine.native_allocation_generation;
+            const scanner = makeScanner(scope, bindings, h.arg(args, 0)) catch |err| {
+                if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
                 const reason = c.JS_GetException(scope.engine.context);
                 scope.engine.freeValue(reason);
                 return errors.expected(scope, bindings, "invalid", "Invalid line range", try scope.get(receiver, "path"));

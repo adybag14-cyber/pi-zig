@@ -1,0 +1,15 @@
+{
+  "checkpoint": "abdc8d057160462a45510d06c14a503613909cff",
+  "status": "Source-only unqualified allocation repair candidate; no local native launch due to guarded RAM admission",
+  "native_reader_manifest_sha256": "93588A6E6E0928D47BA51E3383AA3AA13F847362DC7E16F38151E6FEA67B1235",
+  "source_gpa_capture": "original Node reference passed at21:10:32Z; full1,902 Source and pinned Node post drift zero",
+  "changes": [
+    "Restore direct and tagged native OOM before Source invalid line range mapping",
+    "Propagate direct OOM through the outer reader failure helper",
+    "Initialize native scanner before allocating its State",
+    "Exercise genuine Source binary scan/info/read and text continuation packet at every host allocation failure"
+  ],
+  "public_guest_activation": false,
+  "full_env_package_qualified": false,
+  "file_worker_wip_included": false
+}
