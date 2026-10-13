@@ -1,0 +1,37 @@
+{
+  "original_inventory": [
+    {
+      "name": "codec",
+      "cases": 41,
+      "negative": 37,
+      "input_sha256": "8F98B9FE3A1A94BF3AFD26E241D5987C905BA20A84EDC94E2E1B47DA6939D37C",
+      "oracle_sha256": "0006FC91ED2DB611A738159BEEEA58650A140EBF63CA93A46A20602A51ADEA94"
+    },
+    {
+      "name": "wire",
+      "cases": 69,
+      "negative": 30,
+      "input_sha256": "D6E6D1198391C132CBD2C1F1A01B92D9E735B46A2AE47B0FD59C1B85B71DE993",
+      "oracle_sha256": "3C089203F7D1CDAB1DC43666F015573572E0D9EBD5F3F43928266F32CD452059"
+    },
+    {
+      "name": "apply",
+      "cases": 34,
+      "negative": 23,
+      "input_sha256": "087370AFD765953325B483602DD13E93F6520E0F358FAE878EB0B2806D9C11CE",
+      "oracle_sha256": "FAB8DDC3490A55CE5A0E1886510AB1E1C95423C2DFC184C86D47B8041DD1E76C"
+    },
+    {
+      "name": "remote",
+      "cases": 30,
+      "negative": 9,
+      "input_sha256": "AAF6FA77FD4761267D7F6826CCB7A303D31D7EC6570D695324534600BE25CA7E",
+      "oracle_sha256": "70BDF9732FB5152A86E5563F25AF91035A4180D884EEA291D6F684F276C27A80"
+    }
+  ],
+  "compiled_count": 13,
+  "named_count": 12,
+  "missing": [],
+  "status": "passed",
+  "checked_utc": "2026-10-13T20:37:16.9793017+00:00"
+}

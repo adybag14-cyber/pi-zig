@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "head": "346f529f4a91d0ef9048132476a46efdb907f219",
+  "tree": "8405cc158999c3d8400322dd341ce7b65de1af6c",
+  "debug_source_manifest": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-composition-candidate-debug-remote-inventory-resume-20261013-source-before.json",
+  "manifest_sha256": "B257C010FBC7247989121B363B039D4B1DB498BF49AF4A6BF0A7A0B11A5FA7A6",
+  "committed_blobs_checked": 4867,
+  "committed_byte_drift": 0,
+  "drift": [],
+  "reader_pid": 40860,
+  "reader_created_utc": "2026-10-13T20:36:49.9681197Z",
+  "reader_executable": "C:\\Program Files\\Git\\cmd\\git.exe",
+  "reader_executable_sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+  "reader_command": "git cat-file --batch",
+  "reader_exit_code": 0,
+  "completed_utc": "2026-10-13T20:36:52.7443406+00:00"
+}
