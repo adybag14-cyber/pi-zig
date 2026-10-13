@@ -85,7 +85,10 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $PSNativeCommandUseErrorActionPreference = $false
-          & zig fmt --check build.zig src tools
+          $taskFmt = @('build.zig','src/extensions/engine.zig')
+          $taskFmt += @(Get-ChildItem -LiteralPath src/extensions -File -Filter 'native_chord_delta*.zig' | ForEach-Object FullName)
+          $taskFmt += @(Get-ChildItem -LiteralPath src -File -Filter 'native_chord_delta*.zig' | ForEach-Object FullName)
+          & zig fmt --check @taskFmt
           if ($LASTEXITCODE -ne 0) { throw 'Native formatting failed' }
           & zig build build-native-chord-delta-candidate -Doptimize=${{ matrix.mode }} -j1 --summary all 2>&1 | Tee-Object verification/native-chord-delta-candidate/compile.log
           if ($LASTEXITCODE -ne 0) { throw 'Candidate compilation failed' }
