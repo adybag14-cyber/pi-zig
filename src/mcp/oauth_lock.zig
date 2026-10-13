@@ -120,15 +120,27 @@ test "mcp.runtime OAuth directory lease renews while held and releases only its 
     const count = try scratch.dir.realPath(io, &buffer);
     const base = try std.fs.path.join(gpa, &.{ buffer[0..count], "refresh" });
     defer gpa.free(base);
-    const options: Options = .{ .stale_ms = 150, .wait_ms = 100, .retry_ms = 10, .heartbeat_ms = 20 };
+    // Keep the lease past its stale interval while allowing a loaded hosted
+    // runner to schedule the real renewal thread. Product defaults stay above.
+    const options: Options = .{ .stale_ms = 2000, .wait_ms = 100, .retry_ms = 10, .heartbeat_ms = 50 };
     const lease = try Lease.acquire(gpa, io, base, options, null);
     const path = try gpa.dupe(u8, lease.path);
     defer gpa.free(path);
     var closed = false;
     defer if (!closed) lease.close(io);
-    try io.sleep(.fromMilliseconds(220), .awake);
+    const initial = try std.Io.Dir.cwd().statFile(io, path, .{ .follow_symlinks = false });
+    try io.sleep(.fromMilliseconds(2300), .awake);
     try std.testing.expect(!lease.compromised.load(.acquire));
-    try std.testing.expectError(error.McpOAuthRefreshLockTimeout, Lease.acquire(gpa, io, base, options, null));
+    const renewed = try std.Io.Dir.cwd().statFile(io, path, .{ .follow_symlinks = false });
+    try std.testing.expectEqual(initial.inode, renewed.inode);
+    try std.testing.expect(renewed.mtime.nanoseconds > initial.mtime.nanoseconds);
+    const age = std.Io.Clock.real.now(io).toMilliseconds() - @divTrunc(renewed.mtime.nanoseconds, std.time.ns_per_ms);
+    try std.testing.expect(age < options.stale_ms);
+    if (Lease.acquire(gpa, io, base, options, null)) |unexpected| {
+        // Preserve ownership cleanup even when this assertion fails.
+        unexpected.close(io);
+        return error.TestExpectedError;
+    } else |err| try std.testing.expectEqual(error.McpOAuthRefreshLockTimeout, err);
     lease.close(io);
     closed = true;
     try std.testing.expectError(error.FileNotFound, std.Io.Dir.cwd().statFile(io, path, .{ .follow_symlinks = false }));
