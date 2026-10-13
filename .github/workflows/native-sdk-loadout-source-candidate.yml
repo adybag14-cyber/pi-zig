@@ -90,12 +90,12 @@ jobs:
           if ('sha256-' + (Get-FileHash "$taskReceipt/models.all.json").Hash.ToLowerInvariant() -cne $taskRevision) { throw 'Typed catalog revision mismatch' }
           & $taskNode --max-old-space-size=256 --experimental-transform-types "$taskSource/packages/ai/scripts/hydrate-model-catalog.ts" "$taskReceipt/models.all.json"
           if ($LASTEXITCODE) { throw 'Original official hydrator failed' }
-          $taskData = @(Get-ChildItem -LiteralPath "$taskSource/packages/ai/src/providers/data" -File | Sort-Object Name | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskData = @(Get-ChildItem -LiteralPath "$taskSource/packages/ai/src/providers/data" -File -Force | Sort-Object Name | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
           if ($taskData.Count -ne 43) { throw 'Hydrated Source data inventory changed' }
           $taskData | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/hydrated-before.json"
-          $taskDependencyRows = @(Get-ChildItem -LiteralPath $taskSource -File -Recurse | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskDependencyRows = @(Get-ChildItem -LiteralPath $taskSource -File -Recurse -Force | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
           $taskDependencyRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/dependencies-before.json"
-          $taskNodeRows = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse | Where-Object { !$_.LinkType } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
+          $taskNodeRows = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse -Force | Where-Object { !$_.LinkType } | Sort-Object FullName | ForEach-Object { [ordered]@{path=$_.FullName;sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
           $taskNodeRows | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/node-before.json"
           $taskPackage = '/tmp/pi-sdk-loadout-source-fixture/packages/coding-agent'
           if (Test-Path -LiteralPath $taskPackage) { throw 'Refuse existing caller package directory' }
@@ -126,15 +126,15 @@ jobs:
             $taskDrift = @($taskRows | Where-Object { !(Test-Path -LiteralPath $_.path) -or (Get-FileHash -LiteralPath $_.path).Hash -cne $_.sha256 } | ForEach-Object path)
             $taskSetDrift = @()
             if ($taskKind -eq 'dependencies') {
-              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest' -File -Recurse | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | ForEach-Object FullName | Sort-Object)
+              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest' -File -Recurse -Force | Where-Object { !$_.LinkType -and $_.FullName -match '[/\\]node_modules[/\\]' } | ForEach-Object FullName | Sort-Object)
               $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
             } elseif ($taskKind -eq 'node') {
               $taskNodePath = $taskRows | Where-Object { $_.path -match '/bin/node$' } | Select-Object -ExpandProperty path
               $taskNodeRoot = Split-Path (Split-Path $taskNodePath)
-              $taskCurrent = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse | Where-Object { !$_.LinkType } | ForEach-Object FullName | Sort-Object)
+              $taskCurrent = @(Get-ChildItem -LiteralPath $taskNodeRoot -File -Recurse -Force | Where-Object { !$_.LinkType } | ForEach-Object FullName | Sort-Object)
               $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
             } elseif ($taskKind -eq 'hydrated') {
-              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest/packages/ai/src/providers/data' -File | ForEach-Object FullName | Sort-Object)
+              $taskCurrent = @(Get-ChildItem -LiteralPath 'source-latest/packages/ai/src/providers/data' -File -Force | ForEach-Object FullName | Sort-Object)
               $taskSetDrift = @(Compare-Object @($taskRows.path | Sort-Object) $taskCurrent)
             }
             [ordered]@{count=$taskRows.Count;drift=$taskDrift;file_set_drift=$taskSetDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 4 | Set-Content "$taskReceipt/$taskKind-posthash.json"
