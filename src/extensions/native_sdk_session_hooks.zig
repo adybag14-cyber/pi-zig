@@ -8,6 +8,7 @@ const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const flow = @import("native_agent_async.zig");
 const c = em.c;
+extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Hook = enum(c_int) { beforeTool, afterTool, next, request, boundary, hidden, forced, legacyNext };
 const Helper = enum(c_int) { before, after, compact, dispatchBoundary };
 const Installer = enum(c_int) { tool, next, request, boundary, hidden, forced };
@@ -221,28 +222,66 @@ fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: boo
 fn hidden(scope: *Scope, session: c.JSValue, messages: c.JSValue) !c.JSValue {
     const hidden_names = try scope.get(session, "_hiddenDeclarations");
     if (scope.equal(try scope.get(hidden_names, "size"), c.JS_NewInt32(scope.engine.context, 0))) return messages;
-    const result = try scope.array();
-    for (0..try sdk.length(scope.engine, messages)) |index| {
-        const message = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, messages, @intCast(index))));
-        var projected = message;
-        if (try is(scope, try scope.get(message, "role"), "system") and (scope.truthy(try scope.get(message, "toolsAdded")) or scope.truthy(try scope.get(message, "toolsRemoved")))) {
-            projected = try scope.own(try js.spread(scope.engine, message));
-            inline for (.{ "toolsAdded", "toolsRemoved" }) |name| {
-                const atom = c.JS_NewAtom(scope.engine.context, name);
-                defer c.JS_FreeAtom(scope.engine.context, atom);
-                if (c.JS_DeleteProperty(scope.engine.context, projected, atom, c.JS_PROP_THROW) < 0) return js.capture(scope.engine);
-                const tools = try scope.get(message, name);
-                const kept = try scope.array();
-                if (!temp.nullish(tools)) for (0..try sdk.length(scope.engine, tools)) |tool_index| {
-                    const tool = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, tools, @intCast(tool_index))));
-                    if (!scope.truthy(try scope.invoke(hidden_names, "has", &.{try scope.get(tool, "name")}))) _ = try scope.invoke(kept, "push", &.{tool});
-                };
-                if (try sdk.length(scope.engine, kept) > 0) try scope.put(projected, name, kept);
-            }
-        }
-        _ = try scope.invoke(result, "push", &.{projected});
+    var roots = [_]c.JSValue{hidden_names};
+    const mapper = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, hiddenMapper, "", 1, 0, roots.len, &roots)));
+    return scope.invoke(messages, "map", &.{mapper});
+}
+fn hiddenMapper(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return hiddenMessage(engine, if (argc > 0) args[0] else c.pi_js_undefined(), roots[0]) catch |err| sdk.fail(engine, err);
+}
+fn hiddenMessage(engine: *em.Engine, message: c.JSValue, hidden_names: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (!try is(&scope, try scope.get(message, "role"), "system") or (!scope.truthy(try scope.get(message, "toolsAdded")) and !scope.truthy(try scope.get(message, "toolsRemoved")))) return c.JS_DupValue(engine.context, message);
+    const added = try scope.get(message, "toolsAdded");
+    const removed = try scope.get(message, "toolsRemoved");
+    const rest = try scope.own(try toolChangesRest(engine, message));
+    var roots = [_]c.JSValue{hidden_names};
+    const predicate = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, visibleTool, "", 1, 0, roots.len, &roots)));
+    const filtered_added = if (temp.nullish(added)) c.pi_js_undefined() else try scope.invoke(added, "filter", &.{predicate});
+    const kept_added = if (temp.nullish(filtered_added)) try scope.array() else filtered_added;
+    const filtered_removed = if (temp.nullish(removed)) c.pi_js_undefined() else try scope.invoke(removed, "filter", &.{predicate});
+    const kept_removed = if (temp.nullish(filtered_removed)) try scope.array() else filtered_removed;
+    inline for (.{ "toolsAdded", "toolsRemoved" }, .{ kept_added, kept_removed }) |name, kept| {
+        if (try scope.positive(try scope.get(kept, "length"))) try scope.put(rest, name, kept);
+    }
+    return c.JS_DupValue(engine.context, rest);
+}
+fn toolChangesRest(engine: *em.Engine, message: c.JSValue) !c.JSValue {
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    var properties: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &properties, &count, message, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return js.capture(engine);
+    defer c.JS_FreePropertyEnum(engine.context, properties, count);
+    const added_atom = c.JS_NewAtom(engine.context, "toolsAdded");
+    defer c.JS_FreeAtom(engine.context, added_atom);
+    const removed_atom = c.JS_NewAtom(engine.context, "toolsRemoved");
+    defer c.JS_FreeAtom(engine.context, removed_atom);
+    for (properties[0..count]) |entry| {
+        if (entry.atom == added_atom or entry.atom == removed_atom) continue;
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(engine.context, &descriptor, message, entry.atom);
+        if (present < 0) return js.capture(engine);
+        if (present == 0) continue;
+        defer engine.freeValue(descriptor.value);
+        defer engine.freeValue(descriptor.getter);
+        defer engine.freeValue(descriptor.setter);
+        if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
+        const value = try engine.checked(c.JS_GetProperty(engine.context, message, entry.atom));
+        if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, value, c.JS_PROP_C_W_E) < 0) return js.capture(engine);
     }
     return result;
+}
+fn visibleTool(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const tool = if (argc > 0) args[0] else c.pi_js_undefined();
+    const name = scope.get(tool, "name") catch |err| return sdk.fail(engine, err);
+    const hidden_value = scope.invoke(roots[0], "has", &.{name}) catch |err| return sdk.fail(engine, err);
+    return c.pi_js_bool(engine.context, @intFromBool(!scope.truthy(hidden_value)));
 }
 fn forced(scope: *Scope, session: c.JSValue, messages: c.JSValue) !c.JSValue {
     const options = try scope.get(session, "_runSystemPromptOptions");
@@ -257,11 +296,26 @@ fn forced(scope: *Scope, session: c.JSValue, messages: c.JSValue) !c.JSValue {
     try scope.put(head, "timestamp", if (temp.nullish(timestamp)) try scope.invoke(try scope.global("Date"), "now", &.{}) else timestamp);
     const result = try scope.array();
     _ = try scope.invoke(result, "push", &.{head});
-    for (0..try sdk.length(scope.engine, messages)) |index| {
-        const message = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, messages, @intCast(index))));
-        if (!try is(scope, try scope.get(message, "role"), "system")) _ = try scope.invoke(result, "push", &.{message});
+    const predicate = try scope.own(try scope.engine.checked(c.JS_NewCFunction(scope.engine.context, notSystem, "", 1)));
+    const filtered = try scope.invoke(messages, "filter", &.{predicate});
+    const symbol = try scope.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context)));
+    var iterator = try js.Iterator.init(scope.engine, filtered, symbol);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
+    while (try iterator.next()) |message| {
+        defer scope.engine.freeValue(message);
+        _ = try scope.invoke(result, "push", &.{message});
     }
     return result;
+}
+fn notSystem(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const message = if (argc > 0) args[0] else c.pi_js_undefined();
+    const role = scope.get(message, "role") catch |err| return sdk.fail(engine, err);
+    const system = is(&scope, role, "system") catch |err| return sdk.fail(engine, err);
+    return c.pi_js_bool(engine.context, @intFromBool(!system));
 }
 fn nextSnapshot(scope: *Scope, session: c.JSValue, owner: c.JSValue, previous: c.JSValue) !c.JSValue {
     const previous_context = if (temp.nullish(previous)) c.pi_js_undefined() else try scope.get(previous, "context");
@@ -485,7 +539,7 @@ fn rejectBefore(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
     const instance = c.JS_IsInstanceOf(engine.context, reason, error_constructor);
     if (instance < 0) return js.capture(engine);
     if (instance != 0) return flow.settle(engine, owner, true, reason);
-    const message = try scope.concat(try scope.text("Extension failed, blocking execution: "), try scope.stringify(reason));
+    const message = try scope.concat(try scope.text("Extension failed, blocking execution: "), try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{reason}));
     const replacement = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, @constCast(&message))));
     try flow.settle(engine, owner, true, replacement);
 }

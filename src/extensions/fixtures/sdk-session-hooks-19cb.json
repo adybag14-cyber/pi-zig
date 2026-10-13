@@ -1,0 +1,1081 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "scope": "Real SDK factory-created AgentSession and original installed transform/request/boundary/tool hook callbacks; actual ExtensionRunner and SessionManager; caller messages/fields, user handlers, and an explicit nested recorder collaborator are test inputs; does not certify NestedToolCallRunner itself.",
+  "rows": [
+    {
+      "scenario": "hidden-empty",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": "base",
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "hide",
+              "description": "hide",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "system",
+          "content": "append",
+          "toolsRemoved": [
+            {
+              "name": "remove"
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "hidden-tool",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": "base",
+          "timestamp": "clock",
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ]
+        },
+        {
+          "role": "system",
+          "content": "append",
+          "timestamp": "clock",
+          "toolsRemoved": [
+            {
+              "name": "remove"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "forced-string",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": "forced",
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "hide",
+              "description": "hide",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "forced-empty",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": "",
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "hide",
+              "description": "hide",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "forced-null",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": null,
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            },
+            {
+              "name": "hide",
+              "description": "hide",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "forced-hidden",
+      "error": null,
+      "hookResult": [
+        {
+          "role": "system",
+          "content": "forced",
+          "toolsAdded": [
+            {
+              "name": "keep",
+              "description": "keep",
+              "parameters": {
+                "type": "object"
+              }
+            }
+          ],
+          "timestamp": "clock"
+        },
+        {
+          "role": "user",
+          "content": "question",
+          "timestamp": "clock"
+        }
+      ],
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "physical-request",
+      "error": null,
+      "hookResult": {
+        "context": {
+          "messages": [],
+          "tools": []
+        },
+        "model": {
+          "id": "fixture",
+          "name": "fixture",
+          "provider": "fixture",
+          "api": "openai-completions",
+          "baseUrl": "https://fixture.invalid",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 10000,
+          "maxTokens": 1000
+        },
+        "thinkingLevel": "off"
+      },
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "failed-physical-request",
+      "error": null,
+      "hookResult": {
+        "context": {
+          "messages": [],
+          "tools": []
+        },
+        "model": {
+          "id": "fixture",
+          "name": "fixture",
+          "provider": "fixture",
+          "api": "openai-completions",
+          "baseUrl": "https://fixture.invalid",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 10000,
+          "maxTokens": 1000
+        },
+        "thinkingLevel": "off"
+      },
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "finish-no-handler",
+      "error": null,
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "before-no-handler",
+      "error": null,
+      "nestedTrace": [],
+      "trace": [],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "before-block",
+      "error": null,
+      "hookResult": {
+        "block": true,
+        "reason": "blocked"
+      },
+      "nestedTrace": [],
+      "trace": [
+        [
+          "extension",
+          "tool_call",
+          0,
+          [],
+          [],
+          null,
+          null,
+          null,
+          [
+            "input",
+            "toolCallId",
+            "toolName",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "tool_call"
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "before-error",
+      "error": "hookfailure",
+      "nestedTrace": [],
+      "trace": [
+        [
+          "extension",
+          "tool_call",
+          0,
+          [],
+          [],
+          null,
+          null,
+          null,
+          [
+            "input",
+            "toolCallId",
+            "toolName",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "tool_call"
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "assistant",
+        "api": "openai-completions",
+        "provider": "fixture",
+        "model": "fixture",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "nested-calls",
+      "error": null,
+      "nestedTrace": [
+        [
+          "take",
+          "parent"
+        ]
+      ],
+      "trace": [
+        [
+          "extension",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "message_start"
+        ],
+        [
+          "public",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "toolResult",
+        "toolCallId": "parent",
+        "toolName": "outer",
+        "content": [],
+        "timestamp": "clock",
+        "nestedCalls": [
+          {
+            "toolName": "nested",
+            "toolCallId": "child"
+          }
+        ]
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "nested-usage",
+      "error": null,
+      "nestedTrace": [
+        [
+          "take",
+          "parent"
+        ]
+      ],
+      "trace": [
+        [
+          "extension",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "message_start"
+        ],
+        [
+          "public",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "toolResult",
+        "toolCallId": "parent",
+        "toolName": "outer",
+        "content": [],
+        "timestamp": "clock",
+        "usage": {
+          "input": 2,
+          "output": 3,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 5,
+          "cost": {
+            "input": 0.25,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.25
+          },
+          "reasoning": 1,
+          "cacheWrite1h": 4
+        }
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "nested-combine",
+      "error": null,
+      "nestedTrace": [
+        [
+          "take",
+          "parent"
+        ]
+      ],
+      "trace": [
+        [
+          "extension",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "message_start"
+        ],
+        [
+          "public",
+          "message_start",
+          0,
+          [],
+          [],
+          "toolResult",
+          [],
+          null,
+          [
+            "message",
+            "type"
+          ]
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "message": {
+        "role": "toolResult",
+        "toolCallId": "parent",
+        "toolName": "outer",
+        "content": [],
+        "usage": {
+          "input": 9,
+          "output": 3,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "cacheWrite1h": 4,
+          "reasoning": 3,
+          "totalTokens": 12,
+          "cost": {
+            "input": 0.75,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.75
+          }
+        },
+        "timestamp": "clock"
+      },
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": false,
+      "lastToolResultsSame": false
+    },
+    {
+      "scenario": "nested-clear",
+      "error": null,
+      "nestedTrace": [
+        [
+          "clear"
+        ]
+      ],
+      "trace": [
+        [
+          "extension",
+          "agent_end",
+          0,
+          [],
+          [],
+          null,
+          null,
+          null,
+          [
+            "messages",
+            "type"
+          ]
+        ],
+        [
+          "extension-done",
+          "agent_end"
+        ],
+        [
+          "public",
+          "agent_end",
+          0,
+          [],
+          [],
+          null,
+          null,
+          false,
+          [
+            "messages",
+            "type",
+            "willRetry"
+          ]
+        ]
+      ],
+      "streamCalls": 0,
+      "boundOwn": true,
+      "history": [],
+      "mapped": false,
+      "turnIndex": 0,
+      "retry": 0,
+      "overflow": true,
+      "pending": 0,
+      "lastAssistantSame": true,
+      "lastToolResultsSame": false
+    }
+  ]
+}
