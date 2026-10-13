@@ -1486,6 +1486,12 @@ pub fn build(b: *std.Build) void {
     session_models_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-models", "Compare original ordinary session model selection thinking levels scoped cycles and complete owner graphs").dependOn(&b.addRunArtifact(session_models_tests).step);
     b.step("build-native-sdk-session-models", "Compile model selection and thinking capability bodies separately from runtime deadlines").dependOn(&session_models_tests.step);
+    const session_utilities_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_utilities_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session utilities"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_utilities_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_utilities_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_utilities_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-utilities", "Compare original ordinary session transcript queries replacement contexts and complete owner graphs").dependOn(&b.addRunArtifact(session_utilities_tests).step);
+    b.step("build-native-sdk-session-utilities", "Compile session utility bodies separately from runtime deadlines").dependOn(&session_utilities_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

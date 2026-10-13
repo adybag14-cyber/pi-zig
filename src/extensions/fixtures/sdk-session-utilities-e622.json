@@ -1,0 +1,366 @@
+{
+  "sourceHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inputSha256": "c9b47ce4e70c7008ee4ce87a6c3c9cc1a598bad94cd80926a9cf335f8abfbb2b",
+  "scope": "Original latest createAgentSession/AgentSession/Agent/SettingsManager/SessionManager/CacheWarmer; observer invokes original installer once without skipping or replacing its body; caller-owned settings/runner/stream inputs",
+  "factoryCount": 34,
+  "rows": [
+    {
+      "name": "method-metadata",
+      "value": {
+        "getLastAssistantText": {
+          "name": "getLastAssistantText",
+          "length": 0,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true,
+          "ownPrototype": false
+        },
+        "createReplacedSessionContext": {
+          "name": "createReplacedSessionContext",
+          "length": 0,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true,
+          "ownPrototype": false
+        },
+        "hasExtensionHandlers": {
+          "name": "hasExtensionHandlers",
+          "length": 1,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true,
+          "ownPrototype": false
+        },
+        "getUserMessagesForForking": {
+          "name": "getUserMessagesForForking",
+          "length": 0,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "user-only",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "last-assistant",
+      "value": {
+        "text": "new text"
+      }
+    },
+    {
+      "name": "skip-empty-abort",
+      "value": {
+        "text": "prior"
+      }
+    },
+    {
+      "name": "keep-nonempty-abort",
+      "value": {
+        "text": "partial"
+      }
+    },
+    {
+      "name": "keep-error",
+      "value": {
+        "text": "failed text"
+      }
+    },
+    {
+      "name": "empty-normal-hides-prior",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "unicode-trim",
+      "value": {
+        "text": "λ🧪"
+      }
+    },
+    {
+      "name": "whitespace-only",
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "name": "text-coercion",
+      "value": {
+        "result": {
+          "text": "172"
+        },
+        "reads": [
+          "default"
+        ]
+      }
+    },
+    {
+      "name": "no-mutation",
+      "value": {
+        "result": {
+          "text": "new"
+        },
+        "same": true,
+        "first": "old"
+      }
+    },
+    {
+      "name": "live-slice-reverse-find",
+      "value": {
+        "text": "live",
+        "log": [
+          [
+            "slice",
+            true
+          ],
+          [
+            "reverse",
+            true
+          ],
+          [
+            "find",
+            true,
+            1,
+            false
+          ]
+        ]
+      }
+    },
+    {
+      "name": "predicate-short-circuit",
+      "value": {
+        "text": "ok",
+        "log": [
+          "role"
+        ]
+      }
+    },
+    {
+      "name": "predicate-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "content-iterator-close",
+      "value": {
+        "same": true,
+        "log": [
+          "iterator",
+          "next",
+          "return"
+        ]
+      }
+    },
+    {
+      "name": "content-next-throw-no-close",
+      "value": {
+        "same": true,
+        "log": [
+          "next"
+        ]
+      }
+    },
+    {
+      "name": "context-descriptors",
+      "value": {
+        "keys": [
+          "hidden",
+          "lazy",
+          "sendMessage",
+          "sendUserMessage",
+          "symbol"
+        ],
+        "hidden": {
+          "value": 7,
+          "writable": false,
+          "enumerable": false,
+          "configurable": true
+        },
+        "before": 0,
+        "lazy": "copy",
+        "reads": 1,
+        "symbol": "symbol",
+        "inherited": false,
+        "plain": true
+      }
+    },
+    {
+      "name": "context-callback-metadata",
+      "value": [
+        {
+          "name": "",
+          "length": 2,
+          "ownPrototype": false,
+          "descriptor": {
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        },
+        {
+          "name": "",
+          "length": 2,
+          "ownPrototype": false,
+          "descriptor": {
+            "writable": true,
+            "enumerable": true,
+            "configurable": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "context-live-lexical-session",
+      "value": {
+        "calls": [
+          [
+            true,
+            true,
+            true
+          ],
+          [
+            true,
+            true,
+            true
+          ]
+        ],
+        "first": true,
+        "second": 8
+      }
+    },
+    {
+      "name": "context-live-user-message",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "context-forward-error",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "context-copy-setter-order",
+      "value": {
+        "log": [
+          [
+            "set",
+            2,
+            false
+          ]
+        ],
+        "setter": true,
+        "user": "function"
+      }
+    },
+    {
+      "name": "context-copy-readonly-rejects",
+      "value": {
+        "type": "TypeError"
+      }
+    },
+    {
+      "name": "context-original-runner-receiver",
+      "value": {
+        "receiver": true
+      }
+    },
+    {
+      "name": "context-global-object-order",
+      "value": {
+        "ok": 1,
+        "log": [
+          "context",
+          [
+            "descriptors",
+            true
+          ],
+          [
+            "define",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "handler-return-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "handler-missing-argument",
+      "value": {
+        "undefined": true,
+        "count": 1
+      }
+    },
+    {
+      "name": "handler-raw-false",
+      "value": {
+        "value": 0
+      }
+    },
+    {
+      "name": "handler-thrown-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "fork-empty",
+      "value": []
+    },
+    {
+      "name": "fork-filter-and-text",
+      "value": [
+        {
+          "entryId": "b",
+          "text": "raw"
+        },
+        {
+          "entryId": "c",
+          "text": "onetwo"
+        }
+      ]
+    },
+    {
+      "name": "fork-message-double-read",
+      "value": {
+        "rows": [
+          {
+            "entryId": "x",
+            "text": "text"
+          }
+        ],
+        "log": [
+          "message",
+          "message"
+        ]
+      }
+    },
+    {
+      "name": "fork-iterator-close",
+      "value": {
+        "same": true,
+        "log": [
+          "return"
+        ]
+      }
+    }
+  ]
+}

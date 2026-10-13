@@ -57,7 +57,7 @@ fn dispatch(engine: *em.Engine, receiver: c.JSValue, operation: Operation, argum
     }
 }
 
-fn forkMessages(scope: *Scope, receiver: c.JSValue) !c.JSValue {
+pub fn forkMessages(scope: *Scope, receiver: c.JSValue) !c.JSValue {
     const engine = scope.engine;
     const entries = try scope.invoke(try scope.get(receiver, "sessionManager"), "getEntries", &.{});
     const result = try scope.array();
