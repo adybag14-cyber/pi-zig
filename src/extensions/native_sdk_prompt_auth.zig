@@ -86,3 +86,33 @@ fn oauthError(engine: *em.Engine, session: c.JSValue) !void {
     message = try scope.concat(try scope.concat(message, try scope.stringify(next_provider)), try scope.text("' to re-authenticate."));
     try raise(&scope, constructor, message);
 }
+
+// Ordinary session prompt preflight reads _modelRuntime afresh at every
+// Source access; a caller may replace it from a preceding getter or callback.
+pub fn beginLive(engine: *em.Engine, session: c.JSValue) !?c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (!scope.truthy(try scope.get(session, "model"))) {
+        try noModel(engine);
+        return error.JavaScriptException;
+    }
+    const runtime = try scope.get(session, "_modelRuntime");
+    const configured = try scope.get(runtime, "hasConfiguredAuth");
+    const provider = try scope.own(try currentProvider(engine, session));
+    if (scope.truthy(try scope.call(configured, runtime, &.{provider}))) return null;
+    const actual_runtime = try scope.get(session, "_modelRuntime");
+    const check = try scope.get(actual_runtime, "checkAuth");
+    const actual_provider = try scope.own(try currentProvider(engine, session));
+    const pending = try scope.call(check, actual_runtime, &.{actual_provider});
+    return try engine.checked(c.JS_PiPromiseResolve(engine.context, pending));
+}
+pub fn finishLive(engine: *em.Engine, session: c.JSValue, status: c.JSValue) !void {
+    if (!c.JS_IsUndefined(status)) return;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const runtime = try scope.get(session, "_modelRuntime");
+    const oauth = try scope.get(runtime, "isUsingOAuth");
+    const provider = try scope.own(try currentProvider(engine, session));
+    if (scope.truthy(try scope.call(oauth, runtime, &.{provider}))) return oauthError(engine, session);
+    return noKey(engine, session);
+}

@@ -2,7 +2,7 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const c = em.c;
-fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
+pub fn setup(engine: *em.Engine, environment: *std.process.Environ.Map) !void {
     try @import("native_sdk_session_constructor_phase_test.zig").setup(engine, environment);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);

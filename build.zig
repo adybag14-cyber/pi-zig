@@ -1468,6 +1468,12 @@ pub fn build(b: *std.Build) void {
     prompt_handlers_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-prompt-handlers", "Compare original input and command dispatch with native receiver collection and allocation lifetimes").dependOn(&b.addRunArtifact(prompt_handlers_tests).step);
     b.step("build-native-sdk-session-prompt-handlers", "Compile original input and command dispatch separately from its runtime envelope").dependOn(&prompt_handlers_tests.step);
+    const session_prompt_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_prompt_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session prompt preflight and queues"}, .use_llvm = use_llvm });
+    linkQuickJs(b, session_prompt_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(session_prompt_tests.root_module, sqlite_lib_dir, sqlite_library);
+    session_prompt_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-session-prompt", "Compare original public prompt preflight and ordinary queue methods with retained owner graphs").dependOn(&b.addRunArtifact(session_prompt_tests).step);
+    b.step("build-native-sdk-session-prompt", "Compile public prompt and queue bodies separately from runtime deadlines").dependOn(&session_prompt_tests.step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);
