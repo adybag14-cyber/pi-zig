@@ -1,0 +1,9 @@
+<anonymous_script>:5
+const binary={get path(){events.push('reader.path');return'virtual'},get closed(){events.push('reader.closed');return false},get file(){events.push('reader.file');return{get read(){events.push('file.read');return async(chunk,from,length,position)=>{events.push(['read',from,length,position]);return{bytesRead:0}}},get stat(){events.push('file.stat');return async()=>({isFile(){events.push('stat.file');return true},size:0,mtimeMs:0})}}};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^
+
+SyntaxError: Unexpected token ';'
+    at new Function (<anonymous>)
+    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/env-node-reader-getters-source-e6220e1-20261013.mjs:3:135
+
+Node.js v24.14.0

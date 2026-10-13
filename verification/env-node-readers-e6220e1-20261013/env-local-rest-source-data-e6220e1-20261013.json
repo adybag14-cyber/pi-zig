@@ -1,0 +1,96 @@
+{
+  "events": [
+    [
+      "get",
+      "connection"
+    ],
+    [
+      "keys"
+    ],
+    [
+      "descriptor",
+      "cwd"
+    ],
+    [
+      "get",
+      "cwd"
+    ],
+    [
+      "descriptor",
+      "shellPath"
+    ],
+    [
+      "get",
+      "shellPath"
+    ],
+    [
+      "descriptor",
+      "shellEnv"
+    ],
+    [
+      "get",
+      "shellEnv"
+    ],
+    [
+      "descriptor",
+      "watch"
+    ],
+    [
+      "get",
+      "watch"
+    ],
+    [
+      "descriptor",
+      "unused"
+    ],
+    [
+      "get",
+      "unused"
+    ],
+    [
+      "descriptor",
+      "hidden"
+    ],
+    [
+      "descriptor",
+      "extra"
+    ],
+    [
+      "get",
+      "extra"
+    ]
+  ],
+  "env": {
+    "own": [
+      "id",
+      "cwd",
+      "shellPath",
+      "shellEnv",
+      "watchOptions",
+      "activeChildPids"
+    ],
+    "id": "node:local",
+    "cwd": "C:\\work",
+    "shellPath": "shell",
+    "shellEnv": {
+      "A": "B"
+    },
+    "watchOptions": {
+      "mode": "polling"
+    },
+    "active": 0
+  },
+  "primitive": {
+    "own": [
+      "id",
+      "cwd",
+      "shellPath",
+      "shellEnv",
+      "watchOptions",
+      "activeChildPids"
+    ],
+    "id": "node:local",
+    "watchOptions": {},
+    "active": 0
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "bom": [
+    true,
+    false,
+    false,
+    true,
+    false
+  ],
+  "proxy": false,
+  "proxyEvents": [
+    "0",
+    "1"
+  ],
+  "range": {
+    "encoding": "utf-8",
+    "fatal": false,
+    "ignoreBOM": true,
+    "first": "﻿A",
+    "second": "﻿B",
+    "finish": ""
+  },
+  "stream": {
+    "first": "",
+    "second": "A",
+    "third": "﻿B",
+    "finish": "",
+    "prototype": [
+      "constructor",
+      "decode"
+    ],
+    "own": []
+  },
+  "custom": {
+    "name": "",
+    "events": [
+      [
+        "utf-8",
+        {
+          "ignoreBOM": true
+        }
+      ]
+    ]
+  },
+  "customStream": {
+    "decoded": "X",
+    "events": [
+      [
+        "utf-8",
+        {
+          "ignoreBOM": true
+        }
+      ],
+      [
+        "decode"
+      ]
+    ]
+  },
+  "functions": [
+    {
+      "name": "rangeDecoder",
+      "length": 0,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ]
+    },
+    {
+      "name": "startsWithBom",
+      "length": 1,
+      "keys": [
+        "length",
+        "name",
+        "prototype"
+      ]
+    }
+  ]
+}

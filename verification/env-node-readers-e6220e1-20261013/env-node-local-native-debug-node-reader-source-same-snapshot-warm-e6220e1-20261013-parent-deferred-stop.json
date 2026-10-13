@@ -1,0 +1,10 @@
+{
+  "reason": "Parent lane coordination deferred warm attempt for Root/Chord",
+  "pid": 32008,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "created_utc": "2026-10-13T20:26:16.9050268Z",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-env-guest -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+  "stopped_utc": "2026-10-13T20:27:12.7446912+00:00",
+  "identity_verified": true,
+  "gone": true
+}

@@ -1,0 +1,389 @@
+1/13 native_env_guest_test.test.native Env guest actual compiled inventory...
+ENV_GUEST_TEST_INVENTORY=["native_env_guest_test.test.native Env guest actual compiled inventory","native_env_guest_test.test.native Env guest Node public reader values and LineScanner match original Source virtual files","native_env_guest_test.test.native Env guest public decoder exports preserve Source BOM globals and function values","native_env_guest_test.test.native Env guest shared Error Result and platform values match original e6220e1 descriptors and live getters","native_env_guest_test.test.native Env guest listing continuations preserve Source virtual calls validation cancellation and error identity","native_env_guest_test.test.native Env guest error constructors and closures survive collection with original live causes","native_env_guest_test.test.native Env guest shared constructors results and platform helpers release every host allocation failure","native_env_guest_test.test.native Env guest Connection class matches original lazy starts failure sharing retries and close ordering","native_env_guest_test.test.native Env guest real Connection transport matches Source daemon writes events signal getters and close from callback","native_env_guest_test.test.native Env guest RemoteExecutionEnv complete class shape and virtual path filesystem calls match Source","native_env_guest_test.test.native Env guest RemoteExecutionEnv retained readers chunk pipelines and exec match original real Source daemon","native_env_guest_test.test.native Env guest closing queued frames shares Source rejection detaches listeners and preserves retained callbacks","extensions.native_durable_storage.test_0"]
+OK
+2/13 native_env_guest_test.test.native Env guest Node public reader values and LineScanner match original Source virtual files...OK
+3/13 native_env_guest_test.test.native Env guest public decoder exports preserve Source BOM globals and function values...OK
+4/13 native_env_guest_test.test.native Env guest shared Error Result and platform values match original e6220e1 descriptors and live getters...OK
+5/13 native_env_guest_test.test.native Env guest listing continuations preserve Source virtual calls validation cancellation and error identity...OK
+6/13 native_env_guest_test.test.native Env guest error constructors and closures survive collection with original live causes...OK
+7/13 native_env_guest_test.test.native Env guest shared constructors results and platform helpers release every host allocation failure...OK
+8/13 native_env_guest_test.test.native Env guest Connection class matches original lazy starts failure sharing retries and close ordering...OK
+9/13 native_env_guest_test.test.native Env guest real Connection transport matches Source daemon writes events signal getters and close from callback...OK
+10/13 native_env_guest_test.test.native Env guest RemoteExecutionEnv complete class shape and virtual path filesystem calls match Source...OK
+11/13 native_env_guest_test.test.native Env guest RemoteExecutionEnv retained readers chunk pipelines and exec match original real Source daemon...OK
+12/13 native_env_guest_test.test.native Env guest closing queued frames shares Source rejection detaches listeners and preserves retained callbacks...OK
+13/13 extensions.native_durable_storage.test_0...OK
+All 13 tests passed.
+1/105 env_test.test_0...OK
+2/105 env.root.test_0...OK
+3/105 env.root.test.native environment contracts match independent captured upstream Node bytes and arguments...OK
+4/105 env.ssh.test.SSH arguments retain strict private host trust no forwarding locale and literal paths...OK
+5/105 env.ssh.test.SSH rejects option injection whitespace control characters invalid ports and embedded NUL paths...OK
+6/105 env.ssh.test.SSH platform probe accepts banners CRLF architecture aliases and Windows shell fallback...OK
+7/105 env.ssh.test.SSH argument platform-path and quoting allocation failures release all owned values...OK
+8/105 env.frame.test.Pi-env golden framing matches Node and Rust big-endian protocol bytes...OK
+9/105 env.frame.test.Pi-env fragmented batches drain without retaining later frames...OK
+10/105 env.frame.test.Pi-env rejects lengths malformed JSON and truncated input before payload allocation...OK
+11/105 env.frame.test.Pi-env sync survives arbitrary fragmentation wrong tokens and overlapping banner prefixes...OK
+12/105 env.frame.test.Pi-env frame allocation failures release encoder decoder JSON and payload...OK
+13/105 env.deploy.test.deployment hashes payload and verifies private atomic upload before execution...OK
+14/105 env.deploy.test.Windows deployment command uses UTF16 encoded PowerShell literal paths and verified replacement...OK
+15/105 env.deploy.test.deployment allocation failures release paths scripts encoded commands and program...OK
+16/105 env.deploy.test.actual platform deployment verifies reuses rejects corrupt input and repairs tampering inside owned home...OK
+17/105 env.ssh_process.test.SSH failure classification prioritizes changed key and retains unrelated errors...OK
+18/105 env.ssh_process.test.SSH I/O drains both pipes during bounded upload and keeps authentication error precedence...OK
+19/105 env.metadata.test.remote metadata uses retained file identity across rename and distinguishes directories...OK
+20/105 env.files.test.directory names preserve BOM and encode invalid native bytes with decoded-path errors...SKIP
+21/105 env.files.test.native remote file dispatch matches captured original daemon scans bytes retained handles and error codes...OK
+22/105 env.files.test.retained write chunks stay on the opened inode and poisoned writes reject later chunks...OK
+23/105 env.files.test.whole-file read handles retain platform cursor semantics captured from the original daemon...OK
+24/105 env.files.test.retained write handle admission releases ownership at every allocation failure...OK
+25/105 env.files.test.native remote directory paging temporary directories and truncate preserve daemon fields...OK
+26/105 env.files.test.native remote handle admission and detached reply allocation failures release ownership...OK
+27/105 env.connection.test.native daemon client multiplexes tickets and rejects handles from another session without Node...OK
+28/105 env.connection.test.native client streams Unicode nonzero output and cancels an entered process while serving other requests...OK
+29/105 env.connection.test.native client eight concurrent reply waiters keep independent absolute waits without resetting shared state...OK
+30/105 env.terminal_request.test.terminal971 validates ordered request fields and Windows control lookup before resize...OK
+31/105 env.terminal_request.test.terminal971 retains borrowed argv environment and Source fallback defaults...OK
+32/105 env.terminal_request.test.terminal971 actual upstream Windows daemon errors replay through the native framed daemon...OK
+33/105 env.terminal_test.test.POSIX terminal framed daemon preserves actual TTY raw output resizing and normal exit...SKIP
+34/105 env.terminal_test.test.POSIX terminal framed daemon reports the foreground job and retires before aborted outcome...SKIP
+35/105 env.terminal_test.test.native terminal client preserves upstream Windows unsupported error fields...OK
+36/105 env.terminal_test.test.native terminal client retains raw output normal exit and retired foreground failure...SKIP
+37/105 env.terminal_test.test.native terminal client ordered input resize foreground and abort use the original daemon session...SKIP
+38/105 env.terminal_test.test.native terminal client chunks input beyond the protocol frame limit without changing raw bytes...SKIP
+39/105 env.utf8_lossy.test.native macOS terminal names match exhaustive short and boundary Rust lossy UTF8 captures...OK
+40/105 env.info.test.handshake drive paths retain Unicode and canonical uppercase drive keys only on Windows...OK
+41/105 env.daemon_output.test.actual framed writer prioritizes controls while command results follow all command output...OK
+42/105 env.daemon_output.test.output queue allocation failures release encoder and accepted records...OK
+43/105 env.lazy_connection.test.lazy native connection does nothing until requested and retries failed preparation without adopting stale handles...OK
+44/105 env.ssh_remote.test.native SSH detection deployment and framed startup cross an actual private SSH server...SKIP
+45/105 env.ssh_connection.test.native SSH factory is inert, caches only successful detection and verifies every preparation...OK
+46/105 env.ssh_connection.test.native SSH launch commands match twenty captured original platform shell and login cases...OK
+47/105 env.ssh_connection.test.native SSH factory ownership and launch transfer survive every allocation failure...OK
+48/105 env.ssh_connection.test.native lazy SSH factory verifies restart tampering over actual strict private SSH...SKIP
+49/105 env.remote_path.test.remote paths match actual latest upstream RemoteExecutionEnv across host-independent platforms...OK
+50/105 env.remote_env.test.remote owned error messages survive independent copies and every induced allocation failure; deinit is idempotent...OK
+51/105 env.remote_env.test.remote native adapters execute retained readers pipelined writes UTF8 and owned failures against actual daemon...OK
+52/105 env.remote_env.test.remote command facade callback precedence timeout abort and cleanup cross actual owned daemon processes...OK
+53/105 env.file_workers_test.test.sixteen native file workers bound blocking FIFO opens while free slots keep unrelated file requests live...SKIP
+54/105 env.file_workers_test.test.native chunk arrival lanes preserve ordered bytes across parallel handle traffic and close every admitted ticket...OK
+55/105 env.file_workers_test.test.a concurrent close cannot destroy a FIFO handle leased by an already blocked read...SKIP
+56/105 env.file_workers_test.test.polite transport EOF cancels and reaps native workers blocked in FIFO open without a writer...SKIP
+57/105 durable.watch.test.durable b7df overlapping targets retain independent traversal and count unique directories...OK
+58/105 durable.watch.test.durable b7df real target permission failure is distinguished from an unreadable descendant...SKIP
+59/105 durable.watch.test.durable polling watch initial coverage missing paths excludes recursive changes rename and close...OK
+60/105 durable.watch.test.durable polling watch budgets fail closed and callback close cannot join its own thread...OK
+61/105 durable.watch.test.durable watch initial snapshot resources release on every allocation failure...OK
+62/105 durable.watch.test.durable watch macOS default native stream observes immediate startup writes and repeated close...SKIP
+63/105 durable.watch.test.durable watch macOS unstarted stream rolls back without a run-loop owner...SKIP
+64/105 env.watch_test.test.remote watcher proves real native events reads excluded paths recursive creation rename and post-close silence...OK
+65/105 env.watch_test.test.remote lazy watcher reconnects after actual owned daemon loss and reports uncertain coverage once...OK
+66/105 env.watch_test.test.remote watch constructor releases every target ticket and thread at each induced allocation failure...OK
+67/105 env.watch_test.test.remote forced native watcher observes recursive UTF8 writes excludes reads and releases handles before ordinary RPC...OK
+68/105 env.watch_test.test.remote watch close keeps the same daemon alive for ordinary RPC and repeated subscriptions...OK
+69/105 env.list_files_test.test.listFiles daemon bytes match actual e6220e1 source across hierarchical ignores globals hidden bounds and errors...OK
+70/105 env.list_files_test.test.listFiles protocol errors and nullish defaults match genuine Source without changing other filesystem paths...OK
+71/105 env.list_files_test.test.listFiles remote local capability retained directory paging and old daemon fallback use real native transport...OK
+72/105 env.list_files_test.test.listFiles nodePlatform maps the exact Source names and preserves unknown names...OK
+73/105 env.list_files_test.test.listFiles ignore parser and globs match genuine Source daemon walks including invalid UTF8...OK
+74/105 env.list_files_test.test.listFiles owned walk and payload remain leak free at every allocation failure...OK
+75/105 env.list_files_test.test.listFiles ignore stacks global config and nested branches remain leak free at every allocation failure...OK
+76/105 env.list_files_test.test.listFiles links stay unfollowed while an explicit linked root can be listed...SKIP
+77/105 env.list_files_test.test.listFiles Windows junctions hidden attributes and unpaired UTF16 names match genuine Source bytes...OK
+78/105 env.list_files_test.test.listFiles real daemon cancels an admitted walk and keeps subsequent bounded requests healthy...OK
+79/105 durable.startup.test.durable platform startup picks inherited home temp paths and rejects unavailable custom shells...OK
+80/105 env.event_wait.test.native daemon event waits tolerate spurious Timeout preserve absolute expiry and propagate cancellation...OK
+81/105 durable.filesystem.test.durable noFollow regular reader uses compatible positional I/O and line scans...OK
+82/105 durable.filesystem.test.durable binary reader bounded huge requests retain opened file info across path replacement and close...OK
+83/105 durable.filesystem.test.durable line reader decodes chunk-boundary BOM and malformed scalars without adding trailing empty line...OK
+84/105 durable.filesystem.test.durable paged directory reader keeps continuation and reports owned metadata validation and abort...OK
+85/105 durable.filesystem.test.durable reader operations release every induced allocation failure and keep line retry state...OK
+86/105 durable.filesystem.test.durable binary noFollow refuses file and directory symbolic links and follows them otherwise...SKIP
+87/105 durable.filesystem.test.durable binary reader refuses a real FIFO without waiting for a writer...SKIP
+88/105 durable.filesystem.test.durable local filesystem mutation text binary listing canonical and temp contracts...OK
+89/105 durable.filesystem.test.durable append remains atomic between independent opened handles...OK
+90/105 durable.filesystem.test.durable filesystem facade every induced allocation failure releases returned values and temp rollback...OK
+91/105 extensions.file_urls.test.native file URLs preserve Unicode reserved characters drive and UNC paths...OK
+92/105 durable.decode.test.durable stream decoding preserves a noninitial BOM after malformed split UTF8...OK
+93/105 durable.list_ignore.test.listFiles ignore globs retain hierarchy, escapes, recursive separators, and classes...OK
+94/105 durable.line_scan.test.durable line scan offsets retain CR and strip only a file leading BOM...OK
+95/105 durable.execution_env.test.durable ExecutionEnv forwards real capabilities and cwd changes atomically...OK
+96/105 durable.shell.test.durable direct argv executes a real owned native process and removes its active control...OK
+97/105 durable.shell.test.durable native argv stream labels BOM splits and inherited environment overlays...OK
+98/105 durable.shell.test.durable native command window skips drain multi-megabyte output and spill complete raw bytes...OK
+99/105 durable.shell.test.durable native timeout abort callback failures reap owned trees and preserve unrelated child...OK
+100/105 durable.shell.test.durable shell every induced allocation failure releases active controls pipes and environment...OK
+101/105 durable.output_window.test.durable output tail skips preserve exact totals sanitization and snapshot-independent margins...OK
+102/105 durable.output_window.test.durable output allocations clean up and failed decoding can be retried atomically...OK
+103/105 durable.watch_windows.test.durable watch Windows native kernel handles retire through cancellation and every allocation failure...OK
+104/105 durable.watch_windows.test.durable watch Windows owned handle audit detects a leak even when an unrelated handle closes...OK
+105/105 durable.watch_identity.test.durable watch physical device and inode identity survives rename and distinguishes a retained replacement...OK
+88 passed; 17 skipped; 0 failed.
+1/12 env_list_files_test.test.listFiles actual compiled inventory...
+ENV_LIST_FILES_TEST_INVENTORY=["env_list_files_test.test.listFiles actual compiled inventory","env.list_files_test.test.listFiles daemon bytes match actual e6220e1 source across hierarchical ignores globals hidden bounds and errors","env.list_files_test.test.listFiles protocol errors and nullish defaults match genuine Source without changing other filesystem paths","env.list_files_test.test.listFiles remote local capability retained directory paging and old daemon fallback use real native transport","env.list_files_test.test.listFiles nodePlatform maps the exact Source names and preserves unknown names","env.list_files_test.test.listFiles ignore parser and globs match genuine Source daemon walks including invalid UTF8","env.list_files_test.test.listFiles owned walk and payload remain leak free at every allocation failure","env.list_files_test.test.listFiles ignore stacks global config and nested branches remain leak free at every allocation failure","env.list_files_test.test.listFiles links stay unfollowed while an explicit linked root can be listed","env.list_files_test.test.listFiles Windows junctions hidden attributes and unpaired UTF16 names match genuine Source bytes","env.list_files_test.test.listFiles real daemon cancels an admitted walk and keeps subsequent bounded requests healthy","durable.list_ignore.test.listFiles ignore globs retain hierarchy, escapes, recursive separators, and classes"]
+OK
+2/12 env.list_files_test.test.listFiles daemon bytes match actual e6220e1 source across hierarchical ignores globals hidden bounds and errors...OK
+3/12 env.list_files_test.test.listFiles protocol errors and nullish defaults match genuine Source without changing other filesystem paths...OK
+4/12 env.list_files_test.test.listFiles remote local capability retained directory paging and old daemon fallback use real native transport...OK
+5/12 env.list_files_test.test.listFiles nodePlatform maps the exact Source names and preserves unknown names...OK
+6/12 env.list_files_test.test.listFiles ignore parser and globs match genuine Source daemon walks including invalid UTF8...OK
+7/12 env.list_files_test.test.listFiles owned walk and payload remain leak free at every allocation failure...OK
+8/12 env.list_files_test.test.listFiles ignore stacks global config and nested branches remain leak free at every allocation failure...OK
+9/12 env.list_files_test.test.listFiles links stay unfollowed while an explicit linked root can be listed...SKIP
+10/12 env.list_files_test.test.listFiles Windows junctions hidden attributes and unpaired UTF16 names match genuine Source bytes...OK
+11/12 env.list_files_test.test.listFiles real daemon cancels an admitted walk and keeps subsequent bounded requests healthy...OK
+12/12 durable.list_ignore.test.listFiles ignore globs retain hierarchy, escapes, recursive separators, and classes...OK
+11 passed; 1 skipped; 0 failed.
+Build Summary: 168/168 steps succeeded
+test-native-env-guest success
++- run test success 934ms
+   +- compile test ReleaseSafe native cached 102ms MaxRSS:19M
+   |  +- WriteFile cached
+   |  +- compile lib pi-quickjs ReleaseSafe native cached 37ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile lib pi-icu78-i18n ReleaseSafe native cached 80ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile lib pi-icu78-common ReleaseSafe native cached 88ms MaxRSS:19M
+   |  |  |  |  +- WriteFile cached
+   |  |  |  |  +- compile lib pi-icu78-stubdata ReleaseSafe native cached 38ms MaxRSS:19M
+   |  |  |  |  +- compile lib pi-icu78-stubdata ReleaseSafe native (reused)
+   |  |  |  +- compile lib pi-icu78-common ReleaseSafe native (+3 more reused dependencies)
+   |  |  +- WriteFile cached
+   |  |  +- compile lib pi-native-yaml ReleaseSafe native cached 30ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 36ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 31ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 31ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 37ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 27ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 30ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 40ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 28ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 36ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 40ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 30ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 31ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 29ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 29ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 37ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 38ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 31ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 29ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 88ms MaxRSS:18M
+   |  |  |  +- WriteFile cached
+   |  |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 14ms MaxRSS:19M
+   |  |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+   |  |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+   |  |  +- WriteFile cached
+   |  |  +- compile lib pi-sqlite ReleaseSafe native cached 63ms MaxRSS:19M
+   |  |  +- compile lib pi-icu78-i18n ReleaseSafe native (+3 more reused dependencies)
+   |  |  +- compile lib pi-native-yaml ReleaseSafe native (+81 more reused dependencies)
+   |  |  +- compile lib pi-sqlite ReleaseSafe native (reused)
+   |  +- WriteFile (reused)
+   |  +- compile lib pi-sqlite ReleaseSafe native (reused)
+   |  +- compile lib pi-quickjs ReleaseSafe native (+9 more reused dependencies)
+   |  +- compile lib pi-sqlite ReleaseSafe native (reused)
+   |  +- WriteFile cached
+   |  +- compile lib pi-photon ReleaseSafe native cached 54ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_0 ReleaseSafe native cached 33ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_0 ReleaseSafe native cached 28ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_1 ReleaseSafe native cached 39ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_1 ReleaseSafe native cached 26ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_2 ReleaseSafe native cached 26ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_2 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_3 ReleaseSafe native cached 37ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_3 ReleaseSafe native cached 26ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_4 ReleaseSafe native cached 33ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_4 ReleaseSafe native cached 33ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_5 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_5 ReleaseSafe native cached 36ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_6 ReleaseSafe native cached 45ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_6 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_7 ReleaseSafe native cached 31ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_7 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_8 ReleaseSafe native cached 39ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_8 ReleaseSafe native cached 38ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_9 ReleaseSafe native cached 27ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_9 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_10 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_10 ReleaseSafe native cached 29ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_11 ReleaseSafe native cached 32ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_11 ReleaseSafe native cached 40ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_12 ReleaseSafe native cached 33ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_12 ReleaseSafe native cached 45ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_13 ReleaseSafe native cached 25ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_13 ReleaseSafe native cached 30ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_14 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_14 ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_15 ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_15 ReleaseSafe native cached 25ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-codec_imports ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-browser_imports ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-codec_alloc_guard ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_native ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-photon_browser_native ReleaseSafe native cached 37ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-session_api ReleaseSafe native cached 27ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-session_browser_api ReleaseSafe native cached 36ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-wasm-rt-impl ReleaseSafe native cached 34ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-wasm-rt-mem-impl ReleaseSafe native cached 35ms MaxRSS:19M
+   |  |  +- WriteFile cached
+   |  |  +- compile obj pi-photon-wasm-rt-exceptions-impl ReleaseSafe native cached 26ms MaxRSS:19M
+   |  |  +- compile obj pi-photon-photon_0 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_0 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_1 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_1 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_2 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_2 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_3 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_3 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_4 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_4 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_5 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_5 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_6 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_6 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_7 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_7 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_8 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_8 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_9 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_9 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_10 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_10 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_11 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_11 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_12 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_12 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_13 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_13 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_14 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_14 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_15 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_15 ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-codec_imports ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-browser_imports ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-codec_alloc_guard ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_native ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-photon_browser_native ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-session_api ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-session_browser_api ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-wasm-rt-impl ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-wasm-rt-mem-impl ReleaseSafe native (reused)
+   |  |  +- compile obj pi-photon-wasm-rt-exceptions-impl ReleaseSafe native (reused)
+   |  +- compile lib pi-photon ReleaseSafe native (+126 more reused dependencies)
+   |  +- options cached
+   +- install pi-env cached
+      +- compile exe pi-env ReleaseSafe native cached 63ms MaxRSS:19M
+test-env-list-files success
++- run test success 5s
+   +- compile test ReleaseSafe native cached 61ms MaxRSS:19M
+   +- install pi-env (+1 more reused dependencies)
+   +- install pi-env-process-fixture cached
+      +- compile exe pi-env-process-fixture ReleaseSafe native cached 51ms MaxRSS:19M
+test-env success
++- run test success 17s
+   +- compile test ReleaseSafe native cached 54ms MaxRSS:19M
+   +- install pi-env (+1 more reused dependencies)
+   +- install pi-env-process-fixture (+1 more reused dependencies)
+   +- install pi-durable-fixture cached
+      +- compile exe pi-durable-fixture ReleaseSafe native cached 69ms MaxRSS:19M
+

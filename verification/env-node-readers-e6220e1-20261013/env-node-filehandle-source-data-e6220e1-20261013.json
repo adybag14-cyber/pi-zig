@@ -1,0 +1,168 @@
+{
+  "file": {
+    "constructor": "FileHandle",
+    "fdType": "number",
+    "fdPositive": true,
+    "prototype": [
+      "constructor",
+      "getAsyncId",
+      "fd",
+      "appendFile",
+      "chmod",
+      "chown",
+      "datasync",
+      "sync",
+      "read",
+      "readv",
+      "readFile",
+      "readLines",
+      "stat",
+      "truncate",
+      "utimes",
+      "write",
+      "writev",
+      "writeFile",
+      "readableWebStream",
+      "createReadStream",
+      "createWriteStream"
+    ]
+  },
+  "stats": {
+    "constructor": "Stats",
+    "keys": [
+      "dev",
+      "mode",
+      "nlink",
+      "uid",
+      "gid",
+      "rdev",
+      "blksize",
+      "ino",
+      "size",
+      "blocks",
+      "atimeMs",
+      "mtimeMs",
+      "ctimeMs",
+      "birthtimeMs"
+    ],
+    "isFile": true,
+    "isDirectory": false,
+    "isSymbolicLink": false,
+    "size": 4
+  },
+  "read": {
+    "ok": true,
+    "value": {
+      "bytesRead": 3,
+      "buffer": [
+        98,
+        99,
+        100
+      ]
+    }
+  },
+  "badOffset": {
+    "ok": false,
+    "name": "RangeError",
+    "message": "The value of \"offset\" is out of range. It must be >= 0 && <= 9007199254740991. Received -1",
+    "code": "ERR_OUT_OF_RANGE",
+    "keys": [
+      "code"
+    ]
+  },
+  "badLength": {
+    "ok": false,
+    "name": "RangeError",
+    "message": "The value of \"length\" is out of range. It must be <= 1. Received 2",
+    "code": "ERR_OUT_OF_RANGE",
+    "keys": [
+      "code"
+    ]
+  },
+  "negativePosition": {
+    "ok": true,
+    "value": {
+      "bytesRead": 1,
+      "buffer": [
+        97
+      ]
+    }
+  },
+  "truncateReadOnly": {
+    "ok": false,
+    "name": "Error",
+    "message": "EPERM: operation not permitted, ftruncate",
+    "code": "EPERM",
+    "errno": -4048,
+    "syscall": "ftruncate",
+    "keys": [
+      "errno",
+      "code",
+      "syscall"
+    ]
+  },
+  "sync": {
+    "ok": false,
+    "name": "Error",
+    "message": "EPERM: operation not permitted, fsync",
+    "code": "EPERM",
+    "errno": -4048,
+    "syscall": "fsync",
+    "keys": [
+      "errno",
+      "code",
+      "syscall"
+    ]
+  },
+  "close": {
+    "ok": true
+  },
+  "closedFd": -1,
+  "closeAgain": {
+    "ok": true
+  },
+  "closedRead": {
+    "ok": false,
+    "name": "Error",
+    "message": "file closed",
+    "code": "EBADF",
+    "syscall": "read",
+    "keys": [
+      "code",
+      "syscall"
+    ]
+  },
+  "closedStat": {
+    "ok": false,
+    "name": "Error",
+    "message": "file closed",
+    "code": "EBADF",
+    "syscall": "fstat",
+    "keys": [
+      "code",
+      "syscall"
+    ]
+  },
+  "closedTruncate": {
+    "ok": false,
+    "name": "Error",
+    "message": "file closed",
+    "code": "EBADF",
+    "syscall": "ftruncate",
+    "keys": [
+      "code",
+      "syscall"
+    ]
+  },
+  "closedSync": {
+    "ok": false,
+    "name": "Error",
+    "message": "file closed",
+    "code": "EBADF",
+    "syscall": "fsync",
+    "keys": [
+      "code",
+      "syscall"
+    ]
+  }
+}

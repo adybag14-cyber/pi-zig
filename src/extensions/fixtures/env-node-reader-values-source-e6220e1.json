@@ -1,0 +1,556 @@
+{
+  "binaryShape": {
+    "own": [
+      "file",
+      "path",
+      "closed"
+    ],
+    "keys": [
+      "file",
+      "path",
+      "closed"
+    ],
+    "prototype": [
+      "constructor",
+      "info",
+      "read",
+      "scanLines",
+      "close"
+    ],
+    "methods": {
+      "info": {
+        "name": "info",
+        "length": 1,
+        "async": true
+      },
+      "read": {
+        "name": "read",
+        "length": 3,
+        "async": true
+      },
+      "scanLines": {
+        "name": "scanLines",
+        "length": 2,
+        "async": true
+      },
+      "close": {
+        "name": "close",
+        "length": 1,
+        "async": true
+      }
+    }
+  },
+  "info": {
+    "ok": true,
+    "value": {
+      "name": "\root\bytes.txt",
+      "path": "C:\root\bytes.txt",
+      "kind": "file",
+      "size": 19,
+      "mtimeMs": 1.25
+    }
+  },
+  "read": {
+    "ok": true,
+    "value": [
+      191,
+      97,
+      108,
+      112,
+      104,
+      97,
+      13,
+      10,
+      98,
+      101,
+      116,
+      97
+    ]
+  },
+  "readCalls": [
+    {
+      "from": 0,
+      "length": 12,
+      "position": 2
+    },
+    {
+      "from": 0,
+      "length": 9,
+      "position": 5
+    },
+    {
+      "from": 0,
+      "length": 6,
+      "position": 8
+    },
+    {
+      "from": 0,
+      "length": 3,
+      "position": 11
+    }
+  ],
+  "empty": {
+    "ok": true,
+    "value": []
+  },
+  "invalid": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "Offset and length must be non-negative safe integers",
+      "path": "C:\root\bytes.txt"
+    }
+  },
+  "scan": {
+    "ok": true,
+    "value": {
+      "newlines": 2,
+      "start": 10,
+      "end": 19,
+      "firstLineEnd": 14,
+      "lastLineStart": 15,
+      "selectedBytes": 9,
+      "firstLineBytes": 4
+    }
+  },
+  "scanCalls": [
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 0
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 3
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 6
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 9
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 12
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 15
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 18
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 19
+    }
+  ],
+  "invalidScan": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "Invalid line range",
+      "path": "C:\root\bytes.txt"
+    }
+  },
+  "closed": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "Binary reader is closed",
+      "path": "C:\root\bytes.txt"
+    }
+  },
+  "closedAbort": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "aborted",
+      "message": "aborted",
+      "path": "C:\root\bytes.txt"
+    }
+  },
+  "binaryClose": 1,
+  "textShape": {
+    "own": [
+      "file",
+      "path",
+      "decoder",
+      "chunk",
+      "byteOffset",
+      "buffered",
+      "ended",
+      "closed"
+    ],
+    "keys": [
+      "file",
+      "path",
+      "decoder",
+      "chunk",
+      "byteOffset",
+      "buffered",
+      "ended",
+      "closed"
+    ],
+    "prototype": [
+      "constructor",
+      "readLine",
+      "close"
+    ],
+    "methods": {
+      "readLine": {
+        "name": "readLine",
+        "length": 1,
+        "async": true
+      },
+      "close": {
+        "name": "close",
+        "length": 1,
+        "async": true
+      }
+    }
+  },
+  "text": [
+    {
+      "ok": true,
+      "value": {
+        "text": "alpha\r",
+        "terminated": true
+      }
+    },
+    {
+      "ok": true,
+      "value": {
+        "text": "beta",
+        "terminated": true
+      }
+    },
+    {
+      "ok": true,
+      "value": {
+        "text": "last",
+        "terminated": false
+      }
+    },
+    {
+      "ok": true
+    },
+    {
+      "ok": true
+    }
+  ],
+  "textOffset": 19,
+  "textCalls": [
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 0
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 3
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 6
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 9
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 12
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 15
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 18
+    },
+    {
+      "from": 0,
+      "length": 65536,
+      "position": 19
+    }
+  ],
+  "textClosed": {
+    "closed": true,
+    "buffered": "",
+    "closes": 2
+  },
+  "retryFirst": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "aborted",
+      "message": "aborted",
+      "path": "retry"
+    }
+  },
+  "retryOffset": 0,
+  "retrySecond": {
+    "ok": true,
+    "value": {
+      "text": "A",
+      "terminated": true
+    }
+  },
+  "retryFinalOffset": 2,
+  "borrowedRead": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "unknown",
+      "message": "sync read",
+      "path": "borrowed",
+      "cause": "sync read"
+    }
+  },
+  "borrowedInfo": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "unknown",
+      "message": "sync stat",
+      "path": "borrowed",
+      "cause": "sync stat"
+    }
+  },
+  "borrowedClose": {
+    "thrown": {
+      "name": "Error",
+      "message": "sync close"
+    }
+  },
+  "borrowedClosed": true,
+  "textBestEffort": {},
+  "scanner": [
+    {
+      "shape": {
+        "own": [],
+        "keys": [],
+        "prototype": [
+          "constructor",
+          "push",
+          "finish"
+        ],
+        "methods": {
+          "push": {
+            "name": "push",
+            "length": 1,
+            "async": false
+          },
+          "finish": {
+            "name": "finish",
+            "length": 0,
+            "async": false
+          }
+        }
+      },
+      "value": {
+        "newlines": 0,
+        "start": 0,
+        "end": 0,
+        "firstLineEnd": 0,
+        "lastLineStart": 0,
+        "selectedBytes": 0,
+        "firstLineBytes": 0
+      },
+      "again": {
+        "newlines": 0,
+        "start": 0,
+        "end": 0,
+        "firstLineEnd": 0,
+        "lastLineStart": 0,
+        "selectedBytes": 0,
+        "firstLineBytes": 0
+      }
+    },
+    {
+      "shape": {
+        "own": [],
+        "keys": [],
+        "prototype": [
+          "constructor",
+          "push",
+          "finish"
+        ],
+        "methods": {
+          "push": {
+            "name": "push",
+            "length": 1,
+            "async": false
+          },
+          "finish": {
+            "name": "finish",
+            "length": 0,
+            "async": false
+          }
+        }
+      },
+      "value": {
+        "newlines": 2,
+        "start": 0,
+        "end": 7,
+        "firstLineEnd": 4,
+        "lastLineStart": 5,
+        "selectedBytes": 5,
+        "firstLineBytes": 1
+      },
+      "again": {
+        "newlines": 2,
+        "start": 0,
+        "end": 7,
+        "firstLineEnd": 4,
+        "lastLineStart": 5,
+        "selectedBytes": 5,
+        "firstLineBytes": 1
+      }
+    },
+    {
+      "shape": {
+        "own": [],
+        "keys": [],
+        "prototype": [
+          "constructor",
+          "push",
+          "finish"
+        ],
+        "methods": {
+          "push": {
+            "name": "push",
+            "length": 1,
+            "async": false
+          },
+          "finish": {
+            "name": "finish",
+            "length": 0,
+            "async": false
+          }
+        }
+      },
+      "value": {
+        "newlines": 2,
+        "start": 2,
+        "end": 3,
+        "firstLineEnd": 3,
+        "lastLineStart": 2,
+        "selectedBytes": 1,
+        "firstLineBytes": 1
+      },
+      "again": {
+        "newlines": 2,
+        "start": 2,
+        "end": 3,
+        "firstLineEnd": 3,
+        "lastLineStart": 2,
+        "selectedBytes": 1,
+        "firstLineBytes": 1
+      }
+    },
+    {
+      "shape": {
+        "own": [],
+        "keys": [],
+        "prototype": [
+          "constructor",
+          "push",
+          "finish"
+        ],
+        "methods": {
+          "push": {
+            "name": "push",
+            "length": 1,
+            "async": false
+          },
+          "finish": {
+            "name": "finish",
+            "length": 0,
+            "async": false
+          }
+        }
+      },
+      "value": {
+        "newlines": 1,
+        "start": 2,
+        "end": 2,
+        "firstLineEnd": 2,
+        "lastLineStart": 2,
+        "selectedBytes": 0,
+        "firstLineBytes": 0
+      },
+      "again": {
+        "newlines": 1,
+        "start": 2,
+        "end": 2,
+        "firstLineEnd": 2,
+        "lastLineStart": 2,
+        "selectedBytes": 0,
+        "firstLineBytes": 0
+      }
+    }
+  ],
+  "scannerInvalid": [
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "thrown": {
+        "name": "RangeError",
+        "message": "Invalid line range"
+      }
+    },
+    {
+      "value": {}
+    }
+  ]
+}

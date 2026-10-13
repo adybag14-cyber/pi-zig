@@ -1,0 +1,5 @@
+import fs from'node:fs/promises';import path from'node:path';import{NodeExecutionEnv}from'../pi-upstream-env-oracle-e6220e1-20261013/packages/durable/src/env/node.ts';
+const treePath=await fs.mkdtemp(path.join(path.dirname(import.meta.filename),'env-node-functional-source-tree-')),commandPath=process.env.ComSpec;
+const body=await fs.readFile(new URL('./env-node-functional-source-body-e6220e1-20261013.txt',import.meta.url),'utf8');
+const run=new Function('NodeExecutionEnv','treePath','commandPath','return(async()=>{'+body+';return packet})()');const packet=await run(NodeExecutionEnv,treePath,commandPath);
+await fs.writeFile(new URL('./env-node-functional-source-data-e6220e1-20261013.json',import.meta.url),JSON.stringify(packet,null,2)+'\n');console.log(JSON.stringify({terminal:'passed',cases:Object.keys(packet).length}));

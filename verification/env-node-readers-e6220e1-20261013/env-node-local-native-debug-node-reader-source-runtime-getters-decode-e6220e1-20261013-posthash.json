@@ -1,0 +1,11 @@
+{
+  "source": 4731,
+  "source_after": 4731,
+  "source_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "admitted_free_kib": 24486800,
+  "admission_gib": 16,
+  "admission_policy": "normal fresh16GiB",
+  "completed_utc": "2026-10-13T20:44:13.7977268+00:00"
+}

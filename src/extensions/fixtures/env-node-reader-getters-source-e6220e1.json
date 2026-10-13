@@ -1,0 +1,110 @@
+{
+  "binaryRead": {
+    "ok": true,
+    "value": {}
+  },
+  "binaryReadEvents": [
+    "context.signal",
+    "reader.path",
+    "reader.closed",
+    "reader.file",
+    "file.read",
+    [
+      "read",
+      0,
+      1,
+      0
+    ],
+    "context.signal",
+    "reader.path"
+  ],
+  "binaryInfo": {
+    "ok": true,
+    "value": {
+      "name": "virtual",
+      "path": "virtual",
+      "kind": "file",
+      "size": 0,
+      "mtimeMs": 0
+    }
+  },
+  "binaryInfoEvents": [
+    "context.signal",
+    "reader.path",
+    "reader.closed",
+    "reader.path",
+    "reader.file",
+    "file.stat",
+    "stat.file"
+  ],
+  "textRead": {
+    "ok": true,
+    "value": {
+      "text": "end",
+      "terminated": false
+    }
+  },
+  "textEvents": [
+    "context.signal",
+    [
+      "text.buffered",
+      ""
+    ],
+    "text.ended",
+    "text.file",
+    "text.file.read",
+    "text.chunk",
+    "text.chunk",
+    "text.offset",
+    [
+      "text.read",
+      3,
+      0,
+      3,
+      9
+    ],
+    "context.signal",
+    "text.offset",
+    [
+      "text.offset=",
+      9
+    ],
+    [
+      "text.buffered",
+      ""
+    ],
+    "text.decoder",
+    "text.decoder.decode",
+    "text.decode()",
+    [
+      "text.buffered=",
+      "end"
+    ],
+    [
+      "text.ended=",
+      true
+    ],
+    [
+      "text.buffered",
+      "end"
+    ],
+    "text.ended",
+    [
+      "text.buffered",
+      "end"
+    ],
+    [
+      "text.buffered",
+      "end"
+    ],
+    [
+      "text.buffered=",
+      ""
+    ]
+  ],
+  "textFinal": {
+    "buffered": "",
+    "ended": true,
+    "offset": 9
+  }
+}

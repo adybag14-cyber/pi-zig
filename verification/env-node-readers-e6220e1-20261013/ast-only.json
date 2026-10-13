@@ -1,0 +1,44 @@
+[
+  {
+    "path": "src\\extensions\\native_env_node_errors.zig",
+    "sha256": "D120ED3697A64A37B319A9E9FD7CCB154C680BDDC54A38B511C2F0A865553DF7",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\extensions\\native_env_node_path.zig",
+    "sha256": "2FA79A6AF10947E661A2E6218C9EC9D64B579D4BAC46667F622A6286FD923F25",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\extensions\\native_env_node_readers.zig",
+    "sha256": "1080F3CF7EE3E4CE4DF11F44BBAF0BFF3F59498FACEC264DFD5037489B5E4F2A",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\extensions\\native_env_node.zig",
+    "sha256": "C487D263993A9244271871A520D28654E7522494FA49E0B4805EC0709F9343AB",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\extensions\\native_env_line_scan.zig",
+    "sha256": "8ED1E3D5FDB1ABDF44A6E4CFAF439E687E9804C95E8B5FE2A2069E234E6258EE",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\extensions\\native_env_decode_exports.zig",
+    "sha256": "252754D8CB81E9D9DB43AABBD198C7C207995A7493BB6B9A4B32CA7FF2592AA9",
+    "kind": "syntax only",
+    "exit_code": 0
+  },
+  {
+    "path": "src\\native_env_guest_test.zig",
+    "sha256": "9B9246DC8A279C574A285EFE09D2218650C51FCA93CD1A1D09055D57E18129A8",
+    "kind": "syntax only",
+    "exit_code": 0
+  }
+]

@@ -1,0 +1,10 @@
+import fs from'node:fs/promises';import path from'node:path';
+import{NodeExecutionEnv}from'../pi-upstream-env-oracle-e6220e1-20261013/packages/durable/src/env/node.ts';
+import{LineScanner}from'../pi-upstream-env-oracle-e6220e1-20261013/packages/durable/src/env/line-scan.ts';
+const root=await fs.mkdtemp(path.join(path.dirname(import.meta.filename),'env-node-reader-values-source-tree-'));
+await fs.writeFile(path.join(root,'file'),'data');const env=new NodeExecutionEnv({cwd:root});const b=await env.openBinaryReader('file',undefined,{}),t=await env.openTextLineReader('file',{});if(!b.ok||!t.ok)throw Error('original Source reader setup');
+const NodeBinaryReader=b.value.constructor,NodeTextLineReader=t.value.constructor;await b.value.close({});await t.value.close({});
+const input=await fs.readFile(new URL('./env-node-reader-values-source-body-e6220e1-20261013.txt',import.meta.url),'utf8');
+const run=new Function('NodeBinaryReader','NodeTextLineReader','LineScanner','return(async()=>{'+input+';return packet})()');
+const packet=await run(NodeBinaryReader,NodeTextLineReader,LineScanner);
+await fs.writeFile(new URL('./env-node-reader-values-source-data-e6220e1-20261013.json',import.meta.url),JSON.stringify(packet,null,2)+'\n');console.log(JSON.stringify({terminal:'passed',cases:Object.keys(packet).length}));

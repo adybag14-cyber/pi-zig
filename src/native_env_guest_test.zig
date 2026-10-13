@@ -15,6 +15,73 @@ test "native Env guest actual compiled inventory" {
 fn fixtureValue(engine: *em.Engine, comptime source: []const u8) !c.JSValue {
     return engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "native-env-source.json"));
 }
+test "native Env guest Node public reader values and LineScanner match original Source virtual files" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/node_path.zig").install(engine, std.testing.io);
+    const shared = try values.exports(engine);
+    defer engine.freeValue(shared);
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bindings = try scope.object();
+    inline for (.{ "FileError", "toError" }) |name| try scope.put(bindings, name, try scope.get(shared, name));
+    var promises = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer promises.deinit(engine);
+    try scope.put(bindings, "promise_constructor", promises.constructor);
+    try scope.put(bindings, "promise_resolve", promises.resolve);
+    try scope.put(bindings, "promise_then", promises.then_function);
+    try scope.put(bindings, "paths", engine.native_module_values.get("node:path").?);
+    try scope.put(bindings, "StreamDecoder", try scope.own(try @import("extensions/native_env_decode.zig").create(engine)));
+    const scanner = try scope.own(try @import("extensions/native_env_line_scan.zig").create(engine));
+    try scope.put(bindings, "LineScanner", scanner);
+    const internal = try scope.object();
+    try scope.put(internal, "LineScanner", scanner);
+    try scope.put(internal, "NodeBinaryReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .binary)));
+    try scope.put(internal, "NodeTextLineReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .text)));
+    try engine.registerValueModule("native-env-node-readers-test", internal);
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "nodeReaderSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-reader-values-source-e6220e1.json"))));
+    const result = engine.evalModule("import{NodeBinaryReader,NodeTextLineReader,LineScanner}from'native-env-node-readers-test';\n" ++
+        @embedFile("extensions/fixtures/env-node-reader-values-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeReaderSource))throw Error(JSON.stringify({actual:packet,expected:nodeReaderSource}));export const proof=true;", "native-env-node-reader-source.mjs") catch |err| {
+        std.debug.print("Native Env Node reader Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    try scope.put(global, "nodeReaderGettersSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-reader-getters-source-e6220e1.json"))));
+    const getter_result = engine.evalModule("import{NodeBinaryReader,NodeTextLineReader}from'native-env-node-readers-test';\n" ++
+        @embedFile("extensions/fixtures/env-node-reader-getters-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeReaderGettersSource))throw Error(JSON.stringify({actual:packet,expected:nodeReaderGettersSource}));export const proof=true;", "native-env-node-reader-getters-source.mjs") catch |err| {
+        std.debug.print("Native Env Node reader getter Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(getter_result);
+    c.JS_RunGC(engine.runtime);
+}
+test "native Env guest public decoder exports preserve Source BOM globals and function values" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/text_encoding.zig").install(engine);
+    const exports = try js.object(engine);
+    defer engine.freeValue(exports);
+    try @import("extensions/native_env_decode_exports.zig").install(engine, exports);
+    try js.define(engine, exports, "StreamDecoder", try @import("extensions/native_env_decode.zig").create(engine));
+    try engine.registerValueModule("native-env-decode-test", exports);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "decodeSource", try fixtureValue(engine, @embedFile("extensions/fixtures/env-decode-exports-source-e6220e1.json")));
+    const result = engine.evalModule("import{rangeDecoder,startsWithBom,StreamDecoder}from'native-env-decode-test';\n" ++
+        @embedFile("extensions/fixtures/env-decode-exports-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(decodeSource))throw Error(JSON.stringify({actual:packet,expected:decodeSource}));export const proof=true;", "native-env-decode-source.mjs") catch |err| {
+        std.debug.print("Native Env public decoder Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
 test "native Env guest shared Error Result and platform values match original e6220e1 descriptors and live getters" {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
     defer engine.deinit();

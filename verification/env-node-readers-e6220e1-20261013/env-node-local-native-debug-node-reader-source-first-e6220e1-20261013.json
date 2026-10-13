@@ -1,0 +1,16 @@
+{
+  "name": "env-node-local-native-debug-node-reader-source-first-e6220e1-20261013",
+  "pid": 40132,
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-env-guest -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=true -j1 --test-timeout 120s --summary all",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-13T20:20:42.6784898Z",
+  "launched_utc": "2026-10-13T20:20:42.6746044+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-env-node-local-e6220e1-20261013",
+  "status": "timed_out",
+  "exit_code": -1,
+  "completed_utc": "2026-10-13T20:25:43.0883822+00:00"
+}
