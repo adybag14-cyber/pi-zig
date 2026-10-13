@@ -1,0 +1,708 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "actual Connection own field order prototype methods and initial hello",
+      "ctor": [
+        "Connection",
+        3
+      ],
+      "own": [
+        "host",
+        "link",
+        "role",
+        "peer",
+        "principal",
+        "restamp",
+        "generation",
+        "peerEpoch",
+        "synced",
+        "fencedEpochs",
+        "remotes",
+        "calls",
+        "subs",
+        "served",
+        "incoming",
+        "feeds",
+        "relaySubs",
+        "relayedHolds",
+        "relayedCalls",
+        "relayedSubs",
+        "votes"
+      ],
+      "prototype": [
+        "constructor",
+        "open",
+        "name",
+        "send",
+        "nextId",
+        "whenSynced",
+        "markSynced",
+        "revoke",
+        "hold",
+        "release",
+        "call",
+        "sub",
+        "unsub"
+      ],
+      "methods": [
+        [
+          "send",
+          1,
+          false
+        ],
+        [
+          "nextId",
+          0,
+          false
+        ],
+        [
+          "whenSynced",
+          0,
+          false
+        ],
+        [
+          "markSynced",
+          1,
+          false
+        ],
+        [
+          "revoke",
+          1,
+          false
+        ],
+        [
+          "hold",
+          1,
+          false
+        ],
+        [
+          "release",
+          1,
+          false
+        ],
+        [
+          "call",
+          5,
+          false
+        ],
+        [
+          "sub",
+          3,
+          false
+        ],
+        [
+          "unsub",
+          1,
+          false
+        ]
+      ],
+      "getters": [
+        [
+          "get open",
+          false
+        ],
+        [
+          "get name",
+          false
+        ]
+      ],
+      "initial": [
+        true,
+        null,
+        0,
+        null,
+        true,
+        1,
+        2
+      ],
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        }
+      ]
+    },
+    {
+      "name": "child",
+      "synced": true,
+      "epoch": 3,
+      "log": [
+        [
+          "hello",
+          3
+        ],
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "closing before synchronization rejects original waiter",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: link to child closed: waiting"
+        }
+      },
+      "after": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: link to child closed"
+        }
+      },
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "parent",
+      "open": true
+    },
+    {
+      "name": "consumer real remote hold shape subscribed state and release identities",
+      "id": 1,
+      "status": "released",
+      "values": [
+        null,
+        4,
+        5
+      ],
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "hold",
+          "id": 1,
+          "at": "remote",
+          "token": {
+            "name": "wire.counter",
+            "scope": "remote",
+            "version": 1,
+            "input": {
+              "type": "object"
+            },
+            "variants": {
+              "active": {
+                "count": {
+                  "kind": "state",
+                  "schema": {
+                    "type": "number"
+                  }
+                },
+                "run": {
+                  "kind": "method",
+                  "args": {
+                    "type": "object",
+                    "properties": {
+                      "n": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "n"
+                    ]
+                  },
+                  "result": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "input": {
+            "n": 1
+          },
+          "principal": {
+            "user": "forwarded"
+          },
+          "client": true
+        },
+        {
+          "t": "sub",
+          "id": 2,
+          "hold": 1,
+          "member": "count"
+        },
+        {
+          "t": "unsub",
+          "id": 2
+        },
+        {
+          "t": "release",
+          "id": 1
+        }
+      ],
+      "sizes": [
+        0,
+        0
+      ],
+      "log": [
+        [
+          "forgot"
+        ],
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "host call carries root and settles pending map once",
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "call",
+          "id": 1,
+          "hold": 8,
+          "member": "run",
+          "args": {
+            "n": 2
+          },
+          "root": {
+            "rootId": "r",
+            "epoch": 1
+          }
+        }
+      ],
+      "log": [
+        [
+          "root_sent",
+          "r",
+          true
+        ],
+        [
+          "closed",
+          true
+        ]
+      ],
+      "result": {
+        "n": 12
+      },
+      "identities": [
+        true,
+        true
+      ],
+      "calls": 0
+    },
+    {
+      "name": "client calls omit carried roots and preserve wire error vocabulary",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "forbidden",
+          "message": "forbidden/policy: refused",
+          "reason": "policy"
+        }
+      },
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "call",
+          "id": 1,
+          "hold": 8,
+          "member": "run",
+          "args": {
+            "n": 1
+          }
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "name": "call cancellation sends cancel retains cause and removes pending",
+      "error": {
+        "name": "ChordError",
+        "code": "aborted",
+        "message": "aborted: call aborted"
+      },
+      "same": true,
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "call",
+          "id": 1,
+          "hold": 8,
+          "member": "run",
+          "args": {}
+        },
+        {
+          "t": "cancel",
+          "id": 1
+        }
+      ],
+      "calls": 0
+    },
+    {
+      "name": "already aborted call still consumes id without sending",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "aborted",
+          "message": "aborted: call aborted"
+        }
+      },
+      "next": 2,
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        }
+      ],
+      "calls": 0
+    },
+    {
+      "name": "provider refuses unknown holds and nonlocal acquisition with typed replies",
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "result",
+          "id": 7,
+          "error": {
+            "code": "gone",
+            "message": "gone: unknown hold"
+          }
+        },
+        {
+          "t": "state",
+          "id": 8,
+          "error": {
+            "code": "gone",
+            "message": "gone: unknown hold"
+          }
+        },
+        {
+          "t": "gone",
+          "id": 9,
+          "error": {
+            "code": "unavailable",
+            "message": "unavailable: not a local handle"
+          }
+        }
+      ],
+      "log": [
+        [
+          "acquire",
+          "wire.counter",
+          "remote",
+          1,
+          "466c56de23617fef",
+          {},
+          {
+            "principal": {
+              "user": "alice"
+            }
+          },
+          "client"
+        ],
+        [
+          "closed",
+          true
+        ]
+      ],
+      "served": 0,
+      "incoming": 0,
+      "reports": []
+    },
+    {
+      "name": "upstream provider never relays a mismatched destination",
+      "sent": [
+        {
+          "t": "hello",
+          "name": "server",
+          "kind": "host",
+          "epoch": 1
+        },
+        {
+          "t": "gone",
+          "id": 9,
+          "error": {
+            "code": "unavailable",
+            "message": "unavailable: server does not relay"
+          }
+        }
+      ],
+      "served": 0
+    },
+    {
+      "name": "upstream control frames dispatch to actual supplied host callbacks",
+      "log": [
+        [
+          "retire",
+          4
+        ],
+        [
+          "reload",
+          true,
+          {
+            "t": "prepare",
+            "reload": 7,
+            "epoch": 4,
+            "plugins": [],
+            "options": {}
+          }
+        ],
+        [
+          "reload",
+          true,
+          {
+            "t": "commit",
+            "reload": 7
+          }
+        ],
+        [
+          "reload",
+          true,
+          {
+            "t": "abort",
+            "reload": 7
+          }
+        ],
+        [
+          "invalidate",
+          {
+            "user": "a"
+          }
+        ],
+        [
+          "root_end",
+          "root",
+          true
+        ],
+        [
+          "closed",
+          true
+        ]
+      ],
+      "reports": [],
+      "open": true
+    },
+    {
+      "name": "host participant vote removes pending vote before resolution",
+      "log": [
+        [
+          "resolve",
+          {
+            "epoch": 2,
+            "previous": 1,
+            "changed": [],
+            "removed": [],
+            "prepared": [],
+            "gated": []
+          }
+        ]
+      ],
+      "size": 0,
+      "reports": [],
+      "open": true
+    },
+    {
+      "name": "protocol refusal malformed frame",
+      "open": false,
+      "closed": [
+        true,
+        true
+      ],
+      "reports": [
+        {
+          "name": "ChordError",
+          "code": "invalid",
+          "message": "invalid/protocol: link to peer: malformed frame",
+          "reason": "protocol"
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "protocol refusal child reload control",
+      "open": false,
+      "closed": [
+        true,
+        true
+      ],
+      "reports": [
+        {
+          "name": "ChordError",
+          "code": "invalid",
+          "message": "invalid/protocol: link to peer: commit from a child",
+          "reason": "protocol"
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "protocol refusal client vote",
+      "open": false,
+      "closed": [
+        true,
+        true
+      ],
+      "reports": [
+        {
+          "name": "ChordError",
+          "code": "invalid",
+          "message": "invalid/protocol: link to peer: vote from a non-participant",
+          "reason": "protocol"
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "protocol refusal hello kind mismatch",
+      "open": false,
+      "closed": [
+        true,
+        true
+      ],
+      "reports": [
+        {
+          "name": "ChordError",
+          "code": "invalid",
+          "message": "invalid/protocol: link to peer: hello host client does not match the accepted client ",
+          "reason": "protocol"
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "protocol refusal parent not host",
+      "open": false,
+      "closed": [
+        true,
+        true
+      ],
+      "reports": [
+        {
+          "name": "ChordError",
+          "code": "invalid",
+          "message": "invalid/protocol: link to peer: parent is not a host",
+          "reason": "protocol"
+        }
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "closed callback rejects calls clears subscriptions and notifies host",
+      "result": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: link to peer closed: lost"
+        }
+      },
+      "states": [
+        {
+          "t": "state",
+          "id": 2,
+          "snap": 1
+        }
+      ],
+      "sizes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "principal restamp increments generation and undefined closes link",
+      "kept": {
+        "generation": 1,
+        "principal": {
+          "user": "bob"
+        },
+        "open": true
+      },
+      "generation": 2,
+      "open": false,
+      "log": [
+        [
+          "closed",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "latest constructor already closed guard initializes no keepalive",
+      "open": true,
+      "synced": true,
+      "log": [
+        [
+          "closed",
+          false
+        ]
+      ]
+    }
+  ]
+}

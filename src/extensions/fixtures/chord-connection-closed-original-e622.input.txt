@@ -1,0 +1,12 @@
+const cases=[],flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve()};
+const originalInterval=globalThis.setInterval;let intervalCalls=0;
+globalThis.setInterval=function(...args){intervalCalls++;return Reflect.apply(originalInterval,this,args)};
+try{
+ for(const end of ['direct','peer']){
+  const log=[],[a,b]=api.memoryLinkPair();a.close('before constructor');await flush();const link=end==='direct'?a:b;
+  const host={name:'closed',kind:'host',current:{id:1},report(error){throw error},connectionClosed(connection){log.push(['closed',connection.open])}};
+  const config={role:'upstream',principal:undefined,peer:{kind:'host',name:undefined},get pingInterval(){log.push('interval');return 1000000},get pingTimeout(){log.push('timeout');return 45000}};
+  const before=intervalCalls,connection=new api.Connection(host,link,config);await flush();cases.push({name:'actual already-closed '+end+' end constructor guard',beforeClosed:link.closed,open:connection.open,synced:connection.synced,timers:intervalCalls-before,log});
+ }
+}finally{globalThis.setInterval=originalInterval}
+globalThis.chordConnectionClosedCases=cases;

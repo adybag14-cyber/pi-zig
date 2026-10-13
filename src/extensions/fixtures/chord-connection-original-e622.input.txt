@@ -1,0 +1,64 @@
+const cases=[],info=error=>({name:error?.name,code:error?.code,message:error?.message,reason:error?.reason}),outcome=async fn=>{try{return {value:await fn()}}catch(error){return {error:info(error)}}};
+const token=api.remote('wire.counter',{version:1,input:{type:'object'},variants:{active:{state:{count:{type:'number'}},methods:{run:api.method({type:'object',properties:{n:{type:'number'}},required:['n']},{type:'number'})}}}});
+async function flush(){await Promise.resolve();await Promise.resolve();await Promise.resolve()}
+async function fixture(config={}){
+ const log=[],sent=[],reports=[],[a,b]=api.memoryLinkPair(),host={name:'server',kind:'host',current:{id:1},report(error){reports.push(error)},connectionClosed(connection){log.push(['closed',connection===conn])},peerHello(connection,epoch){log.push(['hello',epoch]);connection.markSynced(epoch)},foreignRootEnded(id,connection){log.push(['root_end',id,connection===conn])},rootSent(id,connection){log.push(['root_sent',id,connection===conn])},allowRetire(epoch){log.push(['retire',epoch])},onReloadFrame(connection,frame){log.push(['reload',connection===conn,frame])},invalidatePrincipal(pattern){log.push(['invalidate',pattern]);return Promise.resolve()},acquire(token,input,options,owner){log.push(['acquire',token.name,token.scope,token.version,token.fingerprint,input,options,owner]);return undefined},hasEpoch(epoch){return epoch===1}};
+ b.receive(frame=>sent.push(frame));let conn;conn=new api.Connection(host,a,{role:'downstream',principal:{user:'alice'},peer:{kind:'client',name:undefined},pingInterval:1000000,pingTimeout:45000,...config});
+ await flush();return {conn,host,a,b,log,sent,reports};
+}
+{
+ const f=await fixture(),c=f.conn,p=api.Connection.prototype;cases.push({name:'actual Connection own field order prototype methods and initial hello',ctor:[api.Connection.name,api.Connection.length],own:Object.keys(c),prototype:Object.getOwnPropertyNames(p),methods:['send','nextId','whenSynced','markSynced','revoke','hold','release','call','sub','unsub'].map(name=>[p[name].name,p[name].length,Object.hasOwn(p[name],'prototype')]),getters:['open','name'].map(name=>[Object.getOwnPropertyDescriptor(p,name).get.name,Object.getOwnPropertyDescriptor(p,name).enumerable]),initial:[c.open,c.name,c.generation,c.peerEpoch,c.synced,c.nextId(),c.nextId()],sent:f.sent});f.a.close('done');
+}
+{
+ const f=await fixture({peer:{kind:'host',name:'child'}}),waiting=f.conn.whenSynced();f.b.send({t:'hello',name:'child',kind:'host',epoch:3});await flush();await waiting;cases.push({name:'host hello resolves pending synchronization and stores peer epoch',synced:f.conn.synced,epoch:f.conn.peerEpoch,name:f.conn.name,log:f.log});f.a.close('done');
+}
+{
+ const f=await fixture({peer:{kind:'host',name:'child'}}),waiting=f.conn.whenSynced();f.a.close('waiting');cases.push({name:'closing before synchronization rejects original waiter',result:await outcome(()=>waiting),after:await outcome(()=>f.conn.whenSynced()),log:f.log});
+}
+{
+ const f=await fixture({role:'upstream',principal:undefined,peer:{kind:'host',name:undefined}});f.b.send({t:'hello',name:'parent',kind:'host',epoch:1});await flush();f.b.send({t:'hello',name:'other-parent',kind:'host',epoch:1});await flush();cases.push({name:'upstream parent name is announced once',name:f.conn.name,open:f.conn.open});f.a.close('done');
+}
+{
+ const f=await fixture(),remoteHost={inFactory:0,report(error){f.reports.push(error)},forgetRemote(){f.log.push(['forgot'])}},handle=new api.RemoteHandle(remoteHost,{contract:token,at:'remote',input:{n:1},principal:{user:'forwarded'},owner:'client',address:'remote/counter'}),id=f.conn.hold(handle);f.b.send({t:'shape',id,kind:'active',members:['run','count'],contract:'fingerprint',epoch:2});await flush();await handle.ready;const values=[],off=handle.proxy.count.subscribe(value=>values.push(value));await flush();const sub=f.sent.find(frame=>frame.t==='sub').id;f.b.send({t:'state',id:sub,snap:4});await flush();const stream=api.encoder();f.b.send({t:'state',id:sub,ops:stream.encode([['r',5]])});await flush();off();handle.release();cases.push({name:'consumer real remote hold shape subscribed state and release identities',id,status:handle.status,values,sent:f.sent,sizes:[f.conn.remotes.size,f.conn.subs.size],log:f.log});f.a.close('done');
+}
+{
+ const f=await fixture(),signal=new AbortController().signal,root={rootId:'r',epoch:1},args={n:2},pending=f.conn.call(8,'run',args,root,signal);await flush();const call=f.sent.find(frame=>frame.t==='call');f.b.send({t:'result',id:call.id,value:{n:12}});await flush();const result=await pending;cases.push({name:'host call carries root and settles pending map once',sent:f.sent,log:f.log,result,identities:[call.args!==args,call.root!==root],calls:f.conn.calls.size});f.a.close('done');
+}
+{
+ const f=await fixture();f.host.kind='client';const pending=f.conn.call(8,'run',{n:1},{rootId:'drop',epoch:9},new AbortController().signal);await flush();const call=f.sent.find(frame=>frame.t==='call');f.b.send({t:'result',id:call.id,error:{code:'forbidden',reason:'policy',message:'refused'}});await flush();cases.push({name:'client calls omit carried roots and preserve wire error vocabulary',result:await outcome(()=>pending),sent:f.sent,log:f.log,calls:f.conn.calls.size});f.a.close('done');
+}
+{
+ const f=await fixture(),controller=new AbortController(),reason={cancel:1},pending=f.conn.call(8,'run',{},undefined,controller.signal);controller.abort(reason);let error;try{await pending}catch(value){error=value}cases.push({name:'call cancellation sends cancel retains cause and removes pending',error:info(error),same:error.cause===reason,sent:f.sent,calls:f.conn.calls.size});f.a.close('done');
+}
+{
+ const f=await fixture(),controller=new AbortController();controller.abort('before');cases.push({name:'already aborted call still consumes id without sending',result:await outcome(()=>f.conn.call(8,'run',{},undefined,controller.signal)),next:f.conn.nextId(),sent:f.sent,calls:f.conn.calls.size});f.a.close('done');
+}
+{
+ const f=await fixture();f.b.send({t:'call',id:7,hold:99,member:'run',args:{}});await flush();f.b.send({t:'sub',id:8,hold:99,member:'count'});await flush();f.b.send({t:'hold',id:9,at:'server',token:token.description,input:{}});await flush();cases.push({name:'provider refuses unknown holds and nonlocal acquisition with typed replies',sent:f.sent,log:f.log,served:f.conn.served.size,incoming:f.conn.incoming.size,reports:f.reports.map(info)});f.a.close('done');
+}
+{
+ const f=await fixture({role:'upstream',principal:undefined,peer:{kind:'host',name:undefined}});f.b.send({t:'hold',id:9,at:'elsewhere',token:token.description,input:{}});await flush();cases.push({name:'upstream provider never relays a mismatched destination',sent:f.sent,served:f.conn.served.size});f.a.close('done');
+}
+{
+ const f=await fixture({role:'upstream',principal:undefined,peer:{kind:'host',name:undefined}});f.b.send({t:'retire',epoch:4});await flush();f.b.send({t:'prepare',reload:7,epoch:4,plugins:[],options:{}});await flush();f.b.send({t:'commit',reload:7});await flush();f.b.send({t:'abort',reload:7});await flush();f.b.send({t:'invalidate',pattern:{user:'a'}});await flush();f.b.send({t:'root_end',rootId:'root'});await flush();await Promise.resolve();cases.push({name:'upstream control frames dispatch to actual supplied host callbacks',log:f.log,reports:f.reports.map(info),open:f.conn.open});f.a.close('done');
+}
+{
+ const f=await fixture({peer:{kind:'host',name:'child'}}),log=[];f.conn.votes.set(7,{resolve(value){log.push(['resolve',value])},reject(error){log.push(['reject',info(error)])}});f.b.send({t:'vote',reload:7,report:{epoch:2,previous:1,changed:[],removed:[],prepared:[],gated:[]}});await flush();cases.push({name:'host participant vote removes pending vote before resolution',log,size:f.conn.votes.size,reports:f.reports.map(info),open:f.conn.open});f.a.close('done');
+}
+for(const [name,config,frame] of [
+ ['malformed frame',{}, {t:'not-a-frame'}],
+ ['child reload control',{}, {t:'commit',reload:1}],
+ ['client vote',{}, {t:'vote',reload:1,error:{code:'gone',message:'failed'}}],
+ ['hello kind mismatch',{}, {t:'hello',name:'client',kind:'host',epoch:1}],
+ ['parent not host',{role:'upstream',principal:undefined,peer:{kind:'host',name:undefined}}, {t:'hello',name:'client',kind:'client',epoch:1}]
+]){const f=await fixture(config);f.b.send(frame);await flush();cases.push({name:'protocol refusal '+name,open:f.conn.open,closed:[f.a.closed,f.b.closed],reports:f.reports.map(info),log:f.log})}
+{
+ const f=await fixture(),controller=new AbortController(),reason={close:1},pending=f.conn.call(8,'run',{},undefined,controller.signal),states=[],sub=f.conn.sub(8,'count',frame=>states.push(frame));f.b.send({t:'state',id:sub,snap:1});await flush();f.a.close('lost');cases.push({name:'closed callback rejects calls clears subscriptions and notifies host',result:await outcome(()=>pending),states,sizes:[f.conn.calls.size,f.conn.subs.size,f.conn.remotes.size,f.conn.incoming.size],log:f.log});
+}
+{
+ const f=await fixture();f.conn.revoke({user:'bob'});const kept={generation:f.conn.generation,principal:f.conn.principal,open:f.conn.open};f.conn.revoke(undefined);cases.push({name:'principal restamp increments generation and undefined closes link',kept,generation:f.conn.generation,open:f.conn.open,log:f.log});
+}
+{
+ const log=[],[a,b]=api.memoryLinkPair();a.close('before');const host={name:'closed',kind:'host',current:{id:1},report(error){log.push(info(error))},connectionClosed(connection){log.push(['closed',connection.open])}};const connection=new api.Connection(host,b,{role:'upstream',principal:undefined,peer:{kind:'host',name:undefined}});cases.push({name:'latest constructor already closed guard initializes no keepalive',open:connection.open,synced:connection.synced,log});
+}
+globalThis.chordConnectionCases=cases;

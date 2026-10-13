@@ -47,7 +47,24 @@ fn parse(s: *Scope, text: c.JSValue) !c.JSValue {
 }
 fn memoryDelivery(ctx: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(ctx.?);
-    return memoryDelivered(engine, magic, captures) catch |err| @import("native_durable.zig").reject(engine, err);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    return memoryDelivered(engine, magic, captures) catch |err| {
+        if (err == error.OutOfMemory) {
+            const thrown = engine.throwNativeOutOfMemory();
+            // This private delivery promise has no application waiter. A real
+            // native OOM must reach its owned host boundary instead of stranding
+            // every later FIFO frame behind an unobserved rejection.
+            if (engine.native_allocation_exception) |value| c.JS_SetUncatchableError(engine.context, value);
+            return thrown;
+        }
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) {
+            if (engine.captured_exception) |value| c.JS_SetUncatchableError(engine.context, value);
+            return engine.throwCaptured();
+        }
+        return @import("native_durable.zig").reject(engine, err);
+    };
 }
 fn memoryDelivered(engine: *h.Engine, magic: c_int, captures: [*c]c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };

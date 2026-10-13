@@ -1,0 +1,35 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "actual already-closed direct end constructor guard",
+      "beforeClosed": true,
+      "open": false,
+      "synced": true,
+      "timers": 0,
+      "log": [
+        [
+          "closed",
+          false
+        ],
+        "interval",
+        "timeout"
+      ]
+    },
+    {
+      "name": "actual already-closed peer end constructor guard",
+      "beforeClosed": true,
+      "open": false,
+      "synced": true,
+      "timers": 0,
+      "log": [
+        [
+          "closed",
+          false
+        ],
+        "interval",
+        "timeout"
+      ]
+    }
+  ]
+}

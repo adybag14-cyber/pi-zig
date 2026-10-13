@@ -719,6 +719,14 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, chord_relay_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_relay_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-chord-relay-source", "Replay actual Source RelayHold RelayCall forwarding ownership generation settlement GC and every allocation failure").dependOn(&b.addRunArtifact(chord_relay_tests).step);
+    const chord_connection_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord connection"} });
+    linkQuickJs(b, chord_connection_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_connection_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-connection-source", "Replay actual Source Connection owner protocol constructor keepalive consumers provider frames GC and all allocation failures").dependOn(&b.addRunArtifact(chord_connection_tests).step);
+    const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
+    linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
+    chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-chord-connection-boundaries", "Retain existing private native OOM identity and actual V8 WeakRef regressions around delivery propagation").dependOn(&b.addRunArtifact(chord_connection_boundaries).step);
     const chord_protocol_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_protocol_candidate_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord protocol compiled inventory", "native Chord codec", "native Chord wire", "native Chord apply", "native Chord remote" } });
     linkQuickJs(b, chord_protocol_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_protocol_tests.root_module, sqlite_lib_dir, sqlite_library);
