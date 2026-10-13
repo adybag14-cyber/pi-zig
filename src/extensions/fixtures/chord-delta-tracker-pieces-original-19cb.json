@@ -1,0 +1,271 @@
+{
+  "sourceRoot": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012",
+  "sourceHead": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "latestHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "sourceFiles": [
+    {
+      "file": "packages/chord/src/delta/tracker.ts",
+      "sha256": "68bd2d7b9c0538366b079004ddd5dc9180cedd67d129f5c8de6c9ef6380e2c54",
+      "latestSha256": "68bd2d7b9c0538366b079004ddd5dc9180cedd67d129f5c8de6c9ef6380e2c54"
+    },
+    {
+      "file": "packages/chord/src/delta/index.ts",
+      "sha256": "5dc82a4c50b04d8a99fbde0470f5149a1836be73bbafb42ce7e5e028f50c81eb",
+      "latestSha256": "5dc82a4c50b04d8a99fbde0470f5149a1836be73bbafb42ce7e5e028f50c81eb"
+    },
+    {
+      "file": "packages/chord/src/delta/apply-immutable-trusted.ts",
+      "sha256": "b3c1849d8792d1d8848bcd2df564ea131c54722a0ad16b5f76ecc398ab22efed",
+      "latestSha256": "b3c1849d8792d1d8848bcd2df564ea131c54722a0ad16b5f76ecc398ab22efed"
+    },
+    {
+      "file": "packages/chord/src/json.ts",
+      "sha256": "d3a115dde2afa8e79c987b0fb188ec0bdba03939192859a20198a23b2892bb60",
+      "latestSha256": "d3a115dde2afa8e79c987b0fb188ec0bdba03939192859a20198a23b2892bb60"
+    }
+  ],
+  "inputSha256": "253929158f91b490f8e639ef6c657311eb971609998a55cfaa7e9477d73c78f1",
+  "fullFixtureSha256": "d5e5e11fb13f6b8ffa58baee2864b94cf0bf876901725e7fe15159004dcfc8a3",
+  "cases": [
+    {
+      "name": "push-pop",
+      "result": {
+        "base": [
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2
+        ],
+        "ops": [],
+        "baseRevision": 0,
+        "extra": {
+          "length": 3,
+          "popped": {
+            "x": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "shift-unshift",
+      "result": {
+        "base": [
+          1,
+          2,
+          3
+        ],
+        "value": [
+          8,
+          9,
+          2,
+          3
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            0,
+            1,
+            []
+          ],
+          [
+            "p",
+            [],
+            0,
+            0,
+            [
+              8,
+              9
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": {
+          "removed": 1,
+          "length": 4
+        }
+      }
+    },
+    {
+      "name": "splice",
+      "result": {
+        "base": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "value": [
+          0,
+          8,
+          9,
+          10,
+          3,
+          4
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            1,
+            2,
+            []
+          ],
+          [
+            "p",
+            [],
+            1,
+            0,
+            [
+              8,
+              9,
+              10
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "array-length-grow",
+      "result": {
+        "base": [
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2,
+          null,
+          null,
+          null
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            2,
+            0,
+            [
+              null,
+              null,
+              null
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-length-shrink",
+      "result": {
+        "base": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "value": [
+          1,
+          2
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            2,
+            2,
+            []
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-reverse",
+      "result": {
+        "base": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        "value": [
+          {
+            "x": 3
+          },
+          {
+            "x": 9
+          },
+          {
+            "x": 1
+          }
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              2,
+              1,
+              0
+            ]
+          ],
+          [
+            "s",
+            [
+              1,
+              "x"
+            ],
+            9
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-sort",
+      "result": {
+        "base": [
+          3,
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2,
+          3
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              1,
+              2,
+              0
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  ]
+}
