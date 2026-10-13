@@ -1,0 +1,1215 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "host",
+      "value": {
+        "name": "HostImpl",
+        "arity": 1,
+        "own": [
+          "name",
+          "dev",
+          "principal",
+          "inFactory",
+          "failed",
+          "records",
+          "epochs",
+          "facets",
+          "eager",
+          "kind",
+          "connections",
+          "upstream",
+          "remotes",
+          "remoteModules",
+          "remoteRemoved",
+          "current",
+          "previous",
+          "pending",
+          "gating",
+          "reloading",
+          "retired",
+          "serve"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "HostImpl",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "epoch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get epoch",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "previousEpoch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get previousEpoch",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "report",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "report",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "install",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "install",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "ready",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "ready",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "facetApi",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "facetApi",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "serveInto",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "serveInto",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "startEager",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "startEager",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "currentEpoch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "currentEpoch",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "hasEpoch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "hasEpoch",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "service",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "service",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "addressOf",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "addressOf",
+              "length": 4,
+              "async": false
+            }
+          },
+          {
+            "name": "acquire",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "acquire",
+              "length": 5,
+              "async": false
+            }
+          },
+          {
+            "name": "forget",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "forget",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "touch",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "touch",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "root",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "root",
+              "length": 1,
+              "async": true
+            }
+          },
+          {
+            "name": "joinRoot",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "joinRoot",
+              "length": 3,
+              "async": true
+            }
+          },
+          {
+            "name": "endRoot",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "endRoot",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "registry",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "registry",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "buildTables",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "buildTables",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "liveDecls",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "liveDecls",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "checkRegistrations",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "checkRegistrations",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "registriesChanged",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "registriesChanged",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "installTables",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "installTables",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "get",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "get",
+              "length": 3,
+              "async": false
+            }
+          },
+          {
+            "name": "close",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "close",
+              "length": 0,
+              "async": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ctx",
+      "value": {
+        "name": "CtxImpl",
+        "arity": 2,
+        "own": [
+          "host",
+          "signal",
+          "rootId",
+          "epoch",
+          "principal",
+          "holder"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "CtxImpl",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "closed",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get closed",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "check",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "check",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "get",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "get",
+              "length": 3,
+              "async": false
+            }
+          },
+          {
+            "name": "child",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "child",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "close",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "close",
+              "length": 0,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "record",
+      "value": {
+        "name": "RecordImpl",
+        "arity": 2,
+        "own": [
+          "host",
+          "address",
+          "typeName",
+          "input",
+          "principal",
+          "eager",
+          "status",
+          "ready",
+          "service",
+          "stateVersion",
+          "minEpoch",
+          "decls",
+          "pending",
+          "behaviors",
+          "holds",
+          "leases",
+          "openOrder",
+          "callAbort",
+          "activationAbort",
+          "gate",
+          "deferredRuntime",
+          "guard"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "RecordImpl",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "start",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "start",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "run",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "run",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "open",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "open",
+              "length": 3,
+              "async": true
+            }
+          },
+          {
+            "name": "unwind",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "unwind",
+              "length": 1,
+              "async": true
+            }
+          },
+          {
+            "name": "currentInstalled",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "currentInstalled",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "refreshSchemas",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "refreshSchemas",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "allDecls",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "allDecls",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "stageListeners",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "stageListeners",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "startRuntime",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "startRuntime",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "startTasks",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "startTasks",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "stopListeners",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "stopListeners",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "startTask",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "startTask",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "stopTasks",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "stopTasks",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "openGate",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "openGate",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "admit",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "admit",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "lease",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "lease",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "call",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "call",
+              "length": 4,
+              "async": true
+            }
+          },
+          {
+            "name": "rootEnded",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "rootEnded",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "addHold",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "addHold",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "release",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "release",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "dispose",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "dispose",
+              "length": 2,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "hold",
+      "value": {
+        "name": "HandleImpl",
+        "arity": 3,
+        "own": [
+          "record",
+          "contract",
+          "owner",
+          "address",
+          "proxy",
+          "ready",
+          "status",
+          "error",
+          "shapeListeners",
+          "goneListeners",
+          "readables",
+          "bindings",
+          "views",
+          "callers"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "HandleImpl",
+              "length": 3,
+              "async": false
+            }
+          },
+          {
+            "name": "kind",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get kind",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "shape",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get shape",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "onShape",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "onShape",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "onStatus",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "onStatus",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "release",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "release",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "live",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "live",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "gone",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "gone",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "shapeChanged",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "shapeChanged",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "terminalError",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "terminalError",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "viewOf",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "viewOf",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "currentView",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "currentView",
+              "length": 0,
+              "async": false
+            }
+          },
+          {
+            "name": "describe",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "describe",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "inVariant",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "inVariant",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "member",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "member",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "caller",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "caller",
+              "length": 1,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "self",
+      "value": {
+        "name": "SelfImpl",
+        "arity": 2,
+        "own": [],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "SelfImpl",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "run",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "run",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "state",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "state",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "get",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "get",
+              "length": 3,
+              "async": false
+            }
+          },
+          {
+            "name": "resources",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "resources",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "listen",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "listen",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "tasks",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "tasks",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "derive",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "derive",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "expose",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "expose",
+              "length": 1,
+              "async": false
+            }
+          },
+          {
+            "name": "register",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "register",
+              "length": 2,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "exposed",
+      "value": {
+        "name": "ExposedImpl",
+        "arity": 1,
+        "own": [
+          "resource"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "ExposedImpl",
+              "length": 1,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "facade",
+      "value": {
+        "name": "ResourceFacade",
+        "arity": 2,
+        "own": [],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "ResourceFacade",
+              "length": 2,
+              "async": false
+            }
+          },
+          {
+            "name": "key",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get key",
+              "length": 0
+            },
+            "method": null
+          },
+          {
+            "name": "value",
+            "enumerable": false,
+            "configurable": true,
+            "writable": null,
+            "get": {
+              "name": "get value",
+              "length": 0
+            },
+            "method": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "decls",
+      "value": {
+        "name": "Decls",
+        "arity": 0,
+        "own": [
+          "cells",
+          "cellSchemas",
+          "holds",
+          "resources",
+          "listeners",
+          "tasks",
+          "derives",
+          "deriveFns",
+          "registrations"
+        ],
+        "proto": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "get": null,
+            "method": {
+              "name": "Decls",
+              "length": 0,
+              "async": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "resource declaration brand",
+      "value": {
+        "strings": [
+          "spec"
+        ],
+        "symbols": [
+          {
+            "description": "chord.decl",
+            "value": "resource"
+          }
+        ],
+        "same": null,
+        "resource": {
+          "name": "resource",
+          "length": 1,
+          "prototype": false
+        },
+        "defineRegistry": {
+          "name": "defineRegistry",
+          "length": 1,
+          "prototype": false
+        }
+      }
+    }
+  ]
+}

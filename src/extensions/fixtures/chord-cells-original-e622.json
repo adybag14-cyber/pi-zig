@@ -1,0 +1,558 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "atomic diamond publication",
+      "log": [
+        [
+          "counter",
+          {
+            "type": "snap",
+            "value": {
+              "n": 1
+            }
+          },
+          6
+        ],
+        [
+          "left",
+          {
+            "type": "snap",
+            "value": 2
+          },
+          6
+        ],
+        [
+          "right",
+          {
+            "type": "snap",
+            "value": 4
+          },
+          6
+        ],
+        [
+          "diamond",
+          {
+            "type": "snap",
+            "value": 6
+          },
+          6
+        ],
+        [
+          "counter",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "s",
+                [
+                  "n"
+                ],
+                2
+              ]
+            ],
+            "value": {
+              "n": 2
+            }
+          },
+          9
+        ],
+        [
+          "left",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                4
+              ]
+            ],
+            "value": 4
+          },
+          9
+        ],
+        [
+          "right",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                5
+              ]
+            ],
+            "value": 5
+          },
+          9
+        ],
+        [
+          "diamond",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                9
+              ]
+            ],
+            "value": 9
+          },
+          9
+        ]
+      ],
+      "values": [
+        {
+          "n": 2
+        },
+        4,
+        5,
+        9
+      ]
+    },
+    {
+      "name": "no-op adopts without publication",
+      "same": true,
+      "count": 8
+    },
+    {
+      "name": "invalid draft rolls back before derived install",
+      "rejected": {
+        "error": {
+          "name": "ChordError",
+          "message": "invalid/state: state counter: /n must be number",
+          "code": "invalid",
+          "reason": "state"
+        }
+      },
+      "value": {
+        "n": 2
+      },
+      "diamond": 9
+    },
+    {
+      "name": "dependent validation rolls back whole diamond",
+      "rejected": {
+        "error": {
+          "name": "ChordError",
+          "message": "invalid/state: state diamond: / must be <= 11",
+          "code": "invalid",
+          "reason": "state"
+        }
+      },
+      "value": {
+        "n": 2
+      },
+      "diamond": 9
+    },
+    {
+      "name": "detach removes internal dependency ownership",
+      "sizes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "FIFO reentrancy snapshots and skipped unsubscribe",
+      "log": [
+        [
+          "a",
+          "snap",
+          0
+        ],
+        [
+          "b",
+          "snap",
+          0
+        ],
+        [
+          "v",
+          0
+        ],
+        [
+          "a",
+          "ops",
+          1
+        ],
+        [
+          "late",
+          1
+        ],
+        [
+          "v",
+          1
+        ],
+        [
+          "a",
+          "ops",
+          2
+        ],
+        [
+          "v",
+          2
+        ],
+        [
+          "late",
+          2
+        ]
+      ],
+      "value": {
+        "n": 2
+      }
+    },
+    {
+      "name": "listener failures report through Fanout private receiver",
+      "log": [
+        [
+          "report",
+          "Fanout",
+          "listener"
+        ],
+        [
+          "event",
+          "snap",
+          0
+        ],
+        [
+          "event",
+          "ops",
+          1
+        ],
+        [
+          "report",
+          "Fanout",
+          "listener"
+        ]
+      ],
+      "off": [
+        true,
+        false
+      ]
+    },
+    {
+      "name": "guard rejects before beginning change",
+      "outcome": {
+        "error": {
+          "name": "ChordError",
+          "message": "forbidden: guard rejected",
+          "code": "forbidden",
+          "reason": null
+        }
+      },
+      "value": {
+        "n": 1
+      }
+    },
+    {
+      "name": "returned object replacement and guard receiver",
+      "value": {
+        "n": 2
+      }
+    },
+    {
+      "name": "async change rejected synchronously",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "cell.change callbacks must be synchronous",
+          "code": null,
+          "reason": null
+        }
+      },
+      "value": {
+        "n": 2
+      }
+    },
+    {
+      "name": "callback thrown identity and draft rollback",
+      "outcome": {
+        "error": {
+          "name": "RangeError",
+          "message": "callback failure",
+          "code": null,
+          "reason": null
+        }
+      },
+      "value": {
+        "n": 2
+      }
+    },
+    {
+      "name": "undefined return preserves state",
+      "value": {
+        "n": 2
+      },
+      "result": null
+    },
+    {
+      "name": "shared child inferred diff and explicit diff modes",
+      "events": [
+        {
+          "type": "snap",
+          "value": {
+            "child": {
+              "n": 1
+            },
+            "flag": 0
+          }
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "s",
+              [
+                "flag"
+              ],
+              1
+            ]
+          ],
+          "value": {
+            "child": {
+              "n": 1
+            },
+            "flag": 1
+          }
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "s",
+              [
+                "child",
+                "n"
+              ],
+              2
+            ],
+            [
+              "s",
+              [
+                "flag"
+              ],
+              2
+            ]
+          ],
+          "value": {
+            "child": {
+              "n": 2
+            },
+            "flag": 2
+          }
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "r",
+              {
+                "child": {
+                  "n": 3
+                },
+                "flag": 3
+              }
+            ]
+          ],
+          "value": {
+            "child": {
+              "n": 3
+            },
+            "flag": 3
+          }
+        },
+        {
+          "type": "reset",
+          "value": {
+            "changed": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "reset bypasses validation and publishes reset",
+      "event": {
+        "type": "reset",
+        "value": {
+          "changed": true
+        }
+      },
+      "schema": {
+        "type": "object"
+      },
+      "value": {
+        "changed": true
+      }
+    },
+    {
+      "name": "derive stays unattached until activation",
+      "value": null,
+      "size": 0,
+      "events": [
+        {
+          "type": "snap"
+        }
+      ]
+    },
+    {
+      "name": "precomputed attach avoids computing",
+      "value": 7,
+      "size": 1
+    },
+    {
+      "name": "setFn defers recomputation",
+      "value": 7
+    },
+    {
+      "name": "setFn selected by next graph write",
+      "value": 20,
+      "event": {
+        "type": "ops",
+        "ops": [
+          [
+            "r",
+            20
+          ]
+        ],
+        "value": 20
+      }
+    },
+    {
+      "name": "undefined derive installation replaces null payload",
+      "events": [
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "r",
+              null
+            ]
+          ]
+        },
+        {
+          "type": "ops",
+          "ops": [
+            [
+              "r",
+              null
+            ]
+          ],
+          "value": null
+        }
+      ],
+      "value": null
+    },
+    {
+      "name": "external readable immediate refresh error and idempotent detach",
+      "log": [
+        [
+          "event",
+          {
+            "type": "snap"
+          }
+        ],
+        "subscribe",
+        [
+          "event",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                4
+              ]
+            ],
+            "value": 4
+          }
+        ],
+        [
+          "reported",
+          true,
+          {
+            "name": "Error",
+            "message": "external compute failed",
+            "code": null,
+            "reason": null
+          }
+        ],
+        "unsubscribe"
+      ],
+      "value": 4
+    },
+    {
+      "name": "initial schema always checked",
+      "outcome": {
+        "error": {
+          "name": "ChordError",
+          "message": "invalid/state: initial value of state invalid: /n must be number",
+          "code": "invalid",
+          "reason": "state"
+        }
+      }
+    },
+    {
+      "name": "returned replacement checked even outside dev",
+      "outcome": {
+        "error": {
+          "name": "ChordError",
+          "message": "invalid/state: state production: /n must be number",
+          "code": "invalid",
+          "reason": "state"
+        }
+      }
+    },
+    {
+      "name": "draft validation follows dev option",
+      "value": {
+        "n": "allowed"
+      }
+    },
+    {
+      "name": "derive rejects non-readable sources",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "derive invalid: sources must be readables",
+          "code": null,
+          "reason": null
+        }
+      }
+    },
+    {
+      "name": "derive rejects asynchronous fn",
+      "outcome": {
+        "error": {
+          "name": "TypeError",
+          "message": "derive async: fn must be synchronous",
+          "code": null,
+          "reason": null
+        }
+      }
+    },
+    {
+      "name": "attach preserves fn exception",
+      "outcome": {
+        "error": {
+          "name": "SyntaxError",
+          "message": "compute failure",
+          "code": null,
+          "reason": null
+        }
+      },
+      "size": 0
+    },
+    {
+      "name": "Source identity and notReady error",
+      "sources": [
+        true,
+        true,
+        false
+      ],
+      "error": {
+        "name": "ChordError",
+        "message": "not_ready: state counter is not ready",
+        "code": "not_ready",
+        "reason": null
+      }
+    }
+  ]
+}

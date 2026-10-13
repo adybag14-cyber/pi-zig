@@ -1,0 +1,177 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "actual late-bound readable snapshots subscription rebinding and release",
+      "log": [
+        [
+          "before",
+          null
+        ],
+        [
+          "value",
+          null
+        ],
+        [
+          "event",
+          {
+            "type": "snap"
+          }
+        ],
+        "bind",
+        [
+          "event",
+          {
+            "type": "reset",
+            "value": 1
+          }
+        ],
+        [
+          "value",
+          1
+        ],
+        [
+          "same",
+          true,
+          "current",
+          1
+        ],
+        [
+          "event",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                2
+              ]
+            ],
+            "value": 2
+          }
+        ],
+        [
+          "value",
+          2
+        ],
+        [
+          "event",
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "r",
+                3
+              ]
+            ],
+            "value": 3
+          }
+        ],
+        "unbind"
+      ]
+    },
+    {
+      "name": "actual buffered resource listener roots finish before close",
+      "events": [
+        "open",
+        "subscribe",
+        [
+          "event",
+          "initial",
+          1,
+          false,
+          true
+        ],
+        [
+          "done",
+          "initial"
+        ],
+        [
+          "event",
+          "next",
+          1,
+          false,
+          true
+        ],
+        [
+          "done",
+          "next"
+        ],
+        "unsubscribe",
+        "close"
+      ],
+      "errors": [],
+      "status": "gone"
+    },
+    {
+      "name": "actual record tasks abort and settle before resource close",
+      "events": [
+        "open",
+        [
+          "task",
+          true,
+          false,
+          true
+        ],
+        [
+          "stopped",
+          true,
+          false
+        ],
+        "close"
+      ],
+      "errors": [],
+      "status": "gone"
+    },
+    {
+      "name": "actual waiting call cancellation retires abort listener and root",
+      "outcome": {
+        "name": "ChordError",
+        "message": "aborted: call aborted",
+        "code": "aborted",
+        "reason": null,
+        "retryable": false,
+        "cause": true
+      },
+      "events": [
+        "close"
+      ],
+      "status": "released",
+      "roots": 0
+    },
+    {
+      "name": "actual forced disposal waits running invocation before closing resources",
+      "result": 6,
+      "events": [
+        "open",
+        [
+          "call",
+          false
+        ],
+        [
+          "settled",
+          true,
+          false
+        ],
+        "close"
+      ],
+      "status": "gone",
+      "roots": 0
+    },
+    {
+      "name": "actual pending declarations participate in record hold cycle admission",
+      "failure": {
+        "name": "ChordError",
+        "message": "invalid/cycle: cycle.b\u0000{}\u0000host -> cycle.a\u0000{}\u0000host would create a hold cycle",
+        "code": "invalid",
+        "reason": "cycle",
+        "retryable": false
+      },
+      "events": [
+        "a",
+        "b"
+      ],
+      "status": "gone",
+      "records": 0
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+[
+  {
+    "path": "src/extensions/fixtures/chord-host-metadata-original-19cb.input.txt",
+    "sha256": "2737C9878E63CA1C1652255A2A50A152C1B2D3E0E8B3ADA79B7D3320B3E2AD99"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-host-metadata-original-19cb.json",
+    "sha256": "B87668C90E36B05E204C138318264DFE5429DFC8010579C7E1E6F7574ED1A79D"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-host-original-19cb.input.txt",
+    "sha256": "3128EE1D96DB2ED6B6FFA5478E3E7924E6EAC64B5583C52884A1C97C66A0D700"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-host-original-19cb.json",
+    "sha256": "A1F09BBF68EBD40A6EE10863EFBEAC50E95E190276E9AAABEFFC30425A7573B4"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-host-runtime-original-19cb.input.txt",
+    "sha256": "D674CFA8ECC05EADA2893FD5A19439CE353EA79593260EC196EC0048B465E62C"
+  },
+  {
+    "path": "src/extensions/fixtures/chord-host-runtime-original-19cb.json",
+    "sha256": "C01949909BA4864819C6AD63C8C3AD17770448B25BB745BA560DB597DF8951F6"
+  },
+  {
+    "path": "src/extensions/native_chord_declarations.zig",
+    "sha256": "7764E6AD4E518E6B6F437A44016BD2586CDDDBDF6005C30600BF05C4E601D172"
+  },
+  {
+    "path": "src/extensions/native_chord_host.zig",
+    "sha256": "473EFB1090788DF4C5DF8FB3DA0FDAA7CDA476A3DAAAA9ABCC124CCA8BC45F99"
+  },
+  {
+    "path": "src/extensions/native_chord_host_context.zig",
+    "sha256": "CA4A137F67935E8CC8A1857D9BB37B0E775C03B079463FBBC01E682A7F238C84"
+  },
+  {
+    "path": "src/extensions/native_chord_host_dispose.zig",
+    "sha256": "BDF18EEB22129E1A0BCFB96855C4CCC6137E1D627C9B15C3279D2FC6612DEB81"
+  },
+  {
+    "path": "src/extensions/native_chord_host_handle.zig",
+    "sha256": "306D1E9AE880A1B341386F4290F03199EF65D6EFE974F77FFC12891A78A14D8E"
+  },
+  {
+    "path": "src/extensions/native_chord_host_readable.zig",
+    "sha256": "B730715D1134E16D1105BA60BFAA8BEF5FB154B5EBC0628E122C6288B65AE9DC"
+  },
+  {
+    "path": "src/extensions/native_chord_host_record.zig",
+    "sha256": "03C04926C4B9988FF9BB2AED0FD0F6BD1F6902BE1FCEDFFF38E329EB752FD2AB"
+  },
+  {
+    "path": "src/extensions/native_chord_host_record_call.zig",
+    "sha256": "DFB039AE9D64D772F703579E0599B0368AE48109A62EE1644AFF523E8111580A"
+  },
+  {
+    "path": "src/extensions/native_chord_host_record_lifecycle.zig",
+    "sha256": "8CFACF5110F940A9876DC9026265622A4FB2D5A4EBE017273FC8C14F2A526CD8"
+  },
+  {
+    "path": "src/extensions/native_chord_host_record_runtime.zig",
+    "sha256": "CACB66CE2AFFC75FCE6A2FB01DC9E6BF1A65961A35DFE90C6D500D091F9C8E6B"
+  },
+  {
+    "path": "src/extensions/native_chord_host_record_schema.zig",
+    "sha256": "C4DF7420D829BA3A513AAD617B6F131324652B38CC8386AD9A6C711FC9053920"
+  },
+  {
+    "path": "src/extensions/native_chord_host_registry.zig",
+    "sha256": "487D3C666B6DC817E3BCCBD86F54E9F1AA185EE116DCB9D764DB9696ABC97D0D"
+  },
+  {
+    "path": "src/extensions/native_chord_host_self.zig",
+    "sha256": "7FA8AAECCDDBE709DB1B822669B44DE61D98593C8DBF787AB4EAB15046DAD067"
+  },
+  {
+    "path": "src/extensions/native_chord_host_values.zig",
+    "sha256": "88546B47A765E567A0D0123174BF1282F7C96BD0C1758CF35674B356F867A8F6"
+  },
+  {
+    "path": "src/extensions/native_chord_publish.zig",
+    "sha256": "28A80452DD990C48E2F10E49D5A5F8147C211166F13076A216C13CF6418CE34E"
+  },
+  {
+    "path": "src/native_chord_host_source_test.zig",
+    "sha256": "F28A4CD2C6D01045DAADEE90A0331DE0083265DC9D5D3342E232D0FE3B52B878"
+  },
+  {
+    "path": "src/extensions/native_chord_resources.zig",
+    "sha256": "32385A5EA56B77A90439C3C45146E6905EF05A2A441B964A354151730247AD09"
+  }
+]

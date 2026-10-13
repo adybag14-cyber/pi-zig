@@ -1,0 +1,48 @@
+const cases=[],errors=[],options={dev:true,report(error){errors.push(info(error))}},schema={type:'object',properties:{n:{type:'number'}},required:['n'],additionalProperties:false};
+const info=error=>({name:error.name,message:error.message,code:error.code??null,reason:error.reason??null});
+const outcome=fn=>{try{return{value:fn()??null}}catch(error){return{error:info(error)}}};
+const make=(key,value,guard=()=>{},spec=schema,settings=options)=>new api.Cell(key,spec,value,guard,settings);
+{
+ const cell=make('counter',{n:1}),left=new api.Derived('left',[cell],v=>v.n*2,options),right=new api.Derived('right',[cell],v=>v.n+3,options),diamond=new api.Derived('diamond',[left,right],(a,b)=>a+b,options);left.attach();right.attach();diamond.attach();const log=[];
+ for(const source of [cell,left,right,diamond])source.events(event=>log.push([source.key,event,diamond.value]));cell.change(null,draft=>{draft.n=2});cases.push({name:'atomic diamond publication',log,values:[cell.value,left.value,right.value,diamond.value]});
+ const retained=cell.value;cell.change(null,draft=>{draft.n=2});cases.push({name:'no-op adopts without publication',same:cell.value===retained,count:log.length});
+ const rejected=outcome(()=>cell.change(null,draft=>{draft.n='bad'}));cases.push({name:'invalid draft rolls back before derived install',rejected,value:cell.value,diamond:diamond.value});
+ diamond.schemas=[{type:'number',maximum:11}];cases.push({name:'dependent validation rolls back whole diamond',rejected:outcome(()=>cell.replace(null,{n:3})),value:cell.value,diamond:diamond.value});diamond.schemas=[];
+ diamond.detach();left.detach();right.detach();cases.push({name:'detach removes internal dependency ownership',sizes:[cell.dependents.size,left.dependents.size,right.dependents.size]});
+}
+{
+ const cell=make('reentrant',{n:0}),log=[];let offB=()=>{};
+ cell.events(event=>{log.push(['a',event.type,event.value.n]);if(event.type==='ops'&&event.value.n===1){offB();cell.subscribe(v=>log.push(['late',v.n]));cell.change(null,d=>{d.n=2})}});
+ offB=cell.events(event=>log.push(['b',event.type,event.value.n]));cell.subscribe(v=>log.push(['v',v.n]));cell.change(null,d=>{d.n=1});cases.push({name:'FIFO reentrancy snapshots and skipped unsubscribe',log,value:cell.value});
+}
+{
+ const log=[],cell=make('listeners',{n:0},()=>{},schema,{dev:true,report(error){log.push(['report',this.constructor.name,error.marker])}}),marker={marker:'listener'};
+ const off=cell.subscribe(()=>{throw marker});cell.events(event=>log.push(['event',event.type,event.value.n]));cell.change(null,d=>{d.n=1});cases.push({name:'listener failures report through Fanout private receiver',log,off:[off(),off()]});
+}
+{
+ const cell=make('guard',{n:1},function(ctx){if(ctx!=='write')throw new api.ChordError('forbidden','guard rejected');if(this!==cell)throw Error('guard receiver')});
+ cases.push({name:'guard rejects before beginning change',outcome:outcome(()=>cell.change('read',()=>{throw Error('callback entered')})),value:cell.value});cell.change('write',()=>({n:2}));cases.push({name:'returned object replacement and guard receiver',value:cell.value});
+ cases.push({name:'async change rejected synchronously',outcome:outcome(()=>cell.change('write',async()=>({n:3}))),value:cell.value});
+ cases.push({name:'callback thrown identity and draft rollback',outcome:outcome(()=>cell.change('write',d=>{d.n=4;throw new RangeError('callback failure')})),value:cell.value});
+ const undefinedReturn=cell.change('write',()=>undefined);cases.push({name:'undefined return preserves state',value:cell.value,result:undefinedReturn??null});
+}
+{
+ const schema={type:'object',properties:{child:{type:'object',properties:{n:{type:'number'}},required:['n']},flag:{type:'number'}}},child={n:1},cell=make('shared',{child,flag:0},()=>{},schema),events=[];cell.events(event=>events.push(event));cell.replace(null,{child,flag:1});cell.replace(null,{child:{n:2},flag:2},{diff:true});cell.replace(null,{child:{n:3},flag:3},{diff:false});cases.push({name:'shared child inferred diff and explicit diff modes',events});
+ cell.reset({changed:true},{type:'object'});cases.push({name:'reset bypasses validation and publishes reset',event:events.at(-1),schema:cell.schema,value:cell.value});
+}
+{
+ const cell=make('derived',{n:1}),derived=new api.Derived('computed',[cell],value=>value.n,options),events=[];derived.events(event=>events.push(event));cases.push({name:'derive stays unattached until activation',value:derived.value??null,size:cell.dependents.size,events:[...events]});derived.attach(new Map([[derived,7]]));cases.push({name:'precomputed attach avoids computing',value:derived.value,size:cell.dependents.size});derived.setFn(value=>value.n*10);cases.push({name:'setFn defers recomputation',value:derived.value});cell.replace(null,{n:2});cases.push({name:'setFn selected by next graph write',value:derived.value,event:events.at(-1)});derived.install(undefined);derived.install(null);cases.push({name:'undefined derive installation replaces null payload',events:events.slice(-2),value:derived.value});derived.detach();
+}
+{
+ const log=[];let listener,value=1;const external={get value(){return value},subscribe(fn){log.push('subscribe');listener=fn;fn();return()=>log.push('unsubscribe')}};const derived=new api.Derived('external',[external],v=>v*2,{dev:true,report(error){log.push(['reported',this.dev,info(error)])}});derived.events(event=>log.push(['event',event]));derived.attach();value=2;listener();derived.setFn(()=>{throw new Error('external compute failed')});value=3;listener();derived.detach();derived.detach();cases.push({name:'external readable immediate refresh error and idempotent detach',log,value:derived.value});
+}
+{
+ const cell=make('validation',{n:1});cases.push({name:'initial schema always checked',outcome:outcome(()=>make('invalid',{n:'bad'}))});
+ cases.push({name:'returned replacement checked even outside dev',outcome:outcome(()=>make('production',{n:1},()=>{},schema,{dev:false,report(){}}).change(null,()=>({n:'bad'})))});
+ const production=make('production-mutation',{n:1},()=>{},schema,{dev:false,report(){}});production.change(null,d=>{d.n='allowed'});cases.push({name:'draft validation follows dev option',value:production.value});
+ cases.push({name:'derive rejects non-readable sources',outcome:outcome(()=>new api.Derived('invalid',[{}],()=>0,options))});
+ cases.push({name:'derive rejects asynchronous fn',outcome:outcome(()=>new api.Derived('async',[cell],async()=>1,options).attach())});
+ const derived=new api.Derived('throwing',[cell],()=>{throw new SyntaxError('compute failure')},options);cases.push({name:'attach preserves fn exception',outcome:outcome(()=>derived.attach()),size:cell.dependents.size});
+ cases.push({name:'Source identity and notReady error',sources:[api.isSource(cell),api.isSource(new api.Source('base',options)),api.isSource({value:1,subscribe(){}})],error:info(api.notReady('state counter'))});
+}
+globalThis.chordCellsCases=cases;

@@ -1,0 +1,257 @@
+{
+  "source": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "cases": [
+    {
+      "name": "actual local contract normalized identity shared records methods and cleanup",
+      "fingerprint": "c06e8feba6210d14",
+      "sync": {
+        "calls": 0,
+        "first": "loading",
+        "second": "loading"
+      },
+      "live": {
+        "calls": 1,
+        "status": "live",
+        "shared": true,
+        "ownerInput": {
+          "name": "default",
+          "count": 2
+        },
+        "hostPrincipal": true,
+        "records": 1,
+        "addresses": [
+          "local.resource\u0000{}\u0000host"
+        ],
+        "shape": {
+          "members": [
+            "owner",
+            "echo"
+          ],
+          "contract": "c06e8feba6210d14",
+          "epoch": 1
+        }
+      },
+      "value": 5,
+      "invalid": {
+        "name": "ChordError",
+        "message": "invalid/input: local.resource input: /count must be number",
+        "code": "invalid",
+        "reason": "input",
+        "retryable": false
+      },
+      "afterFirst": {
+        "first": "released",
+        "second": "live",
+        "records": 1
+      },
+      "afterClose": 0,
+      "log": [
+        [
+          "factory",
+          {
+            "name": "default",
+            "count": 2
+          },
+          {
+            "host": true
+          }
+        ],
+        [
+          "open"
+        ],
+        [
+          "call",
+          1,
+          {
+            "host": true
+          },
+          false
+        ],
+        [
+          "close",
+          true
+        ]
+      ],
+      "errors": []
+    },
+    {
+      "name": "actual root principal signal expiry foreign host and retained epoch admission",
+      "value": {
+        "epoch": 1,
+        "principal": true,
+        "signal": true,
+        "closed": false,
+        "rootPrefix": "roots",
+        "sequence": 1
+      },
+      "closed": true,
+      "expired": {
+        "name": "ChordError",
+        "message": "aborted/expired: ctx expired: its call already settled",
+        "code": "aborted",
+        "reason": "expired",
+        "retryable": false
+      },
+      "foreign": {
+        "name": "ChordError",
+        "message": "invalid/foreign_ctx: ctx belongs to another host",
+        "code": "invalid",
+        "reason": "foreign_ctx",
+        "retryable": false
+      },
+      "superseded": {
+        "name": "ChordError",
+        "message": "superseded: epoch 99 is not retained by roots",
+        "code": "superseded",
+        "reason": null,
+        "retryable": true
+      },
+      "activeRoots": 0
+    },
+    {
+      "name": "actual facet install deferred eager readiness and epoch registry publication",
+      "pending": {
+        "ready": false,
+        "table": 0,
+        "eager": 1,
+        "records": 1
+      },
+      "live": {
+        "ready": true,
+        "identity": true,
+        "keys": [
+          "main"
+        ]
+      },
+      "duplicate": {
+        "name": "Error",
+        "message": "facet owners is already installed; use reload()",
+        "code": null,
+        "reason": null,
+        "retryable": null
+      },
+      "events": [
+        {
+          "epoch": 1,
+          "keys": []
+        },
+        {
+          "facetName": "facet"
+        },
+        {
+          "epoch": 1,
+          "keys": [
+            "main"
+          ]
+        },
+        {
+          "epoch": 1,
+          "keys": []
+        },
+        {
+          "closed": true
+        }
+      ],
+      "tableAfterClose": 0
+    },
+    {
+      "name": "actual eager registry conflict unwinds opened record and preserves installed facet",
+      "conflict": {
+        "name": "ChordError",
+        "message": "invalid/registry_conflict: one: same registered by owner.a\u0000{}\u0000host and owner.b\u0000{}\u0000host",
+        "code": "invalid",
+        "reason": "registry_conflict",
+        "retryable": false
+      },
+      "after": {
+        "table": [
+          [
+            "same",
+            "a"
+          ]
+        ],
+        "records": 1,
+        "facets": 2
+      },
+      "events": [
+        [
+          "open",
+          "a"
+        ],
+        [
+          "open",
+          "b"
+        ],
+        [
+          "close",
+          "b"
+        ],
+        [
+          "close",
+          "a"
+        ]
+      ],
+      "errors": [
+        {
+          "name": "ChordError",
+          "message": "invalid/registry_conflict: one: same registered by owner.a\u0000{}\u0000host and owner.b\u0000{}\u0000host",
+          "code": "invalid",
+          "reason": "registry_conflict",
+          "retryable": false
+        }
+      ]
+    },
+    {
+      "name": "actual activation settles resources then unwinds and reports cleanup independently",
+      "failure": {
+        "name": "ChordError",
+        "message": "unavailable: activating failed.owner\u0000{}\u0000host: [object Object]",
+        "code": "unavailable",
+        "reason": null,
+        "retryable": false,
+        "cause": true
+      },
+      "after": {
+        "status": "gone",
+        "error": {
+          "name": "ChordError",
+          "message": "unavailable: activating failed.owner\u0000{}\u0000host: [object Object]",
+          "code": "unavailable",
+          "reason": null,
+          "retryable": false
+        },
+        "records": 0
+      },
+      "events": [
+        "open a",
+        "open b",
+        "close a"
+      ],
+      "errors": [
+        "cleanup"
+      ]
+    },
+    {
+      "name": "actual released pending handle abandons and disposes late resource value",
+      "failure": {
+        "name": "ChordError",
+        "message": "aborted: resource owner opened after abort",
+        "code": "aborted",
+        "reason": null,
+        "retryable": false
+      },
+      "status": "released",
+      "records": 0,
+      "events": [
+        [
+          "open",
+          false
+        ],
+        [
+          "close",
+          "late value"
+        ]
+      ]
+    }
+  ]
+}

@@ -218,11 +218,20 @@ fn define(engine: *Engine, prototype: c.JSValue, bindings: c.JSValue, name: [*:0
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, function), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     } else if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
-pub fn exports(engine: *Engine) !c.JSValue {
+pub const Classes = struct {
+    exports: c.JSValue,
+    bindings: c.JSValue,
+    pub fn deinit(self: *Classes, engine: *Engine) void {
+        engine.freeValue(self.exports);
+        engine.freeValue(self.bindings);
+    }
+};
+/// Host owns the same concrete classes and their private facade identity map.
+pub fn classes(engine: *Engine) !Classes {
     const result = try errors.exports(engine);
     errdefer engine.freeValue(result);
     const bindings = try js.object(engine);
-    defer engine.freeValue(bindings);
+    errdefer engine.freeValue(bindings);
     try js.define(engine, bindings, "ChordError", try js.get(engine, result, "ChordError"));
     var intrinsics = try awaiting.Intrinsics.init(engine);
     defer intrinsics.deinit(engine);
@@ -251,5 +260,24 @@ pub fn exports(engine: *Engine) !c.JSValue {
         }
         try js.define(engine, result, name, c.JS_DupValue(engine.context, constructor));
     }
-    return result;
+    return .{ .exports = result, .bindings = bindings };
+}
+pub fn resourceOf(engine: *Engine, value: c.JSValue, bindings: c.JSValue) !c.JSValue {
+    if (!c.JS_IsObject(value) or c.JS_IsFunction(engine.context, value)) return c.pi_js_undefined();
+    const resource_identifier = try js.get(engine, bindings, "resourceId");
+    defer engine.freeValue(resource_identifier);
+    var resource_id: u32 = undefined;
+    if (c.JS_ToUint32(engine.context, &resource_id, resource_identifier) < 0) return js.capture(engine);
+    if (c.JS_GetOpaque(value, resource_id) != null) return c.JS_DupValue(engine.context, value);
+    const identifier = try js.get(engine, bindings, "facadeId");
+    defer engine.freeValue(identifier);
+    var class_id: u32 = undefined;
+    if (c.JS_ToUint32(engine.context, &class_id, identifier) < 0) return js.capture(engine);
+    const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, class_id) orelse return c.pi_js_undefined()));
+    return c.JS_DupValue(engine.context, owned.resource);
+}
+pub fn exports(engine: *Engine) !c.JSValue {
+    const created = try classes(engine);
+    engine.freeValue(created.bindings);
+    return created.exports;
 }
