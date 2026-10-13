@@ -1,0 +1,16 @@
+{
+  "candidate": true,
+  "native_runtime_qualified": false,
+  "public_activation": false,
+  "source_events": 28,
+  "source_hooks": 16,
+  "source_utilities": 28,
+  "direct_latest_source_dependencies_unchanged": 14,
+  "latest_source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_oracle_snapshot": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "latest_built_oracle_recapture": "pending",
+  "workflow_blocks": 3,
+  "workflow_parse_errors": 0,
+  "selected_inventory": "Derived from native builtin.test_functions; all three Source comparison tests required",
+  "runtime_status": "Pending exact-head Windows Debug and ReleaseSafe execution"
+}

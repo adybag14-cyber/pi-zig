@@ -4,6 +4,15 @@ const sdk = @import("extensions/native_sdk.zig");
 const events = @import("extensions/native_sdk_session_events.zig");
 const hooks = @import("extensions/native_sdk_session_hooks.zig");
 const c = em.c;
+test "native SDK session events selected inventory includes every Source comparator" {
+    const functions = @import("builtin").test_functions;
+    const names = try std.testing.allocator.alloc([]const u8, functions.len);
+    defer std.testing.allocator.free(names);
+    for (functions, names) |function, *name| name.* = function.name;
+    const bytes = try std.json.Stringify.valueAlloc(std.testing.allocator, names, .{});
+    defer std.testing.allocator.free(bytes);
+    std.debug.print("SDK_SESSION_EVENTS_TEST_INVENTORY={s}\n", .{bytes});
+}
 fn attach(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     events.attachWithDependencies(engine, if (argc > 0) args[0] else c.pi_js_undefined(), roots[0]) catch |err| return sdk.fail(engine, err);
