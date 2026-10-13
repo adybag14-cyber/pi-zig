@@ -16,6 +16,7 @@ for(const pattern of packageJson.workspaces){
  if(star<0){if(existsSync(join(root,pattern,'package.json')))workspaces.push(pattern);continue;}
  if(star!==pattern.length-1)throw Error('Unsupported workspace pattern '+pattern);
  const parent=pattern.slice(0,-1);
+ if(!existsSync(join(root,parent)))continue;
  for(const entry of readdirSync(join(root,parent),{withFileTypes:true}))if(entry.isDirectory()&&existsSync(join(root,parent,entry.name,'package.json')))workspaces.push(join(parent,entry.name));
 }
 const packages=workspaces.map(path=>({path,manifest:JSON.parse(readFileSync(join(root,path,'package.json')))}));
