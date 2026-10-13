@@ -1,0 +1,35 @@
+{
+  "implementation_commit": "da7559e70181a0bd2260f658cf8e65cf9e07c9bf",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Original AgentSession._normalizePromptImages using linked native image processing, ordinary live session fields and retained iterator owners",
+  "source_cases": 15,
+  "original_factory_instances": 15,
+  "debug": {
+    "tests": 11,
+    "status": "passed"
+  },
+  "release_safe": {
+    "tests": 11,
+    "status": "passed"
+  },
+  "source_files": 4741,
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "original_source_posthash": {
+    "source_files": 1945,
+    "runtime_files": 31064,
+    "node_distribution_files": 1774,
+    "drift": 0
+  },
+  "committed_blobs_verified": 4741,
+  "committed_byte_drift": 0,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending"
+}
