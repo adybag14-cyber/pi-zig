@@ -22,14 +22,22 @@ fn natural(s: *Scope, value: c.JSValue) !bool {
     if (c.JS_ToFloat64(s.engine.context, &number, value) < 0) return js.capture(s.engine);
     return number >= 0;
 }
+fn raiseRaw(s: *Scope, value: c.JSValue) anyerror {
+    // This is an internal native callback completion, not a host diagnostic
+    // boundary. Retain the original value for IteratorClose and the callback's
+    // throwCaptured, without formatting an error the guest may immediately catch.
+    const retained = c.JS_DupValue(s.engine.context, value);
+    if (s.engine.captured_exception) |previous| s.engine.freeValue(previous);
+    s.engine.captured_exception = retained;
+    return error.JavaScriptException;
+}
 fn fail(s: *Scope, text: []const u8) anyerror {
-    _ = try h.typeError(s, &.{try s.text(text)});
-    unreachable;
+    const failure = try s.keep(try js.builtin(s.engine, "TypeError", &.{try s.text(text)}));
+    return raiseRaw(s, failure);
 }
 fn errorFor(s: *Scope, bindings: c.JSValue, path: c.JSValue, unsafe: bool) anyerror {
     const error_value = try h.construct(s, bindings, if (unsafe) "UnsafePathError" else "PathError", &.{path});
-    _ = try h.throwValue(s, error_value);
-    unreachable;
+    return raiseRaw(s, error_value);
 }
 pub fn safePath(s: *Scope, bindings: c.JSValue, path: c.JSValue) !void {
     var iterator = try js.Iterator.init(s.engine, path, try h.iteratorSymbol(s));
@@ -103,7 +111,8 @@ pub fn validWire(s: *Scope, bindings: c.JSValue, op: c.JSValue) !void {
         try safePath(s, bindings, try s.at(op, 2));
     } else {
         const text = try s.keep(try js.call(s.engine, try s.keep(try js.global(s.engine, "String")), c.pi_js_undefined(), &.{verb}));
-        _ = try h.typeError(s, &.{ try s.text("unknown op verb: "), text });
+        const message = try s.keep(try @import("native_utf16.zig").concat(s.engine, &.{ try s.text("unknown op verb: "), text }));
+        return raiseRaw(s, try s.keep(try js.builtin(s.engine, "TypeError", &.{message})));
     }
 }
 fn tuple(s: *Scope, out: c.JSValue, op: c.JSValue, path: c.JSValue, short: bool, decoding: bool) !void {

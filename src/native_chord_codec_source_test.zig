@@ -64,6 +64,8 @@ test "native Chord codec constructors validation errors and streams release ever
                 return mapped;
             };
             engine.freeValue(result);
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            if (failing.has_induced_failure) diagnostic(gpa, engine, "successful-probe", error.SwallowedOutOfMemoryError);
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
