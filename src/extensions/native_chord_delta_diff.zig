@@ -36,6 +36,22 @@ pub fn diffRevisions(engine: *js.Engine, before: c.JSValue, after: c.JSValue) !c
 pub fn function(engine: *js.Engine) !c.JSValue {
     return @import("native_node_function.zig").create(engine, "diffRevisions", 2, callback, &.{});
 }
+/// The tracker uses this same Source equality without invoking revision diff.
+pub fn equalTrustedJson(engine: *js.Engine, left: c.JSValue, right: c.JSValue) !bool {
+    var state: State = .{ .scope = .{ .engine = engine }, .operations = c.pi_js_undefined() };
+    defer state.scope.deinit();
+    return state.equalJson(left, right);
+}
+/// tracker.ts emitChangedValue: changed containers are whole-value writes.
+pub fn changedValueOperations(engine: *js.Engine, before: c.JSValue, after: c.JSValue, path: c.JSValue) !c.JSValue {
+    var state: State = .{ .scope = .{ .engine = engine }, .operations = undefined };
+    defer state.scope.deinit();
+    state.operations = try state.scope.list();
+    if ((!state.container(after) and state.strict(before, after)) or
+        (state.container(before) and state.container(after) and try state.equalJson(before, after))) return state.scope.result(state.operations);
+    if (c.JS_IsString(before) and c.JS_IsString(after)) try state.emitString(before, after, path) else try state.emit("s", &.{ path, after });
+    return state.scope.result(state.operations);
+}
 fn callback(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return diffRevisions(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
 }

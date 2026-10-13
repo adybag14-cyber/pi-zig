@@ -688,6 +688,10 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-chord-delta-diff-source", "Replay genuine Chord diff identity matching UTF16 arrays traps costs and allocation ownership").dependOn(&b.addRunArtifact(chord_delta_diff_tests).step);
     const chord_delta_pieces_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_delta_tracker_pieces_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     b.step("test-native-chord-delta-tracker-pieces", "Verify Source tracker seeded piece tree structural plans and native allocation rollback").dependOn(&b.addRunArtifact(chord_delta_pieces_tests).step);
+    const chord_delta_tracker_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_delta_tracker_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord tracker"} });
+    linkQuickJs(b, chord_delta_tracker_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_delta_tracker_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("test-native-chord-delta-tracker-source", "Replay full original Tracker Change Prepared proxy graph mutations failure states and ownership").dependOn(&b.addRunArtifact(chord_delta_tracker_tests).step);
     const chord_normalization_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_normalization_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chord normalization workers"} });
     linkQuickJs(b, chord_normalization_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_normalization_tests.root_module, sqlite_lib_dir, sqlite_library);
