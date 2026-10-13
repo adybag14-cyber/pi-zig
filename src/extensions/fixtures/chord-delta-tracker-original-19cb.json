@@ -1,0 +1,2179 @@
+{
+  "sourceRoot": "C:/Users/adyba/pi-upstream-runtime-19cb534-20261012",
+  "sourceHead": "19cb534c3b6e3871458a8fa59e98f0312c50e995",
+  "sourceArchiveSha256": "5da1185d5c3bd4ba55618c38ee0524defd5cb0797c9aaa0ead7507387472f2f0",
+  "latestHead": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "sourceFiles": [
+    {
+      "file": "packages/chord/src/delta/tracker.ts",
+      "sha256": "68bd2d7b9c0538366b079004ddd5dc9180cedd67d129f5c8de6c9ef6380e2c54",
+      "latestSha256": "68bd2d7b9c0538366b079004ddd5dc9180cedd67d129f5c8de6c9ef6380e2c54"
+    },
+    {
+      "file": "packages/chord/src/delta/index.ts",
+      "sha256": "5dc82a4c50b04d8a99fbde0470f5149a1836be73bbafb42ce7e5e028f50c81eb",
+      "latestSha256": "5dc82a4c50b04d8a99fbde0470f5149a1836be73bbafb42ce7e5e028f50c81eb"
+    },
+    {
+      "file": "packages/chord/src/delta/apply-immutable-trusted.ts",
+      "sha256": "b3c1849d8792d1d8848bcd2df564ea131c54722a0ad16b5f76ecc398ab22efed",
+      "latestSha256": "b3c1849d8792d1d8848bcd2df564ea131c54722a0ad16b5f76ecc398ab22efed"
+    },
+    {
+      "file": "packages/chord/src/json.ts",
+      "sha256": "d3a115dde2afa8e79c987b0fb188ec0bdba03939192859a20198a23b2892bb60",
+      "latestSha256": "d3a115dde2afa8e79c987b0fb188ec0bdba03939192859a20198a23b2892bb60"
+    }
+  ],
+  "inputSha256": "253929158f91b490f8e639ef6c657311eb971609998a55cfaa7e9477d73c78f1",
+  "cases": [
+    {
+      "name": "ownership",
+      "result": {
+        "same": true,
+        "revision": 0,
+        "keys": [],
+        "prototype": "TrackerImpl"
+      }
+    },
+    {
+      "name": "empty-change",
+      "result": {
+        "base": true,
+        "value": true,
+        "ops": [],
+        "revision": 1,
+        "current": true
+      }
+    },
+    {
+      "name": "set-object",
+      "result": {
+        "base": {
+          "a": 1,
+          "b": 2
+        },
+        "value": {
+          "a": 3,
+          "c": 4
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "a"
+            ],
+            3
+          ],
+          [
+            "s",
+            [
+              "c"
+            ],
+            4
+          ],
+          [
+            "d",
+            [
+              "b"
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "nested-object",
+      "result": {
+        "base": {
+          "a": {
+            "b": 1
+          },
+          "same": {
+            "x": 2
+          }
+        },
+        "value": {
+          "a": {
+            "b": 3
+          },
+          "same": {
+            "x": 2
+          }
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "a",
+              "b"
+            ],
+            3
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "delete-readd",
+      "result": {
+        "base": {
+          "a": 1,
+          "b": 2,
+          "c": 3
+        },
+        "value": {
+          "b": 2,
+          "c": 3,
+          "a": 1
+        },
+        "ops": [
+          [
+            "d",
+            [
+              "a"
+            ]
+          ],
+          [
+            "s",
+            [
+              "a"
+            ],
+            1
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          "b",
+          "c",
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "undefined-deletes",
+      "result": {
+        "base": {
+          "a": 1,
+          "b": 2
+        },
+        "value": {
+          "b": 2
+        },
+        "ops": [
+          [
+            "d",
+            [
+              "a"
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "container-equal",
+      "result": {
+        "ops": [],
+        "unchanged": true,
+        "child": true
+      }
+    },
+    {
+      "name": "placement-detaches",
+      "result": {
+        "value": {
+          "a": {
+            "x": {
+              "y": 1
+            }
+          }
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "a"
+            ],
+            {
+              "x": {
+                "y": 1
+              }
+            }
+          ]
+        ],
+        "detached": true
+      }
+    },
+    {
+      "name": "placement-draft-copy",
+      "result": {
+        "base": {
+          "a": {
+            "x": 1
+          }
+        },
+        "value": {
+          "a": {
+            "x": 2
+          },
+          "b": {
+            "x": 1
+          }
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "b"
+            ],
+            {
+              "x": 1
+            }
+          ],
+          [
+            "s",
+            [
+              "a",
+              "x"
+            ],
+            2
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "stale-detached-node",
+      "result": {
+        "base": {
+          "a": {
+            "x": 1
+          }
+        },
+        "value": {
+          "a": {
+            "x": 2
+          }
+        },
+        "ops": [
+          [
+            "s",
+            [
+              "a"
+            ],
+            {
+              "x": 2
+            }
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "string-overlap",
+      "result": {
+        "base": {
+          "s": "abcdef"
+        },
+        "value": {
+          "s": "defghi"
+        },
+        "ops": [
+          [
+            "t",
+            [
+              "s"
+            ],
+            3
+          ],
+          [
+            "a",
+            [
+              "s"
+            ],
+            "ghi"
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "string-surrogate",
+      "result": {
+        "base": {
+          "s": "x\ud800\u0000"
+        },
+        "value": {
+          "s": "\ud800\u0000z"
+        },
+        "ops": [
+          [
+            "t",
+            [
+              "s"
+            ],
+            1
+          ],
+          [
+            "a",
+            [
+              "s"
+            ],
+            "z"
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "reserved-object",
+      "result": {
+        "base": {
+          "__proto__": {
+            "a": 1
+          },
+          "x": 2
+        },
+        "value": {
+          "__proto__": {
+            "a": 3
+          },
+          "x": 2
+        },
+        "ops": [
+          [
+            "r",
+            {
+              "__proto__": {
+                "a": 3
+              },
+              "x": 2
+            }
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "reserved-write",
+      "result": {
+        "base": {
+          "x": 1
+        },
+        "value": {
+          "x": 1,
+          "constructor": {
+            "x": 2
+          }
+        },
+        "ops": [
+          [
+            "r",
+            {
+              "x": 1,
+              "constructor": {
+                "x": 2
+              }
+            }
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "push-pop",
+      "result": {
+        "base": [
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2
+        ],
+        "ops": [],
+        "baseRevision": 0,
+        "extra": {
+          "length": 3,
+          "popped": {
+            "x": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "shift-unshift",
+      "result": {
+        "base": [
+          1,
+          2,
+          3
+        ],
+        "value": [
+          8,
+          9,
+          2,
+          3
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            0,
+            1,
+            []
+          ],
+          [
+            "p",
+            [],
+            0,
+            0,
+            [
+              8,
+              9
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": {
+          "removed": 1,
+          "length": 4
+        }
+      }
+    },
+    {
+      "name": "splice",
+      "result": {
+        "base": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "value": [
+          0,
+          8,
+          9,
+          10,
+          3,
+          4
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            1,
+            2,
+            []
+          ],
+          [
+            "p",
+            [],
+            1,
+            0,
+            [
+              8,
+              9,
+              10
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "array-set",
+      "result": {
+        "base": [
+          1,
+          2,
+          3
+        ],
+        "value": [
+          1,
+          9,
+          3,
+          4
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            3,
+            0,
+            [
+              4
+            ]
+          ],
+          [
+            "s",
+            [
+              1
+            ],
+            9
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-noop-set",
+      "result": {
+        "base": [
+          1,
+          2,
+          3
+        ],
+        "value": [
+          1,
+          2,
+          3
+        ],
+        "ops": [],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-length-grow",
+      "result": {
+        "base": [
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2,
+          null,
+          null,
+          null
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            2,
+            0,
+            [
+              null,
+              null,
+              null
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-length-shrink",
+      "result": {
+        "base": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "value": [
+          1,
+          2
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            2,
+            2,
+            []
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-reverse",
+      "result": {
+        "base": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        "value": [
+          {
+            "x": 3
+          },
+          {
+            "x": 9
+          },
+          {
+            "x": 1
+          }
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              2,
+              1,
+              0
+            ]
+          ],
+          [
+            "s",
+            [
+              1,
+              "x"
+            ],
+            9
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-sort",
+      "result": {
+        "base": [
+          3,
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2,
+          3
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              1,
+              2,
+              0
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "array-default-sort",
+      "result": {
+        "base": [
+          3,
+          11,
+          2
+        ],
+        "value": [
+          11,
+          2,
+          3
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              1,
+              2,
+              0
+            ]
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": [
+          11,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "name": "array-fill",
+      "result": {
+        "base": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "value": [
+          1,
+          {
+            "x": 9
+          },
+          {
+            "x": 1
+          },
+          4
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            1,
+            2,
+            []
+          ],
+          [
+            "p",
+            [],
+            1,
+            0,
+            [
+              {
+                "x": 9
+              },
+              {
+                "x": 1
+              }
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "array-copywithin",
+      "result": {
+        "base": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        "value": [
+          {
+            "x": 1
+          },
+          {
+            "x": 9
+          },
+          {
+            "x": 2
+          }
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            1,
+            2,
+            []
+          ],
+          [
+            "p",
+            [],
+            1,
+            0,
+            [
+              {
+                "x": 9
+              },
+              {
+                "x": 2
+              }
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "retained-array-node-moves",
+      "result": {
+        "base": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        "value": [
+          {
+            "x": 3
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 9
+          }
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              2,
+              1,
+              0
+            ]
+          ],
+          [
+            "s",
+            [
+              2,
+              "x"
+            ],
+            9
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "removed-array-node",
+      "result": {
+        "base": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          }
+        ],
+        "value": [
+          {
+            "x": 2
+          }
+        ],
+        "ops": [
+          [
+            "p",
+            [],
+            0,
+            1,
+            []
+          ]
+        ],
+        "baseRevision": 0,
+        "extra": {
+          "x": 9
+        }
+      }
+    },
+    {
+      "name": "dense-regions",
+      "result": {
+        "base": [
+          {
+            "x": 0
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          },
+          {
+            "x": 4
+          },
+          {
+            "x": 5
+          },
+          {
+            "x": 6
+          },
+          {
+            "x": 7
+          },
+          {
+            "x": 8
+          },
+          {
+            "x": 9
+          },
+          {
+            "x": 10
+          },
+          {
+            "x": 11
+          },
+          {
+            "x": 12
+          },
+          {
+            "x": 13
+          },
+          {
+            "x": 14
+          },
+          {
+            "x": 15
+          },
+          {
+            "x": 16
+          },
+          {
+            "x": 17
+          },
+          {
+            "x": 18
+          },
+          {
+            "x": 19
+          },
+          {
+            "x": 20
+          },
+          {
+            "x": 21
+          },
+          {
+            "x": 22
+          },
+          {
+            "x": 23
+          },
+          {
+            "x": 24
+          },
+          {
+            "x": 25
+          },
+          {
+            "x": 26
+          },
+          {
+            "x": 27
+          },
+          {
+            "x": 28
+          },
+          {
+            "x": 29
+          },
+          {
+            "x": 30
+          },
+          {
+            "x": 31
+          },
+          {
+            "x": 32
+          },
+          {
+            "x": 33
+          },
+          {
+            "x": 34
+          },
+          {
+            "x": 35
+          },
+          {
+            "x": 36
+          },
+          {
+            "x": 37
+          },
+          {
+            "x": 38
+          },
+          {
+            "x": 39
+          },
+          {
+            "x": 40
+          },
+          {
+            "x": 41
+          },
+          {
+            "x": 42
+          },
+          {
+            "x": 43
+          },
+          {
+            "x": 44
+          },
+          {
+            "x": 45
+          },
+          {
+            "x": 46
+          },
+          {
+            "x": 47
+          },
+          {
+            "x": 48
+          },
+          {
+            "x": 49
+          },
+          {
+            "x": 50
+          },
+          {
+            "x": 51
+          },
+          {
+            "x": 52
+          },
+          {
+            "x": 53
+          },
+          {
+            "x": 54
+          },
+          {
+            "x": 55
+          },
+          {
+            "x": 56
+          },
+          {
+            "x": 57
+          },
+          {
+            "x": 58
+          },
+          {
+            "x": 59
+          },
+          {
+            "x": 60
+          },
+          {
+            "x": 61
+          },
+          {
+            "x": 62
+          },
+          {
+            "x": 63
+          },
+          {
+            "x": 64
+          },
+          {
+            "x": 65
+          },
+          {
+            "x": 66
+          },
+          {
+            "x": 67
+          },
+          {
+            "x": 68
+          },
+          {
+            "x": 69
+          },
+          {
+            "x": 70
+          },
+          {
+            "x": 71
+          },
+          {
+            "x": 72
+          },
+          {
+            "x": 73
+          },
+          {
+            "x": 74
+          },
+          {
+            "x": 75
+          },
+          {
+            "x": 76
+          },
+          {
+            "x": 77
+          },
+          {
+            "x": 78
+          },
+          {
+            "x": 79
+          }
+        ],
+        "value": [
+          {
+            "x": 0
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          },
+          {
+            "x": 4
+          },
+          {
+            "x": 5
+          },
+          {
+            "x": 6
+          },
+          {
+            "x": 7
+          },
+          {
+            "x": 8
+          },
+          {
+            "x": 9
+          },
+          {
+            "x": 110
+          },
+          {
+            "x": 111
+          },
+          {
+            "x": 112
+          },
+          {
+            "x": 113
+          },
+          {
+            "x": 114
+          },
+          {
+            "x": 115
+          },
+          {
+            "x": 116
+          },
+          {
+            "x": 117
+          },
+          {
+            "x": 118
+          },
+          {
+            "x": 119
+          },
+          {
+            "x": 120
+          },
+          {
+            "x": 121
+          },
+          {
+            "x": 122
+          },
+          {
+            "x": 123
+          },
+          {
+            "x": 124
+          },
+          {
+            "x": 125
+          },
+          {
+            "x": 126
+          },
+          {
+            "x": 127
+          },
+          {
+            "x": 128
+          },
+          {
+            "x": 129
+          },
+          {
+            "x": 130
+          },
+          {
+            "x": 131
+          },
+          {
+            "x": 132
+          },
+          {
+            "x": 133
+          },
+          {
+            "x": 134
+          },
+          {
+            "x": 135
+          },
+          {
+            "x": 136
+          },
+          {
+            "x": 137
+          },
+          {
+            "x": 138
+          },
+          {
+            "x": 139
+          },
+          {
+            "x": 140
+          },
+          {
+            "x": 141
+          },
+          {
+            "x": 142
+          },
+          {
+            "x": 143
+          },
+          {
+            "x": 144
+          },
+          {
+            "x": 145
+          },
+          {
+            "x": 146
+          },
+          {
+            "x": 147
+          },
+          {
+            "x": 148
+          },
+          {
+            "x": 149
+          },
+          {
+            "x": 150
+          },
+          {
+            "x": 151
+          },
+          {
+            "x": 152
+          },
+          {
+            "x": 153
+          },
+          {
+            "x": 154
+          },
+          {
+            "x": 155
+          },
+          {
+            "x": 156
+          },
+          {
+            "x": 157
+          },
+          {
+            "x": 158
+          },
+          {
+            "x": 159
+          },
+          {
+            "x": 160
+          },
+          {
+            "x": 161
+          },
+          {
+            "x": 162
+          },
+          {
+            "x": 163
+          },
+          {
+            "x": 164
+          },
+          {
+            "x": 165
+          },
+          {
+            "x": 166
+          },
+          {
+            "x": 167
+          },
+          {
+            "x": 168
+          },
+          {
+            "x": 169
+          },
+          {
+            "x": 70
+          },
+          {
+            "x": 71
+          },
+          {
+            "x": 72
+          },
+          {
+            "x": 73
+          },
+          {
+            "x": 74
+          },
+          {
+            "x": 75
+          },
+          {
+            "x": 76
+          },
+          {
+            "x": 77
+          },
+          {
+            "x": 78
+          },
+          {
+            "x": 79
+          }
+        ],
+        "ops": [
+          [
+            "s",
+            [
+              10,
+              "x"
+            ],
+            110
+          ],
+          [
+            "s",
+            [
+              11,
+              "x"
+            ],
+            111
+          ],
+          [
+            "s",
+            [
+              12,
+              "x"
+            ],
+            112
+          ],
+          [
+            "s",
+            [
+              13,
+              "x"
+            ],
+            113
+          ],
+          [
+            "s",
+            [
+              14,
+              "x"
+            ],
+            114
+          ],
+          [
+            "s",
+            [
+              15,
+              "x"
+            ],
+            115
+          ],
+          [
+            "s",
+            [
+              16,
+              "x"
+            ],
+            116
+          ],
+          [
+            "s",
+            [
+              17,
+              "x"
+            ],
+            117
+          ],
+          [
+            "s",
+            [
+              18,
+              "x"
+            ],
+            118
+          ],
+          [
+            "s",
+            [
+              19,
+              "x"
+            ],
+            119
+          ],
+          [
+            "s",
+            [
+              20,
+              "x"
+            ],
+            120
+          ],
+          [
+            "s",
+            [
+              21,
+              "x"
+            ],
+            121
+          ],
+          [
+            "s",
+            [
+              22,
+              "x"
+            ],
+            122
+          ],
+          [
+            "s",
+            [
+              23,
+              "x"
+            ],
+            123
+          ],
+          [
+            "s",
+            [
+              24,
+              "x"
+            ],
+            124
+          ],
+          [
+            "s",
+            [
+              25,
+              "x"
+            ],
+            125
+          ],
+          [
+            "s",
+            [
+              26,
+              "x"
+            ],
+            126
+          ],
+          [
+            "s",
+            [
+              27,
+              "x"
+            ],
+            127
+          ],
+          [
+            "s",
+            [
+              28,
+              "x"
+            ],
+            128
+          ],
+          [
+            "s",
+            [
+              29,
+              "x"
+            ],
+            129
+          ],
+          [
+            "s",
+            [
+              30,
+              "x"
+            ],
+            130
+          ],
+          [
+            "s",
+            [
+              31,
+              "x"
+            ],
+            131
+          ],
+          [
+            "s",
+            [
+              32,
+              "x"
+            ],
+            132
+          ],
+          [
+            "s",
+            [
+              33,
+              "x"
+            ],
+            133
+          ],
+          [
+            "s",
+            [
+              34,
+              "x"
+            ],
+            134
+          ],
+          [
+            "s",
+            [
+              35,
+              "x"
+            ],
+            135
+          ],
+          [
+            "s",
+            [
+              36,
+              "x"
+            ],
+            136
+          ],
+          [
+            "s",
+            [
+              37,
+              "x"
+            ],
+            137
+          ],
+          [
+            "s",
+            [
+              38,
+              "x"
+            ],
+            138
+          ],
+          [
+            "s",
+            [
+              39,
+              "x"
+            ],
+            139
+          ],
+          [
+            "s",
+            [
+              40,
+              "x"
+            ],
+            140
+          ],
+          [
+            "s",
+            [
+              41,
+              "x"
+            ],
+            141
+          ],
+          [
+            "s",
+            [
+              42,
+              "x"
+            ],
+            142
+          ],
+          [
+            "s",
+            [
+              43,
+              "x"
+            ],
+            143
+          ],
+          [
+            "s",
+            [
+              44,
+              "x"
+            ],
+            144
+          ],
+          [
+            "s",
+            [
+              45,
+              "x"
+            ],
+            145
+          ],
+          [
+            "s",
+            [
+              46,
+              "x"
+            ],
+            146
+          ],
+          [
+            "s",
+            [
+              47,
+              "x"
+            ],
+            147
+          ],
+          [
+            "s",
+            [
+              48,
+              "x"
+            ],
+            148
+          ],
+          [
+            "s",
+            [
+              49,
+              "x"
+            ],
+            149
+          ],
+          [
+            "s",
+            [
+              50,
+              "x"
+            ],
+            150
+          ],
+          [
+            "s",
+            [
+              51,
+              "x"
+            ],
+            151
+          ],
+          [
+            "s",
+            [
+              52,
+              "x"
+            ],
+            152
+          ],
+          [
+            "s",
+            [
+              53,
+              "x"
+            ],
+            153
+          ],
+          [
+            "s",
+            [
+              54,
+              "x"
+            ],
+            154
+          ],
+          [
+            "s",
+            [
+              55,
+              "x"
+            ],
+            155
+          ],
+          [
+            "s",
+            [
+              56,
+              "x"
+            ],
+            156
+          ],
+          [
+            "s",
+            [
+              57,
+              "x"
+            ],
+            157
+          ],
+          [
+            "s",
+            [
+              58,
+              "x"
+            ],
+            158
+          ],
+          [
+            "s",
+            [
+              59,
+              "x"
+            ],
+            159
+          ],
+          [
+            "s",
+            [
+              60,
+              "x"
+            ],
+            160
+          ],
+          [
+            "s",
+            [
+              61,
+              "x"
+            ],
+            161
+          ],
+          [
+            "s",
+            [
+              62,
+              "x"
+            ],
+            162
+          ],
+          [
+            "s",
+            [
+              63,
+              "x"
+            ],
+            163
+          ],
+          [
+            "s",
+            [
+              64,
+              "x"
+            ],
+            164
+          ],
+          [
+            "s",
+            [
+              65,
+              "x"
+            ],
+            165
+          ],
+          [
+            "s",
+            [
+              66,
+              "x"
+            ],
+            166
+          ],
+          [
+            "s",
+            [
+              67,
+              "x"
+            ],
+            167
+          ],
+          [
+            "s",
+            [
+              68,
+              "x"
+            ],
+            168
+          ],
+          [
+            "s",
+            [
+              69,
+              "x"
+            ],
+            169
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "sort-comparator-write",
+      "result": {
+        "base": [
+          {
+            "x": 3
+          },
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          }
+        ],
+        "value": [
+          {
+            "x": 1
+          },
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              1,
+              2,
+              0
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "sort-comparator-structural",
+      "result": {
+        "base": [
+          3,
+          1,
+          2
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          9
+        ],
+        "ops": [
+          [
+            "m",
+            [],
+            [
+              1,
+              2,
+              0
+            ]
+          ],
+          [
+            "p",
+            [],
+            3,
+            0,
+            [
+              9
+            ]
+          ]
+        ],
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "descriptors",
+      "result": {
+        "descriptor": {
+          "configurable": true,
+          "enumerable": true,
+          "writable": true
+        },
+        "identity": true,
+        "prototype": true,
+        "extensible": true,
+        "hasA": true,
+        "hasToString": false,
+        "keys": [
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "array-descriptors",
+      "result": {
+        "length": {
+          "value": 2,
+          "writable": true,
+          "enumerable": false,
+          "configurable": false
+        },
+        "item": {
+          "value": 1,
+          "writable": true,
+          "enumerable": true,
+          "configurable": true
+        },
+        "keys": [
+          "0",
+          "1",
+          "length"
+        ],
+        "array": true,
+        "prototype": true
+      }
+    },
+    {
+      "name": "change-settled-state",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot use a settled overlay"
+      }
+    },
+    {
+      "name": "change-double-prepare",
+      "error": {
+        "name": "Error",
+        "message": "Change has already been settled"
+      }
+    },
+    {
+      "name": "held-after-prepare",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot use a settled overlay"
+      }
+    },
+    {
+      "name": "held-then-after-prepare",
+      "result": {}
+    },
+    {
+      "name": "prepared-abort-adopt",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change has been aborted"
+      }
+    },
+    {
+      "name": "change-abort-prepared-adopt",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change has been aborted"
+      }
+    },
+    {
+      "name": "adopt-double",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change has already been used"
+      }
+    },
+    {
+      "name": "adopt-foreign",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change belongs to a different tracker"
+      }
+    },
+    {
+      "name": "adopt-fake",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change belongs to a different tracker"
+      }
+    },
+    {
+      "name": "competing-prepared-stale",
+      "error": {
+        "name": "Error",
+        "message": "Prepared change is stale"
+      }
+    },
+    {
+      "name": "competing-open-stale",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot use a settled overlay"
+      }
+    },
+    {
+      "name": "replace",
+      "result": {
+        "same": true,
+        "value": {
+          "a": 2
+        },
+        "ops": [
+          [
+            "r",
+            {
+              "a": 2
+            }
+          ]
+        ],
+        "revision": 1,
+        "baseRevision": 0
+      }
+    },
+    {
+      "name": "replace-equal",
+      "result": {
+        "ops": [],
+        "same": true
+      }
+    },
+    {
+      "name": "symbol-write",
+      "error": {
+        "name": "TypeError",
+        "message": "Symbol writes are not supported"
+      }
+    },
+    {
+      "name": "define-property",
+      "error": {
+        "name": "TypeError",
+        "message": "Defining overlay properties is not supported"
+      }
+    },
+    {
+      "name": "prevent-extensions",
+      "error": {
+        "name": "TypeError",
+        "message": "Overlays cannot be made non-extensible"
+      }
+    },
+    {
+      "name": "set-prototype",
+      "error": {
+        "name": "TypeError",
+        "message": "Changing an overlay prototype is not supported"
+      }
+    },
+    {
+      "name": "array-hole",
+      "error": {
+        "name": "TypeError",
+        "message": "Overlay arrays cannot contain holes"
+      }
+    },
+    {
+      "name": "array-delete",
+      "error": {
+        "name": "TypeError",
+        "message": "Overlay arrays cannot contain holes"
+      }
+    },
+    {
+      "name": "array-extra-key",
+      "error": {
+        "name": "TypeError",
+        "message": "Only array indices and length can be written"
+      }
+    },
+    {
+      "name": "array-invalid-length",
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid array length"
+      }
+    },
+    {
+      "name": "array-undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Value contains a non-JSON undefined; expected strict JSON"
+      }
+    },
+    {
+      "name": "placement-cycle",
+      "error": {
+        "name": "TypeError",
+        "message": "Value contains cycles and is not strict JSON"
+      }
+    },
+    {
+      "name": "placement-map",
+      "error": {
+        "name": "TypeError",
+        "message": "Value must contain strict JSON plain objects or arrays"
+      }
+    },
+    {
+      "name": "placement-date",
+      "error": {
+        "name": "TypeError",
+        "message": "Value must contain strict JSON plain objects or arrays"
+      }
+    },
+    {
+      "name": "placement-descriptor",
+      "error": {
+        "name": "TypeError",
+        "message": "Value must contain strict JSON enumerable data properties"
+      }
+    },
+    {
+      "name": "placement-failure-rollback",
+      "result": {
+        "error": {
+          "name": "TypeError",
+          "message": "Value must contain strict JSON plain objects or arrays"
+        },
+        "ops": [],
+        "value": {
+          "a": [
+            1
+          ]
+        }
+      }
+    }
+  ]
+}
