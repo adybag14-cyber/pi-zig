@@ -1,0 +1,40 @@
+{
+  "implementation_commit": "f157fa89d30aaee8b27846f9c773dbdb62c95892",
+  "release_safe_snapshot_commit": "48b4080",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Ordinary _runInputHandlers, _tryExecuteExtensionCommand and _expandSkillCommand; live runner error reporting; engine-only lexical prompt expansion entry",
+  "source_cases": 35,
+  "original_factory_instances": 35,
+  "debug": {
+    "tests": 11,
+    "status": "passed",
+    "source_files": 4761
+  },
+  "release_safe": {
+    "tests": 11,
+    "status": "passed",
+    "source_files": 4762
+  },
+  "source_count_difference": "Separate constructor hosted compile repair and retained negative log; helper implementation unchanged",
+  "compiler_files": 19546,
+  "source_drift": 0,
+  "compiler_drift": 0,
+  "committed_blobs_verified": 4762,
+  "committed_byte_drift": 0,
+  "original_source_posthash": {
+    "source_files": 1945,
+    "runtime_files": 31064,
+    "node_distribution_files": 1774,
+    "drift": 0
+  },
+  "caller_skill_file_sha256": "0C1D85646B99E17B036CED8E7D715FBE1406B0BDA934CAE914826BF02E508C95",
+  "preserved_negative": "First Debug32 comparator differed only in V8/QuickJS built-in null-property TypeError prose; observer records TypeError category, preserves original thrown-object identity and exact application messages",
+  "test_timeout_seconds": 120,
+  "host_await_timeout_ms": 10000,
+  "runtime_outer_seconds": 300,
+  "compile_only_outer_seconds": 1320,
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "hosted": "pending"
+}
