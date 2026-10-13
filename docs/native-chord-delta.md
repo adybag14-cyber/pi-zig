@@ -37,3 +37,16 @@ Both runs exercised `test-native-chord-delta-diff-source` and `test-native-chord
 The separate candidate wrapper imports the unchanged diff, tracker and structural-plan suites and emits the actual compiler-selected test inventory. The `native-chord-delta-candidate.yml` workflow runs on pushes to the single owned candidate branch and supports manual dispatch with an exact reviewed SHA. The scoped push provides first-run registration without merging private Chord code; GitHub requires manual workflows on the default branch before initial dispatch. It runs Windows, Linux and macOS in Debug and ReleaseSafe, freezes source and the complete compiler distribution, verifies original positive/negative inventories and fixture hashes, separates cold compilation from the unchanged 120-second test / 300-second runtime guards, checks every named compiled test executed, and verifies hashes and inventories afterward. Its final job requires all six platform/mode results. Hosted qualification is separate from the local results above.
 
 To integrate, retain the engine cache field and cleanup from `6a76339`, use the actual `track`/`diffRevisions` functions from the native Cell/Derived implementations, and qualify the complete Chord lifecycle and listener graph. The candidate does not certify complete Pi parity, a release, public Chord activation, physical-device behavior, or a deployment.
+
+## Hosted allocation-failure correction
+
+The first candidate run38414917806 passed five platform/mode jobs. Linux Debug
+crashed in the whole tracker allocation sweep when GC inspected array storage
+after an induced failure during optional aggregate initialization. Commit
+b7ac507c736668842174bcf2c270d1699a79c6ac completes every fallible tree
+initialization before publishing the optional payload. A targeted regression
+fails both initial tree allocations, checks that array storage stays absent,
+and runs GC. The corrected local Debug gate passed10/10; the full candidate
+now requires eleven named tests plus its original anonymous declaration test.
+All original108diff/60tracker/23negative cases and the exhaustive sweep remain.
+Corrected hosted qualification is pending.
