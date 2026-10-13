@@ -1,0 +1,48 @@
+const deltaDiffCases=[];
+function diffCase(name,before,after,check,expectedError){try{const ops=api.diffRevisions(before,after);if(check)check(ops);deltaDiffCases.push({name,ops})}catch(error){if(expectedError!==undefined&&error!==expectedError)throw Error('original exception identity changed');deltaDiffCases.push({name,error:{name:error.name,message:error.message}})}}
+diffCase('same-root',{},{});
+diffCase('root-replace',1,{a:2});
+diffCase('root-string','abc','abcd');
+diffCase('object-order',{a:1,b:2},{b:3,c:4});
+diffCase('nested-delete',{a:{b:2,c:3}},{a:{c:3}});
+diffCase('append',{s:'abc'},{s:'abcdef'});
+diffCase('overlap',{s:'abcdef'},{s:'defghi'});
+diffCase('truncate-overlap',{s:'abcdef'},{s:'def'});
+diffCase('no-overlap',{s:'abc'},{s:'xyz'});
+diffCase('empty-string',{s:'abc'},{s:''});
+diffCase('surrogate-overlap',{s:'a\ud800\u0000z'},{s:'\ud800\u0000zz'});
+diffCase('split-pair',{s:'abc\ud83d\ude00'},{s:'\ude00x'});
+diffCase('bounded-repeat',{s:'a'.repeat(300)+'z'},{s:'a'.repeat(299)+'x'});
+diffCase('empty-array',[],[1,2]);
+diffCase('array-remove',[1,2,3],[]);
+diffCase('array-middle',[1,2,3],[1,9,3]);
+diffCase('array-insert',[1,2,3],[1,8,9,2,3]);
+diffCase('array-delete',[1,2,3,4],[1,4]);
+diffCase('array-permute',[1,2,3],[3,1,2]);
+diffCase('array-duplicate-permute',[1,1,2,2],[2,1,2,1]);
+diffCase('array-noidentity',[{a:1},{a:2}],[{a:3},{a:4}]);
+diffCase('array-deep-equal',[{a:[1,2]},{b:2}],[{a:[1,2]},{b:3}]);
+{const a={x:1},b={x:2},c={x:3};diffCase('identity-permute',[a,b,c],[c,a,b],ops=>{if(ops[0][0]!=='m')throw Error('identity permutation')})}
+{const shared={x:1};diffCase('semantic-object',[{shared,a:1},{shared,a:2}],[{shared,a:3},{shared,a:4}])}
+{const shared={x:1};diffCase('semantic-array',[[shared,1],[shared,2]],[[shared,3],[shared,4]])}
+{const a={x:1},b={x:2},c={x:3};diffCase('identity-subsequence',[a,b,c],[a,c])}
+{const a={x:1},b={x:2},c={x:3};diffCase('identity-anchors',[a,b,c,0],[9,b,8,c,7])}
+diffCase('reserved-proto',JSON.parse('{"__proto__":{"a":1},"x":2}'),JSON.parse('{"__proto__":{"a":2},"x":2}'));
+diffCase('reserved-constructor',{constructor:1,x:2},{constructor:2,x:2});
+diffCase('reserved-nested',{a:{prototype:1}},{a:{prototype:2}});
+diffCase('reserved-equal',{constructor:1},{constructor:1});
+diffCase('integer-keys',{'10':1,'2':2,a:3},{'1':9,'10':2,a:3});
+{const child={a:1};diffCase('replacement-payload-identity',{old:1},{child},ops=>{if(ops[0][2]!==child)throw Error('payload detached')})}
+{const child={a:1};diffCase('splice-payload-identity',[],[child],ops=>{if(ops[0][4][0]!==child)throw Error('splice payload detached')})}
+{const a={},b={};for(let i=0;i<4097;i++)b['k'+i]=i;diffCase('operation-overflow',a,b)}
+{const a={},b={};for(let i=0;i<1000;i++){a['k'+i]='a'.repeat(70);b['k'+i]='b'.repeat(70)}diffCase('cost-fallback',a,b)}
+diffCase('large-anchor-greedy',Array(500).fill(1).concat([2,3]),[9].concat(Array(500).fill(1),[3,8]));
+diffCase('semantic-cell-cap',Array.from({length:257},(_,i)=>({a:i})),Array.from({length:257},(_,i)=>({b:i})));
+{const thrown={name:'OriginalTrap',message:'owned'};diffCase('get-trap',{get a(){throw thrown}},{a:2},undefined,thrown)}
+{const thrown={name:'OwnKeysTrap',message:'keys'};diffCase('ownkeys-trap',new Proxy({a:1},{ownKeys(){throw thrown}}),{a:2},undefined,thrown)}
+diffCase('proxy-array',new Proxy([1,2,3],{}),new Proxy([3,1,2],{}));
+diffCase('nested-proxy-array',new Proxy(new Proxy([1,2,3],{}),{}),[1,9,3]);
+diffCase('function-replace',function left(){},function right(){});
+diffCase('proxy-array-read-error',new Proxy([1,2],{get(t,k,r){if(k==='0')throw {name:'ProxyArrayRead',message:'index'};return Reflect.get(t,k,r)}}),[2,1]);
+{let seed=0x12345678;const random=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return seed>>>0};const shared=Array.from({length:6},(_,i)=>({id:i}));const pool=[null,true,false,0,1,2,3,'a','ab','b',...shared];for(let caseIndex=0;caseIndex<64;caseIndex++){const before=Array.from({length:random()%9},()=>pool[random()%pool.length]);let after;if(caseIndex%3===0){after=before.slice();if(after.length)after.splice(random()%after.length,random()%3,pool[random()%pool.length]);if(caseIndex%2===0)after.reverse()}else after=Array.from({length:random()%9},()=>{const value=pool[random()%pool.length];return typeof value==='object'&&value!==null&&random()%2===0?{id:value.id}:value});diffCase('seeded-array-'+caseIndex,before,after)}}
+globalThis.deltaDiffCases=deltaDiffCases;
