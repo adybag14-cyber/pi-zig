@@ -1,0 +1,16 @@
+{
+  "name": "chord-full-links-original-e622-capture-raw-schema-negative-preserved-20261013",
+  "pid": 59220,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordFullLinks-e622-20261013.mjs",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-13T21:01:40.0627729Z",
+  "launched_utc": "2026-10-13T21:01:40.0580937+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-13T21:01:42.2725812+00:00"
+}

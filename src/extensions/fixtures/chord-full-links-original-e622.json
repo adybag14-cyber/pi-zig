@@ -1,0 +1,310 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "cases": [
+    {
+      "name": "actual client server typed calls state ops root stamping and complete disposal",
+      "live": {
+        "rejected": {
+          "error": {
+            "name": "ChordError",
+            "code": "invalid",
+            "message": "invalid/args: link.counter\u0000{}\u0000p:{\"user\":\"alice\"}.add args: /extra schema is false; / must not have additional properties",
+            "reason": "args"
+          }
+        },
+        "initial": "loading",
+        "status": "live",
+        "shape": {
+          "kind": "active",
+          "members": [
+            "count",
+            "add"
+          ],
+          "contract": "f312948e4a8205fe",
+          "epoch": 1
+        },
+        "result": 3,
+        "value": {
+          "n": 3
+        },
+        "events": [
+          {
+            "type": "snap"
+          },
+          {
+            "type": "reset",
+            "value": {
+              "n": 1
+            }
+          },
+          {
+            "type": "ops",
+            "ops": [
+              [
+                "s",
+                [
+                  "n"
+                ],
+                3
+              ]
+            ],
+            "value": {
+              "n": 3
+            }
+          }
+        ],
+        "values": [
+          null,
+          {
+            "n": 1
+          },
+          {
+            "n": 3
+          }
+        ],
+        "sizes": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "log": [
+          [
+            "call",
+            {
+              "n": 2
+            },
+            {
+              "user": "alice"
+            },
+            {
+              "host": true
+            },
+            1,
+            "server",
+            false
+          ]
+        ]
+      },
+      "final": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "errors": []
+    },
+    {
+      "name": "actual upstream replacement preserves remote identity and resets subscribed feed",
+      "detached": {
+        "status": "live",
+        "value": {
+          "n": 3
+        },
+        "connections": [
+          0,
+          1
+        ]
+      },
+      "reconnected": {
+        "status": "live",
+        "value": {
+          "n": 4
+        },
+        "result": 4,
+        "values": [
+          null,
+          {
+            "n": 1
+          },
+          {
+            "n": 3
+          },
+          {
+            "n": 3
+          },
+          {
+            "n": 4
+          }
+        ],
+        "remoteCount": 1,
+        "log": [
+          [
+            "call",
+            {
+              "n": 2
+            },
+            {
+              "user": "alice"
+            },
+            {
+              "host": true
+            },
+            1,
+            "server",
+            false
+          ],
+          [
+            "call",
+            {
+              "n": 1
+            },
+            {
+              "user": "alice"
+            },
+            {
+              "host": true
+            },
+            1,
+            "server",
+            false
+          ]
+        ]
+      },
+      "errors": []
+    },
+    {
+      "name": "actual latest already-closed connection guards never retain a route",
+      "initial": {
+        "serverConnections": 0,
+        "clientConnections": 1,
+        "upstreamOpen": true,
+        "closed": [
+          true,
+          false
+        ]
+      },
+      "errors": []
+    },
+    {
+      "name": "actual latest constructor upstream preserves closed guard",
+      "initial": {
+        "connections": 1,
+        "upstreamOpen": true
+      },
+      "errors": []
+    },
+    {
+      "name": "actual routing refuses unavailable destination and local token crossing",
+      "failure": {
+        "error": {
+          "name": "ChordError",
+          "code": "unavailable",
+          "message": "unavailable: no route to missing"
+        }
+      },
+      "status": "gone",
+      "invalid": {
+        "name": "ChordError",
+        "code": "invalid",
+        "message": "invalid/local: local.owner is local and cannot be reached at missing",
+        "reason": "local"
+      },
+      "remotes": 0
+    },
+    {
+      "name": "actual principal invalidation closes stamped connection and matching record",
+      "invalidated": {
+        "status": "loading",
+        "serverConnections": 0,
+        "clientConnections": 0,
+        "records": 0
+      },
+      "errors": []
+    },
+    {
+      "name": "actual restamp keeps connection and fences disposed old principal hold",
+      "status": "gone",
+      "result": 2,
+      "log": [
+        [
+          "call",
+          {
+            "n": 1
+          },
+          {
+            "user": "bob"
+          },
+          {
+            "host": true
+          },
+          1,
+          "server",
+          false
+        ]
+      ],
+      "connections": 1,
+      "principals": [
+        {
+          "user": "bob"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "name": "actual three-host relay authorizes twice forwards state calls roots and tears down",
+      "live": {
+        "status": "live",
+        "result": 5,
+        "value": {
+          "n": 5
+        },
+        "values": [
+          null,
+          {
+            "n": 1
+          },
+          {
+            "n": 5
+          }
+        ],
+        "authorization": [
+          [
+            {
+              "user": "alice"
+            },
+            "leaf"
+          ],
+          [
+            "resolve",
+            "leaf"
+          ],
+          [
+            {
+              "user": "alice"
+            },
+            "leaf"
+          ]
+        ],
+        "log": [
+          [
+            "call",
+            {
+              "n": 4
+            },
+            {
+              "user": "alice"
+            },
+            {
+              "host": true
+            },
+            1,
+            "root",
+            false
+          ]
+        ],
+        "relaySizes": [
+          1,
+          1
+        ]
+      },
+      "final": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "errors": []
+    }
+  ]
+}

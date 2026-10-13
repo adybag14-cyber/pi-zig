@@ -1,0 +1,10 @@
+import { createHost } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/host.ts';
+import { remote,local,method } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/contract.ts';
+import { memoryLinkPair } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/link.ts';
+import { Cell } from 'file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/cell.ts';
+import {readFileSync,writeFileSync} from 'node:fs';
+const input=readFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-full-links-original-e622.input.txt','utf8');
+await new Function('api','return(async()=>{'+input+'})()')({createHost,remote,local,method,memoryLinkPair,Cell});
+const cases=globalThis.chordFullLinksCases;
+writeFileSync('C:/Users/adyba/pi-zig-update-evidence-20261003/chord-full-links-original-e622-20261013.json',JSON.stringify({source:'e6220e1316f86af818a0ccbfe1c09d7e918b41cf',cases},null,2)+'\n');
+console.log(JSON.stringify({cases:cases.length,negative:cases.filter(row=>JSON.stringify(row).includes('"error":')||Object.hasOwn(row,'invalid')).length}));

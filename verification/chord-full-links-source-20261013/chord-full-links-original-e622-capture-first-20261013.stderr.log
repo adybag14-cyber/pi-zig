@@ -1,0 +1,16 @@
+file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/cell.ts:75
+		this.fanout = new Fanout(options.report);
+		                                 ^
+
+TypeError: Cannot read properties of undefined (reading 'report')
+    at new Source (file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/cell.ts:75:36)
+    at new Cell (file:///C:/Users/adyba/pi-sdk-loadout-source-e6220e1-20261013/packages/chord/src/cell.ts:136:3)
+    at serve (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/Capture-ChordFullLinks-e622-20261013.mjs:7:7), <anonymous>:6:38)
+    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/Capture-ChordFullLinks-e622-20261013.mjs:7:7), <anonymous>:9:208)
+    at eval (eval at <anonymous> (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/Capture-ChordFullLinks-e622-20261013.mjs:7:7), <anonymous>:33:3)
+    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/Capture-ChordFullLinks-e622-20261013.mjs:7:59
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0
