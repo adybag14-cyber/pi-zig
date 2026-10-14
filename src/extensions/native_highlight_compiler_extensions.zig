@@ -8,6 +8,24 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
 pub const Kind = enum { match, begin_keywords, illegal, relevance };
 
+pub fn create(engine: *em.Engine, kind: Kind) !c.JSValue {
+    const Adapter = struct {
+        fn invoke(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+            var numeric: i32 = 0;
+            if (c.JS_ToInt32(host.context, &numeric, roots[0]) < 0) return js.capture(host);
+            try apply(host, @enumFromInt(numeric), if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
+            return c.pi_js_undefined();
+        }
+    };
+    const name: [*:0]const u8 = switch (kind) {
+        .match => "compileMatch",
+        .begin_keywords => "beginKeywords",
+        .illegal => "compileIllegal",
+        .relevance => "compileRelevance",
+    };
+    return ordinary.create(engine, name, 2, Adapter.invoke, &.{c.JS_NewInt32(engine.context, @intFromEnum(kind))});
+}
+
 fn remove(engine: *em.Engine, value: c.JSValue, name: [*:0]const u8) !void {
     const atom = c.JS_NewAtom(engine.context, name);
     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
