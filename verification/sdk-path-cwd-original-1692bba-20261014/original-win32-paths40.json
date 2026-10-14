@@ -1,0 +1,434 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "a8c7f1080c4fac186f5939a788503dfc5981212cd87310a358645684b98d85af",
+  "platform": "win32",
+  "arch": "x64",
+  "cases": 40,
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\hostedtoolcache\\windows\\node\\24.14.0\\x64\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///D:/a/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26352,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 1842,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4830,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26352,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 1842,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4830,
+      "drift": 0
+    }
+  ],
+  "scope": "Original unchanged utils/paths.ts and pinned Node24.14.0 actual node:path; caller-owned process.cwd override restored in finally, no process.chdir or filesystem mutation, no Source body rewrite or TypeError normalization",
+  "rows": [
+    {
+      "name": "posix-resolve-empty",
+      "value": "/fixture/base",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-resolve-relative",
+      "value": "/fixture/base/child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-resolve-two-relative",
+      "value": "/fixture/base/two",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-resolve-absolute",
+      "value": "/owned/file",
+      "log": []
+    },
+    {
+      "name": "posix-resolve-absolute-tail",
+      "value": "/owned/file/child",
+      "log": []
+    },
+    {
+      "name": "posix-resolve-relative-absolute",
+      "value": "/owned/file",
+      "log": []
+    },
+    {
+      "name": "posix-resolve-empty-absolute",
+      "value": "/owned/file",
+      "log": []
+    },
+    {
+      "name": "posix-relative-equal",
+      "value": "",
+      "log": []
+    },
+    {
+      "name": "posix-relative-relative",
+      "value": "../two",
+      "log": [
+        {
+          "receiver": true
+        },
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-relative-absolute",
+      "value": "../next",
+      "log": []
+    },
+    {
+      "name": "posix-relative-mixed",
+      "value": "../../fixture/base/child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-namespace-absolute",
+      "value": "/owned/file",
+      "log": []
+    },
+    {
+      "name": "posix-throw-relative",
+      "value": null,
+      "identical": true,
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "posix-absolute-skips-throw",
+      "value": "/owned/file",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "posix-absolute-pair-skips-throw",
+      "value": "../next",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "posix-equal-skips-throw",
+      "value": "",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "win32-resolve-empty",
+      "value": "C:\\fixture\\base",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-resolve-relative",
+      "value": "C:\\fixture\\base\\child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-resolve-two-relative",
+      "value": "C:\\fixture\\base\\two",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-resolve-absolute",
+      "value": "C:\\owned\\file",
+      "log": []
+    },
+    {
+      "name": "win32-resolve-absolute-tail",
+      "value": "C:\\owned\\file\\child",
+      "log": []
+    },
+    {
+      "name": "win32-resolve-relative-absolute",
+      "value": "C:\\owned\\file",
+      "log": []
+    },
+    {
+      "name": "win32-resolve-empty-absolute",
+      "value": "C:\\owned\\file",
+      "log": []
+    },
+    {
+      "name": "win32-relative-equal",
+      "value": "",
+      "log": []
+    },
+    {
+      "name": "win32-relative-relative",
+      "value": "..\\two",
+      "log": [
+        {
+          "receiver": true
+        },
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-relative-absolute",
+      "value": "..\\next",
+      "log": []
+    },
+    {
+      "name": "win32-relative-mixed",
+      "value": "..\\..\\fixture\\base\\child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-namespace-absolute",
+      "value": "\\\\?\\C:\\owned\\file",
+      "log": []
+    },
+    {
+      "name": "win32-throw-relative",
+      "value": null,
+      "identical": true,
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "win32-absolute-skips-throw",
+      "value": "C:\\owned\\file",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "win32-absolute-pair-skips-throw",
+      "value": "..\\next",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "win32-equal-skips-throw",
+      "value": "",
+      "identical": false,
+      "log": []
+    },
+    {
+      "name": "utils-default-base",
+      "value": "C:\\fixture\\base\\child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "utils-explicit-relative-base",
+      "value": "C:\\fixture\\base\\relative\\child",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "utils-explicit-absolute-base",
+      "value": "C:\\fixture\\base\\child",
+      "log": []
+    },
+    {
+      "name": "utils-absolute-input",
+      "value": "C:\\fixture\\base\\owned",
+      "log": []
+    },
+    {
+      "name": "utils-cwd-relative-inside",
+      "value": "owned",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "utils-cwd-relative-outside",
+      "value": null,
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "utils-display-relative-inside",
+      "value": "owned",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    },
+    {
+      "name": "utils-display-relative-outside",
+      "value": "C:/outside/owned",
+      "log": [
+        {
+          "receiver": true
+        }
+      ]
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\verification\\sdk-renderers-posix-original-1692bba-20261014\\observe-original.mjs",
+      "sha256": "80dabdaffc67e61dc48a04877b27e306573f26503869a722a83c61f9e4b4e364"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\verification\\sdk-path-cwd-original-1692bba-20261014\\capture-paths.mjs",
+      "sha256": "016dcf4e5f0fdaf62520ef5352ad5f066d1efd18139dc13edae3b0b1b6efd934"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\packages\\coding-agent\\src\\utils\\paths.ts",
+      "sha256": "64c3ebef724fa21ed0042e127908b4323a5d2f1b8aaa91eee550442332fe8502"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\packages\\coding-agent\\src\\utils\\child-process.ts",
+      "sha256": "cd324f5b9a1abadd85ab5a331750d475c8bd51ec65cae091ad9b416245ec85d4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\index.js",
+      "sha256": "b8e01cb18ba87ee1b0e5eb2eb1ce6cbb25a2bdd229f9e08671f8a10ed7e3ad35"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\lib\\parse.js",
+      "sha256": "0a67601365a3ae413653c8c9d3c6bff2202861e1eb8b5d28bf46d4812a4465ea"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\lib\\util\\resolveCommand.js",
+      "sha256": "e525fe739aba01cf5eee6473df449cdda93df6266effa8eae0fcfb9a4e6c5de6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\which\\which.js",
+      "sha256": "76845e1fe7851267fb7ee72b18f2d916996d330150e31e48f4657a79e9b46b5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\isexe\\index.js",
+      "sha256": "7af7a68708317ab2b8743b44591d98ca6f5ca787e89e7c289154471fd2f67331"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\isexe\\windows.js",
+      "sha256": "b422b8fbb7815542dfbd1b3adaec5700249a1934c44a1d994654329c06fc1018"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\path-key\\index.js",
+      "sha256": "fdbafdc163f668fe325333d62387365c9b074e01253e32824a4dbf5cc552705d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\lib\\util\\escape.js",
+      "sha256": "5d61b2829e0e7912874e1e664146554d0cd02fd5524abf4ea59a879f0fc30675"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\lib\\util\\readShebang.js",
+      "sha256": "b05ba732e167fcf9a4fd67ebb4a5c28cca4712a36376c0b0f2e4e1d37e7f18d2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\shebang-command\\index.js",
+      "sha256": "d98c3aa373c72016e990a723e919af495423bc4ac1daa0736c5f45fac0418d7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\shebang-regex\\index.js",
+      "sha256": "e91e547bad596a389841fd7938bfcbd22af82f44a01f794e86878e4ff0274250"
+    },
+    {
+      "kind": "observed-module",
+      "path": "D:\\a\\pi-zig\\pi-zig\\.reference-source\\node_modules\\cross-spawn\\lib\\enoent.js",
+      "sha256": "0f9aab5c708991cf01d3fda557318c4600a46071138742ee8596244f7fd73ef5"
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "status": "genuine_latest_original_paths40_Windows_Linux_macOS_actual_double_captures_qualified",
+  "run_id": 38579832214,
+  "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/38579832214",
+  "head": "4f029f41bc7da88d095516784d212d4a1f7db2f7",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "input_sha256": "a8c7f1080c4fac186f5939a788503dfc5981212cd87310a358645684b98d85af",
+  "cases": 40,
+  "linux_macos_raw_rows_identical": true,
+  "source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "catalog_scope": "Pinned official439c5347 typed metadata; latest generated model catalog gate remains separate",
+  "captures": [
+    {
+      "artifact": "original-sdk-path-cwd-macos-latest-4f029f41bc7da88d095516784d212d4a1f7db2f7",
+      "platform": "darwin",
+      "arch": "arm64",
+      "cases": 40,
+      "source_files": 1955,
+      "source_matches_local_authority": 1955,
+      "dependency_files": 26275,
+      "node_tool_files": 4560,
+      "candidate_files": 4830,
+      "source_drift": 0,
+      "post_drift": 0,
+      "observed_modules_first": 16,
+      "observed_modules_second": 16,
+      "double_capture_identical": true,
+      "node_sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+      "first_capture_sha256": "A03BD2D97A227DDED2356C86757E53E110FCC30970A4C582839E6B1EF1C9948B",
+      "second_capture_sha256": "A03BD2D97A227DDED2356C86757E53E110FCC30970A4C582839E6B1EF1C9948B",
+      "owner_receipts": [
+        {
+          "path": "original-darwin-first.process.json",
+          "sha256": "7665C878913741DF39AE62E4BEAB6749DF8EEC1EB1B0CD9DE82063E9D68A2989",
+          "pid": 1730,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:43:03.9578012Z",
+          "completed_utc": "2026-10-14T15:43:12.6176+01:00"
+        },
+        {
+          "path": "original-darwin-second.process.json",
+          "sha256": "88E3BC7AF7A260F72E7940AF2B4F7360DBC6E743B1FA4917E1CB6EDBC4513F05",
+          "pid": 1841,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:43:25.02076Z",
+          "completed_utc": "2026-10-14T15:43:30.005449+01:00"
+        }
+      ],
+      "full_manifest_hashes": [
+        {
+          "kind": "source",
+          "count": 1955,
+          "artifact_file": "source-before.json",
+          "sha256": "1A41FDD02A0143B6244ED8C117C55F14CD42F426DAF224139DF41041CCCC89AC"
+        },
+        {
+          "kind": "dependencies",
+          "count": 26275,
+          "artifact_file": "dependencies-before.json",
+          "sha256": "B653F650C437638FA97C350C89902833A650D74614E1B74E4CC467B67B64770B"
+        },
+        {
+          "kind": "node-tools",
+          "count": 4560,
+          "artifact_file": "node-tools-before.json",
+          "sha256": "36CFF8EC57C8E83A47E103B984E0B7B53E053871B4F5FD0DFE89E5290D82CB7C"
+        },
+        {
+          "kind": "candidate",
+          "count": 4830,
+          "artifact_file": "candidate-before.json",
+          "sha256": "B1D97C5A246940F241A51CF69916AA11983AC5E092D93A8CE63AB10ADCB6D171"
+        }
+      ]
+    },
+    {
+      "artifact": "original-sdk-path-cwd-ubuntu-latest-4f029f41bc7da88d095516784d212d4a1f7db2f7",
+      "platform": "linux",
+      "arch": "x64",
+      "cases": 40,
+      "source_files": 1955,
+      "source_matches_local_authority": 1955,
+      "dependency_files": 26280,
+      "node_tool_files": 4560,
+      "candidate_files": 4830,
+      "source_drift": 0,
+      "post_drift": 0,
+      "observed_modules_first": 16,
+      "observed_modules_second": 16,
+      "double_capture_identical": true,
+      "node_sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+      "first_capture_sha256": "5C53734FC305A4812ADB3393454BC966BCEC7478FAE379867AC6125C72CE1228",
+      "second_capture_sha256": "5C53734FC305A4812ADB3393454BC966BCEC7478FAE379867AC6125C72CE1228",
+      "owner_receipts": [
+        {
+          "path": "original-linux-first.process.json",
+          "sha256": "4A155D06A2E2BC8501FF327E42FC52616D8475A27B8852389B60015AD3C1C1A3",
+          "pid": 2467,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:23:44.5853424Z",
+          "completed_utc": "2026-10-14T15:23:47.9473397+01:00"
+        },
+        {
+          "path": "original-linux-second.process.json",
+          "sha256": "0A44B8C8B3F7C0EE92470FDFABAD4113D579A1C57FCCBD1B441535130BEA89D1",
+          "pid": 2477,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:23:55.6153424Z",
+          "completed_utc": "2026-10-14T15:23:58.9491643+01:00"
+        }
+      ],
+      "full_manifest_hashes": [
+        {
+          "kind": "source",
+          "count": 1955,
+          "artifact_file": "source-before.json",
+          "sha256": "8EEB6F4944B04F7D10D966158AB329630125FC744B380E4DCF4CD62AEA9B1C1F"
+        },
+        {
+          "kind": "dependencies",
+          "count": 26280,
+          "artifact_file": "dependencies-before.json",
+          "sha256": "3EF7022DD9CA87CED00BB17DA8AADC5C8BBA2DA6A2C222C68A6AEBAE0789A100"
+        },
+        {
+          "kind": "node-tools",
+          "count": 4560,
+          "artifact_file": "node-tools-before.json",
+          "sha256": "1AA42F9A9B51A2CCD3E5ACD3D1DFC17D59EFC999DD19D3F47AC07A97C34A42D6"
+        },
+        {
+          "kind": "candidate",
+          "count": 4830,
+          "artifact_file": "candidate-before.json",
+          "sha256": "4C3463C50F0890A7D8CBFEB95A5F1A7315C89CB2560983AF4C1C7E9FA4F88990"
+        }
+      ]
+    },
+    {
+      "artifact": "original-sdk-path-cwd-windows-latest-4f029f41bc7da88d095516784d212d4a1f7db2f7",
+      "platform": "win32",
+      "arch": "x64",
+      "cases": 40,
+      "source_files": 1955,
+      "source_matches_local_authority": 1955,
+      "dependency_files": 26352,
+      "node_tool_files": 1842,
+      "candidate_files": 4830,
+      "source_drift": 0,
+      "post_drift": 0,
+      "observed_modules_first": 16,
+      "observed_modules_second": 16,
+      "double_capture_identical": true,
+      "node_sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "first_capture_sha256": "F6AFA4801D189741B6A7E657CAC9EC19A067F95680BA822DBC3A5AE2A6A8D345",
+      "second_capture_sha256": "F6AFA4801D189741B6A7E657CAC9EC19A067F95680BA822DBC3A5AE2A6A8D345",
+      "owner_receipts": [
+        {
+          "path": "original-win32-first.process.json",
+          "sha256": "97D1E24A4DF57A0D6F375B7F40E11B200EC6561BCEA7B8470495FC93DC3A47D0",
+          "pid": 7276,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:25:28.5702338Z",
+          "completed_utc": "2026-10-14T15:25:37.1288666+01:00"
+        },
+        {
+          "path": "original-win32-second.process.json",
+          "sha256": "E84A543FDE0BE6E5C4B74E2E861817A1FFBAF3C5092B7FE5391487D0E7703A24",
+          "pid": 5284,
+          "status": "passed",
+          "outer_seconds": 300,
+          "created_utc": "2026-10-14T14:25:53.0571326Z",
+          "completed_utc": "2026-10-14T15:26:01.6890578+01:00"
+        }
+      ],
+      "full_manifest_hashes": [
+        {
+          "kind": "source",
+          "count": 1955,
+          "artifact_file": "source-before.json",
+          "sha256": "39B4FA3F489295395F90E900D89E96CD01E791BD698E71595D7BA4A4DF6D7BB4"
+        },
+        {
+          "kind": "dependencies",
+          "count": 26352,
+          "artifact_file": "dependencies-before.json",
+          "sha256": "54699015E4E37F9671FA210E6D3CD5690C177462A0554ABF34A04BD9F08E5D50"
+        },
+        {
+          "kind": "node-tools",
+          "count": 1842,
+          "artifact_file": "node-tools-before.json",
+          "sha256": "E012A118DB5A822FE8C2A34AFB650AB1AA7A18D5BF85F3E4DE326D06D9F4557B"
+        },
+        {
+          "kind": "candidate",
+          "count": 4830,
+          "artifact_file": "candidate-before.json",
+          "sha256": "936496D2AE6EFC98C316F9D1DC97364B821646EBC772CFADCBA000E70FDBA117"
+        }
+      ]
+    }
+  ],
+  "native_qualification": "pending; exact Original40 exposes live process.cwd/ordering dependency for native read renderers",
+  "root_worktree_edits": 0,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T15:50:19.8614033+01:00",
+  "platforms": 3,
+  "original_builtin_rows0_through31_all_three_identical": true,
+  "Source_utils_rows32_through39_platform_specific": true
+}
