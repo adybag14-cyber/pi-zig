@@ -812,13 +812,25 @@ pub fn build(b: *std.Build) void {
     const chord_state_run = b.addRunArtifact(chord_state_tests);
     chord_state_run.has_side_effects = true;
     b.step("test-native-chord-replicated-state-source", "Diagnose actual Source16 replicated state GC and complete allocation baseline; failure sweep remains separately required").dependOn(&chord_state_run.step);
-    const chord_expanded_state_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_expanded_state_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 expanded replicated state"} });
+    const chord_expanded_state_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_expanded_state_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chordb45 expanded replicated state diagnostic compiled inventory", "native Chordb45 expanded replicated state actual Source28 ownership serialized independent repeated reentrant publication overflow rollback late rejection and reporting with GC", "native Chordb45 expanded replicated state measured complete Source28 host allocation baseline diagnostic only" } });
     linkQuickJs(b, chord_expanded_state_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_expanded_state_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("build-native-chord-expanded-state-source", "Compile actual expanded State28 Source diagnostic with genuine context and timers").dependOn(&chord_expanded_state_tests.step);
     const chord_expanded_state_run = b.addRunArtifact(chord_expanded_state_tests);
     chord_expanded_state_run.has_side_effects = true;
     b.step("test-native-chord-expanded-state-source", "Compare actual Source28 independent subscribers overflow reentrancy rollback and errors with GC and baseline").dependOn(&chord_expanded_state_run.step);
+    const chord_expanded_state_gpa_build = b.step("build-native-chord-expanded-state-gpa", "Compile diagnostic and all four complete unchanged Source28 host allocation partitions");
+    chord_expanded_state_gpa_build.dependOn(&chord_expanded_state_tests.step);
+    for (0..4) |partition| {
+        const state_gpa = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_expanded_state_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chordb45 expanded replicated state diagnostic compiled inventory", b.fmt("native Chordb45 expanded replicated state complete Source28 and GC teardown host allocation GPA partition {d}", .{partition}) } });
+        linkQuickJs(b, state_gpa.root_module, quickjs, sqlite_lib_dir);
+        linkSqlite(state_gpa.root_module, sqlite_lib_dir, sqlite_library);
+        chord_expanded_state_gpa_build.dependOn(&state_gpa.step);
+        b.step(b.fmt("build-native-chord-expanded-state-gpa-{d}", .{partition}), "Compile one complete contiguous State28 host allocation partition").dependOn(&state_gpa.step);
+        const state_gpa_run = b.addRunArtifact(state_gpa);
+        state_gpa_run.has_side_effects = true;
+        b.step(b.fmt("test-native-chord-expanded-state-gpa-{d}", .{partition}), "Run unchanged complete Source28 probe GC and teardown at every index in one contiguous partition").dependOn(&state_gpa_run.step);
+    }
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);
