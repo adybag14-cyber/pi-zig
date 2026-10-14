@@ -1,0 +1,21 @@
+{
+  "native_head": "fb7d0f9e499a975291148a815c9fc75b81791752",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "profile": "Windows x86_64 Debug",
+  "status": "diagnostic_passed",
+  "source_cases": 21,
+  "compiled_tests": 4,
+  "native_gc": "passed",
+  "host_allocation_baseline": 5318,
+  "all_host_failure_indices_qualified": false,
+  "c_malloc_exhaustive": false,
+  "source_inputs": 5470,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "full_post_drift": 0,
+  "owned_runtime_pid_absent": 70804,
+  "completed_utc": "2026-10-14T21:14:46.1092950Z",
+  "public_activation": false,
+  "full_v4_graph_qualified": false,
+  "full_pi_qualified": false
+}

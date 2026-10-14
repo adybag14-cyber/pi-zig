@@ -789,13 +789,22 @@ pub fn build(b: *std.Build) void {
     const chord_cells_v4_run = b.addRunArtifact(chord_cells_v4_tests);
     chord_cells_v4_run.has_side_effects = true;
     b.step("test-native-chord-cells-v4-source", "Replay actual b45 Cell Derived Source17 initialization hydration promises raw identity GC and all host allocation failures").dependOn(&chord_cells_v4_run.step);
-    const chord_shared_v4_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_shared_v4_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 shared graph"} });
+    const chord_shared_v4_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_shared_v4_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chordb45 shared graph diagnostic compiled inventory", "native Chordb45 shared graph actual Source21 host initializer identity remote binding state demand and release with GC", "native Chordb45 shared graph measured complete Source21 host allocation baseline diagnostic only" } });
     linkQuickJs(b, chord_shared_v4_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_shared_v4_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("build-native-chord-shared-v4-source", "Compile actual b45 shared graph Source21 first semantic diagnostic").dependOn(&chord_shared_v4_tests.step);
     const chord_shared_v4_run = b.addRunArtifact(chord_shared_v4_tests);
     chord_shared_v4_run.has_side_effects = true;
     b.step("test-native-chord-shared-v4-source", "Diagnose actual b45 full factory Source21 GC and measure host allocation baseline; full GPA remains separately required").dependOn(&chord_shared_v4_run.step);
+    for (0..4) |partition| {
+        const shared_gpa = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_shared_v4_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chordb45 shared graph diagnostic compiled inventory", b.fmt("native Chordb45 shared graph complete Source21 and GC teardown host allocation GPA partition {d}", .{partition}) } });
+        linkQuickJs(b, shared_gpa.root_module, quickjs, sqlite_lib_dir);
+        linkSqlite(shared_gpa.root_module, sqlite_lib_dir, sqlite_library);
+        b.step(b.fmt("build-native-chord-shared-v4-gpa-{d}", .{partition}), "Compile one complete contiguous Source21 host allocation failure partition").dependOn(&shared_gpa.step);
+        const shared_gpa_run = b.addRunArtifact(shared_gpa);
+        shared_gpa_run.has_side_effects = true;
+        b.step(b.fmt("test-native-chord-shared-v4-gpa-{d}", .{partition}), "Run unchanged full Source21 GC teardown and every index in one required allocation partition").dependOn(&shared_gpa_run.step);
+    }
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

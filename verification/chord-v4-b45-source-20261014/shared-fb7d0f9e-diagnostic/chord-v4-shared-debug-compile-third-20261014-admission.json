@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-14T21:12:18.2601277+00:00",
+  "free_bytes": 26197987328,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "source_inputs": 5470,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "normal_floor": true,
+  "sole8_exception_used": false,
+  "root_authority": "Root reviewed focusedshared21 C6D73125 exactfb7d0f9e full5470/1965/19546/vendor/control normal16/j1/1320 compileonly; Rootnojob; b45sourceimmutable; 2026-10-14",
+  "compile_seconds": 1320,
+  "runtime_authorized": false,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "public_activation": false
+}

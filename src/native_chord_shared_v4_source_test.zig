@@ -73,3 +73,53 @@ test "native Chordb45 shared graph measured complete Source21 host allocation ba
     try Probe.run(failing.allocator());
     std.debug.print("CHORD_V4_SHARED_HOST_BASELINE_ALLOCATIONS={d}\n", .{failing.alloc_index});
 }
+// The exact original caller, comparison, GC and teardown run at every index.
+// Four separate targets preserve the original test/outer deadlines while the
+// collector requires complete contiguous coverage and baseline agreement.
+fn allocationPartition(comptime partition: usize) !void {
+    var baseline: std.testing.FailingAllocator = .init(std.testing.allocator, .{});
+    try Probe.run(baseline.allocator());
+    try std.testing.expect(!baseline.has_induced_failure);
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    try std.testing.expect(total > 3);
+    if (@import("builtin").os.tag == .windows) try std.testing.expectEqual(@as(usize, 5318), total);
+    std.debug.print("CHORD_V4_SHARED_GPA_BASELINE_ALLOCATIONS={d}\n", .{total});
+    const start = total * partition / 4;
+    const end = total * (partition + 1) / 4;
+    var completed: usize = 0;
+    for (start..end) |index| {
+        var failing: std.testing.FailingAllocator = .init(std.testing.allocator, .{ .fail_index = index });
+        if (Probe.run(failing.allocator())) |_| {
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (!failing.has_induced_failure) return error.UnexpectedOutOfMemoryError;
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.print("V4 shared GPA partition{d} index{d}/{d} leaked allocated{d} freed{d}\n", .{ partition, index, total, failing.allocated_bytes, failing.freed_bytes });
+                    std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => {
+                std.debug.print("V4 shared GPA partition{d} index{d}/{d} unexpected {s}\n", .{ partition, index, total, @errorName(err) });
+                return err;
+            },
+        }
+        completed += 1;
+    }
+    std.debug.print("CHORD_V4_SHARED_GPA_PARTITION={{\"partition\":{d},\"start\":{d},\"end\":{d},\"baseline\":{d},\"completed\":{d},\"leaks\":0,\"unexpected_errors\":0}}\n", .{ partition, start, end, total, completed });
+}
+test "native Chordb45 shared graph complete Source21 and GC teardown host allocation GPA partition 0" {
+    try allocationPartition(0);
+}
+test "native Chordb45 shared graph complete Source21 and GC teardown host allocation GPA partition 1" {
+    try allocationPartition(1);
+}
+test "native Chordb45 shared graph complete Source21 and GC teardown host allocation GPA partition 2" {
+    try allocationPartition(2);
+}
+test "native Chordb45 shared graph complete Source21 and GC teardown host allocation GPA partition 3" {
+    try allocationPartition(3);
+}

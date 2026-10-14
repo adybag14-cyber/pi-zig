@@ -1,0 +1,55 @@
+{
+  "head": "fb7d0f9e499a975291148a815c9fc75b81791752",
+  "name": "chord-v4-shared-debug-compile-third-20261014",
+  "pid": 49100,
+  "created_utc": "2026-10-14T21:12:18.2745076Z",
+  "executable": "C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "command_line": "\"C:/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-windows-0.16.0/zig.exe\" build build-native-chord-shared-v4-source -Doptimize=Debug -j1 --summary all",
+  "argv": [
+    "build",
+    "build-native-chord-shared-v4-source",
+    "-Doptimize=Debug",
+    "-j1",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-chord-v4-full-graph-b45-20261014",
+  "status": "passed",
+  "deadline_seconds": 1320,
+  "jobs": 1,
+  "phase": "compile_only",
+  "runtime_authorized": false,
+  "compiler_peak_calibrated": false,
+  "exit_code": 0,
+  "elapsed_seconds": 14.4449377,
+  "root_peak_working_set_bytes": null,
+  "sampled_process_peak_bytes": [
+    {
+      "pid": 49100,
+      "observed_peak_bytes": 17514496
+    },
+    {
+      "pid": 71000,
+      "observed_peak_bytes": 20561920
+    },
+    {
+      "pid": 63656,
+      "observed_peak_bytes": 17399808
+    },
+    {
+      "pid": 70868,
+      "observed_peak_bytes": 17403904
+    },
+    {
+      "pid": 55896,
+      "observed_peak_bytes": 17481728
+    },
+    {
+      "pid": 62964,
+      "observed_peak_bytes": 836091904
+    }
+  ],
+  "peak_scope": "One-second sampled exact descendant ancestry RSS is a lower bound; root kernel peak separate; compiler not calibrated",
+  "completed_utc": "2026-10-14T21:12:33.2574020+00:00"
+}

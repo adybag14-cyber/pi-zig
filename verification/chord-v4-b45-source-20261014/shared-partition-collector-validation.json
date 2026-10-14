@@ -1,0 +1,107 @@
+{
+  "positive_passed": true,
+  "negative_passed": 14,
+  "negative_cases": [
+    {
+      "name": "missing partition",
+      "rejected": true,
+      "reason": "Complete shared Source21 GPA requires exactly four partition receipts",
+      "partition_markers": 3,
+      "baseline_markers": 4
+    },
+    {
+      "name": "extra duplicate partition",
+      "rejected": true,
+      "reason": "Complete shared Source21 GPA requires exactly four partition receipts",
+      "partition_markers": 5,
+      "baseline_markers": 4
+    },
+    {
+      "name": "duplicate partition id",
+      "rejected": true,
+      "reason": "Shared Source21 partition ranges contain gaps duplicates or baseline disagreement",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "range gap",
+      "rejected": true,
+      "reason": "Shared Source21 partition ranges contain gaps duplicates or baseline disagreement",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "range overlap",
+      "rejected": true,
+      "reason": "Shared Source21 partition ranges contain gaps duplicates or baseline disagreement",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "baseline mismatch",
+      "rejected": true,
+      "reason": "Shared Source21 partition ranges contain gaps duplicates or baseline disagreement",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "incomplete index count",
+      "rejected": true,
+      "reason": "Incomplete or failed shared Source21 allocation partition",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "leak",
+      "rejected": true,
+      "reason": "Incomplete or failed shared Source21 allocation partition",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "unexpected error",
+      "rejected": true,
+      "reason": "Incomplete or failed shared Source21 allocation partition",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "boolean numeric field",
+      "rejected": true,
+      "reason": "Invalid shared Source21 partition field",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "fractional numeric field",
+      "rejected": true,
+      "reason": "Invalid shared Source21 partition field",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "negative numeric field",
+      "rejected": true,
+      "reason": "Invalid shared Source21 partition field",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    },
+    {
+      "name": "missing baseline marker",
+      "rejected": true,
+      "reason": "Missing or conflicting shared Source21 baseline measurements",
+      "partition_markers": 4,
+      "baseline_markers": 3
+    },
+    {
+      "name": "wrong measured baseline",
+      "rejected": true,
+      "reason": "Missing or conflicting shared Source21 baseline measurements",
+      "partition_markers": 4,
+      "baseline_markers": 4
+    }
+  ],
+  "native_executed": false,
+  "original_probe_modified": false,
+  "completed_utc": "2026-10-14T21:19:03.6674646+00:00"
+}

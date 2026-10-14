@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-14T21:14:27.7639905+00:00",
+  "free_bytes": 26092945408,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "other_native_roots": 0,
+  "root_authority": "Root reviewed exactfb7 focusedruntimeThird2A116B1C all5470/1965/19546/vendor/control normal16/300/120/10 shared4Source21GC/measuredHOSTbaselineONLY; Rootnojob AIworkerrequestpeer; 2026-10-14",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}

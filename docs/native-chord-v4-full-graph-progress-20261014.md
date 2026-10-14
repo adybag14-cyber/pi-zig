@@ -102,6 +102,29 @@ sweep. A coordinated compile-only request precedes its diagnostic runtime;
 after the baseline, full failure sweep granularity must preserve every index
 exactly once and the original120-second test/300-second outer deadlines.
 
+The actual Windows Debug diagnostic at `fb7d0f9e` passed4/4 with the original
+Source21 body, GC/teardown, and measured5318 host allocations. Full5470/1965/
+19546 plus control checks had zero drift; owned runtime70804 was absent after
+completion. Its receipts are retained in shared-fb7d0f9e-diagnostic. This is
+functional and baseline evidence only; it does not establish a failure sweep.
+
+The proposed full sweep appends four tests running the identical Probe at
+every index, with separate build/run targets. Windows ranges are [0,1329),
+[1329,2659), [2659,3988), and [3988,5318). Each test measures its own full
+baseline and requires5318 on Windows, induced native allocation failure,
+exact OutOfMemory delivery, and allocated/freed-byte equality at every index.
+The original four-test diagnostic target retains an explicit original-test
+filter; each new partition target contains inventory, that partition, and the
+unchanged anonymous storage test (three tests). Each invocation retains
+300outer/120test/10host seconds. No production Probe or original caller changes.
+
+The collector requires all four ordered exact ranges, matching actual
+baselines, every completed index, no leaks or unexpected errors, and four
+baseline markers. Its control validation accepts the complete5318 fixture and
+rejects14 specifically formed negatives, with marker cardinalities and
+rejection reasons recorded. This is a source/control proposal awaiting Root
+review and a coordinated native compile/runtime grant.
+
 The authored connection/provider/relay, consumer linger, principal routing and
 reload hydration/init bodies now compose in the private diagnostic factory.
 Their first semantic compile and differential runtime may expose concrete
