@@ -63,7 +63,12 @@ foreach($taskFamily in $taskFamilies){
         if($taskFree -lt 2GB){throw 'Original Source2GiB admission rejected'}
         $taskFailure=$null
         $taskCaptureTail=if($Task -ne 'renderers'){@($taskCaptureScript,"$taskBase-output.json",$taskInput)}else{@($taskCaptureScript,$taskFamily,"$taskBase-output.json",$taskInput)}
-        $taskCaptureArgs=$(if($Task -eq 'inherit'){@('--expose-gc')}else{@()})+@('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri))+$taskCaptureTail
+        # Preserve an array for the singleton GC switch; scalar '+' concatenates
+        # all arguments into one invalid Node option before any Source executes.
+        [string[]]$taskCaptureArgs=@()
+        if($Task -eq 'inherit'){$taskCaptureArgs+=@('--expose-gc')}
+        $taskCaptureArgs+=@('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri))
+        $taskCaptureArgs+=$taskCaptureTail
         try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments $taskCaptureArgs -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
         $taskAfter=Verify-Original
         [ordered]@{before=$taskBefore;after=$taskAfter;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskBase-posthash.json" -Encoding utf8NoBOM
