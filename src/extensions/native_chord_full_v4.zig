@@ -87,6 +87,7 @@ fn createClasses(engine: *h.Engine) !Classes {
         try js.define(engine, api, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, arrow, name, 1, 1, 1, &capture)));
     }
     try js.define(engine, api, "inflateMessage", try @import("native_node_function.zig").create(engine, "inflateMessage", 1, inflateMessage, &.{}));
+    try @import("native_chord_accept_websockets.zig").install(engine, api, bindings);
     try h.field(&s, api, "PACK_THRESHOLD", c.JS_NewInt32(engine.context, @import("native_chord_packing_v4.zig").threshold));
     try h.field(&s, api, "PROTOCOL_VERSION", c.JS_NewInt32(engine.context, 4));
     try @import("native_chord_json.zig").install(engine, api);
