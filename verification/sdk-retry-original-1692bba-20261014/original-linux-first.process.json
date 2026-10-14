@@ -1,0 +1,24 @@
+{
+  "pid": 2712,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-1692bba-20261014/capture-retry.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-result/retry-first-output.json",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-1692bba-20261014/sdk-session-retry-1692.input.txt"
+  ],
+  "live_command_line": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-1692bba-20261014/capture-retry.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-result/retry-first-output.json /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-original-1692bba-20261014/sdk-session-retry-1692.input.txt",
+  "created_utc": "2026-10-14T12:33:09.0868303Z",
+  "launched_utc": "2026-10-14T12:33:09.0916054+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T12:33:14.5900781+00:00"
+}
