@@ -761,6 +761,13 @@ pub fn build(b: *std.Build) void {
     const chord_cluster_run = b.addRunArtifact(chord_cluster_tests);
     chord_cluster_run.has_side_effects = true;
     b.step("test-native-chord-cluster-source", "Replay original Source4 cross-host commit vote rollback retained root and late hello reconciliation").dependOn(&chord_cluster_run.step);
+    const chord_resource_await_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_resource_await_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native latest Chord1692 ResourceAwait"} });
+    linkQuickJs(b, chord_resource_await_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_resource_await_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-resource-await-source", "Compile actual ResourceImpl intrinsic-await Source4 and full allocation-failure probe").dependOn(&chord_resource_await_tests.step);
+    const chord_resource_await_run = b.addRunArtifact(chord_resource_await_tests);
+    chord_resource_await_run.has_side_effects = true;
+    b.step("test-native-chord-resource-await-source", "Replay actual latest Source4 Promise species own then abort cleanup rejection identity GC and every allocation failure").dependOn(&chord_resource_await_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

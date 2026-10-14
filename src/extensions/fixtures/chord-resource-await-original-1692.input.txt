@@ -1,0 +1,26 @@
+const {ResourceImpl}=api,cases=[];
+{
+ const order=[],value={owned:true},opened=Promise.resolve(value),closed=Promise.resolve(),events=[],r=new ResourceImpl('species',{open(){events.push('open');return opened},close(v){events.push(v===value?'close-owned':'close-wrong');return closed}},[]),descriptor=Object.getOwnPropertyDescriptor(Promise,Symbol.species);let reads=0;
+ Object.defineProperty(Promise,Symbol.species,{configurable:true,get(){reads++;throw Error('await must not consult species')}});
+ try{await r.open(new AbortController().signal,order);const live=r.value===value;await r.close(order);cases.push({name:'actual ResourceImpl await ignores Promise species for open and close',live,reads,events,state:r.state,order:order.length})}finally{Object.defineProperty(Promise,Symbol.species,descriptor)}
+}
+{
+ const order=[],value={owned:2},opened=Promise.resolve(value),closed=Promise.resolve();let reads=0;
+ for(const pending of [opened,closed])Object.defineProperty(pending,'then',{get(){reads++;throw Error('await must ignore native promise own then')}});
+ const r=new ResourceImpl('own-then',{open(){return opened},close(v){if(v!==value)throw Error('lost owned value');return closed}},[]);
+ await r.open(new AbortController().signal,order);await r.close(order);cases.push({name:'actual ResourceImpl await ignores native Promise own then',reads,state:r.state,order:order.length});
+}
+{
+ const order=[],value={owned:3},opened=Promise.resolve(value),closed=Promise.resolve(),descriptor=Object.getOwnPropertyDescriptor(Promise,Symbol.species),controller=new AbortController();let closes=0,reads=0;
+ const r=new ResourceImpl('aborted',{open(){return opened},close(v){if(v===value)closes++;return closed}},[]);controller.abort('stop');let failure;
+ Object.defineProperty(Promise,Symbol.species,{configurable:true,get(){reads++;throw Error('await must not consult species')}});
+ try{await r.open(controller.signal,order)}catch(error){failure={code:error.code,message:error.message}}finally{Object.defineProperty(Promise,Symbol.species,descriptor)}
+ cases.push({name:'actual aborted ResourceImpl await closes its produced value without species',closes,reads,failure,state:r.state,order:order.length});
+}
+{
+ const marker={failure:true},pending=Promise.reject(marker),descriptor=Object.getOwnPropertyDescriptor(Promise,Symbol.species),r=new ResourceImpl('rejected',{open(){return pending}},[]);let reads=0,original=false;
+ Object.defineProperty(Promise,Symbol.species,{configurable:true,get(){reads++;throw Error('await must not consult species')}});
+ try{await r.open(new AbortController().signal,[])}catch(error){original=error===marker}finally{Object.defineProperty(Promise,Symbol.species,descriptor)}
+ cases.push({name:'actual ResourceImpl rejected await keeps raw identity without species',original,reads,state:r.state});
+}
+globalThis.chordResourceAwaitCases=cases;

@@ -1,0 +1,25 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": 4,
+  "case_names": [
+    "actual ResourceImpl await ignores Promise species for open and close",
+    "actual ResourceImpl await ignores native Promise own then",
+    "actual aborted ResourceImpl await closes its produced value without species",
+    "actual ResourceImpl rejected await keeps raw identity without species"
+  ],
+  "caller": "chord-resource-await-original-1692.input.txt",
+  "caller_sha256": "7222ADEEA568120786DBBCAE3FDEB47E64A98A88C2CD277FBE962419D8B29785",
+  "oracle": "chord-resource-await-original-1692.json",
+  "oracle_sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6",
+  "source_body_replaced": false,
+  "actual_factory": "ResourceImpl from original object.ts",
+  "full_source_inputs": 34793,
+  "capture_attempts": [
+    "chord-resource-await-1692-second-20261014",
+    "chord-resource-await-1692-third-20261014"
+  ],
+  "candidate_freeze": "chord-resource-await-1692-double-candidate-post-20261014.json",
+  "native_source_differential": false,
+  "native_full_gpa": false,
+  "public_activation": false
+}

@@ -36,7 +36,7 @@ pub fn replay(engine: *em.Engine, comptime stem: []const u8, comptime global: []
     defer engine.freeValue(root);
     try js.define(engine, root, "chordOriginal", try engine.checked(em.c.JS_ParseJSON(engine.context, original.ptr, original.len, "chord-1692-original.json")));
     const result = engine.evalModule("const api=nativeLatestChordApi;await(async()=>{\n" ++ @embedFile("extensions/fixtures/" ++ stem ++ ".input.txt") ++ "\n})();const actual=" ++ global ++ ";if(actual.length!==chordOriginal.cases.length)throw Error('Source case count');for(let i=0;i<actual.length;i++)if(JSON.stringify(actual[i])!==JSON.stringify(chordOriginal.cases[i]))throw Error(JSON.stringify({case:i,actual:actual[i],expected:chordOriginal.cases[i]}));", "chord-1692-source.mjs") catch |err| {
-        std.debug.print("Latest actual Chord Source {s}: {s}\n", .{ stem, engine.last_error orelse "no diagnostic" });
+        if (engine.native_exception_diagnostics_suppressed == 0) std.debug.print("Latest actual Chord Source {s}: {s}\n", .{ stem, engine.last_error orelse "no diagnostic" });
         return err;
     };
     engine.freeValue(result);

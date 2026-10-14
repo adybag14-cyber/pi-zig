@@ -3,7 +3,7 @@ const std = @import("std");
 const js = @import("native_js_values.zig");
 const values = @import("native_values.zig");
 const durable = @import("native_durable.zig");
-const awaiting = @import("native_durable_await.zig");
+const host_values = @import("native_chord_host_values.zig");
 const errors = @import("native_chord_errors.zig");
 const Engine = js.Engine;
 const c = js.c;
@@ -63,10 +63,8 @@ fn optionalClose(engine: *Engine, receiver: c.JSValue, value: c.JSValue) !c.JSVa
     if (c.JS_IsNull(function) or c.JS_IsUndefined(function)) return c.pi_js_undefined();
     return js.call(engine, function, spec, &.{value});
 }
-fn chain(engine: *Engine, bindings: c.JSValue, work: c.JSValue, awaited: c.JSValue, stage: c_int) !c.JSValue {
-    var intrinsics: awaiting.Intrinsics = .{ .constructor = try js.get(engine, bindings, "promiseConstructor"), .resolve = try js.get(engine, bindings, "promiseResolve"), .then_function = try js.get(engine, bindings, "promiseThen") };
-    defer intrinsics.deinit(engine);
-    return awaiting.continueWith(resumeResource, engine, &intrinsics, work, awaited, stage);
+fn chain(engine: *Engine, _: c.JSValue, work: c.JSValue, awaited: c.JSValue, stage: c_int) !c.JSValue {
+    return host_values.wait(resumeResource, engine, work, awaited, stage);
 }
 fn job(engine: *Engine, receiver: c.JSValue, bindings: c.JSValue, signal: c.JSValue, order: c.JSValue) !c.JSValue {
     const work = try js.object(engine);
@@ -237,11 +235,6 @@ pub fn classes(engine: *Engine) !Classes {
     const bindings = try js.object(engine);
     errdefer engine.freeValue(bindings);
     try js.define(engine, bindings, "ChordError", try js.get(engine, result, "ChordError"));
-    var intrinsics = try awaiting.Intrinsics.init(engine);
-    defer intrinsics.deinit(engine);
-    try js.define(engine, bindings, "promiseConstructor", c.JS_DupValue(engine.context, intrinsics.constructor));
-    try js.define(engine, bindings, "promiseResolve", c.JS_DupValue(engine.context, intrinsics.resolve));
-    try js.define(engine, bindings, "promiseThen", c.JS_DupValue(engine.context, intrinsics.then_function));
     inline for (.{ "ResourceImpl", "ResourceFacade" }, 0..) |name, index| {
         var class_id: c.JSClassID = 0;
         _ = c.JS_NewClassID(engine.runtime, &class_id);

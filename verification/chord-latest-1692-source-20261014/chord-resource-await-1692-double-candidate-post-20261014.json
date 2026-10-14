@@ -1,0 +1,21 @@
+{
+  "candidate_count": 5215,
+  "candidate_drift": 0,
+  "candidate_inventory_drift": 0,
+  "double_captures": [
+    "second",
+    "third"
+  ],
+  "first_capture": "original34793+controls only",
+  "source_input_count": 34793,
+  "oracle_sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6",
+  "owned_pids": [
+    59296,
+    58488,
+    22800
+  ],
+  "owned_pids_remaining": 0,
+  "utc": "2026-10-14T15:23:23.6711522+00:00",
+  "native_execution": false,
+  "public_activation": false
+}

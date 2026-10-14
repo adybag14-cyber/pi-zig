@@ -1,0 +1,39 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "cases": [
+    {
+      "name": "actual ResourceImpl await ignores Promise species for open and close",
+      "live": true,
+      "reads": 0,
+      "events": [
+        "open",
+        "close-owned"
+      ],
+      "state": "closed",
+      "order": 0
+    },
+    {
+      "name": "actual ResourceImpl await ignores native Promise own then",
+      "reads": 0,
+      "state": "closed",
+      "order": 0
+    },
+    {
+      "name": "actual aborted ResourceImpl await closes its produced value without species",
+      "closes": 1,
+      "reads": 0,
+      "failure": {
+        "code": "aborted",
+        "message": "aborted: resource aborted opened after abort"
+      },
+      "state": "closed",
+      "order": 0
+    },
+    {
+      "name": "actual ResourceImpl rejected await keeps raw identity without species",
+      "original": true,
+      "reads": 0,
+      "state": "closed"
+    }
+  ]
+}
