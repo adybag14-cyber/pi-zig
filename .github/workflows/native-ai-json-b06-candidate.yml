@@ -1,0 +1,68 @@
+name: Private native AI JSON39 and raw HTTP qualification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-ai-json-b06-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  genuine-posix-reference:
+    if: github.ref == 'refs/heads/work/native-ai-json-b06-candidate-20261014'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: earendil-works/pi
+          ref: b06c1f2cf1dea6af8748ddeee18c23587d2cb7c6
+          path: reference-source
+          persist-credentials: false
+      - name: Capture actual unchanged b06 JSON39 with official Node24.14 Linux
+        shell: pwsh
+        timeout-minutes: 13
+        run: |
+          & ./tools/ci/observe_ai_json_posix.ps1 -SourceDir (Join-Path $PWD 'reference-source')
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-ai-json-b06-posix-reference-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-ai-json-b06-posix-reference/
+  native-profiles:
+    needs: genuine-posix-reference
+    if: github.ref == 'refs/heads/work/native-ai-json-b06-candidate-20261014'
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        mode: [Debug, ReleaseSafe]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Exact cc9053 product bodies, cold compile, selected metadata, Source39 and GPA
+        shell: pwsh
+        timeout-minutes: 32
+        run: |
+          & ./tools/ci/qualify_native_ai_json.ps1 -Mode '${{ matrix.mode }}' -ExpectedHead '${{ github.sha }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-ai-json-b06-${{ matrix.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: verification/native-ai-json-b06-candidate/
