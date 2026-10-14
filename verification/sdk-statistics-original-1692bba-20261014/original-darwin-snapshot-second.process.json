@@ -1,0 +1,24 @@
+{
+  "pid": 3216,
+  "executable": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node",
+  "executable_sha256": "20A18709F0154D668F1BD6F6EA8C2A7AE001447B4B2C339732F22E57A8767A55",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-1692bba-20261014/capture-statistics.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-result/statistics-second-output.json",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-1692bba-20261014/sdk-session-statistics-1692.input.txt"
+  ],
+  "live_command_line": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-1692bba-20261014/capture-statistics.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-result/statistics-second-output.json /Users/runner/work/pi-zig/pi-zig/verification/sdk-statistics-original-1692bba-20261014/sdk-session-statistics-1692.input.txt",
+  "created_utc": "2026-10-14T12:12:59.8836190Z",
+  "launched_utc": "2026-10-14T12:12:59.8831200+00:00",
+  "working_directory": "/Users/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T12:13:15.6012550+00:00"
+}
