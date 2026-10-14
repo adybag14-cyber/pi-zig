@@ -1,0 +1,639 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "c6a1add8bba22890e09438d8e9599f39b8bbad65a5319c95f54182a6ea1d8054",
+  "scope": "Actual unchanged original AgentSession.prototype._restoreToolsFromTranscript on caller-owned receivers; original current-system and settings-manager helper dependencies; this is method qualification, not complete factory qualification",
+  "cases": 22,
+  "rows": [
+    {
+      "scenario": "none",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "basic",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "add",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "alpha",
+          true
+        ],
+        [
+          "allowed",
+          "extension",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing",
+            "alpha",
+            "extension"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing",
+        "alpha",
+        "extension"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "remove",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "active",
+          [],
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": false
+    },
+    {
+      "scenario": "order",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "alpha",
+          true
+        ],
+        [
+          "active",
+          [
+            "missing",
+            "beta",
+            "alpha"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "missing",
+        "beta",
+        "alpha"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "duplicates",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "active",
+          [
+            "missing",
+            "beta"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "missing",
+        "beta"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "empty-names",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "plain-ignored",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "extension",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing",
+            "extension"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing",
+        "extension"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "star-exact",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "a*",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing",
+            "a*"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing",
+        "a*"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "allowlist",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "alpha",
+          true
+        ],
+        [
+          "allowed",
+          "blocked",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing",
+            "alpha",
+            "blocked"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "alpha"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "custom-iterator",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "iterator-close"
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "allowed",
+          "alpha",
+          true
+        ],
+        [
+          "active",
+          [
+            "missing",
+            "alpha"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "missing",
+        "alpha"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "null-modifiers",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "name": "TypeError",
+        "message": "entries is not iterable"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "iterator-throw",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "iterator-finally"
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "undefined-default",
+      "result": {
+        "type": "undefined"
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "clear-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "clear",
+          true
+        ]
+      ],
+      "pending": [
+        "old"
+      ],
+      "samePending": true
+    },
+    {
+      "scenario": "context-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "messages-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "map-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "filter-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "allowed-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ]
+      ],
+      "pending": [],
+      "samePending": true
+    },
+    {
+      "scenario": "active-error",
+      "result": {
+        "type": "undefined"
+      },
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        [
+          "context",
+          true
+        ],
+        [
+          "allowed",
+          "beta",
+          true
+        ],
+        [
+          "allowed",
+          "missing",
+          true
+        ],
+        [
+          "active",
+          [
+            "beta",
+            "missing"
+          ],
+          true
+        ]
+      ],
+      "pending": [
+        "beta",
+        "missing"
+      ],
+      "samePending": false
+    },
+    {
+      "scenario": "method-metadata",
+      "result": {
+        "name": "_restoreToolsFromTranscript",
+        "length": 0,
+        "prototype": false,
+        "async": false
+      },
+      "trace": [],
+      "pending": [
+        "old"
+      ],
+      "samePending": true
+    }
+  ]
+}

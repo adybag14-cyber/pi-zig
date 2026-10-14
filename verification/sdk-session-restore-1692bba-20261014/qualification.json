@@ -1,0 +1,88 @@
+{
+  "source_drift": 0,
+  "constructor_phase_regression_tests": 10,
+  "evidence": [
+    {
+      "path": "Run-RootSessionRestoreSource-20261014.ps1",
+      "sha256": "21359CED006DEE9A501B9601A37C54E5E1AF1ADEA4B2EBD6191133C0608D2640"
+    },
+    {
+      "path": "sdk-session-restore-1692-source-capture-20261014.mjs",
+      "sha256": "D71C256411E4ECB952023105AAC18638F6442D35A0F3F448848C2AC90B6FB7F0"
+    },
+    {
+      "path": "sdk-session-restore-source22-first-20261014.json",
+      "sha256": "A85AACDEC645DC186EEB48EAE5B81C11813C831AF002BA371F1B92579EB7D7C4"
+    },
+    {
+      "path": "sdk-session-restore-source22-first-20261014-posthash.json",
+      "sha256": "E3F22FBD17A0BF5A2A1E95649678DD086EEE6DE1099148E95D8EDFD423A27735"
+    },
+    {
+      "path": "sdk-session-restore-source22-first-20261014-output.json",
+      "sha256": "3CFA30B85144575AC5C78E10610C9B3AB95409E253405D89B9E7CC7F3BE4063A"
+    },
+    {
+      "path": "Run-RootSessionRestoreCompile-20261014.ps1",
+      "sha256": "8CF6B2B977C09E539C795FA6803A5DC4EA845EEBE61BAE482B2A9F1FDA0E1787"
+    },
+    {
+      "path": "Run-RootSessionRestoreRuntime-20261014.ps1",
+      "sha256": "CC095D18181888B1E9EFBC5927BEDBC9DA70A2280DF3C606935110A62C512CF6"
+    },
+    {
+      "path": "root-sdk-session-restore-compile-debug-first-20261014.json",
+      "sha256": "9BAEFFAF12590D60E449678C210EE51784F578DD7397185091406D223C4120CB"
+    },
+    {
+      "path": "root-sdk-session-restore-compile-debug-first-20261014-posthash.json",
+      "sha256": "AE5FA967CA929E089AE71A662BDF14BFE37751913871E5E4AF8D43CF5B3D1B78"
+    },
+    {
+      "path": "root-sdk-session-restore-compile-debug-first-20261014-source-before.json",
+      "sha256": "751593C81BA8BC5A98B72029952F4BB1D9AF714DFDEDE70B4C6226988FA74937"
+    },
+    {
+      "path": "root-sdk-session-restore-compile-debug-first-20261014.stderr.log",
+      "sha256": "7C711F251D950487C6FE764186E4BAF0C61CA773BC1FBCA49156985E3EADE6E4"
+    },
+    {
+      "path": "root-sdk-session-restore-runtime-debug-first-20261014.json",
+      "sha256": "E97E953CC51A7DB642A7E733625FAFE6DEC994146C5D6E4CFDE3CBB7A6B22B8F"
+    },
+    {
+      "path": "root-sdk-session-restore-runtime-debug-first-20261014-posthash.json",
+      "sha256": "58180486644D6C195F04B8CE722673BC58CB675CD645E9D6306D0B6067E31B63"
+    },
+    {
+      "path": "root-sdk-session-restore-runtime-debug-first-20261014.stderr.log",
+      "sha256": "30F0E1FC3F4A5225260741C049567FA7314FFEA6C403822E1B70AD8B80305B99"
+    },
+    {
+      "path": "Run-RootConstructorRestoreRegression-20261014.ps1",
+      "sha256": "7DC33F01EDEADE7959EDED9F7EE41DFF83182962459B2E2D157C064F8DB7EACF"
+    },
+    {
+      "path": "root-sdk-constructor-restore-regression-runtime-debug-first-20261014.json",
+      "sha256": "CCBD214AAF95CA79C16720EBD40219FBD029C584E9A3531BCA802075B4A29453"
+    },
+    {
+      "path": "root-sdk-constructor-restore-regression-runtime-debug-first-20261014-posthash.json",
+      "sha256": "A7E04505BA74634FBB35477EE4B46F22BE47E4856E4C4599B09BCA1CDF6A60A9"
+    },
+    {
+      "path": "root-sdk-constructor-restore-regression-runtime-debug-first-20261014.stderr.log",
+      "sha256": "0F1FE438E40FEC022B8CF5BEB271DC2EA4B7D2A29A266B1CE0F08E977D91C7E6"
+    }
+  ],
+  "code_commit": "51646b43aeba029d804431a98fde516fdeb9606f",
+  "source_head": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "full_pi_qualified": false,
+  "source_files": 5156,
+  "scope": "Original AgentSession transcript restoration method22 on caller-owned receivers; WindowsDebug4/4 includes retained receiver/callback GC and full representative host-allocation graph. Constructor initialization phase10/10 regression passed. Full latest factory/runtime builder remains unqualified.",
+  "compiler_drift": 0,
+  "compiler_files": 19546,
+  "native_tests": 4,
+  "original_cases": 22,
+  "public_activation": false
+}
