@@ -57034,6 +57034,7 @@ static __exception int perform_promise_then(JSContext *ctx,
             list_add_tail(&rd_array[i]->link, &s->promise_reactions[i]);
     } else {
         JSValueConst args[5];
+        int enqueue_result;
         call_promise_rejection_tracker(ctx, promise, true);
         i = s->promise_state - JS_PROMISE_FULFILLED;
         rd = rd_array[i];
@@ -57042,9 +57043,11 @@ static __exception int perform_promise_then(JSContext *ctx,
         args[2] = rd->handler;
         args[3] = js_bool(i);
         args[4] = s->promise_result;
-        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
+        enqueue_result = js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
         for(i = 0; i < 2; i++)
             promise_reaction_data_free(ctx->rt, rd_array[i]);
+        if (enqueue_result < 0)
+            return -1;
     }
     s->is_handled = true;
     return 0;

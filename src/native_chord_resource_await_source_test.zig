@@ -24,9 +24,12 @@ const Probe = struct {
             if (mapped != error.OutOfMemory) {
                 std.debug.print("ResourceAwait complete Source4 probe: {s}: {s}; pending_jobs={any} allocation_generation={d}\n", .{ @errorName(mapped), engine.last_error orelse "no diagnostic", js.c.JS_IsJobPending(engine.runtime), engine.native_allocation_generation });
                 if (engine.captured_exception) |exception| {
-                    const text = engine.toString(exception) catch return mapped;
-                    defer gpa.free(text);
-                    std.debug.print("ResourceAwait actual captured exception: {s}\n", .{text});
+                    std.debug.print("ResourceAwait actual captured tag={d} null={any} undefined={any} native_identity={any}\n", .{ js.c.pi_js_native_allocation_error_generation(exception), js.c.JS_IsNull(exception), js.c.JS_IsUndefined(exception), if (engine.native_allocation_exception) |native| js.c.JS_IsStrictEqual(engine.context, native, exception) else false });
+                    const text = js.c.JS_ToCString(engine.context, exception);
+                    if (text != null) {
+                        defer js.c.JS_FreeCString(engine.context, text);
+                        std.debug.print("ResourceAwait actual captured exception: {s}\n", .{std.mem.span(text)});
+                    }
                 }
             }
             return mapped;
