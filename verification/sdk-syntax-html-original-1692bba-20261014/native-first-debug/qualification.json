@@ -1,0 +1,85 @@
+{
+  "status": "first_Windows_Debug_actual_Source62_comparison_GC_and_partition_passed",
+  "head": "e668e4cf73d26e0461cfca48d5131bee5750ef37",
+  "source_original_run": 38570185401,
+  "input_sha256": "1D5C4E6468DDA77655912566AD64843EE8F51795347B45EFEA267FD175694007",
+  "expected_sha256": "77A182465E9BBF78B09230B5664D5D583E631C14F2AAA3880B1D5A41BBFC5E66",
+  "native_body_sha256": "5D1512B07338BD698C153A4E0040A455EDFDFB4290AEE1A4155EA82EC21362C5",
+  "cases": 62,
+  "tests_passed": 3,
+  "tests_total": 3,
+  "allocation_baseline": 1500,
+  "partition": 0,
+  "partitions": 8,
+  "range_start": 0,
+  "range_end": 187,
+  "completed_indices": 187,
+  "remaining_indices": 1313,
+  "duplicates": 0,
+  "full_qualification_pending": true,
+  "full_highlight_grammar_engine_qualified": false,
+  "source_files": 4761,
+  "compiler_files": 19546,
+  "compile_runtime_manifests_identical": true,
+  "source_post_drift": 0,
+  "tool_post_drift": 0,
+  "minimum_free_gib": 16,
+  "compile_seconds": 1320,
+  "runtime_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "receipts": [
+    {
+      "file": "native-syntax-html-debug-build-first-20261014.process.json",
+      "sha256": "47D6C0ECB3F661638D2BD9319046C113D9AA0429C84010C3E2548236904A5C51"
+    },
+    {
+      "file": "native-syntax-html-debug-build-first-20261014-admission.json",
+      "sha256": "E4BB51A00AB879D38D7DE87368B5EA990784B1E2F98E8E1F8D3E2C318A232BAE"
+    },
+    {
+      "file": "native-syntax-html-debug-build-first-20261014-posthash.json",
+      "sha256": "2D74D26ABF27CB310242F3B743ACEA1E4769AB97C5C38EFBE7371C4B99C753D3"
+    },
+    {
+      "file": "native-syntax-html-debug-build-first-20261014.stderr.log",
+      "sha256": "BF881C4E2BBD7CE1A001BFD7891AB53ADA41FA46BE386A21BE82D36A23DF0A39"
+    },
+    {
+      "file": "native-syntax-html-debug-build-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-syntax-html-debug-build-first-20261014-source-before.json",
+      "sha256": "178335A9BB621F108F86A8ACE871DEA1C9E27EB5C86AE44954A17DEA76FED009",
+      "files": 4761
+    },
+    {
+      "file": "native-syntax-html-debug-test-first-20261014.process.json",
+      "sha256": "45C6E2AF773CE7ACF735D7464BF87EE035E61CDCCE8A738219B7A0914443C1DC"
+    },
+    {
+      "file": "native-syntax-html-debug-test-first-20261014-admission.json",
+      "sha256": "615E10ABB5370BCB55A3775471AE0868DA7ABBA161F3F40B5B88D48FE5365380"
+    },
+    {
+      "file": "native-syntax-html-debug-test-first-20261014-posthash.json",
+      "sha256": "A633EA2C1A09758A602353E9B5B09AC418FD621C0CED27E96500AFF5381C6E9C"
+    },
+    {
+      "file": "native-syntax-html-debug-test-first-20261014.stderr.log",
+      "sha256": "99993FA7138F9594BB2DDD1070E91082687CDB51B9DB30F38E88306FE8546E31"
+    },
+    {
+      "file": "native-syntax-html-debug-test-first-20261014.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "external_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-syntax-html-debug-test-first-20261014-source-before.json",
+      "sha256": "178335A9BB621F108F86A8ACE871DEA1C9E27EB5C86AE44954A17DEA76FED009",
+      "files": 4761
+    }
+  ],
+  "public_activation": false,
+  "checked_utc": "2026-10-14T13:26:49.8381986+00:00"
+}

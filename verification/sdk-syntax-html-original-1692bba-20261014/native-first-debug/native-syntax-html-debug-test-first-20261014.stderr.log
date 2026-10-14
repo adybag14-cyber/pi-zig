@@ -1,0 +1,615 @@
+test-native-syntax-html
++- run test w
+EXHAUSTIVE_ALLOCATION_BASELINE syntax-html total=1500
+EXHAUSTIVE_ALLOCATION_RANGE syntax-html 0/8 range=[0,187) total=1500
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 0
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 0
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 1
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 1
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 2
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 2
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 3
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 3
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 4
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 4
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 5
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 5
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 6
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 6
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 7
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 7
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 8
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 8
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 9
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 9
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 10
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 10
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 11
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 11
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 12
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 12
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 13
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 13
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 14
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 14
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 15
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 15
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 16
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 16
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 17
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 17
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 18
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 18
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 19
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 19
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 20
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 20
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 21
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 21
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 22
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 22
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 23
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 23
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 24
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 24
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 25
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 25
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 26
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 26
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 27
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 27
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 28
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 28
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 29
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 29
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 30
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 30
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 31
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 31
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 32
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 32
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 33
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 33
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 34
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 34
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 35
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 35
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 36
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 36
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 37
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 37
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 38
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 38
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 39
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 39
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 40
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 40
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 41
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 41
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 42
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 42
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 43
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 43
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 44
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 44
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 45
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 45
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 46
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 46
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 47
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 47
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 48
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 48
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 49
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 49
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 50
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 50
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 51
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 51
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 52
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 52
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 53
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 53
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 54
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 54
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 55
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 55
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 56
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 56
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 57
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 57
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 58
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 58
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 59
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 59
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 60
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 60
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 61
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 61
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 62
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 62
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 63
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 63
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 64
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 64
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 65
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 65
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 66
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 66
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 67
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 67
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 68
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 68
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 69
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 69
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 70
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 70
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 71
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 71
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 72
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 72
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 73
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 73
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 74
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 74
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 75
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 75
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 76
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 76
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 77
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 77
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 78
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 78
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 79
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 79
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 80
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 80
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 81
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 81
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 82
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 82
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 83
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 83
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 84
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 84
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 85
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 85
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 86
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 86
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 87
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 87
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 88
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 88
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 89
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 89
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 90
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 90
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 91
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 91
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 92
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 92
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 93
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 93
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 94
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 94
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 95
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 95
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 96
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 96
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 97
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 97
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 98
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 98
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 99
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 99
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 100
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 100
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 101
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 101
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 102
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 102
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 103
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 103
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 104
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 104
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 105
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 105
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 106
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 106
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 107
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 107
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 108
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 108
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 109
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 109
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 110
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 110
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 111
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 111
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 112
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 112
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 113
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 113
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 114
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 114
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 115
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 115
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 116
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 116
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 117
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 117
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 118
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 118
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 119
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 119
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 120
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 120
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 121
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 121
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 122
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 122
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 123
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 123
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 124
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 124
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 125
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 125
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 126
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 126
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 127
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 127
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 128
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 128
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 129
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 129
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 130
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 130
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 131
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 131
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 132
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 132
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 133
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 133
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 134
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 134
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 135
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 135
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 136
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 136
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 137
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 137
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 138
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 138
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 139
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 139
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 140
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 140
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 141
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 141
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 142
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 142
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 143
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 143
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 144
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 144
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 145
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 145
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 146
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 146
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 147
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 147
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 148
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 148
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 149
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 149
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 150
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 150
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 151
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 151
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 152
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 152
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 153
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 153
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 154
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 154
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 155
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 155
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 156
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 156
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 157
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 157
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 158
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 158
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 159
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 159
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 160
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 160
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 161
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 161
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 162
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 162
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 163
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 163
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 164
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 164
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 165
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 165
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 166
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 166
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 167
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 167
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 168
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 168
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 169
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 169
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 170
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 170
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 171
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 171
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 172
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 172
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 173
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 173
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 174
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 174
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 175
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 175
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 176
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 176
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 177
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 177
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 178
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 178
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 179
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 179
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 180
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 180
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 181
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 181
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 182
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 182
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 183
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 183
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 184
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 184
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 185
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 185
+EXHAUSTIVE_ALLOCATION_INDEX_BEGIN syntax-html 186
+EXHAUSTIVE_ALLOCATION_INDEX_COMPLETE syntax-html 186
+EXHAUSTIVE_ALLOCATION_COMPLETE syntax-html 0/8 range=[0,187) total=1500
+failed command: ".\\.zig-cache\\o\\4355333e4899a593b777b35d76c9d272\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0xf1657d60 --listen=-
+
+Build Summary: 156/156 steps succeeded; 3/3 tests passed
+test-native-syntax-html success
++- run test 3 pass (3 total) 1s MaxRSS:10M
+   +- compile test Debug native cached 74ms MaxRSS:19M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 29ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 68ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 74ms MaxRSS:19M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 34ms MaxRSS:19M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 26ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 27ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 32ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 37ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 27ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 37ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 30ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 28ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 24ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 32ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 12ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 27ms MaxRSS:19M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 28ms MaxRSS:19M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 27ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 25ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 33ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 31ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 24ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 25ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 25ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 33ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 25ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 33ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 34ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 36ms MaxRSS:19M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+
