@@ -15,7 +15,16 @@ observe('adding rule preserves existing compiled cache',()=>{const m=makeResumab
 observe('different start mutates shared option positions',()=>{const m=makeResumableRegex({});add(m,[[/a/,{type:'begin'}],[/b/,{type:'begin'}],[/c/,{type:'begin'}]]);m.getMatcher(0);const before=state(m);m.getMatcher(1);return{before,after:state(m)}});
 observe('consider all resets strict resume state',()=>{const m=makeResumableRegex({});m.regexIndex='0';const before=m.resumingScanAtSamePosition();m.considerAll();return{before,after:m.resumingScanAtSamePosition(),state:state(m)}});
 observe('string lastIndex fallback uses plus',()=>{const m=makeResumableRegex({}),log=[];m.regexIndex=1;m.lastIndex='2';m.getMatcher=index=>({set lastIndex(v){log.push(['lastIndex',index,v])},exec(s){log.push(['exec',index,s]);return null}});return{match:match(m.exec('text')),log,state:state(m)}});
-observe('exec callee and argument getter order',()=>{const m=makeResumableRegex({}),log=[];Object.defineProperty(m,'getMatcher',{get(){log.push('getMatcher');return index=>{log.push(['called',index]);return{set lastIndex(v){log.push(['matcher.lastIndex',v])},exec(s){log.push(['exec',s]);return null}}}});Object.defineProperty(m,'regexIndex',{get(){log.push('regexIndex');return 0},set(v){log.push(['regexIndex.set',v])}});Object.defineProperty(m,'lastIndex',{get(){log.push('lastIndex');return 3}});return{match:match(m.exec('text')),log}});
+observe('exec callee and argument getter order',()=>{
+ const m=makeResumableRegex({}),log=[];
+ Object.defineProperty(m,'getMatcher',{get(){
+  log.push('getMatcher');
+  return index=>{log.push(['called',index]);return{set lastIndex(v){log.push(['matcher.lastIndex',v])},exec(s){log.push(['exec',s]);return null}}};
+ }});
+ Object.defineProperty(m,'regexIndex',{get(){log.push('regexIndex');return 0},set(v){log.push(['regexIndex.set',v])}});
+ Object.defineProperty(m,'lastIndex',{get(){log.push('lastIndex');return 3}});
+ return{match:match(m.exec('text')),log};
+});
 observe('count bigint increment',()=>{const m=makeResumableRegex({});m.count=2n;m.addRule(/a/,{type:'begin'});return state(m)});
 observe('count string increment',()=>{const m=makeResumableRegex({});m.count='2';m.addRule(/a/,{type:'begin'});return state(m)});
 observe('option type setter throw keeps pushed rule',()=>{const m=makeResumableRegex({}),sentinel={},o={get type(){throw sentinel}};let same=false;try{m.addRule(/a/,o)}catch(error){same=error===sentinel}return{same,rules:m.rules.length,count:m.count,identity:m.rules[0][1]===o}});

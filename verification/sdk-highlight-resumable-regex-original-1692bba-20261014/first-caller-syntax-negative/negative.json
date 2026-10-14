@@ -1,0 +1,11 @@
+{
+  "status": "caller_SyntaxError_before_cases",
+  "candidate": "54e4de769394bf44cbcfe9a7eeb96a4406cae3ef",
+  "line": 18,
+  "source_cases_executed": 0,
+  "owned_pid": 46112,
+  "owned_pid_absent": true,
+  "full1955_31064_1774_4956_5_post_drift": 0,
+  "source_body_rewrites": 0,
+  "public_activation": false
+}
