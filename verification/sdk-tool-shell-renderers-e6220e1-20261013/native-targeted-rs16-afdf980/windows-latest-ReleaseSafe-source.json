@@ -1,0 +1,13 @@
+{
+  "head": "afdf980213e9f68000fc7704c21f9aba1d17db84",
+  "tree": "ae2a682cd8677a0410df7999db7f4bd800519ba7",
+  "os": "windows-latest",
+  "mode": "ReleaseSafe",
+  "allocation_shards": 16,
+  "source_count": 4868,
+  "tools_count": 19543,
+  "source_cases": 53,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "actual53_Linux_macOS_raw_equivalent_run38556609926",
+  "public_activation": false
+}

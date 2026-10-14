@@ -1,0 +1,19 @@
+{
+  "head": "60d8203a059b11f739ae5c6f4260e70e4b15df56",
+  "os": "macos-latest",
+  "mode": "ReleaseSafe",
+  "status": "passed",
+  "source_cases": 20,
+  "source_fixture_platform": "Windows",
+  "genuine_original_source_replay": "actual20_b45_Windows_explicit_GC_doublecapture_dbfa_POSIX_original_pending",
+  "public_class_metadata_qualified": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "tests_each": 5,
+  "shards": 8,
+  "baseline": 163,
+  "completed_indices": 163,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T21:14:31.7543170+00:00"
+}

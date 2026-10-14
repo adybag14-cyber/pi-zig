@@ -1,0 +1,26 @@
+{
+  "pid": 60916,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "argv": [
+    "--expose-gc",
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-source-capture-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-original-local-20261014-second-output.json",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45.input.txt",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-original-local-20261014-frozen.json"
+  ],
+  "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --expose-gc --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-source-capture-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-original-local-20261014-second-output.json C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-legacy32-b45-gc-original-local-20261014-frozen.json",
+  "created_utc": "2026-10-14T21:20:12.6832400Z",
+  "launched_utc": "2026-10-14T21:20:12.6817366+00:00",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T21:20:20.4933383+00:00"
+}

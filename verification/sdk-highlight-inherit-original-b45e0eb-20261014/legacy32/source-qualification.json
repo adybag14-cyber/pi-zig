@@ -1,0 +1,28 @@
+{
+  "status": "genuine_b45_original_legacy32_doublecapture_and_explicitGC_qualified",
+  "candidate": "dee03dec161d57425374e3c50a87dd741064cdfb",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": 32,
+  "prior20_rows_identical": true,
+  "input_sha256": "CC9AC874E371AB2E28952FD9A4DE75F5FC9B9BEE4A8276F9A7C748903F639769",
+  "doublecapture_rows_identical": true,
+  "actual_Node_GC_executed": true,
+  "source_files": 1965,
+  "dependencies": 31064,
+  "node_tools": 1774,
+  "candidate_files": 5424,
+  "controls": 5,
+  "all_pre_post_drift": 0,
+  "owned_pids": [
+    2004,
+    60916
+  ],
+  "owned_pids_absent": true,
+  "raw_sha256": "3B1B1B853D918E4DB3F5CEE5E30573625EE17E155426C741CFAF3617E64C648D",
+  "Source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "native32_qualified": false,
+  "Root_C_intake_approved": false,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T21:23:01.0896744+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "head": "afdf980213e9f68000fc7704c21f9aba1d17db84",
+  "os": "windows-latest",
+  "mode": "ReleaseSafe",
+  "status": "passed",
+  "source_cases": 53,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "actual53_Linux_macOS_raw_equivalent_run38556609926",
+  "tests_each": 11,
+  "shards": 16,
+  "baseline": 11659,
+  "completed_indices": 11659,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T20:54:54.5931015+00:00"
+}
