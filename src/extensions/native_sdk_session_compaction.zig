@@ -14,21 +14,31 @@ const Stage = enum(c_int) { auth, aborted, extension, summary, saved, failed };
 pub fn install(engine: *em.Engine, prototype: c.JSValue, compact_summary: c.JSValue) !void {
     if (!c.JS_IsFunction(engine.context, compact_summary)) return error.RequiredSharedNativeCompactionBinding;
     inline for (std.meta.fields(Method)) |field| {
-        var roots = [_]c.JSValue{compact_summary};
-        const length: c_int = switch (@as(Method, @enumFromInt(field.value))) {
-            ._runDefaultCompaction => 5,
-            .compact, ._emitSessionCompactFailed => 1,
-            else => 0,
-        };
-        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, length, field.value, roots.len, &roots));
-        defer engine.freeValue(function);
-        if (field.value == 0 or field.value == 2 or field.value == 3) {
-            const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-            defer engine.freeValue(parent);
-            if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
-        }
-        if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+        try installMethod(engine, prototype, compact_summary, @enumFromInt(field.value));
     }
+}
+// These actual ordinary bodies do not depend on the imported summary function.
+// Install them into the private class while its shared AI module is assembled.
+pub fn installHelpers(engine: *em.Engine, prototype: c.JSValue) !void {
+    inline for (.{ Method._clearManualCompactionState, Method._emitSessionCompactFailed, Method._refreshFinalizedContext }) |method| {
+        try installMethod(engine, prototype, c.pi_js_undefined(), method);
+    }
+}
+fn installMethod(engine: *em.Engine, prototype: c.JSValue, compact_summary: c.JSValue, comptime method: Method) !void {
+    var roots = [_]c.JSValue{compact_summary};
+    const length: c_int = switch (method) {
+        ._runDefaultCompaction => 5,
+        .compact, ._emitSessionCompactFailed => 1,
+        else => 0,
+    };
+    const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, @tagName(method), length, @intFromEnum(method), roots.len, &roots));
+    defer engine.freeValue(function);
+    if (method == ._runDefaultCompaction or method == .compact or method == ._emitSessionCompactFailed) {
+        const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
+        defer engine.freeValue(parent);
+        if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
+    }
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(method), c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();

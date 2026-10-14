@@ -73,3 +73,30 @@ test "native ordinary compaction installed method descriptors match genuine Sour
     , "manual-class-descriptors.mjs");
     engine.freeValue(checked);
 }
+
+test "native ordinary compaction pending summary owns session until completion and releases it after collection" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try setup(engine, &environment);
+    const prepared = try engine.evalModule(
+        \\globalThis.compactGcEvents=[];globalThis.compactGcSaved=[];globalThis.compactGcIdle=0;globalThis.compactGcSession={model:{id:'owned'},_entryIdsByMessage:new WeakMap(),agent:{state:{messages:[]}},abort(){return Promise.resolve();},settingsManager:{getCompactionSettings(){return{enabled:true,reserveTokens:4,keepRecentTokens:1};}},sessionManager:{getBranch(){return[{id:'old',parentId:null,type:'message',message:{role:'user',content:'old',timestamp:0}},{id:'new',parentId:'old',type:'message',message:{role:'user',content:'new',timestamp:1}}];},appendCompaction(summary){compactGcSaved.push({type:'compaction',summary});},getEntries(){return compactGcSaved;},buildSessionProjection(){return{entries:[],messages:[]};}},_extensionRunner:{hasHandlers(){return false;},emit(event){compactGcEvents.push(event.type);}},_emit(event){compactGcEvents.push(event.type);},_resolveIdleWaitIfIdle(){compactGcIdle++;},_runDefaultCompaction(){return new Promise(resolve=>{globalThis.compactGcRelease=resolve;});},_clearManualCompactionState:manualCompactionAPI.clear,_emitSessionCompactFailed:manualCompactionAPI.failed,_refreshFinalizedContext:manualCompactionAPI.refresh};globalThis.compactGcWeak=new WeakRef(compactGcSession);globalThis.compactGcPending=manualCompactionAPI.compact.call(compactGcSession,'owned');delete globalThis.compactGcSession;export const ready=true;
+    , "manual-compaction-gc-prepare.mjs");
+    engine.freeValue(prepared);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const retained = try engine.eval("compactGcWeak.deref()!==undefined&&typeof compactGcRelease==='function'", "manual-compaction-gc-retained.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained);
+    try std.testing.expect(c.JS_ToBool(engine.context, retained) == 1);
+    engine.finishJob();
+    const completed = try engine.evalModule(
+        \\compactGcRelease({summary:'retained summary',firstKeptEntryId:'new',tokensBefore:9});if((await compactGcPending).summary!=='retained summary'||compactGcIdle!==2||JSON.stringify(compactGcEvents)!==JSON.stringify(['compaction_start','session_compact','compaction_end']))throw Error('pending manual graph lost');delete globalThis.compactGcPending;delete globalThis.compactGcRelease;delete globalThis.compactGcSaved;export const completed=true;
+    , "manual-compaction-gc-complete.mjs");
+    engine.freeValue(completed);
+    engine.finishJob();
+    c.JS_RunGC(engine.runtime);
+    const collected = try engine.eval("compactGcWeak.deref()===undefined", "manual-compaction-gc-collected.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(collected);
+    try std.testing.expect(c.JS_ToBool(engine.context, collected) == 1);
+}
