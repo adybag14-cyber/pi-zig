@@ -1,0 +1,44 @@
+{
+  "status": "first_hosted_debug_ranges_timed_out_no_complete_qualification",
+  "run_id": 38554643219,
+  "head": "c535edd71b24dd839bee922380c42c2513c044ea",
+  "internal_test_timeout_seconds": 120,
+  "outer_runtime_seconds": 300,
+  "compile_outer_seconds": 1320,
+  "host_await_timeout_ms": 10000,
+  "linux_debug": {
+    "baseline": 8490,
+    "shards": 8,
+    "passed_shards": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "failed_shard": 4,
+    "failed_range_start": 4245,
+    "failed_range_end": 5306,
+    "completed_in_failed_range": 926,
+    "last_complete_index": 5170,
+    "failure": "test120s timeout",
+    "next_shards": 32
+  },
+  "macos_debug": {
+    "baseline": 8486,
+    "shards": 16,
+    "passed_shards": [
+      0
+    ],
+    "passed_shard0_owner_seconds": 53.897293,
+    "failed_shard": 1,
+    "failed_range_start": 530,
+    "failed_range_end": 1060,
+    "completed_in_failed_range": 477,
+    "last_complete_index": 1006,
+    "failure": "test120s timeout",
+    "next_shards": 128
+  },
+  "scope": "Preserve complete original failure universe and all per-test/owner/host limits. More bounded partitions and overall workflow waiting time only. First profile receipts remain historical and are not combined with final candidate qualification.",
+  "public_activation": false,
+  "recorded_utc": "2026-10-14T11:31:13.6623285+00:00"
+}
