@@ -1,0 +1,540 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "8911940d3f61247abbc21168576a095edd813a12e201edca71c4105eb834f89c",
+  "scope": "Actual unchanged original retryAssistantCall with original private abort class, sleep, delay and classifiers; caller-owned produces/callbacks/signals and temporary restored global timer/Promise overrides; no Source bodies replaced",
+  "cases": 30,
+  "rows": [
+    {
+      "name": "async-function-metadata",
+      "value": {
+        "name": "retryAssistantCall",
+        "length": 4,
+        "prototype": false,
+        "tag": "[object AsyncFunction]"
+      }
+    },
+    {
+      "name": "undefined-policy-preserves-error-identity",
+      "value": {
+        "same": true,
+        "calls": 1
+      }
+    },
+    {
+      "name": "disabled-policy-does-not-read-max",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "successful-first-response-no-callbacks",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "aborted-first-response-no-retry",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "deterministic-quota-error-no-retry",
+      "value": {
+        "same": true,
+        "log": []
+      }
+    },
+    {
+      "name": "one-retry-success-order",
+      "value": {
+        "same": true,
+        "calls": 2,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            true,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "exhausted-budget-and-capped-delay",
+      "value": {
+        "same": true,
+        "calls": 3,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "scheduled",
+            2,
+            2,
+            3,
+            "terminated"
+          ],
+          [
+            "timeout",
+            3
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            false,
+            2,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "provider-abort-after-retry-not-success",
+      "value": {
+        "same": true,
+        "calls": 2,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            false,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "length-after-retry-is-nonerror-success",
+      "value": {
+        "same": true,
+        "calls": 2,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            true,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "deterministic-error-after-retry-reports-final",
+      "value": {
+        "same": true,
+        "calls": 2,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            false,
+            1,
+            "insufficient_quota"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "asynchronous-callbacks-are-awaited",
+      "value": {
+        "calls": 2,
+        "log": [
+          "produce",
+          "scheduled-enter",
+          "scheduled-exit",
+          [
+            "timeout",
+            2
+          ],
+          "start-enter",
+          "start-exit",
+          "produce",
+          "finish-enter",
+          "finish-exit"
+        ]
+      }
+    },
+    {
+      "name": "policy-budget-is-snapshotted",
+      "value": {
+        "enabled": 1,
+        "max": 1,
+        "calls": 2,
+        "log": [
+          [
+            "scheduled",
+            1,
+            1,
+            0,
+            "terminated"
+          ],
+          [
+            "timeout",
+            0
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            true,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "produce-thrown-value-original-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "scheduled-callback-rejection-original-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "attempt-start-rejection-original-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "finished-callback-rejection-original-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "timer-failure-finishes-then-rethrows",
+      "value": {
+        "same": true,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "finished",
+            false,
+            1,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "listener-failure-finishes-then-rethrows",
+      "value": {
+        "same": true,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "finished",
+            false,
+            1,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "already-aborted-backoff-normalizes-with-rest",
+      "value": {
+        "same": false,
+        "keys": [
+          "role",
+          "stopReason",
+          "content",
+          "id",
+          "extra"
+        ],
+        "stopReason": "aborted",
+        "hasError": false,
+        "symbol": 7,
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "finished",
+            false,
+            1,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "abort-listener-once-and-clear-order",
+      "value": {
+        "result": {
+          "role": "assistant",
+          "stopReason": "aborted",
+          "content": [],
+          "id": "response"
+        },
+        "log": [
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          "timeout",
+          [
+            "abort",
+            true
+          ],
+          [
+            "clear",
+            true
+          ],
+          [
+            "finished",
+            false,
+            1,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "private-abort-error-is-real-subclass",
+      "value": {
+        "name": "Error",
+        "message": "Aborted",
+        "error": true,
+        "constructor": "RetrySleepAbortError",
+        "base": true,
+        "keys": []
+      }
+    },
+    {
+      "name": "optional-null-callback-members",
+      "value": {
+        "result": {
+          "role": "assistant",
+          "stopReason": "stop",
+          "content": [],
+          "id": "response"
+        },
+        "calls": 2
+      }
+    },
+    {
+      "name": "callback-receiver-and-getter-order",
+      "value": {
+        "calls": 2,
+        "log": [
+          "scheduled-get",
+          [
+            "scheduled-this",
+            true
+          ],
+          [
+            "timeout",
+            2
+          ],
+          "start-get",
+          [
+            "start-this",
+            true
+          ],
+          "finished-get",
+          [
+            "finished-this",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "response-getters-remain-live",
+      "value": {
+        "calls": 2,
+        "log": [
+          "stopReason",
+          "stopReason",
+          "stopReason",
+          "errorMessage",
+          "errorMessage",
+          "errorMessage",
+          [
+            "scheduled",
+            1,
+            2,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            true,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "fractional-budget-compares-without-truncation",
+      "value": {
+        "calls": 3,
+        "log": [
+          [
+            "scheduled",
+            1,
+            1.5,
+            2,
+            "terminated"
+          ],
+          [
+            "timeout",
+            2
+          ],
+          [
+            "start"
+          ],
+          [
+            "scheduled",
+            2,
+            1.5,
+            3,
+            "terminated"
+          ],
+          [
+            "timeout",
+            3
+          ],
+          [
+            "start"
+          ],
+          [
+            "finished",
+            false,
+            2,
+            "terminated"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "negative-budget-does-not-retry",
+      "value": 1
+    },
+    {
+      "name": "await-ignores-promise-own-then",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "await-ignores-public-species",
+      "value": {
+        "same": true,
+        "reads": 0
+      }
+    },
+    {
+      "name": "async-export-not-constructable",
+      "value": {
+        "name": "TypeError"
+      }
+    }
+  ]
+}

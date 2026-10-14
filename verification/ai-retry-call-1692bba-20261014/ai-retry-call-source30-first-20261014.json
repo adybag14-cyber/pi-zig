@@ -1,0 +1,16 @@
+{
+  "name": "ai-retry-call-source30-first-20261014",
+  "pid": 65168,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "C:\\Program Files\\nodejs\\node.exe --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-retry-call-1692-source-capture-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\ai-retry-call-source30-first-20261014-output.json C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013\\src\\extensions\\fixtures\\ai-retry-call-1692.input.txt",
+  "command_line_source": "exact native ProcessStartInfo argv; child already exited",
+  "created_utc": "2026-10-14T16:40:13.5563765Z",
+  "launched_utc": "2026-10-14T16:40:13.5539555+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:\\Users\\adyba\\pi-upstream-source-1692bba-20261014",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T16:40:13.8465710+00:00"
+}

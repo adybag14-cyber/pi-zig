@@ -1,0 +1,8 @@
+{
+  "coordinated_with": "Root Source30 assistant retry oracle reservation; at most one other coordinated native reservation",
+  "free_kib": 21955928,
+  "heap_mb": 256,
+  "status": "admitted",
+  "required_kib": 2097152,
+  "observed_utc": "2026-10-14T16:40:13.4430327+00:00"
+}
