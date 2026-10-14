@@ -58,6 +58,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           & zig build build-native-sdk-session-retry -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-retry-candidate/compile.log
           if ($LASTEXITCODE -ne 0) { throw 'Session retry cold compilation failed' }
+          & zig build build-native-binary-operators -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --summary all 2>&1 | Tee-Object verification/native-sdk-session-retry-candidate/compile-arithmetic.log
+          if ($LASTEXITCODE -ne 0) { throw 'VM arithmetic ABI cold compilation failed' }
       - name: Exercise original retry omission abort sleep callback and classifier owner graphs
         id: runtime
         shell: pwsh
@@ -76,6 +78,21 @@ jobs:
           if ($taskFixture.sourceHead -cne '1692bba6347a287ab0f3cb554a4430fafffc474b' -or $taskFixture.factoryCount -ne 31 -or @($taskFixture.rows).Count -ne 31) { throw 'Complete latest original31 reference required' }
           if ((Get-FileHash -LiteralPath src/extensions/fixtures/sdk-session-retry-1692.input.txt).Hash.ToLowerInvariant() -cne $taskFixture.inputSha256) { throw 'Original retry input hash differs' }
           [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=13;corpus_cases=31;original_reference_comparison=$true;classifier_corpus_cases=30;classifier_original_reference_comparison=$false;test_timeout_seconds=120;host_await_timeout_ms=10000;public_activation=$false;full_factory_qualified=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content "$taskReceipt/result.json"
+      - name: Exercise original VM arithmetic remainder exponentiation and decrement boundary
+        shell: pwsh
+        timeout-minutes: 5
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          $taskReceipt = 'verification/native-sdk-session-retry-candidate'
+          & zig build test-native-binary-operators -Doptimize=${{ matrix.mode }} -Duse-llvm=true -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath "$taskReceipt/runtime-arithmetic.log"
+          if ($LASTEXITCODE -ne 0) { throw 'VM arithmetic ABI regression failed' }
+          $taskLog = Get-Content "$taskReceipt/runtime-arithmetic.log" -Raw
+          $taskRuns = [regex]::Matches($taskLog, '(?ms)^test-native-binary-operators success\r?\n[^\r\n]*run test (?<count>[1-9]\d*) pass \(\k<count> total\)')
+          if ($taskRuns.Count -ne 1) { throw 'Complete named VM arithmetic target and transitive tests must execute without skips' }
+          $taskTests = [int]$taskRuns[0].Groups['count'].Value
+          if ($taskLog -notmatch ("(?m)^Build Summary:.*\b"+$taskTests+'/'+$taskTests+' tests passed')) { throw 'VM arithmetic summary and executed inventory differ' }
+          [ordered]@{head='${{ github.sha }}';status='passed';mode='${{ matrix.mode }}';platform='${{ matrix.os }}';tests=$taskTests;binary_operations=10;increment=$true;decrement=$true;original_guest_operator_comparison=$true;test_timeout_seconds=120;public_activation=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content "$taskReceipt/arithmetic-result.json"
       - name: Verify frozen inputs after terminal execution
         if: ${{ always() && steps.freeze.outcome == 'success' }}
         shell: pwsh
