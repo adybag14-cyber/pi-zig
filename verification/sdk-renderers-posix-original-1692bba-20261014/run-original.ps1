@@ -45,6 +45,7 @@ function Verify-Original {
     }
     return $taskChecks
 }
+$taskObserverUri=[UriBuilder]::new();$taskObserverUri.Scheme='file';$taskObserverUri.Host='';$taskObserverUri.Port=-1;$taskObserverUri.Path=Join-Path $taskBundle 'observe-original.mjs'
 $env:PI_RENDERER_SOURCE_ROOT=$taskSource;$env:PI_RENDERER_CANDIDATE_ROOT=$taskCandidate;$env:PI_RENDERER_RECEIPTS=$taskReceipts
 $taskResults=@()
 foreach($taskFamily in @('listing','shell')){
@@ -58,7 +59,7 @@ foreach($taskFamily in @('listing','shell')){
         [ordered]@{minimum_free_bytes=2GB;available_bytes=$taskFree;checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath "$taskBase-admission.json" -Encoding utf8NoBOM
         if($taskFree -lt 2GB){throw 'Original Source2GiB admission rejected'}
         $taskFailure=$null
-        try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',([uri](Join-Path $taskBundle 'observe-original.mjs')).AbsoluteUri,(Join-Path $taskBundle 'capture-original.mjs'),$taskFamily,"$taskBase-output.json",$taskInput) -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
+        try{& (Join-Path $taskCandidate 'verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1') -Executable $taskNode -WorkingDirectory $taskSource -Arguments @('--max-old-space-size=256','--conditions=source','--experimental-transform-types','--import',($taskObserverUri.Uri.AbsoluteUri),(Join-Path $taskBundle 'capture-original.mjs'),$taskFamily,"$taskBase-output.json",$taskInput) -ReceiptBase $taskBase -TimeoutSeconds 300}catch{$taskFailure=$_}
         $taskAfter=Verify-Original
         [ordered]@{before=$taskBefore;after=$taskAfter;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskBase-posthash.json" -Encoding utf8NoBOM
         if($taskFailure){throw $taskFailure}
