@@ -1,0 +1,37 @@
+{
+  "status": "all_six_downloaded_artifacts_independently_qualified",
+  "candidate": "a00cc87ddf63bc4ece0fd0600944b5fd6075f0be",
+  "run_id": 38569800709,
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "ordinary_methods": [
+    "_summarizationRetryCallbacks",
+    "_finishCancelledRetry",
+    "_prepareRetry",
+    "_omitRecoveryAttempt",
+    "_isRetryableError"
+  ],
+  "tests_each": 13,
+  "original_factory_cases": 61,
+  "retry_cases": 31,
+  "classifier_cases": 30,
+  "arithmetic_tests_each": 2,
+  "binary_VM_operators": 10,
+  "increment": true,
+  "decrement": true,
+  "source_files": 4977,
+  "compiler_files": 19546,
+  "all_source_bytes_identical": true,
+  "post_drift": 0,
+  "retained_callback_GC": true,
+  "full_allocation_failure_sweep": true,
+  "source_reference_runs": [
+    38564569613,
+    38569025790
+  ],
+  "artifact_audit": "hosted-original61-six-artifacts-audit-38569800709.json",
+  "shared_Durable_consumer_regression": "Pending generation and compaction existing callers",
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "observed_utc": "2026-10-14T13:40:33.6321512+00:00"
+}

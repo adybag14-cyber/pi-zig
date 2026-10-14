@@ -2465,6 +2465,7 @@ pub fn build(b: *std.Build) void {
     addCompileOnlyGroup(b, "build-hosted-sdk-query-components", &.{ "test-native-sdk-session-queries", "test-native-sdk-query-consumers" });
     addCompileOnlyGroup(b, "build-hosted-sdk-message-components", &.{ "test-native-sdk-send-user", "test-native-sdk-message-conversion" });
     addCompileOnlyGroup(b, "build-hosted-sdk-lifecycle-components", &.{ "test-native-sdk-session-lifecycle", "test-native-sdk-session-prepare" });
+    addCompileOnlyGroup(b, "build-native-sdk-estimator-regressions", &.{ "test-native-sdk-session-statistics", "test-native-sdk-session-events", "test-native-sdk-session-prepare", "test-native-sdk-session-lifecycle", "test-native-durable-generation", "test-native-durable-89-compaction" });
     addCompileOnlyGroup(b, "build-hosted-sdk-event-components", &.{"test-native-sdk-session-events"});
     addCompileOnlyGroup(b, "build-hosted-auth-components", &.{ "test-native-auth-storage-persistent", "test-native-auth-timer-controls" });
     addCompileOnlyGroup(b, "build-native-sdk-cache-warmer", &.{"test-native-sdk-cache-warmer"});

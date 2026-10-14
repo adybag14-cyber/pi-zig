@@ -1,0 +1,33 @@
+{
+  "status": "Windows_Debug_original30_helper_comparison_GC_fullGPA_passed",
+  "source_head": "580a006f275f09079d065bb7b48a203a3edb20f5",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "tests": 4,
+  "named_tests": 3,
+  "transitive_tests": 1,
+  "original_cases": 30,
+  "original_source": "sdk-compaction-estimate-source30-first-20261014-output.json",
+  "source_files": 4986,
+  "compiler_files": 19546,
+  "compiler_manifest": "../native-vm-arithmetic-20261014/compiler-full-prehash.json",
+  "compile_runtime_source_bytes_identical": true,
+  "source_post_drift": 0,
+  "compiler_post_drift": 0,
+  "native_GC": true,
+  "full_allocation_failure_sweep": true,
+  "normal_admission_gib": 16,
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "host_await_ms": 10000,
+  "owned_pids_gone": [
+    34616,
+    17332
+  ],
+  "other_profiles": "Pending",
+  "shared_consumer_regression": "Pending statistics/hooks/private run preparation/lifecycle at new helper source",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "observed_utc": "2026-10-14T13:40:33.6203052+00:00"
+}
