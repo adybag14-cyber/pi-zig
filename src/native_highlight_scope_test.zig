@@ -4,7 +4,19 @@ const em = @import("extensions/engine.zig");
 const Scope = @import("extensions/native_highlight_scope.zig").Scope;
 const c = em.c;
 fn eval(engine: *em.Engine, source: []const u8) !void {
-    const value = try engine.eval(source, "highlight-scope-regression.js", c.JS_EVAL_TYPE_GLOBAL);
+    const value = engine.eval(source, "highlight-scope-regression.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        std.debug.print("HIGHLIGHT_SCOPE_CAPTURED_FIRST_ERROR={s}\n", .{engine.last_error orelse "<raw exception retained without diagnostic text>"});
+        if (engine.captured_exception) |reason| {
+            const property = c.JS_GetPropertyStr(engine.context, reason, "stack");
+            defer engine.freeValue(property);
+            if (!c.JS_IsException(property)) {
+                const text = c.JS_ToCString(engine.context, property);
+                defer if (text != null) c.JS_FreeCString(engine.context, text);
+                if (text != null) std.debug.print("HIGHLIGHT_SCOPE_CAPTURED_STACK={s}\n", .{std.mem.span(text)});
+            }
+        }
+        return err;
+    };
     engine.freeValue(value);
 }
 fn collect(engine: *em.Engine) void {
@@ -85,8 +97,8 @@ test "native highlight inline roots nested actual grammar scanner completes128 l
         // The unchanged genuine74 comparator independently checks Source semantics.
         try eval(engine,
             \\scopeCore.registerLanguage('inline-nested',()=>({contains:[{className:'section',begin:/\(/,end:/\)/,contains:['self']}]}));
-            \\for(const depth of [32,64,128]){const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:'inline-nested',ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Nested grammar stack or token regression');}
-            \\for(const depth of [32,64,128]){let contains=[];for(let level=0;level<depth;level++)contains=[{className:'section',begin:/\(/,end:/\)/,contains}];const name='inline-distinct-'+depth;scopeCore.registerLanguage(name,()=>({contains}));const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:name,ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Distinct nested compiler Scope stack regression');scopeCore.unregisterLanguage(name);}
+            \\for(const depth of [32,64,128]){globalThis.scopeDeepPhase='self-'+depth;const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:'inline-nested',ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Nested grammar stack or token regression at '+scopeDeepPhase+(result.errorRaised?' '+result.errorRaised:''));}
+            \\for(const depth of [32,64,128]){globalThis.scopeDeepPhase='distinct-'+depth;let contains=[];for(let level=0;level<depth;level++)contains=[{className:'section',begin:/\(/,end:/\)/,contains}];const name='inline-distinct-'+depth;scopeCore.registerLanguage(name,()=>({contains}));const code='('.repeat(depth)+'owned'+')'.repeat(depth);const result=scopeCore.highlight(code,{language:name,ignoreIllegals:false});if(result.errorRaised||result.illegal||result.code!==code||(result.value.match(/hljs-section/g)||[]).length!==depth)throw Error('Distinct nested compiler Scope stack regression at '+scopeDeepPhase+(result.errorRaised?' '+result.errorRaised:''));scopeCore.unregisterLanguage(name);}
             \\scopeCore.unregisterLanguage('inline-nested');const recovered=scopeCore.highlight('{}',{language:'json'});if(recovered.errorRaised||recovered.illegal)throw Error('Post-nesting recovery failed');delete globalThis.scopeCore;
         );
         collect(engine);
