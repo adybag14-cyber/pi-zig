@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/highlightjs/highlight.js",
+  "version": "10.7.3",
+  "package_lock_source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "npm_tarball": "https://registry.npmjs.org/highlight.js/-/highlight.js-10.7.3.tgz",
+  "npm_integrity": "sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==",
+  "actual_core_sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468",
+  "license": "BSD-3-Clause",
+  "license_sha256": "6c081431591d9df696c82dc598fe1423765b8a299b200ed00b281afd0f64c490",
+  "native_ports": [
+    "src/extensions/native_highlight_token_tree.zig",
+    "src/extensions/native_highlight_regex.zig"
+  ],
+  "source_original_constructor_capture_run": 38573862642,
+  "source_original_HTML_formatter_run": 38570185401,
+  "scope": "Attribution and immutable dependency authority for native algorithm ports; full grammar engine unfinished",
+  "javascript_runtime_implementation_vendored": false,
+  "full_highlight_grammar_engine_qualified": false,
+  "public_activation": false
+}
