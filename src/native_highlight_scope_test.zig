@@ -105,3 +105,41 @@ test "native highlight inline roots nested actual grammar scanner completes128 l
     }
     try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
 }
+test "native highlight inline roots match genuine Original deep7 exact caller self and distinct nested grammar results" {
+    const owners = c.pi_js_native_memory_owners();
+    {
+        const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        const eager = try @import("extensions/native_syntax_highlight.zig").createEager(engine);
+        defer eager.deinit(engine);
+        {
+            var s: Scope = .{ .engine = engine };
+            defer s.deinit();
+            const global = try s.own(c.JS_GetGlobalObject(engine.context));
+            try s.put(global, "highlightCoreAPI", eager.core);
+        }
+        const imported = engine.evalModule(@embedFile("extensions/fixtures/sdk-highlight-deep7-b45.input.txt"), "highlight-deep7-original.mjs") catch |err| {
+            std.debug.print("HIGHLIGHT_DEEP7_MODULE_ERROR={s}\n", .{engine.last_error orelse "<raw captured>"});
+            return err;
+        };
+        engine.freeValue(imported);
+        {
+            var s: Scope = .{ .engine = engine };
+            defer s.deinit();
+            const global = try s.own(c.JS_GetGlobalObject(engine.context));
+            const actual = try engine.stringify(try s.get(global, "sdkHighlightDeepRows"));
+            defer std.testing.allocator.free(actual);
+            const bytes = @embedFile("extensions/fixtures/sdk-highlight-deep7-b45.json");
+            const parsed = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes, bytes.len, "highlight-deep7-original.json")));
+            const expected = try engine.stringify(parsed);
+            defer std.testing.allocator.free(expected);
+            if (!std.mem.eql(u8, actual, expected)) {
+                std.debug.print("HIGHLIGHT_DEEP7_ACTUAL={s}\nHIGHLIGHT_DEEP7_EXPECTED={s}\n", .{ actual, expected });
+                return error.HighlightDeepOriginalMismatch;
+            }
+        }
+        try eval(engine, "delete globalThis.highlightCoreAPI;delete globalThis.sdkHighlightDeepRows;delete globalThis.scopeCore;delete globalThis.scopeDeepPhase;");
+        collect(engine);
+    }
+    try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+}
