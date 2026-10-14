@@ -1,0 +1,805 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "eae026dc49db7118e4689cece6e4eebd5f35afcd41b6ca80d8daed6bf4fb2861",
+  "platform": "win32",
+  "arch": "x64",
+  "cases": 25,
+  "instances": 25,
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "sdk-source-1692-full-manifest-20261014.json",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-resumable-regex25-original-local-20261014-candidate.json",
+      "count": 4996,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-resumable-regex25-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "sdk-source-1692-full-manifest-20261014.json",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-resumable-regex25-original-local-20261014-candidate.json",
+      "count": 4996,
+      "drift": 0
+    },
+    {
+      "name": "sdk-highlight-resumable-regex25-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "scope": "Original actual highlight.js10.7.3 ResumableMultiRegex constructors from real compiled caller grammars; unchanged caller input, no Source body rewrite; private algorithms and observed class metadata only",
+  "rows": [
+    {
+      "name": "empty compiler",
+      "value": {
+        "before": {
+          "count": 0,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [],
+          "rules": []
+        },
+        "match": null,
+        "after": {
+          "count": 0,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": []
+        }
+      }
+    },
+    {
+      "name": "single begin wraps index",
+      "value": {
+        "match": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "type": "begin",
+          "position": 0
+        },
+        "state": {
+          "count": 1,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two begin initial selection",
+      "value": {
+        "match": {
+          "values": [
+            "a",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 0,
+          "input": "a",
+          "type": "begin",
+          "position": 0,
+          "label": "first"
+        },
+        "state": {
+          "count": 2,
+          "lastIndex": 0,
+          "regexIndex": 1,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0,
+              "label": "first"
+            },
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 1,
+              "label": "second"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "resume selects next at same position",
+      "value": {
+        "first": {
+          "values": [
+            "a",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 0,
+          "input": "a",
+          "type": "begin",
+          "position": 0,
+          "label": "first"
+        },
+        "second": {
+          "values": [
+            "a"
+          ],
+          "index": 0,
+          "input": "a",
+          "type": "begin",
+          "position": 0,
+          "label": "second"
+        },
+        "state": {
+          "count": 2,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0",
+            "1"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0,
+              "label": "first"
+            },
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0,
+              "label": "second"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "resume fallback full matcher next position",
+      "value": {
+        "first": {
+          "values": [
+            "a",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 0,
+          "input": "a a z",
+          "type": "begin",
+          "position": 0,
+          "label": "first"
+        },
+        "second": {
+          "values": [
+            "a",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 2,
+          "input": "a a z",
+          "type": "begin",
+          "position": 0,
+          "label": "first"
+        },
+        "state": {
+          "count": 2,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0",
+            "1"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0,
+              "label": "first"
+            },
+            {
+              "expression": "/z/",
+              "type": "begin",
+              "position": 0,
+              "label": "second"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nonbegin rule excluded from count",
+      "value": {
+        "match": {
+          "values": [
+            "b",
+            {
+              "undefined": true
+            }
+          ],
+          "index": 0,
+          "input": "b",
+          "type": "end",
+          "position": 1
+        },
+        "state": {
+          "count": 1,
+          "lastIndex": 0,
+          "regexIndex": 2,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            },
+            {
+              "expression": "/b/",
+              "type": "end",
+              "position": 1
+            },
+            {
+              "expression": "/c/",
+              "type": "illegal",
+              "position": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "case insensitive",
+      "value": {
+        "match": {
+          "values": [
+            "ABC"
+          ],
+          "index": 0,
+          "input": "ABC",
+          "type": "begin",
+          "position": 0
+        },
+        "state": {
+          "count": 1,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/abc/",
+              "type": "begin",
+              "position": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "cache identity",
+      "value": {
+        "same": true,
+        "state": {
+          "count": 1,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "adding rule preserves existing compiled cache",
+      "value": {
+        "same": true,
+        "match": null,
+        "state": {
+          "count": 2,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            },
+            {
+              "expression": "/b/",
+              "type": "begin"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "different start mutates shared option positions",
+      "value": {
+        "before": {
+          "count": 3,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            },
+            {
+              "expression": "/b/",
+              "type": "begin",
+              "position": 1
+            },
+            {
+              "expression": "/c/",
+              "type": "begin",
+              "position": 2
+            }
+          ]
+        },
+        "after": {
+          "count": 3,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [
+            "0",
+            "1"
+          ],
+          "rules": [
+            {
+              "expression": "/a/",
+              "type": "begin",
+              "position": 0
+            },
+            {
+              "expression": "/b/",
+              "type": "begin",
+              "position": 0
+            },
+            {
+              "expression": "/c/",
+              "type": "begin",
+              "position": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "consider all resets strict resume state",
+      "value": {
+        "before": true,
+        "after": false,
+        "state": {
+          "count": 0,
+          "lastIndex": 0,
+          "regexIndex": 0,
+          "cached": [],
+          "rules": []
+        }
+      }
+    },
+    {
+      "name": "string lastIndex fallback uses plus",
+      "value": {
+        "match": null,
+        "log": [
+          [
+            "lastIndex",
+            1,
+            "2"
+          ],
+          [
+            "exec",
+            1,
+            "text"
+          ],
+          [
+            "lastIndex",
+            0,
+            "21"
+          ],
+          [
+            "exec",
+            0,
+            "text"
+          ]
+        ],
+        "state": {
+          "count": 0,
+          "lastIndex": "2",
+          "regexIndex": 1,
+          "cached": [],
+          "rules": []
+        }
+      }
+    },
+    {
+      "name": "exec callee and argument getter order",
+      "value": {
+        "match": null,
+        "log": [
+          "getMatcher",
+          "regexIndex",
+          [
+            "called",
+            0
+          ],
+          "lastIndex",
+          [
+            "matcher.lastIndex",
+            3
+          ],
+          [
+            "exec",
+            "text"
+          ],
+          "regexIndex"
+        ]
+      }
+    },
+    {
+      "name": "count bigint increment",
+      "value": {
+        "count": "3n",
+        "lastIndex": 0,
+        "regexIndex": 0,
+        "cached": [],
+        "rules": [
+          {
+            "expression": "/a/",
+            "type": "begin"
+          }
+        ]
+      }
+    },
+    {
+      "name": "count string increment",
+      "value": {
+        "count": 3,
+        "lastIndex": 0,
+        "regexIndex": 0,
+        "cached": [],
+        "rules": [
+          {
+            "expression": "/a/",
+            "type": "begin"
+          }
+        ]
+      }
+    },
+    {
+      "name": "option type setter throw keeps pushed rule",
+      "value": {
+        "same": true,
+        "rules": 1,
+        "count": 0,
+        "identity": true
+      }
+    },
+    {
+      "name": "custom entry iterator closes before addRule",
+      "value": {
+        "log": [
+          "iterator",
+          [
+            "next",
+            0
+          ],
+          [
+            "next",
+            1
+          ],
+          "return",
+          [
+            "position",
+            0
+          ]
+        ],
+        "rules": 1,
+        "compiled": "(a)"
+      }
+    },
+    {
+      "name": "iterator next sentinel preserved",
+      "value": {
+        "same": true,
+        "log": [
+          [
+            "next",
+            0
+          ],
+          [
+            "next",
+            1
+          ]
+        ],
+        "cached": []
+      }
+    },
+    {
+      "name": "retained forEach callback owns matcher",
+      "value": {
+        "rules": 2,
+        "positions": [
+          0,
+          1
+        ],
+        "match": null
+      }
+    },
+    {
+      "name": "live cache getter read twice on hit",
+      "value": {
+        "same": true,
+        "log": [
+          "multiRegexes",
+          "multiRegexes"
+        ]
+      }
+    },
+    {
+      "name": "malformed pair error is TypeError",
+      "value": {
+        "name": "TypeError",
+        "cached": []
+      }
+    },
+    {
+      "name": "regexIndex getter precedes position and later coercion",
+      "value": {
+        "exists": true,
+        "log": [
+          "regexIndex",
+          "regexIndex",
+          "result.position",
+          "index.valueOf",
+          [
+            "regexIndex.set",
+            4
+          ],
+          "regexIndex"
+        ],
+        "index": 4
+      }
+    },
+    {
+      "name": "custom considerAll receives live receiver",
+      "value": {
+        "log": [
+          true
+        ],
+        "state": {
+          "count": 1,
+          "lastIndex": 0,
+          "regexIndex": 17,
+          "cached": [],
+          "rules": []
+        }
+      }
+    },
+    {
+      "name": "constructor and prototype descriptor order",
+      "value": {
+        "owner": [
+          {
+            "key": "rules",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "multiRegexes",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "count",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "lastIndex",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "key": "regexIndex",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true
+          }
+        ],
+        "prototype": [
+          {
+            "key": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "ResumableMultiRegex",
+            "length": 0,
+            "ownPrototype": true
+          },
+          {
+            "key": "getMatcher",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "getMatcher",
+            "length": 1,
+            "ownPrototype": false
+          },
+          {
+            "key": "resumingScanAtSamePosition",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "resumingScanAtSamePosition",
+            "length": 0,
+            "ownPrototype": false
+          },
+          {
+            "key": "considerAll",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "considerAll",
+            "length": 0,
+            "ownPrototype": false
+          },
+          {
+            "key": "addRule",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "addRule",
+            "length": 2,
+            "ownPrototype": false
+          },
+          {
+            "key": "exec",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "name": "exec",
+            "length": 1,
+            "ownPrototype": false
+          }
+        ],
+        "constructor": [
+          {
+            "key": "length",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false
+          },
+          {
+            "key": "name",
+            "enumerable": false,
+            "configurable": true,
+            "writable": false
+          },
+          {
+            "key": "prototype",
+            "enumerable": false,
+            "configurable": false,
+            "writable": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "retained callback forwards overridden addRule result",
+      "value": {
+        "same": true,
+        "log": [
+          {
+            "sameReceiver": true,
+            "expression": "b",
+            "options": {
+              "tag": "later"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-1692-observe-20261014.mjs",
+      "sha256": "ada432e1d692741b750a3f874eaf6c57ada6c78b6026c19df34dd2093f54a147"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-local-source-capture-20261014.mjs",
+      "sha256": "837da0ab557c6955cc67885fabd16c09b09b819cdbad882405d17354831c47de"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    }
+  ]
+}

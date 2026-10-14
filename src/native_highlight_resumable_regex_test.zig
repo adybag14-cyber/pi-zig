@@ -31,14 +31,14 @@ fn exercise(gpa: std.mem.Allocator) !void {
     }
     const maker = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, makeCall, "makeResumableRegex", 1, 0, constructors.len, &constructors)));
     try scope.put(global, "makeResumableRegex", maker);
-    const result = engine.evalModule(@embedFile("extensions/fixtures/sdk-highlight-resumable-regex-1692.input.txt"), "highlight-resumable-regex-original24.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/sdk-highlight-resumable-regex-1692.input.txt"), "highlight-resumable-regex-original25.mjs") catch |err| return engine.nativeAllocationError(err, generation);
     engine.freeValue(result);
     if (engine.native_allocation_generation != generation) return error.OutOfMemory;
     const rows = try scope.get(global, "sdkResumableRegexRows");
     const raw = try engine.stringify(rows);
     defer gpa.free(raw);
     const expected_bytes = @embedFile("extensions/fixtures/sdk-highlight-resumable-regex-1692.json");
-    const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, expected_bytes, expected_bytes.len, "highlight-resumable-regex-original24.json")));
+    const expected = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, expected_bytes, expected_bytes.len, "highlight-resumable-regex-original25.json")));
     const expected_raw = try engine.stringify(expected);
     defer gpa.free(expected_raw);
     if (!std.mem.eql(u8, raw, expected_raw)) {
@@ -53,7 +53,7 @@ fn exercise(gpa: std.mem.Allocator) !void {
     defer engine.freeValue(collected);
     if (c.JS_ToBool(engine.context, collected) != 1) return error.ResumableMultiRegexOwnerRetained;
 }
-test "native ResumableMultiRegex matches genuine original24 cached resume fallback iterator close retained callbacks coercion and sentinel identity" {
+test "native ResumableMultiRegex matches genuine original25 cached resume fallback iterator close retained callbacks coercion and sentinel identity" {
     try exercise(std.testing.allocator);
 }
 test "native ResumableMultiRegex releases every full original probe allocation failure" {

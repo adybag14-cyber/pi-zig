@@ -694,5 +694,20 @@
           }
         ]
       }
+    },
+    {
+      "name": "retained callback forwards overridden addRule result",
+      "value": {
+        "same": true,
+        "log": [
+          {
+            "sameReceiver": true,
+            "expression": "b",
+            "options": {
+              "tag": "later"
+            }
+          }
+        ]
+      }
     }
   ]

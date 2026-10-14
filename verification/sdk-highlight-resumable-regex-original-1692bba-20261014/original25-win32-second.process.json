@@ -1,0 +1,25 @@
+{
+  "pid": 67520,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-local-source-capture-20261014.mjs",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-original-local-20261014-second-output.json",
+    "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\verification\\sdk-highlight-resumable-regex-original-1692bba-20261014\\sdk-highlight-resumable-regex-1692.input.txt",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-original-local-20261014-frozen.json"
+  ],
+  "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-1692-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-local-source-capture-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-original-local-20261014-second-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\verification\\sdk-highlight-resumable-regex-original-1692bba-20261014\\sdk-highlight-resumable-regex-1692.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-highlight-resumable-regex25-original-local-20261014-frozen.json",
+  "created_utc": "2026-10-14T16:49:53.6798733Z",
+  "launched_utc": "2026-10-14T16:49:53.6786905+00:00",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-1692bba-20261014",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T16:50:00.7308508+00:00"
+}
