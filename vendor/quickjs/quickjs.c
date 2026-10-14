@@ -16956,20 +16956,69 @@ static JSValue js_build_arguments(JSContext *ctx, int argc, JSValueConst *argv)
     return JS_EXCEPTION;
 }
 
-/* Pi private legacy-function draft. Borrow argv; return a fresh owned value. */
+/* Pi private legacy-function draft. Existing VM poison/opcodes stay unchanged. */
+static JSValue pi_legacy_arguments_poison(JSContext *ctx,
+                                        JSValueConst this_val,
+                                        int argc, JSValueConst *argv)
+{
+    (void)this_val;
+    (void)argc;
+    (void)argv;
+    return JS_ThrowTypeError(ctx, "'caller', 'callee', and 'arguments' properties may not be accessed on strict mode functions or the arguments objects for calls to them");
+}
+
+/* Borrow argv; return a fresh owned actual unmapped Arguments value. */
 JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
                               JSValueConst *argv)
 {
-    return js_build_arguments(ctx, argc, argv);
+    JSValue value = js_build_arguments(ctx, argc, argv);
+    JSValue poison;
+    JSProperty *property;
+    JSShapeProperty *shape;
+    if (JS_IsException(value))
+        return value;
+    poison = JS_NewCFunction(ctx, pi_legacy_arguments_poison, "", 0);
+    if (JS_IsException(poison)) {
+        JS_FreeValue(ctx, value);
+        return poison;
+    }
+    /* Only this newly owned value receives the Source host diagnostic. */
+    shape = find_own_property(&property, JS_VALUE_GET_OBJ(value), JS_ATOM_callee);
+    assert(shape && (shape->flags & JS_PROP_TMASK) == JS_PROP_GETSET);
+    JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, property->u.getset.getter));
+    JS_FreeValue(ctx, JS_MKPTR(JS_TAG_OBJECT, property->u.getset.setter));
+    property->u.getset.getter = JS_VALUE_GET_OBJ(poison);
+    property->u.getset.setter = JS_VALUE_GET_OBJ(JS_DupValue(ctx, poison));
+    return value;
 }
 
-/* Read-only current frame observation; token is compared only during a call.
- * Native/bound/apply caller conformance is deliberately not inferred here. */
+static JSValue js_function_call(JSContext *ctx, JSValueConst this_val,
+                               int argc, JSValueConst *argv);
+static JSValue js_reflect_apply(JSContext *ctx, JSValueConst this_val,
+                               int argc, JSValueConst *argv);
+
+/* Read-only Source host caller observation. Skip only the three explicit
+ * forwarding builtins; an ordinary native callback boundary yields null. */
 JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
 {
     JSStackFrame *frame = ctx->rt->current_stack_frame;
+    while (frame && JS_IsObject(frame->cur_func)) {
+        JSObject *function = JS_VALUE_GET_OBJ(frame->cur_func);
+        bool forwarding = false;
+        if (function->class_id == JS_CLASS_C_FUNCTION) {
+            if (function->u.cfunc.cproto == JS_CFUNC_generic)
+                forwarding = function->u.cfunc.c_function.generic == js_function_call ||
+                    function->u.cfunc.c_function.generic == js_reflect_apply;
+            else if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
+                forwarding = function->u.cfunc.c_function.generic_magic == js_function_apply;
+        }
+        if (!forwarding)
+            break;
+        frame = frame->prev_frame;
+    }
     *identity = (uintptr_t)frame;
-    if (!frame || frame->is_strict_mode || !JS_IsObject(frame->cur_func))
+    if (!frame || frame->is_strict_mode ||
+        !JS_GetFunctionBytecode(frame->cur_func))
         return JS_NULL;
     return JS_DupValue(ctx, frame->cur_func);
 }

@@ -12,6 +12,11 @@ const c = em.c;
 pub fn create(engine: *em.Engine) !c.JSValue {
     return ordinary.create(engine, "inherit", 1, call, &.{});
 }
+/// Isolated genuine-Original legacy-function diagnostic. Never selected by the
+/// production compiler or ordinary helper until dedicated native qualification.
+pub fn createLegacyPrototype(engine: *em.Engine) !c.JSValue {
+    return @import("native_legacy_function.zig").create(engine, "inherit", 1, call, &.{});
+}
 fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) anyerror!c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

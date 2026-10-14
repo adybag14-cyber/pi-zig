@@ -73,9 +73,23 @@ fn descriptor(context: ?*c.JSContext, output: [*c]c.JSPropertyDescriptor, value:
     return found;
 }
 fn define(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom, field: c.JSValue, getter: c.JSValue, setter: c.JSValue, flags: c_int) callconv(.c) c_int {
-    // The ordinary property table enforces actual writable/configurable flags.
-    // Active legacy redefinition behavior still needs genuine Source cases.
-    return c.JS_DefineProperty(context, state(value).properties, atom, field, getter, setter, flags);
+    const properties = state(value).properties;
+    const extensible = c.JS_IsExtensible(context, value);
+    if (extensible < 0) return -1;
+    if (extensible == 0) {
+        const present = c.JS_GetOwnProperty(context, null, properties, atom);
+        if (present < 0) return -1;
+        if (present == 0) {
+            if (flags & c.JS_PROP_THROW != 0) {
+                _ = c.JS_ThrowTypeError(context, "Cannot define property on a non-extensible native legacy function");
+                return -1;
+            }
+            return 0;
+        }
+    }
+    // The ordinary table enforces the actual writable/configurable descriptors.
+    // Active legacy redefinition requires additional genuine Source coverage.
+    return c.JS_DefineProperty(context, properties, atom, field, getter, setter, flags);
 }
 fn remove(context: ?*c.JSContext, value: c.JSValue, atom: c.JSAtom) callconv(.c) c_int {
     return c.JS_DeleteProperty(context, state(value).properties, atom, 0);
