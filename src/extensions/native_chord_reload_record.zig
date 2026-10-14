@@ -4,6 +4,28 @@ const h = r.h;
 const js = r.js;
 const c = r.c;
 const Scope = r.Scope;
+const aw = @import("native_chord_async_work.zig");
+fn opened(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, phase: c_int) anyerror!void {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (rejected) return aw.complete(&s, work, value, true);
+    const candidate = try s.get(work, "candidate");
+    const record = try s.get(candidate, "object");
+    const run = try s.get(candidate, "run");
+    if (phase == 0) {
+        try aw.wait(opened, &s, work, try h.invoke(&s, record, "waitHydrated", &.{run}), 1);
+        return;
+    }
+    if (try h.length(&s, try s.get(candidate, "reasons")) == 0) {
+        if (phase == 1) {
+            const signal = try s.get(try s.get(try s.get(work, "reload"), "abort"), "signal");
+            try aw.wait(opened, &s, work, try h.invoke(&s, record, "initCells", &.{ run, signal }), 2);
+            return;
+        }
+        try @import("native_chord_reload_candidate.zig").dryRun(&s, try s.get(work, "bindings"), candidate);
+    }
+    try aw.complete(&s, work, c.pi_js_undefined(), false);
+}
 pub fn prepare(s: *Scope, bindings: c.JSValue, reload: c.JSValue, record: c.JSValue) anyerror!c.JSValue {
     const service = try h.invoke(s, try s.get(reload, "services"), "get", &.{try s.get(record, "typeName")});
     const run = try h.invoke(s, record, "run", &.{ service, try s.get(record, "decls") });
@@ -56,11 +78,13 @@ pub fn prepare(s: *Scope, bindings: c.JSValue, reload: c.JSValue, record: c.JSVa
         if (try h.flag(s, resource, "exclusive") and !h.nullish(old) and try h.flag(s, old, "exclusive") and try s.equal(try s.get(old, "state"), "open")) try js.push(s.engine, try s.get(candidate, "replaced"), old);
     }
     if (try r.index(s, deferred, "size") > 0) try js.push(s.engine, try s.get(candidate, "reasons"), try s.text("exclusive resource replaced"));
-    if (try h.length(s, try s.get(candidate, "reasons")) == 0) try @import("native_chord_reload_candidate.zig").dryRun(s, bindings, candidate);
     const open = try s.list();
     for (0..try h.length(s, resources)) |index| {
         const resource = try s.at(resources, index);
         if (!try r.has(s, deferred, resource)) try js.push(s.engine, open, resource);
     }
-    return h.invoke(s, record, "open", &.{ open, try s.get(try s.get(run, "created"), "refs"), try s.get(try s.get(reload, "abort"), "signal") });
+    const work = try aw.create(s);
+    inline for (.{ "candidate", "bindings", "reload" }, .{ candidate, bindings, reload }) |name, value| try h.field(s, work, name, value);
+    try aw.wait(opened, s, work, try h.invoke(s, record, "open", &.{ open, try s.get(try s.get(run, "created"), "refs"), try s.get(try s.get(reload, "abort"), "signal") }), 0);
+    return aw.result(s, work);
 }

@@ -79,6 +79,11 @@ implementation body or missing-method fallback is introduced.
   authorize/resolve/authorize/synchronize stages use owned intrinsic await
   capabilities and preserve the authorization checks around each await.
   Relaying validates the contract's placement before route resolution.
+- Reload prepare now opens resources, waits for hydration, initializes added
+  cells before an ungated dry run, and initializes gated cells after exclusive
+  resource opens. Candidate value reads suppress only actual Chord not_ready
+  or not_in_variant errors, rethrowing every other error unchanged. Host close
+  first closes the retained consumer linger bindings.
 
 ## Qualification boundary and remaining integration
 

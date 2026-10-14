@@ -6,6 +6,9 @@ const c = h.c;
 pub fn close(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
+    const host_data = (try h.actor(&s, host, bindings, .HostImpl)).data;
+    const lingering = try h.values(&s, try s.get(host_data, "lingering"));
+    for (0..try h.length(&s, lingering)) |index| _ = try h.invoke(&s, try s.at(lingering, index), "close", &.{});
     _ = try h.invoke(&s, try s.get(host, "hostObjects"), "clear", &.{});
     const data = (try h.actor(&s, host, bindings, .HostImpl)).data;
     const facets = try h.snapshot(&s, try h.invoke(&s, try s.get(data, "facetRuns"), "keys", &.{}));

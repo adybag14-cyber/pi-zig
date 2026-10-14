@@ -40,12 +40,21 @@ fn compareEntries(engine: *h.Engine, a: c.JSValue, b: c.JSValue) !c.JSValue {
 }
 fn readSource(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(ctx.?);
-    return readValue(engine, captures[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| @import("native_durable.zig").reject(engine, err);
+    return readValue(engine, captures[0], if (argc > 0) argv[0] else c.pi_js_undefined(), captures[1]) catch |err| @import("native_durable.zig").reject(engine, err);
 }
-fn readValue(engine: *h.Engine, values: c.JSValue, source: c.JSValue) !c.JSValue {
+fn readValue(engine: *h.Engine, values: c.JSValue, source: c.JSValue, bindings: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    return if (try r.has(&s, values, source)) js.invoke(engine, values, "get", &.{source}) else js.get(engine, source, "value");
+    if (try r.has(&s, values, source)) return js.invoke(engine, values, "get", &.{source});
+    const generation = engine.native_allocation_generation;
+    return js.get(engine, source, "value") catch |err| {
+        const mapped = engine.nativeAllocationError(err, generation);
+        if (mapped != error.JavaScriptException) return mapped;
+        const reason = try s.keep(c.JS_DupValue(engine.context, engine.captured_exception orelse return err));
+        const errors = try s.get(bindings, "errors");
+        if (c.JS_ToBool(engine.context, try h.invoke(&s, errors, "isChordError", &.{ reason, try s.text("not_ready") })) != 0 or c.JS_ToBool(engine.context, try h.invoke(&s, errors, "isChordError", &.{ reason, try s.text("not_in_variant") })) != 0) return c.pi_js_undefined();
+        return h.throwValue(&s, reason);
+    };
 }
 pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!void {
     const run = try s.get(candidate, "run");
@@ -82,8 +91,8 @@ pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!voi
         defer s.engine.freeValue(entry);
         const name = try s.at(entry, 0);
         const derived = try s.at(entry, 1);
-        var captures = [_]c.JSValue{values};
-        const read = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, readSource, "", 1, 0, 1, &captures)));
+        var captures = [_]c.JSValue{ values, bindings };
+        const read = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, readSource, "", 1, 0, 2, &captures)));
         const value = try h.invoke(s, derived, "compute", &.{read});
         const schemas = try h.invoke(s, exposed, "get", &.{derived});
         if (!h.nullish(schemas)) {

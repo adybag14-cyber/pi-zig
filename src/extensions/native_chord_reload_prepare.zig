@@ -75,6 +75,11 @@ fn gateStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool
         try h.field(&s, work, "replacedIndex", c.JS_NewInt32(engine.context, 0));
     } else if (phase == 2) {
         try r.alive(&s, bindings, reload);
+        const candidate = try s.at(gated, try r.index(&s, work, "candidateIndex"));
+        const record = try s.get(candidate, "object");
+        return h.wait(gateStep, engine, work, try h.invoke(&s, record, "initCells", &.{ try s.get(candidate, "run"), try s.get(try s.get(reload, "abort"), "signal") }), 3);
+    } else if (phase == 3) {
+        try r.alive(&s, bindings, reload);
         _ = try r.advance(&s, work, "candidateIndex");
         try r.put(&s, work, "replacedIndex", c.JS_NewInt32(engine.context, 0));
     }
