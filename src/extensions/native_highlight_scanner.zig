@@ -353,7 +353,7 @@ fn openContinuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c
     _ = scope.invoke(roots[0], "openNode", &.{if (argc > 0) argv[0] else c.pi_js_undefined()}) catch |err| return sdk.fail(engine, err);
     return c.pi_js_undefined();
 }
-fn destructurePair(scope: *Scope, value: c.JSValue) ![2]c.JSValue {
+pub fn destructurePair(scope: *Scope, value: c.JSValue) ![2]c.JSValue {
     // IteratorClose after the second element is required for custom keyword data.
     const iterator_symbol = try scope.get(try scope.global("Symbol"), "iterator");
     const iterator = try scope.call(try key(scope, value, iterator_symbol), value, &.{});
