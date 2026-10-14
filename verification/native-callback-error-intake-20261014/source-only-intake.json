@@ -1,0 +1,28 @@
+{
+  "status": "qualified_narrow_Env_callback_error_identity_bodies_intaken_source_only_here",
+  "source_commit": "4a11aaba4b99373aaaee8da24567d12284bd571c",
+  "requalified_source": "75ea66c91352b0f62965e331ac36adcf3a50ca9f",
+  "qualified_run": 38572898382,
+  "proof_commit": "31e5c660ad404639ed09824bcae76685a40c70b1",
+  "proof_branch": "work/env-filehandle-qualified-proof-75ea66c-20261014",
+  "files": [
+    {
+      "path": "src/extensions/node_buffer.zig",
+      "git_blob": "22fb6bf27a2bd677a80b13217ef31e49577d21cf",
+      "sha256": "63B02E77C813AA95A69298411136699A71E6602EEB37382F59A94B7FF0E8B4B6",
+      "entire_file_exact_qualified_Env4a11": true
+    },
+    {
+      "path": "src/extensions/node_path.zig",
+      "git_blob": "f3da55506196bdcd72728dba60b22c9954aa10e5",
+      "sha256": "574D19F98F49241BE8F74612C0B2AAFA21409346041AB88B511BBE96A680B625",
+      "entire_file_exact_qualified_Env4a11": true
+    }
+  ],
+  "native_out_of_memory": "exact fresh Engine.throwNativeOutOfMemory identity only",
+  "guest_exceptions": "Engine.throwCaptured original identity",
+  "encoding_behavior": "unchanged; engine.toString remains fallible, only UnknownBufferEncoding accepted for existing byteLength fallback",
+  "newstream_visibility_WIP_intaken": false,
+  "local_native_execution_qualification": "pending exact-current Source comparison/GPA; Env component proof does not qualify current full renderer tree",
+  "public_activation": false
+}
