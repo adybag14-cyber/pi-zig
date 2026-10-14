@@ -1,0 +1,40 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": 17,
+  "case_names": [
+    "boxed initial state and schema ownership",
+    "uninitialized cell reads actual not_ready",
+    "uninitialized change calls guard before failing without running callback",
+    "uninitialized replace calls guard before failing",
+    "initialize installs the first value without publishing and events then snapshot it",
+    "initialize twice throws actual ordinary error",
+    "invalid initialize leaves the cell uninitialized and can retry",
+    "boxed undefined constructor value uses actual null placeholder",
+    "initialize undefined keeps actual undefined value",
+    "constructor reads initial box again after validation",
+    "hydrationOf only reads object hydration symbol and preserves its identity",
+    "unhydrated fully iterates before hydration getters and filters strict false",
+    "hydration getter failures keep raw identity",
+    "derived hydration follows real pending source and is absent after hydration",
+    "derived hydration wait preserves raw source rejection",
+    "derived hydration uses actual public Promise.all and then",
+    "derived over hydrated cells has no hydration object"
+  ],
+  "source_body_replaced": false,
+  "actual_factory_calls": true,
+  "caller": "src/extensions/fixtures/chord-cell-hydration-original-b45.input.txt",
+  "caller_sha256": "DA8EC8141E8C0F1154692AFAD39257DA2DBFBF54F73969F31EFB9DF508EF42CD",
+  "oracle": "src/extensions/fixtures/chord-cell-hydration-original-b45.json",
+  "oracle_sha256": "E66AB66A7623ED357AB060DABB4C58E516AC1003C2CB3EBA8B9DA169E6572FEA",
+  "full_source_inputs": 34803,
+  "source_inputs": 1965,
+  "dependency_inputs": 31064,
+  "node_inputs": 1774,
+  "capture_attempts": [
+    "chord-cell-hydration-b45-first-20261014",
+    "chord-cell-hydration-b45-second-20261014"
+  ],
+  "native_qualified": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

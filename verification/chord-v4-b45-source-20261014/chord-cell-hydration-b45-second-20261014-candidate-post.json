@@ -1,0 +1,11 @@
+{
+  "candidate_before": 5362,
+  "candidate_after": 5362,
+  "candidate_drift": 0,
+  "root_pid_absent": true,
+  "source_inputs": 1965,
+  "dependency_inputs": 31064,
+  "node_inputs": 1774,
+  "control_drift": 0,
+  "completed_utc": "2026-10-14T19:30:29.9445746+00:00"
+}

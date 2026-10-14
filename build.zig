@@ -782,6 +782,13 @@ pub fn build(b: *std.Build) void {
     const chord_contracts_v4_run = b.addRunArtifact(chord_contracts_v4_tests);
     chord_contracts_v4_run.has_side_effects = true;
     b.step("test-native-chord-contracts-v4-source", "Replay actual b45 Source28 placement fingerprints binding raw identity GC and all host allocation failures").dependOn(&chord_contracts_v4_run.step);
+    const chord_cells_v4_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_cells_v4_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 cells"} });
+    linkQuickJs(b, chord_cells_v4_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_cells_v4_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-cells-v4-source", "Compile actual b45 deferred Cell and Derived hydration Source17").dependOn(&chord_cells_v4_tests.step);
+    const chord_cells_v4_run = b.addRunArtifact(chord_cells_v4_tests);
+    chord_cells_v4_run.has_side_effects = true;
+    b.step("test-native-chord-cells-v4-source", "Replay actual b45 Cell Derived Source17 initialization hydration promises raw identity GC and all host allocation failures").dependOn(&chord_cells_v4_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

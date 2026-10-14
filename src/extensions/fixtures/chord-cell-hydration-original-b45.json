@@ -1,0 +1,166 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "boxed initial state and schema ownership",
+      "value": {
+        "value": 3,
+        "schemaSame": true,
+        "ownSchemaSame": true
+      }
+    },
+    {
+      "name": "uninitialized cell reads actual not_ready",
+      "value": {
+        "name": "ChordError",
+        "code": "not_ready",
+        "message": "not_ready: state later (its init has not run) is not ready"
+      }
+    },
+    {
+      "name": "uninitialized change calls guard before failing without running callback",
+      "value": {
+        "events": [
+          "guard:ctx"
+        ],
+        "error": {
+          "name": "ChordError",
+          "code": "not_ready",
+          "message": "not_ready: state later (its init has not run) is not ready"
+        }
+      }
+    },
+    {
+      "name": "uninitialized replace calls guard before failing",
+      "value": {
+        "events": [
+          "guard:ctx"
+        ],
+        "error": {
+          "name": "ChordError",
+          "code": "not_ready",
+          "message": "not_ready: state later (its init has not run) is not ready"
+        }
+      }
+    },
+    {
+      "name": "initialize installs the first value without publishing and events then snapshot it",
+      "value": {
+        "during": [],
+        "value": 7,
+        "events": [
+          {
+            "type": "snap",
+            "value": 7
+          }
+        ]
+      }
+    },
+    {
+      "name": "initialize twice throws actual ordinary error",
+      "value": {
+        "name": "Error",
+        "message": "state once is already initialized"
+      }
+    },
+    {
+      "name": "invalid initialize leaves the cell uninitialized and can retry",
+      "value": {
+        "rejected": {
+          "code": "invalid",
+          "reason": "state"
+        },
+        "before": {
+          "name": "ChordError",
+          "code": "not_ready",
+          "message": "not_ready: state valid (its init has not run) is not ready"
+        },
+        "value": 9
+      }
+    },
+    {
+      "name": "boxed undefined constructor value uses actual null placeholder",
+      "value": {
+        "isNull": true
+      }
+    },
+    {
+      "name": "initialize undefined keeps actual undefined value",
+      "value": {
+        "isUndefined": true
+      }
+    },
+    {
+      "name": "constructor reads initial box again after validation",
+      "value": {
+        "reads": [
+          1,
+          2
+        ],
+        "value": 2
+      }
+    },
+    {
+      "name": "hydrationOf only reads object hydration symbol and preserves its identity",
+      "value": {
+        "same": true,
+        "absent": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "name": "unhydrated fully iterates before hydration getters and filters strict false",
+      "value": {
+        "events": [
+          "first",
+          "second",
+          "end",
+          "a.hydration",
+          "b.hydration"
+        ],
+        "count": 1,
+        "same": true
+      }
+    },
+    {
+      "name": "hydration getter failures keep raw identity",
+      "value": true
+    },
+    {
+      "name": "derived hydration follows real pending source and is absent after hydration",
+      "value": {
+        "before": false,
+        "afterAbsent": true,
+        "value": 14
+      }
+    },
+    {
+      "name": "derived hydration wait preserves raw source rejection",
+      "value": true
+    },
+    {
+      "name": "derived hydration uses actual public Promise.all and then",
+      "value": {
+        "events": [
+          "all.get",
+          "source.wait",
+          "all.call:true",
+          "then.call:true"
+        ],
+        "isUndefined": true
+      }
+    },
+    {
+      "name": "derived over hydrated cells has no hydration object",
+      "value": {
+        "absent": true,
+        "value": 5
+      }
+    }
+  ]
+}
