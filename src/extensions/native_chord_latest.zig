@@ -39,6 +39,8 @@ fn createClasses(engine: *h.Engine) !Classes {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     try @import("abort_signal.zig").install(engine);
+    // Host.resolve uses the genuine URL brand even for object facet references.
+    try @import("node_url.zig").install(engine);
     if (engine.buffer_prototype == null) try @import("node_buffer.zig").install(engine);
     const bindings = try s.record();
     try h.field(&s, bindings, "classes", try s.record());

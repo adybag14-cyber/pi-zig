@@ -80,7 +80,7 @@ pub fn promise(s: *Scope, name: [*:0]const u8, values: c.JSValue) !c.JSValue {
 pub fn next(s: *Scope, iterator: c.JSValue) !?c.JSValue {
     const result = try h.invoke(s, iterator, "next", &.{});
     if (try h.flag(s, result, "done")) return null;
-    return s.get(result, "value");
+    return try s.get(result, "value");
 }
 pub fn noop(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();

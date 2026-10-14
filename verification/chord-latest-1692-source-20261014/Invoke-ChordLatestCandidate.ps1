@@ -91,17 +91,17 @@ if($Phase -eq 'Run'){
  $candidateMarker=[regex]::Matches($candidateLog,'CHORD_LATEST_COMPILED_INVENTORY=(\[[^\r\n]*\])')
  if($candidateMarker.Count -ne 1){throw 'Missing or duplicated compiled inventory'}
  $candidateNames=@($candidateMarker[0].Groups[1].Value|ConvertFrom-Json)
- $candidateWanted=@('native latest Chord1692 compiled selected inventory','native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks','native latest Chord1692 actual Source8 full Host Connection RemoteRef RelayRef links calls state and invalidation','native latest Chord1692 actual Source2 already closed full Host construction accept connect','native latest Chord1692 actual Source9 protocol2 packed bytes window acknowledgement maxCalls negatives','native latest Chord1692 actual object refs root signals and declarations survive GC then teardown','native latest Chord1692 complete actual object factory root call and teardown GPA sweep')
- if($candidateNames.Count -ne 7 -or @($candidateNames|Sort-Object -Unique).Count -ne 7){throw 'Selected compiled inventory changed'}
+ $candidateWanted=@('native latest Chord1692 compiled selected inventory','native latest Chord1692 actual Source8 object factories reload cells resource adoption signals tasks','native latest Chord1692 actual Source8 full Host Connection RemoteRef RelayRef links calls state and invalidation','native latest Chord1692 actual Source2 already closed full Host construction accept connect','native latest Chord1692 actual Source9 protocol2 packed bytes window acknowledgement maxCalls negatives','native latest Chord1692 actual object refs root signals and declarations survive GC then teardown','native latest Chord1692 complete actual object factory root call and teardown GPA sweep','native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep')
+ if($candidateNames.Count -ne 8 -or @($candidateNames|Sort-Object -Unique).Count -ne 8){throw 'Selected compiled inventory changed'}
  foreach($candidateName in $candidateWanted){if(@($candidateNames|Where-Object{$_.EndsWith('.test.'+$candidateName,[StringComparison]::Ordinal)}).Count -ne 1){throw "Missing selected gate $candidateName"}}
- if($candidateLog.IndexOf('run test 7 pass (7 total)',[StringComparison]::Ordinal) -lt 0){throw 'All selected native gates did not execute'}
- [ordered]@{head=$ExpectedHead;mode=$Mode;platform=$Platform;status='passed';source_cases=27;compiled_tests=7;compiled_names=$candidateNames;gc='passed';all_gpa_failures='passed';host_await_seconds=10;test_timeout_seconds=120;outer_timeout_seconds=300;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/result.json" -Encoding utf8NoBOM
+ if($candidateLog.IndexOf('run test 8 pass (8 total)',[StringComparison]::Ordinal) -lt 0){throw 'All selected native gates did not execute'}
+ [ordered]@{head=$ExpectedHead;mode=$Mode;platform=$Platform;status='passed';source_cases=27;compiled_tests=8;compiled_names=$candidateNames;gc='passed';all_gpa_failures='passed';host_await_seconds=10;test_timeout_seconds=120;outer_timeout_seconds=300;public_activation=$false;node_loader_qualified=$false;manager_qualified=$false;full_pi_qualified=$false}|ConvertTo-Json -Depth 6|Set-Content "$candidateReceipt/result.json" -Encoding utf8NoBOM
  return
 }
 if($Phase -eq 'Post'){
  foreach($candidateKind in @('inputs','tools')){
   $candidateRows=@(Get-Content "$candidateReceipt/$candidateKind.json" -Raw|ConvertFrom-Json)
-  $candidateDrift=Check-Rows $candidateRows
+  $candidateDrift=@(Check-Rows $candidateRows)
   [ordered]@{count=$candidateRows.Count;drift_count=$candidateDrift.Count;drift=$candidateDrift;checked_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 5|Set-Content "$candidateReceipt/$candidateKind-posthash.json" -Encoding utf8NoBOM
   if($candidateDrift.Count){throw "Frozen $candidateKind bytes changed"}
  }
