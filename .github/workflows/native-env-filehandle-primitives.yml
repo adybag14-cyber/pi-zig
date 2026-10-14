@@ -101,8 +101,9 @@ jobs:
           $file=Join-Path $tool $archive
           Invoke-WebRequest -Uri "https://nodejs.org/dist/v24.14.0/$archive" -OutFile $file -TimeoutSec 90
           if((Get-FileHash -LiteralPath $file).Hash -cne $hash){throw 'Reference archive checksum mismatch'}
-          if($IsWindows){Expand-Archive -LiteralPath $file -DestinationPath $tool}else{& tar -xf $file -C $tool}
-          if($LASTEXITCODE -ne 0){throw 'Reference Node extraction failed'}
+          if($IsWindows){Expand-Archive -LiteralPath $file -DestinationPath $tool}
+          else{& tar -xf $file -C $tool;if($LASTEXITCODE -ne 0){throw 'Reference Node extraction failed'}}
+          if(!(Test-Path -LiteralPath (Join-Path $tool $binary) -PathType Leaf)){throw 'Extracted reference Node binary absent'}
           $receipt='verification/env-node-fs-source-only'
           New-Item -ItemType Directory -Path $receipt|Out-Null
           [ordered]@{node=(Join-Path $tool $binary);archive=$archive;archive_sha256=$hash;node_sha256=(Get-FileHash -LiteralPath (Join-Path $tool $binary)).Hash}|ConvertTo-Json|Set-Content "$receipt/tool.json"
