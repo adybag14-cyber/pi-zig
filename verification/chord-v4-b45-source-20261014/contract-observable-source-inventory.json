@@ -31,5 +31,21 @@
   ],
   "native_qualified": false,
   "public_activation": false,
-  "full_pi_qualified": false
+  "full_pi_qualified": false,
+  "native_component_debug": {
+    "head": "7ed8ac9c49de3e4fbce5c93403fb8f75fd636f31",
+    "source_cases": 40,
+    "compiled_tests": 6,
+    "original28_host_gpa": 2133,
+    "observable12_host_gpa": 249,
+    "all_host_indices": "passed",
+    "native_gc": "passed",
+    "candidate_inputs": 5348,
+    "original_inputs": 1965,
+    "compiler_inputs": 19546,
+    "post_drift": 0,
+    "root_pid_absent": true,
+    "c_malloc_exhaustive": false,
+    "full_v4_graph": false
+  }
 }
