@@ -1,0 +1,20 @@
+{
+  "status": "retained_harness_argv_packing_failure_before_Source_execution",
+  "run_id": 38605290473,
+  "head": "a7f60a577fc8960032dfc165af4c2e0c99f3ca90",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "platform": "linux",
+  "source_cases_executed": 0,
+  "source_files": 1955,
+  "dependencies": 26280,
+  "node_tools": 4560,
+  "candidate_files": 5092,
+  "fullpost_drift": 0,
+  "failure": "PowerShell scalar-plus packed nine intended arguments into one invalid --expose-gc--max-old-space-size option",
+  "repair": "eb5d4ca5cc667c7faa852bf6f3bf8991dbd7b29b typed string[] argv boundaries only",
+  "successful_successor_run": 38612827957,
+  "original_Source_body_edits": 0,
+  "native_inherit_qualified": false,
+  "old_run_cancelled": false,
+  "external_artifact": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-inherit24-original-a7f60a5-linux-negative-20261014"
+}

@@ -1,0 +1,17 @@
+{
+  "pid": 2613,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--expose-gc--max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-inherit-original-1692bba-20261014/capture-inherit.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-inherit-original-result/inherit-first-output.json /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-inherit-original-1692bba-20261014/sdk-highlight-inherit-1692.input.txt"
+  ],
+  "live_command_line": "",
+  "created_utc": "2026-10-14T17:19:40.5745032Z",
+  "launched_utc": "2026-10-14T17:19:40.5752732+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "failed",
+  "exit_code": 9,
+  "completed_utc": "2026-10-14T17:19:40.5856810+00:00"
+}
