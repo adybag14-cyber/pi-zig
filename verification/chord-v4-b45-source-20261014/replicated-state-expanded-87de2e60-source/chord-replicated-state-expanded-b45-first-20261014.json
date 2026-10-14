@@ -1,0 +1,16 @@
+{
+  "name": "chord-replicated-state-expanded-b45-first-20261014",
+  "pid": 12320,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Capture-ChordReplicatedStateExpandedB45.mjs C:\\Users\\adyba\\pi-zig-chord-v4-state-b45-20261014\\src\\extensions\\fixtures\\chord-replicated-state-expanded-original-b45.input.txt C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\chord-replicated-state-expanded-b45-first-20261014-output.json chordReplicatedStateExpandedCases",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-14T22:53:59.3261099Z",
+  "launched_utc": "2026-10-14T22:53:59.3236734+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-zig-update-evidence-20261003",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T22:54:01.6222013+00:00"
+}

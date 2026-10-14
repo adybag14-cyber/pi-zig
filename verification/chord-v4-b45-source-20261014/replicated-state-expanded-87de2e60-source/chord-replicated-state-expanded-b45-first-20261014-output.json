@@ -1,0 +1,467 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "mutable state takes immutable root ownership",
+      "value": {
+        "same": true,
+        "value": {
+          "n": 1,
+          "keep": {
+            "x": 2
+          }
+        },
+        "change": "function",
+        "replace": "function",
+        "dispose": "undefined"
+      }
+    },
+    {
+      "name": "hydration has exact background context and subscriber receiver",
+      "value": [
+        {
+          "value": {
+            "n": 1
+          },
+          "background": true,
+          "delivery": {
+            "kind": "hydrate",
+            "sequence": 0
+          },
+          "receiver": "StateSubscriber"
+        }
+      ]
+    },
+    {
+      "name": "change preserves old revision and clones inserted values",
+      "value": {
+        "old": 1,
+        "current": 2,
+        "shared": true,
+        "cloned": true,
+        "seen": [
+          {
+            "n": 1,
+            "context": false,
+            "sequence": 0
+          },
+          {
+            "n": 2,
+            "context": true,
+            "sequence": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty changes publish no revision",
+      "value": [
+        0
+      ]
+    },
+    {
+      "name": "replacement transfers root and publishes only real changes",
+      "value": {
+        "value": {
+          "n": 2
+        },
+        "seen": [
+          {
+            "n": 1,
+            "context": false,
+            "sequence": 0
+          },
+          {
+            "n": 2,
+            "context": true,
+            "sequence": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "change callback reentrancy fails atomically and then recovers",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Replicated state cannot be changed reentrantly from a change callback"
+        },
+        "before": 1,
+        "after": 3
+      }
+    },
+    {
+      "name": "replacement from change callback fails atomically",
+      "value": {
+        "error": {
+          "name": "Error",
+          "message": "Replicated state cannot be replaced from a change callback"
+        },
+        "value": {
+          "n": 1
+        }
+      }
+    },
+    {
+      "name": "async change callback is rejected without committing",
+      "value": {
+        "error": {
+          "name": "TypeError",
+          "message": "Replicated state change callbacks must be synchronous"
+        },
+        "value": {
+          "n": 4
+        }
+      }
+    },
+    {
+      "name": "subscribers serialize a pending hydration before updates",
+      "value": {
+        "before": [
+          {
+            "n": 0,
+            "sequence": 0
+          }
+        ],
+        "after": [
+          {
+            "n": 0,
+            "sequence": 0
+          },
+          {
+            "n": 1,
+            "sequence": 1
+          },
+          {
+            "n": 2,
+            "sequence": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "bounded pending queue keeps newest revisions after overflow",
+      "value": [
+        {
+          "n": 0,
+          "sequence": 0
+        },
+        {
+          "n": 101,
+          "sequence": 101
+        },
+        {
+          "n": 102,
+          "sequence": 102
+        },
+        {
+          "n": 103,
+          "sequence": 103
+        },
+        {
+          "n": 104,
+          "sequence": 104
+        },
+        {
+          "n": 105,
+          "sequence": 105
+        }
+      ]
+    },
+    {
+      "name": "unsubscribe discards pending updates without joining callback",
+      "value": {
+        "seen": [
+          0
+        ],
+        "value": {
+          "n": 2
+        }
+      }
+    },
+    {
+      "name": "source attachment drains buffered revisions before later hydration",
+      "value": {
+        "value": {
+          "n": 2
+        },
+        "seen": [
+          {
+            "same": true,
+            "background": true,
+            "sequence": 1
+          }
+        ],
+        "counts": {
+          "attached": 1,
+          "activated": 1,
+          "closed": 1
+        },
+        "change": "undefined"
+      }
+    },
+    {
+      "name": "source publishes exact immutable values without reading ops",
+      "value": {
+        "same": true,
+        "seen": [
+          {
+            "n": 1,
+            "context": false,
+            "sequence": 0
+          },
+          {
+            "n": 7,
+            "context": true,
+            "sequence": 1
+          }
+        ],
+        "counts": {
+          "attached": 1,
+          "activated": 1,
+          "closed": 1
+        }
+      }
+    },
+    {
+      "name": "source cursor gap reports and disposes once retaining value",
+      "value": {
+        "errors": [
+          {
+            "name": "Error",
+            "message": "Replicated state source cursor has a gap: expected 4, received 5",
+            "receiver": "AttachedReplicatedStateImpl"
+          }
+        ],
+        "value": {
+          "n": 1
+        },
+        "counts": {
+          "attached": 1,
+          "activated": 1,
+          "closed": 1
+        }
+      }
+    },
+    {
+      "name": "source unsafe snapshot cleans up before rethrow",
+      "value": {
+        "error": {
+          "name": "TypeError",
+          "message": "Replicated state source snapshot cursor must be a safe integer"
+        },
+        "counts": {
+          "attached": 1,
+          "activated": 0,
+          "closed": 1
+        }
+      }
+    },
+    {
+      "name": "factory is an ordinary constructible source function",
+      "value": {
+        "length": 2,
+        "value": {
+          "n": 6
+        },
+        "name": "MutableReplicatedStateImpl"
+      }
+    },
+    {
+      "name": "mutable independently serializes slow and fast subscriptions",
+      "value": {
+        "before": {
+          "events": [
+            "start:0"
+          ],
+          "fast": [
+            0,
+            1,
+            2
+          ],
+          "value": 2
+        },
+        "middle": [
+          "start:0",
+          "end:0",
+          "start:1"
+        ],
+        "after": [
+          "start:0",
+          "end:0",
+          "start:1",
+          "end:1",
+          "start:2",
+          "end:2"
+        ],
+        "fast": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "mutable excludes running update from overflow and retains identities",
+      "value": {
+        "before": [
+          0,
+          1
+        ],
+        "after": [
+          0,
+          1,
+          102,
+          103
+        ],
+        "sameValue": true,
+        "sameContext": true,
+        "delivery": {
+          "kind": "update",
+          "sequence": 102
+        }
+      }
+    },
+    {
+      "name": "mutable treats repeated callback subscriptions independently",
+      "value": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "mutable serializes reentrant hydration and update callbacks",
+      "value": [
+        "start:0",
+        "end:0",
+        "start:1",
+        "end:1",
+        "start:2",
+        "end:2"
+      ]
+    },
+    {
+      "name": "attached independently serializes slow and fast subscriptions",
+      "value": {
+        "before": {
+          "events": [
+            "start:0"
+          ],
+          "fast": [
+            0,
+            1,
+            2
+          ],
+          "value": 2
+        },
+        "middle": [
+          "start:0",
+          "end:0",
+          "start:1"
+        ],
+        "after": [
+          "start:0",
+          "end:0",
+          "start:1",
+          "end:1",
+          "start:2",
+          "end:2"
+        ],
+        "fast": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "attached excludes running update from overflow and retains identities",
+      "value": {
+        "before": [
+          0,
+          1
+        ],
+        "after": [
+          0,
+          1,
+          102,
+          103
+        ],
+        "sameValue": true,
+        "sameContext": true,
+        "delivery": {
+          "kind": "update",
+          "sequence": 102
+        }
+      }
+    },
+    {
+      "name": "attached treats repeated callback subscriptions independently",
+      "value": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "attached serializes reentrant hydration and update callbacks",
+      "value": [
+        "start:0",
+        "end:0",
+        "start:1",
+        "end:1",
+        "start:2",
+        "end:2"
+      ]
+    },
+    {
+      "name": "attached isolates raw synchronous hydration failure and continues",
+      "value": {
+        "errors": [
+          true
+        ],
+        "received": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "name": "attached observes rejection after unsubscribe with raw identity",
+      "value": {
+        "errors": [
+          true
+        ],
+        "received": [
+          0
+        ]
+      }
+    },
+    {
+      "name": "mutable rolls back raw callback failure and revokes escaped draft",
+      "value": {
+        "same": true,
+        "retained": true,
+        "value": {
+          "nested": {
+            "n": 1
+          }
+        },
+        "revoked": true
+      }
+    },
+    {
+      "name": "mutable default reporter queues exact callback rejection",
+      "value": {
+        "reports": 1,
+        "same": [
+          true
+        ],
+        "value": {
+          "n": 1
+        }
+      }
+    }
+  ]
+}
