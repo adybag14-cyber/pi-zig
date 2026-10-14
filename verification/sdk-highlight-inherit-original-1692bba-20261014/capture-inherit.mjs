@@ -1,0 +1,12 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{join}from'node:path';import{pathToFileURL}from'node:url';
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{const rows=JSON.parse(readFileSync(join(process.env.PI_RENDERER_RECEIPTS,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);return{name,count:rows.length,drift:0};});
+const before=verify(),root=process.env.PI_RENDERER_SOURCE_ROOT;
+const{default:core}=await import(pathToFileURL(join(root,'node_modules/highlight.js/lib/core.js')).href);
+globalThis.inheritAPI=core.inherit;
+if(typeof globalThis.gc!=='function')throw Error('Required actual Node GC unavailable');
+globalThis.collectInheritanceGarbage=async()=>{await new Promise(resolve=>setImmediate(resolve));globalThis.gc();await new Promise(resolve=>setImmediate(resolve));};
+const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));
+if(sdkHighlightInheritRows.length!==24)throw Error('Original inherit24 inventory mismatch '+sdkHighlightInheritRows.length);
+const observedModules=readFileSync(join(process.env.PI_RENDERER_RECEIPTS,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'1692bba6347a287ab0f3cb554a4430fafffc474b',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:sdkHighlightInheritRows.length,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Original actual highlight.js10.7.3 exported inherit function called unchanged; inherited/nonenumerable/deletion/proxy ordering, exceptions and real GC; caller input unchanged, no Source body rewrite',rows:sdkHighlightInheritRows,observedModules},null,2));
