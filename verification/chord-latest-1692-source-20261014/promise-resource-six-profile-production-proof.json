@@ -1,0 +1,83 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "production_vm_sha256": "00543FBCBBBDDF922C112EFC374900E8DA9BBC8E9E9F4B4FB0AEAA4304C88CD1",
+  "production_probe_golden_identical": true,
+  "profiles": [
+    {
+      "platform": "windows-latest",
+      "mode": "Debug",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": false
+    },
+    {
+      "platform": "windows-latest",
+      "mode": "ReleaseSafe",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": false
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "Debug",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": false
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": false
+    },
+    {
+      "platform": "macos-latest",
+      "mode": "Debug",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "79a1304e45627e821bb384ff0b11b874f650e246",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": true
+    },
+    {
+      "platform": "macos-latest",
+      "mode": "ReleaseSafe",
+      "module_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "module_vm_budgets": 514,
+      "resource_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+      "resource_all858_host_indices": "passed",
+      "original_source4": "passed",
+      "original_caller_negative856": "passed",
+      "metadata_successor": false
+    }
+  ],
+  "original_run": 38610788981,
+  "original_aggregate_status": "failed",
+  "mac_debug_successor_run": 38618977084,
+  "mac_debug_successor_status": "passed",
+  "single_exact_head_six_matrix": false,
+  "approved_test_metadata_successor": true,
+  "scope": "Historical intrinsic module7 targetedVM514 plus Resource original4 guarded4 fullHOST858; not Source50 or full Chord",
+  "c_malloc_exhaustive": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

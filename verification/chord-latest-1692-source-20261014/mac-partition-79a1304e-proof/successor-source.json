@@ -1,0 +1,18 @@
+{
+  "head": "79a1304e45627e821bb384ff0b11b874f650e246",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "prior_run": 38610788981,
+  "prior_head": "da46b70fafae4a14a70e0a4d66618d82cf5a5d05",
+  "preserved_positive_profiles": 5,
+  "preserved_negative": "macos-latest/Debug Resource120 timeout",
+  "platform": "macos-latest",
+  "mode": "Debug",
+  "source_cases": 4,
+  "guarded_source_cases": 4,
+  "compiled_expected": 6,
+  "host_gpa_baseline": 858,
+  "production_probe_changed": false,
+  "broader_source50_regression": "not_run",
+  "public_activation": false,
+  "full_pi_qualified": false
+}

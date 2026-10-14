@@ -1,0 +1,54 @@
+{
+  "head": "79a1304e45627e821bb384ff0b11b874f650e246",
+  "mode": "Debug",
+  "platform": "macos-latest",
+  "status": "passed",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "source_cases": 4,
+  "guarded_source_cases": 4,
+  "compiled_tests": 6,
+  "compiled_names": [
+    "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait actual Source4 intrinsic species own then abort cleanup and rejection identity with GC",
+    "native_chord_resource_await_source_test.test.native latest Chord1692 ResourceAwait original caller caught allocation diagnostic preserves replacement and first failure stack",
+    "native_chord_resource_await_source_test.test.native Chord Resource MacDebug partition compiled inventory",
+    "native_chord_resource_await_source_test.test.native Chord Resource MacDebug whole guarded4 GPA partition 0",
+    "native_chord_resource_await_source_test.test.native Chord Resource MacDebug whole guarded4 GPA partition 1",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "host_gpa_coverage": {
+    "baseline": 858,
+    "partitions": [
+      {
+        "partition": 0,
+        "start": 0,
+        "end": 429,
+        "baseline": 858,
+        "completed": 429,
+        "leaks": 0,
+        "unexpected_errors": 0
+      },
+      {
+        "partition": 1,
+        "start": 429,
+        "end": 858,
+        "baseline": 858,
+        "completed": 429,
+        "leaks": 0,
+        "unexpected_errors": 0
+      }
+    ],
+    "start": 0,
+    "end": 858,
+    "completed": 858,
+    "gaps": 0,
+    "duplicates": 0,
+    "leaks": 0,
+    "unexpected_errors": 0,
+    "whole_probe_each_index": true
+  },
+  "production_probe_changed": false,
+  "preserved_prior_positive_profiles": 5,
+  "c_malloc_exhaustive": false,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

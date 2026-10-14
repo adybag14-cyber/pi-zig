@@ -1,0 +1,29 @@
+{
+  "name": "compile",
+  "status": "passed",
+  "head": "79a1304e45627e821bb384ff0b11b874f650e246",
+  "pid": 1717,
+  "created_utc": "2026-10-14T18:54:18.1868820Z",
+  "executable": "/Users/runner/work/_temp/bd56bdff-60db-43da-bc9d-a13ed8782b1d/zig-aarch64-macos-0.16.0/zig",
+  "executable_sha256": "E6CD688D25664983833AAE272F501D4BCEEAE304875B8F1741209D15FD13A4EC",
+  "argv": [
+    "build",
+    "build-native-chord-resource-mac-partitions",
+    "-Doptimize=Debug",
+    "-j1",
+    "--summary",
+    "all"
+  ],
+  "command_line": "/Users/runner/work/_temp/bd56bdff-60db-43da-bc9d-a13ed8782b1d/zig-aarch64-macos-0.16.0/zig build build-native-chord-resource-mac-partitions -Doptimize=Debug -j1 --summary all",
+  "identity": "Retained kernel Process handle and exact ProcessStartInfo argv, plus live Windows CIM when available",
+  "deadline_seconds": 1320,
+  "test_timeout_seconds": 120,
+  "host_await_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "exit_code": 0,
+  "root_peak_working_set_bytes": null,
+  "completed_utc": "2026-10-14T19:01:53.7330150+00:00",
+  "root_pid_absent": true
+}

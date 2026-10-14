@@ -1,0 +1,21 @@
+{
+  "head": "79a1304e45627e821bb384ff0b11b874f650e246",
+  "tree": "ba4ae39dc2005de76a8f02c8965f71ef77752ce9",
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "mode": "Debug",
+  "platform": "macos-latest",
+  "zig": "/Users/runner/work/_temp/bd56bdff-60db-43da-bc9d-a13ed8782b1d/zig-aarch64-macos-0.16.0/zig",
+  "zig_version": "0.16.0",
+  "zig_sha256": "E6CD688D25664983833AAE272F501D4BCEEAE304875B8F1741209D15FD13A4EC",
+  "compiler_distribution": "/Users/runner/work/_temp/bd56bdff-60db-43da-bc9d-a13ed8782b1d/zig-aarch64-macos-0.16.0",
+  "source_count": 5370,
+  "tool_count": 19546,
+  "source_cases": 27,
+  "auxiliary_source_cases": 27,
+  "total_source_cases": 54,
+  "public_activation": false,
+  "node_loader_qualified": false,
+  "manager_qualified": false,
+  "full_pi_qualified": false,
+  "scope": "Private actual latest Host Object Ref Ctx reload cluster protocol-v2 graph Source27 + Loader7 Manager12 Cluster4 ResourceAwait4 GC and core/resource full GPA"
+}
