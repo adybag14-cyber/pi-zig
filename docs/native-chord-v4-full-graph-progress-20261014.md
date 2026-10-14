@@ -67,6 +67,12 @@ implementation body or missing-method fallback is introduced.
   sub/unsub/resync, shape snapshot lists, and hold/member state routing. Links
   retain the actual chord2 IPC envelope while using v4 args/value packing.
   Relay and reload integration still gate factory assembly.
+- RelayRef now forwards origin identity/state demand/reconnect flags, sends the
+  first unit's snapshots past the origin window, drops ops until a requested
+  reset arrives, and owns call cancellation, queued state, waiters, and hold
+  release. The unchanged RelayCall class bodies are reused through a real
+  installCalls entry point. Host connection policy and reload initialization
+  ordering still gate a coherent private factory.
 
 ## Qualification boundary and remaining integration
 

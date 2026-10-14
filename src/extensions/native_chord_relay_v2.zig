@@ -219,6 +219,14 @@ fn constructCall(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, 
     if (!h.nullish(down)) _ = try h.invoke(&s, try s.get(down, "relayedCalls"), "set", &.{ h.arg(args, 2), result });
     return s.result(result);
 }
+pub fn installCalls(engine: *h.Engine, bindings: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    try h.register(&s, bindings, .RelayCall);
+    const call = try s.record();
+    try js.define(engine, bindings, "RelayCall", try @import("native_class.zig").constructor(engine, "RelayCall", 4, call, constructCall, &.{bindings}));
+    inline for (.{ .{ "finish", Method.finish, 2 }, .{ "cancel", Method.cancel, 2 } }) |entry| try h.define(&s, call, bindings, entry[0], callback, @intFromEnum(entry[1]), entry[2], false, false);
+}
 pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
