@@ -14,6 +14,8 @@ The actual cluster coordinator retires before sending child prepare frames, wait
 
 Latest Host reload support includes deferred hello replay, reload waiters, facet-run replacement aborts, coordinator admission, remote-module remembrance, retirement watchers, retirement announcement and dependency-ordered old-implementation cleanup. The source-only Host connection body now fences and defers children that announce during a reload, removes their deferred entry on close, and invokes mandatory actual child reconciliation/parent-loss dependencies.
 
+The actual latest factory `SelfImpl` and `Decls` now have separate unimported modules. They declare state and resources by name, validate per-cell/resource versions, retain old references where their contracts/status allow it, record kept resources for adoption, build optional-selector listeners, and create fresh positional tasks/derivations. Registry declarations require host lifetime. They depend on real Object/Ref/Cell/resource runtime bindings and are not installed into the historical Host factory.
+
 ## Remaining qualification boundary
 
 These modules are unimported and have pinned Zig 0.16.0 formatting and AST evidence only. No compile, native execution, Source differential, GC or allocator-failure qualification is claimed. No Host connection/reload API, Chord package or default runtime is activated.
