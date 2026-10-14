@@ -1,0 +1,19 @@
+{
+  "head": "3fe8340b5aee2da003abb4e8fa89ae9a2579895b",
+  "os": "windows-latest",
+  "mode": "Debug",
+  "status": "diagnostic_passed",
+  "full_qualification_pending": true,
+  "source_cases": 53,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "Source59_Source53_actual_Linux_macOS_raw_equivalent_run38556609926",
+  "tests_each": 11,
+  "shards": 8,
+  "baseline": 11659,
+  "completed_shards": 1,
+  "completed_indices": 1457,
+  "remaining_indices": 10202,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T13:34:25.6176209+00:00"
+}
