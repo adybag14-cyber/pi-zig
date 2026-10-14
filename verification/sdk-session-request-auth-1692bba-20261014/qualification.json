@@ -31,7 +31,18 @@
     "status": "admission_failed_before_launch",
     "free_kib": 6126016
   },
-  "candidate_exact_head_hosted": "pending six platform/build-mode qualification",
+  "candidate_exact_head_hosted": {
+    "source_cases_each": 49,
+    "source_drift": 0,
+    "head": "1b63804ba189298e95d3065d532d76e43d6f0371",
+    "compiler_drift": 0,
+    "status": "terminal success; all six downloaded artifacts verified",
+    "compiler_files": 19546,
+    "tests_each": 11,
+    "profiles": 6,
+    "run": 38553469486,
+    "source_files": 4919
+  },
   "lexical_dependency_scope": "Actual native HTTP/SSE function supplies private import identity for auth branch comparison; compatibility module/factory import assembly and transport behavior are separate unqualified gates",
   "public_activation": false,
   "compat_stream_import_assembly_qualified": false,
@@ -41,5 +52,6 @@
   "test_timeout_seconds": 120,
   "host_await_timeout_ms": 10000,
   "runtime_outer_seconds": 300,
-  "compile_only_outer_seconds": 1320
+  "compile_only_outer_seconds": 1320,
+  "current_root_composition_qualified": false
 }

@@ -1,0 +1,84 @@
+{
+  "run": 38553469486,
+  "head": "1b63804ba189298e95d3065d532d76e43d6f0371",
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "profiles": [
+    {
+      "platform": "macos-latest",
+      "mode": "Debug",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "6DD539892DFD15BA1B61B17D78793CAEF94BAFCF27476463FB873B5D0ADD780F",
+      "artifact": "native-sdk-session-request-auth-candidate-macos-latest-Debug-1b63804ba189298e95d3065d532d76e43d6f0371"
+    },
+    {
+      "platform": "macos-latest",
+      "mode": "ReleaseSafe",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "6DD539892DFD15BA1B61B17D78793CAEF94BAFCF27476463FB873B5D0ADD780F",
+      "artifact": "native-sdk-session-request-auth-candidate-macos-latest-ReleaseSafe-1b63804ba189298e95d3065d532d76e43d6f0371"
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "Debug",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "6DD539892DFD15BA1B61B17D78793CAEF94BAFCF27476463FB873B5D0ADD780F",
+      "artifact": "native-sdk-session-request-auth-candidate-ubuntu-latest-Debug-1b63804ba189298e95d3065d532d76e43d6f0371"
+    },
+    {
+      "platform": "ubuntu-latest",
+      "mode": "ReleaseSafe",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "6DD539892DFD15BA1B61B17D78793CAEF94BAFCF27476463FB873B5D0ADD780F",
+      "artifact": "native-sdk-session-request-auth-candidate-ubuntu-latest-ReleaseSafe-1b63804ba189298e95d3065d532d76e43d6f0371"
+    },
+    {
+      "platform": "windows-latest",
+      "mode": "Debug",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "A5E50F777E767C8FB1D0D1DD8427FC51C059AC2371F77D4C4A2E411356F9FD5C",
+      "artifact": "native-sdk-session-request-auth-candidate-windows-latest-Debug-1b63804ba189298e95d3065d532d76e43d6f0371"
+    },
+    {
+      "platform": "windows-latest",
+      "mode": "ReleaseSafe",
+      "tests": 11,
+      "source_cases": 49,
+      "source": 4919,
+      "tools": 19546,
+      "source_drift": 0,
+      "tool_drift": 0,
+      "inputs_sha256": "A5E50F777E767C8FB1D0D1DD8427FC51C059AC2371F77D4C4A2E411356F9FD5C",
+      "artifact": "native-sdk-session-request-auth-candidate-windows-latest-ReleaseSafe-1b63804ba189298e95d3065d532d76e43d6f0371"
+    }
+  ],
+  "status": "all six exact-head artifacts verified",
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "completed_utc": "2026-10-14T11:45:17.4949488+00:00"
+}
