@@ -46,8 +46,25 @@ pub fn acquire(engine: *h.Engine, bindings: c.JSValue, name: c.JSValue) anyerror
     const key_z = try engine.gpa.dupeZ(u8, key[0..32]);
     defer engine.gpa.free(key_z);
     var temporary: []const u8 = "/tmp";
+    var owned_temporary: ?[]u8 = null;
+    defer if (owned_temporary) |value| engine.gpa.free(value);
     if (builtin.os.tag != .windows and builtin.os.tag != .linux) {
-        if (std.c.getenv("TMPDIR")) |value| temporary = std.mem.span(value);
+        const process = try s.keep(try js.global(engine, "process"));
+        const environment = if (h.nullish(process)) c.pi_js_undefined() else try s.get(process, "env");
+        inline for (.{ "TMPDIR", "TMP", "TEMP" }) |environment_key| {
+            if (owned_temporary == null) {
+                const value = if (h.nullish(environment)) c.pi_js_undefined() else try s.get(environment, environment_key);
+                if (c.JS_ToBool(engine.context, value) != 0) {
+                    owned_temporary = try engine.toString(value);
+                } else if (h.nullish(environment)) {
+                    if (std.c.getenv(environment_key)) |bytes_value| if (bytes_value[0] != 0) {
+                        owned_temporary = try engine.gpa.dupe(u8, std.mem.span(bytes_value));
+                    };
+                }
+            }
+        }
+        if (owned_temporary) |value| temporary = value;
+        if (temporary.len > 1 and temporary[temporary.len - 1] == '/') temporary = temporary[0 .. temporary.len - 1];
     }
     const temporary_z = try engine.gpa.dupeZ(u8, temporary);
     defer engine.gpa.free(temporary_z);

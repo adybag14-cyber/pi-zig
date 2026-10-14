@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
+#include <wchar.h>
 #include <errno.h>
 struct pi_chord_lock { intptr_t handle; int file; char path[104]; };
 #ifdef _WIN32
