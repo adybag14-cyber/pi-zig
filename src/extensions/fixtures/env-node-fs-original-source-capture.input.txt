@@ -1,0 +1,54 @@
+// SOURCE-ONLY oracle. This never loads or qualifies the Zig implementation.
+// Intended destination: tools/Capture-EnvFsSource.mjs after candidate review.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
+const [sourceRoot, candidateRoot, receiptRoot] = process.argv.slice(2).map(value => path.resolve(value));
+const expectedHead = 'e6220e1316f86af818a0ccbfe1c09d7e918b41cf';
+if (process.versions.node !== '24.14.0') throw Error('Pinned reference Node version mismatch');
+const git = (...args) => execFileSync('git', ['-C', sourceRoot, ...args], {encoding: 'utf8', windowsHide: true}).trim();
+if (git('rev-parse', 'HEAD') !== expectedHead) throw Error('Original source head mismatch');
+const digest = async file => crypto.createHash('sha256').update(await fs.readFile(file)).digest('hex').toUpperCase();
+const sourceFiles = git('ls-files').split('\n').map(value => value.trim()).filter(Boolean).sort();
+if (sourceFiles.length !== 1902) throw Error('Original tracked source inventory mismatch');
+const sourceRows = async () => {
+    const rows=[];
+    for(const file of sourceFiles) rows.push({path:file,sha256:await digest(path.join(sourceRoot,file))});
+    return rows;
+};
+const before = await sourceRows();
+const toolBefore = await digest(process.execPath);
+await fs.mkdir(receiptRoot,{recursive:true});
+await fs.writeFile(path.join(receiptRoot,'source-before.json'),JSON.stringify(before,null,2)+'\n');
+const {NodeExecutionEnv} = await import(pathToFileURL(path.join(sourceRoot,'packages/durable/src/env/node.ts')).href);
+const fixtureNames = ['env-node-file-io-core-source-e6220e1','env-node-fs-owner-source-e6220e1','env-node-fs-phases-source-e6220e1','env-node-fs-getters-source-e6220e1','env-node-stats-source-e6220e1','env-node-fs-gpa-source-e6220e1','env-node-fs-chunks-source-e6220e1','env-node-filehandle-close-source-e6220e1'];
+const records = [];
+for (const name of fixtureNames) {
+    const inputPath=path.join(candidateRoot,'src/extensions/fixtures',name+'.input.txt');
+    const input=await fs.readFile(inputPath,'utf8');
+    const inputHash=crypto.createHash('sha256').update(input).digest('hex').toUpperCase();
+    const treePath=await fs.mkdtemp(path.join(receiptRoot,name+'-tree-'));
+    const env=new NodeExecutionEnv({cwd:treePath});
+    let file;
+    if(name==='env-node-file-io-core-source-e6220e1') {
+        await fs.writeFile(path.join(treePath,'file'),'abcdef');
+        const opened=await env.openBinaryReader('file',undefined,{});
+        if(!opened.ok)throw opened.error;
+        file=opened.value.file;
+    }
+    const packet=await new Function('env','treePath','file','return(async()=>{'+input+';return packet})()')(env,treePath,file);
+    const outputPath=path.join(receiptRoot,name+'.json');
+    await fs.writeFile(outputPath,JSON.stringify(packet,null,2)+'\n');
+    if(await digest(inputPath)!==inputHash)throw Error('Oracle input changed during capture');
+    records.push({name,input_sha256:inputHash,output_sha256:await digest(outputPath),cases:Object.keys(packet).length});
+}
+const after=await sourceRows();
+const toolAfter=await digest(process.execPath);
+const sourceDrift=after.filter((row,index)=>row.path!==before[index].path||row.sha256!==before[index].sha256);
+const result={schema:'env-node-fs-source-only-v1',upstream:expectedHead,node:{version:process.versions.node,platform:process.platform,arch:process.arch,sha256:toolBefore},source_files:sourceFiles.length,source_drift:sourceDrift.length,tool_drift:toolBefore!==toolAfter,records,native_qualified:false,full_env_qualified:false,public_activation:false};
+await fs.writeFile(path.join(receiptRoot,'source-after.json'),JSON.stringify(after,null,2)+'\n');
+await fs.writeFile(path.join(receiptRoot,'source-only.json'),JSON.stringify(result,null,2)+'\n');
+if(sourceDrift.length||toolBefore!==toolAfter||git('rev-parse','HEAD')!==expectedHead)throw Error('Source/tool post drift');
+console.log(JSON.stringify({terminal:'passed',scope:'SOURCE_ONLY',platform:process.platform,records:records.length}));

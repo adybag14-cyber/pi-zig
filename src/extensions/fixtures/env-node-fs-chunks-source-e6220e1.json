@@ -1,0 +1,39 @@
+{
+  "chunks": {
+    "length": 524290,
+    "head": [
+      65279,
+      65,
+      65
+    ],
+    "tail": [
+      65,
+      65,
+      65,
+      65,
+      128169,
+      65533,
+      65533,
+      65279,
+      66
+    ],
+    "allocations": [
+      524288
+    ],
+    "strings": [],
+    "concats": 0
+  },
+  "single": {
+    "text": "﻿abc",
+    "allocations": [
+      6
+    ],
+    "strings": [
+      {
+        "length": 6,
+        "encoding": "utf8"
+      }
+    ],
+    "concats": 0
+  }
+}

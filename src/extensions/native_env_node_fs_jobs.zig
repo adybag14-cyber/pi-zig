@@ -1,4 +1,4 @@
-//! Local filesystem jobs snapshot guest arguments on the owner and perform native I/O off the VM.
+//! Native libuv filesystem workers. Arguments and completion values belong to the VM owner.
 const std = @import("std");
 const builtin = @import("builtin");
 const js = @import("native_js_values.zig");
@@ -6,23 +6,26 @@ const h = @import("native_env_remote_helpers.zig");
 const owner = @import("native_env_io.zig");
 const errors = @import("native_env_node_errors.zig");
 const files = @import("native_env_node_file_io.zig");
+const uv = @import("native_uv_api").c;
 const c = js.c;
-const Method = enum(c_int) { open, lstat, readFile, writeFile, appendFile, mkdir, rename, realpath };
+const Method = enum(c_int) { open, lstat, readFile, writeFile, appendFile, mkdir, rename, realpath, readdir, opendir, rm, mkdtemp };
 const Job = struct {
     task: owner.Task,
     method: Method,
     bindings: c.JSValue,
-    path: []u8,
-    destination: []u8 = &.{},
-    content: []u8 = &.{},
+    path: [:0]u8,
+    destination: ?[:0]u8 = null,
     result: std.ArrayList(u8) = .empty,
-    mode: std.Io.File.OpenMode = .read_only,
+    flags: c_int = uv.UV_FS_O_RDONLY,
     recursive: bool = false,
-    file: ?std.Io.File = null,
-    info: ?std.Io.File.Stat = null,
+    force: bool = false,
+    fd: ?uv.uv_file = null,
+    directory: ?*uv.uv_dir_t = null,
+    entries: std.ArrayList([]u8) = .empty,
+    info: ?uv.uv_stat_t = null,
+    native_status: c_int = 0,
     failure: ?anyerror = null,
     phase: []const u8,
-    include_path: bool = true,
     aborted: std.atomic.Value(bool) = .init(false),
     fn run(task: *owner.Task) void {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
@@ -31,90 +34,99 @@ const Job = struct {
         };
         task.finish();
     }
+    fn mkdirRecursive(self: *Job, path: [:0]const u8) !c_int {
+        var request: uv.uv_fs_t = std.mem.zeroes(uv.uv_fs_t);
+        defer uv.uv_fs_req_cleanup(&request);
+        const result = uv.uv_fs_mkdir(null, &request, path, 0o777, null);
+        if (result == uv.UV_ENOENT) {
+            const parent = std.fs.path.dirname(path) orelse return result;
+            if (std.mem.eql(u8, parent, path)) return result;
+            const terminated = try self.task.hub.engine.gpa.dupeZ(u8, parent);
+            defer self.task.hub.engine.gpa.free(terminated);
+            const made = try self.mkdirRecursive(terminated);
+            if (made < 0) return made;
+            uv.uv_fs_req_cleanup(&request);
+            return uv.uv_fs_mkdir(null, &request, path, 0o777, null);
+        }
+        if (result == uv.UV_EEXIST) {
+            uv.uv_fs_req_cleanup(&request);
+            if (uv.uv_fs_stat(null, &request, path, null) == 0 and (request.statbuf.st_mode & 0o170000) == 0o040000) return 0;
+        }
+        return result;
+    }
+    fn removeRecursive(self: *Job, path: [:0]const u8) !c_int {
+        if (self.aborted.load(.acquire)) return error.Canceled;
+        var request: uv.uv_fs_t = std.mem.zeroes(uv.uv_fs_t);
+        defer uv.uv_fs_req_cleanup(&request);
+        var status = uv.uv_fs_lstat(null, &request, path, null);
+        if (status < 0) return if (status == uv.UV_ENOENT and self.force) 0 else status;
+        if ((request.statbuf.st_mode & 0o170000) != 0o040000) {
+            uv.uv_fs_req_cleanup(&request);
+            return uv.uv_fs_unlink(null, &request, path, null);
+        }
+        if (!self.recursive) return error.NodeRmDirectory;
+        uv.uv_fs_req_cleanup(&request);
+        status = uv.uv_fs_scandir(null, &request, path, 0, null);
+        if (status < 0) return status;
+        var entry: uv.uv_dirent_t = undefined;
+        while (uv.uv_fs_scandir_next(&request, &entry) == 0) {
+            const child = try std.fs.path.join(self.task.hub.engine.gpa, &.{ path, std.mem.span(entry.name) });
+            defer self.task.hub.engine.gpa.free(child);
+            const terminated = try self.task.hub.engine.gpa.dupeZ(u8, child);
+            defer self.task.hub.engine.gpa.free(terminated);
+            status = try self.removeRecursive(terminated);
+            if (status < 0) return status;
+        }
+        uv.uv_fs_req_cleanup(&request);
+        return uv.uv_fs_rmdir(null, &request, path, null);
+    }
     fn execute(self: *Job) !void {
-        const io = self.task.hub.io;
         const gpa = self.task.hub.engine.gpa;
         if (self.aborted.load(.acquire)) return error.Canceled;
-        const cwd = std.Io.Dir.cwd();
+        var request: uv.uv_fs_t = std.mem.zeroes(uv.uv_fs_t);
+        defer uv.uv_fs_req_cleanup(&request);
+        const status = switch (self.method) {
+            .open => uv.uv_fs_open(null, &request, self.path, self.flags, 0o666, null),
+            .lstat => uv.uv_fs_lstat(null, &request, self.path, null),
+            .mkdir => if (self.recursive) try self.mkdirRecursive(self.path) else uv.uv_fs_mkdir(null, &request, self.path, 0o777, null),
+            .rename => uv.uv_fs_rename(null, &request, self.path, self.destination.?, null),
+            .realpath => uv.uv_fs_realpath(null, &request, self.path, null),
+            .opendir => uv.uv_fs_opendir(null, &request, self.path, null),
+            .readdir => uv.uv_fs_scandir(null, &request, self.path, 0, null),
+            .rm => try self.removeRecursive(self.path),
+            .mkdtemp => temp: {
+                const template = try std.fmt.allocPrintSentinel(gpa, "{s}XXXXXX", .{self.path}, 0);
+                defer gpa.free(template);
+                break :temp uv.uv_fs_mkdtemp(null, &request, template, null);
+            },
+            .readFile, .writeFile, .appendFile => unreachable, // These use owner-side open/stat/chunk/close continuations.
+        };
+        if (status < 0) {
+            self.native_status = status;
+            return;
+        }
         switch (self.method) {
-            .open => self.file = try cwd.openFile(io, self.path, .{ .mode = self.mode, .allow_directory = true }),
-            .lstat => self.info = try cwd.statFile(io, self.path, .{ .follow_symlinks = false }),
-            .readFile => {
-                const file = try cwd.openFile(io, self.path, .{ .allow_directory = true });
-                defer file.close(io);
-                self.phase = "read";
-                self.include_path = false;
-                if ((try file.stat(io)).kind == .directory) return error.IsDir;
-                var chunk: [64 * 1024]u8 = undefined;
-                while (true) {
-                    if (self.aborted.load(.acquire)) return error.Canceled;
-                    var buffers = [_][]u8{&chunk};
-                    const count = try file.readStreaming(io, &buffers);
-                    if (count == 0) break;
-                    try self.result.appendSlice(gpa, chunk[0..count]);
+            .open => self.fd = status,
+            .lstat => self.info = request.statbuf,
+            .realpath => try self.result.appendSlice(gpa, std.mem.span(@as([*:0]const u8, @ptrCast(request.ptr)))),
+            .mkdtemp => try self.result.appendSlice(gpa, std.mem.span(request.path)),
+            .opendir => self.directory = @ptrCast(@alignCast(request.ptr)),
+            .readdir => {
+                var entry: uv.uv_dirent_t = undefined;
+                while (uv.uv_fs_scandir_next(&request, &entry) == 0) {
+                    const copy = try gpa.dupe(u8, std.mem.span(entry.name));
+                    self.entries.append(gpa, copy) catch |err| {
+                        gpa.free(copy);
+                        return err;
+                    };
                 }
             },
-            .writeFile => {
-                const file = try cwd.createFile(io, self.path, .{});
-                defer file.close(io);
-                self.phase = "write";
-                self.include_path = false;
-                var position: usize = 0;
-                while (position < self.content.len) {
-                    if (self.aborted.load(.acquire)) return error.Canceled;
-                    const end = @min(self.content.len, position + 512 * 1024);
-                    try file.writeStreamingAll(io, self.content[position..end]);
-                    position = end;
-                }
-            },
-            .appendFile => {
-                // Windows permits opening a directory here; its write reports EISDIR without a path.
-                const file = cwd.openFile(io, self.path, .{ .mode = .write_only, .allow_directory = true }) catch |err| opened: {
-                    if (err != error.FileNotFound) return err;
-                    break :opened try cwd.createFile(io, self.path, .{ .truncate = false });
-                };
-                defer file.close(io);
-                self.phase = "write";
-                self.include_path = false;
-                if ((try file.stat(io)).kind == .directory) return error.IsDir;
-                if (builtin.os.tag == .windows) {
-                    try @import("../durable/filesystem.zig").appendWindows(file, self.content);
-                } else {
-                    // Positional append is provisional here; atomic O_APPEND admission remains to qualify on POSIX.
-                    const stat = try file.stat(io);
-                    try file.writePositionalAll(io, self.content, stat.size);
-                }
-            },
-            .mkdir => {
-                if (self.recursive) try cwd.createDirPath(io, self.path) else try cwd.createDir(io, self.path, .default_dir);
-            },
-            .rename => try cwd.rename(self.path, cwd, self.destination, io),
-            .realpath => {
-                const value = try cwd.realPathFileAlloc(io, self.path, gpa);
-                defer gpa.free(value);
-                try self.result.appendSlice(gpa, value);
-            },
+            else => {},
         }
     }
     fn cancel(task: *owner.Task) void {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
         self.aborted.store(true, .release);
-    }
-    fn failureValue(self: *Job, scope: *h.Scope, failure: anyerror) !c.JSValue {
-        const windows = builtin.os.tag == .windows;
-        var fields: errors.SystemFailure = switch (failure) {
-            error.FileNotFound => .{ .code = "ENOENT", .description = "no such file or directory", .errno = if (windows) -4058 else -2, .syscall = self.phase },
-            error.NotDir => .{ .code = "ENOTDIR", .description = "not a directory", .errno = if (windows) -4052 else -20, .syscall = self.phase },
-            error.IsDir => .{ .code = "EISDIR", .description = "illegal operation on a directory", .errno = if (windows) -4068 else -21, .syscall = self.phase },
-            error.PathAlreadyExists => .{ .code = "EEXIST", .description = "file already exists", .errno = if (windows) -4075 else -17, .syscall = self.phase },
-            error.AccessDenied => .{ .code = "EACCES", .description = "permission denied", .errno = if (windows) -4092 else -13, .syscall = self.phase },
-            error.PermissionDenied => .{ .code = "EPERM", .description = "operation not permitted", .errno = if (windows) -4048 else -1, .syscall = self.phase },
-            error.InvalidArgument => .{ .code = "EINVAL", .description = "invalid argument", .errno = if (windows) -4071 else -22, .syscall = self.phase },
-            else => return error.UnclassifiedNativeNodeFilesystemFailure,
-        };
-        fields.path = if (self.include_path) self.path else null;
-        if (self.method == .rename) fields.destination = self.destination;
-        return errors.systemError(scope, fields);
     }
     fn complete(task: *owner.Task) anyerror!void {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
@@ -122,18 +134,32 @@ const Job = struct {
         var scope: h.Scope = .{ .engine = engine };
         defer scope.deinit();
         if (self.failure) |failure| {
-            if (failure == error.OutOfMemory) return failure;
-            return task.settled(true, try self.failureValue(&scope, failure));
+            if (failure == error.NodeRmDirectory) return task.settled(true, try errors.removeDirectoryError(&scope, self.path));
+            return failure;
         }
+        if (self.native_status < 0) return task.settled(true, try errors.systemError(&scope, .{ .code = std.mem.span(uv.uv_err_name(self.native_status)), .description = std.mem.span(uv.uv_strerror(self.native_status)), .errno = self.native_status, .syscall = self.phase, .path = self.path, .destination = self.destination }));
         const result = switch (self.method) {
             .open => opened: {
-                const file = self.file.?;
-                self.file = null;
-                break :opened try scope.own(try files.create(&scope, file, self.mode != .read_only, self.bindings));
+                const fd = self.fd.?;
+                self.fd = null;
+                break :opened try scope.own(try files.createDescriptor(&scope, fd, (self.flags & (uv.UV_FS_O_WRONLY | uv.UV_FS_O_RDWR)) != 0, self.bindings));
             },
-            .lstat => try files.statsValue(&scope, self.info.?),
-            .readFile => try scope.own(try @import("node_buffer.zig").fromBytes(engine, self.result.items)),
-            .realpath => try scope.text(self.result.items),
+            .opendir => opened: {
+                const dir = self.directory.?;
+                self.directory = null;
+                break :opened try scope.own(try @import("native_env_node_dir_io.zig").create(&scope, dir, self.path));
+            },
+            .readdir => entries: {
+                const array = try scope.array();
+                for (self.entries.items, 0..) |name, index| {
+                    const entry = try scope.object();
+                    try scope.put(entry, "name", try scope.text(name));
+                    try scope.index(array, @intCast(index), entry);
+                }
+                break :entries array;
+            },
+            .lstat => try files.statsValue(&scope, self.info.?, self.bindings, false),
+            .realpath, .mkdtemp => try scope.text(self.result.items),
             else => c.pi_js_undefined(),
         };
         try task.settled(false, result);
@@ -141,10 +167,20 @@ const Job = struct {
     fn destroy(task: *owner.Task) void {
         const self: *Job = @alignCast(@fieldParentPtr("task", task));
         const engine = task.hub.engine;
-        if (self.file) |file| file.close(task.hub.io);
+        if (self.fd) |fd| {
+            var request: uv.uv_fs_t = std.mem.zeroes(uv.uv_fs_t);
+            _ = uv.uv_fs_close(null, &request, fd, null);
+            uv.uv_fs_req_cleanup(&request);
+        }
+        if (self.directory) |dir| {
+            var request: uv.uv_fs_t = std.mem.zeroes(uv.uv_fs_t);
+            _ = uv.uv_fs_closedir(null, &request, dir, null);
+            uv.uv_fs_req_cleanup(&request);
+        }
+        for (self.entries.items) |entry| engine.gpa.free(entry);
+        self.entries.deinit(engine.gpa);
         engine.gpa.free(self.path);
-        engine.gpa.free(self.destination);
-        engine.gpa.free(self.content);
+        if (self.destination) |destination| engine.gpa.free(destination);
         self.result.deinit(engine.gpa);
         engine.freeValue(self.bindings);
         task.releaseFunctions();
@@ -154,25 +190,32 @@ const Job = struct {
 fn submit(engine: *js.Engine, args: []const c.JSValue, bindings: c.JSValue, method: Method) !c.JSValue {
     var scope: h.Scope = .{ .engine = engine };
     defer scope.deinit();
-    const path = try engine.toString(h.arg(args, 0));
+    const input_path = try engine.toString(h.arg(args, 0));
+    defer engine.gpa.free(input_path);
+    if (std.mem.indexOfScalar(u8, input_path, 0) != null) return error.InvalidNativeNodePathValue;
+    const path = try engine.gpa.dupeZ(u8, input_path);
     var path_transferred = false;
     defer if (!path_transferred) engine.gpa.free(path);
-    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeNodePathValue;
     const hub = try owner.get(engine);
     var functions: [2]c.JSValue = undefined;
-    const promise = try scope.own(try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions)));
+    const new_promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     var transferred = false;
     errdefer if (!transferred) {
         engine.freeValue(functions[0]);
         engine.freeValue(functions[1]);
     };
+    const promise = try scope.own(new_promise);
     const job = try engine.gpa.create(Job);
     job.* = .{ .task = .{ .hub = hub, .work = Job.run, .complete = Job.complete, .destroy = Job.destroy, .cancel = Job.cancel, .resolve = functions[0], .reject = functions[1] }, .method = method, .bindings = c.JS_DupValue(engine.context, bindings), .path = path, .phase = switch (method) {
-        .open, .readFile, .writeFile, .appendFile => "open",
-        .lstat => "lstat",
+        .open => "open",
+        .lstat, .rm => "lstat",
         .mkdir => "mkdir",
         .rename => "rename",
         .realpath => "realpath",
+        .readdir => "scandir",
+        .opendir => "opendir",
+        .mkdtemp => "mkdtemp",
+        else => unreachable,
     } };
     transferred = true;
     path_transferred = true;
@@ -180,22 +223,19 @@ fn submit(engine: *js.Engine, args: []const c.JSValue, bindings: c.JSValue, meth
     switch (method) {
         .open => {
             const mode = h.arg(args, 1);
-            if (scope.equal(mode, try scope.text("r+"))) job.mode = .read_write else if (!scope.equal(mode, try scope.text("r"))) return error.UnsupportedNativeNodeOpenMode;
+            if (scope.equal(mode, try scope.text("r+"))) job.flags = uv.UV_FS_O_RDWR else if (scope.equal(mode, try scope.text("w"))) job.flags = uv.UV_FS_O_WRONLY | uv.UV_FS_O_CREAT | uv.UV_FS_O_TRUNC else if (scope.equal(mode, try scope.text("a"))) job.flags = uv.UV_FS_O_WRONLY | uv.UV_FS_O_CREAT | uv.UV_FS_O_APPEND else if (!scope.equal(mode, try scope.text("r")) and !scope.equal(mode, c.JS_NewInt32(engine.context, 0))) return error.UnsupportedNativeNodeOpenMode;
+            if (c.JS_IsNumber(mode) and builtin.os.tag != .windows) job.flags |= uv.UV_FS_O_NONBLOCK;
+            if (scope.equal(try h.optional(&scope, h.arg(args, 2), "noFollow"), c.pi_js_bool(engine.context, 1))) job.flags |= uv.UV_FS_O_NOFOLLOW;
+        },
+        .rm => {
+            job.recursive = scope.truthy(try h.optional(&scope, h.arg(args, 1), "recursive"));
+            job.force = scope.truthy(try h.optional(&scope, h.arg(args, 1), "force"));
         },
         .mkdir => job.recursive = scope.truthy(try h.optional(&scope, h.arg(args, 1), "recursive")),
-        .rename => job.destination = try engine.toString(h.arg(args, 1)),
-        .writeFile, .appendFile => {
-            const content = h.arg(args, 1);
-            if (c.JS_IsString(content)) job.content = try engine.toString(content) else {
-                var offset: usize = undefined;
-                var length: usize = undefined;
-                var element: usize = undefined;
-                const backing = try scope.own(try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, content, &offset, &length, &element)));
-                var total: usize = undefined;
-                const data = c.JS_GetArrayBuffer(engine.context, &total, backing);
-                if ((data == null and length != 0) or offset > total or length > total - offset) return error.InvalidNativeNodeContent;
-                job.content = try engine.gpa.dupe(u8, if (length == 0) &.{} else data[offset..][0..length]);
-            }
+        .rename => {
+            const destination = try engine.toString(h.arg(args, 1));
+            defer engine.gpa.free(destination);
+            job.destination = try engine.gpa.dupeZ(u8, destination);
         },
         else => {},
     }
@@ -204,7 +244,9 @@ fn submit(engine: *js.Engine, args: []const c.JSValue, bindings: c.JSValue, meth
 }
 fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = js.Engine.fromContext(context.?);
-    return submit(engine, if (argc > 0) argv[0..@intCast(argc)] else &.{}, data[0], @enumFromInt(raw)) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
+    const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
+    const method: Method = @enumFromInt(raw);
+    return (if (method == .readFile or method == .writeFile or method == .appendFile) @import("native_env_node_fs_contents.zig").invoke(engine, data[0], args, method != .readFile, method == .appendFile) else submit(engine, args, data[0], method)) catch |err| @import("native_durable.zig").rejectedPromise(engine, err);
 }
 pub fn create(scope: *h.Scope, bindings: c.JSValue) !c.JSValue {
     const object = try scope.object();

@@ -15,6 +15,7 @@ pub fn build(b: *std.Build) void {
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
     const vm_identity = @import("tools/build_native_vm_identity.zig").add(b, target, optimize, use_llvm) catch |err| std.debug.panic("Native VM identity cannot bind its source/tool inputs: {s}", .{@errorName(err)});
     b.modules.put(b.graph.arena, "native_vm_identity", vm_identity) catch @panic("OOM");
+    _ = @import("tools/build_native_uv.zig").add(b, target, optimize);
     const native_yaml = @import("tools/build_native_yaml.zig").add(b, target, optimize);
     const frontmatter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_frontmatter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native frontmatter"}, .use_llvm = use_llvm });
     frontmatter_tests.root_module.addIncludePath(b.path("vendor/libfyaml"));
@@ -2397,6 +2398,7 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.addIncludePath(b.path("vendor/quickjs"));
     module.addIncludePath(b.path("vendor/libfyaml"));
     module.addIncludePath(b.path("src/extensions"));
+    module.addImport("native_uv_api", b.modules.get("native_uv_api").?);
     module.addImport("native_icu_api", b.modules.get("native_icu_api").?);
     module.addIncludePath(b.path("vendor/photon-native"));
     module.addImport("native_photon_link", b.modules.get("native_photon_link").?);

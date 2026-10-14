@@ -63,14 +63,14 @@ pub fn home(scope: *Scope) !c.JSValue {
             extern "userenv" fn GetUserProfileDirectoryW(windows.HANDLE, ?[*]u16, *u32) callconv(.winapi) windows.BOOL;
         };
         var token: windows.HANDLE = undefined;
-        if (Native.OpenProcessToken(windows.GetCurrentProcess(), 8, &token) == 0) return missingHome(scope);
+        if (Native.OpenProcessToken(windows.GetCurrentProcess(), 8, &token) == .FALSE) return missingHome(scope);
         defer windows.CloseHandle(token);
         var count: u32 = 0;
         _ = Native.GetUserProfileDirectoryW(token, null, &count);
         if (count == 0) return missingHome(scope);
         const buffer = try scope.engine.gpa.alloc(u16, count);
         defer scope.engine.gpa.free(buffer);
-        if (Native.GetUserProfileDirectoryW(token, buffer.ptr, &count) == 0 or count == 0) return missingHome(scope);
+        if (Native.GetUserProfileDirectoryW(token, buffer.ptr, &count) == .FALSE or count == 0) return missingHome(scope);
         return scope.own(try scope.engine.checked(c.JS_NewStringUTF16(scope.engine.context, buffer.ptr, count - 1)));
     }
     if (try environmentValue(scope, "HOME")) |value| return value;

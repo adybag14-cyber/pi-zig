@@ -1,0 +1,7 @@
+const packet={},context={};const must=r=>{if(!r.ok)throw r.error;return r.value};
+const bytes=new Uint8Array(512*1024+8);bytes.fill(65);bytes.set([239,187,191],0);bytes.set([240,159,146,169],512*1024-2);bytes.set([192,128,239,187,191,66],512*1024+2);
+must(await env.writeFile('chunks-data',bytes,context));must(await env.writeFile('single-data','\uFEFFabc',context));
+const originalAlloc=Buffer.allocUnsafeSlow,originalToString=Buffer.prototype.toString,originalConcat=Buffer.concat;let allocations=[],strings=[],concats=0;Buffer.concat=function(...args){concats++;return originalConcat.apply(this,args)};Buffer.allocUnsafeSlow=function(size){allocations.push(size);return originalAlloc.call(this,size)};Buffer.prototype.toString=function(...args){strings.push({length:this.length,encoding:args[0]});return originalToString.apply(this,args)};
+try{const text=must(await env.readTextFile('chunks-data',context));packet.chunks={length:text.length,head:Array.from(text.slice(0,3),s=>s.codePointAt(0)),tail:Array.from(text.slice(-10),s=>s.codePointAt(0)),allocations:allocations.slice(),strings:strings.slice(),concats};allocations=[];strings=[];concats=0;const small=must(await env.readTextFile('single-data',context));packet.single={text:small,allocations:allocations.slice(),strings:strings.slice(),concats}}finally{Buffer.allocUnsafeSlow=originalAlloc;Buffer.prototype.toString=originalToString;Buffer.concat=originalConcat}
+must(await env.remove('chunks-data',undefined,context));must(await env.remove('single-data',undefined,context));
+

@@ -1,0 +1,45 @@
+{
+  "info": {
+    "kind": "file",
+    "size": 10
+  },
+  "read": [
+    110,
+    101,
+    10,
+    116,
+    104,
+    114,
+    101,
+    101,
+    10
+  ],
+  "stats": {
+    "size": 10,
+    "keys": [
+      "dev",
+      "mode",
+      "nlink",
+      "uid",
+      "gid",
+      "rdev",
+      "blksize",
+      "ino",
+      "size",
+      "blocks",
+      "atimeMs",
+      "mtimeMs",
+      "ctimeMs",
+      "birthtimeMs"
+    ],
+    "file": true,
+    "time": true
+  },
+  "directory": {
+    "names": [
+      "gpa-data"
+    ],
+    "done": true
+  },
+  "text": "onz"
+}

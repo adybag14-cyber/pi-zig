@@ -4,6 +4,7 @@ param(
     [Parameter(Mandatory)][string]$ExpectedSourceManifestHash,
     [Parameter(Mandatory)][string]$ExpectedGuestManifestHash,
     [string]$ExpectedNodeReaderManifestHash,
+    [string]$ExpectedNodeFsManifestHash,
     [ValidateSet('Compile','Run')][string]$Phase='Run',
     [string]$Receipt='verification/env-guest',
     [int]$OuterSeconds=300
@@ -35,6 +36,19 @@ if($ExpectedNodeReaderManifestHash){
     $taskNodeOriginal=Get-Content -LiteralPath $taskNodeManifest -Raw|ConvertFrom-Json
     if($taskNodeOriginal.upstream -cne $taskOriginal.upstream -or $taskNodeOriginal.source_snapshot_tracked_files -ne 1902 -or $taskNodeOriginal.public_guest_activation -or $taskNodeOriginal.full_env_package_qualified -or $taskNodeOriginal.fixtures.Count -ne 8){throw 'Node reader Source identity, inventory or activation boundary drift'}
     foreach($taskFixture in $taskNodeOriginal.fixtures){if((Get-FileHash -LiteralPath $taskFixture.path).Hash -cne $taskFixture.sha256){throw "Original Node reader capture drift: $($taskFixture.path)"}}
+}
+if($ExpectedNodeFsManifestHash){
+    $taskFsManifest='src/extensions/fixtures/env-node-fs-source-manifest-e6220e1.json'
+    if((Get-FileHash -LiteralPath $taskFsManifest).Hash -cne $ExpectedNodeFsManifestHash){throw 'Original Node filesystem manifest drift'}
+    $taskFsOriginal=Get-Content -LiteralPath $taskFsManifest -Raw|ConvertFrom-Json
+    if($taskFsOriginal.upstream -cne $taskOriginal.upstream -or $taskFsOriginal.source_snapshot_tracked_files -ne 1902 -or $taskFsOriginal.source_corpora -ne 8 -or $taskFsOriginal.expected_guest_tests -ne 20 -or $taskFsOriginal.fixtures.Count -ne 18 -or $taskFsOriginal.public_guest_activation -or $taskFsOriginal.full_env_package_qualified -or $taskFsOriginal.posix_native_qualified){throw 'Node filesystem source identity inventory or scope drift'}
+    foreach($taskFixture in $taskFsOriginal.fixtures){if((Get-FileHash -LiteralPath $taskFixture.path).Hash -cne $taskFixture.sha256){throw "Original filesystem capture drift: $($taskFixture.path)"}}
+    $taskUvPath='vendor/libuv/PI-UPSTREAM-PROVENANCE.json'
+    if((Get-FileHash -LiteralPath $taskUvPath).Hash -cne $taskFsOriginal.libuv_provenance_sha256){throw 'Pinned libuv provenance drift'}
+    $taskUv=Get-Content -LiteralPath $taskUvPath -Raw|ConvertFrom-Json
+    if($taskUv.commit -cne 'f657bb8ed86365ff3fdbe32e27563e778b41486a' -or $taskUv.version -cne '1.51.0' -or $taskUv.files.Count -ne 416){throw 'Pinned linked C source identity drift'}
+    foreach($taskFile in $taskUv.files){if((Get-FileHash -LiteralPath (Join-Path 'vendor/libuv' $taskFile.path)).Hash -cne $taskFile.sha256){throw "Pinned libuv source drift: $($taskFile.path)"}}
+    [ordered]@{source_fs_manifest_sha256=$ExpectedNodeFsManifestHash;upstream=$taskFsOriginal.upstream;source_corpora=$taskFsOriginal.source_corpora;expected_guest_tests=$taskFsOriginal.expected_guest_tests;libuv_provenance_sha256=$taskFsOriginal.libuv_provenance_sha256;scope=$taskFsOriginal.scope;full_env_package_qualified=$false;public_guest_activation=$false;posix_native_qualified=$false}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskReceipt 'filesystem-scope.json') -Encoding utf8NoBOM
 }
 $taskInputs=@(git ls-files|Sort-Object|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_).Hash}})
 $taskToolRoot=Split-Path -Parent $taskZig
@@ -121,6 +135,10 @@ if($taskGuestMarkers.Count -ne 1){throw 'Missing or duplicate actual guest compi
 $taskGuestInventory=@($taskGuestMarkers[0].Groups[1].Value|ConvertFrom-Json)
 if(!$taskGuestInventory.Count -or @($taskGuestInventory|Sort-Object -Unique).Count -ne $taskGuestInventory.Count){throw 'Empty or duplicate actual guest test names'}
 $taskGuestWanted=@(foreach($taskMatch in [regex]::Matches([IO.File]::ReadAllText((Join-Path $taskRoot 'src/native_env_guest_test.zig')),'(?m)^test "([^"\r\n]+)"')){$taskMatch.Groups[1].Value})
+if($ExpectedNodeFsManifestHash){
+    if($taskGuestInventory.Count -ne $taskFsOriginal.expected_guest_tests){throw 'Private filesystem actual compiled inventory mismatch'}
+    foreach($taskRequired in $taskFsOriginal.required_tests){if(@($taskGuestWanted|Where-Object{$_ -ceq $taskRequired}).Count -ne 1){throw "Mandatory filesystem Source comparator missing: $taskRequired"}}
+}
 if($ExpectedNodeReaderManifestHash){
     foreach($taskRequired in @('native Env guest Node public reader values and LineScanner match original Source virtual files','native Env guest public decoder exports preserve Source BOM globals and function values','native Env guest Node reader scan and text continuations release every host allocation failure')){
         if(@($taskGuestWanted|Where-Object{$_ -ceq $taskRequired}).Count -ne 1){throw "Mandatory Node reader Source comparator missing: $taskRequired"}
@@ -134,4 +152,4 @@ foreach($taskName in $taskGuestInventory){
     if([regex]::Matches($taskLog,$taskPattern).Count -ne 1){throw "Missing terminal or skipped mandatory guest body: $taskName"}
 }
 if(!$taskLog.Contains("All $($taskGuestInventory.Count) tests passed.",[StringComparison]::Ordinal)){throw 'Incomplete guest selected execution'}
-[ordered]@{actual_compiled_tests=$taskGuestInventory.Count;named_source_tests=$taskGuestWanted.Count;inventory=$taskGuestInventory;passed=$taskGuestInventory.Count;failed=0;skipped=0;source_manifest_sha256=$ExpectedGuestManifestHash;node_reader_manifest_sha256=$ExpectedNodeReaderManifestHash;public_guest_activation=$false;full_env_package_qualified=$false;scope=if($ExpectedNodeReaderManifestHash){$taskNodeOriginal.scope}else{$taskGuestOriginal.scope}}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskReceipt 'guest-coverage.json') -Encoding utf8NoBOM
+[ordered]@{actual_compiled_tests=$taskGuestInventory.Count;named_source_tests=$taskGuestWanted.Count;inventory=$taskGuestInventory;passed=$taskGuestInventory.Count;failed=0;skipped=0;source_manifest_sha256=$ExpectedGuestManifestHash;node_reader_manifest_sha256=$ExpectedNodeReaderManifestHash;node_fs_manifest_sha256=$ExpectedNodeFsManifestHash;public_guest_activation=$false;full_env_package_qualified=$false;scope=if($ExpectedNodeFsManifestHash){$taskFsOriginal.scope}elseif($ExpectedNodeReaderManifestHash){$taskNodeOriginal.scope}else{$taskGuestOriginal.scope}}|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskReceipt 'guest-coverage.json') -Encoding utf8NoBOM

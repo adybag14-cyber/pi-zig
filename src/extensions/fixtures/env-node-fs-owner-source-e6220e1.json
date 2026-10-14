@@ -1,0 +1,354 @@
+{
+  "binary": {
+    "shape": {
+      "name": "NodeBinaryReader",
+      "keys": [
+        "file",
+        "path",
+        "closed"
+      ],
+      "methods": [
+        "constructor",
+        "info",
+        "read",
+        "scanLines",
+        "close"
+      ]
+    },
+    "info": {
+      "name": "data",
+      "path": "nested\\data",
+      "kind": "file",
+      "size": 13
+    },
+    "read": [
+      239,
+      187,
+      191,
+      97,
+      10,
+      98,
+      13,
+      10,
+      240,
+      159,
+      154,
+      128,
+      255
+    ],
+    "scan": {
+      "newlines": 2,
+      "start": 0,
+      "end": 7,
+      "firstLineEnd": 4,
+      "lastLineStart": 5,
+      "selectedBytes": 4,
+      "firstLineBytes": 1
+    }
+  },
+  "retained": [
+    239,
+    187,
+    191,
+    97,
+    10,
+    98,
+    13,
+    10,
+    240,
+    159,
+    154,
+    128,
+    255
+  ],
+  "closed": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "Binary reader is closed",
+      "path": "<TREE>\\nested\\data"
+    }
+  },
+  "closedAborted": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "aborted",
+      "message": "aborted",
+      "path": "<TREE>\\nested\\data"
+    }
+  },
+  "text": "﻿a\nb\r\n🚀�",
+  "textReader": {
+    "name": "NodeTextLineReader",
+    "keys": [
+      "file",
+      "path",
+      "decoder",
+      "chunk",
+      "byteOffset",
+      "buffered",
+      "ended",
+      "closed"
+    ],
+    "lines": [
+      {
+        "text": "a",
+        "terminated": true
+      },
+      {
+        "text": "b\r",
+        "terminated": true
+      },
+      {
+        "text": "🚀�",
+        "terminated": false
+      },
+      null
+    ],
+    "closed": {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "invalid",
+        "message": "Text line reader is closed",
+        "path": "<TREE>\\moved"
+      }
+    }
+  },
+  "large": {
+    "length": 1048593,
+    "sum": 133695291,
+    "first": [
+      3,
+      20,
+      37,
+      54,
+      71,
+      88,
+      105,
+      122,
+      139,
+      156
+    ],
+    "last": [
+      122,
+      139,
+      156,
+      173,
+      190,
+      207,
+      224,
+      241,
+      2,
+      19
+    ]
+  },
+  "truncated": [
+    3,
+    20,
+    37,
+    54,
+    71,
+    88
+  ],
+  "directory": {
+    "name": "NodeDirReader",
+    "keys": [
+      "dir",
+      "path",
+      "done",
+      "closed"
+    ],
+    "entries": [
+      {
+        "name": "large",
+        "path": "large",
+        "kind": "file",
+        "size": 6
+      },
+      {
+        "name": "moved",
+        "path": "moved",
+        "kind": "file",
+        "size": 13
+      },
+      {
+        "name": "nested",
+        "path": "nested",
+        "kind": "directory",
+        "size": 0
+      }
+    ],
+    "closed": {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "invalid",
+        "message": "Directory reader is closed",
+        "path": "<TREE>"
+      }
+    }
+  },
+  "list": [
+    {
+      "name": "large",
+      "path": "large",
+      "kind": "file",
+      "size": 6
+    },
+    {
+      "name": "moved",
+      "path": "moved",
+      "kind": "file",
+      "size": 13
+    },
+    {
+      "name": "nested",
+      "path": "nested",
+      "kind": "directory",
+      "size": 0
+    }
+  ],
+  "canonical": "<TREE>\\moved",
+  "missing": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "not_found",
+      "message": "ENOENT: no such file or directory, open '<TREE>\\absent'",
+      "path": "<TREE>\\absent",
+      "cause": {
+        "name": "Error",
+        "code": "ENOENT",
+        "message": "ENOENT: no such file or directory, open '<TREE>\\absent'",
+        "syscall": "open"
+      }
+    }
+  },
+  "readDirectory": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "is_directory",
+      "message": "EISDIR: illegal operation on a directory, read",
+      "path": "<TREE>\\nested",
+      "cause": {
+        "name": "Error",
+        "code": "EISDIR",
+        "message": "EISDIR: illegal operation on a directory, read",
+        "syscall": "read"
+      }
+    }
+  },
+  "readerDirectory": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "is_directory",
+      "message": "EISDIR: illegal operation on a directory, read",
+      "path": "<TREE>\\nested"
+    }
+  },
+  "flushDirectory": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "is_directory",
+      "message": "Is a directory",
+      "path": "<TREE>\\nested"
+    }
+  },
+  "negative": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "invalid",
+      "message": "File size must be a non-negative safe integer",
+      "path": "<TREE>\\large"
+    }
+  },
+  "existingDir": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "unknown",
+      "message": "EEXIST: file already exists, mkdir '<TREE>\\nested'",
+      "path": "<TREE>\\nested",
+      "cause": {
+        "name": "Error",
+        "code": "EEXIST",
+        "message": "EEXIST: file already exists, mkdir '<TREE>\\nested'",
+        "syscall": "mkdir"
+      }
+    }
+  },
+  "missingRemove": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "not_found",
+      "message": "ENOENT: no such file or directory, lstat '<TREE>\\absent'",
+      "path": "<TREE>\\absent",
+      "cause": {
+        "name": "Error",
+        "code": "ENOENT",
+        "message": "ENOENT: no such file or directory, lstat '<TREE>\\absent'",
+        "syscall": "lstat"
+      }
+    }
+  },
+  "forceRemove": {
+    "ok": true
+  },
+  "aborted": [
+    {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "aborted",
+        "message": "aborted",
+        "path": "<TREE>\\absent"
+      }
+    },
+    {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "aborted",
+        "message": "aborted",
+        "path": "<TREE>\\never"
+      }
+    },
+    {
+      "ok": false,
+      "error": {
+        "name": "FileError",
+        "code": "aborted",
+        "message": "aborted",
+        "path": "<TREE>\\destination"
+      }
+    }
+  ],
+  "temp": {
+    "kind": "file",
+    "empty": true,
+    "name": true
+  },
+  "removed": {
+    "ok": false,
+    "error": {
+      "name": "FileError",
+      "code": "not_found",
+      "message": "ENOENT: no such file or directory, lstat '<TREE>\\nested'",
+      "path": "<TREE>\\nested",
+      "cause": {
+        "name": "Error",
+        "code": "ENOENT",
+        "message": "ENOENT: no such file or directory, lstat '<TREE>\\nested'",
+        "syscall": "lstat"
+      }
+    }
+  }
+}

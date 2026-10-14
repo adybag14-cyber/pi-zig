@@ -1,0 +1,66 @@
+{
+  "schema": "env-node-fs-source-only-v1",
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "node": {
+    "version": "24.14.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  "source_files": 1902,
+  "source_drift": 0,
+  "tool_drift": false,
+  "records": [
+    {
+      "name": "env-node-file-io-core-source-e6220e1",
+      "input_sha256": "6B8AB82B5F33B623CD61CF7246A7720CEA793F840C9914C18C518D4678C75091",
+      "output_sha256": "EC7089315437778406EB00656044E988D3B9ECE5D20456965597C09E12C28E3E",
+      "cases": 11
+    },
+    {
+      "name": "env-node-fs-owner-source-e6220e1",
+      "input_sha256": "410C4E9532D1F95C409509BB546BB278EE08D97BE46226F4A5FB69EC525790F9",
+      "output_sha256": "F3128F127AD472F6BB7CE13A3058E6BE5362CF357A1881D736F8D38E479A943F",
+      "cases": 22
+    },
+    {
+      "name": "env-node-fs-phases-source-e6220e1",
+      "input_sha256": "E30CF6BC899FB78245B7ED4A0E3EA3A0D261411ACDCB9D61A07A9383C4502330",
+      "output_sha256": "6039AB27FEABFFB3BA24D63F3FB351EDEFCD7DC7D2B37FC32FA4B8D5AB87A4BF",
+      "cases": 2
+    },
+    {
+      "name": "env-node-fs-getters-source-e6220e1",
+      "input_sha256": "962ED964A714934B44AC3A8CC00A3CDFA9A3B7808A56FF932468030C384E5623",
+      "output_sha256": "9429C6B091E7A241481D26CE93FA9A571215477502AFDE86B407DA21C8ADB395",
+      "cases": 2
+    },
+    {
+      "name": "env-node-stats-source-e6220e1",
+      "input_sha256": "669C186E750D734ED9B25248CBB16BC3BF1B52C843E27293BA94BF2004EEB93A",
+      "output_sha256": "030E0780F5793C35ECB610BD8F6B3C40E9F445D4F11768E47E9EC19650AE8C11",
+      "cases": 10
+    },
+    {
+      "name": "env-node-fs-gpa-source-e6220e1",
+      "input_sha256": "1BD2BDF7B341845575C1FECF284A5E12EAD0BA05E2576B9ADF0A7800E971FA53",
+      "output_sha256": "AB088C36CDED1B7EA756F438B2013FEDA7004617FC11DE5082EC8B9E47052BAD",
+      "cases": 5
+    },
+    {
+      "name": "env-node-fs-chunks-source-e6220e1",
+      "input_sha256": "145F7E6E38994B34FD227BC466E1AE6E1EC554B4DBEFB9A3F7B34C98805C6E27",
+      "output_sha256": "D95563C4B8D30889D229A45F8E6606ED0AA024CCE8E40CAF0737BE034A89A50F",
+      "cases": 2
+    },
+    {
+      "name": "env-node-filehandle-close-source-e6220e1",
+      "input_sha256": "C9FA55300A36C2CF1B68456B712455AF5CDF3DF0F2A5B3B9B0FA875D083A358E",
+      "output_sha256": "3BF8CB4032D0D826F47912C6F0702D540DD960A9CA1BD2F5FAC4BA11D5DF0970",
+      "cases": 4
+    }
+  ],
+  "native_qualified": false,
+  "full_env_qualified": false,
+  "public_activation": false
+}

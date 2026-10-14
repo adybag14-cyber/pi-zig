@@ -1,0 +1,382 @@
+{
+  "small": {
+    "name": "Stats",
+    "length": 14,
+    "keys": [
+      "dev",
+      "mode",
+      "nlink",
+      "uid",
+      "gid",
+      "rdev",
+      "blksize",
+      "ino",
+      "size",
+      "blocks",
+      "atimeMs",
+      "mtimeMs",
+      "ctimeMs",
+      "birthtimeMs"
+    ],
+    "types": {
+      "dev": "number",
+      "mode": "number",
+      "nlink": "number",
+      "uid": "number",
+      "gid": "number",
+      "rdev": "number",
+      "blksize": "number",
+      "ino": "number",
+      "size": "number",
+      "blocks": "number",
+      "atimeMs": "number",
+      "mtimeMs": "number",
+      "ctimeMs": "number",
+      "birthtimeMs": "number"
+    },
+    "prototype": {
+      "constructor": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "name": "Stats",
+        "length": 14
+      },
+      "atime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "mtime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "ctime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "birthtime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "_checkModeProperty": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 1
+      }
+    },
+    "base": {
+      "constructor": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "name": "StatsBase",
+        "length": 10
+      },
+      "isDirectory": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isFile": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isBlockDevice": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isCharacterDevice": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isSymbolicLink": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isFIFO": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isSocket": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      }
+    },
+    "baseName": "StatsBase",
+    "baseLength": 10
+  },
+  "big": {
+    "name": "BigIntStats",
+    "length": 14,
+    "keys": [
+      "dev",
+      "mode",
+      "nlink",
+      "uid",
+      "gid",
+      "rdev",
+      "blksize",
+      "ino",
+      "size",
+      "blocks",
+      "atimeMs",
+      "mtimeMs",
+      "ctimeMs",
+      "birthtimeMs",
+      "atimeNs",
+      "mtimeNs",
+      "ctimeNs",
+      "birthtimeNs"
+    ],
+    "types": {
+      "dev": "bigint",
+      "mode": "bigint",
+      "nlink": "bigint",
+      "uid": "bigint",
+      "gid": "bigint",
+      "rdev": "bigint",
+      "blksize": "bigint",
+      "ino": "bigint",
+      "size": "bigint",
+      "blocks": "bigint",
+      "atimeMs": "bigint",
+      "mtimeMs": "bigint",
+      "ctimeMs": "bigint",
+      "birthtimeMs": "bigint",
+      "atimeNs": "bigint",
+      "mtimeNs": "bigint",
+      "ctimeNs": "bigint",
+      "birthtimeNs": "bigint"
+    },
+    "prototype": {
+      "constructor": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "name": "BigIntStats",
+        "length": 14
+      },
+      "atime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "mtime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "ctime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "birthtime": {
+        "enumerable": true,
+        "configurable": true,
+        "get": "get",
+        "set": "set"
+      },
+      "_checkModeProperty": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 1
+      }
+    },
+    "base": {
+      "constructor": {
+        "enumerable": false,
+        "configurable": true,
+        "writable": true,
+        "name": "StatsBase",
+        "length": 10
+      },
+      "isDirectory": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isFile": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isBlockDevice": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isCharacterDevice": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isSymbolicLink": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isFIFO": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      },
+      "isSocket": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "name": "",
+        "length": 0
+      }
+    },
+    "baseName": "StatsBase",
+    "baseLength": 10
+  },
+  "shared": true,
+  "real": {
+    "file": true,
+    "directory": false,
+    "symlink": false,
+    "block": false,
+    "character": false,
+    "fifo": false,
+    "socket": false,
+    "size": 7,
+    "bigSize": "7",
+    "ino": true,
+    "dev": true,
+    "times": true
+  },
+  "custom": {
+    "keys": [
+      "dev",
+      "mode",
+      "nlink",
+      "uid",
+      "gid",
+      "rdev",
+      "blksize",
+      "ino",
+      "size",
+      "blocks",
+      "atimeMs",
+      "mtimeMs",
+      "ctimeMs",
+      "birthtimeMs"
+    ],
+    "values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  "mode": [
+    false,
+    true,
+    false
+  ],
+  "virtual": [
+    16384,
+    32768,
+    40960
+  ],
+  "date": {
+    "before": false,
+    "value": 2,
+    "after": {
+      "enumerable": false,
+      "configurable": false,
+      "writable": true
+    },
+    "cached": true
+  },
+  "assigned": {
+    "value": "sentinel",
+    "descriptor": {
+      "enumerable": false,
+      "configurable": false,
+      "writable": true
+    }
+  },
+  "bigCustom": {
+    "values": [
+      "0",
+      "1000000",
+      "2000000",
+      "3000000",
+      "4000000",
+      "5000000",
+      "6000000",
+      "7000000",
+      "8000000",
+      "9000000",
+      "10",
+      "11",
+      "12",
+      "13",
+      "10000000",
+      "11000000",
+      "12000000",
+      "13000000"
+    ],
+    "date": 11
+  }
+}

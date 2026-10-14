@@ -62,3 +62,55 @@ pub fn systemError(scope: *Scope, fields: SystemFailure) !c.JSValue {
     if (fields.destination) |destination| try scope.put(value, "dest", try scope.text(destination));
     return value;
 }
+fn systemContextAlias(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const key: [*:0]const u8 = switch (@divTrunc(raw, 2)) {
+        0 => "errno",
+        1 => "syscall",
+        else => "path",
+    };
+    if (@mod(raw, 2) == 0) {
+        const value = c.JS_GetPropertyStr(context, data[0], key);
+        if (c.JS_IsException(value) or raw < 4 or h.nullish(value)) return value;
+        defer engine.freeValue(value);
+        return js.invoke(engine, value, "toString", &.{}) catch |err| @import("native_durable.zig").reject(engine, err);
+    }
+    const value = h.arg(if (argc > 0) argv[0..@intCast(argc)] else &.{}, 0);
+    const given = if (raw == 5) converted: {
+        if (!scope.truthy(value)) break :converted c.pi_js_undefined();
+        const text = scope.invoke(value, "toString", &.{}) catch |err| return @import("native_durable.zig").reject(engine, err);
+        break :converted scope.invoke(scope.global("Buffer") catch |err| return @import("native_durable.zig").reject(engine, err), "from", &.{text}) catch |err| return @import("native_durable.zig").reject(engine, err);
+    } else value;
+    if (c.JS_SetPropertyStr(context, data[0], key, c.JS_DupValue(context, given)) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    return c.pi_js_undefined();
+}
+pub fn removeDirectoryError(scope: *Scope, path: []const u8) !c.JSValue {
+    const engine = scope.engine;
+    const info = try scope.object();
+    try scope.put(info, "code", try scope.text("EISDIR"));
+    try scope.put(info, "message", try scope.text("is a directory"));
+    try scope.put(info, "path", try scope.text(path));
+    try scope.put(info, "syscall", try scope.text("rm"));
+    try scope.put(info, "errno", c.JS_NewInt32(engine.context, 21));
+    const error_value = try scope.own(try engine.checked(c.JS_NewError(engine.context)));
+    try scope.put(error_value, "code", try scope.text("ERR_FS_EISDIR"));
+    inline for (.{ "name", "message" }) |key| {
+        const value = if (comptime @import("std").mem.eql(u8, key, "name")) try scope.text("SystemError") else try scope.concat(try scope.text("Path is a directory: rm returned EISDIR (is a directory) "), try scope.text(path));
+        if (c.JS_DefinePropertyValueStr(engine.context, error_value, key, c.JS_DupValue(engine.context, value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+    }
+    if (c.JS_DefinePropertyValueStr(engine.context, error_value, "info", c.JS_DupValue(engine.context, info), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+    var data = [_]c.JSValue{info};
+    inline for (.{ "errno", "syscall", "path" }, 0..) |key, index| {
+        const atom = c.JS_NewAtom(engine.context, key);
+        defer c.JS_FreeAtom(engine.context, atom);
+        const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, systemContextAlias, "get", 0, @intCast(index * 2), 1, &data));
+        const setter = engine.checked(c.JS_NewCFunctionData2(engine.context, systemContextAlias, "set", 1, @intCast(index * 2 + 1), 1, &data)) catch |err| {
+            engine.freeValue(getter);
+            return err;
+        };
+        if (c.JS_DefinePropertyGetSet(engine.context, error_value, atom, getter, setter, c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(engine);
+    }
+    return error_value;
+}

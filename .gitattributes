@@ -79,3 +79,8 @@ verification/env-node-readers-e6220e1-20261013/** whitespace=blank-at-eol,-blank
 # Preserve original terminal boundaries for the scoped file-worker packet.
 verification/env-node-file-workers-e6220e1-20261013/** whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 src/extensions/fixtures/env-node-file-workers-source-manifest-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Native filesystem reference programs retain captured CRLF and EOF bytes.
+src/extensions/fixtures/env-node-fs-*-e6220e1.input.txt whitespace=cr-at-eol,-blank-at-eof
+src/extensions/fixtures/env-node-stats-source-e6220e1.input.txt whitespace=cr-at-eol
+src/extensions/fixtures/env-node-fs-source-capture-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+src/extensions/fixtures/env-node-fs-source-manifest-e6220e1.json whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

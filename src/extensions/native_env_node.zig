@@ -5,7 +5,7 @@ const h = @import("native_env_remote_helpers.zig");
 const paths = @import("native_env_node_path.zig");
 const Scope = h.Scope;
 const c = js.c;
-pub const Method = enum(c_int) { watch, absolutePath, joinPath, exec, openTextLineReader, readTextFile, readTextLines, readBinaryFile, openBinaryReader, writeFile, appendFile, truncateFile, flushFile, renameFile, fileInfo, listDir, openDirReader, canonicalPath, exists, createDir, remove, createTempDir, createTempFile, cleanup };
+pub const Method = @import("native_env_node_methods.zig").Method;
 fn constructNode(engine: *js.Engine, target: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

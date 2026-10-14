@@ -1,0 +1,118 @@
+{
+  "upstream": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "source_snapshot_tracked_files": 1902,
+  "node_version": "24.14.0",
+  "node_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "node_source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "libuv_version": "1.51.0",
+  "libuv_provenance_sha256": "9AE11C0E2B27BE84AD914E7A937B83A9C5A5264A2A5330411DE7B933C6E7AFBC",
+  "source": [
+    {
+      "path": "packages/durable/src/env/node.ts",
+      "sha256": "8DA3592F9D0D99CE0E97FAAAB2AE123DD8070270ECE12036D5A6A10C69EA422B"
+    },
+    {
+      "path": "packages/durable/src/env/decode.ts",
+      "sha256": "3DB30EAE71F612B015B95E83B28D64B5330498A517119B5A01E210666CB5B032"
+    },
+    {
+      "path": "packages/durable/src/env/line-scan.ts",
+      "sha256": "EB60F69745262FFD55B1054FC3D63247A5AED95FF502332D093945345B244603"
+    },
+    {
+      "path": "packages/durable/src/env/index.ts",
+      "sha256": "085266C93B7388CD70439B634CD376C876A6033B8FBC9EC337960A3A25003BE5"
+    },
+    {
+      "path": "packages/durable/src/env/node-watch.ts",
+      "sha256": "F3A9B9D186489166FFB7AB6AB0032F46CA3E8D05943C1DB386BE1FD17106CEFA"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "src/extensions/fixtures/env-node-file-io-core-source-e6220e1.input.txt",
+      "sha256": "6B8AB82B5F33B623CD61CF7246A7720CEA793F840C9914C18C518D4678C75091"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-file-io-core-source-e6220e1.json",
+      "sha256": "EC7089315437778406EB00656044E988D3B9ECE5D20456965597C09E12C28E3E"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-owner-source-e6220e1.input.txt",
+      "sha256": "410C4E9532D1F95C409509BB546BB278EE08D97BE46226F4A5FB69EC525790F9"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-owner-source-e6220e1.json",
+      "sha256": "F3128F127AD472F6BB7CE13A3058E6BE5362CF357A1881D736F8D38E479A943F"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-phases-source-e6220e1.input.txt",
+      "sha256": "E30CF6BC899FB78245B7ED4A0E3EA3A0D261411ACDCB9D61A07A9383C4502330"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-phases-source-e6220e1.json",
+      "sha256": "6039AB27FEABFFB3BA24D63F3FB351EDEFCD7DC7D2B37FC32FA4B8D5AB87A4BF"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-getters-source-e6220e1.input.txt",
+      "sha256": "962ED964A714934B44AC3A8CC00A3CDFA9A3B7808A56FF932468030C384E5623"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-getters-source-e6220e1.json",
+      "sha256": "9429C6B091E7A241481D26CE93FA9A571215477502AFDE86B407DA21C8ADB395"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-stats-source-e6220e1.input.txt",
+      "sha256": "669C186E750D734ED9B25248CBB16BC3BF1B52C843E27293BA94BF2004EEB93A"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-stats-source-e6220e1.json",
+      "sha256": "030E0780F5793C35ECB610BD8F6B3C40E9F445D4F11768E47E9EC19650AE8C11"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-gpa-source-e6220e1.input.txt",
+      "sha256": "1BD2BDF7B341845575C1FECF284A5E12EAD0BA05E2576B9ADF0A7800E971FA53"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-gpa-source-e6220e1.json",
+      "sha256": "AB088C36CDED1B7EA756F438B2013FEDA7004617FC11DE5082EC8B9E47052BAD"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-chunks-source-e6220e1.input.txt",
+      "sha256": "145F7E6E38994B34FD227BC466E1AE6E1EC554B4DBEFB9A3F7B34C98805C6E27"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-chunks-source-e6220e1.json",
+      "sha256": "D95563C4B8D30889D229A45F8E6606ED0AA024CCE8E40CAF0737BE034A89A50F"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-close-source-e6220e1.input.txt",
+      "sha256": "C9FA55300A36C2CF1B68456B712455AF5CDF3DF0F2A5B3B9B0FA875D083A358E"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-filehandle-close-source-e6220e1.json",
+      "sha256": "3BF8CB4032D0D826F47912C6F0702D540DD960A9CA1BD2F5FAC4BA11D5DF0970"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-source-capture-e6220e1.json",
+      "sha256": "DFF51A32404FD2CC16C872B8C668E45D8A9027C4B737F7F7B48DFF6558A92954"
+    },
+    {
+      "path": "src/extensions/fixtures/env-node-fs-original-source-capture.input.txt",
+      "sha256": "8CE7FCBABE339EB2D55DC70C9E3C98DFD7FED461866E7FDAD27AFE048EB2BFD8"
+    }
+  ],
+  "source_corpora": 8,
+  "expected_guest_tests": 20,
+  "required_tests": [
+    "native Env guest Node filesystem workers retained handles and Stats release every host allocation failure",
+    "native Env guest Node readFile reuses encoded chunks and retains Source decoder tails and BOM",
+    "native Env guest Node FileHandle close is bound own and closed calls make Source fresh promises"
+  ],
+  "public_guest_activation": false,
+  "full_env_package_qualified": false,
+  "posix_native_qualified": false,
+  "scope": "Private Windows filesystem workers, retained FileHandle/Dir and Stats, original signal/getter phases, decoder chunk tails and native allocation failure ownership. Full FileHandle/EventEmitter/streams, Node/Local constructors, exec/watch, POSIX native replay and public Env module remain incomplete.",
+  "oracle_input": "src/extensions/fixtures/env-node-fs-original-source-capture.input.txt",
+  "oracle_materialization": "Exact bytes to an owned temp .mjs outside checkout; input and temp digests checked before and after Source-only execution; no body rewrites."
+}

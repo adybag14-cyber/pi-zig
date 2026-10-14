@@ -1,0 +1,25 @@
+{
+  "descriptor": {
+    "own": true,
+    "enumerable": true,
+    "writable": true,
+    "configurable": true,
+    "name": "close",
+    "length": 0,
+    "prototypeOwn": false
+  },
+  "immediate": {
+    "fd": -1,
+    "same": false
+  },
+  "after": {
+    "fd": -1,
+    "same": false
+  },
+  "error": {
+    "name": "Error",
+    "message": "file closed",
+    "code": "EBADF",
+    "syscall": "read"
+  }
+}

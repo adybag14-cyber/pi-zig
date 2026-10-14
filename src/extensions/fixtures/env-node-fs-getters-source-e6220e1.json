@@ -1,0 +1,109 @@
+{
+  "signals": [
+    {
+      "method": "readBinaryFile",
+      "contexts": 1,
+      "firstChecks": 7,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "readTextFile",
+      "contexts": 1,
+      "firstChecks": 7,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "writeFile",
+      "contexts": 1,
+      "firstChecks": 5,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "appendFile",
+      "contexts": 1,
+      "firstChecks": 3,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "truncateFile",
+      "contexts": 1,
+      "firstChecks": 2,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "flushFile",
+      "contexts": 1,
+      "firstChecks": 2,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "listDir",
+      "contexts": 1,
+      "firstChecks": 3,
+      "secondChecks": 0,
+      "ok": true
+    },
+    {
+      "method": "openBinaryReader",
+      "contexts": 2,
+      "firstChecks": 1,
+      "secondChecks": 1,
+      "ok": false,
+      "code": "aborted"
+    },
+    {
+      "method": "openTextLineReader",
+      "contexts": 2,
+      "firstChecks": 1,
+      "secondChecks": 1,
+      "ok": false,
+      "code": "aborted"
+    },
+    {
+      "method": "openDirReader",
+      "contexts": 2,
+      "firstChecks": 1,
+      "secondChecks": 1,
+      "ok": false,
+      "code": "aborted"
+    }
+  ],
+  "throws": [
+    {
+      "name": "tempVirtualReject",
+      "rejected": true,
+      "same": true
+    },
+    {
+      "name": "tempVirtualError",
+      "rejected": false,
+      "same": true
+    },
+    {
+      "name": "tempPrefixThrow",
+      "rejected": true,
+      "same": true
+    },
+    {
+      "name": "tempSuffixThrow",
+      "rejected": true,
+      "same": true
+    },
+    {
+      "name": "noFollowGetterThrow",
+      "rejected": true,
+      "same": true
+    },
+    {
+      "name": "truncateValidationThrow",
+      "rejected": true,
+      "same": true
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "read": [
+    {
+      "abortAt": 1,
+      "checks": 1,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "aborted"
+        }
+      }
+    },
+    {
+      "abortAt": 2,
+      "checks": 2,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 3,
+      "checks": 3,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 4,
+      "checks": 4,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 5,
+      "checks": 5,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 6,
+      "checks": 6,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 7,
+      "checks": 7,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      }
+    },
+    {
+      "abortAt": 8,
+      "checks": 7,
+      "result": {
+        "ok": true,
+        "length": 1048593
+      }
+    },
+    {
+      "abortAt": 9,
+      "checks": 7,
+      "result": {
+        "ok": true,
+        "length": 1048593
+      }
+    }
+  ],
+  "write": [
+    {
+      "abortAt": 1,
+      "checks": 1,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "aborted"
+        }
+      },
+      "length": 4
+    },
+    {
+      "abortAt": 2,
+      "checks": 2,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "aborted"
+        }
+      },
+      "length": 4
+    },
+    {
+      "abortAt": 3,
+      "checks": 3,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      },
+      "length": 4
+    },
+    {
+      "abortAt": 4,
+      "checks": 4,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      },
+      "length": 0
+    },
+    {
+      "abortAt": 5,
+      "checks": 5,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      },
+      "length": 0
+    },
+    {
+      "abortAt": 6,
+      "checks": 6,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      },
+      "length": 524288
+    },
+    {
+      "abortAt": 7,
+      "checks": 7,
+      "result": {
+        "ok": false,
+        "error": {
+          "name": "FileError",
+          "code": "aborted",
+          "message": "The operation was aborted",
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORT_ERR",
+            "message": "The operation was aborted",
+            "reason": "phase-reason"
+          }
+        }
+      },
+      "length": 1048576
+    },
+    {
+      "abortAt": 8,
+      "checks": 7,
+      "result": {
+        "ok": true
+      },
+      "length": 1048593
+    },
+    {
+      "abortAt": 9,
+      "checks": 7,
+      "result": {
+        "ok": true
+      },
+      "length": 1048593
+    }
+  ]
+}

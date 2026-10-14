@@ -364,3 +364,221 @@ test "native Env guest closing queued frames shares Source rejection detaches li
     engine.freeValue(result);
     c.JS_RunGC(engine.runtime);
 }
+fn nodeFilesystemDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, raw: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = js.Engine.fromContext(context.?);
+    const value = @import("extensions/native_env_node_files.zig").invoke(engine, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, data[0], @enumFromInt(raw)) catch |err| return @import("extensions/native_durable.zig").rejectedPromise(engine, err);
+    defer engine.freeValue(value);
+    return @import("extensions/native_durable.zig").resolvedPromise(engine, value) catch |err| @import("extensions/native_durable.zig").rejectedPromise(engine, err);
+}
+fn nodeFilesystemObject(engine: *em.Engine, tree: []const u8) !c.JSValue {
+    try @import("extensions/text_encoding.zig").install(engine);
+    try @import("extensions/node_path.zig").install(engine, std.testing.io);
+    try @import("extensions/node_url.zig").install(engine);
+    try @import("extensions/node_buffer.zig").install(engine);
+    const shared = try values.exports(engine);
+    defer engine.freeValue(shared);
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bindings = try scope.object();
+    inline for (.{ "FileError", "toError" }) |name| try scope.put(bindings, name, try scope.get(shared, name));
+    var promises = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer promises.deinit(engine);
+    try scope.put(bindings, "promise_constructor", promises.constructor);
+    try scope.put(bindings, "promise_resolve", promises.resolve);
+    try scope.put(bindings, "promise_then", promises.then_function);
+    try scope.put(bindings, "paths", engine.native_module_values.get("node:path").?);
+    try scope.put(bindings, "fileURLToPath", try scope.get(engine.native_module_values.get("node:url").?, "fileURLToPath"));
+    try scope.put(bindings, "StreamDecoder", try scope.own(try @import("extensions/native_env_decode.zig").create(engine)));
+    try scope.put(bindings, "LineScanner", try scope.own(try @import("extensions/native_env_line_scan.zig").create(engine)));
+    try scope.put(bindings, "NodeBinaryReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .binary)));
+    try scope.put(bindings, "NodeTextLineReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .text)));
+    try scope.put(bindings, "NodeDirReader", try scope.own(try @import("extensions/native_env_node_readers.zig").create(&scope, bindings, .directory)));
+    try scope.put(bindings, "fs", try scope.own(try @import("extensions/native_env_node_fs_jobs.zig").create(&scope, bindings)));
+    const object = try scope.object();
+    try scope.put(object, "cwd", try scope.text(tree));
+    var data = [_]c.JSValue{bindings};
+    inline for (std.meta.fields(@import("extensions/native_env_node_methods.zig").Method)) |field| {
+        const method: @import("extensions/native_env_node_methods.zig").Method = @enumFromInt(field.value);
+        if (comptime method != .watch and method != .exec and method != .cleanup and method != .absolutePath and method != .joinPath and method != .exists and method != .readTextLines) {
+            const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, nodeFilesystemDispatch, field.name, 3, @intCast(field.value), 1, &data)));
+            try scope.put(object, field.name, function);
+        }
+    }
+    return c.JS_DupValue(engine.context, object);
+}
+test "native Env guest Node filesystem owner phases and real retained cursors match original Source" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsNodeFilesystemReference;
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const path = try tmp.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "env", try scope.own(try nodeFilesystemObject(engine, path)));
+    try scope.put(global, "treePath", try scope.text(path));
+    try scope.put(global, "fsOwnerSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-fs-owner-source-e6220e1.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-fs-owner-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(fsOwnerSource))throw Error(JSON.stringify({actual:packet,expected:fsOwnerSource}));export const proof=true;", "native-env-node-fs-owner-source.mjs") catch |err| {
+        std.debug.print("Native Env Node filesystem Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    try @import("extensions/abort_signal.zig").install(engine);
+    try scope.put(global, "fsPhasesSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-fs-phases-source-e6220e1.json"))));
+    const phases = engine.evalModule(@embedFile("extensions/fixtures/env-node-fs-phases-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(fsPhasesSource))throw Error(JSON.stringify({actual:packet,expected:fsPhasesSource}));export const proof=true;", "native-env-node-fs-phases-source.mjs") catch |err| {
+        std.debug.print("Native Env Node filesystem phase Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(phases);
+    try scope.put(global, "nodeStatsSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-stats-source-e6220e1.json"))));
+    const stats = engine.evalModule(@embedFile("extensions/fixtures/env-node-stats-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeStatsSource))throw Error(JSON.stringify({actual:packet,expected:nodeStatsSource}));export const proof=true;", "native-env-node-stats-source.mjs") catch |err| {
+        std.debug.print("Native Env Node Stats Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(stats);
+    c.JS_RunGC(engine.runtime);
+}
+test "native Env guest Node filesystem signal caching and exception boundaries match original Source" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsNodeFilesystemReference;
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const path = try tmp.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "env", try scope.own(try nodeFilesystemObject(engine, path)));
+    try scope.put(global, "nodeFsGettersSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-fs-getters-source-e6220e1.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-fs-getters-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeFsGettersSource))throw Error(JSON.stringify({actual:packet,expected:nodeFsGettersSource}));export const proof=true;", "native-env-node-fs-getters-source.mjs") catch |err| {
+        std.debug.print("Native Env Node filesystem getter Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+// Append to src/native_env_guest_test.zig only after the frozen native lane is released.
+// Fixtures are retained actual-source oracle files:
+// env-node-fs-gpa-source-body-e6220e1-20261014.txt
+// env-node-fs-gpa-source-data-e6220e1-20261014.json
+const NodeFsLockedAllocator = struct {
+    child: std.mem.Allocator,
+    mutex: std.Io.Mutex = .init,
+    fn allocator(self: *NodeFsLockedAllocator) std.mem.Allocator {
+        return .{ .ptr = self, .vtable = &.{ .alloc = alloc, .resize = resize, .remap = remap, .free = free } };
+    }
+    fn alloc(raw: *anyopaque, len: usize, alignment: std.mem.Alignment, ra: usize) ?[*]u8 {
+        const self: *NodeFsLockedAllocator = @ptrCast(@alignCast(raw));
+        std.Io.Threaded.mutexLock(&self.mutex);
+        defer std.Io.Threaded.mutexUnlock(&self.mutex);
+        return self.child.rawAlloc(len, alignment, ra);
+    }
+    fn resize(raw: *anyopaque, bytes: []u8, alignment: std.mem.Alignment, len: usize, ra: usize) bool {
+        const self: *NodeFsLockedAllocator = @ptrCast(@alignCast(raw));
+        std.Io.Threaded.mutexLock(&self.mutex);
+        defer std.Io.Threaded.mutexUnlock(&self.mutex);
+        return self.child.rawResize(bytes, alignment, len, ra);
+    }
+    fn remap(raw: *anyopaque, bytes: []u8, alignment: std.mem.Alignment, len: usize, ra: usize) ?[*]u8 {
+        const self: *NodeFsLockedAllocator = @ptrCast(@alignCast(raw));
+        std.Io.Threaded.mutexLock(&self.mutex);
+        defer std.Io.Threaded.mutexUnlock(&self.mutex);
+        return self.child.rawRemap(bytes, alignment, len, ra);
+    }
+    fn free(raw: *anyopaque, bytes: []u8, alignment: std.mem.Alignment, ra: usize) void {
+        const self: *NodeFsLockedAllocator = @ptrCast(@alignCast(raw));
+        std.Io.Threaded.mutexLock(&self.mutex);
+        defer std.Io.Threaded.mutexUnlock(&self.mutex);
+        self.child.rawFree(bytes, alignment, ra);
+    }
+};
+fn allocationNodeFilesystem(gpa: std.mem.Allocator) !void {
+    // Keep temp-directory ownership outside the failing allocator. Each attempted
+    // failure gets a fresh real tree and cleanup runs after Engine.deinit joins
+    // pending native jobs and finalizes retained FileHandle/Dir objects.
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const path = try tmp.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    var locked: NodeFsLockedAllocator = .{ .child = gpa };
+    const engine = try em.Engine.init(locked.allocator(), .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "env", try scope.own(try nodeFilesystemObject(engine, path)));
+    try scope.put(global, "nodeFsGpaSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-fs-gpa-source-e6220e1.json"))));
+    const generation = engine.native_allocation_generation;
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-fs-gpa-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeFsGpaSource))throw Error(JSON.stringify({actual:packet,expected:nodeFsGpaSource}));export const proof=true;", "native-env-node-fs-gpa-source.mjs") catch |err| {
+        const classified = engine.nativeAllocationError(err, generation);
+        if (classified != error.OutOfMemory) {
+            const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+            std.debug.print("Node filesystem GPA fail_index={d}: {s}\n", .{ failing.fail_index, engine.last_error orelse "no diagnostic" });
+        }
+        return classified;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native Env guest Node filesystem workers retained handles and Stats release every host allocation failure" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsNodeFilesystemReference;
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationNodeFilesystem, .{});
+}
+
+test "native Env guest Node readFile reuses encoded chunks and retains Source decoder tails and BOM" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsNodeFilesystemReference;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const path = try tmp.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "env", try scope.own(try nodeFilesystemObject(engine, path)));
+    try scope.put(global, "nodeFsChunksSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-fs-chunks-source-e6220e1.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-fs-chunks-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeFsChunksSource))throw Error(JSON.stringify({actual:packet,expected:nodeFsChunksSource}));export const proof=true;", "native-env-node-fs-chunks-source.mjs") catch |err| {
+        std.debug.print("Native Env Node filesystem decoder chunks Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native Env guest Node FileHandle close is bound own and closed calls make Source fresh promises" {
+    if (@import("builtin").os.tag != .windows) return error.MissingRequiredWindowsNodeFilesystemReference;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const path = try tmp.dir.realPathFileAlloc(std.testing.io, ".", std.testing.allocator);
+    defer std.testing.allocator.free(path);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var scope: @import("extensions/native_sdk_prompt_scope.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try scope.put(global, "env", try scope.own(try nodeFilesystemObject(engine, path)));
+    try scope.put(global, "nodeFileCloseSource", try scope.own(try fixtureValue(engine, @embedFile("extensions/fixtures/env-node-filehandle-close-source-e6220e1.json"))));
+    const result = engine.evalModule(@embedFile("extensions/fixtures/env-node-filehandle-close-source-e6220e1.input.txt") ++
+        "\nif(JSON.stringify(packet)!==JSON.stringify(nodeFileCloseSource))throw Error(JSON.stringify({actual:packet,expected:nodeFileCloseSource}));export const proof=true;", "native-env-node-file-close-source.mjs") catch |err| {
+        std.debug.print("Native Env Node FileHandle close Source failure: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
