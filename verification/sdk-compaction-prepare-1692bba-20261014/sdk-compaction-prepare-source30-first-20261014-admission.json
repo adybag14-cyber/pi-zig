@@ -1,0 +1,8 @@
+{
+  "free_kib": 24536552,
+  "heap_mb": 256,
+  "observed_utc": "2026-10-14T15:54:31.8857501+00:00",
+  "coordinated_with": "Root Source30 preparation oracle reservation; at most one other coordinated native reservation",
+  "status": "admitted",
+  "required_kib": 2097152
+}
