@@ -1,4 +1,4 @@
-name: Original manual compaction44 platform captures
+name: Original manual and automatic compaction84 captures
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
         working-directory: .reference-source
         timeout-minutes: 12
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Capture actual unchanged b45 manual compaction44 exports twice
+      - name: Capture actual unchanged b45 manual and automatic compaction84 exports twice
         shell: pwsh
         timeout-minutes: 20
         run: |

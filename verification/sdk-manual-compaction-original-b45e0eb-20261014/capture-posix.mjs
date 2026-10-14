@@ -2,7 +2,7 @@ import{readFileSync,writeFileSync}from'node:fs';
 import{createHash}from'node:crypto';
 import{join}from'node:path';
 import{pathToFileURL}from'node:url';
-const root=process.env.PI_RENDERER_SOURCE_ROOT,receipts=process.env.PI_RENDERER_RECEIPTS;
+const root=process.env.PI_RENDERER_SOURCE_ROOT,receipts=process.env.PI_RENDERER_RECEIPTS,candidate=process.env.PI_RENDERER_CANDIDATE_ROOT;
 const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
 const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{
  const rows=JSON.parse(readFileSync(join(receipts,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));
@@ -17,6 +17,11 @@ globalThis.manualCompactionAPI={compact:p.compact,clear:p._clearManualCompaction
 const input=readFileSync(process.argv[3],'utf8');
 await import('data:text/javascript,'+encodeURIComponent(input));
 if(manualCompactionRows.length!==44)throw Error('Actual44 manual compaction observations required');
+const autoInput=readFileSync(join(candidate,'verification/sdk-manual-compaction-original-b45e0eb-20261014/input-auto40.txt'),'utf8');
+globalThis.autoCompactionAPI={run:p._runAutoCompaction,failed:p._emitSessionCompactFailed,refresh:p._refreshFinalizedContext};
+await import('data:text/javascript,'+encodeURIComponent(autoInput));
+if(autoCompactionRows.length!==40)throw Error('Actual40 automatic observations required');
+const compactionRows=[...manualCompactionRows,...autoCompactionRows];
 const observedModules=readFileSync(join(receipts,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);
 for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
-writeFileSync(process.argv[2],JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:44,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Actual unchanged b45 ordinary manual compaction32/default summary8/finalized projection4 on caller-owned collaborators; configured package directory /owned/pi-package gives genuine POSIX documentation paths; no Source body rewrite or result normalization; historical typed catalog metadata only',rows:manualCompactionRows,observedModules},null,2));
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:84,manualCases:44,automaticCases:40,autoInputSha256:createHash('sha256').update(autoInput).digest('hex'),node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Actual unchanged b45 ordinary manual compaction32/default summary8/finalized projection4/automatic compaction40 on caller-owned collaborators; configured package directory /owned/pi-package gives genuine POSIX documentation paths; no Source body rewrite or result normalization; historical typed catalog metadata only',rows:compactionRows,observedModules},null,2));
