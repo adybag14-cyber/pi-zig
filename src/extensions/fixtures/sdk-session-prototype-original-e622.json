@@ -1,0 +1,2276 @@
+{
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Reflect.ownKeys/Object.getOwnPropertyDescriptor of actual original factory AgentSession.prototype; no Source class body rewrite",
+  "descriptors": [
+    {
+      "key": "constructor",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "AgentSession",
+        "length": 1,
+        "async": false,
+        "ownPrototype": true
+      }
+    },
+    {
+      "key": "modelRuntime",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get modelRuntime",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getRequiredRequestAuth",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getRequiredRequestAuth",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getSummarizationRequestAuth",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getSummarizationRequestAuth",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_modelForMessage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_modelForMessage",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_recordSelection",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_recordSelection",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_limitsModel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_limitsModel",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installAgentToolHooks",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installAgentToolHooks",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_beforeToolCall",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_beforeToolCall",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_afterToolCall",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_afterToolCall",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_executeNestedToolCall",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_executeNestedToolCall",
+        "length": 4,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_exceedsCompactionThreshold",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_exceedsCompactionThreshold",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_compactBeforeNextAssistantResponse",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_compactBeforeNextAssistantResponse",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installAgentRequestProjection",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installAgentRequestProjection",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_dispatchTurnEndBoundary",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_dispatchTurnEndBoundary",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installAgentBoundaryHooks",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installAgentBoundaryHooks",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installAgentNextTurnRefresh",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installAgentNextTurnRefresh",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_refreshFinalizedContext",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_refreshFinalizedContext",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_applyBoundaryDrafts",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_applyBoundaryDrafts",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_createBoundaryPreviewManager",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_createBoundaryPreviewManager",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getPendingBoundaryMessages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getPendingBoundaryMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_buildBoundaryContext",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_buildBoundaryContext",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_commitBoundaryDrafts",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_commitBoundaryDrafts",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_reportInvalidBoundaryContinuation",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_reportInvalidBoundaryContinuation",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emit",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emit",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emitQueueUpdate",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emitQueueUpdate",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emitSessionCompactFailed",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emitSessionCompactFailed",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getIdleWaitPromise",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getIdleWaitPromise",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_resolveIdleWaitIfIdle",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_resolveIdleWaitIfIdle",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emitAgentSettled",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emitAgentSettled",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_willRetryAfterAgentEnd",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_willRetryAfterAgentEnd",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_findPersistedMessageEntryId",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_findPersistedMessageEntryId",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_omitRecoveryAttempt",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_omitRecoveryAttempt",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_findLastAssistantMessage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_findLastAssistantMessage",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_replaceMessageInPlace",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_replaceMessageInPlace",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emitExtensionEvent",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emitExtensionEvent",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "subscribe",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "subscribe",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_disconnectFromAgent",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_disconnectFromAgent",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "dispose",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "dispose",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "refreshContext",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "refreshContext",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "state",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get state",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "cacheWarmingStatus",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get cacheWarmingStatus",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setCacheWarmingMode",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setCacheWarmingMode",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "model",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get model",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "thinkingLevel",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get thinkingLevel",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "routedModel",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get routedModel",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "isStreaming",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get isStreaming",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "isIdle",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get isIdle",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "systemPrompt",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get systemPrompt",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "retryAttempt",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get retryAttempt",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getActiveToolNames",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getActiveToolNames",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getCallableToolNames",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getCallableToolNames",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getAllTools",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getAllTools",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getToolDefinition",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getToolDefinition",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setActiveToolsByName",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setActiveToolsByName",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_setActiveTools",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_setActiveTools",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_isAllowedTool",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_isAllowedTool",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_isActivatable",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_isActivatable",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getToolExposure",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getToolExposure",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getCallableTools",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getCallableTools",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_applyToolLoadout",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_applyToolLoadout",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "isCompacting",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get isCompacting",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "messages",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get messages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "steeringMode",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get steeringMode",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "followUpMode",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get followUpMode",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "sessionFile",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get sessionFile",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "sessionId",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get sessionId",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "sessionName",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get sessionName",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "scopedModels",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get scopedModels",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setScopedModels",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setScopedModels",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "promptTemplates",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get promptTemplates",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_normalizePromptSnippet",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_normalizePromptSnippet",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_normalizePromptGuidelines",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_normalizePromptGuidelines",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_rebuildSystemPrompt",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_rebuildSystemPrompt",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_preparePromptAndToolLoadout",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_preparePromptAndToolLoadout",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installHiddenDeclarationsProjection",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installHiddenDeclarationsProjection",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_installAgentForcedPromptProjection",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_installAgentForcedPromptProjection",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_restoreToolsFromTranscript",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_restoreToolsFromTranscript",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_startRun",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_startRun",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_prepareRun",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_prepareRun",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_handlePostAgentRun",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_handlePostAgentRun",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_runBeforeSettleBoundary",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_runBeforeSettleBoundary",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_runInputHandlers",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_runInputHandlers",
+        "length": 4,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_normalizePromptImages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_normalizePromptImages",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "prompt",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "prompt",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_tryExecuteExtensionCommand",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_tryExecuteExtensionCommand",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_expandSkillCommand",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_expandSkillCommand",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_queueUserInput",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_queueUserInput",
+        "length": 4,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "steer",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "steer",
+        "length": 3,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "followUp",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "followUp",
+        "length": 3,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_queueSteer",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_queueSteer",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_queueFollowUp",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_queueFollowUp",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_throwIfExtensionCommand",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_throwIfExtensionCommand",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "sendCustomMessage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "sendCustomMessage",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_appendCustomMessage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_appendCustomMessage",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_flushPendingCustomMessages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_flushPendingCustomMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "sendUserMessage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "sendUserMessage",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "clearQueue",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "clearQueue",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "pendingMessageCount",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get pendingMessageCount",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getSteeringMessages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getSteeringMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getFollowUpMessages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getFollowUpMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "resourceLoader",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get resourceLoader",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "abort",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "abort",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "waitForIdle",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "waitForIdle",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_emitModelSelect",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_emitModelSelect",
+        "length": 3,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setModel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setModel",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_addPersistedDefaultToNonEmptyScope",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_addPersistedDefaultToNonEmptyScope",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "cycleModel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "cycleModel",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_cycleScopedModel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_cycleScopedModel",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_cycleAvailableModel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_cycleAvailableModel",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setThinkingLevel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setThinkingLevel",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "cycleThinkingLevel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "cycleThinkingLevel",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getAvailableThinkingLevels",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getAvailableThinkingLevels",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "supportsThinking",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "supportsThinking",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_getThinkingLevelForModelSwitch",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_getThinkingLevelForModelSwitch",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_clampThinkingLevel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_clampThinkingLevel",
+        "length": 2,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "syncQueueModesFromSettings",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "syncQueueModesFromSettings",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setSteeringMode",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setSteeringMode",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setFollowUpMode",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setFollowUpMode",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_runDefaultCompaction",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_runDefaultCompaction",
+        "length": 5,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_clearManualCompactionState",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_clearManualCompactionState",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "compact",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "compact",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "abortCompaction",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "abortCompaction",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "abortBranchSummary",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "abortBranchSummary",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_checkCompaction",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_checkCompaction",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_runAutoCompaction",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_runAutoCompaction",
+        "length": 2,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setAutoCompactionEnabled",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setAutoCompactionEnabled",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "autoCompactionEnabled",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get autoCompactionEnabled",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "bindExtensions",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "bindExtensions",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "extendResourcesFromExtensions",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "extendResourcesFromExtensions",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "buildExtensionResourcePaths",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "buildExtensionResourcePaths",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getExtensionSourceLabel",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getExtensionSourceLabel",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_applyExtensionBindings",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_applyExtensionBindings",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_refreshCurrentModelFromRegistry",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_refreshCurrentModelFromRegistry",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_bindExtensionCore",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_bindExtensionCore",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_refreshToolRegistry",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_refreshToolRegistry",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_isDeclarable",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_isDeclarable",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_isActivatedOnRegistration",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_isActivatedOnRegistration",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_buildRuntime",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_buildRuntime",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "reload",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "reload",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_isRetryableError",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_isRetryableError",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_summarizationRetryCallbacks",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_summarizationRetryCallbacks",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_finishCancelledRetry",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_finishCancelledRetry",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_prepareRetry",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_prepareRetry",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "abortRetry",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "abortRetry",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "isRetrying",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get isRetrying",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "autoRetryEnabled",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get autoRetryEnabled",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setAutoRetryEnabled",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setAutoRetryEnabled",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "executeBash",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "executeBash",
+        "length": 3,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "recordBashResult",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "recordBashResult",
+        "length": 3,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "abortBash",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "abortBash",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "isBashRunning",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get isBashRunning",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "hasPendingBashMessages",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get hasPendingBashMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "_flushPendingBashMessages",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "_flushPendingBashMessages",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "setSessionName",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "setSessionName",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "navigateTree",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "navigateTree",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getUserMessagesForForking",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getUserMessagesForForking",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getSessionStats",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getSessionStats",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getContextUsage",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getContextUsage",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "exportToHtml",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "exportToHtml",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "exportToJsonl",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "exportToJsonl",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "summarizeForBugReport",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "summarizeForBugReport",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "getLastAssistantText",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "getLastAssistantText",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "createReplacedSessionContext",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "createReplacedSessionContext",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "hasExtensionHandlers",
+      "kind": "data",
+      "enumerable": false,
+      "configurable": true,
+      "writable": true,
+      "valueType": "function",
+      "function": {
+        "name": "hasExtensionHandlers",
+        "length": 1,
+        "async": false,
+        "ownPrototype": false
+      }
+    },
+    {
+      "key": "extensionRunner",
+      "kind": "accessor",
+      "enumerable": false,
+      "configurable": true,
+      "get": {
+        "name": "get extensionRunner",
+        "length": 0,
+        "async": false,
+        "ownPrototype": false
+      }
+    }
+  ]
+}

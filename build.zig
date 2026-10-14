@@ -1466,6 +1466,11 @@ pub fn build(b: *std.Build) void {
     read_prompt_b45_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-read-prompt-b45", "Compile private genuine b45 read-range and native prompt comparison without execution").dependOn(&read_prompt_b45_tests.step);
     b.step("test-native-read-prompt-b45", "Compare actual Original54 numeric ranges live callbacks quoted empties Unicode prompts GC and allocation cleanup").dependOn(&b.addRunArtifact(read_prompt_b45_tests).step);
+    const registry_composition_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_registry_composition_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native private registry"}, .use_llvm = use_llvm });
+    linkQuickJs(b, registry_composition_tests.root_module, quickjs, sqlite_lib_dir);
+    registry_composition_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-registry-composition", "Compile private actual constructor registry loadout hook composition; Root helper intake required").dependOn(&registry_composition_tests.step);
+    b.step("test-native-sdk-registry-composition", "Report actual Original64 behavior and historical Source166 missing methods descriptors GC and full allocation failures").dependOn(&b.addRunArtifact(registry_composition_tests).step);
     const source_paths_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_source_paths_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Source path cwd"}, .use_llvm = use_llvm });
     linkQuickJs(b, source_paths_tests.root_module, quickjs, sqlite_lib_dir);
     source_paths_tests.root_module.addImport("catalog_tool", catalog_tool);
