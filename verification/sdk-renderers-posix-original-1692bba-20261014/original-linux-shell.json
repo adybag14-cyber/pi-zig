@@ -1,0 +1,2639 @@
+{
+  "source": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "scope": "Unchanged original renderer bodies and genuine Theme/TUI/helpers on the actual recorded platform; caller input unchanged, no TypeError normalization or Source body rewrite",
+  "family": "shell",
+  "platform": "linux",
+  "arch": "x64",
+  "cases": 53,
+  "node": {
+    "version": "v24.14.0",
+    "path": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+    "sha256": "e237a2839d0cbdc9a9a2adda1a184afc0f5b20306ffbe923af5686550472d8a8",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs"
+    ]
+  },
+  "input": {
+    "path": "/home/runner/work/pi-zig/pi-zig/src/extensions/fixtures/sdk-tool-shell-renderers-e622.input.txt",
+    "sha256": "b8bb8465720e778b3bebbc6afc8752910c4c90556ccea237ade0e83dbf2bcf6d"
+  },
+  "before": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4642,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source",
+      "count": 1955,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26280,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 4642,
+      "drift": 0
+    }
+  ],
+  "raw": [
+    {
+      "name": "$-call-0",
+      "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-1",
+      "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-2",
+      "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-3",
+      "text": "\u001b[38;2;222;224;225m$ echo hello\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ echo hello\u001b[39m                            "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-4",
+      "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m            "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-5",
+      "text": "\u001b[38;2;222;224;225m$ echo 界🙂\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ echo 界🙂\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m               "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-6",
+      "text": "\u001b[38;2;222;224;225m$ one\ntwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ one                                   ",
+        "\u001b[38;2;222;224;225mtwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m                      "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-call-7",
+      "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-0",
+      "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-1",
+      "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-2",
+      "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-3",
+      "text": "\u001b[38;2;222;224;225mPS> echo hello\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> echo hello\u001b[39m                          "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-4",
+      "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m          "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-5",
+      "text": "\u001b[38;2;222;224;225mPS> echo 界🙂\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> echo 界🙂\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m             "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-6",
+      "text": "\u001b[38;2;222;224;225mPS> one\ntwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> one                                 ",
+        "\u001b[38;2;222;224;225mtwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m                      "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "PS>-call-7",
+      "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+      "lines": [
+        "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+      ],
+      "reused": true,
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000
+      },
+      "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+      "metadata": {
+        "call": {
+          "name": "renderCall",
+          "length": 3,
+          "ownPrototype": false
+        },
+        "result": {
+          "name": "renderResult",
+          "length": 4,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "$-result-0",
+      "output": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-1",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mshort \u001b[39m\n\u001b[38;2;157;165;169mtext\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mshort \u001b[39m  ",
+          "\u001b[38;2;157;165;169mtext\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mshort \u001b[39m                                  ",
+          "\u001b[38;2;157;165;169mtext\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-2",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 10 ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169m... (5 earlier lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+          "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-3",
+      "output": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mline 1  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 2  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 3  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 4  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 5  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 6  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 7  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 8  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 9  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 10 ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-4",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: showing 2 of 100 lines]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md:      ",
+          "\u001b[38;2;205;154;34mshowing ",
+          "\u001b[38;2;205;154;34m2 of 100",
+          "\u001b[38;2;205;154;34mlines]\u001b[39m  ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34mshowing 2 of 100 lines]\u001b[39m                 ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-5",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[other]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (1.0KB limit)]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+          "\u001b[38;2;157;165;169m\u001b[39m        ",
+          "\u001b[38;2;157;165;169m[other]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md: 3    ",
+          "\u001b[38;2;205;154;34mlines   ",
+          "\u001b[38;2;205;154;34mshown   ",
+          "\u001b[38;2;205;154;34m(1.0KB  ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+          "\u001b[38;2;157;165;169m[other]\u001b[39m                                 ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34m3 lines shown (1.0KB limit)]\u001b[39m            ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-6",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (50.0KB limit)]\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+          "\u001b[38;2;157;165;169m\u001b[39m        ",
+          "\u001b[38;2;157;165;169m[Full   ",
+          "\u001b[38;2;157;165;169moutput: ",
+          "\u001b[38;2;157;165;169m/tmp/own",
+          "\u001b[38;2;157;165;169med.log]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md: 3    ",
+          "\u001b[38;2;205;154;34mlines   ",
+          "\u001b[38;2;205;154;34mshown   ",
+          "\u001b[38;2;205;154;34m(50.0KB ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+          "\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m           ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34m3 lines shown (50.0KB limit)]\u001b[39m           "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-7",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/all",
+          "\u001b[38;2;205;154;34m.log]\u001b[39m   ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mcomplete\u001b[39m                                ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m             ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-8",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mred\u001b[39m     ",
+          "\u001b[38;2;157;165;169mend\u001b[39m     ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+          "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-9",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mwith image\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mwith    ",
+          "\u001b[38;2;157;165;169mimage\u001b[39m   ",
+          "\u001b[38;2;157;165;169m[Image: ",
+          "\u001b[38;2;157;165;169m[image/p",
+          "\u001b[38;2;157;165;169mng] 1x1]\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mwith image\u001b[39m                              ",
+          "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "$-result-10",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169merror\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169merror\u001b[39m   ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169merror\u001b[39m                                   ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-0",
+      "output": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-1",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mshort \u001b[39m\n\u001b[38;2;157;165;169mtext\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mshort \u001b[39m  ",
+          "\u001b[38;2;157;165;169mtext\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mshort \u001b[39m                                  ",
+          "\u001b[38;2;157;165;169mtext\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-2",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 10 ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169m... (5 earlier lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+          "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-3",
+      "output": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mline 1  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 2  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 3  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 4  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 5  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 6  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 7  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 8  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 9  ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "\u001b[38;2;157;165;169mline 10 ",
+          "\u001b[38;2;157;165;169mabcdefgh",
+          "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+          "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-4",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: showing 2 of 100 lines]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md:      ",
+          "\u001b[38;2;205;154;34mshowing ",
+          "\u001b[38;2;205;154;34m2 of 100",
+          "\u001b[38;2;205;154;34mlines]\u001b[39m  ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34mshowing 2 of 100 lines]\u001b[39m                 ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-5",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[other]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (1.0KB limit)]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+          "\u001b[38;2;157;165;169m\u001b[39m        ",
+          "\u001b[38;2;157;165;169m[other]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md: 3    ",
+          "\u001b[38;2;205;154;34mlines   ",
+          "\u001b[38;2;205;154;34mshown   ",
+          "\u001b[38;2;205;154;34m(1.0KB  ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+          "\u001b[38;2;157;165;169m[other]\u001b[39m                                 ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34m3 lines shown (1.0KB limit)]\u001b[39m            ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-6",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (50.0KB limit)]\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+          "\u001b[38;2;157;165;169m\u001b[39m        ",
+          "\u001b[38;2;157;165;169m[Full   ",
+          "\u001b[38;2;157;165;169moutput: ",
+          "\u001b[38;2;157;165;169m/tmp/own",
+          "\u001b[38;2;157;165;169med.log]\u001b[39m ",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/own",
+          "\u001b[38;2;205;154;34med.log. ",
+          "\u001b[38;2;205;154;34mTruncate",
+          "\u001b[38;2;205;154;34md: 3    ",
+          "\u001b[38;2;205;154;34mlines   ",
+          "\u001b[38;2;205;154;34mshown   ",
+          "\u001b[38;2;205;154;34m(50.0KB ",
+          "\u001b[38;2;205;154;34mlimit)]\u001b[39m "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+          "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+          "\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m           ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+          "\u001b[38;2;205;154;34m3 lines shown (50.0KB limit)]\u001b[39m           "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-7",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m"
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+          "        ",
+          "\u001b[38;2;205;154;34m[Full   ",
+          "\u001b[38;2;205;154;34moutput: ",
+          "\u001b[38;2;205;154;34m/tmp/all",
+          "\u001b[38;2;205;154;34m.log]\u001b[39m   ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mcomplete\u001b[39m                                ",
+          "                                        ",
+          "\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m             ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-8",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mred\u001b[39m     ",
+          "\u001b[38;2;157;165;169mend\u001b[39m     ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+          "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-9",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mwith image\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mwith    ",
+          "\u001b[38;2;157;165;169mimage\u001b[39m   ",
+          "\u001b[38;2;157;165;169m[Image: ",
+          "\u001b[38;2;157;165;169m[image/p",
+          "\u001b[38;2;157;165;169mng] 1x1]\u001b[39m",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mwith image\u001b[39m                              ",
+          "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "PS>-result-10",
+      "output": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169merror\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169merror\u001b[39m   ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169merror\u001b[39m                                   ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "reused": true,
+      "next": {
+        "children": [
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+        ],
+        "wide": [
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "endedAt": 5000
+      }
+    },
+    {
+      "name": "live-interval-cleared",
+      "scheduled": true,
+      "handleType": "object",
+      "reused": true,
+      "partialOutput": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mlive\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mElapsed 4.0s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mlive\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;157;165;169mElapsed ",
+          "\u001b[38;2;157;165;169m4.0s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mlive\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mElapsed 4.0s\u001b[39m                            "
+        ]
+      },
+      "finalOutput": {
+        "children": [
+          {
+            "type": "Spacer"
+          },
+          {
+            "type": "VisualLinePreview",
+            "options": {
+              "text": "\u001b[38;2;157;165;169mdone\u001b[39m",
+              "maxVisualLines": 5,
+              "keep": "end"
+            }
+          },
+          {
+            "type": "Text",
+            "text": "\n\u001b[38;2;157;165;169mTook 4.0s\u001b[39m"
+          }
+        ],
+        "narrow": [
+          "",
+          "\u001b[38;2;157;165;169mdone\u001b[39m    ",
+          "        ",
+          "\u001b[38;2;157;165;169mTook    ",
+          "\u001b[38;2;157;165;169m4.0s\u001b[39m    "
+        ],
+        "wide": [
+          "",
+          "\u001b[38;2;157;165;169mdone\u001b[39m                                    ",
+          "                                        ",
+          "\u001b[38;2;157;165;169mTook 4.0s\u001b[39m                               "
+        ]
+      },
+      "state": {
+        "startedAt": 1000,
+        "endedAt": 5000,
+        "intervalCleared": true
+      }
+    },
+    {
+      "name": "actual-start-clock",
+      "integer": true,
+      "withinObservedCall": true,
+      "endedUndefined": true
+    },
+    {
+      "name": "duration-0",
+      "text": "0.0s"
+    },
+    {
+      "name": "duration-1",
+      "text": "0.0s"
+    },
+    {
+      "name": "duration-4200",
+      "text": "4.2s"
+    },
+    {
+      "name": "duration-59949",
+      "text": "59.9s"
+    },
+    {
+      "name": "duration-59950",
+      "text": "60.0s"
+    },
+    {
+      "name": "duration-60000",
+      "text": "1m 0s"
+    },
+    {
+      "name": "duration-90000",
+      "text": "1m 30s"
+    },
+    {
+      "name": "duration-3599999",
+      "text": "59m 59s"
+    },
+    {
+      "name": "duration-3600000",
+      "text": "1h 0m 0s"
+    },
+    {
+      "name": "duration-7384000",
+      "text": "2h 3m 4s"
+    },
+    {
+      "name": "duration--4250",
+      "text": "-4.3s"
+    },
+    {
+      "name": "duration-NaN",
+      "text": "NaNh NaNm NaNs"
+    },
+    {
+      "name": "duration-Infinity",
+      "text": "Infinityh NaNm NaNs"
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+      "sha256": "80dabdaffc67e61dc48a04877b27e306573f26503869a722a83c61f9e4b4e364"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/capture-original.mjs",
+      "sha256": "188a58d155b9b91730f5db51e4b658ba6cf6c7a4509019f225255f85ecf700e0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/modes/interactive/theme/theme.ts",
+      "sha256": "07ff17a690749afa8b3b1724efd271859ff889255fd494606230fec99ec1c1ba"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts",
+      "sha256": "1a4ad10ce2da3e6664078771352dbd40b02920a9a07f7f6d25f699c72e22ff3e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/marked/lib/marked.esm.js",
+      "sha256": "05e41134d075ad3a009a748d6c779c3d83cea9b942be911c2d9abade36d1dd31"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/autocomplete.ts",
+      "sha256": "7391902f35b60c3467ceb5eccc86e0954a388ea1012455c1a7ea8f7325de773b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/fuzzy.ts",
+      "sha256": "0ae2bedc6a4f043d875ec415202a6e3d9e45405741359d7d2dc2855240dff633"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/utils.ts",
+      "sha256": "6e22ed5385c08965a46f01d6ec9686cb0eada95e34b9dc0f9a5e85d28f8f512a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/index.js",
+      "sha256": "d7b1ba05914c0fc311c20e5618bf8d0893c9c74078a07975e2df981445e64887"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/lookup.js",
+      "sha256": "c80ecc22b120b27ef5ea9facb7000b8fd4ec037a84d9231d215f1c44bc9c21d0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/lookup-data.js",
+      "sha256": "f6b40f86c9a2a6808ec808fa8ddcb8da261254cc6121d37ffaeb2bf35dad1d5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/utilities.js",
+      "sha256": "4b08a7e9e3ffacbcf198a6abceb2338d52ac671899e52ccc2851c898bfccac42"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/colors.ts",
+      "sha256": "d4fe729c424d2c07bc64cf0c3edfdbf5642865cba395dfb37234c6c88d65f468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/oklab.ts",
+      "sha256": "45b067e6e3605b385f595adecd7c0216f1c6b6686680d5c73f661286de736be6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/box.ts",
+      "sha256": "f9dc623ba06ab407ac3edd71eb8ff32525609d3b2cf5013a599c9a1d10273f2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui.ts",
+      "sha256": "206519884c4cb27096d00048a2fc4e8a0c404714e548c8dd5b62c38060d3b240"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/keys.ts",
+      "sha256": "40cd0229bbc36cdcac24f3bdd2fce53f060ff4fe6f8522e239135212033d37f2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal-colors.ts",
+      "sha256": "72d1ef298837bfe520bd8a060cb93ea27547dcbff04a167ace0f55b5183e550d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal-image.ts",
+      "sha256": "fa09e7725f1158e1bb3b53c3d0539cc6c066a7c058bee33142ad2f33e8ac5736"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/cancellable-loader.ts",
+      "sha256": "5f0ae0a56f299e5f6c9585c79bbe16c38a845f038a7254f8dffe7a44f6082e16"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/keybindings.ts",
+      "sha256": "475760dd4e3d02eca46bb5ee8704cd387c397b40d7a1f8967bdac3c481f5f702"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/loader.ts",
+      "sha256": "614b39cd2f493e289a12ee4f42404f779cc3a5784735066760c1d9f13bf5d287"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/text.ts",
+      "sha256": "e46790ea0b4a3db105306e057664b4246983c189218346dacd8ea6f0c9ee7152"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/editor.ts",
+      "sha256": "48c6a498527df4f645f66574904bdc82c1a4021b29ff81674132219043d4d016"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/kill-ring.ts",
+      "sha256": "d829ae816560b12d2800a38db9f7278f76d9ef43d0e53e004a86add9b56c559a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/undo-stack.ts",
+      "sha256": "1373c1e0a1e2c58ac90c93d32a9e5c1226d7f53314c77dd3d0f8ec349d2b3627"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/word-navigation.ts",
+      "sha256": "b73e915a524926ac8881731e89026b0bc7b5b0bd465de67257af81a420465c7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/select-list.ts",
+      "sha256": "0fc369801e745eff15567d72829bf67887f5efec8bc6816aaf1ee65338618373"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/h-stack.ts",
+      "sha256": "6622e1e2605e500a420c3cdf3ffcae0548b2d86ec496a0f6bf1dd5c95aeb0b6b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/stack.ts",
+      "sha256": "93208d326fa43431b930eaa3250a1e19747063d696e97ec2f002f5feaa54fc18"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/layout-node.ts",
+      "sha256": "31dd68c9edafdc4f882bbb6c16f8deb1c514111020b647f0037b34d6b8c70a85"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/image.ts",
+      "sha256": "e92c3f66f36eb579ff1eabd9dc3b9f34bd8a07997bd62ffe3fb63a21f97a7462"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/input.ts",
+      "sha256": "0ad90bf7464e4da90e75596007b365edc45fcb371c4dbee563d4122b13247a11"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/markdown.ts",
+      "sha256": "04ef2f5aad6b9706e9f02568814283021b6151a18ae2b08fcf145890aeac7dfa"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/latex.ts",
+      "sha256": "c4ef99bef1d3a54c73006912c9a7fa67ef99412b4f6cd28d608cf0e07b38cece"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/mouse-region.ts",
+      "sha256": "9dbcac616e8f8271b522b374bae29ab0b829d3771ce0ed228d6ae3da1c2be759"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/scroll-view.ts",
+      "sha256": "76dfd9f8a88cabc064f0652b83f16a945fbc988c9fe7c0423a4cd796907ef77d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/settings-list.ts",
+      "sha256": "8d6b91d3c4aaaf11225854847d42ae6da852ef2646d54542c5b51a97dde15605"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/spacer.ts",
+      "sha256": "b511acec1d33885dad23e7ab2108b2d04dff0589b3bfda53b1f7458be4381e66"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/truncated-text.ts",
+      "sha256": "c383487099d1864b51493a5838dd28a1bd3e5e440a675ec1dbcaf0177534fad0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/v-stack.ts",
+      "sha256": "0f36c9417bfffe5f6b9cc5fd40d420390cf9bebae70a073a409ac5f931f1f813"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-platform.ts",
+      "sha256": "693d33898358804541d36aff089db74e1eb3be8f1a1722ffe6d821036b925959"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-module-path.ts",
+      "sha256": "e0955c6d733085d89cc81ef4d991e2a04368a54b52007273c0a688b23abba28b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/program-status.ts",
+      "sha256": "4b05e7cc38b902559738b13b08ffb367fb188426823be90f341cc626d5d013f0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/stdin-buffer.ts",
+      "sha256": "82da9ff728e77269bbfa24c28eda81f26f744efef9e05113c2401ed52c823054"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal.ts",
+      "sha256": "7a75ac820dff409781f1ca59a0354d97282044f444a38322eb4e1886cb7fe247"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-modifiers.ts",
+      "sha256": "8bfe66389dee2e6e962cb82f54050f8fe10df0d0b26d56186a581a00f70d6d8e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui-alt-screen.ts",
+      "sha256": "dd978db4f24a07e58a6e63819388a07700cb6237bbc0c8e9994bfc5f5d656800"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/alt-screen-search.ts",
+      "sha256": "7d339e83cf0f160847335dc9be0d1f1db2a0945c463c3d636c7b84ceb9665d40"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/alt-screen-flash.ts",
+      "sha256": "6d341546b59958e93e4d33fdc1766b10d13c98a779031e2c01b827f0a4c6e30c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/layout.ts",
+      "sha256": "7530a8eaa30f44fef82e8b7020b5068ba89d34884463c6cb526073b20fcdeef0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/wheel-scroll.ts",
+      "sha256": "a969a50d0a3627fde0052f766443e3668a6355b3ecf312ea078025080d303f82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui-main-screen.ts",
+      "sha256": "643661182cbeb1d5c5fbee195e0ec03a4f1045f629c8666c4d175518ce5939e1"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/chalk/source/index.js",
+      "sha256": "08e92f2330a34d232f8aa987da4d953893094be5b2aa8cc39ddb4313743f206e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/chalk/source/utilities.js",
+      "sha256": "a58d81494366211509ea2c373328cf68a6365a94be8645f33c1ed49f1288650a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/chalk/source/vendor/ansi-styles/index.js",
+      "sha256": "f28f1ede59be327626e4ae5f9f05387ab8072f298ba1ab7f9c9262d39923a25d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/chalk/source/vendor/supports-color/index.js",
+      "sha256": "57f56bb90a586a6c7a65fc831cae47f0773b8f42edf11abb7c4f2273b82fb63e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/config.ts",
+      "sha256": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/child-process.ts",
+      "sha256": "cd324f5b9a1abadd85ab5a331750d475c8bd51ec65cae091ad9b416245ec85d4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/index.js",
+      "sha256": "b8e01cb18ba87ee1b0e5eb2eb1ce6cbb25a2bdd229f9e08671f8a10ed7e3ad35"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/paths.ts",
+      "sha256": "64c3ebef724fa21ed0042e127908b4323a5d2f1b8aaa91eee550442332fe8502"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/text.ts",
+      "sha256": "bb323f9607c499115b532021f4f0163c6df04d834aee9c32c3c77b273bd2d7c6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/fs-watch.ts",
+      "sha256": "f40e22497371b59286e516eeff70495b20a099daef160c82cc1c196cf637df41"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/syntax-highlight.ts",
+      "sha256": "6849a5ead44fb9e76d5e93047641bf34f21483c67400b7056c97f0028c8c4612"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/bash.js",
+      "sha256": "760337399a01bba07ca386b26d67b4979cef2cd8619c4c012f3e2d3696513805"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/c.js",
+      "sha256": "9465ff9b3b7f72057acc56509dd3184f4742cd90c907ac8a9162a22ae4081dcc"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/cpp.js",
+      "sha256": "d75213a6d84131f2951481c65ce72996e2af98ffa02f72fc088b8ef6032fa619"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/csharp.js",
+      "sha256": "ebcc1a0eb1cfc68bccf4691ba86661da6773e22003062c95b0163d29640da048"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/dart.js",
+      "sha256": "d803a195fdc1e233d573e7b57852a88ecd5674f425d7ccbb398df7868d73a4c7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/go.js",
+      "sha256": "2f7e722c1261a41636561e8857075264109a11c86c0de73cefe50db39396ba59"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/groovy.js",
+      "sha256": "469a021e26a94093fbcb5491f41db234889a7cf0183e1bf0c2f49a10cdefde4b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/java.js",
+      "sha256": "3e19b818d4a4d48a0710f9d9965d3ae6fee86bdfd2314aa8f9aec89c47cf6908"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/javascript.js",
+      "sha256": "f0edc556ff97da57eede63732b476927da43da502b999186a4d9dac28f688fcd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/json.js",
+      "sha256": "ebb4ccb8af5c7b49f01af8b81b75e0a0bbb0aed5b3074b4f5c44f023e246fd2a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/kotlin.js",
+      "sha256": "c7e0b63200229f1c2b311cf810044dd999b5e8b92f27266c06a999dd374ae31c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/lua.js",
+      "sha256": "88a0ff413042cf4085e1c64c14ee9368ea66516f5b816548a51a9169b6e66ebd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/nix.js",
+      "sha256": "988d14d6bbe8d40609f13b8d76f55e096c64e9745740a70002ff1bf2de122757"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/perl.js",
+      "sha256": "6080515bade18921d32207f656f558857d976b195accbef86204c00c0beb3e2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/php.js",
+      "sha256": "6106a3585adc0ef5d8d52449bac71c14e1fdfc7e5a6257b8bd03a7964b58bfbd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/python.js",
+      "sha256": "a7145981d1c4fbe9979021d16f34728408e95e72374173c878e24babd378bbc3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/ruby.js",
+      "sha256": "ac7d96bd0483aeb712efbd60dfb675b04de0375293a4f3bd046353591e2bff86"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/rust.js",
+      "sha256": "bdc8e553ec27818f6679efd1ab30a5aa71cdf915b2205d51b4ce575d9898ad47"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/scala.js",
+      "sha256": "f00bc0c4c74ebcf0fdf4d16ed770d8391c9ef59ebf46876379887ad29dfd42fb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/swift.js",
+      "sha256": "68de29ed46414356e02d838b848ff2e4590b69fe1bd6286cf3a57e7ba156d6c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/highlight.js/lib/languages/typescript.js",
+      "sha256": "8deb81f57cdad5fbb3d3afe1af393924d5ed17c81951d72459e03f141a6589cb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/html.ts",
+      "sha256": "d3abd075ab64807a1facae1511ec0b9b22f63153c7808eb63e7560fb00b1d48b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/modes/interactive/theme/system-theme.ts",
+      "sha256": "877a3dc24fd194f2dc5ee9efe8f1699acdcdac6defa197009bc7b39920bbb729"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/modes/interactive/theme/theme-tokens.ts",
+      "sha256": "6c38a169da4f85ee04bc31980a13ef6a498b6be68e63faceda4f5a1e5c632ecf"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/parse.js",
+      "sha256": "0a67601365a3ae413653c8c9d3c6bff2202861e1eb8b5d28bf46d4812a4465ea"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/resolveCommand.js",
+      "sha256": "e525fe739aba01cf5eee6473df449cdda93df6266effa8eae0fcfb9a4e6c5de6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/which/which.js",
+      "sha256": "76845e1fe7851267fb7ee72b18f2d916996d330150e31e48f4657a79e9b46b5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/isexe/index.js",
+      "sha256": "7af7a68708317ab2b8743b44591d98ca6f5ca787e89e7c289154471fd2f67331"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/isexe/mode.js",
+      "sha256": "0381513485dd6d0799b160a5c0bf7b4a79d1ece5c32182de44aa73f756a7ac54"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/path-key/index.js",
+      "sha256": "fdbafdc163f668fe325333d62387365c9b074e01253e32824a4dbf5cc552705d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/escape.js",
+      "sha256": "5d61b2829e0e7912874e1e664146554d0cd02fd5524abf4ea59a879f0fc30675"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/readShebang.js",
+      "sha256": "b05ba732e167fcf9a4fd67ebb4a5c28cca4712a36376c0b0f2e4e1d37e7f18d2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/shebang-command/index.js",
+      "sha256": "d98c3aa373c72016e990a723e919af495423bc4ac1daa0736c5f45fac0418d7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/shebang-regex/index.js",
+      "sha256": "e91e547bad596a389841fd7938bfcbd22af82f44a01f794e86878e4ff0274250"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/enoent.js",
+      "sha256": "0f9aab5c708991cf01d3fda557318c4600a46071138742ee8596244f7fd73ef5"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/tools/renderers/bash.ts",
+      "sha256": "ada1e7766ea385344691d944196ff2ff1af45c6f8f17604143b31fff8de55d9f"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/modes/interactive/components/keybinding-hints.ts",
+      "sha256": "76b13ee8bfc6e49d5b2b5496eac13523bd9aad95770cbfa4a239336131f94aae"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/modes/interactive/components/visual-truncate.ts",
+      "sha256": "0e52adab4b4568ff6cfe8798f994d70122f7fd2e1b7618438023637915187c05"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/tools/render-utils.ts",
+      "sha256": "088f7eb9ad7da1415891af13c0943e584b2fb6ff84fa248b246ed7f128b50c87"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/ansi.ts",
+      "sha256": "47b4f605f05b42edc63fb9dcc6f2eccc810ba14306fb76bde715f027d3dae111"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/shell.ts",
+      "sha256": "c93b05fef8d75072adeff45cdec2abfa2e03eb2910d9755c1edb45ce237e614a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/home/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/tools/truncate.ts",
+      "sha256": "8e4507c3ed7ca7548cf7c2d7f77d07f2ae63a38b756789cbb44e9062db6c8762"
+    }
+  ]
+}

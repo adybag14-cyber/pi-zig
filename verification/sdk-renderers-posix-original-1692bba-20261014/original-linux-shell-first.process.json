@@ -1,0 +1,25 @@
+{
+  "pid": 2497,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/capture-original.mjs",
+    "shell",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-result/shell-first-output.json",
+    "/home/runner/work/pi-zig/pi-zig/src/extensions/fixtures/sdk-tool-shell-renderers-e622.input.txt"
+  ],
+  "live_command_line": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/capture-original.mjs shell /home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-result/shell-first-output.json /home/runner/work/pi-zig/pi-zig/src/extensions/fixtures/sdk-tool-shell-renderers-e622.input.txt",
+  "created_utc": "2026-10-14T11:27:40.0330648Z",
+  "launched_utc": "2026-10-14T11:27:40.0436208+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T11:27:43.2177230+00:00"
+}
