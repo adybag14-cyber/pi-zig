@@ -1,0 +1,1201 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "inputSha256": "69d0ec5799320367518330e125ff1e63d5e0f91c06ebeeb9025b1403f3238d26",
+  "platform": "darwin",
+  "arch": "arm64",
+  "cases": 54,
+  "node": {
+    "version": "v24.14.0",
+    "path": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node",
+    "sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+    "execArgv": [
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/observe-original.mjs"
+    ]
+  },
+  "before": [
+    {
+      "name": "source",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26275,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 5307,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "name": "source",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 26275,
+      "drift": 0
+    },
+    {
+      "name": "node-tools",
+      "count": 4560,
+      "drift": 0
+    },
+    {
+      "name": "candidate",
+      "count": 5307,
+      "drift": 0
+    }
+  ],
+  "scope": "Actual unchanged b45 read/prompt exports and dependencies; numeric parsing/live callbacks/quoted empty arguments/Unicode/defaults/slices/expansion; no Source body rewrite or raw normalizer; historical typed catalog metadata only",
+  "rows": [
+    {
+      "kind": "range",
+      "index": 0,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 1,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 2,
+      "value": ":1-3"
+    },
+    {
+      "kind": "range",
+      "index": 3,
+      "value": ":1-3"
+    },
+    {
+      "kind": "range",
+      "index": 4,
+      "value": ":2"
+    },
+    {
+      "kind": "range",
+      "index": 5,
+      "value": ":2"
+    },
+    {
+      "kind": "range",
+      "index": 6,
+      "value": ":2-4"
+    },
+    {
+      "kind": "range",
+      "index": 7,
+      "value": ":2-4"
+    },
+    {
+      "kind": "range",
+      "index": 8,
+      "value": ":2-4"
+    },
+    {
+      "kind": "range",
+      "index": 9,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 10,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 11,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 12,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 13,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 14,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 15,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 16,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 17,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 18,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 19,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 20,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 21,
+      "value": ""
+    },
+    {
+      "kind": "range",
+      "index": 22,
+      "value": ":0"
+    },
+    {
+      "kind": "range",
+      "index": 23,
+      "value": ":0"
+    },
+    {
+      "kind": "range",
+      "index": 24,
+      "value": ":1"
+    },
+    {
+      "kind": "range",
+      "index": 25,
+      "value": ":-2"
+    },
+    {
+      "kind": "range",
+      "index": 26,
+      "value": ":1.5-2.75"
+    },
+    {
+      "kind": "range",
+      "index": 27,
+      "value": ":16-17"
+    },
+    {
+      "kind": "range",
+      "index": 28,
+      "value": ":100-119"
+    },
+    {
+      "kind": "range",
+      "index": 29,
+      "value": ":1.7976931348623157e+308-Infinity"
+    },
+    {
+      "kind": "prompt",
+      "index": 0,
+      "input": "",
+      "args": [],
+      "substituted": "|||fallback|all|all|"
+    },
+    {
+      "kind": "prompt",
+      "index": 1,
+      "input": "\"\"",
+      "args": [
+        ""
+      ],
+      "substituted": "|||fallback|all|all|"
+    },
+    {
+      "kind": "prompt",
+      "index": 2,
+      "input": "''",
+      "args": [
+        ""
+      ],
+      "substituted": "|||fallback|all|all|"
+    },
+    {
+      "kind": "prompt",
+      "index": 3,
+      "input": "\"\" next",
+      "args": [
+        "",
+        "next"
+      ],
+      "substituted": "|next||fallback| next| next|next"
+    },
+    {
+      "kind": "prompt",
+      "index": 4,
+      "input": "one \"\" three",
+      "args": [
+        "one",
+        "",
+        "three"
+      ],
+      "substituted": "one||three|one|one  three|one  three| three"
+    },
+    {
+      "kind": "prompt",
+      "index": 5,
+      "input": "\"\" ''",
+      "args": [
+        "",
+        ""
+      ],
+      "substituted": "|||fallback| | |"
+    },
+    {
+      "kind": "prompt",
+      "index": 6,
+      "input": "a\"\"b ''c",
+      "args": [
+        "ab",
+        "c"
+      ],
+      "substituted": "ab|c||ab|ab c|ab c|c"
+    },
+    {
+      "kind": "prompt",
+      "index": 7,
+      "input": "\"unterminated",
+      "args": [
+        "unterminated"
+      ],
+      "substituted": "unterminated|||unterminated|unterminated|unterminated|"
+    },
+    {
+      "kind": "prompt",
+      "index": 8,
+      "input": "\"\"\"\"",
+      "args": [
+        ""
+      ],
+      "substituted": "|||fallback|all|all|"
+    },
+    {
+      "kind": "prompt",
+      "index": 9,
+      "input": "a \"\" b﻿c",
+      "args": [
+        "a",
+        "",
+        "b",
+        "c"
+      ],
+      "substituted": "a||b|a|a  b c|a  b c| b"
+    },
+    {
+      "kind": "prompt",
+      "index": 10,
+      "input": "'a  b' c",
+      "args": [
+        "a  b",
+        "c"
+      ],
+      "substituted": "a  b|c||a  b|a  b c|a  b c|c"
+    },
+    {
+      "kind": "prompt",
+      "index": 11,
+      "input": "ab᠎c",
+      "args": [
+        "ab᠎c"
+      ],
+      "substituted": "ab᠎c|||ab᠎c|ab᠎c|ab᠎c|"
+    },
+    {
+      "kind": "live",
+      "index": 0,
+      "value": ":2-4",
+      "log": [
+        [
+          "trim",
+          "2"
+        ],
+        [
+          "trim",
+          "3"
+        ]
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 1,
+      "failure": {
+        "same": true
+      },
+      "log": [
+        "trim"
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 2,
+      "value": ":2-4",
+      "log": [
+        "Number",
+        "Number",
+        "Number",
+        "Number"
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 3,
+      "value": ":2-4",
+      "log": [
+        "get isFinite",
+        [
+          "isFinite",
+          2,
+          true
+        ],
+        "get isFinite",
+        [
+          "isFinite",
+          3,
+          true
+        ]
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 4,
+      "value": "",
+      "log": []
+    },
+    {
+      "kind": "live",
+      "index": 5,
+      "failure": {
+        "same": true
+      },
+      "log": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 6,
+      "value": "",
+      "log": [
+        "trim"
+      ]
+    },
+    {
+      "kind": "live",
+      "index": 7,
+      "value": ":7-13",
+      "log": [
+        [
+          "convert",
+          "2"
+        ],
+        [
+          "finite",
+          7,
+          true
+        ],
+        [
+          "convert",
+          "3"
+        ],
+        [
+          "finite",
+          7,
+          true
+        ]
+      ]
+    },
+    {
+      "kind": "expand",
+      "index": 0,
+      "input": "/p \"\" next",
+      "value": "|next|fallback| next|next"
+    },
+    {
+      "kind": "expand",
+      "index": 1,
+      "input": "/p \"\" next",
+      "value": "|next|fallback| next|next"
+    },
+    {
+      "kind": "expand",
+      "index": 2,
+      "input": "/p \"\"",
+      "value": "||fallback|all|"
+    },
+    {
+      "kind": "expand",
+      "index": 3,
+      "input": "ordinary text",
+      "value": "ordinary text"
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/observe-original.mjs",
+      "sha256": "1fce572bc8010cb9b340ea7a98de29a9334e048b62337fabaedd3aec852c017a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/capture-posix.mjs",
+      "sha256": "1d51dc8115dcf5f0705fa3dfd3bdec7812948fcd139e309ebb112e2fc369360b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/tools/render-utils.ts",
+      "sha256": "03233de3db6921e16715778da055821414a57f6161abdf06be13dbf8ea8242cc"
+    },
+    {
+      "kind": "official-workspace-export-map",
+      "specifier": "@earendil-works/pi-tui",
+      "packageName": "@earendil-works/pi-tui",
+      "packageVersion": "1.2.0",
+      "officialTarget": "dist/index.js",
+      "sourceTarget": "./src/index.ts",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/index.ts",
+      "sha256": "1a4ad10ce2da3e6664078771352dbd40b02920a9a07f7f6d25f699c72e22ff3e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/marked/lib/marked.esm.js",
+      "sha256": "05e41134d075ad3a009a748d6c779c3d83cea9b942be911c2d9abade36d1dd31"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/autocomplete.ts",
+      "sha256": "7391902f35b60c3467ceb5eccc86e0954a388ea1012455c1a7ea8f7325de773b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/fuzzy.ts",
+      "sha256": "0ae2bedc6a4f043d875ec415202a6e3d9e45405741359d7d2dc2855240dff633"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/utils.ts",
+      "sha256": "6e22ed5385c08965a46f01d6ec9686cb0eada95e34b9dc0f9a5e85d28f8f512a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/index.js",
+      "sha256": "d7b1ba05914c0fc311c20e5618bf8d0893c9c74078a07975e2df981445e64887"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/lookup.js",
+      "sha256": "c80ecc22b120b27ef5ea9facb7000b8fd4ec037a84d9231d215f1c44bc9c21d0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/lookup-data.js",
+      "sha256": "f6b40f86c9a2a6808ec808fa8ddcb8da261254cc6121d37ffaeb2bf35dad1d5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/get-east-asian-width/utilities.js",
+      "sha256": "4b08a7e9e3ffacbcf198a6abceb2338d52ac671899e52ccc2851c898bfccac42"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/colors.ts",
+      "sha256": "d4fe729c424d2c07bc64cf0c3edfdbf5642865cba395dfb37234c6c88d65f468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/oklab.ts",
+      "sha256": "45b067e6e3605b385f595adecd7c0216f1c6b6686680d5c73f661286de736be6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/box.ts",
+      "sha256": "f9dc623ba06ab407ac3edd71eb8ff32525609d3b2cf5013a599c9a1d10273f2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui.ts",
+      "sha256": "206519884c4cb27096d00048a2fc4e8a0c404714e548c8dd5b62c38060d3b240"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/keys.ts",
+      "sha256": "40cd0229bbc36cdcac24f3bdd2fce53f060ff4fe6f8522e239135212033d37f2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal-colors.ts",
+      "sha256": "72d1ef298837bfe520bd8a060cb93ea27547dcbff04a167ace0f55b5183e550d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal-image.ts",
+      "sha256": "fa09e7725f1158e1bb3b53c3d0539cc6c066a7c058bee33142ad2f33e8ac5736"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/cancellable-loader.ts",
+      "sha256": "5f0ae0a56f299e5f6c9585c79bbe16c38a845f038a7254f8dffe7a44f6082e16"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/keybindings.ts",
+      "sha256": "475760dd4e3d02eca46bb5ee8704cd387c397b40d7a1f8967bdac3c481f5f702"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/loader.ts",
+      "sha256": "614b39cd2f493e289a12ee4f42404f779cc3a5784735066760c1d9f13bf5d287"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/text.ts",
+      "sha256": "e46790ea0b4a3db105306e057664b4246983c189218346dacd8ea6f0c9ee7152"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/editor.ts",
+      "sha256": "48c6a498527df4f645f66574904bdc82c1a4021b29ff81674132219043d4d016"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/kill-ring.ts",
+      "sha256": "d829ae816560b12d2800a38db9f7278f76d9ef43d0e53e004a86add9b56c559a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/undo-stack.ts",
+      "sha256": "1373c1e0a1e2c58ac90c93d32a9e5c1226d7f53314c77dd3d0f8ec349d2b3627"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/word-navigation.ts",
+      "sha256": "b73e915a524926ac8881731e89026b0bc7b5b0bd465de67257af81a420465c7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/select-list.ts",
+      "sha256": "0fc369801e745eff15567d72829bf67887f5efec8bc6816aaf1ee65338618373"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/h-stack.ts",
+      "sha256": "6622e1e2605e500a420c3cdf3ffcae0548b2d86ec496a0f6bf1dd5c95aeb0b6b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/stack.ts",
+      "sha256": "93208d326fa43431b930eaa3250a1e19747063d696e97ec2f002f5feaa54fc18"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/layout-node.ts",
+      "sha256": "31dd68c9edafdc4f882bbb6c16f8deb1c514111020b647f0037b34d6b8c70a85"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/image.ts",
+      "sha256": "e92c3f66f36eb579ff1eabd9dc3b9f34bd8a07997bd62ffe3fb63a21f97a7462"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/input.ts",
+      "sha256": "0ad90bf7464e4da90e75596007b365edc45fcb371c4dbee563d4122b13247a11"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/markdown.ts",
+      "sha256": "04ef2f5aad6b9706e9f02568814283021b6151a18ae2b08fcf145890aeac7dfa"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/latex.ts",
+      "sha256": "c4ef99bef1d3a54c73006912c9a7fa67ef99412b4f6cd28d608cf0e07b38cece"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/mouse-region.ts",
+      "sha256": "9dbcac616e8f8271b522b374bae29ab0b829d3771ce0ed228d6ae3da1c2be759"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/scroll-view.ts",
+      "sha256": "76dfd9f8a88cabc064f0652b83f16a945fbc988c9fe7c0423a4cd796907ef77d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/settings-list.ts",
+      "sha256": "8d6b91d3c4aaaf11225854847d42ae6da852ef2646d54542c5b51a97dde15605"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/spacer.ts",
+      "sha256": "b511acec1d33885dad23e7ab2108b2d04dff0589b3bfda53b1f7458be4381e66"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/truncated-text.ts",
+      "sha256": "c383487099d1864b51493a5838dd28a1bd3e5e440a675ec1dbcaf0177534fad0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/v-stack.ts",
+      "sha256": "0f36c9417bfffe5f6b9cc5fd40d420390cf9bebae70a073a409ac5f931f1f813"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-platform.ts",
+      "sha256": "693d33898358804541d36aff089db74e1eb3be8f1a1722ffe6d821036b925959"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-module-path.ts",
+      "sha256": "e0955c6d733085d89cc81ef4d991e2a04368a54b52007273c0a688b23abba28b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/program-status.ts",
+      "sha256": "4b05e7cc38b902559738b13b08ffb367fb188426823be90f341cc626d5d013f0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/stdin-buffer.ts",
+      "sha256": "82da9ff728e77269bbfa24c28eda81f26f744efef9e05113c2401ed52c823054"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/terminal.ts",
+      "sha256": "7a75ac820dff409781f1ca59a0354d97282044f444a38322eb4e1886cb7fe247"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/native-modifiers.ts",
+      "sha256": "8bfe66389dee2e6e962cb82f54050f8fe10df0d0b26d56186a581a00f70d6d8e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui-alt-screen.ts",
+      "sha256": "dd978db4f24a07e58a6e63819388a07700cb6237bbc0c8e9994bfc5f5d656800"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/alt-screen-search.ts",
+      "sha256": "7d339e83cf0f160847335dc9be0d1f1db2a0945c463c3d636c7b84ceb9665d40"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/components/alt-screen-flash.ts",
+      "sha256": "6d341546b59958e93e4d33fdc1766b10d13c98a779031e2c01b827f0a4c6e30c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/layout.ts",
+      "sha256": "7530a8eaa30f44fef82e8b7020b5068ba89d34884463c6cb526073b20fcdeef0"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/wheel-scroll.ts",
+      "sha256": "a969a50d0a3627fde0052f766443e3668a6355b3ecf312ea078025080d303f82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/tui/src/tui-main-screen.ts",
+      "sha256": "643661182cbeb1d5c5fbee195e0ec03a4f1045f629c8666c4d175518ce5939e1"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/ansi.ts",
+      "sha256": "47b4f605f05b42edc63fb9dcc6f2eccc810ba14306fb76bde715f027d3dae111"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/paths.ts",
+      "sha256": "64c3ebef724fa21ed0042e127908b4323a5d2f1b8aaa91eee550442332fe8502"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/child-process.ts",
+      "sha256": "cd324f5b9a1abadd85ab5a331750d475c8bd51ec65cae091ad9b416245ec85d4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/index.js",
+      "sha256": "b8e01cb18ba87ee1b0e5eb2eb1ce6cbb25a2bdd229f9e08671f8a10ed7e3ad35"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/shell.ts",
+      "sha256": "c93b05fef8d75072adeff45cdec2abfa2e03eb2910d9755c1edb45ce237e614a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/config.ts",
+      "sha256": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/text.ts",
+      "sha256": "bb323f9607c499115b532021f4f0163c6df04d834aee9c32c3c77b273bd2d7c6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/parse.js",
+      "sha256": "0a67601365a3ae413653c8c9d3c6bff2202861e1eb8b5d28bf46d4812a4465ea"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/resolveCommand.js",
+      "sha256": "e525fe739aba01cf5eee6473df449cdda93df6266effa8eae0fcfb9a4e6c5de6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/which/which.js",
+      "sha256": "76845e1fe7851267fb7ee72b18f2d916996d330150e31e48f4657a79e9b46b5b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/isexe/index.js",
+      "sha256": "7af7a68708317ab2b8743b44591d98ca6f5ca787e89e7c289154471fd2f67331"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/isexe/mode.js",
+      "sha256": "0381513485dd6d0799b160a5c0bf7b4a79d1ece5c32182de44aa73f756a7ac54"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/path-key/index.js",
+      "sha256": "fdbafdc163f668fe325333d62387365c9b074e01253e32824a4dbf5cc552705d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/escape.js",
+      "sha256": "5d61b2829e0e7912874e1e664146554d0cd02fd5524abf4ea59a879f0fc30675"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/util/readShebang.js",
+      "sha256": "b05ba732e167fcf9a4fd67ebb4a5c28cca4712a36376c0b0f2e4e1d37e7f18d2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/shebang-command/index.js",
+      "sha256": "d98c3aa373c72016e990a723e919af495423bc4ac1daa0736c5f45fac0418d7f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/shebang-regex/index.js",
+      "sha256": "e91e547bad596a389841fd7938bfcbd22af82f44a01f794e86878e4ff0274250"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/cross-spawn/lib/enoent.js",
+      "sha256": "0f9aab5c708991cf01d3fda557318c4600a46071138742ee8596244f7fd73ef5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/prompt-templates.ts",
+      "sha256": "1bdaa7b3825f92bf33203fd7587014b878c55b3d812900cca5cad08fefd92171"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/utils/frontmatter.ts",
+      "sha256": "99142d78b94e658e0be65cf05046be8069b3700168a683e0af64219ad903bcd6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/index.js",
+      "sha256": "2d58984e0ae80de4acbd8f009fab332f5ce77d9e1a5f138a3058a0ada6567fb9"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/packages/coding-agent/src/core/source-info.ts",
+      "sha256": "52648af6e9bb29858ece4eaeccedd960c5de8a0ac4ec25c0ee851ff00de27f5c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/composer.js",
+      "sha256": "509c0bdb4cef641cc784c130b6cc2b350752f6841798daa1a13cbcaf4fc74c46"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/doc/directives.js",
+      "sha256": "8f02c3c03571e377e33680b68027d4336234d7a6da3d8c6a8b7f1183c1c428ff"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/identity.js",
+      "sha256": "1a7cb042ae725ff68d05dc503efbbecbe65281f18b23dfc23f12d1749a440cfe"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/visit.js",
+      "sha256": "a757e3b924af184b25e2386d1678b1fe341805a516ebf9bccee219b47aebd5e7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/doc/Document.js",
+      "sha256": "9bc1c9a56de3902d554e77193125b6aadcfaec743073b3417b22c95a8f7d7923"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/Alias.js",
+      "sha256": "80a8109b7cb1d0d73eee18463fdd3095d120fa21f49b282444d90d867e291ea1"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/doc/anchors.js",
+      "sha256": "ea9a479b1e98d88235ffa6736d0405e2119e9dde7b5249b72185488ab2527261"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/Node.js",
+      "sha256": "b57b42071f7ebab633626858656ec5187617f2290c272e87edc57467ef591215"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/doc/applyReviver.js",
+      "sha256": "7271668f41f264e4b9aeb184629cfd11c510b401c5a797fa7194d17a9652976e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/toJS.js",
+      "sha256": "34de93bb4e16abbf317210a7bd1b062ed20acb028cd8395b69b591f433e277b6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/Collection.js",
+      "sha256": "e2d3ffdc9a997774602e72b296fba641558bc7355c9f12a3ee0502fb1e541306"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/doc/createNode.js",
+      "sha256": "a39d14026d4cc6ff8d76d90db30c41facc26a146ebed30783bcf28e40b5caa65"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/Scalar.js",
+      "sha256": "616ac0f6a0a5a6565307a4bb4443691b0dd019c03d6bb8777353750bd3459487"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/Pair.js",
+      "sha256": "d5dad67916ba0e864a892da63265a062c45c15a191349ef50a540f2ddbae93e5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyPair.js",
+      "sha256": "bc03ae533d85bf9122e87c0a256c841ae7fbf063499bc3034d49fd9f7b200659"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringify.js",
+      "sha256": "38efb5bc5553e98fee58c825a88131c59184368d8689e3e6f43c652a06e9c167"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyComment.js",
+      "sha256": "490bff57104b7cfdb1893f14528610bb4d0a63c29b314e122233cf308cf96662"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyString.js",
+      "sha256": "4113b71a9c4c087a197f71452794a6acb9929111f569c973ff4efe7caee8f777"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/foldFlowLines.js",
+      "sha256": "7819679e80222b80c564ea4a9cf3145fa4d5e28a6cfbac248283ac55b0249761"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/addPairToJSMap.js",
+      "sha256": "e4977864d75c1fdbf7fc78c9f4329406e153deccfff090fd812dae2b27e6c2c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/log.js",
+      "sha256": "f6ccc3593357801851aa1023b202f842733043ac3b25773048d836f89de8108d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/merge.js",
+      "sha256": "9c85b5e026e4369a96f3f7b5bc6c05da102dfa2968950b17986201cfe0be542c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/Schema.js",
+      "sha256": "d3b1bc956a766e2489c36114366f3b3f89762a257ae05ff6271ee3fc8c2a9bf5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/common/map.js",
+      "sha256": "769207eaa56e34c113da10cdc22da845f92b4080ff2b921a72847a38d3ac03d8"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/YAMLMap.js",
+      "sha256": "d140cfc5aa8d28737bd3c993d977d5a10ab81efe221e36708ac45b3cf18f5dce"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyCollection.js",
+      "sha256": "b55fd3b6e3f1346bbcd1fcdc48a59c089b7a4b0e6fac2b46846f7828f9488600"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/common/seq.js",
+      "sha256": "51fc0e8bfc63d1d9c7c66b0370a069bb33e0dad865080ff76802803597b9909a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/nodes/YAMLSeq.js",
+      "sha256": "9f89417f3cba5f22a4436f67a9ff9dce627344b5874d2ed7957ff9acffb030e4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/common/string.js",
+      "sha256": "51d0b3aafab2ffa4ad9d86656a3b92c4b4824d0a8806423882ea5f92a1bf8d11"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/tags.js",
+      "sha256": "dba2f42d4dbe8cc8b13f662fd97d253da2da5567e71c47115305efede5a888f2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/common/null.js",
+      "sha256": "f5d5f694ea3a42ef136e0fbcc674dfd7aa0a3da2b8d62183fb750166a12e52bb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/core/bool.js",
+      "sha256": "9fa696b1efc38cf8c73a398f30d9f9841658aa5afd0b7a6b0822947c3991ba7a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/core/float.js",
+      "sha256": "139e3964f0e626ad3741500faf51d855ff98eafa2d9e7523cac06260e4515382"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyNumber.js",
+      "sha256": "26a1980d34a21a80704d356d475a0187a24ebcbeb37a2e3b149d4d791bb65598"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/core/int.js",
+      "sha256": "f0e474254f6877d5dd23bb57017980931ab333a7eaa3d33872247a80d11f754d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/core/schema.js",
+      "sha256": "481d7c64817b40090d519fb65bd83730dadd4c6baec1440b9bf85d29e52c046e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/json/schema.js",
+      "sha256": "9efdd848455f6e0621feb13f3eb762453cb02b09d5e04b6501163cfb26af27ed"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/binary.js",
+      "sha256": "15d7b0b8516c8190b191ec9a0adaab16808d09751ef534d7829512944072011f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/omap.js",
+      "sha256": "3174270cd59c0f0e3ffd73b3b44c4de679efd5c681325b7aac8e0935d547bee8"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/pairs.js",
+      "sha256": "46ba76da72ad65a6202358c486c6a3084ab7c48a8eb5be60d241d9e198c5a9b5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/schema.js",
+      "sha256": "a7320808484dc6d04817b33b2d09b65ead7ffc1c672ab54e068a80972b17702e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/bool.js",
+      "sha256": "80a0046224dac3437f22e3b27b0180e1aad82277ab2fee4769094c6d12d67b6f"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/float.js",
+      "sha256": "a90c44db83152e4d902d46f667737dac90aa86b401abdefe89371ac3bd03abfe"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/int.js",
+      "sha256": "5ff72b08fecc3a924d4a76658a304859db5edb4fadf8893ee837aa06bba60a52"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/set.js",
+      "sha256": "e4553b0cbde79090884908f44bb3b4afd04935fc23656a1b87ec1af87f24427a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/schema/yaml-1.1/timestamp.js",
+      "sha256": "b157c946dc1b8854aadc4e7994b268ec8afe6d916721cb3580e0752c7d15a5f7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/stringify/stringifyDocument.js",
+      "sha256": "dd5ba1813a16b62955c466bce8d1c16254e90b36d688f863c508dc8fe38f2afe"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/errors.js",
+      "sha256": "c389d9c448193ce1bcb9641f5eda62cbe56467b2104357d2fc8dd86df88cb07b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/compose-doc.js",
+      "sha256": "0f388537747b5c1a241639413f17fc2b5f831451b5017d6902e46db6842a5fe4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/compose-node.js",
+      "sha256": "86562c85e4e5737d28b24aae2030b97bc9b672e1f2de5da9e4d25c4571e4345c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/compose-collection.js",
+      "sha256": "a7db11a1a7987d6412df8adbbb85ccd4370171f82265703b2b6af2d13c45d646"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-block-map.js",
+      "sha256": "dcfada448c8fc532ebba96d6788a4b41bb015fc5e697a9544ff429b9c4e4c70a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-props.js",
+      "sha256": "0b49c6af0145c309883dbf24d1a00260c0c090412be10aaa301de126dad15983"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/util-contains-newline.js",
+      "sha256": "60182618fc9fa669e74ab74f4231c15b5d24bc52ab0a419684bb827a00d69be6"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/util-flow-indent-check.js",
+      "sha256": "c7c0c9837a1f828de19eb3ee0947dff39c4f69222c762aed9fa2fe14fc46ee3e"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/util-map-includes.js",
+      "sha256": "0330dc34072cb499493176b293228631ca8ebaaaddcdc0e63b02bf24f6a25c2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-block-seq.js",
+      "sha256": "18f54a39d73b600ebbd74a343e6671d0d08423f125bd86963b72dc24d6261911"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-flow-collection.js",
+      "sha256": "242470b54c0deba1507babba2e879f3005ed2ee3bd53a36affb6ecf82fddd375"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-end.js",
+      "sha256": "532bf56299183e75bb7c20db75321367c28393b66ecb8ffd540faedd9817f116"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/compose-scalar.js",
+      "sha256": "37920472755bdaa76399b6d33872f0015ae1fd9ba7faa031c03d501aa8c3e903"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-block-scalar.js",
+      "sha256": "af562e2e3cd7ee7b3cb9342984177f6b5c77de73121e87695db3ff635e12d152"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/resolve-flow-scalar.js",
+      "sha256": "167fa296e6fb75618bb7b315acaa926d4e88b2b63a9ff139f1a7de9c78db4610"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/compose/util-empty-scalar-position.js",
+      "sha256": "460516395ef7e961d5248e047ee6d52084f279b76e8af9f3c2bac92da1c7d656"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/cst.js",
+      "sha256": "acc25760d010068844f36f4aefc7fe6f5f6048fd7f8fcc29d4290e154819d1a4"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/cst-scalar.js",
+      "sha256": "2f72b634348b04b395408ac427fb4f8ee67432244c327561d4b755a28a783b34"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/cst-stringify.js",
+      "sha256": "4d14a7a286cff9c1a578ab15839388ea76f77ae79293db25b235394bcc377b51"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/cst-visit.js",
+      "sha256": "525535fc05841407420be6505804c74d873eb3aaa9319679896f7a24a474ca01"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/lexer.js",
+      "sha256": "cb30a2c4628e270ee810530217f3f7bb0f2730ab89f8fbaf1f8a73ccd1883cf5"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/line-counter.js",
+      "sha256": "ddfd11ca2cdd42d36bc6c3090a31c21e6bbcc90bf3498bf6aacfbb30c5d79436"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/parse/parser.js",
+      "sha256": "0adc5ffa51ffa4c0ceed1f80efa8b188d10f58c7b9389a6d46bc861e6bff34e1"
+    },
+    {
+      "kind": "observed-module",
+      "path": "/Users/runner/work/pi-zig/pi-zig/.reference-source/node_modules/yaml/dist/public-api.js",
+      "sha256": "9b318ac7b3a3751127c74f59dd1dd209230a70ca116000348b82faae189f72f0"
+    }
+  ]
+}

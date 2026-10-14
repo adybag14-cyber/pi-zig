@@ -1,0 +1,13 @@
+{
+  "head": "c54658cfe6a717eeb45cc9854bff2bd40f032ebd",
+  "tree": "d3a748efc59f014b45f40cf6a487da0ada25f32d",
+  "os": "windows-latest",
+  "mode": "ReleaseSafe",
+  "allocation_shards": 8,
+  "source_count": 4782,
+  "tools_count": 19543,
+  "source_cases": 59,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "pending",
+  "public_activation": false
+}

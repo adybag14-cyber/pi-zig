@@ -1,0 +1,17 @@
+{
+  "head": "c54658cfe6a717eeb45cc9854bff2bd40f032ebd",
+  "os": "windows-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 59,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "pending",
+  "tests_each": 11,
+  "shards": 16,
+  "baseline": 8597,
+  "completed_indices": 8597,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T16:34:09.3617449+00:00"
+}

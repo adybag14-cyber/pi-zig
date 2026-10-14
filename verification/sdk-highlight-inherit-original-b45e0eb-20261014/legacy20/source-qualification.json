@@ -1,0 +1,28 @@
+{
+  "status": "actual_b45_original_CJS_legacy20_doublecapture_qualified",
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "candidate": "e66625fec45c95346a968033accfc03aa793814d",
+  "input_sha256": "5823C817988D289DDFD149B3BFB767E9D3F9B8870535885CC6B4F92839680FCF",
+  "cases": 20,
+  "doublecapture_rows_identical": true,
+  "first_raw_sha256": "2AF7B39BB6AB1AABF24E6566289BE1216AF0C44E82A74E72BB8C2AC876FF7FF0",
+  "second_raw_sha256": "2AF7B39BB6AB1AABF24E6566289BE1216AF0C44E82A74E72BB8C2AC876FF7FF0",
+  "source_files": 1965,
+  "dependencies": 31064,
+  "node_tools": 1774,
+  "candidate_files": 5315,
+  "controls": 5,
+  "all_pre_post_drift": 0,
+  "actual_Node_GC": true,
+  "owned_pids": [
+    55204,
+    21280
+  ],
+  "owned_pids_absent": true,
+  "native_legacy_function_qualified": false,
+  "native_enumerator_qualified": false,
+  "Source_body_rewrites": 0,
+  "raw_normalizations": 0,
+  "public_activation": false,
+  "verified_utc": "2026-10-14T20:14:41.8319341+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "pid": 1874,
+  "executable": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node",
+  "executable_sha256": "20A18709F0154D668F1BD6F6EA8C2A7AE001447B4B2C339732F22E57A8767A55",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/observe-original.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/capture-posix.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-result/read-prompt-second-output.json",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/input54.txt"
+  ],
+  "live_command_line": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/observe-original.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/capture-posix.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-result/read-prompt-second-output.json /Users/runner/work/pi-zig/pi-zig/verification/sdk-read-prompt-original-b45e0eb-20261014/input54.txt",
+  "created_utc": "2026-10-14T19:44:37.9317790Z",
+  "launched_utc": "2026-10-14T19:44:37.9314580+00:00",
+  "working_directory": "/Users/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T19:44:42.6008720+00:00"
+}

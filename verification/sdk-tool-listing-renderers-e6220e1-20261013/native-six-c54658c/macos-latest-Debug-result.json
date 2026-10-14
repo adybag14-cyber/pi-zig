@@ -1,0 +1,17 @@
+{
+  "head": "c54658cfe6a717eeb45cc9854bff2bd40f032ebd",
+  "os": "macos-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 59,
+  "source_fixture_platform": "Windows",
+  "genuine_posix_source_replay": "pending",
+  "tests_each": 11,
+  "shards": 128,
+  "baseline": 8486,
+  "completed_indices": 8486,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T19:25:20.6424930+00:00"
+}
