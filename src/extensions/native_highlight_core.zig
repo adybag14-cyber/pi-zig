@@ -299,7 +299,7 @@ pub fn create(engine: *em.Engine, loggers: c.JSValue) !c.JSValue {
     _ = try s.invoke(object, "assign", &.{ api, modes });
     return c.JS_DupValue(engine.context, api);
 }
-pub const eager_order = [_][]const u8{ "python", "java", "go", "javascript", "json", "cpp", "typescript", "php", "ruby", "c", "csharp", "nix", "bash", "rust", "scala", "kotlin", "swift", "dart", "groovy", "perl", "lua" };
+pub const eager_order = [_][:0]const u8{ "python", "java", "go", "javascript", "json", "cpp", "typescript", "php", "ruby", "c", "csharp", "nix", "bash", "rust", "scala", "kotlin", "swift", "dart", "groovy", "perl", "lua" };
 pub fn registerEager(engine: *em.Engine, api: c.JSValue, factories: c.JSValue) !void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();

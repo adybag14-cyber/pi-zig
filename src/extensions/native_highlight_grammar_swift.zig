@@ -571,7 +571,7 @@ pub fn build(engine: *em.Engine, hljs: c.JSValue, state: c.JSValue) !c.JSValue {
     try s.put(tuple, "contains", tuple_contains);
     return finish(&s, hljs, state, whitespace, comments, keyword_modes, builtins, operators, operator_guard, number, string, identifiers, attributes, type_mode, tuple, quoted_identifier, keywords_value);
 }
-fn finish(s: *Scope, hljs: c.JSValue, state: c.JSValue, whitespace: c.JSValue, comments: c.JSValue, keyword_modes: c.JSValue, builtins: c.JSValue, operators: c.JSValue, operator_guard: c.JSValue, number: c.JSValue, string: c.JSValue, identifiers: c.JSValue, attributes: c.JSValue, type_mode: c.JSValue, tuple: c.JSValue, quoted_identifier: c.JSValue, keywords_value: c.JSValue) !c.JSValue {
+fn finish(s: *Scope, hljs: c.JSValue, state: c.JSValue, whitespace: c.JSValue, comments: c.JSValue, keyword_modes: c.JSValue, builtins: c.JSValue, operators: c.JSValue, _: c.JSValue, number: c.JSValue, string: c.JSValue, identifiers: c.JSValue, attributes: c.JSValue, type_mode: c.JSValue, tuple: c.JSValue, quoted_identifier: c.JSValue, keywords_value: c.JSValue) !c.JSValue {
     const engine = s.engine;
     const func_title = try s.object();
     try s.put(func_title, "beginKeywords", try s.text("func"));

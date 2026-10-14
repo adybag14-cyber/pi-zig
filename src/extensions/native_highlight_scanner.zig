@@ -64,7 +64,7 @@ const Scanner = struct {
     fn core(self: *Scanner, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
         return self.scope.call(try self.scope.get(self.bindings, name), c.pi_js_undefined(), args);
     }
-    fn response(self: *Scanner, mode: c.JSValue) !c.JSValue {
+    fn makeResponse(self: *Scanner, mode: c.JSValue) !c.JSValue {
         var args = [_]c.JSValue{mode};
         return self.scope.own(try self.scope.engine.checked(c.JS_CallConstructor(self.scope.engine.context, try self.scope.get(self.bindings, "Response"), args.len, &args)));
     }
@@ -155,7 +155,7 @@ const Scanner = struct {
         var matched = try scope.own(try regex.startsWith(scope.engine, try scope.get(mode, "endRe"), remainder));
         if (scope.truthy(matched)) {
             if (scope.truthy(try scope.get(mode, "on:end"))) {
-                const response = try self.response(mode);
+                const response = try self.makeResponse(mode);
                 _ = try scope.invoke(mode, "on:end", &.{ match, response });
                 if (scope.truthy(try scope.get(response, "isMatchIgnored"))) matched = c.pi_js_bool(scope.engine.context, 0);
             }
@@ -179,7 +179,7 @@ const Scanner = struct {
         self.resume_at_same = true;
         return zero(scope);
     }
-    fn escaped(self: *Scanner, value: c.JSValue) !c.JSValue {
+    fn makeEscaped(self: *Scanner, value: c.JSValue) !c.JSValue {
         const scope = self.scope;
         var pattern_args = [_]c.JSValue{ try scope.text("[-/\\\\^$*+?.()|[\\]{}]"), try scope.text("g") };
         const pattern = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, pattern_args.len, &pattern_args)));
@@ -191,7 +191,7 @@ const Scanner = struct {
         const scope = self.scope;
         const lexeme = try at(scope, match, 0);
         const mode = try scope.get(match, "rule");
-        const response = try self.response(mode);
+        const response = try self.makeResponse(mode);
         // Source eagerly reads both callbacks before invoking either of them.
         const callbacks = [_]c.JSValue{ try scope.get(mode, "__beforeBegin"), try scope.get(mode, "on:begin") };
         for (callbacks) |callback| {
@@ -199,7 +199,7 @@ const Scanner = struct {
             _ = try scope.call(callback, c.pi_js_undefined(), &.{ match, response });
             if (scope.truthy(try scope.get(response, "isMatchIgnored"))) return self.doIgnore(lexeme);
         }
-        if (scope.truthy(mode) and scope.truthy(try scope.get(mode, "endSameAsBegin"))) try scope.set(mode, "endRe", try self.escaped(lexeme));
+        if (scope.truthy(mode) and scope.truthy(try scope.get(mode, "endSameAsBegin"))) try scope.set(mode, "endRe", try self.makeEscaped(lexeme));
         if (scope.truthy(try scope.get(mode, "skip"))) {
             self.buffer = try scope.concat(self.buffer, lexeme);
         } else {
