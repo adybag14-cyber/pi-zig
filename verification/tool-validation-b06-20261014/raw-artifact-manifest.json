@@ -1,0 +1,197 @@
+[
+  {
+    "path": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "bytes": 7153406
+  },
+  {
+    "path": "durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+    "bytes": 4665338
+  },
+  {
+    "path": "Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+    "bytes": 3723
+  },
+  {
+    "path": "root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "bytes": 352993
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "E181750E5FC5164C35F296C5EDCC1B258120F2DCDA3D96EBB3971D571721D15D",
+    "bytes": 12097
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "15CCDB50AB157FEA8CA3E70D145AD0513DA814D163B889ABD361B7C963D96AC2",
+    "bytes": 832
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "8FBFB3DE2A25531F143D604658451B5EFC11B32E4E0E9B6C9DA42A29579D79BE",
+    "bytes": 420
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "269FAF5F4238219645508518B56EC6FCA4BE18A78306C80271B793914FA78DDF",
+    "bytes": 921208
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014.json",
+    "sha256": "F3AF5DA0CC0F906AD6DCE94797FE418D866F8BAE399F592FE4A737D54D764B49",
+    "bytes": 1004
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "5DB65715B5E65F49B57E92B6DA4995A60D713CDCED7F6EBD6A210AABB18C25E1",
+    "bytes": 13338
+  },
+  {
+    "path": "root-tool-validation-b06-compile-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014-admission.json",
+    "sha256": "913A17F08D2F8A7FA46ADC77E5C7E6A5EF1AD6C90FB89766426160ED8CD47F4A",
+    "bytes": 360
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014-controls-before.json",
+    "sha256": "15CCDB50AB157FEA8CA3E70D145AD0513DA814D163B889ABD361B7C963D96AC2",
+    "bytes": 832
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014-posthash.json",
+    "sha256": "325095D7F6F565D129C86DDEF07F2A5A54F91DCFD49DEF2B5937CD9E72A35705",
+    "bytes": 420
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014-source-before.json",
+    "sha256": "269FAF5F4238219645508518B56EC6FCA4BE18A78306C80271B793914FA78DDF",
+    "bytes": 921208
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014.json",
+    "sha256": "69C7192FDEEC82F94FF071197F48BA6331870F2CDDFDE14EA1FF6371FC8D8542",
+    "bytes": 1006
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014.stderr.log",
+    "sha256": "AAA4949E288A17AF51427CFF820DFC3192D9DDBBD52E65B82617D7392D8C1063",
+    "bytes": 19525
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-complete-shard0-of1-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014-admission.json",
+    "sha256": "91CF502A149C00332B7A304FAB6A6BC7D62B799144000B657891BD4DCCC6D905",
+    "bytes": 360
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014-controls-before.json",
+    "sha256": "15CCDB50AB157FEA8CA3E70D145AD0513DA814D163B889ABD361B7C963D96AC2",
+    "bytes": 832
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014-posthash.json",
+    "sha256": "7591ED73D4B359C7C74C2CFEAA1806CB3EA7EC6EA80E1AD248D31F04D717FBAF",
+    "bytes": 420
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014-source-before.json",
+    "sha256": "269FAF5F4238219645508518B56EC6FCA4BE18A78306C80271B793914FA78DDF",
+    "bytes": 921208
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014.json",
+    "sha256": "EEE0B4B50DA677323D74166DDA09BF67C0B67AD2BC24A2F06968C2D0DD5EF778",
+    "bytes": 1003
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014.stderr.log",
+    "sha256": "60BFFCC299C1F254D75437EC880D365141A3A15C3FA4F53539FED3DDC115D633",
+    "bytes": 15104
+  },
+  {
+    "path": "root-tool-validation-b06-runtime-debug-first-shard0-of8-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014-admission.json",
+    "sha256": "C850926CE12DEF59EC67B95D8268110420FEE876A0D202D8285A9E95D90FD79E",
+    "bytes": 247
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014-extra-before.json",
+    "sha256": "F77CCC5F5A35AB1DA9F4048D8E8ED12231CB640D6B905EDB3D93653C7A84A30C",
+    "bytes": 1844
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014-output.json",
+    "sha256": "13FA0328F2863CB4C0E3C4D6C436C19653E1E4F6FF6F85F9DBD027F577E56599",
+    "bytes": 7917
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014-posthash.json",
+    "sha256": "EF9EE6C53DA7D358707363C9A4E78DB572A1AD02E0503173DA322306DE8484C0",
+    "bytes": 678
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014.json",
+    "sha256": "BD3F73A200246C2BD26314C0B21254B34D92E7E7D317A6BA633B85361E55B676",
+    "bytes": 1161
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014.stderr.log",
+    "sha256": "448530727E8EBD30C65E136FB9EB8D0A3A7E64F2A7021BD1EFB35B24CF5740B7",
+    "bytes": 177
+  },
+  {
+    "path": "root-tool-validation-b06-source28-first-20261014.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "Run-RootToolValidationB06Native-20261014.ps1",
+    "sha256": "31BFE459230B48484B760DDA4203E5A9C7E48632A2D6D78BB53E5E6EB042262B",
+    "bytes": 6746
+  },
+  {
+    "path": "Run-RootToolValidationB06Source-20261014.ps1",
+    "sha256": "7B28434AA1CCBF2208C3D3F6A531ED793E5D6FE84B79A765429E136D9FFE4A75",
+    "bytes": 5718
+  },
+  {
+    "path": "sdk-source-b06-dependency-contract-audit-20261014.json",
+    "sha256": "F92707660EDA10B0ACADBF5435D84B29A5A5B9AA9D719643E3157E2C406387AB",
+    "bytes": 210982
+  },
+  {
+    "path": "sdk-source-b06-full-manifest-20261014.json",
+    "sha256": "810E220B73299EBFE48BE1E44189758F885BEC8BC7D8150D8D7AF687D7CDEAC4",
+    "bytes": 555591
+  },
+  {
+    "path": "sdk-source-b06-observe-20261014.mjs",
+    "sha256": "E7472C88CE8B73DD27BC973EA50357B8D0E11AB841A9CAB11E2C09995FF5F96C",
+    "bytes": 3102
+  },
+  {
+    "path": "tool-validation-b06-caller-20261014.mjs",
+    "sha256": "1E726B029A1B336BBE98126761E00A2C10104C14A00F616E0B65247BB2654184",
+    "bytes": 5173
+  },
+  {
+    "path": "tool-validation-b06-source-capture-20261014.mjs",
+    "sha256": "F981809AF4DCFA1FD33F5B3CDD1C9A7A92E24C0C167A27849631A7022D89E1FF",
+    "bytes": 978
+  }
+]
