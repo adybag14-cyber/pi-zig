@@ -16358,6 +16358,8 @@ JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
     case 5: status = js_relational_slow(ctx, stack + 2, OP_lte); break;
     case 6: status = js_relational_slow(ctx, stack + 2, OP_gt); break;
     case 7: status = js_relational_slow(ctx, stack + 2, OP_gte); break;
+    case 8: status = js_binary_arith_slow(ctx, stack + 2, OP_mod); break;
+    case 9: status = js_binary_arith_slow(ctx, stack + 2, OP_pow); break;
     default:
         JS_FreeValue(ctx, stack[0]);
         JS_FreeValue(ctx, stack[1]);
@@ -16369,6 +16371,12 @@ JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value)
 {
     JSValue stack[1] = { JS_DupValue(ctx, value) };
     return js_unary_arith_slow(ctx, stack + 1, OP_inc) < 0
+        ? JS_EXCEPTION : stack[0];
+}
+JSValue JS_PiDecrement(JSContext *ctx, JSValueConst value)
+{
+    JSValue stack[1] = { JS_DupValue(ctx, value) };
+    return js_unary_arith_slow(ctx, stack + 1, OP_dec) < 0
         ? JS_EXCEPTION : stack[0];
 }
 

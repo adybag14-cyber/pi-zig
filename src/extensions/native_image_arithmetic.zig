@@ -1,7 +1,7 @@
 //! Actual VM arithmetic for image strategies with observable option coercion.
 const js = @import("native_js_values.zig");
 const c = js.c;
-pub const Operation = enum(c_int) { add, subtract, multiply, divide, less, less_equal, greater, greater_equal };
+pub const Operation = enum(c_int) { add, subtract, multiply, divide, less, less_equal, greater, greater_equal, remainder, power };
 pub fn binary(engine: *js.Engine, operation: Operation, left: c.JSValue, right: c.JSValue) !c.JSValue {
     return engine.checked(c.JS_PiBinaryOperator(engine.context, @intFromEnum(operation), left, right));
 }
