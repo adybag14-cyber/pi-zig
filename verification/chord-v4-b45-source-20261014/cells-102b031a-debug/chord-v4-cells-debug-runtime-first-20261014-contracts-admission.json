@@ -1,0 +1,15 @@
+{
+  "observed_utc": "2026-10-14T20:01:12.0076008+00:00",
+  "free_bytes": 28811460608,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "other_native_roots": 0,
+  "root_authority": "Root reviewed exact102b Cells57 compile E1C4F2 and matching runtime1704BC; compile terminal full5382/1965/19546/control0/PID52660absent; normal16/max2/j1/300/120/10; AIcompat sole peer; 2026-10-14",
+  "outer_seconds": 300,
+  "test_seconds": 120,
+  "host_seconds": 10,
+  "jobs": 1,
+  "llvm": "default",
+  "sole8_exception_used": false,
+  "public_activation": false
+}
