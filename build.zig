@@ -1471,6 +1471,11 @@ pub fn build(b: *std.Build) void {
     highlight_legacy32_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-highlight-legacy-function32", "Compile genuine Original32 broader legacy diagnostic; expected negative before source repairs").dependOn(&highlight_legacy32_tests.step);
     b.step("test-native-highlight-legacy-function32", "Compare actual poison identity descriptor flags constructor frame ordering and active redefinition without weakening acceptance").dependOn(&b.addRunArtifact(highlight_legacy32_tests).step);
+    const highlight_core_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_highlight_core_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native full eager21 highlight core"}, .use_llvm = use_llvm });
+    linkQuickJs(b, highlight_core_tests.root_module, quickjs, sqlite_lib_dir);
+    highlight_core_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-highlight-core-b45", "Compile all21 actual native grammar factories/compiler/scanner/frontend against genuine Source74").dependOn(&highlight_core_tests.step);
+    b.step("test-native-highlight-core-b45", "Compare genuine Original74 complete eager21 factory scanner class and themed syntax outputs; no fallback stubs").dependOn(&b.addRunArtifact(highlight_core_tests).step);
     const read_prompt_b45_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_read_prompt_b45_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "b45 read range", "quoted empty command", "one empty argument", "prompt token separators" }, .use_llvm = use_llvm });
     linkQuickJs(b, read_prompt_b45_tests.root_module, quickjs, sqlite_lib_dir);
     read_prompt_b45_tests.root_module.addImport("catalog_tool", catalog_tool);

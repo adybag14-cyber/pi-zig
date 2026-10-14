@@ -4,7 +4,7 @@
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const ordinary = @import("native_node_function.zig");
+const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 
 fn literal(scope: *Scope, pattern: []const u8) !c.JSValue {

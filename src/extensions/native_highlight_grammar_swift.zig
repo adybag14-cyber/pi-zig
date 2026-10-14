@@ -2,7 +2,7 @@
 const std = @import("std");
 const em = @import("engine.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const ordinary = @import("native_node_function.zig");
+const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const Token = struct { regex: bool, text: []const u8 };
 // Actual Source Swift module constants; generated native literals from unchanged Source.

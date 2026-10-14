@@ -2,7 +2,7 @@
 const std = @import("std");
 const em = @import("engine.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const ordinary = @import("native_node_function.zig");
+const ordinary = @import("native_legacy_function.zig");
 const c = em.c;
 const ident = "[A-Za-z$_][0-9A-Za-z$_]*";
 const keywords_text = "as in of if for while finally var new function do return void else break catch instanceof with throw case default try switch continue typeof delete let yield const class debugger async await static import from export extends";

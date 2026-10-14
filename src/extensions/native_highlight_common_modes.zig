@@ -19,7 +19,13 @@ fn list(scope: *Scope, values: []const c.JSValue) !c.JSValue {
     return result;
 }
 fn helper(scope: *Scope, state: c.JSValue, kind: Kind, name: [*:0]const u8, arity: u8) !c.JSValue {
-    return scope.own(try ordinary.create(scope.engine, name, arity, invoke, &.{ state, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) }));
+    var roots = [_]c.JSValue{ state, c.JS_NewInt32(scope.engine.context, @intFromEnum(kind)) };
+    if (kind == .comment or kind == .same) return scope.own(try @import("native_legacy_function.zig").create(scope.engine, name, arity, invoke, &roots));
+    return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, arrowCallback, name, arity, 0, roots.len, &roots)));
+}
+fn arrowCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return invoke(engine, c.pi_js_undefined(), if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots[0..2]) catch |err| @import("native_sdk.zig").fail(engine, err);
 }
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
