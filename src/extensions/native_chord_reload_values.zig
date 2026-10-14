@@ -12,6 +12,10 @@ pub fn mapIterator(s: *Scope, map: c.JSValue, method: [*:0]const u8) !js.Iterato
 pub fn has(s: *Scope, map: c.JSValue, key: c.JSValue) !bool {
     return c.JS_ToBool(s.engine.context, try h.invoke(s, map, "has", &.{key})) != 0;
 }
+pub fn greater(s: *Scope, a: c.JSValue, b: c.JSValue) !bool {
+    const result = try s.keep(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 6, a, b)));
+    return c.JS_ToBool(s.engine.context, result) != 0;
+}
 pub fn optional(s: *Scope, value: c.JSValue, key: [*:0]const u8) !c.JSValue {
     return if (h.nullish(value)) c.pi_js_undefined() else s.get(value, key);
 }
@@ -93,6 +97,5 @@ pub fn reportPending(s: *Scope, host: c.JSValue, pending: c.JSValue) !c.JSValue 
     return h.invoke(s, pending, "catch", &.{try reportFunction(s, host)});
 }
 pub fn endReload(s: *Scope, host: c.JSValue) !void {
-    try js.setKey(s.engine, host, try s.text("reloading"), c.pi_js_bool(s.engine.context, 0));
-    _ = try h.invoke(s, host, "maybeRetire", &.{});
+    _ = try h.invoke(s, host, "reloadEnded", &.{});
 }

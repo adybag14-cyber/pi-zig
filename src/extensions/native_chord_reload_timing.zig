@@ -18,11 +18,8 @@ fn execute(engine: *h.Engine, work: c.JSValue, resolve: c.JSValue, reject: c.JSV
     }
     if (mode == 4) return js.call(engine, try s.get(work, "resolve"), c.pi_js_undefined(), &.{c.pi_js_bool(engine.context, 1)});
     if (mode == 5) return c.pi_js_bool(engine.context, 0);
-    const reload = try s.get(work, "reload");
     var timer_callback = resolve;
-    if (mode == 0) {
-        try r.put(&s, try s.get(reload, "host"), "retired", resolve);
-    } else {
+    {
         try h.field(&s, work, "resolve", resolve);
         try h.field(&s, work, "reject", reject);
         var data = [_]c.JSValue{work};
@@ -37,30 +34,11 @@ fn timer(s: *Scope, work: c.JSValue, mode: c_int) !c.JSValue {
     const executor = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, callback, "", 2, mode, 1, &data)));
     return s.keep(try js.builtin(s.engine, "Promise", &.{executor}));
 }
-fn finish(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, mode: c_int) anyerror!c.JSValue {
+fn finish(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     _ = try s.keep(try js.call(engine, try s.keep(try js.global(engine, "clearTimeout")), c.pi_js_undefined(), &.{try s.get(work, "timer")}));
-    if (mode == 0) {
-        const host = try s.get(try s.get(work, "reload"), "host");
-        const noop = try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, r.noop, "noop", 0, 0, 0, null)));
-        try r.put(&s, host, "retired", noop);
-        if (!rejected) _ = try h.invoke(&s, host, "retire", &.{});
-    }
     return if (rejected) h.throwValue(&s, value) else s.result(value);
-}
-pub fn retirement(s: *Scope, reload: c.JSValue) !c.JSValue {
-    const host = try s.get(reload, "host");
-    const previous = try s.get(host, "previous");
-    if (c.JS_IsUndefined(previous)) return c.pi_js_undefined();
-    if (try r.index(s, try s.get(previous, "roots"), "size") == 0) {
-        _ = try h.invoke(s, host, "retire", &.{});
-        return c.pi_js_undefined();
-    }
-    const work = try s.record();
-    try h.field(s, work, "reload", reload);
-    try h.field(s, work, "deadline", r.default(s, try s.get(try s.get(reload, "options"), "retireDeadline"), c.JS_NewInt32(s.engine.context, 5000)));
-    return s.keep(try h.wait(finish, s.engine, work, try timer(s, work, 0), 0));
 }
 pub fn deadline(s: *Scope, bindings: c.JSValue, reload: c.JSValue, pending: c.JSValue, what: c.JSValue) !c.JSValue {
     const work = try s.record();
@@ -93,12 +71,12 @@ pub fn drain(s: *Scope, reload: c.JSValue) !c.JSValue {
     const candidates = try h.values(s, try s.get(reload, "candidates"));
     for (0..try h.length(s, candidates)) |index| {
         const candidate = try s.at(candidates, index);
-        if (try h.length(s, try s.get(candidate, "reasons")) > 0 and try s.equal(try s.get(try s.get(candidate, "record"), "status"), "live")) try js.push(s.engine, gated, candidate);
+        if (try h.length(s, try s.get(candidate, "reasons")) > 0 and try s.equal(try s.get(try s.get(candidate, "object"), "status"), "live")) try js.push(s.engine, gated, candidate);
     }
     try r.put(s, reload, "gated", gated);
     const promises = try s.list();
     for (0..try h.length(s, gated)) |index| {
-        var data = [_]c.JSValue{try s.get(try s.at(gated, index), "record")};
+        var data = [_]c.JSValue{try s.get(try s.at(gated, index), "object")};
         const executor = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, gateExecutor, "", 1, 0, 1, &data)));
         try js.push(s.engine, promises, try s.keep(try js.builtin(s.engine, "Promise", &.{executor})));
     }

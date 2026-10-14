@@ -48,6 +48,7 @@ pub fn connect(s: *Scope, bindings: c.JSValue, host: c.JSValue, link: c.JSValue,
 pub fn connectionClosed(s: *Scope, bindings: c.JSValue, host: c.JSValue, connection: c.JSValue, parent_lost: ParentLost) anyerror!void {
     const data = (try h.actor(s, host, bindings, .HostImpl)).data;
     _ = try h.invoke(s, try s.get(host, "connections"), "delete", &.{connection});
+    _ = try h.invoke(s, try s.get(data, "deferredHellos"), "delete", &.{connection});
     const foreign = try h.snapshot(s, try s.get(data, "foreign"));
     for (0..try h.length(s, foreign)) |index| {
         const pair = try s.at(foreign, index);
@@ -87,19 +88,28 @@ fn reconcileFailed(engine: *h.Engine, host: c.JSValue, connection: c.JSValue, er
     return c.pi_js_undefined();
 }
 pub fn peerHello(s: *Scope, bindings: c.JSValue, host: c.JSValue, connection: c.JSValue, epoch: c.JSValue, reconcile: ReconcileChild) anyerror!void {
-    if (c.JS_IsStrictEqual(s.engine.context, epoch, try s.get(try s.get(host, "current"), "id"))) {
-        _ = try h.invoke(s, connection, "markSynced", &.{epoch});
-        return;
-    }
     const ahead = try s.keep(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 6, epoch, try s.get(try s.get(host, "current"), "id"))));
     if (c.JS_ToBool(s.engine.context, ahead) != 0) {
-        const failure = try h.errorValue(s, bindings, "invalid", &.{ try s.get(connection, "name"), try s.text(" runs epoch "), epoch, try s.text(", ahead of "), try s.get(try s.get(host, "current"), "id") }, c.pi_js_undefined());
+        const failure = try h.errorValue(s, bindings, "invalid", &.{ try s.get(connection, "name"), try s.text(" runs code version "), epoch, try s.text(", ahead of "), try s.get(try s.get(host, "current"), "id") }, c.pi_js_undefined());
         _ = try h.invoke(s, host, "report", &.{failure});
-        _ = try h.invoke(s, try s.get(connection, "link"), "close", &.{try s.text("epoch ahead of parent")});
+        _ = try h.invoke(s, try s.get(connection, "link"), "close", &.{try s.text("code version ahead of parent")});
         return;
     }
-    try js.setKey(s.engine, connection, try s.text("peerEpoch"), epoch);
-    _ = try h.invoke(s, try s.get(connection, "fencedEpochs"), "add", &.{epoch});
+    if (try h.flag(s, host, "reloading")) {
+        try js.setKey(s.engine, connection, try s.text("peerCodeVersion"), epoch);
+        const behind = try s.keep(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 4, epoch, try s.get(try s.get(host, "current"), "id"))));
+        if (c.JS_ToBool(s.engine.context, behind) != 0) _ = try h.invoke(s, try s.get(connection, "fencedCodeVersions"), "add", &.{epoch});
+        const data = (try h.actor(s, host, bindings, .HostImpl)).data;
+        _ = try h.invoke(s, try s.get(data, "deferredHellos"), "set", &.{ connection, epoch });
+        return;
+    }
+    if (c.JS_IsStrictEqual(s.engine.context, epoch, try s.get(try s.get(host, "current"), "id"))) {
+        _ = try h.invoke(s, connection, "markSynced", &.{epoch});
+        _ = try h.invoke(s, host, "announceRetired", &.{connection});
+        return;
+    }
+    try js.setKey(s.engine, connection, try s.text("peerCodeVersion"), epoch);
+    _ = try h.invoke(s, try s.get(connection, "fencedCodeVersions"), "add", &.{epoch});
     const pending = try s.keep(try reconcile(s.engine, bindings, host, connection));
     var captures = [_]c.JSValue{ host, connection };
     const failed = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, rejected, "", 1, 0, 2, &captures)));

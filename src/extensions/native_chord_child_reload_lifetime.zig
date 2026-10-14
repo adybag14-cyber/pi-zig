@@ -18,8 +18,7 @@ fn completed(engine: *h.Engine, host: c.JSValue, finish: bool, error_value: c.JS
     return c.pi_js_undefined();
 }
 pub fn endReload(s: *Scope, host: c.JSValue) !void {
-    try js.setKey(s.engine, host, try s.text("reloading"), c.pi_js_bool(s.engine.context, 0));
-    _ = try h.invoke(s, host, "maybeRetire", &.{});
+    _ = try h.invoke(s, host, "reloadEnded", &.{});
 }
 pub fn cancel(s: *Scope, host: c.JSValue, data: c.JSValue, operation: c.JSValue) !void {
     try js.setKey(s.engine, operation, try s.text("cancelled"), c.pi_js_bool(s.engine.context, 1));

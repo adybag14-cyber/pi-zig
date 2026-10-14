@@ -19,7 +19,7 @@ fn allStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool,
     if (phase != 0) try r.alive(&s, bindings, reload);
     if (phase == 0) {
         const todo = try s.list();
-        const records = try h.values(&s, try s.get(try s.get(reload, "host"), "records"));
+        const records = try h.values(&s, try s.get(try s.get(reload, "host"), "objects"));
         for (0..try h.length(&s, records)) |index| {
             const record = try s.at(records, index);
             const name = try s.get(record, "typeName");
@@ -35,7 +35,7 @@ fn allStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool,
     const todo = try s.get(work, "todo");
     while (try r.index(&s, work, "index") < try h.length(&s, todo)) {
         const record = try s.at(todo, try r.advance(&s, work, "index"));
-        if (try s.equal(try s.get(record, "status"), "live") and !c.JS_IsStrictEqual(engine.context, try s.get(record, "service"), try h.invoke(&s, try s.get(reload, "services"), "get", &.{try s.get(record, "typeName")}))) return h.wait(allStep, engine, work, try h.invoke(&s, reload, "prepareRecord", &.{record}), 2);
+        if (try s.equal(try s.get(record, "status"), "live") and !c.JS_IsStrictEqual(engine.context, try s.get(record, "service"), try h.invoke(&s, try s.get(reload, "services"), "get", &.{try s.get(record, "typeName")}))) return h.wait(allStep, engine, work, try h.invoke(&s, reload, "prepareObject", &.{record}), 2);
     }
     return allStep(engine, work, c.pi_js_undefined(), false, 0);
 }
@@ -56,7 +56,7 @@ fn gateStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool
         if (c.JS_ToBool(engine.context, value) != 0) {
             const blocking = try s.list();
             for (0..try h.length(&s, gated)) |index| {
-                const gate_value = try s.get(try s.get(try s.at(gated, index), "record"), "gate");
+                const gate_value = try s.get(try s.get(try s.at(gated, index), "object"), "gate");
                 const roots = try r.optional(&s, gate_value, "grandfathered");
                 const list = try h.snapshot(&s, if (h.nullish(roots)) try s.list() else roots);
                 for (0..try h.length(&s, list)) |root_index| try js.push(engine, blocking, try s.at(list, root_index));
@@ -78,7 +78,7 @@ fn gateStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool
     }
     while (try r.index(&s, work, "candidateIndex") < try h.length(&s, gated)) {
         const candidate = try s.at(gated, try r.index(&s, work, "candidateIndex"));
-        const record = try s.get(candidate, "record");
+        const record = try s.get(candidate, "object");
         const replaced = try s.get(candidate, "replaced");
         if (try r.index(&s, work, "replacedIndex") < try h.length(&s, replaced)) {
             const old = try s.at(replaced, try r.advance(&s, work, "replacedIndex"));
@@ -138,7 +138,7 @@ fn pipeline(s: *Scope, work: c.JSValue, phase: c_int) anyerror!c.JSValue {
         return h.wait(prepareStep, s.engine, work, try h.invoke(s, reload, "withDeadline", &.{ try h.invoke(s, reload, "prepareAll", &.{}), try s.text("activations in flight did not finish") }), 3);
     }
     if (phase == 3) {
-        _ = try h.invoke(s, reload, "checkHolds", &.{});
+        _ = try h.invoke(s, reload, "checkRefs", &.{});
         try r.put(s, reload, "tables", try h.invoke(s, host, "buildTables", &.{try h.invoke(s, reload, "entries", &.{})}));
         return h.wait(prepareStep, s.engine, work, try h.invoke(s, reload, "gate", &.{}), 4);
     }

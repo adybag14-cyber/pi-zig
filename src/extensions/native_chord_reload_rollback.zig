@@ -8,6 +8,13 @@ pub fn rollback(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerror!c.JS
     if (try h.flag(s, reload, "rolledBack")) return c.pi_js_undefined();
     try r.put(s, reload, "rolledBack", c.pi_js_bool(s.engine.context, 1));
     _ = try h.invoke(s, try s.get(reload, "abort"), "abort", &.{try h.errorValue(s, bindings, "aborted", &.{try s.text("reload aborted")}, c.pi_js_undefined())});
+    var facet_runs = try r.mapIterator(s, try s.get(reload, "facetRuns"), "values");
+    defer facet_runs.deinit();
+    errdefer facet_runs.closePreserving();
+    while (try facet_runs.next()) |run| {
+        defer s.engine.freeValue(run);
+        _ = try h.invoke(s, run, "abort", &.{try h.errorValue(s, bindings, "aborted", &.{try s.text("reload aborted")}, c.pi_js_undefined())});
+    }
     const host = try s.get(reload, "host");
     var candidates = try r.mapIterator(s, try s.get(reload, "candidates"), "values");
     defer candidates.deinit();
@@ -38,7 +45,7 @@ fn step(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, ph
     const bindings = try s.get(work, "bindings");
     if (phase == 0) {
         if (try r.next(&s, try s.get(work, "candidates"))) |candidate| {
-            const record = try s.get(candidate, "record");
+            const record = try s.get(candidate, "object");
             const run = try s.get(candidate, "run");
             _ = try h.invoke(&s, try s.get(record, "pending"), "delete", &.{try s.get(run, "decls")});
             const pending = try r.reportPending(&s, host, try h.invoke(&s, record, "unwind", &.{run}));
@@ -56,7 +63,7 @@ fn step(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, ph
             const resource = try s.at(entry, 1);
             if (!try s.equal(try s.get(resource, "state"), "closed")) continue;
             const restored = try s.record();
-            inline for (.{ "host", "record", "resource", "bindings" }, .{ host, record, resource, bindings }) |name, item| try h.field(&s, restored, name, item);
+            inline for (.{ "host", "object", "resource", "bindings" }, .{ host, record, resource, bindings }) |name, item| try h.field(&s, restored, name, item);
             const controller = try s.keep(try js.builtin(engine, "AbortController", &.{}));
             const opened = try h.invoke(&s, resource, "open", &.{ try s.get(controller, "signal"), try s.get(record, "openOrder") });
             const handled = try s.keep(try h.wait(restore, engine, restored, opened, 0));
@@ -67,23 +74,17 @@ fn step(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, ph
         errdefer gated.closePreserving();
         while (try gated.next()) |candidate| {
             defer engine.freeValue(candidate);
-            const record = try s.get(candidate, "record");
+            const record = try s.get(candidate, "object");
             if (c.JS_IsUndefined(try s.get(record, "gate"))) continue;
             _ = try h.invoke(&s, record, "openGate", &.{});
-            var tasks = try r.mapIterator(&s, try s.get(try s.get(record, "decls"), "tasks"), "keys");
-            defer tasks.deinit();
-            errdefer tasks.closePreserving();
-            while (try tasks.next()) |name| {
-                defer engine.freeValue(name);
-                _ = try h.invoke(&s, record, "startTask", &.{ name, try s.get(try s.get(host, "current"), "id") });
-            }
+            _ = try h.invoke(&s, record, "startTasks", &.{});
         }
-        try h.field(&s, work, "records", try h.values(&s, try s.get(host, "records")));
+        try h.field(&s, work, "objects", try h.values(&s, try s.get(host, "objects")));
         try h.field(&s, work, "recordIndex", c.JS_NewInt32(engine.context, 0));
         try h.field(&s, work, "reason", try h.errorValue(&s, bindings, "gone", &.{try s.text("reload aborted; type not served")}, c.pi_js_undefined()));
         return step(engine, work, c.pi_js_undefined(), false, 3);
     }
-    const records = try s.get(work, "records");
+    const records = try s.get(work, "objects");
     while (try r.index(&s, work, "recordIndex") < try h.length(&s, records)) {
         const record = try s.at(records, try r.advance(&s, work, "recordIndex"));
         if (try r.has(&s, try s.get(try s.get(host, "current"), "services"), try s.get(record, "typeName"))) continue;
@@ -99,7 +100,7 @@ fn restore(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool,
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const resource = try s.get(work, "resource");
-    const record = try s.get(work, "record");
+    const record = try s.get(work, "object");
     _ = try h.invoke(&s, resource, "markUnavailable", &.{});
     const options = try s.record();
     try h.field(&s, options, "cause", value);

@@ -6,7 +6,7 @@ const c = r.c;
 const Scope = r.Scope;
 const schema = @import("native_chord_host_record_schema.zig");
 fn kindOf(s: *Scope, behavior: c.JSValue) !c.JSValue {
-    return if (c.JS_IsString(try s.get(behavior, "kind"))) s.get(behavior, "kind") else c.pi_js_undefined();
+    return if (c.JS_IsString(try s.get(behavior, "variant"))) s.get(behavior, "variant") else c.pi_js_undefined();
 }
 fn memberSchemas(s: *Scope, bindings: c.JSValue, service: c.JSValue, behavior: c.JSValue) !c.JSValue {
     const schemas = try h.map(s);
@@ -51,8 +51,8 @@ pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!voi
     const run = try s.get(candidate, "run");
     const migrated = try s.get(candidate, "migrated");
     const service = try s.get(candidate, "service");
-    const record = try s.get(candidate, "record");
-    const exposed = try memberSchemas(s, bindings, service, try s.get(run, "behavior"));
+    const record = try s.get(candidate, "object");
+    const exposed = try memberSchemas(s, bindings, service, try s.get(run, "implementation"));
     var migration_iter = try r.iterate(s, migrated);
     defer migration_iter.deinit();
     errdefer migration_iter.closePreserving();
@@ -84,7 +84,7 @@ pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!voi
         const derived = try s.at(entry, 1);
         var captures = [_]c.JSValue{values};
         const read = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, readSource, "", 1, 0, 1, &captures)));
-        const value = try h.invoke(s, derived, "compute", &.{ read, try h.invoke(s, try s.get(decls, "deriveFns"), "get", &.{name}) });
+        const value = try h.invoke(s, derived, "compute", &.{read});
         const schemas = try h.invoke(s, exposed, "get", &.{derived});
         if (!h.nullish(schemas)) {
             var checks = try r.iterate(s, schemas);
@@ -92,7 +92,7 @@ pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!voi
             errdefer checks.closePreserving();
             while (try checks.next()) |check| {
                 defer s.engine.freeValue(check);
-                try schema.assertValid(s, bindings, "state", try r.concat(s, &.{ try s.get(record, "address"), try s.text(": derived "), name }), check, value);
+                try schema.assertValid(s, bindings, "state", try r.concat(s, &.{ try s.get(record, "address"), try s.text(": derivation "), name }), check, value);
             }
         }
         _ = try h.invoke(s, values, "set", &.{ derived, value });
@@ -100,12 +100,8 @@ pub fn dryRun(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!voi
     try js.setKey(s.engine, candidate, try s.text("derived"), values);
 }
 pub fn migrate(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!void {
-    const record = try s.get(candidate, "record");
-    const service = try s.get(candidate, "service");
+    const record = try s.get(candidate, "object");
     const run = try s.get(candidate, "run");
-    const raw = try r.optional(s, try s.get(try s.get(service, "options"), "state"), "migrate");
-    const functions = if (h.nullish(raw)) try s.record() else raw;
-    const bumped = !c.JS_IsStrictEqual(s.engine.context, try s.get(service, "stateVersion"), try s.get(record, "stateVersion"));
     const decls = try s.get(run, "decls");
     var iter = try r.iterate(s, try s.get(decls, "cells"));
     defer iter.deinit();
@@ -116,10 +112,12 @@ pub fn migrate(s: *Scope, bindings: c.JSValue, candidate: c.JSValue) anyerror!vo
         const cell = try s.at(entry, 1);
         if (!c.JS_IsStrictEqual(s.engine.context, try h.invoke(s, try s.get(try s.get(record, "decls"), "cells"), "get", &.{name}), cell)) continue;
         const target_schema = try h.invoke(s, try s.get(decls, "cellSchemas"), "get", &.{name});
-        const function = try s.key(functions, name);
-        const value = if (bumped and !c.JS_IsUndefined(function)) blk: {
+        const from = r.default(s, try h.invoke(s, try s.get(try s.get(record, "decls"), "cellVersions"), "get", &.{name}), c.JS_NewInt32(s.engine.context, 1));
+        const to = r.default(s, try h.invoke(s, try s.get(decls, "cellVersions"), "get", &.{name}), c.JS_NewInt32(s.engine.context, 1));
+        const function = try h.invoke(s, try s.get(decls, "cellMigrations"), "get", &.{name});
+        const value = if (try r.greater(s, to, from) and !c.JS_IsUndefined(function)) blk: {
             const cloned = try s.keep(try @import("native_chord_clone.zig").clone(s.engine, try s.get(cell, "value")));
-            break :blk try s.keep(try js.call(s.engine, function, c.pi_js_undefined(), &.{ cloned, try s.get(record, "stateVersion") }));
+            break :blk try s.keep(try js.call(s.engine, function, c.pi_js_undefined(), &.{ cloned, from }));
         } else if (!try @import("native_chord_canonical.zig").deepEqual(s.engine, try s.get(cell, "schema"), target_schema)) try s.get(cell, "value") else continue;
         try schema.assertValid(s, bindings, "state", try r.concat(s, &.{ try s.get(record, "address"), try s.text(": migrated state "), name }), target_schema, value);
         _ = try h.invoke(s, try s.get(candidate, "migrated"), "set", &.{ cell, value });
@@ -173,37 +171,37 @@ pub fn checkProviders(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerro
         }
     }
 }
-pub fn checkHolds(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerror!void {
+pub fn checkRefs(s: *Scope, bindings: c.JSValue, reload: c.JSValue) anyerror!void {
     const dropped = try h.set(s);
     var candidates = try r.mapIterator(s, try s.get(reload, "candidates"), "values");
     defer candidates.deinit();
     errdefer candidates.closePreserving();
     while (try candidates.next()) |candidate| {
         defer s.engine.freeValue(candidate);
-        const record = try s.get(candidate, "record");
-        var holds = try r.mapIterator(s, try s.get(try s.get(record, "decls"), "holds"), "values");
+        const record = try s.get(candidate, "object");
+        var holds = try r.mapIterator(s, try s.get(try s.get(record, "decls"), "refs"), "values");
         defer holds.deinit();
         errdefer holds.closePreserving();
         while (try holds.next()) |hold| {
             defer s.engine.freeValue(hold);
-            const kept = try h.values(s, try s.get(try s.get(try s.get(candidate, "run"), "decls"), "holds"));
+            const kept = try h.values(s, try s.get(try s.get(try s.get(candidate, "run"), "decls"), "refs"));
             if (c.JS_ToBool(s.engine.context, try h.invoke(s, kept, "includes", &.{hold})) == 0) _ = try h.invoke(s, dropped, "add", &.{hold});
         }
     }
     const host = try s.get(reload, "host");
-    var records = try r.mapIterator(s, try s.get(host, "records"), "values");
+    var records = try r.mapIterator(s, try s.get(host, "objects"), "values");
     defer records.deinit();
     errdefer records.closePreserving();
     while (try records.next()) |record| {
         defer s.engine.freeValue(record);
         const service = try h.invoke(s, try s.get(reload, "services"), "get", &.{try s.get(record, "typeName")});
         if (c.JS_IsUndefined(service) or !try r.has(s, try s.get(reload, "changed"), try s.get(record, "typeName"))) continue;
-        var holds = try r.iterate(s, try s.get(record, "holds"));
+        var holds = try r.iterate(s, try s.get(record, "refs"));
         defer holds.deinit();
         errdefer holds.closePreserving();
         while (try holds.next()) |hold| {
             defer s.engine.freeValue(hold);
-            if (c.JS_IsStrictEqual(s.engine.context, hold, try h.invoke(s, try s.get(host, "eager"), "get", &.{try s.get(record, "typeName")}))) continue;
+            if (c.JS_IsStrictEqual(s.engine.context, hold, try h.invoke(s, try s.get(host, "hostObjects"), "get", &.{try s.get(record, "typeName")}))) continue;
             if (!try r.has(s, dropped, hold) and !try s.equal(try s.get(hold, "owner"), "client")) _ = try h.invoke(s, try s.get(bindings, "contracts"), "bind", &.{ try s.get(service, "contract"), try s.get(try s.get(service, "options"), "accepts"), try s.get(hold, "contract") });
         }
     }

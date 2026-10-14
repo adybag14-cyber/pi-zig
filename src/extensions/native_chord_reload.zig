@@ -4,10 +4,10 @@ const h = r.h;
 const js = r.js;
 const c = r.c;
 const Scope = r.Scope;
-const Method = enum(c_int) { prepare, summary, waitForRetirement, load, withDeadline, checkProviders, prepareAll, prepareRecord, checkHolds, entries, gate, migrate, rollback, commit, install };
+const Method = enum(c_int) { prepare, summary, waitForRetirement, load, withDeadline, checkProviders, prepareAll, prepareObject, checkRefs, entries, gate, migrate, rollback, commit, install };
 fn asyncMethod(method: Method) bool {
     return switch (method) {
-        .prepare, .waitForRetirement, .withDeadline, .prepareAll, .prepareRecord, .gate, .rollback => true,
+        .prepare, .waitForRetirement, .withDeadline, .prepareAll, .prepareObject, .gate, .rollback => true,
         else => false,
     };
 }
@@ -25,16 +25,16 @@ fn invoke(engine: *h.Engine, bindings: c.JSValue, receiver: c.JSValue, args: []c
     switch (method) {
         .prepare => return @import("native_chord_reload_prepare.zig").prepare(&s, bindings, receiver),
         .summary => return s.result(try @import("native_chord_reload_table.zig").summary(&s, receiver)),
-        .waitForRetirement => return s.result(try @import("native_chord_reload_timing.zig").retirement(&s, receiver)),
-        .load => try @import("native_chord_reload_table.zig").load(&s, receiver),
+        .waitForRetirement => return s.result(try @import("native_chord_reload_retirement.zig").wait(&s, bindings, receiver)),
+        .load => try @import("native_chord_reload_table.zig").load(&s, bindings, receiver),
         .withDeadline => return @import("native_chord_reload_timing.zig").deadline(&s, bindings, receiver, h.arg(args, 0), h.arg(args, 1)),
         .checkProviders => try @import("native_chord_reload_candidate.zig").checkProviders(&s, bindings, receiver),
         .prepareAll => return @import("native_chord_reload_prepare.zig").prepareAll(&s, bindings, receiver),
-        .prepareRecord => {
+        .prepareObject => {
             const pending = try @import("native_chord_reload_record.zig").prepare(&s, bindings, receiver, h.arg(args, 0));
             return h.wait(discard, engine, c.pi_js_undefined(), pending, 0);
         },
-        .checkHolds => try @import("native_chord_reload_candidate.zig").checkHolds(&s, bindings, receiver),
+        .checkRefs => try @import("native_chord_reload_candidate.zig").checkRefs(&s, bindings, receiver),
         .entries => return s.result(try @import("native_chord_reload_table.zig").entries(&s, receiver)),
         .gate => return @import("native_chord_reload_prepare.zig").gate(&s, bindings, receiver),
         .migrate => try @import("native_chord_reload_candidate.zig").migrate(&s, bindings, h.arg(args, 0)),
@@ -56,8 +56,8 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, capt
     defer s.deinit();
     const bindings = captures[0];
     const result = try s.keep(try h.allocate(engine, target, bindings, .Reload));
-    inline for (.{ "host", "facets", "options", "epoch" }, 0..) |name, index| try h.field(&s, result, name, h.arg(args, index));
-    inline for (.{ "candidates", "services", "tables", "deferred" }) |name| try h.field(&s, result, name, try h.map(&s));
+    inline for (.{ "host", "facets", "options", "codeVersion" }, 0..) |name, index| try h.field(&s, result, name, h.arg(args, index));
+    inline for (.{ "candidates", "services", "tables", "deferred", "facetRuns" }) |name| try h.field(&s, result, name, try h.map(&s));
     inline for (.{ "changed", "removed" }) |name| try h.field(&s, result, name, try h.set(&s));
     inline for (.{ "closed", "gated" }) |name| try h.field(&s, result, name, try s.list());
     try h.field(&s, result, "abort", try s.keep(try js.builtin(engine, "AbortController", &.{})));
@@ -68,10 +68,11 @@ fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, capt
 pub fn install(engine: *h.Engine, bindings: c.JSValue) !void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
+    try h.field(&s, bindings, "reloadSeq", c.JS_NewInt32(engine.context, 0));
     try h.register(&s, bindings, .Reload);
     const prototype = try s.record();
-    try js.define(engine, bindings, "Reload", try @import("native_class.zig").constructor(engine, "Reload", 3, prototype, construct, &.{bindings}));
-    inline for (.{ .{ Method.prepare, 0 }, .{ Method.summary, 0 }, .{ Method.waitForRetirement, 0 }, .{ Method.load, 0 }, .{ Method.withDeadline, 2 }, .{ Method.checkProviders, 0 }, .{ Method.prepareAll, 0 }, .{ Method.prepareRecord, 1 }, .{ Method.checkHolds, 0 }, .{ Method.entries, 0 }, .{ Method.gate, 0 }, .{ Method.migrate, 1 }, .{ Method.rollback, 0 }, .{ Method.commit, 0 }, .{ Method.install, 2 } }) |entry| try h.define(&s, prototype, bindings, @tagName(entry[0]), callback, @intFromEnum(entry[0]), entry[1], false, asyncMethod(entry[0]));
+    try js.define(engine, bindings, "Reload", try @import("native_class.zig").constructor(engine, "Reload", 4, prototype, construct, &.{bindings}));
+    inline for (.{ .{ Method.prepare, 0 }, .{ Method.summary, 0 }, .{ Method.waitForRetirement, 0 }, .{ Method.load, 0 }, .{ Method.withDeadline, 2 }, .{ Method.checkProviders, 0 }, .{ Method.prepareAll, 0 }, .{ Method.prepareObject, 1 }, .{ Method.checkRefs, 0 }, .{ Method.entries, 0 }, .{ Method.gate, 0 }, .{ Method.migrate, 1 }, .{ Method.rollback, 0 }, .{ Method.commit, 1 }, .{ Method.install, 2 } }) |entry| try h.define(&s, prototype, bindings, @tagName(entry[0]), callback, @intFromEnum(entry[0]), entry[1], false, asyncMethod(entry[0]));
 }
 pub fn begin(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, plugins: c.JSValue, options: c.JSValue, epoch: c.JSValue) anyerror!c.JSValue {
     const pending = beginInner(engine, bindings, host, plugins, options, epoch) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
@@ -84,7 +85,7 @@ fn beginInner(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, plugins: 
     if (try h.flag(&s, host, "reloading")) return h.throwValue(&s, try h.errorValue(&s, bindings, "unavailable", &.{try s.text("a reload is already running")}, try r.reason(&s, "reload_running")));
     try r.put(&s, host, "reloading", c.pi_js_bool(engine.context, 1));
     const work = try s.record();
-    inline for (.{ "bindings", "host", "options", "epoch" }, .{ bindings, host, options, epoch }) |name, value| try h.field(&s, work, name, value);
+    inline for (.{ "bindings", "host", "options", "codeVersion" }, .{ bindings, host, options, epoch }) |name, value| try h.field(&s, work, name, value);
     const pending = h.invoke(&s, host, "resolve", &.{plugins}) catch |err| {
         if (err != error.JavaScriptException) return err;
         const failure = try s.keep(c.JS_DupValue(engine.context, engine.captured_exception.?));
@@ -98,14 +99,14 @@ fn beginStep(engine: *h.Engine, work: c.JSValue, facets: c.JSValue, rejected: bo
     const bindings = try s.get(work, "bindings");
     const host = try s.get(work, "host");
     if (!rejected) {
-        const result = h.construct(&s, bindings, "Reload", &.{ host, facets, try s.get(work, "options"), try s.get(work, "epoch") }) catch |err| {
-            try r.put(&s, host, "reloading", c.pi_js_bool(engine.context, 0));
+        const result = h.construct(&s, bindings, "Reload", &.{ host, facets, try s.get(work, "options"), try s.get(work, "codeVersion") }) catch |err| {
+            _ = try h.invoke(&s, host, "reloadEnded", &.{});
             if (err != error.JavaScriptException) return err;
             return h.throwValue(&s, try r.reloadError(&s, bindings, try s.keep(c.JS_DupValue(engine.context, engine.captured_exception.?))));
         };
         return s.result(result);
     }
-    try r.put(&s, host, "reloading", c.pi_js_bool(engine.context, 0));
+    _ = try h.invoke(&s, host, "reloadEnded", &.{});
     return h.throwValue(&s, try r.reloadError(&s, bindings, facets));
 }
 pub fn run(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, plugins: c.JSValue, options: c.JSValue) anyerror!c.JSValue {

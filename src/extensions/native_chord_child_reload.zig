@@ -55,7 +55,7 @@ fn run(engine: *h.Engine, work: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const frame = try s.get(work, "frame");
-    const pending = try s.keep(try @import("native_chord_reload.zig").begin(engine, try s.get(work, "bindings"), try s.get(work, "host"), try s.get(frame, "plugins"), try s.get(frame, "options"), try s.get(frame, "epoch")));
+    const pending = try s.keep(try @import("native_chord_reload.zig").begin(engine, try s.get(work, "bindings"), try s.get(work, "host"), try s.get(frame, "plugins"), try s.get(frame, "options"), try s.get(frame, "codeVersion")));
     return h.wait(step, engine, work, pending, 0);
 }
 fn runFailure(s: *Scope, work: c.JSValue, value: c.JSValue) anyerror!c.JSValue {

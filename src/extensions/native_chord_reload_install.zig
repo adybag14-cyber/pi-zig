@@ -6,16 +6,26 @@ const c = r.c;
 const Scope = r.Scope;
 fn start(ctx: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, mode: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(ctx.?);
-    return js.invoke(engine, captures[0], if (mode == 0) "startTasks" else "startEager", if (mode == 0) &.{} else &.{captures[1]}) catch |err| @import("native_durable.zig").reject(engine, err);
+    return js.invoke(engine, captures[0], if (mode == 0) "startTasks" else if (mode == 1) "startHostObject" else if (mode == 2) "facetRunChanged" else "release", if (mode == 0 or mode == 3) &.{} else if (mode == 1) &.{captures[1]} else &.{ captures[1], captures[2] }) catch |err| @import("native_durable.zig").reject(engine, err);
 }
 pub fn queue(s: *Scope, starts: c.JSValue, owner: c.JSValue, service: ?c.JSValue) !void {
     var data = [_]c.JSValue{ owner, service orelse c.pi_js_undefined() };
     const callback = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, start, "", 0, @intFromBool(service != null), 2, &data)));
     try js.push(s.engine, starts, callback);
 }
+pub fn queueFacet(s: *Scope, starts: c.JSValue, host: c.JSValue, name: c.JSValue, run: c.JSValue) !void {
+    var data = [_]c.JSValue{ host, name, run };
+    const callback = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, start, "", 0, 2, 3, &data)));
+    try js.push(s.engine, starts, callback);
+}
+pub fn queueRelease(s: *Scope, starts: c.JSValue, pinned: c.JSValue) !void {
+    var data = [_]c.JSValue{pinned};
+    const callback = try s.keep(try s.engine.checked(c.JS_NewCFunctionData2(s.engine.context, start, "", 0, 3, 1, &data)));
+    try js.push(s.engine, starts, callback);
+}
 pub fn install(s: *Scope, bindings: c.JSValue, reload: c.JSValue, starts: c.JSValue, candidate: c.JSValue, epoch: c.JSValue) anyerror!void {
     const host = try s.get(reload, "host");
-    const record = try s.get(candidate, "record");
+    const record = try s.get(candidate, "object");
     const run = try s.get(candidate, "run");
     const service = try s.get(candidate, "service");
     const decls = try s.get(run, "decls");
@@ -34,26 +44,25 @@ pub fn install(s: *Scope, bindings: c.JSValue, reload: c.JSValue, starts: c.JSVa
     }
     try r.put(s, record, "decls", decls);
     try r.put(s, record, "service", service);
-    try r.put(s, record, "stateVersion", try s.get(service, "stateVersion"));
+    var adopted = try r.iterate(s, try s.get(decls, "adopted"));
+    defer adopted.deinit();
+    errdefer adopted.closePreserving();
+    while (try adopted.next()) |entry| {
+        defer s.engine.freeValue(entry);
+        _ = try h.invoke(s, try s.at(entry, 0), "adopt", &.{try s.at(entry, 1)});
+    }
     const installed = try s.record();
-    inline for (.{ "epoch", "service", "behavior", "decls" }, .{ epoch, service, try s.get(run, "behavior"), decls }) |name, value| try h.field(s, installed, name, value);
-    _ = try h.invoke(s, try s.get(record, "behaviors"), "set", &.{ epoch, installed });
+    inline for (.{ "codeVersion", "service", "implementation", "decls" }, .{ epoch, service, try s.get(run, "implementation"), decls }) |name, value| try h.field(s, installed, name, value);
+    _ = try h.invoke(s, try s.get(record, "implementations"), "set", &.{ epoch, installed });
     if (gated) {
-        try r.put(s, record, "minEpoch", epoch);
-        const old_epochs = try h.snapshot(s, try h.invoke(s, try s.get(record, "behaviors"), "keys", &.{}));
+        try r.put(s, record, "minCodeVersion", epoch);
+        const old_epochs = try h.snapshot(s, try h.invoke(s, try s.get(record, "implementations"), "keys", &.{}));
         for (0..try h.length(s, old_epochs)) |index| {
             const old = try s.at(old_epochs, index);
-            if (!c.JS_IsStrictEqual(s.engine.context, old, epoch)) _ = try h.invoke(s, host, "retireBehavior", &.{ record, old });
+            if (!c.JS_IsStrictEqual(s.engine.context, old, epoch)) _ = try h.invoke(s, host, "retireImplementation", &.{ record, old });
         }
     }
     _ = try h.invoke(s, record, "refreshSchemas", &.{});
-    var derivations = try r.iterate(s, try s.get(decls, "derives"));
-    defer derivations.deinit();
-    errdefer derivations.closePreserving();
-    while (try derivations.next()) |entry| {
-        defer s.engine.freeValue(entry);
-        _ = try h.invoke(s, try s.at(entry, 1), "setFn", &.{try h.invoke(s, try s.get(decls, "deriveFns"), "get", &.{try s.at(entry, 0)})});
-    }
     var cells = try r.iterate(s, try s.get(decls, "cells"));
     defer cells.deinit();
     errdefer cells.closePreserving();
@@ -85,14 +94,14 @@ pub fn install(s: *Scope, bindings: c.JSValue, reload: c.JSValue, starts: c.JSVa
     if (!h.nullish(staged)) _ = try h.invoke(s, staged, "activate", &.{});
     try queue(s, starts, record, null);
     _ = try h.invoke(s, record, "openGate", &.{});
-    const eager = try h.invoke(s, try s.get(host, "eager"), "get", &.{try s.get(record, "typeName")});
-    if (!h.nullish(eager) and c.JS_IsStrictEqual(s.engine.context, try s.get(eager, "record"), record) and !c.JS_IsStrictEqual(s.engine.context, try s.get(try s.get(eager, "contract"), "fingerprint"), try s.get(try s.get(service, "contract"), "fingerprint"))) {
-        const replacement = try h.construct(s, bindings, "HandleImpl", &.{ record, try s.get(service, "contract"), try s.text("host") });
-        _ = try h.invoke(s, record, "addHold", &.{replacement});
-        _ = try h.invoke(s, try s.get(host, "eager"), "set", &.{ try s.get(record, "typeName"), replacement });
+    const eager = try h.invoke(s, try s.get(host, "hostObjects"), "get", &.{try s.get(record, "typeName")});
+    if (!h.nullish(eager) and c.JS_IsStrictEqual(s.engine.context, try s.get(eager, "object"), record) and !c.JS_IsStrictEqual(s.engine.context, try s.get(try s.get(eager, "contract"), "fingerprint"), try s.get(try s.get(service, "contract"), "fingerprint"))) {
+        const replacement = try h.construct(s, bindings, "RefImpl", &.{ record, try s.get(service, "contract"), try s.text("host") });
+        _ = try h.invoke(s, record, "addRef", &.{replacement});
+        _ = try h.invoke(s, try s.get(host, "hostObjects"), "set", &.{ try s.get(record, "typeName"), replacement });
         _ = try h.invoke(s, eager, "release", &.{});
     }
-    const holds = try h.snapshot(s, try s.get(record, "holds"));
+    const holds = try h.snapshot(s, try s.get(record, "refs"));
     for (0..try h.length(s, holds)) |index| {
         const handle = try s.at(holds, index);
         if (try s.equal(try s.get(handle, "owner"), "client")) {

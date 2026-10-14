@@ -1,0 +1,4238 @@
+{
+  "source_head": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "previous_source_head": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "inventory_kind": "static source inventory and declarations, not executed oracle",
+  "native_qualification": false,
+  "public_activation": false,
+  "files": [
+    {
+      "path": "packages/chord/src/cell.ts",
+      "bytes": 12753,
+      "sha256": "B188544739BCEAC489954FB64E9E920529BF91B72F45C26053139BDE865634FE"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "bytes": 10052,
+      "sha256": "2F4B37F899852DAD7627B3CFA681FF3BC80B0DD8FF55030ABD9733D5FBEC8FEA"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "bytes": 40127,
+      "sha256": "898B5F41FE4F294B36FBCBABCAE41CC6BA6EA52636C79A42660C916F387A9F3C"
+    },
+    {
+      "path": "packages/chord/src/context/index.ts",
+      "bytes": 4196,
+      "sha256": "2BE1F4F17B34ED786AB629D861BFA31517312FA9202BE42F1A0BE1C0427C2EC5"
+    },
+    {
+      "path": "packages/chord/src/contract.ts",
+      "bytes": 14242,
+      "sha256": "FD821D188EC97B83612725822B665B3026753D3A0D5339F05799B8321B95184C"
+    },
+    {
+      "path": "packages/chord/src/declare.ts",
+      "bytes": 1635,
+      "sha256": "94DE2CB9E3B57625123CA34980776E85A1B700B98FB891BF39F6BBF9D37E2455"
+    },
+    {
+      "path": "packages/chord/src/delta/apply-immutable-trusted.ts",
+      "bytes": 4653,
+      "sha256": "B3C1849D8792D1D8848BCD2DF564EA131C54722A0AD16B5F76ECC398AB22EFED"
+    },
+    {
+      "path": "packages/chord/src/delta/diff.ts",
+      "bytes": 16969,
+      "sha256": "928696ADD33868B9655F856C2D52F596A220249DB3EE907C8B8C5B497BF7CCDE"
+    },
+    {
+      "path": "packages/chord/src/delta/draft.ts",
+      "bytes": 386,
+      "sha256": "D23DDBF8F26C6883A30040C460CB82B1CEF7281578879BB2AFC9ECBC57FC8502"
+    },
+    {
+      "path": "packages/chord/src/delta/index.ts",
+      "bytes": 26919,
+      "sha256": "B6C606044D3E3005034308CD000C9DAE7F1DCDD9EDEF4DB795856417DAF42C81"
+    },
+    {
+      "path": "packages/chord/src/delta/README.md",
+      "bytes": 10890,
+      "sha256": "469CAE51E43F3083C00EE565CB1C8ADBE6B0772B59E7924659D8384B833E078F"
+    },
+    {
+      "path": "packages/chord/src/delta/revision-validator.ts",
+      "bytes": 3006,
+      "sha256": "03A9D180C6347DA8816AF6D11C3107AF7810469ECAC70309706A41014EBC18CF"
+    },
+    {
+      "path": "packages/chord/src/delta/tracker.ts",
+      "bytes": 79799,
+      "sha256": "68BD2D7B9C0538366B079004DDD5DC9180CEDD67D129F5C8DE6C9EF6380E2C54"
+    },
+    {
+      "path": "packages/chord/src/errors.ts",
+      "bytes": 2662,
+      "sha256": "61FDE478547E150EA492A8C777F9A9EFE0B28AB6B6EA0EC610F41C76DCB20F6E"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "bytes": 47656,
+      "sha256": "FE06D53948E9234CE7287DDDC5CCE74C1C4B34A81E03D1E71680ADE120C620DE"
+    },
+    {
+      "path": "packages/chord/src/index.ts",
+      "bytes": 2149,
+      "sha256": "6AC3B5BF09F53B156A6E4A1811DDF53EF2B68FF32E0EC65058D4E097A26AF126"
+    },
+    {
+      "path": "packages/chord/src/json.ts",
+      "bytes": 5375,
+      "sha256": "D3A115DDE2AFA8E79C987B0FB188EC0BDBA03939192859A20198A23B2892BB60"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "bytes": 16979,
+      "sha256": "81D58CBD307E78252FF47F3602133B7C288567FBD0027C3C6E4473F342F5BD54"
+    },
+    {
+      "path": "packages/chord/src/loader.ts",
+      "bytes": 2896,
+      "sha256": "BAE44B80EB302406F4B6390DC836CB826030257ACAE5BE567D7CCEA653E27332"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "bytes": 15697,
+      "sha256": "0D445A62779548E3ECBA514C2B6B036CD1A44729AF950C5658C88F14A8248BE1"
+    },
+    {
+      "path": "packages/chord/src/node.ts",
+      "bytes": 385,
+      "sha256": "E9D566F8569FB3AC8BBF9FFF0013B29B5E2A991ABD65D46AB98F95EAABAF1FFB"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "bytes": 66071,
+      "sha256": "9945B5F0FF60D71D25C11215E8CA77BD2D806134B7BDA51EAB21615D051D13E5"
+    },
+    {
+      "path": "packages/chord/src/publish.ts",
+      "bytes": 1316,
+      "sha256": "89450B3A5E7DA183E28D238198E4A56C3C02C0E5A51A6AC5814BCFF8C6727434"
+    },
+    {
+      "path": "packages/chord/src/registry.ts",
+      "bytes": 1025,
+      "sha256": "D41CCCB9F742CA6FB9C0864D9B8F4FB4379DB82BDE67A0318F2BE1E5D5FBE13D"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "bytes": 28143,
+      "sha256": "64E6FC000C0BEDEC92963890638320DFB63BC273D8931F86ABCEDFD32FF4A7EA"
+    },
+    {
+      "path": "packages/chord/src/remote.ts",
+      "bytes": 12219,
+      "sha256": "D33B84EF81EA4569487C60F2622CBBB5517641FB01A90A4592D3FBE6C6CCE6A8"
+    },
+    {
+      "path": "packages/chord/src/schema.ts",
+      "bytes": 9453,
+      "sha256": "B83EF511D32501AAEFE9F7DE6BD99E770A1077CADD3ACA1F080DDB641B871264"
+    },
+    {
+      "path": "packages/chord/src/state.ts",
+      "bytes": 14445,
+      "sha256": "489F40F305283E8A66FA6747350F684146F65B6113FD0FC417058BA9BB9D6986"
+    },
+    {
+      "path": "packages/chord/src/types.ts",
+      "bytes": 3076,
+      "sha256": "767C3078902F107A7E1F5E493A871F038938F1348DBA7C925C0CEFFB78016729"
+    },
+    {
+      "path": "packages/chord/src/websocket.ts",
+      "bytes": 1712,
+      "sha256": "465490436ABF3E8A16345338530F8B590C8AA5F60BBDC372956C68F4A98A15D2"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "bytes": 6918,
+      "sha256": "8F9A01D80BDD50C4FD6267A69057E8AC2CA7D1A9DD28B96770ED2480A9A79ACD"
+    },
+    {
+      "path": "packages/chord/test/boundary.test.ts",
+      "bytes": 1504,
+      "sha256": "F719DE5FF76358A6B2171B14F8C2F368C0057DFB860F87DCD37EDA4BAAECE1F1"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "bytes": 23575,
+      "sha256": "49F2DCE4322A52E24D7FB6AF2CE9EA920706134ECB182178F3B4A02C6A1265E2"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "bytes": 3546,
+      "sha256": "8270A710FE003103141F1A72C01AF0655A8863233F8CBA3B96A041443E9CFE82"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "bytes": 5465,
+      "sha256": "6043D66E13D898E00A53D44970F0D3585B070044E18B9DB52968ACEE93FE6C5A"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "bytes": 11188,
+      "sha256": "81480B4EAE8ADBEEBE473837BE66CF50FC31DB6F371887B966F1E8C6AE000344"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/benchmark.ts",
+      "bytes": 5535,
+      "sha256": "5A9DCCDF8E68C3DA64DFEAF075891819D2DD29E30339AB1210085CCE6ABB65FC"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/benchmark.worker.ts",
+      "bytes": 15065,
+      "sha256": "F98F718B91CF8A0F6358F52F01EBACCE058C7799C903ABC5DB298B09C6A84E65"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/conversation-view-benchmark.ts",
+      "bytes": 9737,
+      "sha256": "78EE0166BB8471E88BBF30A7939AA4F97812116A8BB9C85A5060B85DA2F6F919"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/conversation-view-benchmark.worker.ts",
+      "bytes": 39131,
+      "sha256": "D035C2EAC33E48E4623B14D668056D66A5462C1FD6FA7F36302A8D5149395712"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/memory-benchmark.ts",
+      "bytes": 4404,
+      "sha256": "07C5916F91012E268A345F129E1469785E02F71098C1295E6EE5EEEE7F567C2D"
+    },
+    {
+      "path": "packages/chord/test/delta-benchmark/memory-benchmark.worker.ts",
+      "bytes": 6134,
+      "sha256": "E947DA7AB726FC8DCAA0C65062119CC725FF15F8381605EBEA25694FDDDDEFD4"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "bytes": 2130,
+      "sha256": "A437D92130FE9A67223B2438266D58EE8A69DE0FA39B983666794DDE4BAD2692"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "bytes": 10825,
+      "sha256": "94579BFFE2D9E035A97FD923E7F4A43B66E8BC090FBB09D25BE11A20713A0D58"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/retention.test.ts",
+      "bytes": 992,
+      "sha256": "3BB2287B0E1229ADE82630CBEC5125F931454BA33E5FDE158539B84A20F2BAAC"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/retention.worker.ts",
+      "bytes": 11910,
+      "sha256": "B2D35480F0B68A6398715510E006EBAB7964C5E51F4ACBEE8E506C6A10F2D0C5"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "bytes": 58258,
+      "sha256": "AB2B57ED6BF5FDF45ED1CC36FDF0FF0BD1CE8D77E83690F4E78426CA5322D5FC"
+    },
+    {
+      "path": "packages/chord/test/delta-traversal.bench.ts",
+      "bytes": 6849,
+      "sha256": "05E0E3F5A3EE25B0420BAC89BFCD7E89AED64699D46B17BE9CC1E86F4A872A1C"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "bytes": 17921,
+      "sha256": "DE120D2970E8DDF4628321917B48018D523963506BC31DF6B06CC78A9FA343C1"
+    },
+    {
+      "path": "packages/chord/test/fixtures/echo.ts",
+      "bytes": 292,
+      "sha256": "E977796F706E11878EE5C8EFD07106FF3B3E14326F17E089BA922E2008099AA2"
+    },
+    {
+      "path": "packages/chord/test/fixtures/loader.ts",
+      "bytes": 3564,
+      "sha256": "3894378D1FC03C915BB6E57D0E3130611825A69CE21214A81204DDC38376C33C"
+    },
+    {
+      "path": "packages/chord/test/fixtures/worker.ts",
+      "bytes": 1468,
+      "sha256": "D946A443BA0BA1DD63F8CB4EEB42FF52742E0BDB715AF0D06D444AEE6DF97491"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "bytes": 9672,
+      "sha256": "D8D071CFCFDACA48CFCC37452DB1EF27DA432EC5666FF4A3B108763547531689"
+    },
+    {
+      "path": "packages/chord/test/generations.test.ts",
+      "bytes": 6397,
+      "sha256": "0814BFBDD89187598D178F3B4C37E38E9628C1E9EBD8A5464E87493F072F26E4"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "bytes": 11446,
+      "sha256": "2C949E05B0C4CDB37C94754676415F62C2F6F5A5F38FF53A7549216F6A70F6AE"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "bytes": 23846,
+      "sha256": "0735A4F6172E10D48CD6D1C1FB7B6EDBC112F2EBC76E654CC4F027F19DBA9DB9"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "bytes": 2679,
+      "sha256": "75382FB561A4AC66388D4694975048468DF50E15291AF05DD25AB4EED5FC885D"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "bytes": 21996,
+      "sha256": "EF7CED2F68F8CE335873B8CEE48EA3945BBEF2703E7D8F23B5C1D95BFEDE1CF8"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "bytes": 18715,
+      "sha256": "8CBF35F53CBBFC3E958CDDE568FD3A22922A4D93F5ED73CBEEDD6FCBD88579AB"
+    },
+    {
+      "path": "packages/chord/test/loader.test.ts",
+      "bytes": 833,
+      "sha256": "FD8BC67AF956141E599E801F79E62B775D4C787A59AE1118068B6B259A8E4212"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "bytes": 7407,
+      "sha256": "EB559E359DCD1E5206EBF321FAD91931076B79D866A6CD2C80009D4CB3D475C8"
+    },
+    {
+      "path": "packages/chord/test/readiness.test.ts",
+      "bytes": 6779,
+      "sha256": "8EDABC312CDBF1490C3A0980F7A0DBA05F5EDFFF94CDD242C8D8BAF55F64BF03"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "bytes": 24622,
+      "sha256": "5034C01D9D4B8A07A5746C0A6DB86459D915A1618DA697FD14981FDBE25820C7"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "bytes": 8940,
+      "sha256": "0AC6C010E19249BF256C22F41EEC861AEBFF9C5D1F25C2084E74707F404B2182"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "bytes": 13672,
+      "sha256": "FCB0F85B222C40706FC6D3143678EC8EA620B7F492A238DBC3B8FC04ADD88FF3"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "bytes": 17210,
+      "sha256": "BF20A5B6A590DC22EDDCD3CDEADEBDA23D6211E94DD590D2439EE7FD7C39B9E0"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "bytes": 20547,
+      "sha256": "6414B650C5A5D092B4F03455669E459363B10376B9D69570336FA005882D1FD9"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "bytes": 10267,
+      "sha256": "436D25B7BE4FCAE1EB26EF5F2E80F84CA5A0CBFC9272F0DB911CC0D8243ED798"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "bytes": 5012,
+      "sha256": "7A6128223C604679CFB91F9EC02415034481A1FEF093815CEA0AD6313EFFAE4A"
+    },
+    {
+      "path": "packages/chord/test/state-fuzz.test.ts",
+      "bytes": 4282,
+      "sha256": "DB3A047FF8CE1EECDEF9FA9634320D72B4D098D385AAA98FDF437E130B172600"
+    },
+    {
+      "path": "packages/chord/test/state-value.test.ts",
+      "bytes": 1524,
+      "sha256": "95659FF6B308FFDEB0EAFCEF98728F9DEB6BE8AA6CC3918EE11146766B6B37CE"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "bytes": 8705,
+      "sha256": "D7DB20250F86C0811704B66964BD2A81500ECDF62C82DEE556379DA6AEAD76F7"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "bytes": 16927,
+      "sha256": "BCF691F1C5D4B367225D7FDA167CBE0EC83ED34AC5479F5549560732D5A52431"
+    },
+    {
+      "path": "packages/chord/test/websocket.test.ts",
+      "bytes": 5892,
+      "sha256": "6E6E91D4E151A14D62D84E4A2EAC86A0FA3F90040C386706A9E33BA0A68D3DA6"
+    }
+  ],
+  "api": [
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 39,
+      "declaration": "export const hostPrincipal: Principal = Object.freeze({ host: true });"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 45,
+      "declaration": "export interface Serve {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 65,
+      "declaration": "export interface FacetApi {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 82,
+      "declaration": "export interface FacetDefinition {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 85,
+      "declaration": "setup(api: FacetApi): void;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 89,
+      "declaration": "export interface Facet extends FacetDefinition {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 93,
+      "declaration": "export const defineFacet = ("
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 99,
+      "declaration": "export type FacetLoader = (modules: readonly (string | URL)[]) => Promise<Facet[]>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 102,
+      "declaration": "export type PluginRef = Facet | string | URL;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 106,
+      "declaration": "export interface HostOptions {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 129,
+      "declaration": "export interface Route {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 131,
+      "declaration": "authorize(principal: Principal, hostName: string): boolean | Promise<boolean>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 133,
+      "declaration": "resolve(hostName: string): Promise<Link>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 139,
+      "declaration": "export type PrincipalMatch = ((principal: Principal) => boolean) | Readonly<Record<string, unknown>>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 141,
+      "declaration": "export interface RootOptions {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 148,
+      "declaration": "export interface LoadOptions {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 156,
+      "declaration": "export interface Host {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 162,
+      "declaration": "install(facet: Facet, options?: LoadOptions): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 164,
+      "declaration": "load(plugins: readonly PluginRef[], options?: LoadOptions): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 166,
+      "declaration": "ready(): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 174,
+      "declaration": "invalidatePrincipal(match: PrincipalMatch): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 176,
+      "declaration": "accept(link: Link, options: AcceptOptions): void;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 178,
+      "declaration": "connect(link: Link, options?: LinkOptions): void;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 179,
+      "declaration": "route(prefix: string, route: Route): void;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 181,
+      "declaration": "reload(plugins: readonly PluginRef[], options?: ReloadOptions): Promise<ReloadReport>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 182,
+      "declaration": "close(): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 185,
+      "declaration": "export interface CodeVersionState {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 197,
+      "declaration": "export function createHost(options: HostOptions = {}): Host {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 201,
+      "declaration": "export class HostImpl implements Host, HostCore {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 260,
+      "declaration": "constructor(options: HostOptions) {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 279,
+      "declaration": "get codeVersion(): number {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 283,
+      "declaration": "get previousCodeVersion(): number | undefined {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 288,
+      "declaration": "nextCodeVersionId(given?: number): number {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 295,
+      "declaration": "report(error: unknown): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 307,
+      "declaration": "install(facet: Facet, options: LoadOptions = {}): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 333,
+      "declaration": "async load(plugins: readonly PluginRef[], options: LoadOptions = {}): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 339,
+      "declaration": "ready(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 351,
+      "declaration": "async resolve(plugins: readonly PluginRef[]): Promise<Facet[]> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 362,
+      "declaration": "facetApi(serve: Serve, signal: AbortSignal): FacetApi {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 373,
+      "declaration": "facetRunChanged(name: string, run: AbortController | undefined): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 380,
+      "declaration": "serveInto(services: Map<string, Service>, service: Service): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 385,
+      "declaration": "startHostObject(service: Service): RefCore {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 394,
+      "declaration": "currentCodeVersion(): number {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 398,
+      "declaration": "hasCodeVersion(codeVersion: number): boolean {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 407,
+      "declaration": "pendingCodeVersion(): number | undefined {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 412,
+      "declaration": "service(typeName: string): Service | undefined {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 416,
+      "declaration": "addressOf(type: AnyContract, input: unknown, principal: Principal, at?: string, candidate = false): string {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 481,
+      "declaration": "forget(object: ObjectImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 486,
+      "declaration": "disposed(object: ObjectImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 490,
+      "declaration": "touch(rootId: string, object: ObjectImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 558,
+      "declaration": "rootSent(rootId: string, connection: Connection): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 568,
+      "declaration": "endRoot(rootId: string): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 581,
+      "declaration": "foreignRootEnded(rootId: string, from: Connection): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 594,
+      "declaration": "maybeRetire(): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 599,
+      "declaration": "retirable(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 605,
+      "declaration": "allowRetire(codeVersion: number): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 612,
+      "declaration": "watchRetirement(watcher: () => void): () => void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 626,
+      "declaration": "announceRetired(connection: Connection): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 632,
+      "declaration": "retire(): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 649,
+      "declaration": "retireImplementation(object: ObjectImpl, codeVersion: number): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 701,
+      "declaration": "buildTables(entries: Iterable<readonly [ObjectImpl, Decls]>): Map<string, RegistryTable<unknown>> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 744,
+      "declaration": "liveDecls(candidates = false): [ObjectImpl, Decls][] {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 750,
+      "declaration": "checkRegistrations(object: ObjectImpl, decls: Decls): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 755,
+      "declaration": "registriesChanged(including?: ObjectImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 762,
+      "declaration": "fail(error: unknown): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 768,
+      "declaration": "installTables(codeVersion: CodeVersionState, tables: Map<string, RegistryTable<unknown>>, all = false): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 794,
+      "declaration": "async invalidatePrincipal(match: PrincipalMatch): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 819,
+      "declaration": "accept(link: Link, options: AcceptOptions): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 830,
+      "declaration": "connect(link: Link, options: LinkOptions = {}): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 850,
+      "declaration": "route(prefix: string, route: Route): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 859,
+      "declaration": "peerHello(connection: Connection, codeVersion: number): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 893,
+      "declaration": "reloadEnded(): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 903,
+      "declaration": "whenReloadEnded(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 908,
+      "declaration": "connectionClosed(connection: Connection): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 921,
+      "declaration": "forgetRemote(ref: RemoteRef): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 1008,
+      "declaration": "async relay(relay: RelayRef): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 1021,
+      "declaration": "reload(plugins: readonly PluginRef[], options: ReloadOptions = {}): Promise<ReloadReport> {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 1036,
+      "declaration": "onReloadFrame(connection: Connection, frame: Extract<Frame, { t: \"prepare\" | \"commit\" | \"abort\" }>): void {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 1057,
+      "declaration": "peekNextCodeVersion(): number {"
+    },
+    {
+      "path": "packages/chord/src/host.ts",
+      "line": 1065,
+      "declaration": "async close(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 36,
+      "declaration": "export type ServeOptions = ReferencedServeOptions | HostServeOptions;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 38,
+      "declaration": "export interface ReferencedServeOptions {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 46,
+      "declaration": "export interface HostServeOptions {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 58,
+      "declaration": "export type ServeOptionsFor<C extends AnyContract> = C extends LocalContract"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 64,
+      "declaration": "export type Lifetime = \"referenced\" | \"host\";"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 66,
+      "declaration": "export type Factory<C extends AnyContract> = ("
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 73,
+      "declaration": "export interface Service {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 80,
+      "declaration": "export const makeService = <C extends AnyContract>("
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 96,
+      "declaration": "export const hostLifetime = (service: Service): boolean => service.options.lifetime === \"host\";"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 122,
+      "declaration": "export interface StateOptions<T> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 132,
+      "declaration": "export interface Self {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 167,
+      "declaration": "task(fn: (ctx: Ctx) => Promise<void>): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 182,
+      "declaration": "constructor(resource: ResourceImpl) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 187,
+      "declaration": "export class ResourceImpl<T = unknown> implements Resource<T> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 196,
+      "declaration": "constructor(key: string, spec: ResourceDeclaration<T>, deps: readonly (RefCore | ResourceImpl)[]) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 202,
+      "declaration": "get value(): T {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 209,
+      "declaration": "get exclusive(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 217,
+      "declaration": "async open(signal: AbortSignal, order: ResourceImpl[]): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 237,
+      "declaration": "async close(order: ResourceImpl[]): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 247,
+      "declaration": "markUnavailable(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 256,
+      "declaration": "adopt(spec: ResourceDeclaration<T>): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 269,
+      "declaration": "constructor(resource: ResourceImpl<T>, host: HostCore) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 275,
+      "declaration": "get key(): string {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 279,
+      "declaration": "get value(): T {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 292,
+      "declaration": "export class Decls {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 310,
+      "declaration": "export interface Run {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 320,
+      "declaration": "export interface Installed {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 329,
+      "declaration": "export interface HostCore {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 336,
+      "declaration": "report(error: unknown): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 337,
+      "declaration": "currentCodeVersion(): number;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 338,
+      "declaration": "hasCodeVersion(codeVersion: number): boolean;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 339,
+      "declaration": "retainedCodeVersions(): Iterable<readonly [number, ReadonlyMap<string, Service>]>;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 340,
+      "declaration": "pendingCodeVersion(): number | undefined;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 341,
+      "declaration": "service(typeName: string): Service | undefined;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 350,
+      "declaration": "addressOf(type: AnyContract, input: unknown, principal: Principal, at?: string, candidate?: boolean): string;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 352,
+      "declaration": "touch(rootId: string, object: ObjectImpl): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 353,
+      "declaration": "forget(object: ObjectImpl): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 355,
+      "declaration": "disposed(object: ObjectImpl): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 358,
+      "declaration": "checkRegistrations(object: ObjectImpl, decls: Decls): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 360,
+      "declaration": "registriesChanged(including?: ObjectImpl): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 365,
+      "declaration": "export class CtxImpl implements Ctx {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 378,
+      "declaration": "get closed(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 383,
+      "declaration": "check(host: HostCore): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 427,
+      "declaration": "child(object: ObjectImpl): CtxImpl {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 436,
+      "declaration": "close(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 448,
+      "declaration": "export function linkedSignal(sources: readonly AbortSignal[]): { readonly signal: AbortSignal; release(): void } {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 470,
+      "declaration": "export async function raceSignal<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 487,
+      "declaration": "export type RefOwner = \"object\" | \"call\" | \"host\" | \"external\" | \"connection\" | \"client\";"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 490,
+      "declaration": "export interface RefCore {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 497,
+      "declaration": "release(): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 500,
+      "declaration": "export const REF_BASE: ReadonlySet<PropertyKey> = new Set(["
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 512,
+      "declaration": "export type StatusListener = (status: RefStatus, error: unknown) => void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 515,
+      "declaration": "export function notifyStatus("
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 523,
+      "declaration": "enqueue(() => {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 535,
+      "declaration": "export const refsByProxy = new WeakMap<object, RefCore>();"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 536,
+      "declaration": "export const refOf = (value: unknown): RefCore | undefined =>"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 554,
+      "declaration": "constructor(ref: RefImpl, name: string) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 559,
+      "declaration": "get value(): unknown {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 563,
+      "declaration": "subscribe(listener: (value: unknown) => void): () => void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 571,
+      "declaration": "events(listener: (event: StateEvent<unknown>) => void): () => void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 580,
+      "declaration": "bind(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 604,
+      "declaration": "stop(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 633,
+      "declaration": "export class RefImpl {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 651,
+      "declaration": "constructor(object: ObjectImpl, contract: AnyContract, owner: RefOwner) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 676,
+      "declaration": "get variant(): string | undefined {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 681,
+      "declaration": "get shape(): Shape | undefined {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 693,
+      "declaration": "onShape(listener: (shape: Shape) => void): () => void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 698,
+      "declaration": "onStatus(listener: StatusListener): () => void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 709,
+      "declaration": "release(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 719,
+      "declaration": "live(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 726,
+      "declaration": "gone(error: unknown): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 735,
+      "declaration": "shapeChanged(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 751,
+      "declaration": "terminalError(): unknown {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 756,
+      "declaration": "viewOf(installed: Installed): Record<string, unknown> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 771,
+      "declaration": "currentView(): Record<string, unknown> | undefined {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 787,
+      "declaration": "describe(variant: string | undefined, member: string): MemberDescription | undefined {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 795,
+      "declaration": "inVariant(view: Record<string, unknown>, name: string): boolean {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 799,
+      "declaration": "member(name: string): unknown {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 818,
+      "declaration": "caller(name: string): (...given: unknown[]) => Promise<unknown> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 854,
+      "declaration": "export const variantOf = (implementation: Record<string, unknown>): string | undefined =>"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 859,
+      "declaration": "export type ObjectStatus = \"activating\" | \"live\" | \"failed\" | \"disposing\" | \"disposed\";"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 883,
+      "declaration": "export interface StagedListeners {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 884,
+      "declaration": "activate(): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 885,
+      "declaration": "discard(): void;"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 893,
+      "declaration": "export interface ObjectIdentity {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 902,
+      "declaration": "export class ObjectImpl {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 937,
+      "declaration": "constructor(host: HostCore, identity: ObjectIdentity) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 946,
+      "declaration": "start(after: Promise<void> | undefined): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1034,
+      "declaration": "run(service: Service, previous: Decls | undefined): Run {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1064,
+      "declaration": "async open(resources: readonly ResourceImpl[], refs: readonly RefCore[], signal: AbortSignal): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1087,
+      "declaration": "async unwind(run: Run): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1101,
+      "declaration": "currentInstalled(): Installed | undefined {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1106,
+      "declaration": "refreshSchemas(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1119,
+      "declaration": "allDecls(): Set<Decls> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1148,
+      "declaration": "stageListeners(decls: Decls): StagedListeners {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1207,
+      "declaration": "startRuntime(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1217,
+      "declaration": "startTasks(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1247,
+      "declaration": "stopListeners(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1280,
+      "declaration": "stopTasks(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1320,
+      "declaration": "openGate(): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1329,
+      "declaration": "admit(ctx: Ctx): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1347,
+      "declaration": "lease(ctx: Ctx): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1362,
+      "declaration": "async call(ref: RefImpl, name: string, args: unknown, ctx: CtxImpl): Promise<unknown> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1435,
+      "declaration": "rootEnded(rootId: string): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1443,
+      "declaration": "addRef(ref: RefImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1449,
+      "declaration": "release(ref: RefImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1483,
+      "declaration": "dispose(forced: boolean, reason?: unknown): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1538,
+      "declaration": "export function memberSchemas("
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1593,
+      "declaration": "constructor(object: ObjectImpl, previous: Decls | undefined) {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1598,
+      "declaration": "run(implementation: unknown): Run {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1685,
+      "declaration": "on(name: string, source: unknown, ...rest: readonly unknown[]): void {"
+    },
+    {
+      "path": "packages/chord/src/object.ts",
+      "line": 1698,
+      "declaration": "task(fn: (ctx: Ctx) => Promise<void>): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 12,
+      "declaration": "export interface LinkOptions {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 41,
+      "declaration": "export interface AcceptOptions extends LinkOptions {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 60,
+      "declaration": "export interface Peer {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 82,
+      "declaration": "export class RelayRef {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 96,
+      "declaration": "constructor(origin: Connection, frame: Extract<Frame, { t: \"hold\" }>, principal: Principal, client: boolean) {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 104,
+      "declaration": "get originId(): number {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 109,
+      "declaration": "get current(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 114,
+      "declaration": "ready(): Promise<Connection> {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 123,
+      "declaration": "open(down: Connection): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 140,
+      "declaration": "subscribe(originSubId: number, member: string): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 158,
+      "declaration": "resync(originSubId: number): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 167,
+      "declaration": "unsubscribe(originSubId: number, forward = true): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 183,
+      "declaration": "close(error: unknown, options: { readonly releaseDown: boolean; readonly notify: boolean }): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 200,
+      "declaration": "export class RelayCall {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 207,
+      "declaration": "constructor(relay: RelayRef, originId: number, downId: number, pending: Pending) {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 216,
+      "declaration": "finish(error: unknown, value?: unknown): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 226,
+      "declaration": "cancel(error: unknown, forward: boolean): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 262,
+      "declaration": "export class Connection implements RemoteChannel {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 361,
+      "declaration": "get open(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 366,
+      "declaration": "get name(): string | undefined {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 370,
+      "declaration": "send(frame: Frame): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 379,
+      "declaration": "sendState(frame: StateFrame): boolean {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 403,
+      "declaration": "dropState(id: number): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 436,
+      "declaration": "nextId(): number {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 441,
+      "declaration": "whenSynced(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 447,
+      "declaration": "markSynced(codeVersion: number): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 455,
+      "declaration": "revoke(next: Principal | undefined): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 488,
+      "declaration": "hold(ref: RemoteRef): number {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 505,
+      "declaration": "release(id: number): void {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 510,
+      "declaration": "call(hold: number, member: string, args: unknown, root: RootRef | undefined, signal: AbortSignal): Promise<unknown> {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 541,
+      "declaration": "sub(hold: number, member: string, sink: (frame: StateSink) => void): number {"
+    },
+    {
+      "path": "packages/chord/src/connection.ts",
+      "line": 548,
+      "declaration": "unsub(id: number): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 22,
+      "declaration": "export interface ReloadOptions {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 37,
+      "declaration": "export interface ReloadReport {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 94,
+      "declaration": "export function reloadError(error: unknown): ChordError {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 105,
+      "declaration": "export async function runReload("
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 120,
+      "declaration": "export async function beginReload("
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 138,
+      "declaration": "export function endReload(host: HostImpl): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 163,
+      "declaration": "export class Reload {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 183,
+      "declaration": "constructor(host: HostImpl, facets: readonly Facet[], options: ReloadOptions, codeVersion?: number) {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 191,
+      "declaration": "async prepare(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 213,
+      "declaration": "summary(): ReloadReport {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 251,
+      "declaration": "async waitForRetirement(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 265,
+      "declaration": "load(): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 308,
+      "declaration": "checkProviders(): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 337,
+      "declaration": "async prepareAll(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 359,
+      "declaration": "async prepareObject(object: ObjectImpl): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 408,
+      "declaration": "checkRefs(): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 426,
+      "declaration": "entries(): [ObjectImpl, Run[\"decls\"]][] {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 437,
+      "declaration": "async gate(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 483,
+      "declaration": "migrate(candidate: Candidate): void {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 501,
+      "declaration": "async rollback(): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 545,
+      "declaration": "commit(beforeStart?: () => void): ReloadReport {"
+    },
+    {
+      "path": "packages/chord/src/reload.ts",
+      "line": 636,
+      "declaration": "install(candidate: Candidate, codeVersion: number): void {"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 39,
+      "declaration": "export async function runClusterReload("
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 123,
+      "declaration": "export async function reconcileChild(host: HostImpl, connection: Connection): Promise<void> {"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 173,
+      "declaration": "export class ChildReloads {"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 177,
+      "declaration": "constructor(host: HostImpl) {"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 181,
+      "declaration": "handle(connection: Connection, frame: Extract<Frame, { t: \"prepare\" | \"commit\" | \"abort\" }>): void {"
+    },
+    {
+      "path": "packages/chord/src/cluster.ts",
+      "line": 209,
+      "declaration": "parentLost(): void {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 5,
+      "declaration": "export interface Link {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 12,
+      "declaration": "send(frame: Frame): number | undefined;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 14,
+      "declaration": "receive(handler: (frame: Frame) => void): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 15,
+      "declaration": "onClose(handler: (reason: string) => void): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 17,
+      "declaration": "close(reason?: string): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 29,
+      "declaration": "get closed(): boolean {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 36,
+      "declaration": "send(frame: Frame): number | undefined {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 41,
+      "declaration": "receive(handler: (frame: Frame) => void): void {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 46,
+      "declaration": "onClose(handler: (reason: string) => void): void {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 51,
+      "declaration": "close(reason = \"closed\"): void {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 113,
+      "declaration": "export const PACK_THRESHOLD = 64 * 1024;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 120,
+      "declaration": "export class Packed {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 122,
+      "declaration": "constructor(bytes: Uint8Array) {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 128,
+      "declaration": "export function unpack(value: unknown): unknown {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 219,
+      "declaration": "export function inflateMessage(data: Uint8Array): string {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 243,
+      "declaration": "export class MemoryLink extends BaseLink {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 249,
+      "declaration": "sever(): void {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 273,
+      "declaration": "export function memoryLinkPair(): [MemoryLink, MemoryLink] {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 284,
+      "declaration": "export interface IpcChannel {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 290,
+      "declaration": "send(message: unknown, callback?: (error: Error | null) => void): boolean;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 291,
+      "declaration": "on(event: \"message\", listener: (message: unknown) => void): unknown;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 292,
+      "declaration": "on(event: \"disconnect\", listener: () => void): unknown;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 293,
+      "declaration": "off(event: \"message\", listener: (message: unknown) => void): unknown;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 294,
+      "declaration": "off(event: \"disconnect\", listener: () => void): unknown;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 302,
+      "declaration": "export class IpcLink extends BaseLink {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 322,
+      "declaration": "constructor(channel: IpcChannel) {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 340,
+      "declaration": "export const ipcLink = (channel: IpcChannel): IpcLink => new IpcLink(channel);"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 345,
+      "declaration": "export interface WebSocketLike {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 347,
+      "declaration": "send(data: string | Uint8Array): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 348,
+      "declaration": "close(code?: number, reason?: string): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 349,
+      "declaration": "addEventListener(type: \"message\", listener: (event: { readonly data: unknown }) => void): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 350,
+      "declaration": "addEventListener(type: \"open\" | \"close\" | \"error\", listener: () => void): void;"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 355,
+      "declaration": "export interface WebSocketLinkOptions {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 362,
+      "declaration": "export class WebSocketLink extends BaseLink {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 367,
+      "declaration": "constructor(socket: WebSocketLike, options: WebSocketLinkOptions = {}) {"
+    },
+    {
+      "path": "packages/chord/src/link.ts",
+      "line": 415,
+      "declaration": "export const webSocketLink = (socket: WebSocketLike, options?: WebSocketLinkOptions): WebSocketLink =>"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 22,
+      "declaration": "export const PROTOCOL_VERSION = 2;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 31,
+      "declaration": "export type RootRef = Static<typeof RootRefSchema>;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 38,
+      "declaration": "export type WireError = Static<typeof WireErrorSchema>;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 45,
+      "declaration": "export type WireReloadOptions = Static<typeof WireReloadOptionsSchema>;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 56,
+      "declaration": "export type WireReloadReport = Static<typeof WireReloadReportSchema>;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 146,
+      "declaration": "export type Frame = Static<typeof FrameSchema>;"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 149,
+      "declaration": "export const isFrame = (value: unknown): value is Frame => Value.Check(FrameSchema, value);"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 151,
+      "declaration": "export function toWireError(error: unknown): WireError {"
+    },
+    {
+      "path": "packages/chord/src/wire.ts",
+      "line": 160,
+      "declaration": "export const fromWireError = (error: WireError): ChordError =>"
+    },
+    {
+      "path": "packages/chord/src/loader.ts",
+      "line": 44,
+      "declaration": "export const nodeLoader: FacetLoader = async (modules) => {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 13,
+      "declaration": "export type ControlMessage ="
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 25,
+      "declaration": "export interface Liveness {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 36,
+      "declaration": "export interface Exit {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 42,
+      "declaration": "export interface Instance {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 46,
+      "declaration": "send(message: ControlMessage): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 48,
+      "declaration": "killTree(): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 49,
+      "declaration": "onControl(listener: (message: ControlMessage) => void): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 52,
+      "declaration": "export interface Driver {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 53,
+      "declaration": "spawn(): Instance;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 56,
+      "declaration": "export interface ForkDriverOptions {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 82,
+      "declaration": "export async function processLock(name: string): Promise<() => Promise<void>> {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 164,
+      "declaration": "export function forkDriver(options: ForkDriverOptions): Driver {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 231,
+      "declaration": "export interface HostManagerOptions {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 244,
+      "declaration": "export interface HostManager {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 249,
+      "declaration": "start(): Promise<Instance>;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 251,
+      "declaration": "stop(): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 253,
+      "declaration": "replace(): Promise<Instance>;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 256,
+      "declaration": "export function createHostManager(options: HostManagerOptions): HostManager {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 394,
+      "declaration": "export function childControl(channel: NodeJS.Process = process): {"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 400,
+      "declaration": "lock(): Promise<void>;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 401,
+      "declaration": "ready(): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 402,
+      "declaration": "fatal(error: unknown): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 403,
+      "declaration": "report(status: { activeCalls?: number; viewers?: number; durableTasks?: number }): void;"
+    },
+    {
+      "path": "packages/chord/src/manager.ts",
+      "line": 404,
+      "declaration": "onShutdown(handler: () => void | Promise<void>): void;"
+    }
+  ],
+  "source_test_declarations": [
+    {
+      "path": "packages/chord/test/boundary.test.ts",
+      "line": 10,
+      "declaration": "describe(\"package boundary\", () => {"
+    },
+    {
+      "path": "packages/chord/test/boundary.test.ts",
+      "line": 11,
+      "declaration": "test(\"does not depend on Pi packages or files outside Chord\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 102,
+      "declaration": "describe(\"cross-host reload\", () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 103,
+      "declaration": "it(\"prepares every host, commits the server first, then the workers; code versions stay in step\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 132,
+      "declaration": "it(\"a failing vote aborts every host; the error keeps its code and names the host\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 148,
+      "declaration": "it(\"a worker gate blocked past its deadline aborts the whole reload\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 172,
+      "declaration": "it(\"removes facets from server and workers, reconciles removal tombstones, and clears them on re-add\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 225,
+      "declaration": "it(\"only the server coordinates reloads\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 231,
+      "declaration": "it(\"browsers are not participants: they see shape and reset pushes, or upgrade_required\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 258,
+      "declaration": "it(\"an abort while a worker is still preparing: a late open closes itself and the worker can reload again\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 295,
+      "declaration": "it(\"a child that says hello while a reload runs is reconciled after it, never left in step with the old code\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 329,
+      "declaration": "it(\"a child keeps the previous code version until its parent retired it (spec 12)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 355,
+      "declaration": "it(\"a child reconciled after its parent retired old code versions may retire its own previous one at once\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 385,
+      "declaration": "it(\"a reconciliation running when a reload starts syncs the child only after it, to the committed code version\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 434,
+      "declaration": "it(\"a child behind whose hello waits for a running reload is fenced at once: its calls up are admitted (spec 9)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 466,
+      "declaration": "it(\"a reconnecting child behind its parent, still retaining its previous code version, reconciles without waiting out the retire deadline\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/cluster.test.ts",
+      "line": 500,
+      "declaration": "it(\"forced retirement cancels a browser call relayed to a worker before the server closes the old code's resources\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 13,
+      "declaration": "describe(\"Context\", () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 14,
+      "declaration": "it(\"provides distinct empty root contexts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 24,
+      "declaration": "it(\"layers typed values without modifying parents\", () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 41,
+      "declaration": "it(\"inherits parent cancellation and isolates child cancellation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 61,
+      "declaration": "it(\"masks caller cancellation for mandatory cleanup\", () => {"
+    },
+    {
+      "path": "packages/chord/test/context.test.ts",
+      "line": 73,
+      "declaration": "it(\"stops waiting when the invocation is cancelled\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 21,
+      "declaration": "describe(\"contracts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 22,
+      "declaration": "it(\"normalizes input and omits defaults from the identity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 34,
+      "declaration": "it(\"fingerprints are stable and description-based\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 40,
+      "declaration": "it(\"rejects reserved member names and opaque remote members\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 51,
+      "declaration": "it(\"covers additive changes and refuses breaking ones\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 98,
+      "declaration": "it(\"methods without arguments or result: described without them; their presence must match, a void consumer accepts a result\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 112,
+      "declaration": "it(\"binds other versions only through accepts adapters\", () => {"
+    },
+    {
+      "path": "packages/chord/test/contract.test.ts",
+      "line": 122,
+      "declaration": "it(\"compares opaque members by name@version and function members structurally\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 23,
+      "declaration": "describe(\"checked immutable operation application\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 24,
+      "declaration": "it(\"copies each touched container once while preserving input and payload ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 84,
+      "declaration": "it(\"protects root replacement payloads before later object and array edits\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 107,
+      "declaration": "it(\"shares one private copy-on-write scope across batch partitions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 147,
+      "declaration": "it(\"handles tracker-produced batches across arbitrary revision boundaries\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 184,
+      "declaration": "it(\"does not expose partial application when validation or iteration fails\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 233,
+      "declaration": "it(\"allows one immutable batch to fan out without mutating shared payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 249,
+      "declaration": "describe(\"immutable application complexity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 250,
+      "declaration": "it(\"appends to an array not yet copied in one copy, sharing everything else\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-apply-immutable.test.ts",
+      "line": 289,
+      "declaration": "it(\"copies a wide object once rather than once per repeated write\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "line": 4,
+      "declaration": "describe(\"tracker ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "line": 5,
+      "declaration": "it(\"takes immutable ownership of the imported revision in O(1)\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "line": 17,
+      "declaration": "it(\"preserves null prototypes in an alias-free owned root\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "line": 27,
+      "declaration": "it(\"does not traverse a trusted root while taking ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-clone.test.ts",
+      "line": 41,
+      "declaration": "it(\"copies assigned and inserted values immediately\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 19,
+      "declaration": "describe(\"immutable revision diff\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 20,
+      "declaration": "it(\"emits sets and deletes\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 28,
+      "declaration": "it(\"emits string append and front truncation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 37,
+      "declaration": "it(\"represents array insertion, removal, and shift with splices\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 45,
+      "declaration": "it(\"collapses a same-length queue update to two splices\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 56,
+      "declaration": "it(\"emits a permutation for a pure reorder\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 63,
+      "declaration": "it(\"normalizes reordered distinct deeply-equal objects to a no-op\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 70,
+      "declaration": "it(\"validates and encodes permutations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 86,
+      "declaration": "it(\"emits nothing for deeply equal reconstructed values\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 92,
+      "declaration": "it(\"keeps a leaf edit inside a reconstructed array narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 110,
+      "declaration": "it(\"emits payload-free splices for scattered removals\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 128,
+      "declaration": "it(\"does not field-diff unrelated shifted objects with common fields\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 137,
+      "declaration": "it(\"does not treat coincidental id or key fields as structural identity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 149,
+      "declaration": "it(\"combines removals, append, and a shared-subtree survivor edit\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 195,
+      "declaration": "it(\"keeps forty-thousand-row sparse edits narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 209,
+      "declaration": "it(\"keeps a reconstructed large-array leaf edit narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 219,
+      "declaration": "it(\"splices an ambiguous equal-count moved-and-edited gap\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 231,
+      "declaration": "it(\"keeps a large rotation payload-free\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 241,
+      "declaration": "it(\"encodes five hundred unshifts without snapshotting retained rows\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 250,
+      "declaration": "it(\"bounds wide-object operation emission with a root replacement\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-diff.test.ts",
+      "line": 260,
+      "declaration": "it(\"bounds a wide normalized array fallback with a root replacement\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/retention.test.ts",
+      "line": 5,
+      "declaration": "describe(\"delta tracker retention across GC jobs\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 44,
+      "declaration": "describe(\"delta tracker transactional overlay lifecycle\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 45,
+      "declaration": "it(\"materializes an immutable next revision and adopts it by pointer swap\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 75,
+      "declaration": "it(\"keeps a transaction live across await and seals it only at prepare\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 89,
+      "declaration": "it(\"allows Promise resolution to inspect a settled draft without reporting a false failure\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 118,
+      "declaration": "it(\"aborts idempotently and revokes held descendants\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 130,
+      "declaration": "it(\"allows competing contexts and invalidates loser views\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 146,
+      "declaration": "it(\"invalidates competing open overlays without changing their base revision\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 165,
+      "declaration": "it(\"adopts object edits as ordinary fast-layout immutable revisions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 185,
+      "declaration": "it(\"supports adopt-then-publish ordering and retained publication reads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 211,
+      "declaration": "it(\"keeps replacement base/value structurally compatible and readable after adoption\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 224,
+      "declaration": "it(\"keeps aborted and stale materialized candidates readable\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 244,
+      "declaration": "it(\"lets a settled Change abort its prepared result without retaining its context\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 257,
+      "declaration": "it(\"rejects foreign and aborted prepared values\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 267,
+      "declaration": "it(\"reads deleted own properties as absent\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 293,
+      "declaration": "it(\"detaches old handles for deeply equal object and array assignments before normalizing\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 327,
+      "declaration": "it(\"normalizes a deeply equal replacement without changing committed identity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 336,
+      "declaration": "it(\"takes O(1) immutable ownership for replacement and its operation payload\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 350,
+      "declaration": "describe(\"delta tracker policy view\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 351,
+      "declaration": "it(\"supports native reads, descriptors, keys, iteration, map, and JSON\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 367,
+      "declaration": "it(\"keeps document keys distinct from object proxy target fields\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 387,
+      "declaration": "it(\"keeps native coercion side effects and string operation forms\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 409,
+      "declaration": "it(\"emits deletion and supports root arrays\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 424,
+      "declaration": "it(\"preserves native object key order after delete and re-add\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 435,
+      "declaration": "it(\"orders new integer-like object keys before strings for recipe-visible reads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 452,
+      "declaration": "it(\"normalizes deeply equal container assignments before direct candidate materialization\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 467,
+      "declaration": "it(\"keeps native integer and string ordering across deletion and re-addition\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 485,
+      "declaration": "it(\"orders integer-like keys on null-prototype objects\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 503,
+      "declaration": "it(\"forwards borrowed mutators to ordinary generic array receivers\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 522,
+      "declaration": "it(\"matches native structural coercion ordering for splice, fill, and copyWithin\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 602,
+      "declaration": "it(\"does not report inherited methods as own array properties\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 609,
+      "declaration": "it(\"keeps repeated identical writes instead of reverting their pending override\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 623,
+      "declaration": "it(\"rejects array index gaps without mutation while allowing replacement and append\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 641,
+      "declaration": "it(\"supports optional deletion, explicit null length growth, shrinking, and default sort\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 654,
+      "declaration": "it(\"enumerates wide objects without duplicate keys\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 665,
+      "declaration": "it(\"does not dirty read-only traversals\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 674,
+      "declaration": "it(\"uses one proxy identity per accessed container\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 684,
+      "declaration": "describe(\"delta tracker by-value placements\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 685,
+      "declaration": "it(\"clones property, index, push, unshift, splice, fill, and copyWithin placements\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 713,
+      "declaration": "it(\"rejects non-strict JSON placements before changing the draft\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 788,
+      "declaration": "it(\"expands repeated source aliases into independent placements\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 813,
+      "declaration": "it(\"deep-clones draft-sourced placements within and across revisions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 843,
+      "declaration": "it(\"distinguishes raw committed references from draft references\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 859,
+      "declaration": "it(\"folds edits to introduced object and array subtrees into placement payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 879,
+      "declaration": "it(\"folds pathological operation counts without payload-cost estimation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 905,
+      "declaration": "it(\"shares immutable operation placements with the materialized candidate\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 926,
+      "declaration": "describe(\"delta tracker piece arrays\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 927,
+      "declaration": "it(\"emits one insert for an append to a long array\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 938,
+      "declaration": "it(\"emits removals from the end backwards, then inserts, when kept elements keep their order\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 964,
+      "declaration": "it(\"emits a permutation when kept elements change order\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 980,
+      "declaration": "it(\"keeps adoption independent from mutable detached permutation metadata\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 992,
+      "declaration": "it(\"matches native splice with zero or one argument\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1017,
+      "declaration": "it(\"supports all structural mutators and native return values\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1036,
+      "declaration": "it(\"tracks held handles after reindex and suppresses detached writes\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1051,
+      "declaration": "it(\"replays introduced, moved, then edited array descendants\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1072,
+      "declaration": "it(\"combines movement and edits with permutation plus final paths\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1091,
+      "declaration": "it(\"keeps comparator writes and structurally reentrant appends\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1118,
+      "declaration": "it(\"normalizes duplicate entries created by structurally reentrant sort callbacks\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1150,
+      "declaration": "it(\"folds dense child and direct-index edits into one full-array operation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1172,
+      "declaration": "it(\"folds only a deeply nested dense array region\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1190,
+      "declaration": "it(\"does not cache emission paths for nested reserved-key folds covered by an outer region\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1210,
+      "declaration": "it(\"suppresses nested structural and leaf operations covered by an outer dense region\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1230,
+      "declaration": "it(\"emits multiple disjoint dense regions and preserves operations outside their boundaries\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1251,
+      "declaration": "it(\"normalizes a 20,000-operation queue transaction to two operations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1265,
+      "declaration": "it(\"handles adversarial fragmentation and resolves held handles without piece scans\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1284,
+      "declaration": "it(\"normalizes restored overrides and cancelled structural edits to no operations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1299,
+      "declaration": "it(\"handles null sparse overrides without confusing absence\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1309,
+      "declaration": "it(\"supports self-overlapping fill and copyWithin by value\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1339,
+      "declaration": "describe(\"delta tracker randomized transactions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1394,
+      "declaration": "it(\"matches policy, detached replay, and adopted state after multi-operation transactions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1430,
+      "declaration": "describe(\"delta tracker object emission scaling\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1431,
+      "declaration": "it(\"orders many reverse-depth object edits through the bounded fallback\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1452,
+      "declaration": "describe(\"delta tracker security and storage-style cloning\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1453,
+      "declaration": "it(\"defines own properties without invoking inherited setters\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1471,
+      "declaration": "it(\"handles reserved own keys without prototype pollution\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta-tracker/tracker.test.ts",
+      "line": 1485,
+      "declaration": "it(\"supports a MemoryStorage-style recursive clone of Prepared.value\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 18,
+      "declaration": "describe(\"immutable tracker lifecycle\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 19,
+      "declaration": "it(\"keeps a draft alive across await and adopts only a prepared change\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 48,
+      "declaration": "it(\"aborts and revokes without changing the committed value\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 62,
+      "declaration": "it(\"grows arrays with explicit nulls and revokes drafts after preparation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 72,
+      "declaration": "it(\"normalizes a deep no-op to exact previous identity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 83,
+      "declaration": "it(\"takes immutable ownership of replacement input and applies no-op normalization\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 96,
+      "declaration": "it(\"shares immutable operation placements with the prepared candidate\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 108,
+      "declaration": "it(\"rejects foreign, stale, and repeated preparations while allowing competing changes\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 129,
+      "declaration": "it(\"invalidates a prepared result when its change is aborted\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 139,
+      "declaration": "it(\"makes competing same-base preparations stale after adopting a no-op\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 150,
+      "declaration": "it(\"emits an owned root replacement without traversing large replacement input\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 162,
+      "declaration": "describe(\"canonical strings\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 163,
+      "declaration": "it(\"emits append and rolling-window operations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 180,
+      "declaration": "it(\"finds bounded overlaps\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 186,
+      "declaration": "describe(\"operation application and validation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 187,
+      "declaration": "it(\"applies mutable and immutable operations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 201,
+      "declaration": "it(\"supports root replacement, root splice, and permutations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 210,
+      "declaration": "it(\"rejects unsafe and malformed paths\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 218,
+      "declaration": "it(\"validates immutable operations before traversing the target\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 231,
+      "declaration": "it(\"validates decoded and wire vocabularies separately\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 239,
+      "declaration": "describe(\"codec\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 240,
+      "declaration": "it(\"interns paths, omits adjacent paths, and round-trips\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 258,
+      "declaration": "it(\"resets path dictionaries on a base\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 267,
+      "declaration": "it(\"rejects unresolved short forms and unsafe interned paths\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 276,
+      "declaration": "it(\"omits an adjacent repeated path\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 290,
+      "declaration": "it(\"interns on second use rather than first\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 300,
+      "declaration": "it(\"does not collide paths containing null characters\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 308,
+      "declaration": "it(\"clears decoder ids on a base batch\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 318,
+      "declaration": "it(\"makes batches after a base self-contained\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 331,
+      "declaration": "it(\"round-trips deterministic mixed operation streams\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 343,
+      "declaration": "describe(\"immutable application ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 344,
+      "declaration": "it(\"does not mutate a replacement payload targeted by a later operation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 354,
+      "declaration": "it(\"adopts a mutable replacement payload rather than copying it\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 363,
+      "declaration": "describe(\"path and prototype safety\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 364,
+      "declaration": "it(\"rejects constructor walks and forbidden interned paths\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 374,
+      "declaration": "it(\"does not run inherited setters\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 389,
+      "declaration": "it(\"allows reserved names inside values without prototype pollution\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 396,
+      "declaration": "it(\"imports own properties without invoking inherited setters\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 427,
+      "declaration": "describe(\"array index safety\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 428,
+      "declaration": "it(\"writes an existing index and appends exactly one past the end\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 433,
+      "declaration": "it(\"rejects gaps, huge indices, and string-spelled indices\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 440,
+      "declaration": "it(\"allows explicit growth values and rejects deletion past the end\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 447,
+      "declaration": "it(\"applies large splice payloads without spreading them at once\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 454,
+      "declaration": "describe(\"operation structure safety\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 455,
+      "declaration": "it(\"rejects unknown verbs, malformed tuples, paths, and splice payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 463,
+      "declaration": "it(\"rejects invalid append and truncation operations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 470,
+      "declaration": "it(\"clamps splice removal past the end\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 475,
+      "declaration": "describe(\"operation assertions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 476,
+      "declaration": "it(\"accepts decoded operations and rejects wire-only forms\", () => {"
+    },
+    {
+      "path": "packages/chord/test/delta.test.ts",
+      "line": 502,
+      "declaration": "it(\"does not recursively inspect operation payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 113,
+      "declaration": "describe(\"link flow control\", () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 114,
+      "declaration": "it(\"holds state back while the window is full, answers calls meanwhile, and sends one coalesced frame\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 138,
+      "declaration": "it(\"replaces ops that outgrow their slot with the current value\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 162,
+      "declaration": "it(\"drops what waits for a subscription that ends\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 182,
+      "declaration": "it(\"coalesces relayed state for the origin and resubscribes downstream when the slot overflows\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 224,
+      "declaration": "it(\"neither windows nor acknowledges a peer whose hello does not announce acks\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 243,
+      "declaration": "it(\"closes the link on an acknowledgement of frames never sent\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 255,
+      "declaration": "describe(\"link call limit\", () => {"
+    },
+    {
+      "path": "packages/chord/test/flow.test.ts",
+      "line": 256,
+      "declaration": "it(\"answers calls beyond maxCalls at once with too_many_calls and keeps the link\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/generations.test.ts",
+      "line": 50,
+      "declaration": "describe(\"generation GC\", () => {"
+    },
+    {
+      "path": "packages/chord/test/generations.test.ts",
+      "line": 51,
+      "declaration": "it(\"a reference held across reloads keeps only the current generation alive\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/generations.test.ts",
+      "line": 115,
+      "declaration": "it(\"abort listeners that calls and tasks add to their ctx.signal do not outlive them\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/generations.test.ts",
+      "line": 152,
+      "declaration": "it(\"disposed objects are not kept once their disposal finished\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 131,
+      "declaration": "test(\"the host's reference to a host object follows contract bumps at commit without reopening its object or resources; failures retain the old reference\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 195,
+      "declaration": "test(\"external old-version consumers still refuse a host object's upgrade without accepts, and keep their adapter when it is provided\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 216,
+      "declaration": "test(\"object-owned old-version references still block a host object's upgrade unless their consumer is replaced in the same batch\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 250,
+      "declaration": "test(\"a forgotten contract bump remains refused even when the only consumer is the host's own reference\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 271,
+      "declaration": "test(\"a cluster contract upgrade retokens the server's and worker's references to host objects only after unanimous preparation\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host-objects-reload.test.ts",
+      "line": 305,
+      "declaration": "test(\"a reload that changes a type's lifetime creates its host object, or lets it go\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 66,
+      "declaration": "describe(\"host: activation and lifetime\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 67,
+      "declaration": "it(\"activates, goes live, binds members late, disposes after release\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 86,
+      "declaration": "it(\"coalesces concurrent gets and keeps the object while held\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 102,
+      "declaration": "it(\"lingers after the last release and revives on a new get\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 117,
+      "declaration": "it(\"disposes an abandoned activation once it settles\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 151,
+      "declaration": "it(\"propagates activation failures to dependents and retries on the next get\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 180,
+      "declaration": "it(\"unwinds declarations when a factory throws and rejects async factories\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 209,
+      "declaration": "it(\"rejects duplicate declaration names\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 220,
+      "declaration": "it(\"detects hold cycles\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 235,
+      "declaration": "it(\"closes resources in reverse order, runs all steps and aggregates errors\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 272,
+      "declaration": "it(\"releases ctx.get holds when the call settles\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 286,
+      "declaration": "describe(\"host: declarations and methods\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 287,
+      "declaration": "it(\"refuses a second declaration of one name per kind; kinds have their own names\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 312,
+      "declaration": "it(\"methods without arguments are called with ctx alone; void methods resolve to undefined\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 342,
+      "declaration": "it(\"a listener on state gets the current value at start and again after a reload replaced its derivation\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 384,
+      "declaration": "describe(\"host: lifetime\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 414,
+      "declaration": "it(\"every get reaches the one object, created at serve for the host principal; another input is invalid\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 448,
+      "declaration": "describe(\"host: principals, variants and disposal\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 477,
+      "declaration": "it(\"keeps objects per principal key and enforces variants\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 493,
+      "declaration": "it(\"validates remote args and results at the provider boundary\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 507,
+      "declaration": "it(\"forced disposal makes references gone and aborts in-flight calls\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 538,
+      "declaration": "it(\"state members are late-bound readables: values, then snapshot/reset/ops events\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 560,
+      "declaration": "describe(\"host: registries\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 599,
+      "declaration": "it(\"rejects conflicting registrations\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 618,
+      "declaration": "describe(\"host: composition\", () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 630,
+      "declaration": "it(\"reference state members are sources for listeners and derivations\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 659,
+      "declaration": "it(\"ctx.get acts as the root principal at ingress and as the host inside objects\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 684,
+      "declaration": "it(\"calling a reference inside a factory throws not_ready\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/host.test.ts",
+      "line": 699,
+      "declaration": "it(\"a ChordError from a factory keeps its code through dependents\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 4,
+      "declaration": "describe(\"isJsonValue\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 5,
+      "declaration": "test(\"checks strict JSON without normalizing it\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 16,
+      "declaration": "describe(\"copyJson\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 17,
+      "declaration": "test(\"copies strict JSON without retaining aliases\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 28,
+      "declaration": "test(\"optionally omits undefined object properties without normalizing arrays\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 35,
+      "declaration": "test(\"preserves null prototypes and own __proto__ data properties\", () => {"
+    },
+    {
+      "path": "packages/chord/test/json.test.ts",
+      "line": 49,
+      "declaration": "test(\"rejects cycles and non-strict container properties\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 67,
+      "declaration": "describe(\"links: calls and state across hosts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 68,
+      "declaration": "it(\"a child calls the server; the server stamps the child's principal\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 82,
+      "declaration": "it(\"state members: snapshot, then delta-encoded ops; values decode to the provider's\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 102,
+      "declaration": "it(\"the server reaches a connected child by name\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 113,
+      "declaration": "it(\"rejects local types and unknown hosts\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 196,
+      "declaration": "describe(\"links: relay, stamping, lifetime\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 197,
+      "declaration": "it(\"relays browser → server → worker; the worker sees the browser's stamped principal\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 211,
+      "declaration": "it(\"ignores payload principals from clients and from child hosts\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 251,
+      "declaration": "it(\"a route that returns an already closed link does not poison the host name\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 274,
+      "declaration": "it(\"authorizes before resolving and again after\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 291,
+      "declaration": "it(\"a browser disconnect releases exactly its holds; the worker link stays up\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 305,
+      "declaration": "it(\"a dead link (no pongs) is closed and everything held through it is released\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 314,
+      "declaration": "it(\"checks contract tokens across links: contract_mismatch for hosts, upgrade_required for browsers\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 333,
+      "declaration": "it(\"invalidatePrincipal re-stamps the link and propagates to workers\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 348,
+      "declaration": "it(\"after a reconnect, state subscribers get a reset and calls work again\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 382,
+      "declaration": "describe(\"links: methods without arguments or result\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 383,
+      "declaration": "it(\"travel without args and without a value, and resolve to the result or undefined\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 425,
+      "declaration": "describe(\"links: protocol version\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 434,
+      "declaration": "it(\"a peer without a protocol version (an old client) is told and dropped; nothing it sends is served\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 455,
+      "declaration": "it(\"a client learns that its server speaks another version, and stops\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 476,
+      "declaration": "it(\"peers of the same version talk; an ordinary close is no mismatch\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 490,
+      "declaration": "describe(\"links: packed payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 491,
+      "declaration": "it(\"large args, results and snapshots cross a relay deflated and arrive intact\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 515,
+      "declaration": "it(\"only payloads above the threshold are packed; the receiver unpacks them\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 543,
+      "declaration": "describe(\"links: IPC\", () => {"
+    },
+    {
+      "path": "packages/chord/test/link.test.ts",
+      "line": 544,
+      "declaration": "it(\"a write that fails after the peer process exited (EPIPE) ends the link instead of raising an unhandled error\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 161,
+      "declaration": "describe(\"links review: identity and stamping\", () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 162,
+      "declaration": "it(\"#1 the acceptor decides what a peer is: a client announcing itself as a host is cut off\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 173,
+      "declaration": "it(\"#1 root_end is honored only from the link the root came over\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 215,
+      "declaration": "it(\"#2 a revocation while the route is still resolving closes the relay; no worker object is made\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 231,
+      "declaration": "it(\"#10 malformed frames and duplicate ids close the link\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 244,
+      "declaration": "describe(\"links review: relay ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 245,
+      "declaration": "it(\"#7 a browser disconnect cancels its call downstream\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 258,
+      "declaration": "it(\"#9 a subscription dropped while the route resolves is never forwarded\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 273,
+      "declaration": "it(\"#9 a release while the route resolves settles waiting calls and forwards nothing\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 290,
+      "declaration": "it(\"#9 an origin disconnect removes its relayed holds and subscriptions downstream\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 303,
+      "declaration": "it(\"two browsers share one worker connection; one leaving releases only its own holds\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 318,
+      "declaration": "it(\"#11 snapshots through an accepts adapter are validated against the consumer's schema\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 371,
+      "declaration": "describe(\"links review: cross-host reload\", () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 401,
+      "declaration": "it(\"#3 an abort while the child is still loading modules frees its reload slot; a later reload works\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 415,
+      "declaration": "it(\"#3 the parent link dying while the child prepares unwinds the child\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 429,
+      "declaration": "it(\"#4 tasks the commit starts cannot reach a child before the child's commit\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 461,
+      "declaration": "it(\"#5 a child that missed a commit is reconciled on reconnect, never relabeled\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/links-review.test.ts",
+      "line": 477,
+      "declaration": "it(\"#6 a server root that bounces through a worker and back ends normally (no leaked lease)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/loader.test.ts",
+      "line": 7,
+      "declaration": "describe(\"node loader\", () => {"
+    },
+    {
+      "path": "packages/chord/test/loader.test.ts",
+      "line": 8,
+      "declaration": "it(\"loads facet modules and reloads them with fresh copies of their relative imports\", () => {"
+    },
+    {
+      "path": "packages/chord/test/loader.test.ts",
+      "line": 17,
+      "declaration": "it(\"needs a configured loader for modules\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 26,
+      "declaration": "describe(\"processLock\", () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 28,
+      "declaration": "it(\"admits one holder when the temporary directory is too deep for a socket path\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 47,
+      "declaration": "describe(\"host manager (real child processes)\", () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 49,
+      "declaration": "it(\"a child without a lock does not inherit the parent's lock\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 66,
+      "declaration": "it(\"starts a child host, links it, stops it gracefully\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 81,
+      "declaration": "it(\"a child-owned kernel lock admits one live process; replace waits for the exit before the next start\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 106,
+      "declaration": "it(\"a graceful exit still takes the child's descendants with it\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 119,
+      "declaration": "it(\"idleFor counts from the busy → idle transition\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 146,
+      "declaration": "it(\"kills the process tree when a child ignores shutdown past the grace period\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 163,
+      "declaration": "it(\"reports a fatal child as a failed start\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/manager.test.ts",
+      "line": 169,
+      "declaration": "it(\"stops an idle child when keepAlive says so\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/readiness.test.ts",
+      "line": 21,
+      "declaration": "describe(\"host: eager readiness\", () => {"
+    },
+    {
+      "path": "packages/chord/test/readiness.test.ts",
+      "line": 113,
+      "declaration": "it(\"load installs every facet before awaiting eager consumers\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/readiness.test.ts",
+      "line": 137,
+      "declaration": "it(\"missing eager dependencies reject load instead of only reaching onError\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/readiness.test.ts",
+      "line": 162,
+      "declaration": "it(\"ready includes direct host serves, but not later serves\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 90,
+      "declaration": "describe(\"reload\", () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 91,
+      "declaration": "it(\"compatible reload: no gate, pinned roots keep old code, state preserved, previous retires\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 117,
+      "declaration": "it(\"prepare runs in recording mode: writes throw and a failing factory leaves everything unchanged\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 160,
+      "declaration": "it(\"refuses a changed cell schema without a version bump\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 176,
+      "declaration": "it(\"state bump: gate, migrate(old, fromVersion) into the new schema, reset to watchers, old roots upgrade_conflict\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 216,
+      "declaration": "it(\"versions are per cell: a raised one migrates only that cell, a lowered one is refused\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 256,
+      "declaration": "it(\"gate: late old roots get upgrade_conflict, grandfathered roots re-enter, then commit\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 284,
+      "declaration": "it(\"gate deadline: reload aborts, reports blocking roots, nothing changes\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 321,
+      "declaration": "it(\"exclusive resources are replaced at the gate; non-exclusive ones at prepare and closed at retirement\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 357,
+      "declaration": "it(\"two-version rule: the next reload retires the previous code version; its roots get superseded\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 382,
+      "declaration": "it(\"forced retirement aborts the leftover roots before it closes the resources only their code used\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 430,
+      "declaration": "it(\"a kept resource closes with the newest declaration's close\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 454,
+      "declaration": "it(\"a task that ignores its abort delays its replacement at most taskStopDeadline (reported)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 492,
+      "declaration": "it(\"a facet's signal aborts when its run is replaced or removed, when its reload aborts, and when the host closes\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 522,
+      "declaration": "it(\"checks contracts at reload: forgotten bumps, live consumers, accepts adapters\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 574,
+      "declaration": "it(\"rebinds listeners to the new code and restarts tasks\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 628,
+      "declaration": "it(\"keeps registry tables per code version\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 664,
+      "declaration": "it(\"a reload can add a type together with a consumer that holds it\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/reload.test.ts",
+      "line": 696,
+      "declaration": "it(\"the gate rejects new objects of a changed type; after commit they get the new code\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 52,
+      "declaration": "test(\"awaits hydration and each update independently of other subscribers\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 92,
+      "declaration": "test(\"excludes a running update from overflow and retains exact value/context/delivery\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 115,
+      "declaration": "test(\"serializes reentrant hydration and update callbacks\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 126,
+      "declaration": "test(\"treats two subscriptions of the same callback independently\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 145,
+      "declaration": "test(\"unsubscribe drops queued callbacks without joining or aborting the running callback\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 171,
+      "declaration": "describe(\"attached listener errors\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 173,
+      "declaration": "test(\"isolates a synchronous hydration failure without removing the subscription\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 189,
+      "declaration": "test(\"observes hydration rejection, synchronous throw, and update rejection while continuing delivery\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 209,
+      "declaration": "test(\"still observes a callback rejection after unsubscribe\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state-delivery.test.ts",
+      "line": 227,
+      "declaration": "test(\"mutable state reports rejected callbacks through its default error reporter\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 12,
+      "declaration": "describe(\"transactional replicated state\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 13,
+      "declaration": "it(\"publishes one immutable structurally shared revision\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 31,
+      "declaration": "it(\"rolls back callback failures and revokes escaped drafts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 46,
+      "declaration": "it(\"rejects PromiseLike callbacks and aborts their draft\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 58,
+      "declaration": "it(\"rejects nested changes and replacements without losing the outer rollback\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 77,
+      "declaration": "it(\"queues listener-triggered changes in sequence order\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 103,
+      "declaration": "it(\"isolates listener failures after committing the revision\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 129,
+      "declaration": "it(\"copies assigned values by value\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 145,
+      "declaration": "it(\"takes immutable ownership of alias-free replacements\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 157,
+      "declaration": "it(\"replaces atomically and ignores deeply equal replacements\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 232,
+      "declaration": "describe(\"authoritative replicated state sources\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 233,
+      "declaration": "it(\"captures before activation and drains queued commits in order\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 252,
+      "declaration": "it(\"hydrates at sequence zero when attaching after existing commits\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 264,
+      "declaration": "it(\"publishes exact source values without applying or re-diffing\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 280,
+      "declaration": "it(\"buffers reentrant frames and skips updates covered by a late hydration\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 301,
+      "declaration": "it(\"reports listener failures without throwing them into the source\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 321,
+      "declaration": "it(\"reports cursor gaps, disposes the broken attachment, and ignores later frames\", () => {"
+    },
+    {
+      "path": "packages/chord/test/replicated-state.test.ts",
+      "line": 333,
+      "declaration": "it(\"keeps attachments independent and disposes each idempotently\", () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 40,
+      "declaration": "describe(\"application requests\", () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 41,
+      "declaration": "it(\"#1 a held object's state member can be returned as this object's state member\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 88,
+      "declaration": "it(\"#2 facets reach their own host through FacetApi.root and FacetApi.registry\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 127,
+      "declaration": "it(\"#3 a listener keeps its subscription across reloads when resource and select are unchanged\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 166,
+      "declaration": "emit(\"a\");"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 169,
+      "declaration": "emit(\"b\");"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 175,
+      "declaration": "it(\"#3 a changed select resubscribes\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 202,
+      "declaration": "it(\"#4 replace diffs a new revision that shares structure; unrelated values replace\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 248,
+      "declaration": "it(\"#5 roots of a child that connected behind the server are admitted in the server's code version\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 284,
+      "declaration": "it(\"#6 self.expose: an opaque member backed by a resource, readable once live\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 317,
+      "declaration": "it(\"#7 a cluster reload reports what each child prepared\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 346,
+      "declaration": "it(\"#8 a remote state member forgets its value when nobody listens; the next subscriber sees the fresh value\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 380,
+      "declaration": "it(\"#9 references report status changes: live, loading while a link reconnects, gone, released\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/requests.test.ts",
+      "line": 413,
+      "declaration": "it(\"#10 host close disposes holders before what they hold, and before closing links\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 55,
+      "declaration": "describe(\"review: reload commit\", () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 56,
+      "declaration": "it(\"#1 a failing listener subscription fails prepare; the code version and all objects stay unchanged\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 78,
+      "declaration": "it(\"#2 migration is validated against the new remote schemas, not the obsolete ones (dev mode)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 132,
+      "declaration": "it(\"#1 a commit that still fails midway fails the host terminally (no half-published code version serving work)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 154,
+      "declaration": "it(\"reentrant observers calling another object during a commit see the whole new code version\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 179,
+      "declaration": "describe(\"review: leases, invocations, activation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 186,
+      "declaration": "it(\"#4 a running listener holds a lease: the gate waits for it before migrating\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 233,
+      "declaration": "it(\"#5 disposal waits for running methods before closing resources (released and forced)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 284,
+      "declaration": "it(\"#6 a registry conflict found while finalizing activation unwinds the loser completely\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 312,
+      "declaration": "it(\"#6 releasing the last hold while listeners start up does not resurrect the object\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 340,
+      "declaration": "describe(\"review: prepare isolation and contracts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 347,
+      "declaration": "it(\"#7 a prepare rerun cannot touch retained resources, even open ones\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 367,
+      "declaration": "it(\"#7 objects of types a reload adds start listeners and tasks only at commit\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 402,
+      "declaration": "it(\"#8 a breaking provider change and its updated consumer reload in one batch\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 446,
+      "declaration": "it(\"#9 an exclusive resource whose close failed is restored on rollback, or marked unavailable\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 486,
+      "declaration": "it(\"#10 retirement closes dropped resources before releasing dropped holds\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 531,
+      "declaration": "it(\"#11 fits has no false positives for unmodelled keywords; counterexamples checked with Value.Check\", () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 563,
+      "declaration": "it(\"#11 arguments are stripped to what the consumer knows, then to what the provider knows\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 582,
+      "declaration": "describe(\"review: ctx races\", () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 589,
+      "declaration": "it(\"an aborted task ctx cannot start fresh calls\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/review.test.ts",
+      "line": 620,
+      "declaration": "it(\"an expired ctx and a foreign ctx are refused\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 19,
+      "declaration": "describe(\"immutable revision diff\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 20,
+      "declaration": "it(\"emits sets and deletes\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 28,
+      "declaration": "it(\"emits string append and front truncation\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 37,
+      "declaration": "it(\"represents array insertion, removal, and shift with splices\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 45,
+      "declaration": "it(\"collapses a same-length queue update to two splices\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 56,
+      "declaration": "it(\"emits a permutation for a pure reorder\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 63,
+      "declaration": "it(\"normalizes reordered distinct deeply-equal objects to a no-op\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 70,
+      "declaration": "it(\"validates and encodes permutations\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 86,
+      "declaration": "it(\"emits nothing for deeply equal reconstructed values\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 92,
+      "declaration": "it(\"keeps a leaf edit inside a reconstructed array narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 110,
+      "declaration": "it(\"emits payload-free splices for scattered removals\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 128,
+      "declaration": "it(\"does not field-diff unrelated shifted objects with common fields\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 137,
+      "declaration": "it(\"does not treat coincidental id or key fields as structural identity\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 149,
+      "declaration": "it(\"combines removals, append, and a shared-subtree survivor edit\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 195,
+      "declaration": "it(\"keeps forty-thousand-row sparse edits narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 209,
+      "declaration": "it(\"keeps a reconstructed large-array leaf edit narrow\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 219,
+      "declaration": "it(\"splices an ambiguous equal-count moved-and-edited gap\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 231,
+      "declaration": "it(\"encodes five hundred unshifts without snapshotting retained rows\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 240,
+      "declaration": "it(\"bounds wide-object operation emission with a root replacement\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-diff.test.ts",
+      "line": 250,
+      "declaration": "it(\"falls back to a base operation when leaf operations are larger\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 4,
+      "declaration": "describe(\"transactional overlay drafts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 5,
+      "declaration": "it(\"copies only changed branches\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 22,
+      "declaration": "it(\"supports frozen bases, deletion, and native array mutators\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 39,
+      "declaration": "it(\"copies inserted draft values without aliasing their original reference\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 50,
+      "declaration": "it(\"keeps comparator edits when sorting object drafts\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 68,
+      "declaration": "it(\"drops writes through detached child references\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 92,
+      "declaration": "it(\"rejects non-strict JSON placements without mutating the draft or base\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-draft.test.ts",
+      "line": 110,
+      "declaration": "it(\"rejects array holes without mutating the committed base\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-fuzz.test.ts",
+      "line": 90,
+      "declaration": "it(\"converges across randomized prepared revisions\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-value.test.ts",
+      "line": 4,
+      "declaration": "describe(\"immutable revision ownership\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-value.test.ts",
+      "line": 5,
+      "declaration": "it(\"takes ownership of an alias-free mutable JSON root without freezing\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-value.test.ts",
+      "line": 14,
+      "declaration": "it(\"commits transaction copies in place while sharing unchanged branches\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state-value.test.ts",
+      "line": 29,
+      "declaration": "it(\"makes repeated placements independent\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 59,
+      "declaration": "describe(\"state cells\", () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 60,
+      "declaration": "it(\"publishes snapshots then exact ops; derivations follow\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 84,
+      "declaration": "it(\"supports primitive cells and value-returning changes\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 117,
+      "declaration": "it(\"rejects a returned value that does not fit the schema, even outside dev mode\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 136,
+      "declaration": "it(\"validates initial values always and writes only in dev mode\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 159,
+      "declaration": "it(\"rejects writes from inside a factory and placeholder use before activation\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 179,
+      "declaration": "it(\"listeners run each event in a fresh root; tasks get an abortable ctx\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/state.test.ts",
+      "line": 223,
+      "declaration": "it(\"re-entrant writes publish in adoption order; derivations never go stale (Sol #3)\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 36,
+      "declaration": ".split(\"\\n\")"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 139,
+      "declaration": "it(\"01: objects live inside hosts\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 148,
+      "declaration": "it(\"02: first contract, factory, reference and root\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 162,
+      "declaration": "it(\"03: cells publish values and derivations\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 184,
+      "declaration": "it(\"04: holds, asynchronous resources and release\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 247,
+      "declaration": "it(\"05: principals select views of one shared store\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 266,
+      "declaration": "it(\"06: remote methods and live state over a memory link\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 298,
+      "declaration": "it(\"07: listeners react and tasks start fresh calls\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 339,
+      "declaration": "it(\"08: plugins contribute registry entries and expose callbacks\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 381,
+      "declaration": "it(\"09: compatible reload, migration and an old-contract adapter\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 470,
+      "declaration": "it(\"10: stub a provider with a fake facet and check error codes\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/tutorial.test.ts",
+      "line": 498,
+      "declaration": "it(\"11: short roots release temporary holds\", { timeout: 5000 }, async () => {"
+    },
+    {
+      "path": "packages/chord/test/websocket.test.ts",
+      "line": 28,
+      "declaration": "describe(\"WebSocket links\", () => {"
+    },
+    {
+      "path": "packages/chord/test/websocket.test.ts",
+      "line": 29,
+      "declaration": "it(\"serves a browser-style client over a real socket, stamped by the authenticator\", async () => {"
+    },
+    {
+      "path": "packages/chord/test/websocket.test.ts",
+      "line": 102,
+      "declaration": "describe(\"WebSocket links: packed payloads\", () => {"
+    },
+    {
+      "path": "packages/chord/test/websocket.test.ts",
+      "line": 103,
+      "declaration": "it(\"large snapshots and results reach the client as binary messages; clients may not send them\", async () => {"
+    }
+  ]
+}
