@@ -1,0 +1,70 @@
+const cases=[];
+const plain=value=>JSON.parse(JSON.stringify(value));
+const record=(name,fn)=>{
+  try { const value=fn();cases.push({name,value:value===undefined?'undefined':plain(value)}); }
+  catch(error) {
+    if(!(error instanceof TypeError)&&!api.isChordError(error))throw error;
+    cases.push({name,error:{name:error.name,message:error.message,...(api.isChordError(error)?{code:error.code,...(error.reason===undefined?{}:{reason:error.reason})}:{})}});
+  }
+};
+const schema=api.Type.Object({session:api.Type.String()});
+const definition=(host,version=1)=>({version,input:schema,host,variants:{main:{state:{n:api.Type.Number()},methods:{bump:api.method(api.Type.Number(),api.Type.Number())}}}});
+record('named placement data',()=>api.hostNamed('server'));
+record('family placement data',()=>api.hostFamily('session:','session'));
+record('named placement rejects empty',()=>api.hostNamed(''));
+record('named placement rejects nonstring',()=>api.hostNamed({toString(){return 'server'}}));
+record('family placement rejects empty prefix',()=>api.hostFamily('','session'));
+record('family placement rejects empty key',()=>api.hostFamily('session:',''));
+record('family placement rejects nonstring key',()=>api.hostFamily('session:',3));
+record('remote token includes detached named placement and fingerprint',()=>{
+  const host=api.hostNamed('server');const def=definition(host);const token=api.remote('t.v4.named',def);host.name='moved';
+  return {scope:token.scope,description:token.description,fingerprint:token.fingerprint,definitionKept:token.def===def,originalPlacement:token.def.host.name};
+});
+record('remote token includes family placement and fingerprint',()=>{
+  const token=api.remote('t.v4.family',definition(api.hostFamily('session:','session')));
+  return {description:token.description,fingerprint:token.fingerprint};
+});
+record('remote token requires placement',()=>{const def=definition(undefined);delete def.host;return api.remote('t.v4.missing',def)});
+record('remote placement rejects extra named property',()=>api.remote('t.v4.extra',definition({name:'server',extra:1})));
+record('remote placement rejects extra family property',()=>api.remote('t.v4.extra-family',definition({prefix:'session:',key:'session',extra:1})));
+record('remote placement requires nonempty family strings',()=>api.remote('t.v4.empty-family',definition({prefix:'session:',key:''})));
+record('placement resolves named host without reading input',()=>{
+  const input=new Proxy({}, {get(){throw Error('named input must not be read')}});
+  return api.resolveHost('t.v4.resolve',api.hostNamed('server'),input);
+});
+record('placement resolves family field including unicode',()=>api.resolveHost('t.v4.resolve',api.hostFamily('séance:','session'),{session:'東京'}));
+record('placement rejects missing input field',()=>api.resolveHost('t.v4.resolve',api.hostFamily('session:','session'),{}));
+record('placement rejects empty input field',()=>api.resolveHost('t.v4.resolve',api.hostFamily('session:','session'),{session:''}));
+record('placement accepts inherited input field',()=>api.resolveHost('t.v4.resolve',api.hostFamily('session:','session'),Object.create({session:'S1'})));
+record('placement membership exact named and nonempty family suffix',()=>{
+  const named=api.hostNamed('server'),family=api.hostFamily('session:','session');
+  return [api.placedOn(named,'server'),api.placedOn(named,'server2'),api.placedOn(family,'session:S1'),api.placedOn(family,'session:'),api.placedOn(family,'other:S1')];
+});
+record('placement display named and family',()=>[api.placementText(api.hostNamed('server')),api.placementText(api.hostFamily('session:','session'))]);
+record('coverage rejects moved placement before input mismatch',()=>{
+  const a=api.remote('t.v4.coverage',definition(api.hostNamed('server'))),b=api.remote('t.v4.coverage',definition(api.hostNamed('other')));
+  return {same:api.coverage(a.description,a.description)??null,moved:api.coverage(a.description,b.description)};
+});
+record('bind refuses moved placement even with version adapter',()=>{
+  const a=api.remote('t.v4.bind',definition(api.hostNamed('server'),2)),b=api.remote('t.v4.bind',definition(api.hostNamed('other'),1));
+  return api.bind(a,{1:()=>({})},b);
+});
+record('bind retains exact adapter when placement agrees',()=>{
+  const a=api.remote('t.v4.bind-ok',definition(api.hostFamily('session:','session'),2)),b=api.remote('t.v4.bind-ok',definition(api.hostFamily('session:','session'),1));
+  const adapter=()=>({});return api.bind(a,{1:adapter},b)===adapter;
+});
+record('remote description round trip keeps fingerprint and placement',()=>{
+  const original=api.remote('t.v4.round-trip',definition(api.hostNamed('server'))),copy=api.contractFromDescription(original.description);
+  return {sameFingerprint:copy.fingerprint===original.fingerprint,description:copy.description,definition:copy.def};
+});
+record('description rejects remote without host',()=>api.contractFromDescription({name:'t.v4.bad-remote',scope:'remote',version:1,input:{},variants:{}}));
+record('description rejects local carrying host',()=>api.contractFromDescription({name:'t.v4.bad-local',scope:'local',version:1,input:{},host:{name:'server'},variants:{}}));
+record('ordinary placement and method declarations are constructible while opaque remains arrow',()=>{
+  let opaqueRejected=false;try{new api.opaque('t.v4.opaque@1')}catch(error){if(!(error instanceof TypeError))throw error;opaqueRejected=true}
+  const method=new api.method();return {named:new api.hostNamed('server'),family:new api.hostFamily('session:','session'),methodArgs:method.args===undefined,methodResult:method.result===undefined,opaqueRejected};
+});
+record('placement getter failures preserve exact original identity',()=>{
+  const marker={raw:true};const def=definition(undefined);Object.defineProperty(def,'host',{get(){throw marker}});
+  try{api.remote('t.v4.marker',def)}catch(error){if(error!==marker)throw error;return true}throw Error('missing marker');
+});
+globalThis.chordV4ContractCases=cases;

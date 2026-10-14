@@ -775,6 +775,13 @@ pub fn build(b: *std.Build) void {
     const chord_module_promise_run = b.addRunArtifact(chord_module_promise_tests);
     chord_module_promise_run.has_side_effects = true;
     b.step("test-native-chord-module-promise", "Check pure guest TLA dynamic import species own then exact rejection identity native GC and all allocation failures").dependOn(&chord_module_promise_run.step);
+    const chord_contracts_v4_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_contracts_v4_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 contracts"} });
+    linkQuickJs(b, chord_contracts_v4_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_contracts_v4_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-contracts-v4-source", "Compile actual b45 placement token binding Source28 component").dependOn(&chord_contracts_v4_tests.step);
+    const chord_contracts_v4_run = b.addRunArtifact(chord_contracts_v4_tests);
+    chord_contracts_v4_run.has_side_effects = true;
+    b.step("test-native-chord-contracts-v4-source", "Replay actual b45 Source28 placement fingerprints binding raw identity GC and all host allocation failures").dependOn(&chord_contracts_v4_run.step);
     const chord_connection_boundaries = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_connection_boundary_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "native Chord connection boundary inventory", "Sourceea native TuiAltScreen native OOM mapping rejects user lookalikes and stale native exceptions", "native WeakRef" } });
     linkQuickJs(b, chord_connection_boundaries.root_module, quickjs, sqlite_lib_dir);
     chord_connection_boundaries.root_module.addImport("catalog_tool", catalog_tool);

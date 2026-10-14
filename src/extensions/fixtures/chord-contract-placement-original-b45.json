@@ -1,0 +1,338 @@
+{
+  "source": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "cases": [
+    {
+      "name": "named placement data",
+      "value": {
+        "name": "server"
+      }
+    },
+    {
+      "name": "family placement data",
+      "value": {
+        "prefix": "session:",
+        "key": "session"
+      }
+    },
+    {
+      "name": "named placement rejects empty",
+      "error": {
+        "name": "TypeError",
+        "message": "hostNamed needs a host name"
+      }
+    },
+    {
+      "name": "named placement rejects nonstring",
+      "error": {
+        "name": "TypeError",
+        "message": "hostNamed needs a host name"
+      }
+    },
+    {
+      "name": "family placement rejects empty prefix",
+      "error": {
+        "name": "TypeError",
+        "message": "hostFamily needs a host-name prefix"
+      }
+    },
+    {
+      "name": "family placement rejects empty key",
+      "error": {
+        "name": "TypeError",
+        "message": "hostFamily needs an input field name"
+      }
+    },
+    {
+      "name": "family placement rejects nonstring key",
+      "error": {
+        "name": "TypeError",
+        "message": "hostFamily needs an input field name"
+      }
+    },
+    {
+      "name": "remote token includes detached named placement and fingerprint",
+      "value": {
+        "scope": "remote",
+        "description": {
+          "name": "t.v4.named",
+          "scope": "remote",
+          "version": 1,
+          "input": {
+            "type": "object",
+            "required": [
+              "session"
+            ],
+            "properties": {
+              "session": {
+                "type": "string"
+              }
+            }
+          },
+          "host": {
+            "name": "server"
+          },
+          "variants": {
+            "main": {
+              "n": {
+                "kind": "state",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "bump": {
+                "kind": "method",
+                "args": {
+                  "type": "number"
+                },
+                "result": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "fingerprint": "3f8dad4bbd0f6b19",
+        "definitionKept": true,
+        "originalPlacement": "moved"
+      }
+    },
+    {
+      "name": "remote token includes family placement and fingerprint",
+      "value": {
+        "description": {
+          "name": "t.v4.family",
+          "scope": "remote",
+          "version": 1,
+          "input": {
+            "type": "object",
+            "required": [
+              "session"
+            ],
+            "properties": {
+              "session": {
+                "type": "string"
+              }
+            }
+          },
+          "host": {
+            "prefix": "session:",
+            "key": "session"
+          },
+          "variants": {
+            "main": {
+              "n": {
+                "kind": "state",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "bump": {
+                "kind": "method",
+                "args": {
+                  "type": "number"
+                },
+                "result": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "fingerprint": "2a200e813e4f65de"
+      }
+    },
+    {
+      "name": "remote token requires placement",
+      "error": {
+        "name": "TypeError",
+        "message": "remote contract t.v4.missing needs `host`: hostNamed(…) or hostFamily(…)"
+      }
+    },
+    {
+      "name": "remote placement rejects extra named property",
+      "error": {
+        "name": "TypeError",
+        "message": "remote contract t.v4.extra needs `host`: hostNamed(…) or hostFamily(…)"
+      }
+    },
+    {
+      "name": "remote placement rejects extra family property",
+      "error": {
+        "name": "TypeError",
+        "message": "remote contract t.v4.extra-family needs `host`: hostNamed(…) or hostFamily(…)"
+      }
+    },
+    {
+      "name": "remote placement requires nonempty family strings",
+      "error": {
+        "name": "TypeError",
+        "message": "remote contract t.v4.empty-family needs `host`: hostNamed(…) or hostFamily(…)"
+      }
+    },
+    {
+      "name": "placement resolves named host without reading input",
+      "value": "server"
+    },
+    {
+      "name": "placement resolves family field including unicode",
+      "value": "séance:東京"
+    },
+    {
+      "name": "placement rejects missing input field",
+      "error": {
+        "name": "ChordError",
+        "message": "invalid/placement: t.v4.resolve: input field session names no host",
+        "code": "invalid",
+        "reason": "placement"
+      }
+    },
+    {
+      "name": "placement rejects empty input field",
+      "error": {
+        "name": "ChordError",
+        "message": "invalid/placement: t.v4.resolve: input field session names no host",
+        "code": "invalid",
+        "reason": "placement"
+      }
+    },
+    {
+      "name": "placement accepts inherited input field",
+      "value": "session:S1"
+    },
+    {
+      "name": "placement membership exact named and nonempty family suffix",
+      "value": [
+        true,
+        false,
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "name": "placement display named and family",
+      "value": [
+        "server",
+        "session:<session>"
+      ]
+    },
+    {
+      "name": "coverage rejects moved placement before input mismatch",
+      "value": {
+        "same": null,
+        "moved": "host"
+      }
+    },
+    {
+      "name": "bind refuses moved placement even with version adapter",
+      "error": {
+        "name": "ChordError",
+        "message": "contract_mismatch: t.v4.bind lives on server, the consumer expects other",
+        "code": "contract_mismatch"
+      }
+    },
+    {
+      "name": "bind retains exact adapter when placement agrees",
+      "value": true
+    },
+    {
+      "name": "remote description round trip keeps fingerprint and placement",
+      "value": {
+        "sameFingerprint": true,
+        "description": {
+          "name": "t.v4.round-trip",
+          "scope": "remote",
+          "version": 1,
+          "input": {
+            "type": "object",
+            "required": [
+              "session"
+            ],
+            "properties": {
+              "session": {
+                "type": "string"
+              }
+            }
+          },
+          "host": {
+            "name": "server"
+          },
+          "variants": {
+            "main": {
+              "n": {
+                "kind": "state",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "bump": {
+                "kind": "method",
+                "args": {
+                  "type": "number"
+                },
+                "result": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "definition": {
+          "version": 1,
+          "input": {
+            "type": "object",
+            "required": [
+              "session"
+            ],
+            "properties": {
+              "session": {
+                "type": "string"
+              }
+            }
+          },
+          "host": {
+            "name": "server"
+          },
+          "variants": {}
+        }
+      }
+    },
+    {
+      "name": "description rejects remote without host",
+      "error": {
+        "name": "ChordError",
+        "message": "invalid/token: malformed contract token",
+        "code": "invalid",
+        "reason": "token"
+      }
+    },
+    {
+      "name": "description rejects local carrying host",
+      "error": {
+        "name": "ChordError",
+        "message": "invalid/token: malformed contract token",
+        "code": "invalid",
+        "reason": "token"
+      }
+    },
+    {
+      "name": "ordinary placement and method declarations are constructible while opaque remains arrow",
+      "value": {
+        "named": {
+          "name": "server"
+        },
+        "family": {
+          "prefix": "session:",
+          "key": "session"
+        },
+        "methodArgs": true,
+        "methodResult": true,
+        "opaqueRejected": true
+      }
+    },
+    {
+      "name": "placement getter failures preserve exact original identity",
+      "value": true
+    }
+  ]
+}
