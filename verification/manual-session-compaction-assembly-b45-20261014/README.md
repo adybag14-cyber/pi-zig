@@ -1,0 +1,5 @@
+The five native manual-compaction tests pass on Windows Debug: all44 genuine comparisons, all five Source method descriptors, pending-summary session retention and release after GC, and every2256 representative host allocation failure position. Four tests are authored; one imported anonymous storage test is included in the native inventory.
+
+Actual _clearManualCompactionState, _emitSessionCompactFailed and _refreshFinalizedContext now install directly into the private ordinary session class without requiring an unused summary binding. The complete installed descriptor set matches Source, and the final strict class diagnostic still fails honestly with27 absent methods. The actual compact/default-summary bodies remain separately qualified until shared production AI bindings are available for the complete class assembly.
+
+Full5450 source and19546 compiler files remained frozen across compile/runtime/posthash. The expected full-class failure is retained; it does not qualify a baseline-failing allocation graph. Public activation, full factory and full application qualification remain false.

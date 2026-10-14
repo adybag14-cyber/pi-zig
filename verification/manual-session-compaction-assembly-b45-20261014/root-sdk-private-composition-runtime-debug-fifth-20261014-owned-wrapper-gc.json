@@ -1,0 +1,8 @@
+{
+  "scope": "Only this owned PowerShell wrapper managed heap; retained frozen source/tool arrays unchanged",
+  "heap_before": 68913432,
+  "heap_after": 42245104,
+  "working_set_before": 213753856,
+  "working_set_after": 205639680,
+  "observed_utc": "2026-10-14T20:39:59.6579661+00:00"
+}

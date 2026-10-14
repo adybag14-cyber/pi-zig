@@ -1,0 +1,20 @@
+{
+  "code_head": "75936727d0cf18683490127d23dc1c909f60985a",
+  "host_allocation_positions": 2256,
+  "full_factory_qualified": false,
+  "compiler_post_drift": 0,
+  "full_class_diagnostic": "failed_as_expected_missing27_methods",
+  "imported_anonymous_tests": 1,
+  "pending_summary_gc_passed": true,
+  "installed_descriptor_differences": 0,
+  "original_cases": 44,
+  "source_head": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "compiler_files": 19546,
+  "source_files": 5450,
+  "native_tests": 5,
+  "observed_utc": "2026-10-14T20:43:00.8704311+00:00",
+  "native_named_tests": 4,
+  "source_post_drift": 0,
+  "public_activation": false,
+  "full_pi_qualified": false
+}

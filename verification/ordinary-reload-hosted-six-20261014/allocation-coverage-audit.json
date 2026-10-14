@@ -1,0 +1,51 @@
+{
+  "status": "six_unique_profiles_and_allocation_universes_verified",
+  "run": 38630143843,
+  "head": "1e3b0f128ef368448be23954658400e45b63b3a4",
+  "profiles": [
+    {
+      "allocation_positions": 291,
+      "mode": "Debug",
+      "gaps": 0,
+      "platform": "macos-latest",
+      "duplicates": 0
+    },
+    {
+      "allocation_positions": 291,
+      "mode": "ReleaseSafe",
+      "gaps": 0,
+      "platform": "macos-latest",
+      "duplicates": 0
+    },
+    {
+      "allocation_positions": 291,
+      "mode": "Debug",
+      "gaps": 0,
+      "platform": "ubuntu-latest",
+      "duplicates": 0
+    },
+    {
+      "allocation_positions": 291,
+      "mode": "ReleaseSafe",
+      "gaps": 0,
+      "platform": "ubuntu-latest",
+      "duplicates": 0
+    },
+    {
+      "allocation_positions": 291,
+      "mode": "Debug",
+      "gaps": 0,
+      "platform": "windows-latest",
+      "duplicates": 0
+    },
+    {
+      "allocation_positions": 291,
+      "mode": "ReleaseSafe",
+      "gaps": 0,
+      "platform": "windows-latest",
+      "duplicates": 0
+    }
+  ],
+  "observed_utc": "2026-10-14T21:40:39.1097718+01:00",
+  "all_291_positions_complete_each_profile": true
+}
