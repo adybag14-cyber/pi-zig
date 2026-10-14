@@ -109,13 +109,20 @@ test "native legacy CJS function targeted C VM heap budgets preserve recovery fr
                 const source = if (program == 0)
                     try std.fmt.allocPrint(std.testing.allocator, "globalThis.vmInput={{get a(){{nativeArmVmBudget({d});try{{return inheritAPI.arguments}}finally{{nativeDisarmVmBudget()}}}}}};globalThis.vmValue=inheritAPI(vmInput);", .{budget})
                 else
-                    try std.fmt.allocPrint(std.testing.allocator, "nativeArmVmBudget({d});let fn;try{{fn=nativeCreateLegacyProbe()}}finally{{nativeDisarmVmBudget()}}if(fn.name!=='inherit')throw Error('legacy constructor result');globalThis.vmCreated=fn;", .{budget});
+                    try std.fmt.allocPrint(std.testing.allocator, "nativeArmVmBudget({d});let fn;try{{fn=nativeCreateLegacyProbe()}}finally{{nativeDisarmVmBudget()}}globalThis.vmCreated=fn;", .{budget});
                 defer std.testing.allocator.free(source);
                 const outcome = engine.eval(source, "legacy-targeted-vm-budget.js", c.JS_EVAL_TYPE_GLOBAL);
                 // Restore before inspecting, allocating, running GC or deinitializing.
                 c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
                 if (outcome) |result| {
                     engine.freeValue(result);
+                    if (program == 1) {
+                        // Validate outside the pressure outcome classifier, with
+                        // the normal limit restored. A real invariant failure
+                        // must fail this test rather than count as VM pressure.
+                        const constructed = try engine.eval("if(vmCreated.name!=='inherit')throw Error('legacy constructor result');", "legacy-vm-constructor-recovery.js", c.JS_EVAL_TYPE_GLOBAL);
+                        engine.freeValue(constructed);
+                    }
                     successes[program] += 1;
                 } else |err| {
                     // Ordinary JS_EXCEPTION under this explicitly armed limit is
