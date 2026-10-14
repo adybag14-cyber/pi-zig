@@ -53,5 +53,21 @@
   "automatic_provider_cleanup_integrated": false,
   "full_factory_qualified": false,
   "full_pi_qualified": false,
-  "hosted": "pending at qualified code plus mandatory settings regression"
+  "hosted": {
+    "status": "six_terminal_success_and_all_downloaded_artifacts_independently_audited",
+    "run_id": 38478199388,
+    "head": "5b743560721d85bdc2290a88293b7a18437d6dfc",
+    "source_files": 4845,
+    "compiler_files": 19546,
+    "source_post_drift": 0,
+    "compiler_post_drift": 0,
+    "settings_allocation_indices_windows": 1222,
+    "settings_allocation_indices_posix": 1220,
+    "mac_debug_shards": 8,
+    "all_other_shards": 1,
+    "gaps": 0,
+    "duplicates": 0,
+    "artifact_audit": "hosted-six-artifacts-audit-38478199388.json",
+    "latest_upstream_full_factory_qualification": false
+  }
 }
