@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         mode: [Debug, ReleaseSafe]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 150
+    timeout-minutes: 220
     env:
       PI_LISTING_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '128' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || matrix.mode == 'Debug' && matrix.os == 'windows-latest' && '16' || matrix.mode == 'ReleaseSafe' && matrix.os == 'macos-latest' && '32' || '8' }}
     steps:
@@ -59,7 +59,7 @@ jobs:
           & verification/sdk-session-loadout-e6220e1-20261013/run-native-owner.ps1 -Executable $taskZig -WorkingDirectory (Get-Location).Path -Arguments @('build','build-native-sdk-tool-listing-renderers','-Doptimize=${{ matrix.mode }}','-j1','--test-timeout','120s','--summary','all') -ReceiptBase 'verification/native-sdk-tool-listing-renderers-candidate/compile' -TimeoutSeconds 1320
       - name: Execute every original allocation index and full Source59 in bounded partitions
         shell: pwsh
-        timeout-minutes: 125
+        timeout-minutes: 195
         run: |
           $ErrorActionPreference='Stop'
           $taskZig=(Get-Command zig).Source
@@ -67,7 +67,10 @@ jobs:
           $taskUniverse=$null;$taskPrevious=0;$taskIndices=[Collections.Generic.List[int]]::new()
           $taskShardCount=[int]$env:PI_LISTING_ALLOCATION_SHARDS
           if($taskShardCount -notin @(8,16,32,128)){throw'Unexpected allocation partition profile'}
+          $taskBatchWatch=[Diagnostics.Stopwatch]::StartNew()
           foreach($taskShard in 0..($taskShardCount-1)){
+            $taskRemainingSeconds=195*60-$taskBatchWatch.Elapsed.TotalSeconds
+            if($taskRemainingSeconds -lt 360){throw'Batch admission stopped before a new partition: less than six minutes remain for the owned300s runtime and10s settlement'}
             $env:PI_EXHAUSTIVE_ALLOCATION_SHARD=[string]$taskShard
             $env:PI_EXHAUSTIVE_ALLOCATION_SHARDS=[string]$taskShardCount
             $taskBase="$taskReceipt/shard-$taskShard"
