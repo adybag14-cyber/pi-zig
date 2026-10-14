@@ -1,0 +1,291 @@
+{
+  "sourceHead": "b45e0ebcc5ae2fc42a6f2f23104d10e656e6bedb",
+  "actualNodeGcExecuted": true,
+  "cases": 7,
+  "inputSha256": "83e1b3da8def1ee6b678697362ba129f40b6bb4f528c43b03476cdd09d170da0",
+  "platform": "win32",
+  "node": {
+    "version": "v24.14.0",
+    "path": "C:\\Program Files\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=256",
+      "--conditions=source",
+      "--experimental-transform-types",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-source-b45-observe-20261014.mjs"
+    ]
+  },
+  "before": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-deep7-b45-gc-original-local-20261014-candidate.json",
+      "count": 5521,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-deep7-b45-gc-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "after": [
+    {
+      "manifest": "sdk-source-b45-full-manifest-20261014.json",
+      "count": 1965,
+      "drift": 0
+    },
+    {
+      "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "manifest": "root-current8a-npm-tools-before.json",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-deep7-b45-gc-original-local-20261014-candidate.json",
+      "count": 5521,
+      "drift": 0
+    },
+    {
+      "manifest": "sdk-deep7-b45-gc-original-local-20261014-controls.json",
+      "count": 5,
+      "drift": 0
+    }
+  ],
+  "scope": "Unchanged actual highlight.js10.7.3 inherit; exact authored self/distinct32/64/128grammar caller and rawactualSource results, actual Node GC. No Source body rewriting. Historical typed catalog metadata only; latest generated catalog unqualified.",
+  "rows": [
+    {
+      "name": "exact native self and distinct grammar assertion caller",
+      "value": true
+    },
+    {
+      "name": "self actual grammar 32",
+      "value": {
+        "depth": 32,
+        "kind": "self",
+        "language": "source-self-32",
+        "relevance": 32,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 32
+      }
+    },
+    {
+      "name": "self actual grammar 64",
+      "value": {
+        "depth": 64,
+        "kind": "self",
+        "language": "source-self-64",
+        "relevance": 64,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 64
+      }
+    },
+    {
+      "name": "self actual grammar 128",
+      "value": {
+        "depth": 128,
+        "kind": "self",
+        "language": "source-self-128",
+        "relevance": 128,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 128
+      }
+    },
+    {
+      "name": "distinct actual grammar 32",
+      "value": {
+        "depth": 32,
+        "kind": "distinct",
+        "language": "source-distinct-32",
+        "relevance": 32,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 32
+      }
+    },
+    {
+      "name": "distinct actual grammar 64",
+      "value": {
+        "depth": 64,
+        "kind": "distinct",
+        "language": "source-distinct-64",
+        "relevance": 64,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 64
+      }
+    },
+    {
+      "name": "distinct actual grammar 128",
+      "value": {
+        "depth": 128,
+        "kind": "distinct",
+        "language": "source-distinct-128",
+        "relevance": 128,
+        "illegal": false,
+        "code": "((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((owned))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+        "value": "<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(<span class=\"hljs-section\">(owned)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>)</span>",
+        "spans": 128
+      }
+    }
+  ],
+  "observedModules": [
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-observe-20261014.mjs",
+      "sha256": "277c6ccc272a30c512c9bc18cc1adafe9a3f2a99403704020d9c4ff17d2b8d82"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-deep7-b45-gc-source-capture-20261014.mjs",
+      "sha256": "7058d71ff4c0072c04c429956460af643d0090542a2ed8b9641826f9c5e4fd81"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\core.js",
+      "sha256": "c4d10bcc7cb543c36198d34d2ecfcee9f8fbdd82ec1531daa3962c86a6c95468"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\syntax-highlight.ts",
+      "sha256": "6849a5ead44fb9e76d5e93047641bf34f21483c67400b7056c97f0028c8c4612"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\bash.js",
+      "sha256": "760337399a01bba07ca386b26d67b4979cef2cd8619c4c012f3e2d3696513805"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\c.js",
+      "sha256": "9465ff9b3b7f72057acc56509dd3184f4742cd90c907ac8a9162a22ae4081dcc"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\cpp.js",
+      "sha256": "d75213a6d84131f2951481c65ce72996e2af98ffa02f72fc088b8ef6032fa619"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\csharp.js",
+      "sha256": "ebcc1a0eb1cfc68bccf4691ba86661da6773e22003062c95b0163d29640da048"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\dart.js",
+      "sha256": "d803a195fdc1e233d573e7b57852a88ecd5674f425d7ccbb398df7868d73a4c7"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\go.js",
+      "sha256": "2f7e722c1261a41636561e8857075264109a11c86c0de73cefe50db39396ba59"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\groovy.js",
+      "sha256": "469a021e26a94093fbcb5491f41db234889a7cf0183e1bf0c2f49a10cdefde4b"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\java.js",
+      "sha256": "3e19b818d4a4d48a0710f9d9965d3ae6fee86bdfd2314aa8f9aec89c47cf6908"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\javascript.js",
+      "sha256": "f0edc556ff97da57eede63732b476927da43da502b999186a4d9dac28f688fcd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\json.js",
+      "sha256": "ebb4ccb8af5c7b49f01af8b81b75e0a0bbb0aed5b3074b4f5c44f023e246fd2a"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\kotlin.js",
+      "sha256": "c7e0b63200229f1c2b311cf810044dd999b5e8b92f27266c06a999dd374ae31c"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\lua.js",
+      "sha256": "88a0ff413042cf4085e1c64c14ee9368ea66516f5b816548a51a9169b6e66ebd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\nix.js",
+      "sha256": "988d14d6bbe8d40609f13b8d76f55e096c64e9745740a70002ff1bf2de122757"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\perl.js",
+      "sha256": "6080515bade18921d32207f656f558857d976b195accbef86204c00c0beb3e2d"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\php.js",
+      "sha256": "6106a3585adc0ef5d8d52449bac71c14e1fdfc7e5a6257b8bd03a7964b58bfbd"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\python.js",
+      "sha256": "a7145981d1c4fbe9979021d16f34728408e95e72374173c878e24babd378bbc3"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\ruby.js",
+      "sha256": "ac7d96bd0483aeb712efbd60dfb675b04de0375293a4f3bd046353591e2bff86"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\rust.js",
+      "sha256": "bdc8e553ec27818f6679efd1ab30a5aa71cdf915b2205d51b4ce575d9898ad47"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\scala.js",
+      "sha256": "f00bc0c4c74ebcf0fdf4d16ed770d8391c9ef59ebf46876379887ad29dfd42fb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\swift.js",
+      "sha256": "68de29ed46414356e02d838b848ff2e4590b69fe1bd6286cf3a57e7ba156d6c2"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\highlight.js\\lib\\languages\\typescript.js",
+      "sha256": "8deb81f57cdad5fbb3d3afe1af393924d5ed17c81951d72459e03f141a6589cb"
+    },
+    {
+      "kind": "observed-module",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\packages\\coding-agent\\src\\utils\\html.ts",
+      "sha256": "d3abd075ab64807a1facae1511ec0b9b22f63153c7808eb63e7560fb00b1d48b"
+    }
+  ]
+}
