@@ -1,0 +1,254 @@
+{
+  "sourceHead": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "inputSha256": "55aafc2903c84e9058af399e9e9b42d1251726d4862f2e1b1d4d585fc314b708",
+  "scope": "Actual unchanged original serializer and summary failure exports with original contentText lexical helper; caller-owned values and temporary restored standard method overrides; no Source bodies replaced",
+  "cases": 30,
+  "rows": [
+    {
+      "name": "ordinary-function-metadata",
+      "value": [
+        {
+          "key": "serializeConversation",
+          "name": "serializeConversation",
+          "length": 1,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        },
+        {
+          "key": "getSummarizationFailure",
+          "name": "getSummarizationFailure",
+          "length": 2,
+          "prototype": [
+            true,
+            false,
+            false
+          ],
+          "constructor": true
+        }
+      ]
+    },
+    {
+      "name": "empty-and-ignored-roles",
+      "value": ""
+    },
+    {
+      "name": "user-text-and-empty",
+      "value": "[User]: hello\n\n[User]: ab"
+    },
+    {
+      "name": "assistant-text-and-thinking-omission",
+      "value": "[Assistant]: a\nb"
+    },
+    {
+      "name": "assistant-tools-and-argument-json",
+      "value": "[Assistant]: answer\n\n[Assistant tool calls]: read(path=\"a\", offset=2, optional=undefined); other(nested={\"x\":1}, list=[1,2])"
+    },
+    {
+      "name": "tool-results-concatenate-text",
+      "value": "[Tool result]: ab"
+    },
+    {
+      "name": "tool-result-utf16-truncation",
+      "value": "[Tool result]: 😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\n\n[... 1 more characters truncated]"
+    },
+    {
+      "name": "tool-result-exact-boundary",
+      "value": "[Tool result]: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "name": "message-custom-iterator",
+      "value": {
+        "result": "[User]: first\n\n[User]: second",
+        "log": [
+          "start",
+          "end"
+        ]
+      }
+    },
+    {
+      "name": "role-getters-remain-live",
+      "value": {
+        "result": "[Tool result]: out",
+        "reads": 3
+      }
+    },
+    {
+      "name": "assistant-content-getter-order",
+      "value": {
+        "result": "[Assistant]: answer",
+        "log": [
+          "content",
+          "content",
+          "content"
+        ]
+      }
+    },
+    {
+      "name": "argument-property-and-callee-order",
+      "value": {
+        "result": "[Assistant tool calls]: tool(a=1)",
+        "log": [
+          "type",
+          "arguments",
+          "name",
+          "type"
+        ]
+      }
+    },
+    {
+      "name": "object-entries-and-stringify-live",
+      "value": {
+        "result": "[Assistant tool calls]: t(a=1)",
+        "log": [
+          [
+            "entries",
+            true
+          ],
+          [
+            "stringify",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "argument-pair-destructuring-closes-iterator",
+      "value": {
+        "result": "[Assistant tool calls]: t(key=4)",
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "argument-json-bigint-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "missing-tool-arguments-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "message-iterator-abrupt-close-identity",
+      "value": {
+        "same": true,
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "blocks-iterator-abrupt-close-identity",
+      "value": {
+        "same": true,
+        "log": [
+          "closed"
+        ]
+      }
+    },
+    {
+      "name": "truthy-content-result-is-template-converted",
+      "value": {
+        "result": "[User]: custom",
+        "log": [
+          "string"
+        ]
+      }
+    },
+    {
+      "name": "large-message-iterator",
+      "value": {
+        "result": "",
+        "count": 70000
+      }
+    },
+    {
+      "name": "error-failure-message",
+      "value": "Summary failed: broken"
+    },
+    {
+      "name": "falsy-error-message-default",
+      "value": [
+        "Summary failed: Unknown error",
+        "Summary failed: Unknown error",
+        "Summary failed: Unknown error",
+        "Summary failed: Unknown error",
+        "Summary failed: Unknown error"
+      ]
+    },
+    {
+      "name": "length-failure-message",
+      "value": "Turn prefix summarization failed: generation hit the token cap and the summary is incomplete"
+    },
+    {
+      "name": "aborted-and-success-no-failure",
+      "value": [
+        {
+          "undefined": true
+        },
+        {
+          "undefined": true
+        },
+        {
+          "undefined": true
+        },
+        {
+          "undefined": true
+        }
+      ]
+    },
+    {
+      "name": "stop-reason-getter-read-per-branch",
+      "value": {
+        "result": "Summary failed: generation hit the token cap and the summary is incomplete",
+        "reads": 2
+      }
+    },
+    {
+      "name": "label-converts-before-error-getter",
+      "value": {
+        "result": "Summary failed: broken",
+        "log": [
+          "label:string",
+          "errorMessage"
+        ]
+      }
+    },
+    {
+      "name": "truthy-error-message-template-conversion",
+      "value": {
+        "result": "Summary failed: custom",
+        "log": [
+          "string"
+        ]
+      }
+    },
+    {
+      "name": "label-symbol-typeerror",
+      "value": {
+        "name": "TypeError"
+      }
+    },
+    {
+      "name": "failure-getter-original-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "normal-constructor-behavior",
+      "value": {
+        "serialize": true,
+        "failure": true
+      }
+    }
+  ]
+}

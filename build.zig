@@ -1530,6 +1530,12 @@ pub fn build(b: *std.Build) void {
     compaction_prepare_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-compaction-prepare", "Compare original canonical compaction preparation and complete native owner graphs").dependOn(&b.addRunArtifact(compaction_prepare_tests).step);
     b.step("build-native-sdk-compaction-prepare", "Compile canonical compaction preparation separately from runtime deadlines").dependOn(&compaction_prepare_tests.step);
+    const compaction_text_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_compaction_text_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK compaction text"}, .use_llvm = use_llvm });
+    linkQuickJs(b, compaction_text_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(compaction_text_tests.root_module, sqlite_lib_dir, sqlite_library);
+    compaction_text_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-sdk-compaction-text", "Compare original summary serialization and failure text with complete native owner graphs").dependOn(&b.addRunArtifact(compaction_text_tests).step);
+    b.step("build-native-sdk-compaction-text", "Compile original summary serialization independently of runtime deadlines").dependOn(&compaction_text_tests.step);
     const session_retry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_retry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session retry"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_retry_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_retry_tests.root_module, sqlite_lib_dir, sqlite_library);
