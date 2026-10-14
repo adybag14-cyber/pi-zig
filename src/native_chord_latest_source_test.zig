@@ -267,22 +267,61 @@ const composed_owned =
     \\const api=nativeLatestChordApi,empty={type:'object',properties:{},additionalProperties:false},n={type:'number'},host=api.createHost({name:'native',onError(e){throw e}}),token=api.local('native.resource',{version:1,input:empty,members:{read:api.method(undefined,n),owner:api.opaque('owner@1')}}),closes=[];const facet=version=>({name:'native',setup(f){f.serve(token,(_i,_p,self)=>{const cell=self.state('n',n,3,{version,migrate(v){return v+1}}),resource=self.resource('r',{version:1,open(){return{ok:true}},close(){closes.push(version)}});return{read(){return cell.value},owner:self.expose(resource)}})}});await host.install(facet(1));const local=host.get(token,{});await local.ready;const owner=local.owner;await host.reload([facet(2)]);if(await local.read()!==4||local.owner!==owner)throw Error('actual candidate migration/adoption failed');await host.close();local.release();if(closes.length!==1||closes[0]!==2||host.objects.size)throw Error('latest resource cleanup lost');
     \\const server=api.createHost({name:'server',onError(e){throw e}}),client=api.createHost({name:'client',kind:'client',onError(e){throw e}}),remote=api.remote('native.remote',{version:1,input:empty,variants:{live:{state:{n},methods:{add:api.method(n,n),echo:api.method({type:'string'},{type:'string'})}}}});server.serve(remote,(_i,_p,self)=>{const cell=self.state('n',n,1);return{variant:'live',n:cell,add(v,ctx){cell.change(ctx,x=>x+v);return cell.value},echo(v){return v}}});const[a,b]=api.memoryLinkPair();server.accept(a,{principal:{user:1},window:512});client.connect(b);const ref=client.get(remote,{}, {at:'server'});await ref.ready;const values=[],off=ref.n.subscribe(v=>values.push(v));if(await ref.add(2)!==3)throw Error('actual frame call failed');const payload='native-packing'.repeat(6000);if(await ref.echo(payload)!==payload)throw Error('actual native C packing lost bytes');off();await client.close();await server.close();ref.release();if(server.objects.size||server.connections.size||client.remotes.size||client.connections.size)throw Error('actual connection owner cleanup lost');
 ;
-test "native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA sweep" {
-    const Probe = struct {
-        fn run(gpa: std.mem.Allocator) !void {
-            defer allocationBaseline(gpa, "CHORD_COMPOSED_GPA_BASELINE_ALLOCATIONS");
-            const engine = try setup(gpa);
-            defer engine.deinit();
-            const generation = engine.native_allocation_generation;
-            engine.native_exception_diagnostics_suppressed += 1;
-            defer engine.native_exception_diagnostics_suppressed -= 1;
-            const result = engine.evalModule(composed_owned, "chord-latest-composed-gpa.mjs") catch |err| {
-                const mapped = engine.nativeAllocationError(err, generation);
-                diagnoseFailure(engine, gpa, mapped);
-                return mapped;
-            };
-            engine.freeValue(result);
+const ComposedProbe = struct {
+    fn run(gpa: std.mem.Allocator) !void {
+        defer allocationBaseline(gpa, "CHORD_COMPOSED_GPA_BASELINE_ALLOCATIONS");
+        const engine = try setup(gpa);
+        defer engine.deinit();
+        const generation = engine.native_allocation_generation;
+        engine.native_exception_diagnostics_suppressed += 1;
+        defer engine.native_exception_diagnostics_suppressed -= 1;
+        const result = engine.evalModule(composed_owned, "chord-latest-composed-gpa.mjs") catch |err| {
+            const mapped = engine.nativeAllocationError(err, generation);
+            diagnoseFailure(engine, gpa, mapped);
+            return mapped;
+        };
+        engine.freeValue(result);
+    }
+};
+
+// Each partition runs the same complete probe at every failure index. Only the
+// contiguous index range changes, keeping the original per-test deadline.
+fn composedAllocationPartition(comptime partition: usize) !void {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try ComposedProbe.run(baseline.allocator());
+    try std.testing.expect(!baseline.has_induced_failure);
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    try std.testing.expect(total > 1);
+    const middle = total / 2 + total % 2;
+    const start = if (partition == 0) 0 else middle;
+    const end = if (partition == 0) middle else total;
+    var completed: usize = 0;
+    for (start..end) |fail_index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = fail_index });
+        if (ComposedProbe.run(failing.allocator())) |_| {
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |err| switch (err) {
+            error.OutOfMemory => {
+                if (!failing.has_induced_failure) return error.UnexpectedOutOfMemoryError;
+                if (failing.allocated_bytes != failing.freed_bytes) {
+                    std.debug.print("Composed GPA partition{d} index{d}/{d} leaked: allocated{d} freed{d}\n", .{ partition, fail_index, total, failing.allocated_bytes, failing.freed_bytes });
+                    std.debug.dumpStackTrace(&.{ .return_addresses = &failing.stack_addresses, .skipped = .unknown });
+                    return error.MemoryLeakDetected;
+                }
+            },
+            else => return err,
         }
-    };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+        completed += 1;
+    }
+    std.debug.print("CHORD_COMPOSED_GPA_PARTITION={{\"partition\":{d},\"start\":{d},\"end\":{d},\"baseline\":{d},\"completed\":{d},\"leaks\":0,\"unexpected_errors\":0}}\n", .{ partition, start, end, total, completed });
+}
+
+test "native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA partition 0" {
+    try composedAllocationPartition(0);
+}
+
+test "native latest Chord1692 full composed reload resources remote state frames packed C allocation and teardown GPA partition 1" {
+    try composedAllocationPartition(1);
 }
