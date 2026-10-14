@@ -1,0 +1,1036 @@
+[
+  {
+    "name": "find-call-0",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-1",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-2",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m*.ts\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m*.ts\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-3",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m in \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (limit null)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m in \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m     ",
+      "\u001b[38;2;157;165;169m(limit null)\u001b[39m                            "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-4",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m\u001b[38;2;157;165;169m (limit 0)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m\u001b[38;2;157;165;169m (limit 0)\u001b[39m                    "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-5",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215ma.*b\u001b[39m\u001b[38;2;157;165;169m in ~/project\u001b[39m\u001b[38;2;157;165;169m (limit Infinity)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215ma.*b\u001b[39m\u001b[38;2;157;165;169m in ~/project\u001b[39m\u001b[38;2;157;165;169m (limit Infinity)\u001b[39m "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-6",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u03b1\u754c\u001b[39m\u001b[38;2;157;165;169m in a\u754c.txt\u001b[39m\u001b[38;2;157;165;169m (limit 1.5)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u03b1\u754c\u001b[39m\u001b[38;2;157;165;169m in a\u754c.txt\u001b[39m\u001b[38;2;157;165;169m (limit 1.5)\u001b[39m         "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-call-7",
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215m\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-0",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m                                    "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-1",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m                                    "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-2",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215msrc\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215msrc\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m                        "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-3",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m (limit null)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m (limit null)\u001b[39m           "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-4",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m\u001b[38;2;157;165;169m (limit 0)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m\u001b[38;2;157;165;169m (limit 0)\u001b[39m                          "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-5",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m~/project\u001b[39m\u001b[38;2;157;165;169m (limit Infinity)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m~/project\u001b[39m\u001b[38;2;157;165;169m (limit Infinity)\u001b[39m           "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-6",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215ma\u754c.txt\u001b[39m\u001b[38;2;157;165;169m (limit 1.5)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215ma\u754c.txt\u001b[39m\u001b[38;2;157;165;169m (limit 1.5)\u001b[39m                  "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "ls-call-7",
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215m.\u001b[39m                                    "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215mnext\u001b[39m\u001b[38;2;157;165;169m (limit 7)\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-0",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                            "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-1",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                            "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-2",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/*.ts/\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m limit 3\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/*.ts/\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m limit 3\u001b[39m              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-3",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m in \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m limit null\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[38;2;157;165;169m in \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m     ",
+      "\u001b[38;2;157;165;169mlimit null\u001b[39m                              "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-4",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m\u001b[38;2;157;165;169m (*.zig)\u001b[39m\u001b[38;2;157;165;169m limit 0\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m\u001b[38;2;157;165;169m (*.zig)\u001b[39m\u001b[38;2;157;165;169m limit 0\u001b[39m            "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-5",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/a.*b/\u001b[39m\u001b[38;2;157;165;169m in ~/project\u001b[39m\u001b[38;2;157;165;169m (*.ts)\u001b[39m\u001b[38;2;157;165;169m limit Infinity\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/a.*b/\u001b[39m\u001b[38;2;157;165;169m in ~/project\u001b[39m\u001b[38;2;157;165;169m (*.ts)\u001b[39m\u001b[38;2;157;165;169m limit   ",
+      "\u001b[38;2;157;165;169mInfinity\u001b[39m                                "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-6",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/\u03b1\u754c/\u001b[39m\u001b[38;2;157;165;169m in a\u754c.txt\u001b[39m\u001b[38;2;157;165;169m limit 1.5\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/\u03b1\u754c/\u001b[39m\u001b[38;2;157;165;169m in a\u754c.txt\u001b[39m\u001b[38;2;157;165;169m limit 1.5\u001b[39m         "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "grep-call-7",
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m//\u001b[39m\u001b[38;2;157;165;169m in .\u001b[39m                            "
+    ],
+    "reused": true,
+    "nextText": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/next/\u001b[39m\u001b[38;2;157;165;169m in next\u001b[39m\u001b[38;2;157;165;169m limit 7\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "find-result-0",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-1",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-2",
+    "text": "\n\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m\n\u001b[38;2;157;165;169msecond\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169msecond\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-3",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\n\u001b[38;2;157;165;169mline16\u001b[39m\n\u001b[38;2;157;165;169mline17\u001b[39m\n\u001b[38;2;157;165;169mline18\u001b[39m\n\u001b[38;2;157;165;169mline19\u001b[39m\n\u001b[38;2;157;165;169mline20\u001b[39m\u001b[38;2;157;165;169m\n... (5 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline16\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline17\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline18\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline19\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline20\u001b[39m\u001b[38;2;157;165;169m                                  ",
+      "\u001b[38;2;157;165;169m... (5 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m          "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-4",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\n\u001b[38;2;157;165;169mline16\u001b[39m\n\u001b[38;2;157;165;169mline17\u001b[39m\n\u001b[38;2;157;165;169mline18\u001b[39m\n\u001b[38;2;157;165;169mline19\u001b[39m\n\u001b[38;2;157;165;169mline20\u001b[39m\n\u001b[38;2;157;165;169mline21\u001b[39m\n\u001b[38;2;157;165;169mline22\u001b[39m\n\u001b[38;2;157;165;169mline23\u001b[39m\n\u001b[38;2;157;165;169mline24\u001b[39m\n\u001b[38;2;157;165;169mline25\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline16\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline17\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline18\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline19\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline20\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline21\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline22\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline23\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline24\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline25\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-5",
+    "text": "\n\u001b[38;2;157;165;169mlimited\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 10 results limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mlimited\u001b[39m                                 ",
+      "\u001b[38;2;205;154;34m[Truncated: 10 results limit]\u001b[39m           "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-6",
+    "text": "\n\u001b[38;2;157;165;169mbytes\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mbytes\u001b[39m                                   ",
+      "\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m               "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-7",
+    "text": "\n\u001b[38;2;157;165;169mzero\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 0B limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mzero\u001b[39m                                    ",
+      "\u001b[38;2;205;154;34m[Truncated: 0B limit]\u001b[39m                   "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-8",
+    "text": "\n\u001b[38;2;157;165;169mall\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 2 results limit, 1.0MB limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mall\u001b[39m                                     ",
+      "\u001b[38;2;205;154;34m[Truncated: 2 results limit, 1.0MB      ",
+      "\u001b[38;2;205;154;34mlimit]\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-result-9",
+    "text": "\n\u001b[38;2;157;165;169mimage output\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mimage output\u001b[39m                            ",
+      "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+      "\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m                "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-0",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-1",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-2",
+    "text": "\n\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m\n\u001b[38;2;157;165;169msecond\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169msecond\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-3",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\n\u001b[38;2;157;165;169mline16\u001b[39m\n\u001b[38;2;157;165;169mline17\u001b[39m\n\u001b[38;2;157;165;169mline18\u001b[39m\n\u001b[38;2;157;165;169mline19\u001b[39m\n\u001b[38;2;157;165;169mline20\u001b[39m\u001b[38;2;157;165;169m\n... (5 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline16\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline17\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline18\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline19\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline20\u001b[39m\u001b[38;2;157;165;169m                                  ",
+      "\u001b[38;2;157;165;169m... (5 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m          "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-4",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\n\u001b[38;2;157;165;169mline16\u001b[39m\n\u001b[38;2;157;165;169mline17\u001b[39m\n\u001b[38;2;157;165;169mline18\u001b[39m\n\u001b[38;2;157;165;169mline19\u001b[39m\n\u001b[38;2;157;165;169mline20\u001b[39m\n\u001b[38;2;157;165;169mline21\u001b[39m\n\u001b[38;2;157;165;169mline22\u001b[39m\n\u001b[38;2;157;165;169mline23\u001b[39m\n\u001b[38;2;157;165;169mline24\u001b[39m\n\u001b[38;2;157;165;169mline25\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline16\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline17\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline18\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline19\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline20\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline21\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline22\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline23\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline24\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline25\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-5",
+    "text": "\n\u001b[38;2;157;165;169mlimited\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 11 entries limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mlimited\u001b[39m                                 ",
+      "\u001b[38;2;205;154;34m[Truncated: 11 entries limit]\u001b[39m           "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-6",
+    "text": "\n\u001b[38;2;157;165;169mbytes\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mbytes\u001b[39m                                   ",
+      "\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m               "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-7",
+    "text": "\n\u001b[38;2;157;165;169mzero\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 0B limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mzero\u001b[39m                                    ",
+      "\u001b[38;2;205;154;34m[Truncated: 0B limit]\u001b[39m                   "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-8",
+    "text": "\n\u001b[38;2;157;165;169mall\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 3 entries limit, 1.0MB limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mall\u001b[39m                                     ",
+      "\u001b[38;2;205;154;34m[Truncated: 3 entries limit, 1.0MB      ",
+      "\u001b[38;2;205;154;34mlimit]\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "ls-result-9",
+    "text": "\n\u001b[38;2;157;165;169mimage output\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mimage output\u001b[39m                            ",
+      "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+      "\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m                "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-0",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-1",
+    "text": "",
+    "lines": [],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-2",
+    "text": "\n\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m\n\u001b[38;2;157;165;169msecond\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+      "\u001b[38;2;157;165;169msecond\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-3",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\u001b[38;2;157;165;169m\n... (10 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m\u001b[38;2;157;165;169m                                  ",
+      "\u001b[38;2;157;165;169m... (10 more lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m         "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-4",
+    "text": "\n\u001b[38;2;157;165;169mline1\u001b[39m\n\u001b[38;2;157;165;169mline2\u001b[39m\n\u001b[38;2;157;165;169mline3\u001b[39m\n\u001b[38;2;157;165;169mline4\u001b[39m\n\u001b[38;2;157;165;169mline5\u001b[39m\n\u001b[38;2;157;165;169mline6\u001b[39m\n\u001b[38;2;157;165;169mline7\u001b[39m\n\u001b[38;2;157;165;169mline8\u001b[39m\n\u001b[38;2;157;165;169mline9\u001b[39m\n\u001b[38;2;157;165;169mline10\u001b[39m\n\u001b[38;2;157;165;169mline11\u001b[39m\n\u001b[38;2;157;165;169mline12\u001b[39m\n\u001b[38;2;157;165;169mline13\u001b[39m\n\u001b[38;2;157;165;169mline14\u001b[39m\n\u001b[38;2;157;165;169mline15\u001b[39m\n\u001b[38;2;157;165;169mline16\u001b[39m\n\u001b[38;2;157;165;169mline17\u001b[39m\n\u001b[38;2;157;165;169mline18\u001b[39m\n\u001b[38;2;157;165;169mline19\u001b[39m\n\u001b[38;2;157;165;169mline20\u001b[39m\n\u001b[38;2;157;165;169mline21\u001b[39m\n\u001b[38;2;157;165;169mline22\u001b[39m\n\u001b[38;2;157;165;169mline23\u001b[39m\n\u001b[38;2;157;165;169mline24\u001b[39m\n\u001b[38;2;157;165;169mline25\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mline1\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline2\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline3\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline4\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline5\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline6\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline7\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline8\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline9\u001b[39m                                   ",
+      "\u001b[38;2;157;165;169mline10\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline11\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline12\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline13\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline14\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline15\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline16\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline17\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline18\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline19\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline20\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline21\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline22\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline23\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline24\u001b[39m                                  ",
+      "\u001b[38;2;157;165;169mline25\u001b[39m                                  "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-5",
+    "text": "\n\u001b[38;2;157;165;169mlimited\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 12 matches limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mlimited\u001b[39m                                 ",
+      "\u001b[38;2;205;154;34m[Truncated: 12 matches limit]\u001b[39m           "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-6",
+    "text": "\n\u001b[38;2;157;165;169mbytes\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mbytes\u001b[39m                                   ",
+      "\u001b[38;2;205;154;34m[Truncated: 50.0KB limit]\u001b[39m               "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-7",
+    "text": "\n\u001b[38;2;157;165;169mzero\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 0B limit, some lines truncated]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mzero\u001b[39m                                    ",
+      "\u001b[38;2;205;154;34m[Truncated: 0B limit, some lines        ",
+      "\u001b[38;2;205;154;34mtruncated]\u001b[39m                              "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-8",
+    "text": "\n\u001b[38;2;157;165;169mall\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 4 matches limit, 1.0MB limit, some lines truncated]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mall\u001b[39m                                     ",
+      "\u001b[38;2;205;154;34m[Truncated: 4 matches limit, 1.0MB      ",
+      "\u001b[38;2;205;154;34mlimit, some lines truncated]\u001b[39m            "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "grep-result-9",
+    "text": "\n\u001b[38;2;157;165;169mimage output\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m",
+    "lines": [
+      "                                        ",
+      "\u001b[38;2;157;165;169mimage output\u001b[39m                            ",
+      "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+      "\u001b[38;2;157;165;169m[Image: [image/unknown]]\u001b[39m                "
+    ],
+    "reused": true,
+    "nextText": ""
+  },
+  {
+    "name": "find-call-getters",
+    "trace": [
+      "lastComponent",
+      "pattern",
+      "path",
+      "limit",
+      "get-theme:fg",
+      "fg:error",
+      "get-theme:fg",
+      "get-theme:bold",
+      "bold:find",
+      "fg:toolTitle",
+      "get-theme:fg",
+      "fg:accent",
+      "get-theme:fg",
+      "fg:toolOutput",
+      "get-theme:fg",
+      "fg:toolOutput"
+    ],
+    "text": "\u001b[38;2;222;224;225mfind\u001b[39m \u001b[38;2;167;152;215mp\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m"
+  },
+  {
+    "name": "ls-call-getters",
+    "trace": [
+      "lastComponent",
+      "cwd",
+      "limit",
+      "path",
+      "get-theme:fg",
+      "fg:accent",
+      "get-theme:fg",
+      "get-theme:bold",
+      "bold:ls",
+      "fg:toolTitle",
+      "get-theme:fg",
+      "fg:toolOutput"
+    ],
+    "text": "\u001b[38;2;222;224;225mls\u001b[39m \u001b[38;2;167;152;215msrc\u001b[39m\u001b[38;2;157;165;169m (limit 3)\u001b[39m"
+  },
+  {
+    "name": "grep-call-getters",
+    "trace": [
+      "lastComponent",
+      "pattern",
+      "path",
+      "glob",
+      "limit",
+      "get-theme:fg",
+      "fg:error",
+      "get-theme:fg",
+      "get-theme:bold",
+      "bold:grep",
+      "fg:toolTitle",
+      "get-theme:fg",
+      "fg:accent",
+      "get-theme:fg",
+      "fg:toolOutput",
+      "get-theme:fg",
+      "fg:toolOutput",
+      "get-theme:fg",
+      "fg:toolOutput"
+    ],
+    "text": "\u001b[38;2;222;224;225mgrep\u001b[39m \u001b[38;2;167;152;215m/p/\u001b[39m\u001b[38;2;157;165;169m in src\u001b[39m\u001b[38;2;157;165;169m (*.ts)\u001b[39m\u001b[38;2;157;165;169m limit 3\u001b[39m"
+  },
+  {
+    "name": "grep-result-getters",
+    "trace": [
+      "showImages",
+      "content",
+      "type",
+      "content",
+      "type",
+      "text",
+      "expanded",
+      "details",
+      "matchLimit",
+      "details",
+      "truncation",
+      "details",
+      "lines",
+      "truncated",
+      "bytes"
+    ],
+    "text": "\n\u001b[38;2;157;165;169mrow\u001b[39m\n\u001b[38;2;205;154;34m[Truncated: 2 matches limit, 2.0KB limit, some lines truncated]\u001b[39m"
+  },
+  {
+    "name": "theme-throw",
+    "same": true
+  }
+]

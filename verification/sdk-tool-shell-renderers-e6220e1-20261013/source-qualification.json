@@ -1,0 +1,123 @@
+{
+  "status": "genuine_latest_Source53_double_capture_qualified_native_pending",
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Unchanged original Bash/PowerShell renderCall/renderResult, real Theme/TUI/VisualLinePreview and timer helpers; caller-fixed recorded state/duration when API permits, real interval scheduling+clear and actual start clock bounded by the observed call; no Source body rewrites or output normalization",
+  "Source_body_rewrites": 0,
+  "cases": 53,
+  "normalization": "none; raw rows and property order exact",
+  "clock_scope": "Only actual-start-clock observes a generated start: both original and native caller fixtures independently require integer within real Date.now before/after the actual renderCall, and undefined endedAt. Other cases use explicit caller-supplied renderer state/recorded duration already allowed by the API, actual intervals schedule and clear before case completion. No Date/timer overrides or sleeps.",
+  "captures": [
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-shell-renderers-e622-source-first-20261013-output.json",
+        "sha256": "f2b2d6d861c5bb08a97a4884bd621033beb64756aa3e61e4752747bf409c54a2"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-shell-renderers-e622-source-first-20261013.process.json",
+        "sha256": "ca2ec74edabbbe510040ada6babce04e282cdadcbda8c9b56320175854770222"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 107
+    },
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-shell-renderers-e622-source-second-20261013-output.json",
+        "sha256": "f2e7558d005755be5284dadc9d136fcb0b403e58c01d5fd6ee2fd12b41e2988f"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-shell-renderers-e622-source-second-20261013.process.json",
+        "sha256": "d030c009f7e68f82f087ee4ecbf89433589ecbc881b84e9c62106a9551afb51d"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 107
+    }
+  ],
+  "input": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-shell-renderers-e622.input.txt",
+    "sha256": "b8bb8465720e778b3bebbc6afc8752910c4c90556ccea237ade0e83dbf2bcf6d"
+  },
+  "fixture": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-shell-renderers-e622.json",
+    "sha256": "c45e0527a4ba4466cb979b625ef2f5b793b7888e0c5411d6dcdc72da41e99670"
+  },
+  "native_status": "uncompiled/uninstalled WIP; actual Bash/PowerShell bodies with true timers and VisualLinePreview authored, native gates pending",
+  "public_activation": false
+}

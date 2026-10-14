@@ -1,0 +1,47 @@
+const shellRows=[];
+const snapshot=component=>({children:component.children?.map(child=>({type:child.constructor.name,text:child.text,options:child.options?{text:child.options.text,maxVisualLines:child.options.maxVisualLines,keep:child.options.keep}:undefined})),narrow:component.render(8),wide:component.render(40)});
+const calls=[undefined,{}, {command:'',timeout:0},{command:'echo hello',timeout:null},{command:42,timeout:3},{command:'echo \u754c\ud83d\ude42',timeout:15},{command:'one\ntwo',timeout:1.5},null];
+for(const prompt of ['$','PS>']){
+ const renderers=createShellRenderers(prompt);
+ for(let i=0;i<calls.length;i++){
+  const context={state:{startedAt:1000,endedAt:5000},executionStarted:false};
+  const first=renderers.renderCall(calls[i],ignoredRendererTheme,context),text=first.text,lines=first.render(40);
+  context.lastComponent=first;const next=renderers.renderCall({command:'next'},ignoredRendererTheme,context);
+  shellRows.push({name:`${prompt}-call-${i}`,text,lines,reused:first===next,state:context.state,nextText:next.text,metadata:{call:{name:renderers.renderCall.name,length:renderers.renderCall.length,ownPrototype:Object.hasOwn(renderers.renderCall,'prototype')},result:{name:renderers.renderResult.name,length:renderers.renderResult.length,ownPrototype:Object.hasOwn(renderers.renderResult,'prototype')}}});
+ }
+}
+const long=Array.from({length:10},(_,i)=>`line ${i+1} abcdefghijklmnop`).join('\n');
+const inputs=[
+ {result:{content:[]}},
+ {result:{content:[{type:'text',text:'  short \ntext  '}]}},
+ {result:{content:[{type:'text',text:long}]}},
+ {result:{content:[{type:'text',text:long}]},expanded:true},
+ {result:{content:[{type:'text',text:'head\n\n[Full output: /tmp/owned.log]'}],details:{fullOutputPath:'/tmp/owned.log',truncation:{truncated:true,truncatedBy:'lines',outputLines:2,totalLines:100}}}},
+ {result:{content:[{type:'text',text:'head\n\n[other]'}],details:{fullOutputPath:'/tmp/owned.log',truncation:{truncated:true,outputLines:3,maxBytes:1024}}}},
+ {result:{content:[{type:'text',text:'head\n\n[Full output: /tmp/owned.log]'}],details:{fullOutputPath:'/tmp/owned.log',truncation:{truncated:true,outputLines:3}}},partial:true},
+ {result:{content:[{type:'text',text:'complete'}],details:{fullOutputPath:'/tmp/all.log'}}},
+ {result:{content:[{type:'text',text:'\x1b[31mred\x1b[39m\r\n\x00\uFFF9end'}]}},
+ {result:{content:[{type:'image',mimeType:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6SAAAAABJRU5ErkJggg=='},{type:'text',text:'with image'}]}},
+ {result:{content:[{type:'text',text:'error'}]},error:true},
+];
+for(const prompt of ['$','PS>'])for(let i=0;i<inputs.length;i++){
+ const input=inputs[i],context={state:{endedAt:5000},showImages:false,durationMs:4250,isError:input.error??false},options={isPartial:input.partial??false,expanded:input.expanded??false};
+ const renderers=createShellRenderers(prompt),first=renderers.renderResult(input.result,options,ignoredRendererTheme,context),output=snapshot(first);
+ context.lastComponent=first;const next=renderers.renderResult({content:[]},{isPartial:false,expanded:false},ignoredRendererTheme,context);
+ shellRows.push({name:`${prompt}-result-${i}`,output,reused:next===first,next:snapshot(next),state:context.state});
+}
+{
+ const context={state:{startedAt:1000,endedAt:5000},showImages:false,isError:false},renderers=createShellRenderers('$');
+ const partial=renderers.renderResult({content:[{type:'text',text:'live'}]},{isPartial:true,expanded:false},ignoredRendererTheme,context),scheduled=context.state.interval!==undefined,partialOutput=snapshot(partial);
+ const originalHandle=context.state.interval;context.lastComponent=partial;
+ const final=renderers.renderResult({content:[{type:'text',text:'done'}]},{isPartial:false,expanded:false},ignoredRendererTheme,context);
+ if(!scheduled||context.state.interval!==undefined)throw Error('Original shell timer lifecycle absent');
+ shellRows.push({name:'live-interval-cleared',scheduled,handleType:typeof originalHandle,reused:final===partial,partialOutput,finalOutput:snapshot(final),state:{startedAt:context.state.startedAt,endedAt:context.state.endedAt,intervalCleared:context.state.interval===undefined}});
+}
+{
+ const context={state:{},executionStarted:true},renderers=createShellRenderers('$'),before=Date.now();renderers.renderCall({command:'start'},ignoredRendererTheme,context);const after=Date.now(),started=context.state.startedAt;
+ if(!Number.isInteger(started)||started<before||started>after||context.state.endedAt!==undefined)throw Error('Original shell actual start clock outside observed call');
+ shellRows.push({name:'actual-start-clock',integer:Number.isInteger(started),withinObservedCall:started>=before&&started<=after,endedUndefined:context.state.endedAt===undefined});
+}
+for(const duration of [0,1,4200,59949,59950,60000,90000,3599999,3600000,7384000,-4250,NaN,Infinity])shellRows.push({name:'duration-'+String(duration),text:formatToolDuration(duration)});
+globalThis.sdkShellRendererRows=shellRows;

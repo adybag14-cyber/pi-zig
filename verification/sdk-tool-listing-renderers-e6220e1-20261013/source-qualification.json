@@ -1,0 +1,271 @@
+{
+  "status": "genuine_latest_Source59_double_capture_qualified_native_pending",
+  "source": "e6220e1316f86af818a0ccbfe1c09d7e918b41cf",
+  "scope": "Unchanged original find/ls/grep renderCall/renderResult with genuine latest Theme and TUI Text/image helpers; caller-supplied argument/results and live getters; no Source body rewrites",
+  "Source_body_rewrites": 0,
+  "cases": 59,
+  "normalization": "none; raw rows property order metadata and every getter trace exact",
+  "captures": [
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-first-20261013-output.json",
+        "sha256": "49e852992660821fe0cb870fa939736c195a8187ac9b51dcf48a2746bcb5323d"
+      },
+      "owner": {
+        "pid": 19744,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+        "argv": [
+          "--max-old-space-size=256",
+          "--conditions=source",
+          "--experimental-transform-types",
+          "--import",
+          "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-capture-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-first-20261013-output.json",
+          "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.input.txt"
+        ],
+        "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-capture-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-first-20261013-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.input.txt",
+        "created_utc": "2026-10-13T22:08:26.4096830Z",
+        "launched_utc": "2026-10-13T22:08:26.4059453+00:00",
+        "working_directory": "C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:08:32.8506879+00:00"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 108
+    },
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-second-20261013-output.json",
+        "sha256": "4ee9af99d03308d7b1cb6d13247da43a8135f65e9d86a5d83ad1b20a349317b8"
+      },
+      "owner": {
+        "pid": 55432,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+        "argv": [
+          "--max-old-space-size=256",
+          "--conditions=source",
+          "--experimental-transform-types",
+          "--import",
+          "file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-capture-20261013.mjs",
+          "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-second-20261013-output.json",
+          "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.input.txt"
+        ],
+        "live_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/sdk-loadout-e622-source-observe-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-capture-20261013.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-strict-second-20261013-output.json C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.input.txt",
+        "created_utc": "2026-10-13T22:08:33.1785913Z",
+        "launched_utc": "2026-10-13T22:08:33.1773200+00:00",
+        "working_directory": "C:\\Users\\adyba\\pi-sdk-loadout-source-e6220e1-20261013",
+        "outer_seconds": 300,
+        "settle_seconds": 10,
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-13T22:08:39.9844551+00:00"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 108
+    }
+  ],
+  "input": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.input.txt",
+    "sha256": "e76351d32087f875b9573a13a41fdbb5e3f70a04e543e38a6db3fa9253a5be9c"
+  },
+  "fixture": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-listing-renderers-e622.json",
+    "sha256": "13fe58b9f005e9922f580a981bc53730c65a1994fee32c7aa3113b637517370b"
+  },
+  "genuine_latest_Theme_asset": {
+    "path": "src\\extensions\\fixtures\\sdk-tool-renderers-e622-dark.json",
+    "sha256": "e1f96982f8cb7d2a48eca7db03c9cb282cb1e14a243680cd855638ecd6a251b6"
+  },
+  "native_status": "uncompiled/uninstalled WIP; actual find/ls/grep bodies and shared helpers authored, independent native gates pending",
+  "public_activation": false,
+  "previous_captures_preserved": [
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-first-20261013-output.json",
+        "sha256": "31124b0789f8dc9431e9e3fbc247dc7430e21460586659521ad67faebb494e5e"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-first-20261013.process.json",
+        "sha256": "f70681d1bc848b1c5bffb6bfd9182202f01c7052842f18c41c7bb08ce84d3cd7"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 108
+    },
+    {
+      "raw": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-second-20261013-output.json",
+        "sha256": "604e356a98ee5da653f82af9cc2ab2b5512abbbbcc909f0538922ccfdb318ec1"
+      },
+      "owner": {
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-listing-renderers-e622-source-second-20261013.process.json",
+        "sha256": "8949f33f8404ef3223076c8f88ee33589b6f547ba883e591307c1e0c931e22a3"
+      },
+      "before": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "after": [
+        {
+          "manifest": "sdk-loadout-e622-full-source-runtime-manifest-20261013.json",
+          "manifestSha256": "989968c5a4032a0bfbbaa7e92e2a2b4a38bf10a6e7891945dcf5cbb585264375",
+          "count": 1945,
+          "drift": 0
+        },
+        {
+          "manifest": "durable-19cb534-reference-20261012-all-built-runtime.json",
+          "manifestSha256": "38223db79be24c7f9f5833a662d3c73ff2531f78489699dbf87f9f52a9b4bfba",
+          "count": 31064,
+          "drift": 0
+        },
+        {
+          "manifest": "root-current8a-npm-tools-before.json",
+          "manifestSha256": "f834312aac6ac8d79ef4b49ccb806096d80e92fca403cc650a05e901d4c280dd",
+          "count": 1774,
+          "drift": 0
+        }
+      ],
+      "observed_modules": 108
+    }
+  ],
+  "strict_negative_fixture": "Expected caller marker still mandatory; unexpected thrown values rethrown unchanged, old+new genuine raw59 rows/property order exact."
+}

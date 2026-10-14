@@ -1416,6 +1416,16 @@ pub fn build(b: *std.Build) void {
     sdk_visual_preview_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-tool-visual-preview", "Compile the private actual VisualLinePreview Source comparator without execution").dependOn(&sdk_visual_preview_tests.step);
     b.step("test-native-sdk-tool-visual-preview", "Compare original visual wrapping cache callback metadata and complete failure allocator cleanup").dependOn(&b.addRunArtifact(sdk_visual_preview_tests).step);
+    const sdk_listing_renderers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_listing_renderers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK tool listing renderers"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_listing_renderers_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_listing_renderers_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-tool-listing-renderers", "Compile the private genuine Source59 find ls grep presentation artifact without execution").dependOn(&sdk_listing_renderers_tests.step);
+    b.step("test-native-sdk-tool-listing-renderers", "Compare original find ls grep presentation Theme image fallback metadata getters GC and failure allocation ownership").dependOn(&b.addRunArtifact(sdk_listing_renderers_tests).step);
+    const sdk_shell_renderers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_shell_renderers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK tool shell renderers"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_shell_renderers_tests.root_module, quickjs, sqlite_lib_dir);
+    sdk_shell_renderers_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-tool-shell-renderers", "Compile private actual Bash PowerShell Source53 presentation").dependOn(&sdk_shell_renderers_tests.step);
+    b.step("test-native-sdk-tool-shell-renderers", "Compare original Bash PowerShell timers duration Theme visual output and allocation cleanup").dependOn(&b.addRunArtifact(sdk_shell_renderers_tests).step);
     const sdk_message_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_message_conversion_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public message conversion"}, .use_llvm = use_llvm });
     linkQuickJs(b, sdk_message_tests.root_module, quickjs, sqlite_lib_dir);
     sdk_message_tests.root_module.addImport("catalog_tool", catalog_tool);

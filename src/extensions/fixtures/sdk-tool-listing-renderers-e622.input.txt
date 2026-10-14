@@ -1,0 +1,54 @@
+const listingRows=[];
+const callInputs=[undefined,{}, {pattern:'*.ts',path:'src',limit:3},{pattern:42,path:[],glob:false,limit:null},{pattern:'',path:'',glob:'*.zig',limit:0},{pattern:'a.*b',path:'~/project',glob:'*.ts',limit:Infinity},{pattern:'\u03b1\u754c',path:'a\u754c.txt',limit:1.5},null];
+for(const kind of ['find','ls','grep']){
+ const renderers=listingRenderers[kind];
+ for(let i=0;i<callInputs.length;i++){
+  const context={cwd:'C:/Users/adyba/pi-zig-update-evidence-20261003',state:{},showImages:false};
+  const first=renderers.renderCall(callInputs[i],actualRendererTheme,context),firstText=first.text,firstLines=first.render(40);
+  context.lastComponent=first;const again=renderers.renderCall({pattern:'next',path:'next',limit:7},actualRendererTheme,context);
+  listingRows.push({name:`${kind}-call-${i}`,text:firstText,lines:firstLines,reused:again===first,nextText:again.text,metadata:{call:{name:renderers.renderCall.name,length:renderers.renderCall.length,ownPrototype:Object.hasOwn(renderers.renderCall,'prototype')},result:{name:renderers.renderResult.name,length:renderers.renderResult.length,ownPrototype:Object.hasOwn(renderers.renderResult,'prototype')}}});
+ }
+}
+const longOutput=Array.from({length:25},(_,i)=>`line${i+1}`).join('\n');
+const resultInputs=[
+ {content:[]},
+ {content:[{type:'text',text:'  \n  '}]},
+ {content:[{type:'text',text:'\x1b[31mred\x1b[39m\r\n\x00\x08\x0b\uFFF9end'},{type:'text',text:'second'}]},
+ {content:[{type:'text',text:longOutput}]},
+ {content:[{type:'text',text:longOutput}],expanded:true},
+ {content:[{type:'text',text:'limited'}],details:{resultLimitReached:10,entryLimitReached:11,matchLimitReached:12}},
+ {content:[{type:'text',text:'bytes'}],details:{truncation:{truncated:true}}},
+ {content:[{type:'text',text:'zero'}],details:{truncation:{truncated:true,maxBytes:0},linesTruncated:true}},
+ {content:[{type:'text',text:'all'}],details:{resultLimitReached:2,entryLimitReached:3,matchLimitReached:4,truncation:{truncated:true,maxBytes:1024*1024},linesTruncated:true}},
+ {content:[{type:'image',mimeType:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6SAAAAABJRU5ErkJggg=='},{type:'image'},{type:'text',text:'image output'}]},
+];
+for(const kind of ['find','ls','grep'])for(let i=0;i<resultInputs.length;i++){
+ const {expanded,...input}=resultInputs[i],context={cwd:'C:/Users/adyba/pi-zig-update-evidence-20261003',state:{},showImages:false};
+ const first=listingRenderers[kind].renderResult(input,{expanded:expanded??false,isPartial:false},actualRendererTheme,context),firstText=first.text,firstLines=first.render(40);
+ context.lastComponent=first;const again=listingRenderers[kind].renderResult({content:[]},{expanded:false,isPartial:false},actualRendererTheme,context);
+ listingRows.push({name:`${kind}-result-${i}`,text:firstText,lines:firstLines,reused:again===first,nextText:again.text});
+}
+for(const kind of ['find','ls','grep']){
+ const trace=[],args={get pattern(){trace.push('pattern');return'p'},get path(){trace.push('path');return'src'},get glob(){trace.push('glob');return'*.ts'},get limit(){trace.push('limit');return 3}},theme=new Proxy(actualRendererTheme,{get(target,key){if(key==='fg'||key==='bold'){trace.push(`get-theme:${key}`);const original=Reflect.get(target,key);return(...args)=>{trace.push(`${key}:${args[0]}`);return Reflect.apply(original,target,args)}}return Reflect.get(target,key)}}),context={get lastComponent(){trace.push('lastComponent');return undefined},get cwd(){trace.push('cwd');return'C:/Users/adyba/pi-zig-update-evidence-20261003'},state:{}};
+ const rendered=listingRenderers[kind].renderCall(args,theme,context);
+ listingRows.push({name:`${kind}-call-getters`,trace,text:rendered.text});
+}
+{
+ const trace=[];
+ const result={
+  get content(){trace.push('content');return[{get type(){trace.push('type');return'text'},get text(){trace.push('text');return'row'}}]},
+  get details(){trace.push('details');return{
+   get matchLimitReached(){trace.push('matchLimit');return 2},
+   get truncation(){trace.push('truncation');return{get truncated(){trace.push('truncated');return true},get maxBytes(){trace.push('bytes');return 2048}}},
+   get linesTruncated(){trace.push('lines');return true}
+  }}
+ };
+ const context={lastComponent:undefined,state:{},get showImages(){trace.push('showImages');return false}},options={get expanded(){trace.push('expanded');return false}};
+ const output=listingRenderers.grep.renderResult(result,options,actualRendererTheme,context);
+ listingRows.push({name:'grep-result-getters',trace,text:output.text});
+}
+{
+ const marker={identity:'caller-theme'},theme=new Proxy(actualRendererTheme,{get(target,key){if(key==='fg')throw marker;return Reflect.get(target,key)}});let same=false;
+ try{listingRenderers.find.renderCall({pattern:'x'},theme,{state:{}})}catch(error){if(error!==marker)throw error;same=true}if(!same)throw Error('original renderer theme exception identity absent');listingRows.push({name:'theme-throw',same});
+}
+globalThis.sdkListingRendererRows=listingRows;

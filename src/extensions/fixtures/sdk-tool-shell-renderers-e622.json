@@ -1,0 +1,1971 @@
+[
+  {
+    "name": "$-call-0",
+    "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-1",
+    "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-2",
+    "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-3",
+    "text": "\u001b[38;2;222;224;225m$ echo hello\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ echo hello\u001b[39m                            "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-4",
+    "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m            "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-5",
+    "text": "\u001b[38;2;222;224;225m$ echo \u754c\ud83d\ude42\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ echo \u754c\ud83d\ude42\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m               "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-6",
+    "text": "\u001b[38;2;222;224;225m$ one\ntwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ one                                   ",
+      "\u001b[38;2;222;224;225mtwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m                      "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-call-7",
+    "text": "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225m$ \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                   "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225m$ next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-0",
+    "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-1",
+    "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-2",
+    "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-3",
+    "text": "\u001b[38;2;222;224;225mPS> echo hello\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> echo hello\u001b[39m                          "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-4",
+    "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> \u001b[38;2;234;127;129m[invalid arg]\u001b[39m\u001b[39m\u001b[38;2;157;165;169m (timeout 3s)\u001b[39m          "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-5",
+    "text": "\u001b[38;2;222;224;225mPS> echo \u754c\ud83d\ude42\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> echo \u754c\ud83d\ude42\u001b[39m\u001b[38;2;157;165;169m (timeout 15s)\u001b[39m             "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-6",
+    "text": "\u001b[38;2;222;224;225mPS> one\ntwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> one                                 ",
+      "\u001b[38;2;222;224;225mtwo\u001b[39m\u001b[38;2;157;165;169m (timeout 1.5s)\u001b[39m                      "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "PS>-call-7",
+    "text": "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m",
+    "lines": [
+      "\u001b[38;2;222;224;225mPS> \u001b[38;2;157;165;169m...\u001b[39m\u001b[39m                                 "
+    ],
+    "reused": true,
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000
+    },
+    "nextText": "\u001b[38;2;222;224;225mPS> next\u001b[39m",
+    "metadata": {
+      "call": {
+        "name": "renderCall",
+        "length": 3,
+        "ownPrototype": false
+      },
+      "result": {
+        "name": "renderResult",
+        "length": 4,
+        "ownPrototype": false
+      }
+    }
+  },
+  {
+    "name": "$-result-0",
+    "output": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-1",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mshort \u001b[39m\n\u001b[38;2;157;165;169mtext\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mshort \u001b[39m  ",
+        "\u001b[38;2;157;165;169mtext\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mshort \u001b[39m                                  ",
+        "\u001b[38;2;157;165;169mtext\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-2",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 10 ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169m... (5 earlier lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+        "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-3",
+    "output": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mline 1  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 2  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 3  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 4  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 5  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 6  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 7  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 8  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 9  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 10 ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-4",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: showing 2 of 100 lines]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md:      ",
+        "\u001b[38;2;205;154;34mshowing ",
+        "\u001b[38;2;205;154;34m2 of 100",
+        "\u001b[38;2;205;154;34mlines]\u001b[39m  ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34mshowing 2 of 100 lines]\u001b[39m                 ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-5",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[other]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (1.0KB limit)]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+        "\u001b[38;2;157;165;169m\u001b[39m        ",
+        "\u001b[38;2;157;165;169m[other]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md: 3    ",
+        "\u001b[38;2;205;154;34mlines   ",
+        "\u001b[38;2;205;154;34mshown   ",
+        "\u001b[38;2;205;154;34m(1.0KB  ",
+        "\u001b[38;2;205;154;34mlimit)]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+        "\u001b[38;2;157;165;169m[other]\u001b[39m                                 ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34m3 lines shown (1.0KB limit)]\u001b[39m            ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-6",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (50.0KB limit)]\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+        "\u001b[38;2;157;165;169m\u001b[39m        ",
+        "\u001b[38;2;157;165;169m[Full   ",
+        "\u001b[38;2;157;165;169moutput: ",
+        "\u001b[38;2;157;165;169m/tmp/own",
+        "\u001b[38;2;157;165;169med.log]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md: 3    ",
+        "\u001b[38;2;205;154;34mlines   ",
+        "\u001b[38;2;205;154;34mshown   ",
+        "\u001b[38;2;205;154;34m(50.0KB ",
+        "\u001b[38;2;205;154;34mlimit)]\u001b[39m "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+        "\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m           ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34m3 lines shown (50.0KB limit)]\u001b[39m           "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-7",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/all",
+        "\u001b[38;2;205;154;34m.log]\u001b[39m   ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mcomplete\u001b[39m                                ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m             ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-8",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mred\u001b[39m     ",
+        "\u001b[38;2;157;165;169mend\u001b[39m     ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+        "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-9",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mwith image\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mwith    ",
+        "\u001b[38;2;157;165;169mimage\u001b[39m   ",
+        "\u001b[38;2;157;165;169m[Image: ",
+        "\u001b[38;2;157;165;169m[image/p",
+        "\u001b[38;2;157;165;169mng] 1x1]\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mwith image\u001b[39m                              ",
+        "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "$-result-10",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169merror\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169merror\u001b[39m   ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169merror\u001b[39m                                   ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-0",
+    "output": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-1",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mshort \u001b[39m\n\u001b[38;2;157;165;169mtext\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mshort \u001b[39m  ",
+        "\u001b[38;2;157;165;169mtext\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mshort \u001b[39m                                  ",
+        "\u001b[38;2;157;165;169mtext\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-2",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 10 ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169m... (5 earlier lines,\u001b[39m \u001b[38;2;126;136;142m\u001b[39m\u001b[38;2;157;165;169m to expand\u001b[39m\u001b[38;2;157;165;169m)\u001b[39m",
+        "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-3",
+    "output": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m\n\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mline 1  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 2  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 3  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 4  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 5  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 6  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 7  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 8  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 9  ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "\u001b[38;2;157;165;169mline 10 ",
+        "\u001b[38;2;157;165;169mabcdefgh",
+        "\u001b[38;2;157;165;169mijklmnop\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mline 1 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 2 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 3 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 4 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 5 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 6 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 7 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 8 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 9 abcdefghijklmnop\u001b[39m                 ",
+        "\u001b[38;2;157;165;169mline 10 abcdefghijklmnop\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-4",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: showing 2 of 100 lines]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md:      ",
+        "\u001b[38;2;205;154;34mshowing ",
+        "\u001b[38;2;205;154;34m2 of 100",
+        "\u001b[38;2;205;154;34mlines]\u001b[39m  ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34mshowing 2 of 100 lines]\u001b[39m                 ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-5",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[other]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (1.0KB limit)]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m    ",
+        "\u001b[38;2;157;165;169m\u001b[39m        ",
+        "\u001b[38;2;157;165;169m[other]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md: 3    ",
+        "\u001b[38;2;205;154;34mlines   ",
+        "\u001b[38;2;205;154;34mshown   ",
+        "\u001b[38;2;205;154;34m(1.0KB  ",
+        "\u001b[38;2;205;154;34mlimit)]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+        "\u001b[38;2;157;165;169m[other]\u001b[39m                                 ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34m3 lines shown (1.0KB limit)]\u001b[39m            ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-6",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mhead\u001b[39m\n\u001b[38;2;157;165;169m\u001b[39m\n\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated: 3 lines shown (50.0KB limit)]\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169m... (\u001b[0m...\u001b[0m",
+        "\u001b[38;2;157;165;169m\u001b[39m        ",
+        "\u001b[38;2;157;165;169m[Full   ",
+        "\u001b[38;2;157;165;169moutput: ",
+        "\u001b[38;2;157;165;169m/tmp/own",
+        "\u001b[38;2;157;165;169med.log]\u001b[39m ",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/own",
+        "\u001b[38;2;205;154;34med.log. ",
+        "\u001b[38;2;205;154;34mTruncate",
+        "\u001b[38;2;205;154;34md: 3    ",
+        "\u001b[38;2;205;154;34mlines   ",
+        "\u001b[38;2;205;154;34mshown   ",
+        "\u001b[38;2;205;154;34m(50.0KB ",
+        "\u001b[38;2;205;154;34mlimit)]\u001b[39m "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mhead\u001b[39m                                    ",
+        "\u001b[38;2;157;165;169m\u001b[39m                                        ",
+        "\u001b[38;2;157;165;169m[Full output: /tmp/owned.log]\u001b[39m           ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/owned.log. Truncated:",
+        "\u001b[38;2;205;154;34m3 lines shown (50.0KB limit)]\u001b[39m           "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-7",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m"
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mcomplete\u001b[39m",
+        "        ",
+        "\u001b[38;2;205;154;34m[Full   ",
+        "\u001b[38;2;205;154;34moutput: ",
+        "\u001b[38;2;205;154;34m/tmp/all",
+        "\u001b[38;2;205;154;34m.log]\u001b[39m   ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mcomplete\u001b[39m                                ",
+        "                                        ",
+        "\u001b[38;2;205;154;34m[Full output: /tmp/all.log]\u001b[39m             ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-8",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mred\u001b[39m\n\u001b[38;2;157;165;169mend\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mred\u001b[39m     ",
+        "\u001b[38;2;157;165;169mend\u001b[39m     ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mred\u001b[39m                                     ",
+        "\u001b[38;2;157;165;169mend\u001b[39m                                     ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-9",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mwith image\u001b[39m\n\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mwith    ",
+        "\u001b[38;2;157;165;169mimage\u001b[39m   ",
+        "\u001b[38;2;157;165;169m[Image: ",
+        "\u001b[38;2;157;165;169m[image/p",
+        "\u001b[38;2;157;165;169mng] 1x1]\u001b[39m",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mwith image\u001b[39m                              ",
+        "\u001b[38;2;157;165;169m[Image: [image/png] 1x1]\u001b[39m                ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "PS>-result-10",
+    "output": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169merror\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169merror\u001b[39m   ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169merror\u001b[39m                                   ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "reused": true,
+    "next": {
+      "children": [
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.3s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.3s\u001b[39m    "
+      ],
+      "wide": [
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.3s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "endedAt": 5000
+    }
+  },
+  {
+    "name": "live-interval-cleared",
+    "scheduled": true,
+    "handleType": "object",
+    "reused": true,
+    "partialOutput": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mlive\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mElapsed 4.0s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mlive\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;157;165;169mElapsed ",
+        "\u001b[38;2;157;165;169m4.0s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mlive\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mElapsed 4.0s\u001b[39m                            "
+      ]
+    },
+    "finalOutput": {
+      "children": [
+        {
+          "type": "Spacer"
+        },
+        {
+          "type": "VisualLinePreview",
+          "options": {
+            "text": "\u001b[38;2;157;165;169mdone\u001b[39m",
+            "maxVisualLines": 5,
+            "keep": "end"
+          }
+        },
+        {
+          "type": "Text",
+          "text": "\n\u001b[38;2;157;165;169mTook 4.0s\u001b[39m"
+        }
+      ],
+      "narrow": [
+        "",
+        "\u001b[38;2;157;165;169mdone\u001b[39m    ",
+        "        ",
+        "\u001b[38;2;157;165;169mTook    ",
+        "\u001b[38;2;157;165;169m4.0s\u001b[39m    "
+      ],
+      "wide": [
+        "",
+        "\u001b[38;2;157;165;169mdone\u001b[39m                                    ",
+        "                                        ",
+        "\u001b[38;2;157;165;169mTook 4.0s\u001b[39m                               "
+      ]
+    },
+    "state": {
+      "startedAt": 1000,
+      "endedAt": 5000,
+      "intervalCleared": true
+    }
+  },
+  {
+    "name": "actual-start-clock",
+    "integer": true,
+    "withinObservedCall": true,
+    "endedUndefined": true
+  },
+  {
+    "name": "duration-0",
+    "text": "0.0s"
+  },
+  {
+    "name": "duration-1",
+    "text": "0.0s"
+  },
+  {
+    "name": "duration-4200",
+    "text": "4.2s"
+  },
+  {
+    "name": "duration-59949",
+    "text": "59.9s"
+  },
+  {
+    "name": "duration-59950",
+    "text": "60.0s"
+  },
+  {
+    "name": "duration-60000",
+    "text": "1m 0s"
+  },
+  {
+    "name": "duration-90000",
+    "text": "1m 30s"
+  },
+  {
+    "name": "duration-3599999",
+    "text": "59m 59s"
+  },
+  {
+    "name": "duration-3600000",
+    "text": "1h 0m 0s"
+  },
+  {
+    "name": "duration-7384000",
+    "text": "2h 3m 4s"
+  },
+  {
+    "name": "duration--4250",
+    "text": "-4.3s"
+  },
+  {
+    "name": "duration-NaN",
+    "text": "NaNh NaNm NaNs"
+  },
+  {
+    "name": "duration-Infinity",
+    "text": "Infinityh NaNm NaNs"
+  }
+]
