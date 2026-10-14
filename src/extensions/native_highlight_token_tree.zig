@@ -113,9 +113,10 @@ const Renderer = struct {
     fn escape(scope: *Scope, text: c.JSValue) !c.JSValue {
         var result = text;
         inline for (.{ .{ "&", "&amp;" }, .{ "<", "&lt;" }, .{ ">", "&gt;" }, .{ "\"", "&quot;" }, .{ "'", "&#x27;" } }) |entry| {
+            const replace = try scope.get(result, "replace");
             var arguments = [_]c.JSValue{ try scope.text(entry[0]), try scope.text("g") };
             const expression = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, arguments.len, &arguments)));
-            result = try scope.invoke(result, "replace", &.{ expression, try scope.text(entry[1]) });
+            result = try scope.call(replace, result, &.{ expression, try scope.text(entry[1]) });
         }
         return result;
     }
