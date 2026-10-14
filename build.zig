@@ -812,6 +812,13 @@ pub fn build(b: *std.Build) void {
     const chord_state_run = b.addRunArtifact(chord_state_tests);
     chord_state_run.has_side_effects = true;
     b.step("test-native-chord-replicated-state-source", "Diagnose actual Source16 replicated state GC and complete allocation baseline; failure sweep remains separately required").dependOn(&chord_state_run.step);
+    const chord_package_state_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_package_state_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 package State"} });
+    linkQuickJs(b, chord_package_state_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(chord_package_state_tests.root_module, sqlite_lib_dir, sqlite_library);
+    b.step("build-native-chord-package-state-source", "Compile unchanged actual State16 over the assembled private package factory").dependOn(&chord_package_state_tests.step);
+    const chord_package_state_run = b.addRunArtifact(chord_package_state_tests);
+    chord_package_state_run.has_side_effects = true;
+    b.step("test-native-chord-package-state-source", "Compare actual State16 through the complete package factory with GC and a fresh composed baseline").dependOn(&chord_package_state_run.step);
     const chord_websockets_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_chord_websockets_source_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native Chordb45 accept WebSockets"} });
     linkQuickJs(b, chord_websockets_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(chord_websockets_tests.root_module, sqlite_lib_dir, sqlite_library);
