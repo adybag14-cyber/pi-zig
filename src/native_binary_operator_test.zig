@@ -24,7 +24,7 @@ test "native binary operators preserve guest coercion BigInt exception and borro
     try js.define(engine, global, "nativeIncrement", try engine.checked(c.JS_NewCFunction(engine.context, increment, "nativeIncrement", 1)));
     try js.define(engine, global, "nativeDecrement", try engine.checked(c.JS_NewCFunction(engine.context, decrement, "nativeDecrement", 1)));
     const result = try engine.eval(
-        \\const operators=[(a,b)=>a+b,(a,b)=>a-b,(a,b)=>a*b,(a,b)=>a/b,(a,b)=>a<b,(a,b)=>a<=b,(a,b)=>a>b,(a,b)=>a>=b,(a,b)=>a%b,(a,b)=>a**b];
+        \\const operators=[(a,b)=>a+b,(a,b)=>a-b,(a,b)=>a*b,(a,b)=>a/b,(a,b)=>a<b,(a,b)=>a<=b,(a,b)=>a>b,(a,b)=>a>=b,(a,b)=>a%b,(a,b)=>a**b,(a,b)=>a&b,(a,b)=>a|b,(a,b)=>a<<b,(a,b)=>a>>b];
         \\const pairs=[[1,2],[-0,0],[NaN,1],[Infinity,2],['2',3],['10','2'],[2n,3n],[2n,3],[undefined,null],[true,false],[2n,-1n],[0n,0n]];
         \\for(let op=0;op<operators.length;op++)for(const [left,right]of pairs){let a,b,ea,eb;try{a=operators[op](left,right)}catch(e){ea=e}try{b=nativeBinary(op,left,right)}catch(e){eb=e}if(!!ea!==!!eb||ea&&ea.name!==eb.name||!ea&&!Object.is(a,b))throw Error('native operator mismatch '+op)}
         \\for(let op=0;op<operators.length;op++){const trace=[];const left={[Symbol.toPrimitive](hint){trace.push('left:'+hint);return 6}},right={[Symbol.toPrimitive](hint){trace.push('right:'+hint);return 2}};const expected=operators[op](left,right),before=trace.splice(0);const actual=nativeBinary(op,left,right);if(!Object.is(actual,expected)||JSON.stringify(trace)!==JSON.stringify(before))throw Error('operator hint/order');if(typeof left[Symbol.toPrimitive]!=='function')throw Error('borrowed operand released')}

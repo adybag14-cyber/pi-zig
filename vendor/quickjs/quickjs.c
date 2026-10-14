@@ -16360,6 +16360,10 @@ JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
     case 7: status = js_relational_slow(ctx, stack + 2, OP_gte); break;
     case 8: status = js_binary_arith_slow(ctx, stack + 2, OP_mod); break;
     case 9: status = js_binary_arith_slow(ctx, stack + 2, OP_pow); break;
+    case 10: status = js_binary_logic_slow(ctx, stack + 2, OP_and); break;
+    case 11: status = js_binary_logic_slow(ctx, stack + 2, OP_or); break;
+    case 12: status = js_binary_logic_slow(ctx, stack + 2, OP_shl); break;
+    case 13: status = js_binary_logic_slow(ctx, stack + 2, OP_sar); break;
     default:
         JS_FreeValue(ctx, stack[0]);
         JS_FreeValue(ctx, stack[1]);
@@ -59021,6 +59025,22 @@ static JSValue JS_ToBigIntCtorFree(JSContext *ctx, JSValue val)
         return JS_ThrowTypeError(ctx, "cannot convert to BigInt");
     }
     return val;
+}
+
+JSValue JS_PiBigIntNode(JSContext *ctx, JSValueConst value)
+{
+    JSValue val = JS_DupValue(ctx, value);
+    if (JS_IsObject(val)) {
+        val = JS_ToPrimitiveFree(ctx, val, HINT_NUMBER);
+        if (JS_IsException(val))
+            return val;
+    }
+    if (JS_IsNull(val) || JS_IsUndefined(val)) {
+        const char *label = JS_IsNull(val) ? "null" : "undefined";
+        JS_FreeValue(ctx, val);
+        return JS_ThrowTypeError(ctx, "Cannot convert %s to a BigInt", label);
+    }
+    return JS_ToBigIntCtorFree(ctx, val);
 }
 
 static JSValue js_bigint_constructor(JSContext *ctx,

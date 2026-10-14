@@ -1,0 +1,35 @@
+// One actual module instance; deterministic caller-owned clock and random source.
+const rows=[],saved={DateNow:Date.now,crypto:Object.getOwnPropertyDescriptor(globalThis,'crypto'),Number:globalThis.Number,BigInt:globalThis.BigInt,Uint8Array:globalThis.Uint8Array,ArrayFrom:Array.from,MathMax:Math.max};
+let clock=1000,randomCall=0,trace=[];
+Date.now=()=>{trace.push('date');return clock;};
+Object.defineProperty(globalThis,'crypto',{configurable:true,value:{getRandomValues(bytes){trace.push(['random',bytes.length]);for(let i=0;i<bytes.length;i++)bytes[i]=(i*17+randomCall)&255;randomCall++;return bytes;}}});
+const observe=(name,body)=>{trace=[];let value,error;try{value=body();}catch(e){error={name:e.name,message:e.message};}rows.push({name,value,error,trace:JSON.parse(JSON.stringify(trace))});};
+try{
+ observe('ordinary-function-metadata',()=>{const f=uuidAPI,d=Object.getOwnPropertyDescriptor(f,'prototype');return{name:f.name,length:f.length,keys:Reflect.ownKeys(f),prototype:[d.writable,d.enumerable,d.configurable],constructor:f.prototype.constructor===f};});
+ observe('ordinary-clock',()=>uuidAPI());
+ observe('ordinary-clock-moves-forward',()=>{clock=2000;return uuidAPI();});
+ observe('ordinary-clock-clamps-backwards',()=>{clock=500;return uuidAPI();});
+ observe('explicit-zero',()=>uuidAPI(0));
+ observe('explicit-maximum',()=>uuidAPI(0xffffffffffff));
+ observe('explicit-follower-earlier',()=>uuidAPI(1));
+ observe('ordinary-after-follower-retains-clock',()=>uuidAPI());
+ observe('explicit-null-requests-clock-encodes-zero',()=>uuidAPI(null));
+ observe('negative-range',()=>uuidAPI(-1));
+ observe('fractional-range',()=>uuidAPI(1.5));
+ observe('too-large-range',()=>uuidAPI(0x1000000000000));
+ observe('nan-range',()=>uuidAPI(NaN));
+ observe('infinity-range',()=>uuidAPI(Infinity));
+ observe('string-range',()=>uuidAPI('1'));
+ observe('bigint-range',()=>uuidAPI(1n));
+ observe('object-range-does-not-coerce',()=>uuidAPI({valueOf(){trace.push('must-not-coerce');return 1;}}));
+ observe('explicit-does-not-read-date',()=>{const old=Date.now;Date.now=()=>{throw Error('must-not-read');};try{return uuidAPI(123);}finally{Date.now=old;}});
+ observe('random-rejection-before-sequence-increment',()=>{const old=crypto.getRandomValues;crypto.getRandomValues=()=>{throw Error('random-marker');};try{return uuidAPI(321);}finally{crypto.getRandomValues=old;}});
+ observe('sequence-after-random-rejection',()=>uuidAPI(321));
+ observe('mutable-math-max-receiver-and-order',()=>{const old=Math.max;Math.max=function(...args){trace.push(['max',this===Math,...args]);return old(...args);};try{return uuidAPI();}finally{Math.max=old;}});
+ observe('mutable-number-conversion',()=>{const original=globalThis.Number;function Number(value){trace.push(['number',String(value)]);return original(value);}Number.isInteger=function(value){trace.push(['isInteger',this===Number,value]);return original.isInteger(value);};globalThis.Number=Number;try{return uuidAPI(99);}finally{globalThis.Number=original;}});
+ observe('mutable-bigint-conversion',()=>{const original=globalThis.BigInt;globalThis.BigInt=function BigInt(value){trace.push(['bigint',value]);return original(value);};try{return uuidAPI(99);}finally{globalThis.BigInt=original;}});
+ observe('array-from-receiver-and-callback',()=>{const original=Array.from;Array.from=function(bytes,callback){trace.push(['from',this===Array,bytes.length,callback.name,callback.length,Object.hasOwn(callback,'prototype')]);return original.call(this,bytes,callback);};try{return uuidAPI(88);}finally{Array.from=original;}});
+ observe('ordinary-construction',()=>{const value=new uuidAPI(77);return{prototype:Object.getPrototypeOf(value)===uuidAPI.prototype,keys:Object.keys(value)};});
+ observe('tail-bits-variant-and-monotonic-sequence',()=>{const a=uuidAPI(555),b=uuidAPI(555);return{a,b,ordered:a<b,version:a[14],variant:a[19]};});
+}finally{Date.now=saved.DateNow;globalThis.Number=saved.Number;globalThis.BigInt=saved.BigInt;globalThis.Uint8Array=saved.Uint8Array;Array.from=saved.ArrayFrom;Math.max=saved.MathMax;if(saved.crypto)Object.defineProperty(globalThis,'crypto',saved.crypto);else delete globalThis.crypto;}
+globalThis.uuidRows=rows;
