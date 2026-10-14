@@ -68,3 +68,69 @@ test "native legacy CJS function restores inactive frames after actual native en
     const restored = try engine.eval("if(inheritAPI.arguments!==null||inheritAPI.caller!==null||inheritAPI({ok:1}).ok!==1)throw Error('legacy cancellation frame not restored');", "highlight-legacy-restored.js", c.JS_EVAL_TYPE_GLOBAL);
     engine.freeValue(restored);
 }
+
+// Additional source-only targeted C-VM heap pressure diagnostic.
+// This is NOT an exhaustive C malloc failure sweep or trusted OOM classifier.
+fn armLegacyVmBudget(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    var budget: u32 = undefined;
+    if (argc != 1 or c.JS_ToUint32(context, &budget, argv[0]) < 0) return c.JS_ThrowTypeError(context, "VM budget argument required");
+    var usage: c.JSMemoryUsage = undefined;
+    c.JS_ComputeMemoryUsage(engine.runtime, &usage);
+    c.JS_SetMemoryLimit(engine.runtime, @as(usize, @intCast(usage.malloc_size)) + budget + 1);
+    return c.pi_js_undefined();
+}
+fn disarmLegacyVmBudget(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+    return c.pi_js_undefined();
+}
+fn createLegacyVmProbe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    return inherit.createLegacyPrototype(engine) catch |err| @import("extensions/native_sdk.zig").fail(engine, err);
+}
+test "native legacy CJS function targeted C VM heap budgets preserve recovery frames and release every memory owner" {
+    const owners = c.pi_js_native_memory_owners();
+    var failures = [_]usize{ 0, 0 };
+    var successes = [_]usize{ 0, 0 };
+    var completed: usize = 0;
+    for (0..2) |program| {
+        for (0..257) |step| {
+            const budget = step * 32;
+            {
+                const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+                defer engine.deinit();
+                defer c.JS_RunGC(engine.runtime);
+                defer c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+                try setup(engine);
+                try engine.bindFunction("nativeArmVmBudget", armLegacyVmBudget, 1);
+                try engine.bindFunction("nativeDisarmVmBudget", disarmLegacyVmBudget, 0);
+                try engine.bindFunction("nativeCreateLegacyProbe", createLegacyVmProbe, 0);
+                const source = if (program == 0)
+                    try std.fmt.allocPrint(std.testing.allocator, "globalThis.vmInput={{get a(){{nativeArmVmBudget({d});try{{return inheritAPI.arguments}}finally{{nativeDisarmVmBudget()}}}}}};globalThis.vmValue=inheritAPI(vmInput);", .{budget})
+                else
+                    try std.fmt.allocPrint(std.testing.allocator, "nativeArmVmBudget({d});let fn;try{{fn=nativeCreateLegacyProbe()}}finally{{nativeDisarmVmBudget()}}if(fn.name!=='inherit')throw Error('legacy constructor result');globalThis.vmCreated=fn;", .{budget});
+                defer std.testing.allocator.free(source);
+                const outcome = engine.eval(source, "legacy-targeted-vm-budget.js", c.JS_EVAL_TYPE_GLOBAL);
+                // Restore before inspecting, allocating, running GC or deinitializing.
+                c.JS_SetMemoryLimit(engine.runtime, engine.options.memory_limit);
+                if (outcome) |result| {
+                    engine.freeValue(result);
+                    successes[program] += 1;
+                } else |err| {
+                    // Ordinary JS_EXCEPTION under this explicitly armed limit is
+                    // pressure evidence only; never relabel it trusted native OOM.
+                    if (err != error.JavaScriptException) return err;
+                    failures[program] += 1;
+                }
+                const recovered = try engine.eval("if(inheritAPI.arguments!==null||inheritAPI.caller!==null||inheritAPI({ok:1}).ok!==1)throw Error('legacy frame recovery under VM budget');", "legacy-vm-recovery.js", c.JS_EVAL_TYPE_GLOBAL);
+                engine.freeValue(recovered);
+                engine.finishJob();
+            }
+            try std.testing.expectEqual(owners, c.pi_js_native_memory_owners());
+            completed += 1;
+        }
+        try std.testing.expect(failures[program] > 0 and successes[program] > 0);
+    }
+    std.debug.print("LEGACY_FUNCTION_VM_HEAP_LIMIT_COVERAGE={{\"programs\":2,\"minimum_budget\":0,\"maximum_budget\":8192,\"step\":32,\"completed\":{d},\"failures\":[{d},{d}],\"successes\":[{d},{d}],\"owner_leaks\":0,\"exhaustive_C_malloc\":false,\"trusted_OOM_classification\":false}}\n", .{ completed, failures[0], failures[1], successes[0], successes[1] });
+}
