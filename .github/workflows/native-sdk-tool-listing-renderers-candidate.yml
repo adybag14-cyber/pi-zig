@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 150
     env:
-      PI_LISTING_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '128' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || '8' }}
+      PI_LISTING_ALLOCATION_SHARDS: ${{ matrix.mode == 'Debug' && matrix.os == 'macos-latest' && '128' || matrix.mode == 'Debug' && matrix.os == 'ubuntu-latest' && '32' || matrix.mode == 'Debug' && matrix.os == 'windows-latest' && '16' || matrix.mode == 'ReleaseSafe' && matrix.os == 'macos-latest' && '32' || '8' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:

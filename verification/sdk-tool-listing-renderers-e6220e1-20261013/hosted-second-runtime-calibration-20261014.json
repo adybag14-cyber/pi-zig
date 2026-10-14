@@ -1,0 +1,62 @@
+{
+  "status": "remaining_two_profiles_timed_out_no_correctness_failure",
+  "run_id": 38557264252,
+  "head": "7601df18447002fcb3fcf96de78dee70dce192c8",
+  "preserved_limits": {
+    "test_seconds": 120,
+    "runtime_owner_seconds": 300,
+    "compile_owner_seconds": 1320,
+    "host_await_ms": 10000,
+    "workflow_minutes": 150,
+    "runtime_step_minutes": 125
+  },
+  "windows_debug": {
+    "baseline": 8597,
+    "shards": 8,
+    "passed_shards": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "failed_shard": 7,
+    "range_start": 7522,
+    "range_end": 8597,
+    "completed": 1071,
+    "last_complete_index": 8592,
+    "begun_but_not_completed_index": 8593,
+    "failure": "test120s timeout",
+    "next_shards": 16
+  },
+  "macos_release_safe": {
+    "baseline": 8486,
+    "shards": 8,
+    "passed_shards": [
+      0,
+      1,
+      2
+    ],
+    "failed_shard": 3,
+    "range_start": 3182,
+    "range_end": 4243,
+    "completed": 906,
+    "last_complete_index": 4087,
+    "begun_but_not_completed_index": 4088,
+    "failure": "test120s timeout",
+    "next_shards": 32
+  },
+  "unchanged_profiles": {
+    "linux_debug": 32,
+    "macos_debug": 128,
+    "linux_release_safe": 8,
+    "windows_release_safe": 8
+  },
+  "collector": "Full platform/mode baseline and every index exactly once, unchanged; fail fast per partition; no historical partial-proof combination",
+  "production_body_changes": 0,
+  "fixture_changes": 0,
+  "public_activation": false,
+  "recorded_utc": "2026-10-14T12:18:51.9748624+00:00"
+}
