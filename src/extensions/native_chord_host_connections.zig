@@ -21,28 +21,39 @@ pub fn accept(s: *Scope, bindings: c.JSValue, host: c.JSValue, link: c.JSValue, 
     try h.field(s, peer, "kind", kind);
     try h.field(s, peer, "name", if (is_host) try s.get(options, "name") else c.pi_js_undefined());
     try h.field(s, config, "peer", peer);
+    if (try s.equal(kind, "client")) {
+        const data = (try h.actor(s, host, bindings, .HostImpl)).data;
+        const sequence = try s.keep(try s.engine.checked(c.JS_PiIncrement(s.engine.context, try s.get(data, "originSeq"))));
+        try h.field(s, data, "originSeq", sequence);
+        try h.field(s, config, "originId", try s.keep(try @import("native_utf16.zig").concat(s.engine, &.{ try s.get(data, "incarnation"), try s.text(":"), sequence })));
+    }
     _ = try routing.addConnection(s, bindings, host, link, config);
 }
 pub fn connect(s: *Scope, bindings: c.JSValue, host: c.JSValue, link: c.JSValue, options_value: c.JSValue) !void {
+    const principal_atom = try js.atom(s.engine, try s.text("principal"));
+    defer c.JS_FreeAtom(s.engine.context, principal_atom);
+    const has_principal = c.JS_HasProperty(s.engine.context, options_value, principal_atom);
+    if (has_principal < 0) return js.capture(s.engine);
+    if (has_principal == 0) _ = try h.typeError(s, &.{try s.text("connect needs `principal`: what the parent's own requests act as")});
     const previous = try s.get(host, "upstream");
     if (!h.nullish(previous) and try h.flag(s, previous, "open")) _ = try h.invoke(s, try s.get(try s.get(host, "upstream"), "link"), "close", &.{try s.text("replaced")});
     const config = try s.record();
-    const options = if (c.JS_IsUndefined(options_value)) try s.record() else options_value;
+    const options = options_value;
     try js.spreadInto(s.engine, config, options);
     try h.field(s, config, "role", try s.text("upstream"));
-    try h.field(s, config, "principal", c.pi_js_undefined());
+    try h.field(s, config, "principal", try s.get(options, "principal"));
     const peer = try s.record();
     try h.field(s, peer, "kind", try s.text("host"));
     try h.field(s, peer, "name", c.pi_js_undefined());
     try h.field(s, config, "peer", peer);
     const connection = try routing.addConnection(s, bindings, host, link, config);
     try js.setKey(s.engine, host, try s.text("upstream"), connection);
-    var iterator = try js.Iterator.init(s.engine, try s.get(host, "remotes"), try h.iteratorSymbol(s));
+    var iterator = try js.Iterator.init(s.engine, try h.invoke(s, try s.get(host, "bindings"), "values", &.{}), try h.iteratorSymbol(s));
     defer iterator.deinit();
     errdefer iterator.closePreserving();
     while (try iterator.next()) |handle| {
         defer s.engine.freeValue(handle);
-        if (c.JS_IsUndefined(try s.get(handle, "binding"))) _ = try h.invoke(s, connection, "hold", &.{handle});
+        if (c.JS_IsUndefined(try s.get(handle, "hold")) and !try h.flag(s, handle, "ended")) _ = try h.invoke(s, connection, "hold", &.{ handle, try s.get(handle, "applied") });
     }
 }
 pub fn connectionClosed(s: *Scope, bindings: c.JSValue, host: c.JSValue, connection: c.JSValue, parent_lost: ParentLost) anyerror!void {
@@ -73,6 +84,7 @@ pub fn forgetRemote(s: *Scope, host: c.JSValue, handle: c.JSValue) !void {
     _ = try h.invoke(s, try s.get(host, "remotes"), "delete", &.{handle});
 }
 pub fn route(s: *Scope, bindings: c.JSValue, host: c.JSValue, prefix: c.JSValue, value: c.JSValue) !void {
+    if (!c.JS_IsFunction(s.engine.context, try s.get(value, "principal"))) _ = try h.typeError(s, &.{ try s.text("route "), prefix, try s.text(" needs `principal`: what the routed hosts act as when they call back") });
     const data = (try h.actor(s, host, bindings, .HostImpl)).data;
     _ = try h.invoke(s, try s.get(data, "routes"), "set", &.{ prefix, value });
 }

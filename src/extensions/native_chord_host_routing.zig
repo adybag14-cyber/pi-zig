@@ -3,6 +3,7 @@ const h = @import("native_chord_host_values.zig");
 const js = h.js;
 const c = h.c;
 const Scope = h.Scope;
+const aw = @import("native_chord_async_work.zig");
 pub fn remoteAddress(s: *Scope, at: c.JSValue, token: c.JSValue, input: c.JSValue, principal: c.JSValue) !c.JSValue {
     const canonical = @import("native_chord_canonical.zig");
     const destination = try s.keep(try @import("native_utf16.zig").concat(s.engine, &.{ try s.text("@"), at }));
@@ -58,22 +59,22 @@ fn revoked(s: *Scope, work: c.JSValue) !c.JSValue {
 fn refused(s: *Scope, work: c.JSValue) !c.JSValue {
     return h.throwValue(s, try h.errorValue(s, try s.get(work, "bindings"), "forbidden", &.{ try s.get(work, "hostName"), try s.text(" refused for this principal") }, c.pi_js_undefined()));
 }
-fn resolveStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, phase: c_int) anyerror!c.JSValue {
+fn resolveStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, phase: c_int) anyerror!void {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    if (rejected) return h.throwValue(&s, value);
-    if ((phase == 1 or phase == 3) and c.JS_ToBool(engine.context, value) == 0) return refused(&s, work);
-    if (!try still(&s, work)) return revoked(&s, work);
+    if (rejected) return aw.complete(&s, work, value, true);
+    if ((phase == 1 or phase == 3) and c.JS_ToBool(engine.context, value) == 0) return aw.complete(&s, work, try h.errorValue(&s, try s.get(work, "bindings"), "forbidden", &.{ try s.get(work, "hostName"), try s.text(" refused for this principal") }, c.pi_js_undefined()), true);
+    if (!try still(&s, work)) return aw.complete(&s, work, try h.errorValue(&s, try s.get(work, "bindings"), "gone", &.{try s.text("principal invalidated while resolving")}, c.pi_js_undefined()), true);
     const route = try s.get(work, "route");
     const name = try s.get(work, "hostName");
-    if (phase == 1) return h.wait(resolveStep, engine, work, try h.invoke(&s, route, "resolve", &.{name}), 2);
+    if (phase == 1) return aw.wait(resolveStep, &s, work, try h.invoke(&s, route, "resolve", &.{name}), 2);
     if (phase == 2) {
         try h.field(&s, work, "link", value);
-        return h.wait(resolveStep, engine, work, try h.invoke(&s, route, "authorize", &.{ try s.get(work, "principal"), name }), 3);
+        return aw.wait(resolveStep, &s, work, try h.invoke(&s, route, "authorize", &.{ try s.get(work, "principal"), name }), 3);
     }
-    if (phase == 4) return s.result(try s.get(work, "connection"));
+    if (phase == 4) return aw.complete(&s, work, try s.get(work, "connection"), false);
     const host = try s.get(work, "host");
     const link = try s.get(work, "link");
     const connections = try h.snapshot(&s, try s.get(host, "connections"));
@@ -88,12 +89,7 @@ fn resolveStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: b
     if (h.nullish(connection)) {
         const config = try s.record();
         try h.field(&s, config, "role", try s.text("downstream"));
-        const principal_method = try s.get(route, "principal");
-        var principal = if (h.nullish(principal_method)) c.pi_js_undefined() else try s.keep(try js.call(engine, principal_method, route, &.{name}));
-        if (h.nullish(principal)) {
-            principal = try s.record();
-            try h.field(&s, principal, "host", name);
-        }
+        const principal = try s.keep(try js.call(engine, try s.get(route, "principal"), route, &.{name}));
         try h.field(&s, config, "principal", principal);
         const peer = try s.record();
         try h.field(&s, peer, "kind", try s.text("host"));
@@ -102,32 +98,39 @@ fn resolveStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: b
         connection = try addConnection(&s, try s.get(work, "bindings"), host, link, config);
     }
     try h.field(&s, work, "connection", connection);
-    return h.wait(resolveStep, engine, work, try h.invoke(&s, connection, "whenSynced", &.{}), 4);
+    return aw.wait(resolveStep, &s, work, try h.invoke(&s, connection, "whenSynced", &.{}), 4);
 }
 pub fn resolve(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, route: c.JSValue, name: c.JSValue, principal: c.JSValue, guard: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const work = try s.record();
+    const work = try aw.create(&s);
     inline for (.{ "bindings", "host", "route", "hostName", "principal" }, .{ bindings, host, route, name, principal }) |key, value| try h.field(&s, work, key, value);
     const check = if (c.JS_IsUndefined(guard)) try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, always, "still", 0, 0, 0, null))) else guard;
     try h.field(&s, work, "still", check);
-    const authorization = h.invoke(&s, route, "authorize", &.{ principal, name }) catch |err| return @import("native_durable.zig").rejectedPromise(engine, err);
-    const pending = try s.keep(try h.wait(resolveStep, engine, work, authorization, 1));
-    return @import("native_durable.zig").resolvedPromise(engine, pending);
+    const generation = engine.native_allocation_generation;
+    const authorization = h.invoke(&s, route, "authorize", &.{ principal, name });
+    if (authorization) |pending| {
+        try aw.wait(resolveStep, &s, work, pending, 1);
+    } else |err| try aw.rejectErrorSince(&s, work, err, generation);
+    return aw.result(&s, work);
 }
-fn relayStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!c.JSValue {
+fn relayStep(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) anyerror!void {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    if (rejected) return h.throwValue(&s, value);
+    if (rejected) return aw.complete(&s, work, value, true);
     const held = try s.get(work, "relay");
     if (try h.flag(&s, held, "current")) _ = try h.invoke(&s, held, "open", &.{value});
-    return c.pi_js_undefined();
+    try aw.complete(&s, work, c.pi_js_undefined(), false);
 }
 pub fn relay(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, held: c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const data = (try h.actor(&s, host, bindings, .HostImpl)).data;
     const at = try s.get(try s.get(held, "frame"), "at");
+    const frame = try s.get(held, "frame");
+    const token = try s.keep(try @import("native_chord_contracts_v4.zig").contractFromDescription(engine, try s.get(try s.get(bindings, "errors"), "ChordError"), try s.get(frame, "token")));
+    const placement = try s.get(try s.get(token, "description"), "host");
+    if (c.JS_IsUndefined(placement) or !c.JS_IsStrictEqual(engine.context, try s.keep(try @import("native_chord_contracts_v4.zig").resolveHost(engine, try s.get(try s.get(bindings, "errors"), "ChordError"), try s.get(try s.get(frame, "token"), "name"), placement, try s.get(frame, "input"))), at)) return h.invalid(&s, bindings, "placement", &.{ try s.get(try s.get(frame, "token"), "name"), try s.text(" with this input does not live on "), at });
     const route = try routeFor(&s, data, at);
     if (c.JS_IsUndefined(route)) {
         const direct = try childNamed(&s, host, at);
@@ -137,10 +140,10 @@ pub fn relay(engine: *h.Engine, bindings: c.JSValue, host: c.JSValue, held: c.JS
     var captures = [_]c.JSValue{held};
     const guard = try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, current, "", 0, 0, 1, &captures)));
     const pending = try s.keep(try resolve(engine, bindings, host, route, at, try s.get(held, "principal"), guard));
-    const work = try s.record();
+    const work = try aw.create(&s);
     try h.field(&s, work, "relay", held);
-    const completed = try s.keep(try h.wait(relayStep, engine, work, pending, 0));
-    return @import("native_durable.zig").resolvedPromise(engine, completed);
+    try aw.wait(relayStep, &s, work, pending, 0);
+    return aw.result(&s, work);
 }
 fn bindResult(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, mode: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = h.Engine.fromContext(ctx.?);

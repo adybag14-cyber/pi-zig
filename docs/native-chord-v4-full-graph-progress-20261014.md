@@ -73,6 +73,12 @@ implementation body or missing-method fallback is introduced.
   release. The unchanged RelayCall class bodies are reused through a real
   installCalls entry point. Host connection policy and reload initialization
   ordering still gate a coherent private factory.
+- Host accept/connect/route now stamp client origins, require the configured
+  parent principal and route principal function, and re-hold shared bindings
+  with their applied flag. Routing no longer invents a principal; its genuine
+  authorize/resolve/authorize/synchronize stages use owned intrinsic await
+  capabilities and preserve the authorization checks around each await.
+  Relaying validates the contract's placement before route resolution.
 
 ## Qualification boundary and remaining integration
 
