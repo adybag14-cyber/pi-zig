@@ -1,0 +1,25 @@
+{
+  "pid": 3274,
+  "executable": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node",
+  "executable_sha256": "20A18709F0154D668F1BD6F6EA8C2A7AE001447B4B2C339732F22E57A8767A55",
+  "argv": [
+    "--expose-gc",
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/observe-original.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/capture-posix.mjs",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-result/legacy32-second-output.json",
+    "/Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/input32.txt"
+  ],
+  "live_command_line": "/Users/runner/hostedtoolcache/node/24.14.0/arm64/bin/node --expose-gc --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/observe-original.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/capture-posix.mjs /Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-result/legacy32-second-output.json /Users/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/input32.txt",
+  "created_utc": "2026-10-14T22:07:34.1564230Z",
+  "launched_utc": "2026-10-14T22:07:34.1560840+00:00",
+  "working_directory": "/Users/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T22:07:43.1191370+00:00"
+}

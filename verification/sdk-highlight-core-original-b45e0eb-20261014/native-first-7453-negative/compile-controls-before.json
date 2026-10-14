@@ -1,0 +1,18 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-NativeCore74B45First-20261014.ps1",
+    "sha256": "37D047C0C280905A99F315E3318E979079C9EFAF17B80EDF722583E650774C6B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013\\verification\\sdk-session-loadout-e6220e1-20261013\\run-native-owner.ps1",
+    "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+    "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-source-b45-full-manifest-20261014.json",
+    "sha256": "5FE14C9790D7874032CA6440C45FA11102F4D1EE9219E511593C63635E652276"
+  }
+]

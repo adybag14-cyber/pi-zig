@@ -1,0 +1,25 @@
+{
+  "pid": 2458,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--expose-gc",
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/observe-original.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/capture-posix.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-result/legacy32-first-output.json",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/input32.txt"
+  ],
+  "live_command_line": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node --expose-gc --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/observe-original.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/capture-posix.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-result/legacy32-first-output.json /home/runner/work/pi-zig/pi-zig/verification/sdk-highlight-legacy32-original-b45e0eb-20261014/input32.txt",
+  "created_utc": "2026-10-14T22:06:30.8794824Z",
+  "launched_utc": "2026-10-14T22:06:30.8814271+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T22:06:33.7754991+00:00"
+}
