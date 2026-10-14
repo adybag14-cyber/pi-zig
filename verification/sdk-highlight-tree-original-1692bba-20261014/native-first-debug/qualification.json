@@ -1,6 +1,6 @@
 {
   "status": "first_Windows_Debug_actual_original_tree24_algorithm_comparison_GC_and_partition_passed",
-  "head": "f61649d",
+  "head": "f61649d08ac07d8bc4b23761fdc6d5760bbe666f",
   "source_original_run": 38573862642,
   "input_sha256": "D8C4C5633C2FD1AC0EDC85DB2938CC93522E70AFB6F28253FBC1560C92818B1A",
   "expected_sha256": "EAC33F3CA19037330227CA61881B52F5A1F1A7CF784BCB99DD0AEDB581C60E8F",
@@ -105,5 +105,7 @@
     }
   ],
   "public_activation": false,
-  "checked_utc": "2026-10-14T14:46:45.3904912+00:00"
+  "checked_utc": "2026-10-14T15:46:45.3904912+01:00",
+  "compile_runtime_original_manifests_identical": true,
+  "compile_runtime_vendor_manifests_identical": true
 }
