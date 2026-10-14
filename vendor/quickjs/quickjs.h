@@ -794,6 +794,11 @@ JS_EXTERN JSValue JS_PiDecrement(JSContext *ctx, JSValueConst value);
 /* Borrowed source/iterator; owned iterator/key results. Non-null done output. */
 JS_EXTERN JSValue JS_PiForInStart(JSContext *ctx, JSValueConst value);
 JS_EXTERN JSValue JS_PiForInNext(JSContext *ctx, JSValueConst iterator, int *done);
+/* Private SOURCE-ONLY legacy-function draft. Borrowed argv, fresh owned args.
+ * identity output is opaque and valid only for comparison during the call. */
+JS_EXTERN JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
+                                        JSValueConst *argv);
+JS_EXTERN JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity);
 /* Borrowed input, owned actual interpreter ToNumeric result. */
 JS_EXTERN JSValue JS_PiToNumeric(JSContext *ctx, JSValueConst value);
 JS_EXTERN JSValue JS_NewBigUint64(JSContext *ctx, uint64_t v);

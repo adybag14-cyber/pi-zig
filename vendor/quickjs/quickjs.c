@@ -16956,6 +16956,24 @@ static JSValue js_build_arguments(JSContext *ctx, int argc, JSValueConst *argv)
     return JS_EXCEPTION;
 }
 
+/* Pi private legacy-function draft. Borrow argv; return a fresh owned value. */
+JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
+                              JSValueConst *argv)
+{
+    return js_build_arguments(ctx, argc, argv);
+}
+
+/* Read-only current frame observation; token is compared only during a call.
+ * Native/bound/apply caller conformance is deliberately not inferred here. */
+JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
+{
+    JSStackFrame *frame = ctx->rt->current_stack_frame;
+    *identity = (uintptr_t)frame;
+    if (!frame || frame->is_strict_mode || !JS_IsObject(frame->cur_func))
+        return JS_NULL;
+    return JS_DupValue(ctx, frame->cur_func);
+}
+
 #define GLOBAL_VAR_OFFSET 0x40000000
 #define ARGUMENT_VAR_OFFSET 0x20000000
 
