@@ -1,0 +1,14 @@
+{
+  "head": "cb2dbe46dc9d4153b389f74920c2c516c7fb0076",
+  "tree": "9e4e04d50fa60d2afc9b04cfc7f2f6fec34e589a",
+  "os": "ubuntu-latest",
+  "mode": "ReleaseSafe",
+  "allocation_shards": 8,
+  "source_count": 4769,
+  "tools_count": 19543,
+  "source_cases": 62,
+  "source_fixture_platform": "Linux",
+  "genuine_posix_source_replay": "actual62_doublecaptures_Linux_macOS_run38570185401",
+  "full_highlight_grammar_engine_qualified": false,
+  "public_activation": false
+}

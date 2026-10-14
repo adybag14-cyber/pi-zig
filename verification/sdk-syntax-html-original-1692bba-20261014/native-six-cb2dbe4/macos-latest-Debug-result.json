@@ -1,0 +1,18 @@
+{
+  "head": "cb2dbe46dc9d4153b389f74920c2c516c7fb0076",
+  "os": "macos-latest",
+  "mode": "Debug",
+  "status": "passed",
+  "source_cases": 62,
+  "source_fixture_platform": "Linux",
+  "genuine_posix_source_replay": "actual62_doublecaptures_Linux_macOS_run38570185401",
+  "full_highlight_grammar_engine_qualified": false,
+  "tests_each": 3,
+  "shards": 8,
+  "baseline": 1500,
+  "completed_indices": 1500,
+  "missing": 0,
+  "duplicates": 0,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T13:40:01.2989380+00:00"
+}
