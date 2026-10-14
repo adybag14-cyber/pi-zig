@@ -1,0 +1,31 @@
+{
+  "upstream": "1692bba6347a287ab0f3cb554a4430fafffc474b",
+  "methods": [
+    "_summarizationRetryCallbacks",
+    "_finishCancelledRetry",
+    "_prepareRetry",
+    "_omitRecoveryAttempt"
+  ],
+  "helper": "Coding-agent sleep with actual global Promise/setTimeout/clearTimeout/signal callbacks and VM-visible roots",
+  "shared_delay": "Actual VM exponentiation and left-to-right live Math/Number/property coercion; no mutable Math.pow substitution",
+  "quickjs_local_abi": {
+    "new_unary": "JS_PiDecrement using OP_dec",
+    "purpose": "Source backoff ** and retry counter -- including BigInt",
+    "new_binary_case9": "OP_pow",
+    "existing_binary_cases_0_through_8": "unchanged"
+  },
+  "source_cases": 31,
+  "source_reference": "pending remote original Source capture",
+  "native": "uncompiled;fmt-only",
+  "source_retry_pattern": "Latest1692 unable to forward upstream gateway pattern added",
+  "remaining": [
+    "_isRetryableError/context overflow helper native integration",
+    "Full manual/automatic compaction and summaries",
+    "Native helper timer OOM regression integration",
+    "Existing Durable retry regression after shared delay change"
+  ],
+  "public_activation": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "completed_utc": "2026-10-14T12:22:21.9071768+00:00"
+}

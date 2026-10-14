@@ -29,26 +29,22 @@ pub fn retryable(engine: *Engine, message: c.JSValue) !bool {
     return matches(engine, text, @embedFile("retryable-provider-pattern.txt"));
 }
 pub fn delay(engine: *Engine, policy: c.JSValue, attempt: c.JSValue) !c.JSValue {
-    const math = try js.global(engine, "Math");
-    defer engine.freeValue(math);
-    const number = try js.global(engine, "Number");
-    defer engine.freeValue(number);
-    const base = try vm.get(engine, policy, "baseDelayMs");
-    defer engine.freeValue(base);
-    var base_number: f64 = 0;
-    var attempt_number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &base_number, base) < 0 or c.JS_ToFloat64(engine.context, &attempt_number, attempt) < 0) return js.capture(engine);
-    const exponent = try vm.invoke(engine, math, "max", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewFloat64(engine.context, attempt_number - 1) });
-    defer engine.freeValue(exponent);
-    const power = try vm.invoke(engine, math, "pow", &.{ c.JS_NewInt32(engine.context, 2), exponent });
-    defer engine.freeValue(power);
-    var power_number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &power_number, power) < 0) return js.capture(engine);
-    const raw = c.JS_NewFloat64(engine.context, base_number * power_number);
-    const safe = try vm.invoke(engine, number, "isSafeInteger", &.{raw});
-    defer engine.freeValue(safe);
-    const value = if (c.JS_ToBool(engine.context, safe) != 0) raw else c.JS_NewFloat64(engine.context, 9007199254740991);
-    const cap = try vm.get(engine, policy, "maxAgentDelayMs");
-    defer engine.freeValue(cap);
-    return vm.invoke(engine, math, "min", &.{ value, if (c.JS_IsUndefined(cap) or c.JS_IsNull(cap)) c.JS_NewInt32(engine.context, 60000) else cap });
+    const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+    const arithmetic = @import("native_image_arithmetic.zig");
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const base = try scope.get(policy, "baseDelayMs");
+    const math_max = try scope.global("Math");
+    const max = try scope.get(math_max, "max");
+    const position = try scope.own(try arithmetic.binary(engine, .subtract, attempt, c.JS_NewInt32(engine.context, 1)));
+    const exponent = try scope.call(max, math_max, &.{ c.JS_NewInt32(engine.context, 0), position });
+    const power = try scope.own(try arithmetic.binary(engine, .power, c.JS_NewInt32(engine.context, 2), exponent));
+    const raw = try scope.own(try arithmetic.binary(engine, .multiply, base, power));
+    const number = try scope.global("Number");
+    const safe = try scope.invoke(number, "isSafeInteger", &.{raw});
+    const value = if (scope.truthy(safe)) raw else try scope.get(try scope.global("Number"), "MAX_SAFE_INTEGER");
+    const math_min = try scope.global("Math");
+    const min = try scope.get(math_min, "min");
+    const cap = try scope.get(policy, "maxAgentDelayMs");
+    return js.call(engine, min, math_min, &.{ value, if (c.JS_IsUndefined(cap) or c.JS_IsNull(cap)) c.JS_NewInt32(engine.context, 60000) else cap });
 }
