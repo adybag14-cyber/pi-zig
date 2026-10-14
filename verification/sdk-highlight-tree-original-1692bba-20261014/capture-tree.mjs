@@ -1,0 +1,12 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{join}from'node:path';import{pathToFileURL}from'node:url';
+const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+const verify=()=>['source','dependencies','node-tools','candidate'].map(name=>{const rows=JSON.parse(readFileSync(join(process.env.PI_RENDERER_RECEIPTS,name+'-before.json'),'utf8').replace(/^\uFEFF/,''));for(const row of rows)if(hash(row.path)!==row.sha256.toLowerCase())throw Error('Frozen '+name+' drift '+row.path);return{name,count:rows.length,drift:0};});
+const before=verify(),root=process.env.PI_RENDERER_SOURCE_ROOT;
+await import(pathToFileURL(join(root,'packages/coding-agent/src/utils/syntax-highlight.ts')).href);
+const{default:core}=await import(pathToFileURL(join(root,'node_modules/highlight.js/lib/core.js')).href);
+const ActualEmitter=core.highlight('',{language:'javascript',ignoreIllegals:true})._emitter.constructor;
+let instances=0;globalThis.makeTokenTreeEmitter=options=>{instances++;return new ActualEmitter(options)};
+const input=readFileSync(process.argv[3],'utf8');await import('data:text/javascript,'+encodeURIComponent(input));
+if(sdkTokenTreeRows.length!==24||instances!==27)throw Error('Original token-tree24 inventory mismatch '+sdkTokenTreeRows.length+'/'+instances);
+const observedModules=readFileSync(join(process.env.PI_RENDERER_RECEIPTS,'modules-'+process.pid+'.jsonl'),'utf8').trim().split('\n').map(JSON.parse);for(const row of observedModules.filter(row=>row.kind==='observed-module'))if(hash(row.path)!==row.sha256)throw Error('Observed original module drift');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'1692bba6347a287ab0f3cb554a4430fafffc474b',inputSha256:createHash('sha256').update(input).digest('hex'),platform:process.platform,arch:process.arch,cases:sdkTokenTreeRows.length,instances,node:{version:process.version,path:process.execPath,sha256:hash(process.execPath),execArgv:process.execArgv},before,after:verify(),scope:'Original actual highlight.js10.7.3 TokenTreeEmitter and HTMLRenderer constructor obtained from real highlight result; caller input unchanged, no Source body rewrite; internal emitter algorithms only, no public helper metadata certificate',rows:sdkTokenTreeRows,observedModules},null,2));
