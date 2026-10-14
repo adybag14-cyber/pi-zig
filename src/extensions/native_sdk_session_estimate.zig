@@ -29,19 +29,22 @@ fn dispatch(engine: *em.Engine, args: []const c.JSValue, magic: c_int) !c.JSValu
         return engine.checked(c.JS_PiBinaryOperator(engine.context, 6, args[0], threshold));
     }
     if (magic == 1) return estimate(engine, args[0], args[1]);
-    var index = try sdk.length(engine, args[0]);
-    while (index > 0) {
-        index -= 1;
-        const entry = try at(&scope, args[0], index);
-        if (!try is(&scope, try scope.get(entry, "type"), "custom") or !try is(&scope, try scope.get(entry, "customType"), "pi.virtual-model-state")) continue;
-        const data = try scope.get(entry, "data");
-        const provider = if (temp.nullish(data)) c.pi_js_undefined() else try scope.get(data, "provider");
-        if (scope.equal(provider, args[1]) and scope.equal(try scope.get(data, "modelId"), args[2])) return c.JS_DupValue(engine.context, try scope.get(data, "state"));
+    var index = try scope.own(try arithmetic.binary(engine, .subtract, try scope.get(args[0], "length"), c.JS_NewInt32(engine.context, 1)));
+    var steps: usize = 0;
+    while (try arithmetic.compare(engine, .greater_equal, index, c.JS_NewInt32(engine.context, 0))) {
+        steps +|= 1;
+        try estimateBudget(engine, steps);
+        var iteration: Scope = .{ .engine = engine };
+        defer iteration.deinit();
+        const entry = try keyAt(&iteration, args[0], index);
+        if (try is(&iteration, try iteration.get(entry, "type"), "custom") and try is(&iteration, try iteration.get(entry, "customType"), "pi.virtual-model-state")) {
+            const data = try iteration.get(entry, "data");
+            const provider = if (temp.nullish(data)) c.pi_js_undefined() else try iteration.get(data, "provider");
+            if (iteration.equal(provider, args[1]) and iteration.equal(try iteration.get(data, "modelId"), args[2])) return c.JS_DupValue(engine.context, try iteration.get(data, "state"));
+        }
+        index = try scope.own(try arithmetic.binary(engine, .subtract, index, c.JS_NewInt32(engine.context, 1)));
     }
     return c.pi_js_undefined();
-}
-fn at(scope: *Scope, array: c.JSValue, index: usize) !c.JSValue {
-    return scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, array, @intCast(index))));
 }
 fn is(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
     return scope.equal(value, try scope.text(text));
