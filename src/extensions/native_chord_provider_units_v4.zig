@@ -173,7 +173,7 @@ pub fn sendUnit(s: *Scope, bindings: c.JSValue, connection: c.JSValue, served: c
         try replay(s, bindings, connection, served, try s.at(pair, 0), try s.at(pair, 1));
     }
 }
-fn snapshot(s: *Scope, bindings: c.JSValue, served: c.JSValue, name: c.JSValue, as: [*:0]const u8, value: c.JSValue) !c.JSValue {
+fn snapshot(s: *Scope, bindings: c.JSValue, served: c.JSValue, name: c.JSValue, as: []const u8, value: c.JSValue) !c.JSValue {
     const frame = try s.record();
     try h.field(s, frame, "t", try s.text("state"));
     try h.field(s, frame, "hold", try s.get(served, "id"));
@@ -191,7 +191,7 @@ fn snapshot(s: *Scope, bindings: c.JSValue, served: c.JSValue, name: c.JSValue, 
     if (!c.JS_IsUndefined(value)) try h.field(s, frame, "value", value);
     return frame;
 }
-fn attach(s: *Scope, bindings: c.JSValue, connection: c.JSValue, served: c.JSValue, name: c.JSValue, as: [*:0]const u8) !c.JSValue {
+fn attach(s: *Scope, bindings: c.JSValue, connection: c.JSValue, served: c.JSValue, name: c.JSValue, as: []const u8) !c.JSValue {
     const readable = try h.invoke(s, try s.get(served, "ref"), "member", &.{name});
     if (c.JS_IsUndefined(readable) or !c.JS_IsFunction(s.engine.context, try s.get(readable, "events"))) return c.pi_js_undefined();
     const feed = try s.record();

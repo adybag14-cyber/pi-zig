@@ -119,7 +119,7 @@ fn deliver(s: *Scope, owned: c.JSValue, name: c.JSValue, delivered: c.JSValue) !
     const listeners = try h.invoke(s, try s.get(owned, "listeners"), "get", &.{name});
     if (!c.JS_IsUndefined(listeners)) try each(s, listeners, "deliver", &.{delivered}, true);
 }
-fn event(s: *Scope, kind: [*:0]const u8, value: c.JSValue) !c.JSValue {
+fn event(s: *Scope, kind: []const u8, value: c.JSValue) !c.JSValue {
     const result = try s.record();
     try h.field(s, result, "type", try s.text(kind));
     try h.field(s, result, "value", value);

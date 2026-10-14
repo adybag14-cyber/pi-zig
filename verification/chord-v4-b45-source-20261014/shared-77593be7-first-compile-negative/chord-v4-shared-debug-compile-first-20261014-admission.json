@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-14T20:55:33.9116243+00:00",
+  "free_bytes": 26724601856,
+  "required_bytes": 17179869184,
+  "other_native": [],
+  "source_inputs": 5431,
+  "original_source_inputs": 1965,
+  "compiler_inputs": 19546,
+  "normal_floor": true,
+  "sole8_exception_used": false,
+  "root_authority": "Root reviewed exact77593be7 owner7FB02DE9 full5431/1965/19546/vendor/control; normal16/j1/1320 compile-only; RendererGCSource peer; 2026-10-14",
+  "compile_seconds": 1320,
+  "runtime_authorized": false,
+  "jobs": 1,
+  "llvm": "default",
+  "compiler_peak_calibrated": false,
+  "public_activation": false
+}

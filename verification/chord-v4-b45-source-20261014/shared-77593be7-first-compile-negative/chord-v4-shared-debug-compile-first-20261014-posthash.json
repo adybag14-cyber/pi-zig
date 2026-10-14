@@ -1,0 +1,18 @@
+{
+  "head": "77593be73d2c155c172150a0b539323ac472505e",
+  "status": "failed",
+  "exit_code": 1,
+  "source_before": 5431,
+  "source_after": 5431,
+  "source_drift": 0,
+  "compiler_count": 19546,
+  "compiler_drift": 0,
+  "compiler_inventory_drift": 0,
+  "original_source_count": 1965,
+  "original_source_drift": 0,
+  "control_drift": 0,
+  "root_pid_absent": true,
+  "runtime_executed": false,
+  "public_activation": false,
+  "completed_utc": "2026-10-14T21:00:28.9593738+00:00"
+}
