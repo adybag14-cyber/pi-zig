@@ -57,7 +57,7 @@ pub fn loginHelp(scope: *Scope) !c.JSValue {
     try scope.index(lines, 2, try scope.concat(try scope.text("  "), try scope.stringify(models)));
     return scope.invoke(lines, "join", &.{try scope.text("\n")});
 }
-fn noModel(engine: *em.Engine) !void {
+pub fn noModel(engine: *em.Engine) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const constructor = try scope.global("Error");
