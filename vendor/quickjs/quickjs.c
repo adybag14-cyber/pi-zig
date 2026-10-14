@@ -21812,11 +21812,9 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JS_FreeValue(ctx, error);
         resolved:
             if (unlikely(JS_IsException(ret2))) {
-                if (JS_IsUncatchableError(ctx->rt->current_exception)) {
-                    is_success = false;
-                } else {
-                    abort(); /* BUG */
-                }
+                /* Intrinsic resolving functions can fail when queuing a
+                   reaction runs out of memory. Preserve that exception. */
+                is_success = false;
             }
             JS_FreeValue(ctx, ret2);
         }
@@ -32127,8 +32125,7 @@ static JSValue js_load_module_rejected(JSContext *ctx, JSValueConst this_val,
     else
         error = JS_UNDEFINED;
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, &error);
-    JS_FreeValue(ctx, ret);
-    return JS_UNDEFINED;
+    return ret;
 }
 
 static JSValue js_load_module_fulfilled(JSContext *ctx, JSValueConst this_val,
@@ -32143,16 +32140,16 @@ static JSValue js_load_module_fulfilled(JSContext *ctx, JSValueConst this_val,
     ns = JS_GetModuleNamespace(ctx, m);
     if (JS_IsException(ns)) {
         JSValue err = JS_GetException(ctx);
-        js_load_module_rejected(ctx, JS_UNDEFINED, 1, vc(&err), 0, func_data);
-        return JS_UNDEFINED;
+        ret = js_load_module_rejected(ctx, JS_UNDEFINED, 1, vc(&err), 0, func_data);
+        JS_FreeValue(ctx, err);
+        return ret;
     }
     ret = JS_Call(ctx, resolving_funcs[0], JS_UNDEFINED, 1, vc(&ns));
-    JS_FreeValue(ctx, ret);
     JS_FreeValue(ctx, ns);
-    return JS_UNDEFINED;
+    return ret;
 }
 
-static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
+static int JS_LoadModuleInternal(JSContext *ctx, const char *basename,
                                   const char *filename,
                                   JSValueConst *resolving_funcs,
                                   JSValueConst attributes)
@@ -32180,9 +32177,11 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     fail:
         err = JS_GetException(ctx);
         ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-        JS_FreeValue(ctx, ret); /* XXX: what to do if exception ? */
         JS_FreeValue(ctx, err);
-        return;
+        if (JS_IsException(ret))
+            return -1;
+        JS_FreeValue(ctx, ret);
+        return 0;
     }
 
     func_obj = JS_NewModuleValue(ctx, m);
@@ -32206,6 +32205,7 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     JS_FreeValue(ctx, evaluate_promise);
     if (attach_result < 0)
         goto fail;
+    return 0;
 }
 
 /* Return a promise or an exception in case of memory error. Used by
@@ -32214,13 +32214,18 @@ JSValue JS_LoadModule(JSContext *ctx, const char *basename,
                       const char *filename)
 {
     JSValue promise, resolving_funcs[2];
+    int result;
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
     if (JS_IsException(promise))
         return JS_EXCEPTION;
-    JS_LoadModuleInternal(ctx, basename, filename, vc(resolving_funcs), JS_UNDEFINED);
+    result = JS_LoadModuleInternal(ctx, basename, filename, vc(resolving_funcs), JS_UNDEFINED);
     JS_FreeValue(ctx, resolving_funcs[0]);
     JS_FreeValue(ctx, resolving_funcs[1]);
+    if (result < 0) {
+        JS_FreeValue(ctx, promise);
+        return JS_EXCEPTION;
+    }
     return promise;
 }
 
@@ -32233,6 +32238,7 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     JSValueConst attributes = argv[4];
     const char *basename = NULL, *filename;
     JSValue ret, err;
+    int result;
 
     if (!JS_IsString(basename_val)) {
         JS_ThrowTypeError(ctx, "no function filename for import()");
@@ -32246,17 +32252,16 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     if (!filename)
         goto exception;
 
-    JS_LoadModuleInternal(ctx, basename, filename, resolving_funcs, attributes);
+    result = JS_LoadModuleInternal(ctx, basename, filename, resolving_funcs, attributes);
     JS_FreeCString(ctx, filename);
     JS_FreeCString(ctx, basename);
-    return JS_UNDEFINED;
+    return result < 0 ? JS_EXCEPTION : JS_UNDEFINED;
  exception:
     err = JS_GetException(ctx);
     ret = JS_Call(ctx, resolving_funcs[1], JS_UNDEFINED, 1, vc(&err));
-    JS_FreeValue(ctx, ret); /* XXX: what to do if exception ? */
     JS_FreeValue(ctx, err);
     JS_FreeCString(ctx, basename);
-    return JS_UNDEFINED;
+    return ret;
 }
 
 static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
@@ -32363,7 +32368,7 @@ done:
     goto done;
 }
 
-static void js_set_module_evaluated(JSContext *ctx, JSModuleDef *m)
+static int js_set_module_evaluated(JSContext *ctx, JSModuleDef *m)
 {
     m->status = JS_MODULE_STATUS_EVALUATED;
     if (!JS_IsUndefined(m->promise)) {
@@ -32371,8 +32376,11 @@ static void js_set_module_evaluated(JSContext *ctx, JSModuleDef *m)
         assert(m->cycle_root == m);
         JSValueConst value = JS_UNDEFINED;
         ret_val = JS_Call(ctx, m->resolving_funcs[0], JS_UNDEFINED, 1, &value);
+        if (JS_IsException(ret_val))
+            return -1;
         JS_FreeValue(ctx, ret_val);
     }
+    return 0;
 }
 
 typedef struct {
@@ -32465,9 +32473,12 @@ static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst t
     for(i = 0; i < module->async_parent_modules_count; i++) {
         JSModuleDef *m = module->async_parent_modules[i];
         JSValue m_obj = JS_NewModuleValue(ctx, m);
-        js_async_module_execution_rejected(ctx, JS_UNDEFINED, 1, &error, 0,
-                                           vc(&m_obj));
+        JSValue ret = js_async_module_execution_rejected(ctx, JS_UNDEFINED, 1, &error, 0,
+                                                        vc(&m_obj));
         JS_FreeValue(ctx, m_obj);
+        if (JS_IsException(ret))
+            return ret;
+        JS_FreeValue(ctx, ret);
     }
 
     if (!JS_IsUndefined(module->promise)) {
@@ -32475,6 +32486,8 @@ static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst t
         assert(module->cycle_root == module);
         ret_val = JS_Call(ctx, module->resolving_funcs[1], JS_UNDEFINED,
                           1, &error);
+        if (JS_IsException(ret_val))
+            return ret_val;
         JS_FreeValue(ctx, ret_val);
     }
     return JS_UNDEFINED;
@@ -32496,7 +32509,8 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
     assert(!module->eval_has_exception);
     assert(module->async_evaluation);
     module->async_evaluation = false;
-    js_set_module_evaluated(ctx, module);
+    if (js_set_module_evaluated(ctx, module) < 0)
+        return JS_EXCEPTION;
 
     exec_list->tab = NULL;
     exec_list->count = 0;
@@ -32524,8 +32538,10 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
                     error = JS_GetException(ctx);
             } else {
                 result = js_execute_sync_module(ctx, m, &error);
-                if (result >= 0)
-                    js_set_module_evaluated(ctx, m);
+                if (result >= 0 && js_set_module_evaluated(ctx, m) < 0) {
+                    js_free(ctx, exec_list->tab);
+                    return JS_EXCEPTION;
+                }
             }
             if (result < 0) {
                 JSValue m_obj = JS_NewModuleValue(ctx, m);
@@ -32763,6 +32779,8 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
         assert(m->eval_has_exception);
         ret_val = JS_Call(ctx, m->resolving_funcs[1], JS_UNDEFINED,
                           1, vc(&m->eval_exception));
+        if (JS_IsException(ret_val))
+            return ret_val;
         JS_FreeValue(ctx, ret_val);
     } else {
         assert(m->status == JS_MODULE_STATUS_EVALUATING_ASYNC ||
@@ -32773,6 +32791,8 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
             JSValueConst value = JS_UNDEFINED;
             ret_val = JS_Call(ctx, m->resolving_funcs[0], JS_UNDEFINED,
                               1, &value);
+            if (JS_IsException(ret_val))
+                return ret_val;
             JS_FreeValue(ctx, ret_val);
         }
         assert(stack_top == NULL);
@@ -56126,7 +56146,8 @@ static JSValue promise_reaction_job(JSContext *ctx, int argc,
     }
     is_reject = JS_IsException(res);
     if (is_reject) {
-        if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)))
+        if (unlikely(JS_IsUncatchableError(ctx->rt->current_exception)) ||
+            (JS_IsUndefined(argv[0]) && JS_IsUndefined(argv[1])))
             return JS_EXCEPTION;
         res = JS_GetException(ctx);
     }
@@ -56180,16 +56201,17 @@ void JS_SetHostPromiseRejectionTracker(JSRuntime *rt,
     rt->host_promise_rejection_tracker_opaque = opaque;
 }
 
-static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
+static int fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
                                       JSValueConst value, bool is_reject)
 {
     JSPromiseData *s = JS_GetOpaque(promise, JS_CLASS_PROMISE);
     struct list_head *el, *el1;
     JSPromiseReactionData *rd;
     JSValueConst args[5];
+    int result = 0;
 
     if (!s || s->promise_state != JS_PROMISE_PENDING)
-        return; /* should never happen */
+        return 0; /* should never happen */
     set_value(ctx, &s->promise_result, js_dup(value));
     s->promise_state = JS_PROMISE_FULFILLED + is_reject;
 
@@ -56212,7 +56234,9 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
         args[2] = rd->handler;
         args[3] = js_bool(is_reject);
         args[4] = value;
-        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
+        if (result == 0 &&
+            js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context) < 0)
+            result = -1;
         list_del(&rd->link);
         promise_reaction_data_free(ctx->rt, rd);
     }
@@ -56222,6 +56246,7 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
         list_del(&rd->link);
         promise_reaction_data_free(ctx->rt, rd);
     }
+    return result;
 }
 
 static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
@@ -56368,20 +56393,26 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
     then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
     if (JS_IsException(then)) {
         JSValue error;
+        int result;
     fail_reject:
         error = JS_GetException(ctx);
-        fulfill_or_reject_promise(ctx, s->promise, error, true);
+        result = fulfill_or_reject_promise(ctx, s->promise, error, true);
         JS_FreeValue(ctx, error);
+        if (result < 0)
+            return JS_EXCEPTION;
     } else if (!JS_IsFunction(ctx, then)) {
         JS_FreeValue(ctx, then);
     done:
-        fulfill_or_reject_promise(ctx, s->promise, resolution, is_reject);
+        if (fulfill_or_reject_promise(ctx, s->promise, resolution, is_reject) < 0)
+            return JS_EXCEPTION;
     } else {
         args[0] = s->promise;
         args[1] = resolution;
         args[2] = then;
-        JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);
+        int result = JS_EnqueueJob(ctx, js_promise_resolve_thenable_job, 3, args);
         JS_FreeValue(ctx, then);
+        if (result < 0)
+            return JS_EXCEPTION;
     }
     return JS_UNDEFINED;
 }

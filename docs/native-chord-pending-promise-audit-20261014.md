@@ -1,0 +1,22 @@
+# Pending promise settlement failure propagation
+
+The f6ba165b609d83bdd1d92b44138ca662a9ff574f direct VM heap test passed its earlier budgets and then failed with JavaScriptPromiseUnsettled at top-level-await program0/budget768. The already-settled attachment path now checks enqueue failure. A pending promise's settlement still discarded that same enqueue status, allowing an awaited reaction to disappear.
+
+The candidate preserves the first enqueue exception, releases every owned active and opposite reaction record, and returns failure from fulfill_or_reject_promise. Its two callers are both in the intrinsic resolving-function implementation; both now propagate the status. The thenable-adoption enqueue in that same implementation also checks its status and frees its owned then function before returning an exception.
+
+The complete affected callsite and ownership audit is:
+
+- fulfill_or_reject_promise has two callsites, both checked. Reaction records are released on both success and failure. Once enqueue fails, later records are released without another allocation attempt, retaining the first current exception.
+- js_async_function_resume invokes its private intrinsic resolving functions. An allocation failure while delivering their result now propagates instead of reaching the old abort assertion. Ordinary guest throws still reject the async function's own promise through its existing path.
+- promise_reaction_job preserves an abrupt internal handler result when no result capability exists. Those internal module/await handlers have no child promise in which to store a rejection. Public then continues to have a result capability and retains its rejection behavior. The public js_promise_then function body is unchanged.
+- js_set_module_evaluated has two callers, both checked. A failed ready-ancestor delivery releases the owned execution-list allocation before propagation.
+- Module rejection propagates failures from recursive ancestor delivery and the root reject capability, freeing each temporary module value first.
+- js_load_module_fulfilled and js_load_module_rejected return their intrinsic resolution result. Namespace and transferred exception values are released exactly once. The namespace-error branch previously omitted its owned error release.
+- JS_LoadModuleInternal has two callers: public JS_LoadModule and the dynamic-import job. Both check the new internal status. JS_LoadModule releases both resolving functions and its owned promise on failure; the dynamic-import job releases both C strings. The original context exception reaches the host job unchanged.
+- js_evaluate_module checks both root capability deliveries rather than discarding their errors.
+
+No native allocation classifier, private tag format, generation predicate, public then function body or original Source4 fixture changes. The ordinary pure guest tests retain public species behavior and exact rejection identity. The direct VM limit test retains all514 targeted budgets and remains explicitly nonexhaustive C-heap coverage; the host allocator test retains all21 indices.
+
+The original Resource4 functional observer remains immutable. A separate guarded allocation observer was executed twice against the actual pinned original Node factories, with full34793-input closure and5232-candidate/control freezes. Both outputs are byte-identical to the original ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6 oracle. Its only differences rethrow errors outside the actually expected aborted ChordError or exact original rejection marker, preserving their values unchanged. No name/message OOM matching is used. The native target first records the first allocator failure stack from the original observer at its measured baseline-2 caller allocation, then runs every allocation index using the genuinely captured guarded observer. Both observers retain all4 cases, native constructors, await paths, GC and teardown.
+
+This candidate is source-only and requires Root review, coordinated compilation and runtime diagnostics. Existing negative receipts remain retained. Public activation and full Pi qualification remain false.

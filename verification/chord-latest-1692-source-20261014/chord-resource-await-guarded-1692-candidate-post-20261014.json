@@ -1,0 +1,15 @@
+{
+  "candidate_count": 5232,
+  "candidate_drift": 0,
+  "candidate_inventory_drift": 0,
+  "original_and_guarded_byte_equal": true,
+  "oracle_sha256": "ED85E242EDD48DE43E0D1E65E498249554503C50A513AE435A27A141B80028C6",
+  "full_source_inputs": 34793,
+  "owned_pids": [
+    60800,
+    51368
+  ],
+  "owned_pids_remaining": 0,
+  "native_gpa_qualified": false,
+  "utc": "2026-10-14T17:16:48.7449137+00:00"
+}
