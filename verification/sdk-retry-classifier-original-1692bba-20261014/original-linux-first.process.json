@@ -1,0 +1,24 @@
+{
+  "pid": 2698,
+  "executable": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node",
+  "executable_sha256": "E237A2839D0CBDC9A9A2ADDA1A184AFC0F5B20306FFBE923AF5686550472D8A8",
+  "argv": [
+    "--max-old-space-size=256",
+    "--conditions=source",
+    "--experimental-transform-types",
+    "--import",
+    "file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-1692bba-20261014/capture-classifier.mjs",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-result/classifier-first-output.json",
+    "/home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-1692bba-20261014/sdk-session-retry-classifier-1692.input.txt"
+  ],
+  "live_command_line": "/opt/hostedtoolcache/node/24.14.0/x64/bin/node --max-old-space-size=256 --conditions=source --experimental-transform-types --import file:///home/runner/work/pi-zig/pi-zig/verification/sdk-renderers-posix-original-1692bba-20261014/observe-original.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-1692bba-20261014/capture-classifier.mjs /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-result/classifier-first-output.json /home/runner/work/pi-zig/pi-zig/verification/sdk-retry-classifier-original-1692bba-20261014/sdk-session-retry-classifier-1692.input.txt",
+  "created_utc": "2026-10-14T13:06:55.3715394Z",
+  "launched_utc": "2026-10-14T13:06:55.3764204+00:00",
+  "working_directory": "/home/runner/work/pi-zig/pi-zig/.reference-source",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-14T13:07:00.9026213+00:00"
+}
