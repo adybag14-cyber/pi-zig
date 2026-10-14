@@ -1,0 +1,83 @@
+{
+  "run": 38646156102,
+  "head": "74c43be4691d3cb19508de6189c73711775a8341",
+  "tree": "c649b6828a3cdc747a7aa38f5cebc1af8bf9df63",
+  "status": "all_six_independently_audited",
+  "profiles": [
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "Debug",
+      "platform": "macos-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    },
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "ReleaseSafe",
+      "platform": "macos-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    },
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "Debug",
+      "platform": "ubuntu-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    },
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "ReleaseSafe",
+      "platform": "ubuntu-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    },
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "Debug",
+      "platform": "windows-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    },
+    {
+      "source_cases": 28,
+      "host_positions": 41,
+      "compiler": 19546,
+      "tests": 6,
+      "mode": "ReleaseSafe",
+      "platform": "windows-latest",
+      "source": 5567,
+      "source_git_sha256_all_verified": true,
+      "all_post_drift": 0
+    }
+  ],
+  "total_selected_test_executions": 36,
+  "total_host_failure_positions": 246,
+  "genuine_reference_cases": 28,
+  "genuine_posix_source_capture_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "auditor_sha256": "6346356C1E5AF143450E18A0DEC4E70012BCB9D0BD2633A79FD2CA06361B2C95",
+  "completed_utc": "2026-10-14T22:34:17.2925554+00:00"
+}
