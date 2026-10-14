@@ -51,7 +51,8 @@ fn openOne(engine: *h.Engine, parent: c.JSValue, resource: c.JSValue) !c.JSValue
     inline for (.{ "object", "bindings", "resources", "signal", "opening" }) |name| try h.field(&s, work, name, try s.get(parent, name));
     try h.field(&s, work, "resource", resource);
     // An async IIFE starts its synchronous portion immediately, before map.set.
-    startResource(&s, work) catch |err| try aw.rejectError(&s, work, err);
+    const generation = engine.native_allocation_generation;
+    startResource(&s, work) catch |err| try aw.rejectErrorSince(&s, work, err, generation);
     const pending = try s.get(work, "promise");
     _ = try h.invoke(&s, opening, "set", &.{ resource, pending });
     return s.result(pending);

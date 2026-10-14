@@ -50,6 +50,13 @@ implementation body or missing-method fallback is introduced.
   provider reset or relay resync overflow, acknowledgements, and diagnostics.
   The unchanged protocol-violation reporter is reused from its historical
   module; protocol mismatch reporting/close text is explicitly version4.
+- Local provider units now build the current shape and initial snapshots,
+  preserve per-member streams, buffer and replay events during snapshot
+  construction, queue subsequent units, and reset lazily after overflow.
+  State-demand changes, resync, and served-hold teardown are real native bodies.
+  The unchanged qualified snapshot-validation body is reused with public
+  visibility only; its new callers retain the narrow existing trusted fresh
+  allocation guard rather than serializing allocation failures as wire errors.
 
 ## Qualification boundary and remaining integration
 

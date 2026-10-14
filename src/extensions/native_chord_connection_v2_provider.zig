@@ -168,7 +168,7 @@ fn memberDescription(s: *Scope, contract: c.JSValue, kind: c.JSValue, member: c.
     const variant = try s.key(variants, if (h.nullish(kind)) try s.text("") else kind);
     return if (h.nullish(variant)) c.pi_js_undefined() else s.key(variant, member);
 }
-fn validateSnapshot(s: *Scope, bindings: c.JSValue, handle: c.JSValue, member: c.JSValue, value: c.JSValue) !void {
+pub fn validateSnapshot(s: *Scope, bindings: c.JSValue, handle: c.JSValue, member: c.JSValue, value: c.JSValue) !void {
     if (c.JS_IsUndefined(value)) return;
     const installed = try h.invoke(s, try s.get(handle, "object"), "currentInstalled", &.{});
     if (c.JS_IsUndefined(installed)) return;

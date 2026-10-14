@@ -406,7 +406,8 @@ fn call(engine: *h.Engine, binding: c.JSValue, bindings: c.JSValue, name: c.JSVa
     defer s.deinit();
     const work = try aw.create(&s);
     inline for (.{ "binding", "bindings", "name", "args", "ctx" }, .{ binding, bindings, name, args, ctx }) |field, value| try h.field(&s, work, field, value);
-    callAttempt(&s, work) catch |err| try aw.rejectError(&s, work, err);
+    const generation = engine.native_allocation_generation;
+    callAttempt(&s, work) catch |err| try aw.rejectErrorSince(&s, work, err, generation);
     return aw.result(&s, work);
 }
 fn construct(engine: *h.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) !c.JSValue {

@@ -23,10 +23,11 @@ pub fn start(engine: *h.Engine, record: c.JSValue, bindings: c.JSValue, after: c
     if (h.nullish(after)) {
         try aw.wait(advance, &s, work, c.pi_js_undefined(), 0);
     } else {
+        const generation = engine.native_allocation_generation;
         const awaited = h.invoke(&s, after, "catch", &.{ignored});
         if (awaited) |pending| {
             try aw.wait(advance, &s, work, pending, 0);
-        } else |err| try aw.rejectError(&s, work, err);
+        } else |err| try aw.rejectErrorSince(&s, work, err, generation);
     }
     var captures = [_]c.JSValue{work};
     const fulfilled = try s.keep(try engine.checked(c.JS_NewCFunctionData2(engine.context, resultCallback, "", 0, 0, 1, &captures)));
@@ -40,12 +41,16 @@ fn abandoned(s: *Scope, record: c.JSValue, bindings: c.JSValue) !c.JSValue {
     return h.errorValue(s, bindings, "aborted", &.{ try s.get(record, "address"), try s.text(" abandoned") }, c.pi_js_undefined());
 }
 fn advance(engine: *h.Engine, work: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) anyerror!void {
+    const generation = engine.native_allocation_generation;
     step(engine, work, value, rejected, stage) catch |err| {
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
         if (err != error.JavaScriptException) return err;
         var s: Scope = .{ .engine = engine };
         defer s.deinit();
         if (stage >= 1 and stage <= 3) {
+            const cleanup_generation = engine.native_allocation_generation;
             fail(&s, work, engine.captured_exception orelse return err) catch |cleanup_error| {
+                if (engine.nativeAllocationError(cleanup_error, cleanup_generation) == error.OutOfMemory) return cleanup_error;
                 // The original finally executes even when rollback itself fails.
                 const replacement = if (cleanup_error == error.JavaScriptException) engine.captured_exception else null;
                 try dropPending(&s, try s.get(work, "object"), try s.get(work, "run"));
@@ -134,7 +139,9 @@ fn reportCleanup(ctx: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     return js.invoke(engine, data[0], "report", &.{if (argc > 0) argv[0] else c.pi_js_undefined()}) catch |err| @import("native_durable.zig").reject(engine, err);
 }
 fn open(s: *Scope, work: c.JSValue, record: c.JSValue, run: c.JSValue, signal: c.JSValue) !void {
+    const generation = s.engine.native_allocation_generation;
     openWithinTry(s, work, record, run, signal) catch |err| {
+        if (s.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return err;
         if (err != error.JavaScriptException) return err;
         try fail(s, work, s.engine.captured_exception orelse return err);
     };

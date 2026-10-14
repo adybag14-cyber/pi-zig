@@ -29,6 +29,11 @@ pub fn rejectError(s: *Scope, work: c.JSValue, err: anyerror) !void {
     const reason = try s.keep(c.JS_GetException(s.engine.context));
     try complete(s, work, reason, true);
 }
+pub fn rejectErrorSince(s: *Scope, work: c.JSValue, err: anyerror, generation: u64) !void {
+    const mapped = s.engine.nativeAllocationError(err, generation);
+    if (mapped == error.OutOfMemory) return mapped;
+    try rejectError(s, work, err);
+}
 pub fn wait(comptime next: Next, s: *Scope, work: c.JSValue, awaited: c.JSValue, stage: c_int) !void {
     const Adapter = struct {
         fn continueStage(engine: *h.Engine, owned: c.JSValue, value: c.JSValue, rejected: bool, phase: c_int) anyerror!c.JSValue {
